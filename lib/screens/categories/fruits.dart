@@ -26,116 +26,106 @@ class _FruitsState extends State<Fruits> {
       boxFit: BoxFit.cover,
       colorFilter: new ColorFilter.mode(
           Colors.black.withOpacity(0.67), BlendMode.darken),
-      image: Image.asset(
-        'lib/assets/images/apple.png',
-        // width: MediaQuery.of(context).size.width,
-        fit: BoxFit.fitHeight,
-        width: 80,
-        height: 80,
-      ),
+      // image: Image.asset(
+      //   'lib/assets/images/apple.png',
+      //   // width: MediaQuery.of(context).size.width,
+      //   fit: BoxFit.fitHeight,
+      //   width: 80,
+      //   height: 80,
+      // ),
 
 //              imageOverlay: AssetImage("lib/assets/food.jpeg"),
       // titlePosition: GFPosition.end,
-      content: Row(
+      content: Column(
         children: <Widget>[
-          Column(
+          Row(
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(right: 5.0),
-                child: Text('Apple'),
+              Stack(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(left: 22.0),
+                    child: Image.asset(
+                      'lib/assets/images/avocado.png',
+                      // width: MediaQuery.of(context).size.width,
+                      fit: BoxFit.fitHeight,
+
+                      width: 80,
+                      height: 80,
+                    ),
+                  ),
+                  Positioned(
+                    height: 18.0,
+                    width: 60.0,
+                    top: 0.0,
+                    left: 0.0,
+                    child: GFButtonBadge(
+                      // icon: GFBadge(
+                      //   // text: '6',
+                      //   shape: GFBadgeShape.pills,
+                      // ),
+                      // fullWidthButton: true,
+                      onPressed: () {},
+                      text: '25% off',
+                      color: Colors.deepOrange[300],
+                    ),
+                  )
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 5.0, top: 5.0),
-                child: Row(
-                  children: <Widget>[
-                    Image.asset('lib/assets/icons/rupee.png'),
-                    Text(
-                      '85/kg',
-                      style: TextStyle(color: const Color(0xFF00BFA5)),
-                    )
-                  ],
-                ),
-              )
             ],
           ),
-          Column(
+          Row(
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 38.0, bottom: 15.0),
-                child: GFIconButton(
-                  onPressed: null,
-                  icon: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        fav = !fav;
-                      });
-                    },
-                    child: fav
-                        ? Icon(
-                            Icons.favorite,
-                            color: getGFColor(GFColor.danger),
-                          )
-                        : Icon(
-                            Icons.favorite_border,
-                            color: Colors.grey,
-                          ),
+              Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(right: 5.0),
+                    child: Text('Apple'),
                   ),
-                  type: GFType.transparent,
-                ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 5.0, top: 5.0),
+                    child: Row(
+                      children: <Widget>[
+                        Image.asset('lib/assets/icons/rupee.png'),
+                        Text(
+                          '85/kg',
+                          style: TextStyle(color: const Color(0xFF00BFA5)),
+                        )
+                      ],
+                    ),
+                  )
+                ],
               ),
+              Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(left: 38.0, bottom: 15.0),
+                    child: GFIconButton(
+                      onPressed: null,
+                      icon: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            fav = !fav;
+                          });
+                        },
+                        child: fav
+                            ? Icon(
+                                Icons.favorite,
+                                color: getGFColor(GFColor.danger),
+                              )
+                            : Icon(
+                                Icons.favorite_border,
+                                color: Colors.grey,
+                              ),
+                      ),
+                      type: GFType.transparent,
+                    ),
+                  ),
+                ],
+              )
             ],
           )
         ],
       ),
-      // title: GFListTile(
-      //   padding: EdgeInsets.zero,
-      //   title: Text('Apple',
-      //       style: TextStyle(
-      //         fontSize: 13.0,
-      //       )),
-      //   // ),
-      //   icon: GFIconButton(
-      //     onPressed: null,
-      //     icon: GestureDetector(
-      //       onTap: () {
-      //         setState(() {
-      //           fav = !fav;
-      //         });
-      //       },
-      //       child: fav
-      //           ? Icon(
-      //               Icons.favorite,
-      //               color: getGFColor(GFColor.danger),
-      //             )
-      //           : Icon(
-      //               Icons.favorite_border,
-      //               color: Colors.grey,
-      //             ),
-      //     ),
-      //     type: GFType.transparent,
-      //   ),
-      // ),
-      // content: Row(
-      //   children: <Widget>[
-      //     // Image.asset('lib/assets/icons/rupee.png'),
-      //     Text(
-      //       ' 85/kg',
-      //       style: TextStyle(color: const Color(0xFF00BFA5)),
-      //     ),
-      //   ],
-      // ),
-
-      // RichText(
-      //   text: TextSpan(
-      //     children: <TextSpan>[
-      //       TextSpan(text: "85 /kg", style: comments()),
-      //       TextSpan(
-      //         text: '                             View all',
-      //         style: TextStyle(color: primary),
-      //       ),
-      //     ],
-      //   ),
-      // ),
     );
 
     return Scaffold(
@@ -152,10 +142,11 @@ class _FruitsState extends State<Fruits> {
       ),
       body: Container(
         height: 800.0,
-        child: GridView.builder(
-          itemCount: 8,
-          gridDelegate:
-              SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: 4,
+          // gridDelegate:
+          //     SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
           itemBuilder: (BuildContext context, int index) {
             return Container(child: itemCard);
           },

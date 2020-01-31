@@ -1,6 +1,7 @@
 import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:getflutter/colors/gf_color.dart';
+import 'package:getflutter/components/badge/gf_button_badge.dart';
 import 'package:getflutter/components/button/gf_button_bar.dart';
 import 'package:getflutter/components/button/gf_icon_button.dart';
 import 'package:getflutter/components/card/gf_card.dart';
@@ -11,6 +12,7 @@ import 'package:getflutter/components/tabs/gf_tabBarView.dart';
 import 'package:getflutter/components/tabs/gf_segment_tabs.dart';
 import 'package:grocery_pro/screens/categories/categories.dart';
 import 'package:grocery_pro/screens/categories/fruits.dart';
+import 'package:grocery_pro/screens/categories/sub-category/product-details.dart';
 import 'package:grocery_pro/style/style.dart';
 
 class Post {
@@ -238,156 +240,244 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
               ),
             ),
           ),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Container(
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProductDetails()),
+              );
+            },
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: Container(
+                    child: GFCard(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0)),
+                      boxFit: BoxFit.cover,
+                      colorFilter: new ColorFilter.mode(
+                          Colors.black.withOpacity(0.67), BlendMode.darken),
+                      // image: Image.asset(
+                      //   'lib/assets/images/apple.png',
+                      //   // width: MediaQuery.of(context).size.width,
+                      //   fit: BoxFit.fitHeight,
+                      //   width: 80,
+                      //   height: 80,
+                      // ),
+
+//              imageOverlay: AssetImage("lib/assets/food.jpeg"),
+                      // titlePosition: GFPosition.end,
+                      content: Column(
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              Stack(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 22.0),
+                                    child: Image.asset(
+                                      'lib/assets/images/apple.png',
+                                      // width: MediaQuery.of(context).size.width,
+                                      fit: BoxFit.fitHeight,
+
+                                      width: 80,
+                                      height: 80,
+                                    ),
+                                  ),
+                                  Positioned(
+                                    height: 18.0,
+                                    width: 60.0,
+                                    top: 0.0,
+                                    left: 0.0,
+                                    child: GFButtonBadge(
+                                      // icon: GFBadge(
+                                      //   // text: '6',
+                                      //   shape: GFBadgeShape.pills,
+                                      // ),
+                                      // fullWidthButton: true,
+                                      onPressed: () {},
+                                      text: '25% off',
+                                      color: Colors.deepOrange[300],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Column(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 5.0),
+                                    child: Text('Apple'),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 5.0, top: 5.0),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Image.asset(
+                                            'lib/assets/icons/rupee.png'),
+                                        Text(
+                                          '85/kg',
+                                          style: TextStyle(
+                                              color: const Color(0xFF00BFA5)),
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Column(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 38.0, bottom: 15.0),
+                                    child: GFIconButton(
+                                      onPressed: null,
+                                      icon: GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            fav = !fav;
+                                          });
+                                        },
+                                        child: fav
+                                            ? Icon(
+                                                Icons.favorite,
+                                                color:
+                                                    getGFColor(GFColor.danger),
+                                              )
+                                            : Icon(
+                                                Icons.favorite_border,
+                                                color: Colors.grey,
+                                              ),
+                                      ),
+                                      type: GFType.transparent,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
                   child: GFCard(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0)),
                     boxFit: BoxFit.cover,
                     colorFilter: new ColorFilter.mode(
                         Colors.black.withOpacity(0.67), BlendMode.darken),
-                    image: Image.asset(
-                      'lib/assets/images/apple.png',
-                      // width: MediaQuery.of(context).size.width,
-                      fit: BoxFit.fitHeight,
-                      width: 80,
-                      height: 80,
-                    ),
+                    // image: Image.asset(
+                    //   'lib/assets/images/apple.png',
+                    //   // width: MediaQuery.of(context).size.width,
+                    //   fit: BoxFit.fitHeight,
+                    //   width: 80,
+                    //   height: 80,
+                    // ),
 
 //              imageOverlay: AssetImage("lib/assets/food.jpeg"),
                     // titlePosition: GFPosition.end,
-                    content: Row(
+                    content: Column(
                       children: <Widget>[
-                        Column(
+                        Row(
                           children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(right: 5.0),
-                              child: Text('Apple'),
+                            Stack(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 22.0),
+                                  child: Image.asset(
+                                    'lib/assets/images/orange.png',
+                                    // width: MediaQuery.of(context).size.width,
+                                    fit: BoxFit.fitHeight,
+
+                                    width: 80,
+                                    height: 80,
+                                  ),
+                                ),
+                                Positioned(
+                                  height: 18.0,
+                                  width: 60.0,
+                                  top: 0.0,
+                                  left: 0.0,
+                                  child: GFButtonBadge(
+                                      // icon: GFBadge(
+                                      //   // text: '6',
+                                      //   shape: GFBadgeShape.pills,
+                                      // ),
+                                      // fullWidthButton: true,
+                                      onPressed: () {},
+                                      text: '25% off',
+                                      color: const Color(0xFF00BFA5)),
+                                )
+                              ],
                             ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 5.0, top: 5.0),
-                              child: Row(
-                                children: <Widget>[
-                                  Image.asset('lib/assets/icons/rupee.png'),
-                                  Text(
-                                    '85/kg',
-                                    style: TextStyle(
-                                        color: const Color(0xFF00BFA5)),
-                                  )
-                                ],
-                              ),
-                            )
                           ],
                         ),
-                        Column(
+                        Row(
                           children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 38.0, bottom: 15.0),
-                              child: GFIconButton(
-                                onPressed: null,
-                                icon: GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      fav = !fav;
-                                    });
-                                  },
-                                  child: fav
-                                      ? Icon(
-                                          Icons.favorite,
-                                          color: getGFColor(GFColor.danger),
-                                        )
-                                      : Icon(
-                                          Icons.favorite_border,
-                                          color: Colors.grey,
-                                        ),
+                            Column(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 5.0),
+                                  child: Text('Orange'),
                                 ),
-                                type: GFType.transparent,
-                              ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 5.0, top: 5.0),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Image.asset('lib/assets/icons/rupee.png'),
+                                      Text(
+                                        '85/kg',
+                                        style: TextStyle(
+                                            color: const Color(0xFF00BFA5)),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
                             ),
+                            Column(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 38.0, bottom: 15.0),
+                                  child: GFIconButton(
+                                    onPressed: null,
+                                    icon: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          fav = !fav;
+                                        });
+                                      },
+                                      child: fav
+                                          ? Icon(
+                                              Icons.favorite,
+                                              color: getGFColor(GFColor.danger),
+                                            )
+                                          : Icon(
+                                              Icons.favorite_border,
+                                              color: Colors.grey,
+                                            ),
+                                    ),
+                                    type: GFType.transparent,
+                                  ),
+                                ),
+                              ],
+                            )
                           ],
                         )
                       ],
                     ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: GFCard(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0)),
-                  boxFit: BoxFit.cover,
-                  colorFilter: new ColorFilter.mode(
-                      Colors.black.withOpacity(0.67), BlendMode.darken),
-                  image: Image.asset(
-                    'lib/assets/images/apple.png',
-                    // width: MediaQuery.of(context).size.width,
-                    fit: BoxFit.fitHeight,
-                    width: 80,
-                    height: 80,
-                  ),
-
-//              imageOverlay: AssetImage("lib/assets/food.jpeg"),
-                  // titlePosition: GFPosition.end,
-                  content: Row(
-                    children: <Widget>[
-                      Column(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(right: 5.0),
-                            child: Text('Orange'),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 5.0, top: 5.0),
-                            child: Row(
-                              children: <Widget>[
-                                Image.asset('lib/assets/icons/orange.png'),
-                                Text(
-                                  '85/kg',
-                                  style:
-                                      TextStyle(color: const Color(0xFF00BFA5)),
-                                )
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                      Column(
-                        children: <Widget>[
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(left: 38.0, bottom: 15.0),
-                            child: GFIconButton(
-                              onPressed: null,
-                              icon: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    fav = !fav;
-                                  });
-                                },
-                                child: fav
-                                    ? Icon(
-                                        Icons.favorite,
-                                        color: getGFColor(GFColor.danger),
-                                      )
-                                    : Icon(
-                                        Icons.favorite_border,
-                                        color: Colors.grey,
-                                      ),
-                              ),
-                              type: GFType.transparent,
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -418,6 +508,14 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                             child: Text('Grapes'),
                           ),
                           Padding(
+                            padding: const EdgeInsets.only(right: 18.0),
+                            child: Text(
+                              'Green',
+                              style: TextStyle(
+                                  fontSize: 11.0, fontWeight: FontWeight.w300),
+                            ),
+                          ),
+                          Padding(
                             padding: const EdgeInsets.only(left: 5.0, top: 5.0),
                             child: Row(
                               children: <Widget>[
@@ -465,79 +563,112 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                 ),
               ),
               Expanded(
-                child: GFCard(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0)),
-                  boxFit: BoxFit.cover,
-                  colorFilter: new ColorFilter.mode(
-                      Colors.black.withOpacity(0.67), BlendMode.darken),
-                  image: Image.asset(
-                    'lib/assets/images/cherry.png',
-                    // width: MediaQuery.of(context).size.width,
-                    fit: BoxFit.fitHeight,
-                    width: 80,
-                    height: 80,
-                  ),
+                  child: Row(
+                children: <Widget>[
+                  Stack(
+                    children: <Widget>[
+                      GFCard(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0)),
+                        boxFit: BoxFit.cover,
+                        colorFilter: new ColorFilter.mode(
+                            Colors.black.withOpacity(0.67), BlendMode.darken),
+                        image: Image.asset(
+                          'lib/assets/images/cherry.png',
+                          // width: MediaQuery.of(context).size.width,
+                          fit: BoxFit.fitHeight,
+                          width: 80,
+                          height: 80,
+                        ),
 
 //              imageOverlay: AssetImage("lib/assets/food.jpeg"),
-                  // titlePosition: GFPosition.end,
-                  content: Row(
-                    children: <Widget>[
-                      Column(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(right: 5.0),
-                            child: Text('Cherry'),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 5.0, top: 5.0),
-                            child: Row(
+                        // titlePosition: GFPosition.end,
+                        content: Row(
+                          children: <Widget>[
+                            Column(
                               children: <Widget>[
-                                Image.asset('lib/assets/icons/rupee.png'),
-                                Text(
-                                  '85/kg',
-                                  style:
-                                      TextStyle(color: const Color(0xFF00BFA5)),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 5.0),
+                                  child: Text('Cherry'),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 5.0, top: 5.0),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Image.asset('lib/assets/icons/rupee.png'),
+                                      Text(
+                                        '85/kg',
+                                        style: TextStyle(
+                                            color: const Color(0xFF00BFA5)),
+                                      )
+                                    ],
+                                  ),
                                 )
                               ],
                             ),
-                          )
-                        ],
+                            Column(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 38.0, bottom: 15.0),
+                                  child: GFIconButton(
+                                    onPressed: null,
+                                    icon: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          fav = !fav;
+                                        });
+                                      },
+                                      child: fav
+                                          ? Icon(
+                                              Icons.favorite,
+                                              color: getGFColor(GFColor.danger),
+                                            )
+                                          : Icon(
+                                              Icons.favorite_border,
+                                              color: Colors.grey,
+                                            ),
+                                    ),
+                                    type: GFType.transparent,
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
                       ),
-                      Column(
-                        children: <Widget>[
-                          Padding(
+                      Positioned(
+                        top: 18.0,
+                        left: 16.0,
+                        width: 148.0,
+                        height: 144.0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.black45,
+                              borderRadius: BorderRadius.circular(20.0)),
+                          child: Padding(
                             padding:
-                                const EdgeInsets.only(left: 38.0, bottom: 15.0),
-                            child: GFIconButton(
-                              onPressed: null,
-                              icon: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    fav = !fav;
-                                  });
-                                },
-                                child: fav
-                                    ? Icon(
-                                        Icons.favorite,
-                                        color: getGFColor(GFColor.danger),
-                                      )
-                                    : Icon(
-                                        Icons.favorite_border,
-                                        color: Colors.grey,
-                                      ),
+                                const EdgeInsets.only(left: 19.0, top: 40.0),
+                            child: Text(
+                              '     oops!               Out of stock',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20.0,
                               ),
-                              type: GFType.transparent,
                             ),
                           ),
-                        ],
+                        ),
                       )
                     ],
-                  ),
-                ),
-              ),
+                  )
+                ],
+              )),
             ],
           ),
+          SizedBox(
+            height: 30.0,
+          )
         ],
       ),
     );

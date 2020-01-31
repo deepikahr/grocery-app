@@ -5,6 +5,7 @@ import 'package:getflutter/components/button/gf_button.dart';
 import 'package:getflutter/components/tabs/gf_tabBarView.dart';
 import 'package:getflutter/components/tabs/gf_segment_tabs.dart';
 import 'package:grocery_pro/screens/home/mycart.dart';
+import 'package:grocery_pro/screens/home/profile.dart';
 import 'package:grocery_pro/screens/home/saveditems.dart';
 import 'package:grocery_pro/screens/home/store.dart';
 import 'package:grocery_pro/style/style.dart';
@@ -49,6 +50,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           ),
           Container(
             color: Colors.white,
+            child: Profile(),
           ),
         ],
       ),

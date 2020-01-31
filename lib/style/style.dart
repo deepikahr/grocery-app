@@ -84,12 +84,12 @@ TextStyle profiledetails() {
   );
 }
 
-TextStyle drawerheading() {
+TextStyle heading() {
   return TextStyle(
       fontSize: 17.0,
-      fontWeight: FontWeight.w300,
+      fontWeight: FontWeight.w400,
       fontFamily: 'OpenSansSemiBold',
-      color: Colors.white,
+      color: Colors.black,
       letterSpacing: 0.5);
 }
 
