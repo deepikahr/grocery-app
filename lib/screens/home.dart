@@ -10,6 +10,12 @@ import 'package:grocery_pro/screens/home/store.dart';
 import 'package:grocery_pro/style/style.dart';
 
 class Home extends StatefulWidget {
+  final int currentIndex;
+  final Map<String, Map<String, String>> localizedValues;
+  var locale;
+  Home({Key key, this.currentIndex, this.locale, this.localizedValues})
+      : super(key: key);
+
   @override
   _HomeState createState() => _HomeState();
 }

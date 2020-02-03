@@ -6,6 +6,7 @@ import 'package:getflutter/components/typography/gf_typography.dart';
 import 'package:grocery_pro/auth/signup.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:pin_entry_text_field/pin_entry_text_field.dart';
+import '../screens/home.dart';
 
 class Otp extends StatefulWidget {
   Otp({Key key, this.title}) : super(key: key);
@@ -231,7 +232,7 @@ class _OtpState extends State<Otp> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Signup()),
+                  MaterialPageRoute(builder: (context) => Home()),
                 );
               },
               text: 'Submit OTP',

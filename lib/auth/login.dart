@@ -5,14 +5,31 @@ import 'package:getflutter/components/typography/gf_typography.dart';
 import 'package:grocery_pro/auth/forgotpassword.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/verification/otp.dart';
+import '../service/common.dart';
 
 class Login extends StatefulWidget {
+  const Login({
+    Key key,
+  }) : super(key: key);
   @override
   _LoginState createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    getToken();
+  }
+
+  getToken() async {
+    await Common.getToken().then((onValue) {
+      print("Value of the Token");
+      print(onValue);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
