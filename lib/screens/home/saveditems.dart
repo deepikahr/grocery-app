@@ -1,17 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:getflutter/colors/gf_color.dart';
-import 'package:getflutter/components/appbar/gf_appbar.dart';
-import 'package:getflutter/components/badge/gf_badge.dart';
-import 'package:getflutter/components/badge/gf_button_badge.dart';
-import 'package:getflutter/components/button/gf_icon_button.dart';
-import 'package:getflutter/components/card/gf_card.dart';
-import 'package:getflutter/components/list_tile/gf_list_tile.dart';
-import 'package:getflutter/components/tabs/gf_tabBar.dart';
-import 'package:getflutter/components/button/gf_button.dart';
-import 'package:getflutter/components/tabs/gf_tabBarView.dart';
-import 'package:getflutter/components/tabs/gf_segment_tabs.dart';
+import 'package:getflutter/getflutter.dart';
+
 import 'package:grocery_pro/screens/home/store.dart';
-import 'package:grocery_pro/style/style.dart';
 
 class SavedItems extends StatefulWidget {
   @override
@@ -82,10 +72,17 @@ class _SavedItemsState extends State<SavedItems> {
                     child: Text('Apple'),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 5.0, top: 5.0),
+                    padding: const EdgeInsets.only(left: 3.0, top: 5.0),
                     child: Row(
                       children: <Widget>[
-                        Image.asset('lib/assets/icons/rupee.png'),
+                        Icon(
+                          IconData(
+                            0xe913,
+                            fontFamily: 'icomoon',
+                          ),
+                          color: const Color(0xFF00BFA5),
+                          size: 11.0,
+                        ),
                         Text(
                           '85/kg',
                           style: TextStyle(color: const Color(0xFF00BFA5)),
@@ -110,14 +107,14 @@ class _SavedItemsState extends State<SavedItems> {
                         child: fav
                             ? Icon(
                                 Icons.favorite,
-                                color: getGFColor(GFColor.danger),
+                                color: Colors.red,
                               )
                             : Icon(
                                 Icons.favorite_border,
                                 color: Colors.grey,
                               ),
                       ),
-                      type: GFType.transparent,
+                      type: GFButtonType.transparent,
                     ),
                   ),
                 ],

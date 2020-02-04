@@ -89,6 +89,7 @@ TextStyle heading() {
       fontSize: 17.0,
       fontWeight: FontWeight.w400,
       fontFamily: 'OpenSansSemiBold',
+      decoration: TextDecoration.none,
       color: Colors.black,
       letterSpacing: 0.5);
 }

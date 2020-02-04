@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_pro/screens/home.dart';
-import 'package:grocery_pro/verification/verification.dart';
 
 void main() => runApp(MyApp());
 

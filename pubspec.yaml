@@ -9,12 +9,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  getflutter: 1.0.0-dev.7
+  getflutter: ^1.0.3
   pin_entry_text_field: ^0.1.3
   country_pickers: ^1.1.0
   flappy_search_bar: ^1.7.2
   search_widget: ^1.0.1
   badges: ^1.1.0
+  flutter_rating_bar: ^3.0.1+1
+  flutter_range_slider: ^1.4.0
+  rflutter_alert: ^1.0.3
 
 
   cupertino_icons: ^0.1.2
@@ -49,6 +52,10 @@ flutter:
     - lib/assets/images/creditcard.png
     - lib/assets/images/white.png
     - lib/assets/images/product.png
+    - lib/assets/icons/logo.png
+    - lib/assets/images/mastercard.png
+
+
 
 
 

@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/colors/gf_color.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
-import 'package:getflutter/components/badge/gf_badge.dart';
 import 'package:getflutter/components/badge/gf_button_badge.dart';
-import 'package:getflutter/components/button/gf_icon_button.dart';
-import 'package:getflutter/components/card/gf_card.dart';
-import 'package:getflutter/components/list_tile/gf_list_tile.dart';
-import 'package:getflutter/components/tabs/gf_tabBar.dart';
+
 import 'package:getflutter/components/button/gf_button.dart';
-import 'package:getflutter/components/tabs/gf_tabBarView.dart';
-import 'package:getflutter/components/tabs/gf_segment_tabs.dart';
-import 'package:grocery_pro/screens/home/store.dart';
+import 'package:getflutter/shape/gf_button_shape.dart';
+import 'package:grocery_pro/screens/checkout/checkout.dart';
+
 import 'package:grocery_pro/style/style.dart';
 
 class MyCart extends StatefulWidget {
@@ -59,7 +55,11 @@ class _MyCartState extends State<MyCart> {
                     children: <Widget>[
                       Column(
                         children: <Widget>[
-                          Image.asset('lib/assets/images/cherry.png'),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(bottom: 6.0, top: 6.0),
+                            child: Image.asset('lib/assets/images/cherry.png'),
+                          ),
                         ],
                       ),
                       Column(
@@ -83,9 +83,16 @@ class _MyCartState extends State<MyCart> {
                             padding: const EdgeInsets.only(right: 32.0),
                             child: Row(
                               children: <Widget>[
-                                Image.asset('lib/assets/icons/rupee.png'),
+                                Icon(
+                                  IconData(
+                                    0xe913,
+                                    fontFamily: 'icomoon',
+                                  ),
+                                  color: const Color(0xFF00BFA5),
+                                  size: 11.0,
+                                ),
                                 Text(
-                                  ' 85/kg',
+                                  '85/kg',
                                   style: TextStyle(
                                       color: const Color(0xFF00BFA5),
                                       fontSize: 17.0),
@@ -165,8 +172,12 @@ class _MyCartState extends State<MyCart> {
                               Container(
                                   // height: 150,
                                   // width: 130,
-                                  child: Image.asset(
-                                      'lib/assets/images/apple.png')),
+                                  child: Padding(
+                                padding: const EdgeInsets.only(
+                                    bottom: 6.0, top: 6.0),
+                                child:
+                                    Image.asset('lib/assets/images/apple.png'),
+                              )),
                             ],
                           ),
                           Positioned(
@@ -213,9 +224,16 @@ class _MyCartState extends State<MyCart> {
                             padding: const EdgeInsets.only(right: 32.0),
                             child: Row(
                               children: <Widget>[
-                                Image.asset('lib/assets/icons/rupee.png'),
+                                Icon(
+                                  IconData(
+                                    0xe913,
+                                    fontFamily: 'icomoon',
+                                  ),
+                                  color: const Color(0xFF00BFA5),
+                                  size: 11.0,
+                                ),
                                 Text(
-                                  ' 85/kg',
+                                  '85/kg',
                                   style: TextStyle(
                                       color: const Color(0xFF00BFA5),
                                       fontSize: 17.0),
@@ -284,7 +302,8 @@ class _MyCartState extends State<MyCart> {
                 SizedBox(
                   height: 150.0,
                 ),
-                Padding(
+                InkWell(
+                    child: Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 1.0),
                   child: Row(
                     children: <Widget>[
@@ -295,6 +314,7 @@ class _MyCartState extends State<MyCart> {
                           onPressed: () {},
                           // text: 'Warning',
                           color: GFColor.dark,
+                          shape: GFButtonShape.square,
                           child: Column(
                             children: <Widget>[
                               Padding(
@@ -309,8 +329,12 @@ class _MyCartState extends State<MyCart> {
                                       padding:
                                           const EdgeInsets.only(left: 10.0),
                                       child: Icon(
-                                        Icons.attach_money,
+                                        IconData(
+                                          0xe913,
+                                          fontFamily: 'icomoon',
+                                        ),
                                         color: Colors.white,
+                                        size: 11.0,
                                       ),
                                     ),
                                     Padding(
@@ -329,29 +353,40 @@ class _MyCartState extends State<MyCart> {
                         ),
                       ),
                       Container(
-                        width: 215.0,
-                        height: 45.0,
-                        child: GFButton(
-                          onPressed: () {},
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                              Text(
-                                'Checkout',
-                                style: TextStyle(color: Colors.black),
+                          width: 215.0,
+                          height: 45.0,
+                          child: InkWell(
+                            child: GFButton(
+                              onPressed: () {},
+                              shape: GFButtonShape.square,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => Checkout()),
+                                      );
+                                    },
+                                    child: Text(
+                                      'Checkout',
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_forward,
+                                    size: 20.0,
+                                  )
+                                ],
                               ),
-                              Icon(
-                                Icons.arrow_forward,
-                                size: 20.0,
-                              )
-                            ],
-                          ),
-                          color: GFColor.warning,
-                        ),
-                      )
+                              color: GFColor.warning,
+                            ),
+                          )),
                     ],
                   ),
-                )
+                ))
               ],
             ),
           ),

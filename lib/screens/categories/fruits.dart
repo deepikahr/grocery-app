@@ -1,17 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:getflutter/colors/gf_color.dart';
-import 'package:getflutter/components/appbar/gf_appbar.dart';
-import 'package:getflutter/components/badge/gf_badge.dart';
-import 'package:getflutter/components/badge/gf_button_badge.dart';
-import 'package:getflutter/components/button/gf_icon_button.dart';
-import 'package:getflutter/components/card/gf_card.dart';
-import 'package:getflutter/components/list_tile/gf_list_tile.dart';
-import 'package:getflutter/components/tabs/gf_tabBar.dart';
-import 'package:getflutter/components/button/gf_button.dart';
-import 'package:getflutter/components/tabs/gf_tabBarView.dart';
-import 'package:getflutter/components/tabs/gf_segment_tabs.dart';
+
+import 'package:getflutter/getflutter.dart';
+
 import 'package:grocery_pro/screens/home/store.dart';
-import 'package:grocery_pro/style/style.dart';
 
 class Fruits extends StatefulWidget {
   @override
@@ -110,14 +101,14 @@ class _FruitsState extends State<Fruits> {
                         child: fav
                             ? Icon(
                                 Icons.favorite,
-                                color: getGFColor(GFColor.danger),
+                                color: Colors.black,
                               )
                             : Icon(
                                 Icons.favorite_border,
                                 color: Colors.grey,
                               ),
                       ),
-                      type: GFType.transparent,
+                      type: GFButtonType.transparent,
                     ),
                   ),
                 ],
@@ -142,11 +133,10 @@ class _FruitsState extends State<Fruits> {
       ),
       body: Container(
         height: 800.0,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: 4,
-          // gridDelegate:
-          //     SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+        child: GridView.builder(
+          itemCount: 8,
+          gridDelegate:
+              SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
           itemBuilder: (BuildContext context, int index) {
             return Container(child: itemCard);
           },

@@ -1,17 +1,8 @@
-import 'package:country_pickers/country.dart';
-import 'package:country_pickers/country_picker_dropdown.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:getflutter/components/appbar/gf_appbar.dart';
-import 'package:getflutter/components/avatar/gf_avatar.dart';
-import 'package:getflutter/components/button/gf_button.dart';
-import 'package:getflutter/components/card/gf_card.dart';
-import 'package:getflutter/components/list_tile/gf_list_tile.dart';
-import 'package:getflutter/components/typography/gf_typography.dart';
-import 'package:grocery_pro/screens/home.dart';
+
+import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/verification/otp.dart';
-import 'package:pin_entry_text_field/pin_entry_text_field.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -192,8 +183,12 @@ class _ProfileState extends State<Profile> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
                             Icon(
-                              Icons.attach_money,
-                              size: 18.0,
+                              IconData(
+                                0xe913,
+                                fontFamily: 'icomoon',
+                              ),
+                              color: Colors.black,
+                              size: 11.0,
                             ),
                             Text('4566')
                           ],
@@ -229,7 +224,7 @@ class _ProfileState extends State<Profile> {
                           onPressed: () {},
                           text: 'Rate',
                           color: primary,
-                          type: GFType.outline,
+                          type: GFButtonType.outline,
                           size: GFSize.small,
                         ),
                       ),

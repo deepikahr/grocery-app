@@ -1,15 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:getflutter/colors/gf_color.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
-import 'package:getflutter/components/button/gf_button_bar.dart';
-import 'package:getflutter/components/button/gf_icon_button.dart';
-import 'package:getflutter/components/card/gf_card.dart';
-import 'package:getflutter/components/list_tile/gf_list_tile.dart';
-import 'package:getflutter/components/tabs/gf_tabBar.dart';
-import 'package:getflutter/components/button/gf_button.dart';
-import 'package:getflutter/components/tabs/gf_tabBarView.dart';
-import 'package:getflutter/components/tabs/gf_segment_tabs.dart';
-import 'package:grocery_pro/screens/home/store.dart';
+import 'package:getflutter/getflutter.dart';
+
 import 'package:grocery_pro/style/style.dart';
 
 class Categories extends StatefulWidget {
@@ -69,7 +61,7 @@ class _CategoriesState extends State<Categories> with TickerProviderStateMixin {
                                 0xe901,
                                 fontFamily: 'icomoon',
                               ),
-                              color: getGFColor(GFColor.dark),
+                              color: Colors.black,
                               size: 40.0,
                             ),
                           ),
@@ -99,7 +91,7 @@ class _CategoriesState extends State<Categories> with TickerProviderStateMixin {
                                 0xe902,
                                 fontFamily: 'icomoon',
                               ),
-                              color: getGFColor(GFColor.dark),
+                              color: Colors.black,
                               size: 40.0,
                             ),
                           ),
@@ -129,7 +121,7 @@ class _CategoriesState extends State<Categories> with TickerProviderStateMixin {
                                 0xe903,
                                 fontFamily: 'icomoon',
                               ),
-                              color: getGFColor(GFColor.dark),
+                              color: Colors.black,
                               size: 40.0,
                             ),
                           ),
@@ -161,7 +153,7 @@ class _CategoriesState extends State<Categories> with TickerProviderStateMixin {
                                 0xe904,
                                 fontFamily: 'icomoon',
                               ),
-                              color: getGFColor(GFColor.dark),
+                              color: Colors.black,
                               size: 40.0,
                             ),
                           ),
@@ -201,10 +193,10 @@ class _CategoriesState extends State<Categories> with TickerProviderStateMixin {
                                 padding: const EdgeInsets.only(top: 18.0),
                                 child: Icon(
                                   IconData(
-                                    0xe902,
+                                    0xe907,
                                     fontFamily: 'icomoon',
                                   ),
-                                  color: getGFColor(GFColor.dark),
+                                  color: Colors.black,
                                   size: 40.0,
                                 ),
                               ),
@@ -232,10 +224,10 @@ class _CategoriesState extends State<Categories> with TickerProviderStateMixin {
                               padding: const EdgeInsets.only(top: 18.0),
                               child: Icon(
                                 IconData(
-                                  0xe902,
+                                  0xe910,
                                   fontFamily: 'icomoon',
                                 ),
-                                color: getGFColor(GFColor.dark),
+                                color: Colors.black,
                                 size: 40.0,
                               ),
                             ),
@@ -262,10 +254,10 @@ class _CategoriesState extends State<Categories> with TickerProviderStateMixin {
                               padding: const EdgeInsets.only(top: 18.0),
                               child: Icon(
                                 IconData(
-                                  0xe902,
+                                  0xe90c,
                                   fontFamily: 'icomoon',
                                 ),
-                                color: getGFColor(GFColor.dark),
+                                color: Colors.black,
                                 size: 40.0,
                               ),
                             ),
@@ -294,10 +286,10 @@ class _CategoriesState extends State<Categories> with TickerProviderStateMixin {
                               padding: const EdgeInsets.only(top: 18.0),
                               child: Icon(
                                 IconData(
-                                  0xe902,
+                                  0xe908,
                                   fontFamily: 'icomoon',
                                 ),
-                                color: getGFColor(GFColor.dark),
+                                color: Colors.black,
                                 size: 40.0,
                               ),
                             ),
@@ -345,10 +337,10 @@ class _CategoriesState extends State<Categories> with TickerProviderStateMixin {
                               padding: const EdgeInsets.only(top: 18.0),
                               child: Icon(
                                 IconData(
-                                  0xe902,
+                                  0xe909,
                                   fontFamily: 'icomoon',
                                 ),
-                                color: getGFColor(GFColor.dark),
+                                color: Colors.black,
                                 size: 40.0,
                               ),
                             ),
@@ -372,14 +364,15 @@ class _CategoriesState extends State<Categories> with TickerProviderStateMixin {
                         child: Column(
                           children: <Widget>[
                             Padding(
-                              padding: const EdgeInsets.only(top: 18.0),
+                              padding:
+                                  const EdgeInsets.only(top: 18.0, right: 20.0),
                               child: Icon(
                                 IconData(
-                                  0xe902,
+                                  0xe905,
                                   fontFamily: 'icomoon',
                                 ),
-                                color: getGFColor(GFColor.dark),
-                                size: 40.0,
+                                color: Colors.black,
+                                size: 30.0,
                               ),
                             ),
                           ],

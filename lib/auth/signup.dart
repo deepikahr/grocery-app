@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:getflutter/colors/gf_color.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/components/button/gf_button.dart';
 import 'package:getflutter/components/typography/gf_typography.dart';
+import 'package:getflutter/getflutter.dart';
+import 'package:getflutter/size/gf_size.dart';
 import 'package:grocery_pro/auth/login.dart';
 import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/verification/otp.dart';
 
 class Signup extends StatefulWidget {
   @override
@@ -188,11 +190,11 @@ class _SignupState extends State<Signup> {
         // initialValue: "123456",
         style: labelStyle(),
         keyboardType: TextInputType.text,
-        validator: (String value) {
-          if (value.isEmpty || value.length < 6) {
-            return "please Enter Valid Password";
-          }
-        },
+        // validator: (String value) {
+        //   if (value.isEmpty || value.length < 6) {
+        //     return "please Enter Valid Password";
+        //   }
+        // },
         // onSaved: (String value) {
         //   password = value;
         // },
@@ -291,7 +293,7 @@ class _SignupState extends State<Signup> {
                   0xe906,
                   fontFamily: 'icomoon',
                 ),
-                color: getGFColor(GFColor.white),
+                color: Colors.white,
               ),
               buttonBoxShadow: true,
               color: Color(0xFF3B5998),
