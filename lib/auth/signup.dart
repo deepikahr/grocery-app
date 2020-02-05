@@ -7,6 +7,8 @@ import 'package:getflutter/getflutter.dart';
 import 'package:getflutter/size/gf_size.dart';
 import 'package:grocery_pro/auth/login.dart';
 import 'package:grocery_pro/style/style.dart';
+import 'package:grocery_pro/verification/otp.dart';
+import '../service/auth-service.dart';
 
 class Signup extends StatefulWidget {
   @override
@@ -15,6 +17,197 @@ class Signup extends StatefulWidget {
 
 class _SignupState extends State<Signup> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  // final GlobalKey<FormState> _formKeyForLogin = GlobalKey<FormState>();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  bool isLoading = false;
+  bool registerationLoading = false;
+  bool rememberMe = false;
+  bool value = false;
+  String userName, email, password;
+
+  @override
+  void initState() {
+    // emailController.text = defultEmail;
+    // passwordController.text = defultPass;
+    super.initState();
+  }
+
+  userSignup() async {
+    final form = _formKey.currentState;
+    if (form.validate()) {
+      form.save();
+      if (mounted) {
+        setState(() {
+          registerationLoading = true;
+        });
+      }
+      Map<String, dynamic> body = {
+        "firstName": userName,
+        "email": email.toLowerCase(),
+        "password": password,
+        "role": "User"
+      };
+      print(body);
+      await LoginService.signUp(body).then((onValue) {
+        try {
+          if (mounted) {
+            setState(() {
+              print('I am here too');
+              registerationLoading = false;
+            });
+          }
+          print('I am here');
+          print(body);
+          if (onValue['response_code'] == 201) {
+            // showAlert('${onValue['response_data']}');
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                // return object of type Dialog
+                return AlertDialog(
+                  contentPadding: EdgeInsets.only(
+                    top: 10.0,
+                  ),
+                  // title: new Text(
+                  //   "Thank You.......",
+                  //   style: hintSfsemiboldb(),
+                  //   textAlign: TextAlign.center,
+                  // ),
+                  content: Container(
+                    height: 100.0,
+                    child: Column(
+                      children: <Widget>[
+                        new Text(
+                          "${onValue['response_data']}",
+                          style: hintSfLightsm(),
+                          textAlign: TextAlign.center,
+                        ),
+                        Padding(padding: EdgeInsets.only(top: 20.0)),
+                        Divider(),
+                        IntrinsicHeight(
+                            child: new Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            VerticalDivider(),
+                            Expanded(
+                                child: GestureDetector(
+//                              onTap: (){},
+                              onTap: () {
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            Login()),
+                                    (Route<dynamic> route) => false);
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+//                            margin: EdgeInsets.only(top:15.0),
+//                                height: 29.0,
+                                decoration: BoxDecoration(
+//                                border: Border.all(color: Colors.black12)
+                                    ),
+                                child: Text(
+                                  'OK',
+                                  style: hintSfLightbig(),
+                                ),
+                              ),
+                            ))
+                          ],
+                        ))
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+
+            if (mounted)
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (BuildContext context) => Login()),
+                  (Route<dynamic> route) => false);
+            // setState(() {
+            //   // popupType = 'login';
+            // });
+          } else if (onValue['statusCode'] == 400) {
+            // showAlert('${onValue['message'][0]['constraints']['isEmail']}');
+          } else {
+            // showAlert('${onValue['response_data']}');
+          }
+        } catch (error) {
+          print('Error at 1');
+          // sentryError.reportError(error, stackTrace);
+        }
+      }).catchError((error) {
+        print('Error at 2');
+        // sentryError.reportError(error, null);
+      });
+    } else {
+      return;
+    }
+  }
+
+//   showAlert(message) {
+//     showDialog(
+//       context: context,
+//       builder: (BuildContext context) {
+//         // return object of type Dialog
+//         return AlertDialog(
+//           contentPadding: EdgeInsets.only(
+//             top: 10.0,
+//           ),
+//           title: new Text(
+//             'Error at showalert',
+//             style: hintSfsemiboldb(),
+//             textAlign: TextAlign.center,
+//           ),
+//           content: Container(
+//             height: 100.0,
+//             child: Column(
+//               children: <Widget>[
+//                 new Text(
+//                   "$message",
+//                   style: hintSfLightsm(),
+//                   textAlign: TextAlign.center,
+//                 ),
+//                 Padding(padding: EdgeInsets.only(top: 20.0)),
+//                 Divider(),
+//                 IntrinsicHeight(
+//                     child: new Row(
+//                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                   children: <Widget>[
+//                     VerticalDivider(),
+//                     Expanded(
+//                         child: GestureDetector(
+// //                              onTap: (){},
+//                       onTap: () {
+//                         Navigator.of(context).pop();
+//                       },
+//                       child: Container(
+//                         alignment: Alignment.center,
+// //                            margin: EdgeInsets.only(top:15.0),
+// //                                height: 29.0,
+//                         decoration: BoxDecoration(
+// //                                border: Border.all(color: Colors.black12)
+//                             ),
+//                         child: Text(
+//                           'OK',
+//                           style: hintSfLightbig(),
+//                         ),
+//                       ),
+//                     ))
+//                   ],
+//                 ))
+//               ],
+//             ),
+//           ),
+//         );
+//       },
+//     );
+//   }
 
   @override
   Widget build(BuildContext context) {
@@ -57,13 +250,13 @@ class _SignupState extends State<Signup> {
             children: <Widget>[
               buildwelcometext(),
               buildusername(),
-              buildEmailTextField(),
+              buildusernameField(),
               buildEmailText(),
               buildEmailTextField(),
               buildPasswordText(),
               buildPasswordTextField(),
-              buildLoginButton(),
               buildsignuplink(),
+              buildLoginButton(),
               buildcontinuetext(),
               buildsocialbuttons(),
               // buildForgotPasswordButton(),
@@ -109,6 +302,39 @@ class _SignupState extends State<Signup> {
     );
   }
 
+  Widget buildusernameField() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 5.0, bottom: 10.0),
+      child: Container(
+        // color: Colors.blue,
+        child: TextFormField(
+          initialValue: "John Snow",
+          style: labelStyle(),
+          keyboardType: TextInputType.emailAddress,
+          validator: (String value) {
+            if (value.isEmpty || !RegExp(r'^[A-Za-z ]+$').hasMatch(value)) {
+              return "Please Enter Valid Name";
+            } else
+              return null;
+          },
+          onSaved: (String value) {
+            userName = value;
+          },
+
+          decoration: InputDecoration(
+              contentPadding: EdgeInsets.all(10),
+              enabledBorder: const OutlineInputBorder(
+                borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: primary),
+              )),
+          // style: textBlackOSR(),
+        ),
+      ),
+    );
+  }
+
   Widget buildEmailText() {
     return Padding(
       padding: const EdgeInsets.only(),
@@ -136,19 +362,18 @@ class _SignupState extends State<Signup> {
       child: Container(
         // color: Colors.blue,
         child: TextFormField(
-          // initialValue: "user@demo.com",
+          initialValue: "user@demo.com",
           style: labelStyle(),
           keyboardType: TextInputType.emailAddress,
-          // validator: (String value) {
-          //   if (value.isEmpty ||
-          //       !RegExp("r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))")
-          //           .hasMatch(value)) {
-          //     return "Please Enter Valid Email";
-          //   }
-          // },
-          // onSaved: (String value) {
-          //   email = value;
-          // },
+          validator: (String value) {
+            if (value.isEmpty) {
+              return "Please Enter Valid Email";
+            } else
+              return null;
+          },
+          onSaved: (String value) {
+            email = value;
+          },
 
           decoration: InputDecoration(
               contentPadding: EdgeInsets.all(10),
@@ -187,17 +412,18 @@ class _SignupState extends State<Signup> {
       margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
       // color: Colors.blue,
       child: TextFormField(
-        // initialValue: "123456",
+        initialValue: "123456",
         style: labelStyle(),
         keyboardType: TextInputType.text,
-        // validator: (String value) {
-        //   if (value.isEmpty || value.length < 6) {
-        //     return "please Enter Valid Password";
-        //   }
-        // },
-        // onSaved: (String value) {
-        //   password = value;
-        // },
+        validator: (String value) {
+          if (value.isEmpty || value.length < 6) {
+            return "please Enter Valid Password";
+          } else
+            return null;
+        },
+        onSaved: (String value) {
+          password = value;
+        },
         decoration: InputDecoration(
             fillColor: Colors.black,
             focusColor: Colors.black,
@@ -223,7 +449,7 @@ class _SignupState extends State<Signup> {
     );
   }
 
-  Widget buildLoginButton() {
+  Widget buildsignuplink() {
     return Padding(
       padding: const EdgeInsets.only(top: 20.0, bottom: 15.0),
       child: GFButton(
@@ -232,12 +458,7 @@ class _SignupState extends State<Signup> {
         color: GFColor.warning,
         blockButton: true,
 
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => Login()),
-          );
-        },
+        onPressed: userSignup,
         text: 'Sign Up',
         textStyle: TextStyle(fontSize: 17.0, color: Colors.black),
       ),
@@ -247,7 +468,7 @@ class _SignupState extends State<Signup> {
     // );
   }
 
-  Widget buildsignuplink() {
+  Widget buildLoginButton() {
     return InkWell(
         onTap: () {
           Navigator.push(

@@ -1,0 +1,40 @@
+{
+    "project_info": {
+        "project_number": "337929307278",
+        "firebase_url": "https://virohan-e9aa8.firebaseio.com",
+        "project_id": "virohan-e9aa8",
+        "storage_bucket": "virohan-e9aa8.appspot.com"
+    },
+    "client": [
+        {
+            "client_info": {
+                "mobilesdk_app_id": "1:337929307278:android:986dfa2599880864dc75df",
+                "android_client_info": {
+                    "package_name": "com.example.grocery_pro"
+                }
+            },
+            "oauth_client": [
+                {
+                    "client_id": "337929307278-qmh1pt4pqlna7bujn3d1mjshv1j0329h.apps.googleusercontent.com",
+                    "client_type": 3
+                }
+            ],
+            "api_key": [
+                {
+                    "current_key": "AIzaSyDwCD3_CRkYR9parjM_3y0XBI5XNRBa1YU"
+                }
+            ],
+            "services": {
+                "appinvite_service": {
+                    "other_platform_oauth_client": [
+                        {
+                            "client_id": "337929307278-qmh1pt4pqlna7bujn3d1mjshv1j0329h.apps.googleusercontent.com",
+                            "client_type": 3
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "configuration_version": "1"
+}

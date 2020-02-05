@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   getflutter: ^1.0.3
+  shared_preferences: ^0.5.3+4
   pin_entry_text_field: ^0.1.3
   country_pickers: ^1.1.0
   flappy_search_bar: ^1.7.2
@@ -17,9 +18,13 @@ dependencies:
   badges: ^1.1.0
   flutter_rating_bar: ^3.0.1+1
   flutter_range_slider: ^1.4.0
-  rflutter_alert: ^1.0.3
-
-
+  # flutter_alert: ^1.0.3
+  http: ^0.12.0+2
+  sentry: ^2.2.0
+  # firebase_core: ^0.4.3+2
+  # firebase_auth: ^0.15.4
+  # google_sign_in: ^4.1.1
+  # cloud_firestore: ^0.13.0+1
   cupertino_icons: ^0.1.2
 
 dev_dependencies:
