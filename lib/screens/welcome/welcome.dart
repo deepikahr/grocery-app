@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_pro/style/style.dart';
-// import 'package:grocery_pro/screens/home.dart';
 import '../../auth/login.dart';
-import '../auth/authentication.dart';
 import '../../auth/signup.dart';
-import '../../main.dart';
-import '../../service/common.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
 
 class WelcomePage extends StatefulWidget {
   @override
