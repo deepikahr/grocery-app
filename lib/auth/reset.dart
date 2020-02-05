@@ -5,7 +5,8 @@ import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/components/button/gf_button.dart';
 import 'package:getflutter/components/typography/gf_typography.dart';
 import 'package:getflutter/size/gf_size.dart';
-import 'package:grocery_pro/screens/home.dart';
+import 'package:grocery_pro/screens/home/home.dart';
+// import 'package:grocery_pro/screens/home.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:pin_entry_text_field/pin_entry_text_field.dart';
 

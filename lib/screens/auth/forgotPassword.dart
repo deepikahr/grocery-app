@@ -4,7 +4,7 @@ import '../../style/style.dart';
 import 'verifyNumber.dart';
 import '../../service/auth-service.dart';
 import '../../service/sentry-service.dart';
-import '../../localizations.dart' show MyLocalizations;
+import '../../translator/localizations.dart' show MyLocalizations;
 
 SentryError sentryError = new SentryError();
 

@@ -7,7 +7,6 @@ import 'package:getflutter/getflutter.dart';
 import 'package:getflutter/size/gf_size.dart';
 import 'package:grocery_pro/auth/login.dart';
 import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/verification/otp.dart';
 import '../service/auth-service.dart';
 
 class Signup extends StatefulWidget {

@@ -6,8 +6,8 @@ import 'package:getflutter/components/typography/gf_typography.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:getflutter/size/gf_size.dart';
 import 'package:grocery_pro/auth/forgotpassword.dart';
+import 'package:grocery_pro/screens/verification/otp.dart';
 import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/verification/otp.dart';
 import '../service/common.dart';
 
 class Login extends StatefulWidget {

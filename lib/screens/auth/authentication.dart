@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:grocery_pro/screens/home/home.dart';
 import 'package:grocery_pro/style/style.dart' as prefix0;
 import '../../style/style.dart';
 import '../../service/auth-service.dart';
 import '../../service/sentry-service.dart';
 import 'package:flutter/services.dart';
 import '../../service/common.dart';
-import '../home.dart';
+// import '../home.dart';
 import 'forgotPassword.dart';
-import '../../localizations.dart' show MyLocalizations;
+import '../../translator/localizations.dart' show MyLocalizations;
 
 SentryError sentryError = new SentryError();
 // String defultEmail = "user@ionicfirebaseapp.com";

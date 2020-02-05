@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_pro/localizations.dart';
+import 'package:grocery_pro/translator/localizations.dart';
 import '../../style/style.dart';
 import '../../service/auth-service.dart';
 import '../../service/sentry-service.dart';
