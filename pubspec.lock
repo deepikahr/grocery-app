@@ -97,6 +97,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.7.0"
+  flutter_range_slider:
+    dependency: "direct main"
+    description:
+      name: flutter_range_slider
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.4.0"
+  flutter_rating_bar:
+    dependency: "direct main"
+    description:
+      name: flutter_rating_bar
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.1+1"
   flutter_staggered_grid_view:
     dependency: transitive
     description:
@@ -120,7 +134,7 @@ packages:
       name: getflutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0-dev.7"
+    version: "1.0.3"
   http:
     dependency: "direct main"
     description:
@@ -197,7 +211,7 @@ packages:
       name: search_widget
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.1"
+    version: "1.0.2"
   sentry:
     dependency: "direct main"
     description:
@@ -309,5 +323,5 @@ packages:
     source: hosted
     version: "3.5.0"
 sdks:
-  dart: ">=2.4.0 <3.0.0"
+  dart: ">=2.5.0 <3.0.0"
   flutter: ">=1.12.13+hotfix.4 <2.0.0"

@@ -1,7 +1,6 @@
-import 'package:country_pickers/country.dart';
-import 'package:country_pickers/country_picker_dropdown.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:getflutter/colors/gf_color.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/components/button/gf_button.dart';
 import 'package:getflutter/components/typography/gf_typography.dart';
@@ -128,15 +127,15 @@ class _VerificationState extends State<Verification> {
     );
   }
 
-  Widget _buildDropdownItem(Country country) => Container(
-        child: Row(
-          children: <Widget>[
-            // CountryPickerUtils.getDefaultFlagImage(country),
-            SizedBox(
-              width: 8.0,
-            ),
-            Text("+${country.phoneCode}(${country.isoCode})"),
-          ],
-        ),
-      );
+  // Widget _buildDropdownItem(Country country) => Container(
+  //       child: Row(
+  //         children: <Widget>[
+  //           // CountryPickerUtils.getDefaultFlagImage(country),
+  //           SizedBox(
+  //             width: 8.0,
+  //           ),
+  //           Text("+${country.phoneCode}(${country.isoCode})"),
+  //         ],
+  //       ),
+  //     );
 }

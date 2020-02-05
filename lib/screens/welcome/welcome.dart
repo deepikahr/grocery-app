@@ -6,7 +6,7 @@ import '../auth/authentication.dart';
 import '../../auth/signup.dart';
 import '../../main.dart';
 import '../../service/common.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 
 class WelcomePage extends StatefulWidget {
   @override

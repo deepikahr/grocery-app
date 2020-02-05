@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:getflutter/colors/gf_color.dart';
-import 'package:getflutter/components/tabs/gf_tabBar.dart';
-import 'package:getflutter/components/button/gf_button.dart';
-import 'package:getflutter/components/tabs/gf_tabBarView.dart';
-import 'package:getflutter/components/tabs/gf_segment_tabs.dart';
+
+import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/home/mycart.dart';
+import 'package:grocery_pro/screens/home/profile.dart';
 import 'package:grocery_pro/screens/home/saveditems.dart';
 import 'package:grocery_pro/screens/home/store.dart';
 import 'package:grocery_pro/style/style.dart';
@@ -55,56 +53,78 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           ),
           Container(
             color: Colors.white,
+            child: Profile(),
           ),
         ],
       ),
-      bottomNavigationBar: GFTabBar(
-        initialIndex: 0,
-        length: 4,
-        controller: tabController,
-        tabs: [
-          Tab(
-            icon: Icon(
-              Icons.store,
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(),
+        child: GFTabBar(
+          initialIndex: 0,
+          length: 4,
+          controller: tabController,
+          tabs: [
+            Tab(
+              icon: Icon(
+                IconData(
+                  0xe90f,
+                  fontFamily: 'icomoon',
+                ),
+            
+              ),
+              text: "Store",
             ),
-            text: "Store",
-          ),
-          Tab(
-            icon: Icon(Icons.save),
-            text: "Saved Items",
-          ),
-          Tab(
-            icon: Icon(
-              Icons.shopping_cart,
+            Tab(
+              icon: Icon(
+                IconData(
+                  0xe90d,
+                  fontFamily: 'icomoon',
+                ),
+                // color: getGFColor(GFColor.white),
+              ),
+              text: "Saved Items",
             ),
-            text: "My Cart",
-          ),
-          Tab(
-            icon: Icon(
-              Icons.person_outline,
+            Tab(
+              icon: Icon(
+                IconData(
+                  0xe911,
+                  fontFamily: 'icomoon',
+                ),
+                // color: getGFColor(GFColor.white),
+              ),
+              text: "My Cart",
             ),
-            text: "Profile",
-          ),
-        ],
-        indicatorColor: primary,
+            Tab(
+              icon: Icon(
+                IconData(
+                  0xe912,
+                  fontFamily: 'icomoon',
+                ),
+                // color: getGFColor(GFColor.white),
+              ),
+              text: "Profile",
+            ),
+          ],
+          indicatorColor: primary,
 
 //        indicatorSize: TabBarIndicatorSize.label,
-        labelColor: primary,
-        labelPadding: EdgeInsets.all(0),
-        tabBarColor: Colors.black,
-        unselectedLabelColor: getGFColor(GFColor.light),
-        labelStyle: TextStyle(
-          fontWeight: FontWeight.w300,
-          fontSize: 10.0,
-          color: primary,
-          fontFamily: 'OpenSansBold',
-        ),
+          labelColor: primary,
+          labelPadding: EdgeInsets.all(0),
+          tabBarColor: Colors.black,
+          unselectedLabelColor: Colors.white,
+          labelStyle: TextStyle(
+            fontWeight: FontWeight.w300,
+            fontSize: 10.0,
+            color: primary,
+            fontFamily: 'OpenSansBold',
+          ),
 
-        unselectedLabelStyle: TextStyle(
-          fontWeight: FontWeight.w300,
-          fontSize: 10.0,
-          color: Colors.black,
-          fontFamily: 'OpenSansBold',
+          unselectedLabelStyle: TextStyle(
+            fontWeight: FontWeight.w300,
+            fontSize: 10.0,
+            color: Colors.black,
+            fontFamily: 'OpenSansBold',
+          ),
         ),
       ),
     );

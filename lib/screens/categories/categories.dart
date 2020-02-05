@@ -1,15 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:getflutter/colors/gf_color.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
-import 'package:getflutter/components/button/gf_button_bar.dart';
-import 'package:getflutter/components/button/gf_icon_button.dart';
-import 'package:getflutter/components/card/gf_card.dart';
-import 'package:getflutter/components/list_tile/gf_list_tile.dart';
-import 'package:getflutter/components/tabs/gf_tabBar.dart';
-import 'package:getflutter/components/button/gf_button.dart';
-import 'package:getflutter/components/tabs/gf_tabBarView.dart';
-import 'package:getflutter/components/tabs/gf_segment_tabs.dart';
-import 'package:grocery_pro/screens/home/store.dart';
+import 'package:getflutter/getflutter.dart';
+
 import 'package:grocery_pro/style/style.dart';
 
 class Categories extends StatefulWidget {
@@ -46,415 +38,665 @@ class _CategoriesState extends State<Categories> with TickerProviderStateMixin {
         elevation: 0,
         iconTheme: IconThemeData(color: Colors.black, size: 15.0),
       ),
-      body: ListView(
+      body: Column(
         children: <Widget>[
           Row(
-            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Expanded(
-                // flex: 1,
-                child: Container(
-                  height: 100,
-                  // width: 100,
-                  child: GFCard(
-                    color: primary,
-                    // boxFit: BoxFit.cover,
-                    // colorFilter: new ColorFilter.mode(
-                    //     Colors.black.withOpacity(0.40), BlendMode.darken),
-                    // imageOverlay: AssetImage('lib/assets/icons/broccoli.png'),
-                    title: GFListTile(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(top: 4.0, right: 10.0),
-                        child: Icon(
-                          IconData(
-                            0xe904,
-                            fontFamily: 'icomoon',
+              Padding(
+                padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      height: 75,
+                      width: 72,
+                      decoration: BoxDecoration(
+                          color: primary,
+                          borderRadius: BorderRadius.circular(10.0)),
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(top: 18.0),
+                            child: Icon(
+                              IconData(
+                                0xe901,
+                                fontFamily: 'icomoon',
+                              ),
+                              color: Colors.black,
+                              size: 40.0,
+                            ),
                           ),
-                          color: getGFColor(GFColor.dark),
-                          size: 32.0,
-                        ),
+                        ],
                       ),
                     ),
-                  ),
+                    Text('Veggies')
+                  ],
                 ),
               ),
-              Expanded(
-                // flex: 1,
-                child: Container(
-                  height: 100,
-                  width: 100,
-                  child: GFCard(
-                    color: primary,
-                    // boxFit: BoxFit.cover,
-                    // colorFilter: new ColorFilter.mode(
-                    //     Colors.black.withOpacity(0.40), BlendMode.darken),
-                    // imageOverlay: AssetImage('lib/assets/icons/broccoli.png'),
-                    title: GFListTile(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(top: 4.0, right: 10.0),
-                        child: Icon(
-                          IconData(
-                            0xe904,
-                            fontFamily: 'icomoon',
+              Padding(
+                padding: const EdgeInsets.only(right: 15.0),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      decoration: BoxDecoration(
+                          color: primary,
+                          borderRadius: BorderRadius.circular(10.0)),
+                      height: 75,
+                      width: 72,
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(top: 18.0),
+                            child: Icon(
+                              IconData(
+                                0xe902,
+                                fontFamily: 'icomoon',
+                              ),
+                              color: Colors.black,
+                              size: 40.0,
+                            ),
                           ),
-                          color: getGFColor(GFColor.dark),
-                          size: 32.0,
-                        ),
+                        ],
                       ),
                     ),
-                  ),
+                    Text('Fruits')
+                  ],
                 ),
               ),
-              Expanded(
-                // flex: 1,
-                child: Container(
-                  height: 100,
-                  width: 100,
-                  child: GFCard(
-                    color: primary,
-                    // boxFit: BoxFit.cover,
-                    // colorFilter: new ColorFilter.mode(
-                    //     Colors.black.withOpacity(0.40), BlendMode.darken),
-                    // imageOverlay: AssetImage('lib/assets/icons/broccoli.png'),
-                    title: GFListTile(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(top: 4.0, right: 10.0),
-                        child: Icon(
-                          IconData(
-                            0xe904,
-                            fontFamily: 'icomoon',
+              Padding(
+                padding: const EdgeInsets.only(right: 15.0),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      decoration: BoxDecoration(
+                          color: primary,
+                          borderRadius: BorderRadius.circular(10.0)),
+                      height: 75,
+                      width: 72,
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(top: 18.0),
+                            child: Icon(
+                              IconData(
+                                0xe903,
+                                fontFamily: 'icomoon',
+                              ),
+                              color: Colors.black,
+                              size: 40.0,
+                            ),
                           ),
-                          color: getGFColor(GFColor.dark),
-                          size: 32.0,
-                        ),
+                        ],
                       ),
                     ),
-                  ),
+                    Text('Grocery')
+                  ],
                 ),
               ),
-              Expanded(
-                // flex: 1,
-                child: Container(
-                  height: 100,
-                  width: 100,
-                  child: GFCard(
-                    color: primary,
-                    // boxFit: BoxFit.cover,
-                    // colorFilter: new ColorFilter.mode(
-                    //     Colors.black.withOpacity(0.40), BlendMode.darken),
-                    // imageOverlay: AssetImage('lib/assets/icons/broccoli.png'),
-                    title: GFListTile(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(top: 4.0, right: 10.0),
-                        child: Icon(
-                          IconData(
-                            0xe904,
-                            fontFamily: 'icomoon',
+              Padding(
+                padding: const EdgeInsets.only(
+                    // left: 20.0,
+                    ),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      decoration: BoxDecoration(
+                          color: primary,
+                          borderRadius: BorderRadius.circular(10.0)),
+                      height: 75,
+                      width: 72,
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(top: 18.0),
+                            child: Icon(
+                              IconData(
+                                0xe904,
+                                fontFamily: 'icomoon',
+                              ),
+                              color: Colors.black,
+                              size: 40.0,
+                            ),
                           ),
-                          color: getGFColor(GFColor.dark),
-                          size: 32.0,
-                        ),
+                        ],
                       ),
                     ),
-                  ),
+                    Text('Bakery')
+                  ],
                 ),
               ),
             ],
           ),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 24.0, bottom: 30.0),
-                  child: Text(
-                    'Veggies',
-                    style: regular(),
+          Padding(
+            padding: const EdgeInsets.only(top: 15.0),
+            child: Row(
+              children: <Widget>[
+                InkWell(
+                  onTap: () {
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => Dairy()),
+                    // );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          height: 75,
+                          width: 72,
+                          decoration: BoxDecoration(
+                              color: primary,
+                              borderRadius: BorderRadius.circular(10.0)),
+                          child: Column(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(top: 18.0),
+                                child: Icon(
+                                  IconData(
+                                    0xe907,
+                                    fontFamily: 'icomoon',
+                                  ),
+                                  color: Colors.black,
+                                  size: 40.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Text('Dairy')
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 28.0, bottom: 30.0),
-                  child: Text(
-                    'Fruits',
-                    style: regular(),
+                Padding(
+                  padding: const EdgeInsets.only(right: 15.0),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        decoration: BoxDecoration(
+                            color: primary,
+                            borderRadius: BorderRadius.circular(10.0)),
+                        height: 75,
+                        width: 72,
+                        child: Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(top: 18.0),
+                              child: Icon(
+                                IconData(
+                                  0xe910,
+                                  fontFamily: 'icomoon',
+                                ),
+                                color: Colors.black,
+                                size: 40.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Text('Beverages')
+                    ],
                   ),
                 ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 22.0, bottom: 30.0),
-                  child: Text(
-                    'Grocery',
-                    style: regular(),
+                Padding(
+                  padding: const EdgeInsets.only(right: 15.0),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        decoration: BoxDecoration(
+                            color: primary,
+                            borderRadius: BorderRadius.circular(10.0)),
+                        height: 75,
+                        width: 72,
+                        child: Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(top: 18.0),
+                              child: Icon(
+                                IconData(
+                                  0xe90c,
+                                  fontFamily: 'icomoon',
+                                ),
+                                color: Colors.black,
+                                size: 40.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Text('Cosmetis')
+                    ],
                   ),
                 ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 25.0, bottom: 30.0),
-                  child: Text(
-                    'Bakery',
-                    style: regular(),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      // left: 20.0,
+                      ),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        decoration: BoxDecoration(
+                            color: primary,
+                            borderRadius: BorderRadius.circular(10.0)),
+                        height: 75,
+                        width: 72,
+                        child: Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(top: 18.0),
+                              child: Icon(
+                                IconData(
+                                  0xe908,
+                                  fontFamily: 'icomoon',
+                                ),
+                                color: Colors.black,
+                                size: 40.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Text('Liquor')
+                    ],
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Expanded(
-                // flex: 1,
-                child: Container(
-                  height: 100,
-                  // width: 100,
-                  child: GFCard(
-                    color: primary,
-                    // boxFit: BoxFit.cover,
-                    // colorFilter: new ColorFilter.mode(
-                    //     Colors.black.withOpacity(0.40), BlendMode.darken),
-                    // imageOverlay: AssetImage('lib/assets/icons/broccoli.png'),
-                    title: GFListTile(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(top: 4.0, right: 10.0),
-                        child: Icon(
-                          IconData(
-                            0xe904,
-                            fontFamily: 'icomoon',
-                          ),
-                          color: getGFColor(GFColor.dark),
-                          size: 32.0,
+          Padding(
+            padding: const EdgeInsets.only(top: 15.0),
+            child: Row(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        height: 75,
+                        width: 72,
+                        child: Column(
+                          children: <Widget>[],
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
-              ),
-              Expanded(
-                // flex: 1,
-                child: Container(
-                  height: 100,
-                  width: 100,
-                  child: GFCard(
-                    color: primary,
-                    // boxFit: BoxFit.cover,
-                    // colorFilter: new ColorFilter.mode(
-                    //     Colors.black.withOpacity(0.40), BlendMode.darken),
-                    // imageOverlay: AssetImage('lib/assets/icons/broccoli.png'),
-                    title: GFListTile(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(top: 4.0, right: 10.0),
-                        child: Icon(
-                          IconData(
-                            0xe904,
-                            fontFamily: 'icomoon',
-                          ),
-                          color: getGFColor(GFColor.dark),
-                          size: 32.0,
+                Padding(
+                  padding: const EdgeInsets.only(right: 15.0),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        decoration: BoxDecoration(
+                            color: primary,
+                            borderRadius: BorderRadius.circular(10.0)),
+                        height: 75,
+                        width: 72,
+                        child: Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(top: 18.0),
+                              child: Icon(
+                                IconData(
+                                  0xe909,
+                                  fontFamily: 'icomoon',
+                                ),
+                                color: Colors.black,
+                                size: 40.0,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
+                      Text('Frozen')
+                    ],
                   ),
                 ),
-              ),
-              Expanded(
-                // flex: 1,
-                child: Container(
-                  height: 100,
-                  width: 100,
-                  child: GFCard(
-                    color: primary,
-                    // boxFit: BoxFit.cover,
-                    // colorFilter: new ColorFilter.mode(
-                    //     Colors.black.withOpacity(0.40), BlendMode.darken),
-                    // imageOverlay: AssetImage('lib/assets/icons/broccoli.png'),
-                    title: GFListTile(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(top: 4.0, right: 10.0),
-                        child: Icon(
-                          IconData(
-                            0xe904,
-                            fontFamily: 'icomoon',
-                          ),
-                          color: getGFColor(GFColor.dark),
-                          size: 32.0,
+                Padding(
+                  padding: const EdgeInsets.only(right: 15.0),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        decoration: BoxDecoration(
+                            color: primary,
+                            borderRadius: BorderRadius.circular(10.0)),
+                        height: 75,
+                        width: 72,
+                        child: Column(
+                          children: <Widget>[
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 18.0, right: 20.0),
+                              child: Icon(
+                                IconData(
+                                  0xe905,
+                                  fontFamily: 'icomoon',
+                                ),
+                                color: Colors.black,
+                                size: 30.0,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
+                      Text('House Hold')
+                    ],
                   ),
                 ),
-              ),
-              Expanded(
-                // flex: 1,
-                child: Container(
-                  height: 100,
-                  width: 100,
-                  child: GFCard(
-                    color: primary,
-                    // boxFit: BoxFit.cover,
-                    // colorFilter: new ColorFilter.mode(
-                    //     Colors.black.withOpacity(0.40), BlendMode.darken),
-                    // imageOverlay: AssetImage('lib/assets/icons/broccoli.png'),
-                    title: GFListTile(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(top: 4.0, right: 10.0),
-                        child: Icon(
-                          IconData(
-                            0xe904,
-                            fontFamily: 'icomoon',
-                          ),
-                          color: getGFColor(GFColor.dark),
-                          size: 32.0,
+                Padding(
+                  padding: const EdgeInsets.only(
+                      // left: 20.0,
+                      ),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        height: 75,
+                        width: 72,
+                        child: Column(
+                          children: <Widget>[],
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
-              ),
-            ],
-          ),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 28.0, bottom: 30.0),
-                  child: Text(
-                    'Dairy',
-                    style: regular(),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 18.0, bottom: 30.0),
-                  child: Text(
-                    'Beverages',
-                    style: regular(),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 15.0, bottom: 30.0),
-                  child: Text(
-                    'Cosmetics',
-                    style: regular(),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 28.0, bottom: 30.0),
-                  child: Text(
-                    'Liquor',
-                    style: regular(),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Expanded(
-                child: Container(),
-              ),
-              Expanded(
-                // flex: 1,
-                child: Container(
-                  height: 100,
-                  width: 100,
-                  child: GFCard(
-                    color: primary,
-                    // boxFit: BoxFit.cover,
-                    // colorFilter: new ColorFilter.mode(
-                    //     Colors.black.withOpacity(0.40), BlendMode.darken),
-                    // imageOverlay: AssetImage('lib/assets/icons/broccoli.png'),
-                    title: GFListTile(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(top: 4.0, right: 10.0),
-                        child: Icon(
-                          IconData(
-                            0xe904,
-                            fontFamily: 'icomoon',
-                          ),
-                          color: getGFColor(GFColor.dark),
-                          size: 32.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                // flex: 1,
-                child: Container(
-                  height: 100,
-                  width: 100,
-                  child: GFCard(
-                    color: primary,
-                    // boxFit: BoxFit.cover,
-                    // colorFilter: new ColorFilter.mode(
-                    //     Colors.black.withOpacity(0.40), BlendMode.darken),
-                    // imageOverlay: AssetImage('lib/assets/icons/broccoli.png'),
-                    title: GFListTile(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(top: 4.0, right: 10.0),
-                        child: Icon(
-                          IconData(
-                            0xe904,
-                            fontFamily: 'icomoon',
-                          ),
-                          color: getGFColor(GFColor.dark),
-                          size: 32.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Container(),
-              ),
-            ],
-          ),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 28.0),
-                  child: Text(''),
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 25.0, bottom: 30.0),
-                  child: Text(
-                    'Frozen',
-                    style: regular(),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 15.0, bottom: 30.0),
-                  child: Text(
-                    'House hold',
-                    style: regular(),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 28.0),
-                  child: Text(''),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
+      // Row(
+      //   children: <Widget>[
+      //     Expanded(
+      //       child: Padding(
+      //         padding: const EdgeInsets.only(left: 24.0, bottom: 30.0),
+      //         child: Text(
+      //           'Veggies',
+      //           style: regular(),
+      //         ),
+      //       ),
+      //     ),
+      //     Expanded(
+      //       child: Padding(
+      //         padding: const EdgeInsets.only(left: 28.0, bottom: 30.0),
+      //         child: Text(
+      //           'Fruits',
+      //           style: regular(),
+      //         ),
+      //       ),
+      //     ),
+      //     Expanded(
+      //       child: Padding(
+      //         padding: const EdgeInsets.only(left: 22.0, bottom: 30.0),
+      //         child: Text(
+      //           'Grocery',
+      //           style: regular(),
+      //         ),
+      //       ),
+      //     ),
+      //     Expanded(
+      //       child: Padding(
+      //         padding: const EdgeInsets.only(left: 25.0, bottom: 30.0),
+      //         child: Text(
+      //           'Bakery',
+      //           style: regular(),
+      //         ),
+      //       ),
+      //     ),
+      //   ],
+      // ),
+      // Row(
+      //   mainAxisAlignment: MainAxisAlignment.start,
+      //   children: <Widget>[
+      //     Expanded(
+      //       // flex: 1,
+      //       child: Container(
+      //         height: 100,
+      //         // width: 100,
+      //         child: GFCard(
+      //           color: primary,
+      //           // boxFit: BoxFit.cover,
+      //           // colorFilter: new ColorFilter.mode(
+      //           //     Colors.black.withOpacity(0.40), BlendMode.darken),
+      //           // imageOverlay: AssetImage('lib/assets/icons/broccoli.png'),
+      //           title: GFListTile(
+      //             icon: Padding(
+      //               padding: const EdgeInsets.only(top: 4.0, right: 10.0),
+      //               child: Icon(
+      //                 IconData(
+      //                   0xe904,
+      //                   fontFamily: 'icomoon',
+      //                 ),
+      //                 color: getGFColor(GFColor.dark),
+      //                 size: 32.0,
+      //               ),
+      //             ),
+      //           ),
+      //         ),
+      //       ),
+      //     ),
+      //     Expanded(
+      //       // flex: 1,
+      //       child: Container(
+      //         height: 100,
+      //         width: 100,
+      //         child: GFCard(
+      //           color: primary,
+      //           // boxFit: BoxFit.cover,
+      //           // colorFilter: new ColorFilter.mode(
+      //           //     Colors.black.withOpacity(0.40), BlendMode.darken),
+      //           // imageOverlay: AssetImage('lib/assets/icons/broccoli.png'),
+      //           title: GFListTile(
+      //             icon: Padding(
+      //               padding: const EdgeInsets.only(top: 4.0, right: 10.0),
+      //               child: Icon(
+      //                 IconData(
+      //                   0xe904,
+      //                   fontFamily: 'icomoon',
+      //                 ),
+      //                 color: getGFColor(GFColor.dark),
+      //                 size: 32.0,
+      //               ),
+      //             ),
+      //           ),
+      //         ),
+      //       ),
+      //     ),
+      //     Expanded(
+      //       // flex: 1,
+      //       child: Container(
+      //         height: 100,
+      //         width: 100,
+      //         child: GFCard(
+      //           color: primary,
+      //           // boxFit: BoxFit.cover,
+      //           // colorFilter: new ColorFilter.mode(
+      //           //     Colors.black.withOpacity(0.40), BlendMode.darken),
+      //           // imageOverlay: AssetImage('lib/assets/icons/broccoli.png'),
+      //           title: GFListTile(
+      //             icon: Padding(
+      //               padding: const EdgeInsets.only(top: 4.0, right: 10.0),
+      //               child: Icon(
+      //                 IconData(
+      //                   0xe904,
+      //                   fontFamily: 'icomoon',
+      //                 ),
+      //                 color: getGFColor(GFColor.dark),
+      //                 size: 32.0,
+      //               ),
+      //             ),
+      //           ),
+      //         ),
+      //       ),
+      //     ),
+      //     Expanded(
+      //       // flex: 1,
+      //       child: Container(
+      //         height: 100,
+      //         width: 100,
+      //         child: GFCard(
+      //           color: primary,
+      //           // boxFit: BoxFit.cover,
+      //           // colorFilter: new ColorFilter.mode(
+      //           //     Colors.black.withOpacity(0.40), BlendMode.darken),
+      //           // imageOverlay: AssetImage('lib/assets/icons/broccoli.png'),
+      //           title: GFListTile(
+      //             icon: Padding(
+      //               padding: const EdgeInsets.only(top: 4.0, right: 10.0),
+      //               child: Icon(
+      //                 IconData(
+      //                   0xe904,
+      //                   fontFamily: 'icomoon',
+      //                 ),
+      //                 color: getGFColor(GFColor.dark),
+      //                 size: 32.0,
+      //               ),
+      //             ),
+      //           ),
+      //         ),
+      //       ),
+      //     ),
+      //   ],
+      // ),
+      // Row(
+      //   children: <Widget>[
+      //     Expanded(
+      //       child: Padding(
+      //         padding: const EdgeInsets.only(left: 28.0, bottom: 30.0),
+      //         child: Text(
+      //           'Dairy',
+      //           style: regular(),
+      //         ),
+      //       ),
+      //     ),
+      //     Expanded(
+      //       child: Padding(
+      //         padding: const EdgeInsets.only(left: 18.0, bottom: 30.0),
+      //         child: Text(
+      //           'Beverages',
+      //           style: regular(),
+      //         ),
+      //       ),
+      //     ),
+      //     Expanded(
+      //       child: Padding(
+      //         padding: const EdgeInsets.only(left: 15.0, bottom: 30.0),
+      //         child: Text(
+      //           'Cosmetics',
+      //           style: regular(),
+      //         ),
+      //       ),
+      //     ),
+      //     Expanded(
+      //       child: Padding(
+      //         padding: const EdgeInsets.only(left: 28.0, bottom: 30.0),
+      //         child: Text(
+      //           'Liquor',
+      //           style: regular(),
+      //         ),
+      //       ),
+      //     ),
+      //   ],
+      // ),
+      // Row(
+      //   mainAxisAlignment: MainAxisAlignment.start,
+      //   children: <Widget>[
+      //     Expanded(
+      //       child: Container(),
+      //     ),
+      //     Expanded(
+      //       // flex: 1,
+      //       child: Container(
+      //         height: 100,
+      //         width: 100,
+      //         child: GFCard(
+      //           color: primary,
+      //           // boxFit: BoxFit.cover,
+      //           // colorFilter: new ColorFilter.mode(
+      //           //     Colors.black.withOpacity(0.40), BlendMode.darken),
+      //           // imageOverlay: AssetImage('lib/assets/icons/broccoli.png'),
+      //           title: GFListTile(
+      //             icon: Padding(
+      //               padding: const EdgeInsets.only(top: 4.0, right: 10.0),
+      //               child: Icon(
+      //                 IconData(
+      //                   0xe904,
+      //                   fontFamily: 'icomoon',
+      //                 ),
+      //                 color: getGFColor(GFColor.dark),
+      //                 size: 32.0,
+      //               ),
+      //             ),
+      //           ),
+      //         ),
+      //       ),
+      //     ),
+      //     Expanded(
+      //       // flex: 1,
+      //       child: Container(
+      //         height: 100,
+      //         width: 100,
+      //         child: GFCard(
+      //           color: primary,
+      //           // boxFit: BoxFit.cover,
+      //           // colorFilter: new ColorFilter.mode(
+      //           //     Colors.black.withOpacity(0.40), BlendMode.darken),
+      //           // imageOverlay: AssetImage('lib/assets/icons/broccoli.png'),
+      //           title: GFListTile(
+      //             icon: Padding(
+      //               padding: const EdgeInsets.only(top: 4.0, right: 10.0),
+      //               child: Icon(
+      //                 IconData(
+      //                   0xe904,
+      //                   fontFamily: 'icomoon',
+      //                 ),
+      //                 color: getGFColor(GFColor.dark),
+      //                 size: 32.0,
+      //               ),
+      //             ),
+      //           ),
+      //         ),
+      //       ),
+      //     ),
+      //     Expanded(
+      //       child: Container(),
+      //     ),
+      //   ],
+      // ),
+      // Row(
+      //   children: <Widget>[
+      //     Expanded(
+      //       child: Padding(
+      //         padding: const EdgeInsets.only(left: 28.0),
+      //         child: Text(''),
+      //       ),
+      //     ),
+      //     Expanded(
+      //       child: Padding(
+      //         padding: const EdgeInsets.only(left: 25.0, bottom: 30.0),
+      //         child: Text(
+      //           'Frozen',
+      //           style: regular(),
+      //         ),
+      //       ),
+      //     ),
+      //     Expanded(
+      //       child: Padding(
+      //         padding: const EdgeInsets.only(left: 15.0, bottom: 30.0),
+      //         child: Text(
+      //           'House hold',
+      //           style: regular(),
+      //         ),
+      //       ),
+      //     ),
+      //     Expanded(
+      //       child: Padding(
+      //         padding: const EdgeInsets.only(left: 28.0),
+      //         child: Text(''),
+      //       ),
+      //     ),
+      //   ],
+      // ),
+      //   ],
+      // ),
     );
   }
 }
