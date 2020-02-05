@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_pro/localizations.dart';
+import 'package:grocery_pro/translator/localizations.dart';
 import 'package:grocery_pro/screens/auth/resetPassword.dart';
 import '../../style/style.dart';
 // import 'package:flutter_svg/flutter_svg.dart';
