@@ -758,7 +758,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                             ),
                           ),
                         ),
-                      )
+                      ),
                     ],
                   )
                 ],
