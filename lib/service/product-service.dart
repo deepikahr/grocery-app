@@ -7,28 +7,32 @@ class ProductService {
   static final Client client = Client();
   // get category list
   static Future<Map<String, dynamic>> getCategoryList() async {
-    String token;
-    await Common.getToken().then((onValue) {
-      token = onValue;
+    final response =
+        await client.get(Constants.baseURL + "categories", headers: {
+      'Content-Type': 'application/json',
     });
-    final response = await client.get(Constants.baseURL + "categories",
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'bearer $token'
-        });
+    return json.decode(response.body);
+  }
+  // static Future<Map<String, dynamic>> getCategoryList() async {
+  //   final response = await client
+  //       .get(Constants.baseURL + "products/category/combineData", headers: {
+  //     'Content-Type': 'application/json',
+  //   });
+  //   return json.decode(response.body);
+  // }
+
+  static Future<Map<String, dynamic>> getProductsList() async {
+    final response = await client.get(Constants.baseURL + "products", headers: {
+      'Content-Type': 'application/json',
+    });
     return json.decode(response.body);
   }
 
   // get product to category
   static Future<Map<String, dynamic>> getProductToCategoryList(id) async {
-    String token;
-    await Common.getToken().then((onValue) {
-      token = onValue;
-    });
     final response = await client
         .get(Constants.baseURL + "products/by/category/$id", headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'bearer $token'
     });
     return json.decode(response.body);
   }

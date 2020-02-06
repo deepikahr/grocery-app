@@ -3,9 +3,13 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/store/store.dart';
+import 'package:grocery_pro/service/constants.dart';
 import 'package:grocery_pro/style/style.dart';
 
 class ProductDetails extends StatefulWidget {
+  final Map<String, dynamic> productDetail;
+
+  ProductDetails({Key key, this.productDetail}) : super(key: key);
   @override
   _ProductDetailsState createState() => _ProductDetailsState();
 }
@@ -18,20 +22,34 @@ class _ProductDetailsState extends State<ProductDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // appBar: AppBar(
+      //   backgroundColor: Colors.transparent,
+      //   automaticallyImplyLeading: false,
+      //   elevation: 0.0,
+      // ),
       body: SingleChildScrollView(
           child: Column(
         children: <Widget>[
           Stack(
             children: <Widget>[
               Container(
-                  // height: 400.0,
-                  // width: 600,
+                  height: 370.0,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(
+                    Radius.circular(30),
+                  )),
+                  width: MediaQuery.of(context).size.width,
                   child: Padding(
-                padding: const EdgeInsets.only(
-                  bottom: 38.0,
-                ),
-                child: Image.asset('lib/assets/images/product.png'),
-              )),
+                    padding: const EdgeInsets.only(
+                      bottom: 0.0,
+                    ),
+                    child: Image.network(
+                      widget.productDetail['imageUrl'],
+                      height: 370,
+                      width: MediaQuery.of(context).size.width,
+                      fit: BoxFit.fill,
+                    ),
+                  )),
               Positioned(
                   top: 40.0,
                   left: 15.0,
@@ -141,38 +159,36 @@ class _ProductDetailsState extends State<ProductDetails> {
             ],
           ),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(left: 40.0),
+                padding: const EdgeInsets.only(left: 10.0, top: 5),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.only(right: 5.0),
+                      padding: const EdgeInsets.only(right: 0.0, top: 3.0),
                       child: Text(
-                        'Oranges',
+                        '${widget.productDetail['title'][0].toUpperCase()}${widget.productDetail['title'].substring(1)}',
                         style: titleBold(),
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 2.0),
+                      padding: const EdgeInsets.only(right: 10.0, top: 3.0),
                       child: Text(
-                        '100% Organic',
+                        '${widget.productDetail['description'][0].toUpperCase()}${widget.productDetail['description'].substring(1)}',
                         style: TextStyle(fontSize: 10.0),
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(right: 5.0, top: 5.0),
-                      child: Row(
-                        children: <Widget>[
-                          Image.asset('lib/assets/icons/rupee.png'),
-                          Text(
-                            '85/kg',
-                            style: TextStyle(
-                                color: const Color(0xFF00BFA5), fontSize: 17.0),
-                          )
-                        ],
-                      ),
-                    )
+                        padding: const EdgeInsets.only(right: 0.0, top: 5.0),
+                        child: Text(
+                          '${Constants.currency} ${widget.productDetail['price']}',
+                          style: TextStyle(
+                              color: const Color(0xFF00BFA5), fontSize: 17.0),
+                        ))
                   ],
                 ),
               ),
@@ -206,99 +222,195 @@ class _ProductDetailsState extends State<ProductDetails> {
               ),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 0.0),
-            child: GFButton(
-              onPressed: () {},
-              child: Text(
-                "Buy now",
-              ),
-              type: GFButtonType.outline,
-              color: GFColor.dark,
-              size: GFSize.large,
-              blockButton: true,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 24.0, top: 0.0),
-            child: Row(
-              children: <Widget>[
-                Container(
-                  width: 105.0,
-                  height: 45.0,
-                  child: GFButton(
-                    onPressed: () {},
-                    // text: 'Warning',
-                    color: GFColor.dark,
-                    shape: GFButtonShape.square,
+          // Padding(
+          //   padding: const EdgeInsets.only(top: 20.0),
+          //   child: GFButton(
+          //     onPressed: () {},
+          //     child: Text(
+          //       "Buy now",
+          //     ),
+          //     type: GFButtonType.outline,
+          //     color: GFColor.dark,
+          //     size: GFSize.large,
+          //     blockButton: true,
+          //   ),
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.only(left: 24.0, top: 15.0),
+          //   child: Row(
+          //     children: <Widget>[
+          //       Container(
+          //         width: 105.0,
+          //         height: 45.0,
+          //         child: GFButton(
+          //           onPressed: () {},
+          //           // text: 'Warning',
+          //           color: GFColor.dark,
+          //           shape: GFButtonShape.square,
 
-                    child: Column(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(top: 6.0),
-                          child: Text('1kg:'),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 12.0),
-                          child: Row(
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10.0),
-                                child: Icon(
-                                  IconData(
-                                    0xe913,
-                                    fontFamily: 'icomoon',
-                                  ),
-                                  color: Colors.white,
-                                  size: 11.0,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 6.0),
-                                child: Text(
-                                  '123',
-                                  // style: TextStyle(color: const Color(0xFF00BFA5)),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  width: 210.0,
-                  height: 45.0,
-                  child: GFButton(
-                    onPressed: () {},
-                    shape: GFButtonShape.square,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        Text(
-                          'Add to cart ',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        Icon(
-                          IconData(
-                            0xe911,
-                            fontFamily: 'icomoon',
-                          ),
-                          // color: const Color(0xFF00BFA5),
-                          // size: 1.0,
-                        ),
-                      ],
-                    ),
-                    color: GFColor.warning,
-                  ),
-                )
-              ],
-            ),
-          ),
+          //           child: Column(
+          //             children: <Widget>[
+          //               Padding(
+          //                 padding: const EdgeInsets.only(top: 6.0),
+          //                 child: Text('1kg:'),
+          //               ),
+          //               Padding(
+          //                 padding: const EdgeInsets.only(left: 12.0),
+          //                 child: Row(
+          //                   children: <Widget>[
+          //                     Padding(
+          //                       padding: const EdgeInsets.only(left: 10.0),
+          //                       child: Icon(
+          //                         IconData(
+          //                           0xe913,
+          //                           fontFamily: 'icomoon',
+          //                         ),
+          //                         color: Colors.white,
+          //                         size: 11.0,
+          //                       ),
+          //                     ),
+          //                     Padding(
+          //                       padding: const EdgeInsets.only(right: 6.0),
+          //                       child: Text(
+          //                         '123',
+          //                         // style: TextStyle(color: const Color(0xFF00BFA5)),
+          //                       ),
+          //                     )
+          //                   ],
+          //                 ),
+          //               ),
+          //             ],
+          //           ),
+          //         ),
+          //       ),
+          //       Container(
+          //         width: 210.0,
+          //         height: 45.0,
+          //         child: GFButton(
+          //           onPressed: () {},
+          //           shape: GFButtonShape.square,
+          //           child: Row(
+          //             mainAxisAlignment: MainAxisAlignment.end,
+          //             children: <Widget>[
+          //               Text(
+          //                 'Add to cart ',
+          //                 style: TextStyle(color: Colors.black),
+          //               ),
+          //               Icon(
+          //                 IconData(
+          //                   0xe911,
+          //                   fontFamily: 'icomoon',
+          //                 ),
+          //                 // color: const Color(0xFF00BFA5),
+          //                 // size: 1.0,
+          //               ),
+          //             ],
+          //           ),
+          //           color: GFColor.warning,
+          //         ),
+          //       )
+          //     ],
+          //   ),
+          // ),
         ],
       )),
-      // bottomNavigationBar: BottomNavigationBar(items: null),
+      bottomNavigationBar: Container(
+        height: 115,
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 0.0),
+              child: GFButton(
+                onPressed: () {},
+                child: Text(
+                  "Buy now",
+                ),
+                type: GFButtonType.outline,
+                color: GFColor.dark,
+                size: GFSize.large,
+                blockButton: true,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 24.0, top: 15.0),
+              child: Row(
+                children: <Widget>[
+                  Container(
+                    width: 105.0,
+                    height: 45.0,
+                    child: GFButton(
+                      onPressed: () {},
+                      // text: 'Warning',
+                      color: GFColor.dark,
+                      shape: GFButtonShape.square,
+
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(top: 6.0),
+                            child: Text('1kg:'),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 12.0),
+                            child: Row(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10.0),
+                                  child: Icon(
+                                    IconData(
+                                      0xe913,
+                                      fontFamily: 'icomoon',
+                                    ),
+                                    color: Colors.white,
+                                    size: 11.0,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 6.0),
+                                  child: Text(
+                                    '123',
+                                    // style: TextStyle(color: const Color(0xFF00BFA5)),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 210.0,
+                    height: 45.0,
+                    child: GFButton(
+                      onPressed: () {},
+                      shape: GFButtonShape.square,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Text(
+                            'Add to cart ',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          Icon(
+                            IconData(
+                              0xe911,
+                              fontFamily: 'icomoon',
+                            ),
+                            // color: const Color(0xFF00BFA5),
+                            // size: 1.0,
+                          ),
+                        ],
+                      ),
+                      color: GFColor.warning,
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

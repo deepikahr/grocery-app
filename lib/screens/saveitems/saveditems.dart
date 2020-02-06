@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:getflutter/components/alert/gf_alert.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/product/product-details.dart';
+import 'package:grocery_pro/service/common.dart';
+import 'package:grocery_pro/service/sentry-service.dart';
+import 'package:grocery_pro/style/style.dart';
+
+SentryError sentryError = new SentryError();
 
 class SavedItems extends StatefulWidget {
   @override
@@ -8,6 +14,35 @@ class SavedItems extends StatefulWidget {
 }
 
 class _SavedItemsState extends State<SavedItems> {
+  bool isGetTokenLoading = false;
+  @override
+  void initState() {
+    super.initState();
+    getToken();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  getToken() async {
+    await Common.getToken().then((onValue) {
+      if (onValue != null) {
+        setState(() {
+          isGetTokenLoading = true;
+        });
+      } else {
+        setState(() {
+          isGetTokenLoading = false;
+        });
+      }
+      // checkToken(onValue);
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget itemCard = GFCard(
@@ -15,16 +50,6 @@ class _SavedItemsState extends State<SavedItems> {
       boxFit: BoxFit.cover,
       colorFilter: new ColorFilter.mode(
           Colors.black.withOpacity(0.67), BlendMode.darken),
-      // image: Image.asset(
-      //   'lib/assets/images/apple.png',
-      //   // width: MediaQuery.of(context).size.width,
-      //   fit: BoxFit.fitHeight,
-      //   width: 80,
-      //   height: 80,
-      // ),
-
-//              imageOverlay: AssetImage("lib/assets/food.jpeg"),
-      // titlePosition: GFPosition.end,
       content: Column(
         children: <Widget>[
           Row(
@@ -125,28 +150,72 @@ class _SavedItemsState extends State<SavedItems> {
     );
 
     return Scaffold(
-      appBar: GFAppBar(
-        title: Text('Saved Items',
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 17.0,
-                fontWeight: FontWeight.w600)),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black, size: 1.0),
-      ),
-      body: Container(
-        height: 800.0,
-        child: GridView.builder(
-          itemCount: 8,
-          gridDelegate:
-              SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-          itemBuilder: (BuildContext context, int index) {
-            return Container(child: itemCard);
-          },
+        appBar: GFAppBar(
+          title: Text('Saved Items',
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 17.0,
+                  fontWeight: FontWeight.w600)),
+          centerTitle: true,
+          backgroundColor: isGetTokenLoading
+              ? Colors.transparent
+              : Colors.black.withOpacity(0.3),
+          elevation: 0,
+          iconTheme: IconThemeData(color: Colors.black, size: 1.0),
         ),
-      ),
-    );
+        body: GFFloatingWidget(
+          showblurness: isGetTokenLoading ? false : true,
+          blurnessColor:
+              isGetTokenLoading ? Colors.white : Colors.black.withOpacity(0.3),
+          verticalPosition: 70,
+          child: isGetTokenLoading
+              ? Container(
+                  height: 800.0,
+                  child: GridView.builder(
+                    itemCount: 8,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2),
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(child: itemCard);
+                    },
+                  ),
+                )
+              : GFAlert(
+                  title: 'Login Frist!',
+                  bottombar: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Container(
+                            height: 40.0,
+                            padding: EdgeInsets.only(left: 5.0, right: 5.0),
+                            decoration: BoxDecoration(
+                                color: primary,
+                                border:
+                                    Border.all(color: Colors.black, width: 1),
+                                borderRadius: BorderRadius.circular(5.0)),
+                            child: new FlatButton(
+                              child: new Text(
+                                'Login',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              onPressed: () async {},
+                            )),
+                        Container(
+                            height: 40.0,
+                            padding: EdgeInsets.only(left: 5.0, right: 5.0),
+                            decoration: BoxDecoration(
+                                color: primary,
+                                border:
+                                    Border.all(color: Colors.black, width: 1),
+                                borderRadius: BorderRadius.circular(5.0)),
+                            child: new FlatButton(
+                                child: new Text(
+                                  'Cancel',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                onPressed: () async {})),
+                      ]),
+                ),
+        ));
   }
 }
