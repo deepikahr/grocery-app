@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:getflutter/components/accordian/gf_accordian.dart';
 
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/style/style.dart';
+// import 'package:flutter_datetime_picker/flutter_datetime_picker.dart'
 
 class Checkout extends StatefulWidget {
   @override
@@ -648,6 +650,113 @@ class _CheckoutState extends State<Checkout> {
               ),
             ),
           ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(left: 30.0, bottom: 4.0),
+                    child: Text('Pick Up Date'),
+                  ),
+                ],
+              ),
+              Center(
+                child: Container(
+                  width: 300,
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(10.0)),
+                  child: FlatButton(
+                      onPressed: () {
+                        DatePicker.showDatePicker(context,
+                            showTitleActions: true,
+                            minTime: DateTime(2010, 3, 5),
+                            maxTime: DateTime(2019, 6, 7), onChanged: (date) {
+                          print('change $date');
+                        }, onConfirm: (date) {
+                          print('confirm $date');
+                        }, currentTime: DateTime.now(), locale: LocaleType.en);
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'DD/MM/YYYY',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 148.0),
+                            child:
+                                Icon(Icons.calendar_today, color: Colors.grey),
+                          )
+                        ],
+                      )),
+                ),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Text('BreakFast'),
+                      Radio(
+                        value: 2,
+                        groupValue: selectedRadio,
+                        activeColor: Colors.green,
+                        onChanged: (val) {
+                          print("Radio $val");
+                          setSelectedRadio(val);
+                        },
+                      ),
+                    ],
+                  )
+                ],
+              ),
+              Column(
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Text('Lunch'),
+                      Radio(
+                        value: 2,
+                        groupValue: selectedRadio,
+                        activeColor: Colors.green,
+                        onChanged: (val) {
+                          print("Radio $val");
+                          setSelectedRadio(val);
+                        },
+                      ),
+                    ],
+                  )
+                ],
+              ),
+              Column(
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Text('Dinner'),
+                      Radio(
+                        value: 2,
+                        groupValue: selectedRadio,
+                        activeColor: Colors.green,
+                        onChanged: (val) {
+                          print("Radio $val");
+                          setSelectedRadio(val);
+                        },
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ],
+          ),
+          SizedBox(height: 20.0)
         ],
       ),
       bottomNavigationBar: Container(

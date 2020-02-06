@@ -2,7 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:getflutter/getflutter.dart';
+import 'package:grocery_pro/screens/orders/orders.dart';
+import 'package:grocery_pro/screens/address/address.dart';
 import 'package:grocery_pro/style/style.dart';
+import 'package:grocery_pro/screens/profile/editprofile.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -13,9 +16,64 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     Widget itemCard = Container(
-      // height: 50,
-      // width: 200,
-      child: Image.asset('lib/assets/images/creditcard.png'),
+      padding: const EdgeInsets.only(right: 15.0),
+      height: 141,
+      width: 232,
+      decoration: BoxDecoration(
+          color: Colors.blue[400], borderRadius: BorderRadius.circular(5.0)),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(left: 38.0, top: 20.0),
+                child: Image.asset('lib/assets/icons/mastercard-logo.png'),
+              )
+            ],
+          ),
+          SizedBox(height: 20),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 15.0),
+              child: Text(
+                '3421 **** **** **34',
+                style: TextStyle(fontSize: 19.0, color: Colors.white),
+              ),
+            ),
+          ),
+          SizedBox(height: 15),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  Text(
+                    'Card holder',
+                    style: TextStyle(fontSize: 12.0, color: Colors.white),
+                  ),
+                  Text(
+                    'Billie Eilsh',
+                    style: TextStyle(fontSize: 12.0, color: Colors.white),
+                  ),
+                ],
+              ),
+              Column(
+                children: <Widget>[
+                  Text(
+                    'Expires',
+                    style: TextStyle(fontSize: 12.0, color: Colors.white),
+                  ),
+                  Text(
+                    '12/12',
+                    style: TextStyle(fontSize: 12.0, color: Colors.white),
+                  ),
+                ],
+              ),
+            ],
+          )
+        ],
+      ),
     );
     return Scaffold(
       appBar: GFAppBar(
@@ -69,12 +127,20 @@ class _ProfileState extends State<Profile> {
                     subTitle: Container(),
                     description: Container(),
                     icon: Padding(
-                      padding: const EdgeInsets.only(top: 18.0),
-                      child: Icon(
-                        Icons.edit,
-                        color: primary,
-                      ),
-                    )
+                        padding: const EdgeInsets.only(top: 18.0),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EditProfile()),
+                            );
+                          },
+                          child: Icon(
+                            Icons.edit,
+                            color: primary,
+                          ),
+                        ))
                     // showDivider: false,
                     ),
               ),
@@ -92,7 +158,9 @@ class _ProfileState extends State<Profile> {
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 14.0),
+                padding: const EdgeInsets.only(
+                  left: 15.0,
+                ),
                 child: Container(
                   height: 150,
                   // width: 50,
@@ -100,150 +168,70 @@ class _ProfileState extends State<Profile> {
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
                     itemCount: 2,
-                    itemBuilder: (BuildContext context, int index) => Container(
-                      height: 50,
-                      child: itemCard,
+                    itemBuilder: (BuildContext context, int index) => Padding(
+                      padding: const EdgeInsets.only(right: 15.0),
+                      child: Container(
+                        // height: 50,
+                        child: itemCard,
+                      ),
                     ),
                   ),
                 ),
               ),
-              Padding(
-                padding:
-                    const EdgeInsets.only(left: 20.0, top: 10.0, bottom: 10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    RichText(
-                      text: TextSpan(
-                        children: <TextSpan>[
-                          TextSpan(text: "Order History", style: titleBold()),
-                          TextSpan(
-                            text:
-                                '                                                     View all',
-                            style: TextStyle(color: primary),
-                          ),
-                        ],
+              SizedBox(height: 20.0),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Address()),
+                  );
+                },
+                child: Container(
+                  color: Colors.white38,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 10.0, bottom: 10.0, left: 20.0),
+                        child: Text(
+                          'Address',
+                          style: titleBold(),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                color: Colors.white38,
-                child: GFListTile(
-                  avatar: Container(
-                      // width: 150,
-                      child: Image.asset('lib/assets/images/orange.png')),
-                  title: Padding(
-                    padding: const EdgeInsets.only(bottom: 18.0, right: 25.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 6.0),
-                              child: Text(
-                                'White walker',
-                                style: titleBold(),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 4.0),
-                              child: Text(
-                                'Blended scotch whiskey',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: 14.0),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 6.0),
-                              child: Text(
-                                '29/01/2020',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: 14.0),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Icon(
-                              IconData(
-                                0xe913,
-                                fontFamily: 'icomoon',
-                              ),
-                              color: Colors.black,
-                              size: 11.0,
-                            ),
-                            Text('4566')
-                          ],
-                        )
-                      ],
-                    ),
+                    ],
                   ),
-                  // showDivider: false,
                 ),
               ),
-              Container(
-                color: Colors.white38,
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-                        child: GFButton(
-                          onPressed: () {},
-                          text: 'ReOrder',
-                          color: primary,
-                          // size: GFSize.small,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-                        child: GFButton(
-                          onPressed: () {},
-                          text: 'Rate',
-                          color: primary,
-                          type: GFButtonType.outline,
-                          size: GFSize.small,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
+              SizedBox(
+                height: 20.0,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        top: 10.0, bottom: 10.0, left: 20.0),
-                    child: Text(
-                      'Help',
-                      style: titleBold(),
-                    ),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Orders()),
+                  );
+                },
+                child: Container(
+                  color: Colors.white38,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 10.0, bottom: 10.0, left: 20.0),
+                        child: Text(
+                          'Order History',
+                          style: titleBold(),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
+              ),
+              SizedBox(
+                height: 20.0,
               ),
               Container(
                 color: Colors.white38,
@@ -254,8 +242,8 @@ class _ProfileState extends State<Profile> {
                       padding: const EdgeInsets.only(
                           top: 10.0, bottom: 10.0, left: 20.0),
                       child: Text(
-                        'FAQs and Links',
-                        style: emailTextNormal(),
+                        'Help',
+                        style: titleBold(),
                       ),
                     ),
                   ],
