@@ -4,7 +4,11 @@ import 'package:grocery_pro/screens/categories/allcategories.dart';
 import 'package:grocery_pro/screens/categories/subcategories.dart';
 import 'package:grocery_pro/screens/product/product-details.dart';
 import 'package:grocery_pro/screens/searchitem/search.dart';
+import 'package:grocery_pro/service/product-service.dart';
+import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
+
+SentryError sentryError = new SentryError();
 
 class Post {
   final String title;
@@ -45,6 +49,14 @@ bool _isChecked = false;
 
 class _StoreState extends State<Store> with TickerProviderStateMixin {
   final _scaffoldkey = new GlobalKey<ScaffoldState>();
+  bool isLoadingProductsList = false;
+  bool isLoadingSubProductsList = false;
+  bool isLoadingcategoryList = false;
+  bool isLoadingProducts = false;
+  bool isLoadingcategory = false;
+  List categoryList = List();
+  List productsList = List();
+
   List list = [
     'Apple',
     'Orange',
@@ -61,6 +73,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     tabController = TabController(length: 4, vsync: this);
+    getCategoryList();
+    getProductsList();
   }
 
   @override
@@ -69,468 +83,292 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  getCategoryList() async {
+    if (!isLoadingcategory) {
+      if (mounted) {
+        setState(() {
+          isLoadingcategoryList = true;
+        });
+      }
+      await ProductService.getCategoryList().then((onValue) {
+        print("cat $onValue");
+        try {
+          if (onValue['response_code'] == 200) {
+            if (mounted) {
+              setState(() {
+                categoryList = onValue['response_data'];
+                isLoadingcategoryList = false;
+              });
+            }
+          } else {
+            if (mounted) {
+              setState(() {
+                categoryList = [];
+              });
+            }
+          }
+        } catch (error, stackTrace) {
+          sentryError.reportError(error, stackTrace);
+        }
+      }).catchError((error) {
+        sentryError.reportError(error, null);
+      });
+    }
+  }
+
+  getProductsList() async {
+    if (!isLoadingProducts) {
+      if (mounted) {
+        setState(() {
+          isLoadingProductsList = true;
+        });
+      }
+      await ProductService.getProductsList().then((onValue) {
+        print("prod $onValue");
+
+        try {
+          if (onValue['response_code'] == 200) {
+            if (mounted) {
+              setState(() {
+                productsList = onValue['response_data'];
+                isLoadingProductsList = false;
+              });
+            }
+          } else {
+            if (mounted) {
+              setState(() {
+                productsList = [];
+              });
+            }
+          }
+        } catch (error, stackTrace) {
+          sentryError.reportError(error, stackTrace);
+        }
+      }).catchError((error) {
+        sentryError.reportError(error, null);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldkey,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: IconThemeData(color: Colors.grey),
-        title: Row(
-          children: <Widget>[
-            Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 15.0, right: 27.0),
-                  child: Text(
-                    'Delivery Address',
-                    style: descriptionSemibold(),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 0.0, top: 1.0),
-                  child: Text(
-                    'HSR Layout...',
-                    style: boldHeading(),
-                  ),
-                ),
-              ],
-            ),
-            // Column(
-            //   children: <Widget>[
-            //     InkWell(
-            //         onTap: () {
-            //           Navigator.push(
-            //             context,
-            //             MaterialPageRoute(builder: (context) => Search()),
-            //           );
-            //         },
-            //         child: Padding(
-            //           padding: const EdgeInsets.only(left: 148.0, top: 10.0),
-            //           child: Icon(Icons.search, color: Colors.grey),
-            //         ))
-            //   ],
-            // )
-          ],
-        ),
-      ),
-      // endDrawer: Drawer(),
-      // body: Container(
-      // child: SafeArea(
-      body: ListView(
-        children: <Widget>[
-          // Padding(
-          //   padding: const EdgeInsets.only(
-          //       left: 20.0, right: 20.0, top: 10.0, bottom: 20.0),
-          //   child: Container(
-          //     padding: EdgeInsets.only(left: 15, right: 5, top: 0, bottom: 0),
-          //     decoration: BoxDecoration(
-          //       borderRadius: BorderRadius.circular(10),
-          //       color: Colors.grey[200],
-          //     ),
-          //     child: TextField(
-          //       onSubmitted: (String term) {
-          //         // _searchForProducts(term);
-          //       },
-          //       // controller: _controller,
-          //       style: new TextStyle(
-          //         color: Colors.grey,
-          //       ),
-          //       decoration: new InputDecoration(
-          //           focusedBorder: InputBorder.none,
-          //           enabledBorder: InputBorder.none,
-          //           prefixIcon: new Icon(
-          //             Icons.search,
-          //             color: Colors.grey,
-          //           ),
-          //           hintText: "What are you buying today?",
-          //           hintStyle: new TextStyle(color: Colors.grey)),
-          //       // onChanged: _searchForProducts,
-          //     ),
-          //   ),
-          // ),
-          GFSearchBar(
-              searchBoxInputDecoration: InputDecoration(
-                prefixIcon: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Search()),
-                      );
-                    },
-                    child: Icon(Icons.search)),
-                labelText: 'What Are You Buying Today?',
-                enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors.grey,
+        key: _scaffoldkey,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          iconTheme: IconThemeData(color: Colors.grey),
+          title: Row(
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(top: 15.0, right: 27.0),
+                    child: Text(
+                      'Delivery Address',
+                      style: descriptionSemibold(),
                     ),
-                    borderRadius: BorderRadius.circular(30)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 0.0, top: 1.0),
+                    child: Text(
+                      'HSR Layout...',
+                      style: boldHeading(),
+                    ),
+                  ),
+                ],
               ),
-              searchList: list,
-//              hideSearchBoxWhenItemSelected: false,
-              overlaySearchListHeight: 300.0,
-              searchQueryBuilder: (query, list) => list
-                  .where((item) =>
-                      item.toLowerCase().contains(query.toLowerCase()))
-                  .toList(),
-              overlaySearchListItemBuilder: (item) => Container(
-                    padding: const EdgeInsets.all(8),
-                    child: Row(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Icon(Icons.search, color: Colors.grey),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 10.0),
-                          child:
-                              Text(item, style: TextStyle(color: Colors.grey)),
-                        ),
-                      ],
-                    ),
-                  ),
-//              noItemsFoundWidget: Container(
-//                color: Colors.green,
-//                child: Text("no items found..."),
-//              ),
-              onItemSelected: (item) {
-                setState(() {
-                  print('ssssssss $item');
-                });
-              }),
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AllCategories()),
-              );
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(left: 18.0),
-              child: RichText(
-                text: TextSpan(
-                  children: <TextSpan>[
-                    TextSpan(text: "Explore by Categories", style: comments()),
-                    TextSpan(
-                      text: '                             View all',
-                      style: TextStyle(color: primary),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 20.0),
-            child: GFTabBar(
-              initialIndex: 0,
-              length: 4,
-              controller: tabController,
-              tabs: [
-                Tab(
-                  icon: Container(
-                    width: 50,
-                    height: 40,
-                    // decoration: BoxDecoration(
-                    //color:primary,
-                    //   border: Border.all(
-                    //       color: Colors.black,
-                    //       ),
-                    //   borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                    // ),
-                    child: Icon(
-                      IconData(
-                        0xe901,
-                        fontFamily: 'icomoon',
-                      ),
-                      // color: getGFColor(GFColor.white),
-                      size: 30.0,
+        ),
+        body: (isLoadingcategoryList && isLoadingProductsList)
+            ? Center(child: CircularProgressIndicator())
+            : ListView(children: <Widget>[
+                GFSearchBar(
+                    searchBoxInputDecoration: InputDecoration(
+                      prefixIcon: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => Search()),
+                            );
+                          },
+                          child: Icon(Icons.search)),
+                      labelText: 'What Are You Buying Today?',
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.grey,
+                          ),
+                          borderRadius: BorderRadius.circular(30)),
                     ),
-                  ),
-                  text: "Veggies",
-                ),
+                    searchList: list,
+                    overlaySearchListHeight: 300.0,
+                    searchQueryBuilder: (query, list) => list
+                        .where((item) =>
+                            item.toLowerCase().contains(query.toLowerCase()))
+                        .toList(),
+                    overlaySearchListItemBuilder: (item) => Container(
+                          padding: const EdgeInsets.all(8),
+                          child: Row(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 8.0),
+                                child: Icon(Icons.search, color: Colors.grey),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 10.0),
+                                child: Text(item,
+                                    style: TextStyle(color: Colors.grey)),
+                              ),
+                            ],
+                          ),
+                        ),
+                    onItemSelected: (item) {
+                      setState(() {
+                        print('ssssssss $item');
+                      });
+                    }),
                 InkWell(
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => SubCategories()),
+                      MaterialPageRoute(builder: (context) => AllCategories()),
                     );
                   },
-                  child: Tab(
-                    icon: Icon(
-                      IconData(
-                        0xe902,
-                        fontFamily: 'icomoon',
-                      ),
-                      // color: getGFColor(GFColor.white),
-                      size: 30.0,
-                    ),
-                    text: "Fruits",
-                  ),
-                ),
-                Tab(
-                  icon: Icon(
-                    IconData(
-                      0xe903,
-                      fontFamily: 'icomoon',
-                    ),
-                    // color: getGFColor(GFColor.white),
-                    size: 30.0,
-                  ),
-                  text: "Grocery",
-                ),
-                Tab(
-                  icon: Icon(
-                    IconData(
-                      0xe904,
-                      fontFamily: 'icomoon',
-                    ),
-                    // color: getGFColor(GFColor.white),
-                    size: 30.0,
-                  ),
-                  text: "Bakery",
-                ),
-              ],
-              indicatorColor: primary,
-              indicatorSize: TabBarIndicatorSize.label,
-              labelColor: primary,
-              labelPadding: EdgeInsets.all(0),
-              tabBarColor: Colors.transparent,
-              unselectedLabelColor: Colors.black,
-              labelStyle: TextStyle(
-                fontWeight: FontWeight.w300,
-                fontSize: 10.0,
-                color: Colors.black,
-                fontFamily: 'OpenSansBold',
-              ),
-              unselectedLabelStyle: TextStyle(
-                fontWeight: FontWeight.w300,
-                fontSize: 10.0,
-                color: Colors.black,
-                fontFamily: 'OpenSansBold',
-              ),
-            ),
-          ),
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ProductDetails()),
-              );
-            },
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: Container(
-                    child: GFCard(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0)),
-                      boxFit: BoxFit.cover,
-                      colorFilter: new ColorFilter.mode(
-                          Colors.black.withOpacity(0.67), BlendMode.darken),
-                      // image: Image.asset(
-                      //   'lib/assets/images/apple.png',
-                      //   // width: MediaQuery.of(context).size.width,
-                      //   fit: BoxFit.fitHeight,
-                      //   width: 80,
-                      //   height: 80,
-                      // ),
-
-//              imageOverlay: AssetImage("lib/assets/food.jpeg"),
-                      // titlePosition: GFPosition.end,
-                      content: Column(
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              Stack(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 22.0),
-                                    child: Image.asset(
-                                      'lib/assets/images/apple.png',
-                                      // width: MediaQuery.of(context).size.width,
-                                      fit: BoxFit.fitHeight,
-
-                                      width: 80,
-                                      height: 80,
-                                    ),
-                                  ),
-                                  Positioned(
-                                    height: 18.0,
-                                    width: 60.0,
-                                    top: 0.0,
-                                    left: 0.0,
-                                    child: GFButtonBadge(
-                                      // icon: GFBadge(
-                                      //   // text: '6',
-                                      //   shape: GFBadgeShape.pills,
-                                      // ),
-                                      // fullWidthButton: true,
-                                      onPressed: () {},
-                                      text: '25% off',
-                                      color: Colors.deepOrange[300],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ],
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 18.0),
+                    child: RichText(
+                      text: TextSpan(
+                        children: <TextSpan>[
+                          TextSpan(
+                              text: "Explore by Categories", style: comments()),
+                          TextSpan(
+                            text: '                               View all',
+                            style: TextStyle(color: primary),
                           ),
-                          Row(
-                            children: <Widget>[
-                              Column(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 5.0),
-                                    child: Text('Apple'),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 3.0, top: 5.0),
-                                    child: Row(
-                                      children: <Widget>[
-                                        Icon(
-                                          IconData(
-                                            0xe913,
-                                            fontFamily: 'icomoon',
-                                          ),
-                                          color: const Color(0xFF00BFA5),
-                                          size: 11.0,
-                                        ),
-                                        Text(
-                                          '85/kg',
-                                          style: TextStyle(
-                                              color: const Color(0xFF00BFA5)),
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                              Column(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 38.0, bottom: 15.0),
-                                    child: GFIconButton(
-                                      onPressed: null,
-                                      icon: GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            fav = !fav;
-                                          });
-                                        },
-                                        child: fav
-                                            ? Icon(
-                                                Icons.favorite,
-                                                color: Colors.red,
-                                              )
-                                            : Icon(
-                                                Icons.favorite_border,
-                                                color: Colors.grey,
-                                              ),
-                                      ),
-                                      type: GFButtonType.transparent,
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ],
-                          )
                         ],
                       ),
                     ),
                   ),
                 ),
-                Expanded(
-                  child: GFCard(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0)),
-                    boxFit: BoxFit.cover,
-                    colorFilter: new ColorFilter.mode(
-                        Colors.black.withOpacity(0.67), BlendMode.darken),
-                    // image: Image.asset(
-                    //   'lib/assets/images/apple.png',
-                    //   // width: MediaQuery.of(context).size.width,
-                    //   fit: BoxFit.fitHeight,
-                    //   width: 80,
-                    //   height: 80,
-                    // ),
-
-//              imageOverlay: AssetImage("lib/assets/food.jpeg"),
-                    // titlePosition: GFPosition.end,
-                    content: Column(
-                      children: <Widget>[
-                        Row(
+                Container(
+                    margin: EdgeInsets.only(left: 5, right: 5.0),
+                    height: 100.0,
+                    width: MediaQuery.of(context).size.width,
+                    child: ListView.builder(
+                        physics: ScrollPhysics(),
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: categoryList.length == null
+                            ? 0
+                            : categoryList.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          print(categoryList.length);
+                          return SingleChildScrollView(
+                              child: InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => SubCategories(
+                                              catId: categoryList[index]['_id'],
+                                              catTitle:
+                                                  '${categoryList[index]['title'][0].toUpperCase()}${categoryList[index]['title'].substring(1)}')),
+                                    );
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(children: <Widget>[
+                                      Column(
+                                        children: <Widget>[
+                                          Container(
+                                            width: 60,
+                                            height: 60,
+                                            child: Column(
+                                              children: <Widget>[
+                                                Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            top: 0.0),
+                                                    child: Image.network(
+                                                      categoryList[index]
+                                                          ['imageUrl'],
+                                                      width: 60,
+                                                      fit: BoxFit.fill,
+                                                      height: 60,
+                                                    )),
+                                              ],
+                                            ),
+                                          ),
+                                          Text(categoryList[index]['title'])
+                                        ],
+                                      ),
+                                    ]),
+                                  )));
+                        })),
+                GridView.builder(
+                  physics: ScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount:
+                      productsList.length == null ? 0 : productsList.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2),
+                  itemBuilder: (BuildContext context, int i) {
+                    return InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ProductDetails(
+                                  productDetail: productsList[i])),
+                        );
+                      },
+                      child: GFCard(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0)),
+                        boxFit: BoxFit.fill,
+                        colorFilter: new ColorFilter.mode(
+                            Colors.black.withOpacity(0.67), BlendMode.darken),
+                        content: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Stack(
+                              fit: StackFit.loose,
                               children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 22.0),
-                                  child: Image.asset(
-                                    'lib/assets/images/orange.png',
-                                    // width: MediaQuery.of(context).size.width,
-                                    fit: BoxFit.fitHeight,
-
-                                    width: 80,
-                                    height: 80,
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  // mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 20, top: 15.0),
+                                      child: Image.network(
+                                        productsList[i]['imageUrl'],
+                                        fit: BoxFit.fill,
+                                        width: 80,
+                                        height: 70,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Positioned(
+                                  height: 15.0,
+                                  width: 60.0,
+                                  // top: 4.0,
+                                  // bottom: 4.0,
+                                  // left: 6.0,
+                                  child: GFButtonBadge(
+                                    onPressed: () {},
+                                    text: '25% off',
+                                    color: Colors.deepOrange[300],
                                   ),
                                 ),
                                 Positioned(
-                                  height: 18.0,
+                                  height: 15.0,
                                   width: 60.0,
-                                  top: 0.0,
-                                  left: 0.0,
-                                  child: GFButtonBadge(
-                                      // icon: GFBadge(
-                                      //   // text: '6',
-                                      //   shape: GFBadgeShape.pills,
-                                      // ),
-                                      // fullWidthButton: true,
-                                      onPressed: () {},
-                                      text: '25% off',
-                                      color: const Color(0xFF00BFA5)),
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Column(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 5.0),
-                                  child: Text('Orange'),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 3.0, top: 5.0),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Icon(
-                                        IconData(
-                                          0xe913,
-                                          fontFamily: 'icomoon',
-                                        ),
-                                        color: const Color(0xFF00BFA5),
-                                        size: 11.0,
-                                      ),
-                                      Text(
-                                        '85/kg',
-                                        style: TextStyle(
-                                            color: const Color(0xFF00BFA5)),
-                                      )
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                            Column(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 38.0, bottom: 15.0),
+                                  // top: 4.0,
+                                  bottom: 78.0,
+                                  left: 80.0,
                                   child: GFIconButton(
                                     onPressed: null,
                                     icon: GestureDetector(
@@ -553,490 +391,75 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                   ),
                                 ),
                               ],
-                            )
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Expanded(
-                child: GFCard(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0)),
-                  boxFit: BoxFit.cover,
-                  colorFilter: new ColorFilter.mode(
-                      Colors.black.withOpacity(0.67), BlendMode.darken),
-                  image: Image.asset(
-                    'lib/assets/images/grape.png',
-                    // width: MediaQuery.of(context).size.width,
-                    fit: BoxFit.fitHeight,
-                    width: 80,
-                    height: 80,
-                  ),
-
-//              imageOverlay: AssetImage("lib/assets/food.jpeg"),
-                  // titlePosition: GFPosition.end,
-                  content: Row(
-                    children: <Widget>[
-                      Column(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(right: 5.0),
-                            child: Text('Grapes'),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 18.0),
-                            child: Text(
-                              'Green',
-                              style: TextStyle(
-                                  fontSize: 11.0, fontWeight: FontWeight.w300),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 3.0, top: 5.0),
-                            child: Row(
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Icon(
-                                  IconData(
-                                    0xe913,
-                                    fontFamily: 'icomoon',
-                                  ),
-                                  color: const Color(0xFF00BFA5),
-                                  size: 11.0,
-                                ),
-                                Text(
-                                  '85/kg',
-                                  style:
-                                      TextStyle(color: const Color(0xFF00BFA5)),
-                                )
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                      Column(
-                        children: <Widget>[
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(left: 38.0, bottom: 15.0),
-                            child: GFIconButton(
-                              onPressed: null,
-                              icon: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    fav = !fav;
-                                  });
-                                },
-                                child: fav
-                                    ? Icon(
-                                        Icons.favorite,
-                                        color: Colors.red,
-                                      )
-                                    : Icon(
-                                        Icons.favorite_border,
-                                        color: Colors.grey,
-                                      ),
-                              ),
-                              type: GFButtonType.transparent,
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              Expanded(
-                  child: Row(
-                children: <Widget>[
-                  Stack(
-                    children: <Widget>[
-                      GFCard(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0)),
-                        boxFit: BoxFit.cover,
-                        colorFilter: new ColorFilter.mode(
-                            Colors.black.withOpacity(0.67), BlendMode.darken),
-                        image: Image.asset(
-                          'lib/assets/images/cherry.png',
-                          // width: MediaQuery.of(context).size.width,
-                          fit: BoxFit.fitHeight,
-                          width: 80,
-                          height: 80,
-                        ),
-
-//              imageOverlay: AssetImage("lib/assets/food.jpeg"),
-                        // titlePosition: GFPosition.end,
-                        content: Row(
-                          children: <Widget>[
-                            Column(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 5.0),
-                                  child: Text('Cherry'),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 3.0, top: 5.0),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Icon(
-                                        IconData(
-                                          0xe913,
-                                          fontFamily: 'icomoon',
-                                        ),
-                                        color: const Color(0xFF00BFA5),
-                                        size: 11.0,
-                                      ),
-                                      Text(
-                                        '85/kg',
-                                        style: TextStyle(
-                                            color: const Color(0xFF00BFA5)),
-                                      )
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                            Column(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 38.0, bottom: 15.0),
-                                  child: GFIconButton(
-                                    onPressed: null,
-                                    icon: GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          fav = !fav;
-                                        });
-                                      },
-                                      child: fav
-                                          ? Icon(
-                                              Icons.favorite,
-                                              // color: GFColor.danger,
-                                              color: Colors.red,
-                                            )
-                                          : Icon(
-                                              Icons.favorite_border,
-                                              color: Colors.grey,
-                                            ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 10.0),
+                                      child: Text(productsList[i]['title']),
                                     ),
-                                    type: GFButtonType.transparent,
-                                  ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 2.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          Icon(
+                                            IconData(
+                                              0xe913,
+                                              fontFamily: 'icomoon',
+                                            ),
+                                            color: const Color(0xFF00BFA5),
+                                            size: 11.0,
+                                          ),
+                                          Text(
+                                            productsList[i]['price'].toString(),
+                                            style: TextStyle(
+                                                color: const Color(0xFF00BFA5)),
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
                                 ),
+                                // Column(
+                                //   children: <Widget>[
+                                //     Padding(
+                                //       padding: const EdgeInsets.only(top: 5.0),
+                                //       child: GFIconButton(
+                                //         onPressed: null,
+                                //         icon: GestureDetector(
+                                //           onTap: () {
+                                //             setState(() {
+                                //               fav = !fav;
+                                //             });
+                                //           },
+                                //           child: fav
+                                //               ? Icon(
+                                //                   Icons.favorite,
+                                //                   color: Colors.red,
+                                //                 )
+                                //               : Icon(
+                                //                   Icons.favorite_border,
+                                //                   color: Colors.grey,
+                                //                 ),
+                                //         ),
+                                //         type: GFButtonType.transparent,
+                                //       ),
+                                //     ),
+                                //   ],
+                                // )
                               ],
                             )
                           ],
                         ),
                       ),
-                      Positioned(
-                        top: 18.0,
-                        left: 16.0,
-                        width: 148.0,
-                        height: 144.0,
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: Colors.black45,
-                              borderRadius: BorderRadius.circular(20.0)),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.only(left: 19.0, top: 40.0),
-                            child: Text(
-                              '     oops!               Out of stock',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20.0,
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  )
-                ],
-              )),
-            ],
-          ),
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.start,
-          //   children: <Widget>[
-          //     Padding(
-          //       padding: const EdgeInsets.only(left: 25.0),
-          //       child: RichText(
-          //         text: TextSpan(
-          //           children: <TextSpan>[
-          //             TextSpan(text: "Recent Searches", style: comments()),
-          //             TextSpan(
-          //               text: '                                Show More',
-          //               style: TextStyle(color: primary),
-          //             ),
-          //           ],
-          //         ),
-          //       ),
-          //     ),
-          //   ],
-          // ),
-          // Padding(
-          //   padding: const EdgeInsets.only(
-          //     left: 22.0,
-          //     top: 15.0,
-          //     right: 22.0,
-          //   ),
-          //   child: Container(
-          //     decoration: BoxDecoration(
-          //         border: Border(bottom: BorderSide(color: Colors.grey[300]))),
-          //     child: Row(
-          //       children: <Widget>[
-          //         Padding(
-          //           padding: const EdgeInsets.only(bottom: 8.0),
-          //           child: Icon(Icons.search, color: Colors.grey),
-          //         ),
-          //         Padding(
-          //           padding: const EdgeInsets.only(bottom: 10.0),
-          //           child: Text('  Tomatoes',
-          //               style: TextStyle(color: Colors.grey)),
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
-          // Padding(
-          //   padding: const EdgeInsets.only(
-          //     left: 22.0,
-          //     top: 10.0,
-          //     right: 22.0,
-          //   ),
-          //   child: Container(
-          //     decoration: BoxDecoration(
-          //         border: Border(bottom: BorderSide(color: Colors.grey[300]))),
-          //     child: Row(
-          //       children: <Widget>[
-          //         Padding(
-          //           padding: const EdgeInsets.only(bottom: 8.0),
-          //           child: Icon(Icons.search, color: Colors.grey),
-          //         ),
-          //         Padding(
-          //           padding: const EdgeInsets.only(bottom: 10.0),
-          //           child:
-          //               Text('  Oranges', style: TextStyle(color: Colors.grey)),
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.start,
-          //   children: <Widget>[
-          //     Padding(
-          //       padding: const EdgeInsets.only(top: 18.0, left: 22.0),
-          //       child: Text('3 items found', style: comments()),
-          //     ),
-          //   ],
-          // ),
-          // SizedBox(height: 15.0),
-          // InkWell(
-          //   onTap: () {
-          //     _onProductSelect(context);
-          //     // Navigator.push(
-          //     //   context,
-          //     //   MaterialPageRoute(builder: (context) => Categories()),
-          //     // );
-          //   },
-          //   child: Container(
-          //     // color: Colors.white54,
-          //     decoration: BoxDecoration(
-          //       // boxShadow: [
-          //       //   new BoxShadow(
-          //       //       // color: Colors.black,
-          //       //       // blurRadius: 1.0,
-          //       //       ),
-          //       // ],
-          //       color: Colors.white,
-          //     ),
-          //     child: Row(
-          //       children: <Widget>[
-          //         Stack(
-          //           children: <Widget>[
-          //             Column(
-          //               children: <Widget>[
-          //                 Container(
-          //                     // height: 150,
-          //                     // width: 130,
-          //                     child: Padding(
-          //                   padding:
-          //                       const EdgeInsets.only(bottom: 14.0, left: 10.0),
-          //                   child: Image.asset('lib/assets/images/apple.png'),
-          //                 )),
-          //               ],
-          //             ),
-          //             Positioned(
-          //               height: 26.0,
-          //               width: 117.0,
-          //               top: 77.0,
-          //               // left: 20.0,
-          //               child: Padding(
-          //                 padding: const EdgeInsets.only(left: 20.0, top: 5.0),
-          //                 child: GFButtonBadge(
-          //                   // icon: GFBadge(
-          //                   //   // text: '6',
-          //                   //   shape: GFBadgeShape.pills,
-          //                   // ),
-          //                   // fullWidthButton: true,
-          //                   onPressed: () {},
-          //                   text: '25% off',
-          //                   color: Colors.deepOrange[300],
-          //                 ),
-          //               ),
-          //             )
-          //           ],
-          //         ),
-          //         // Column(
-          //         //   children: <Widget>[
-          //         //     Image.asset('lib/assets/images/grape.png'),
-          //         //   ],
-          //         // ),
-          //         Column(
-          //           children: <Widget>[
-          //             Padding(
-          //               padding: const EdgeInsets.only(right: 32.0),
-          //               child: Text(
-          //                 'Applee',
-          //                 style: heading(),
-          //               ),
-          //             ),
-          //             Padding(
-          //               padding: const EdgeInsets.only(
-          //                 left: 6.0,
-          //               ),
-          //               child: Text(
-          //                 '100% Organic',
-          //                 style: labelStyle(),
-          //               ),
-          //             ),
-          //             Padding(
-          //               padding: const EdgeInsets.only(right: 32.0),
-          //               child: Row(
-          //                 children: <Widget>[
-          //                   Icon(
-          //                     IconData(
-          //                       0xe913,
-          //                       fontFamily: 'icomoon',
-          //                     ),
-          //                     color: const Color(0xFF00BFA5),
-          //                     size: 11.0,
-          //                   ),
-          //                   Text(
-          //                     '85/kg',
-          //                     style: TextStyle(
-          //                         color: const Color(0xFF00BFA5),
-          //                         fontSize: 17.0),
-          //                   )
-          //                 ],
-          //               ),
-          //             ),
-          //           ],
-          //         ),
-          //         Column(
-          //           children: <Widget>[
-          //             Row(
-          //               children: <Widget>[
-          //                 Padding(
-          //                   padding: const EdgeInsets.only(
-          //                       bottom: 20.0, left: 20.0, top: 15.0),
-          //                   child: RatingBar(
-          //                     initialRating: 3,
-          //                     minRating: 1,
-          //                     direction: Axis.horizontal,
-          //                     allowHalfRating: true,
-          //                     itemCount: 5,
-          //                     itemSize: 12.0,
-          //                     itemPadding:
-          //                         EdgeInsets.symmetric(horizontal: 4.0),
-          //                     itemBuilder: (context, _) => Icon(
-          //                       Icons.star,
-          //                       color: Colors.red,
-          //                       size: 15.0,
-          //                     ),
-          //                     onRatingUpdate: (rating) {
-          //                       print(rating);
-          //                     },
-          //                   ),
-          //                 )
-          //               ],
-          //             ),
-          //             Padding(
-          //               padding: const EdgeInsets.only(left: 20.0),
-          //               child: Container(
-          //                 decoration: BoxDecoration(
-          //                     color: Colors.grey[200],
-          //                     borderRadius: BorderRadius.circular(20.0)),
-          //                 height: 30,
-          //                 width: 100,
-          //                 child: Row(
-          //                   children: <Widget>[
-          //                     Container(
-          //                       width: 30,
-          //                       height: 30,
-          //                       decoration: BoxDecoration(
-          //                           color: primary,
-          //                           borderRadius: BorderRadius.circular(20.0)),
-          //                       child: Icon(Icons.add
-          //                           // IconData(
-          //                           //   0xe910,
-          //                           //   fontFamily: 'icomoon',
-          //                           // ),
-          //                           // color: getGFColor(GFColor.white),
-          //                           ),
-          //                     ),
-          //                     // Text(''),
-          //                     Padding(
-          //                       padding: const EdgeInsets.only(left: 14.0),
-          //                       child: Container(child: Text('1')),
-          //                     ),
-          //                     Text(''),
-          //                     Padding(
-          //                       padding: const EdgeInsets.only(left: 17.0),
-          //                       child: Container(
-          //                         width: 30,
-          //                         height: 30,
-          //                         decoration: BoxDecoration(
-          //                             color: Colors.black,
-          //                             borderRadius:
-          //                                 BorderRadius.circular(20.0)),
-          //                         child: Icon(
-          //                           Icons.remove, color: Colors.white,
-          //                           // IconData(
-          //                           //   0xe910,
-          //                           //   fontFamily: 'icomoon',
-          //                           // ),
-          //                           // color: getGFColor(GFColor.white),
-          //                         ),
-          //                       ),
-          //                     ),
-          //                   ],
-          //                 ),
-          //               ),
-          //             )
-          //           ],
-          //         )
-          //       ],
-          //     ),
-          //   ),
-          // ),
-          // SizedBox(
-          //   height: 30.0,
-          // )
-        ],
-      ),
-    );
+                    );
+                  },
+                ),
+              ]));
   }
 
   Widget itemcard = Container(

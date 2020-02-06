@@ -59,6 +59,7 @@ flutter:
     - lib/assets/images/product.png
     - lib/assets/icons/logo.png
     - lib/assets/images/mastercard.png
+    - lib/assets/images/no-orders.png
 
 
 
