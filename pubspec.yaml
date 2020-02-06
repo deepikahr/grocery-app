@@ -17,7 +17,7 @@ dependencies:
   search_widget: ^1.0.1
   badges: ^1.1.0
   flutter_rating_bar: ^3.0.1+1
-  flutter_range_slider: ^1.4.0
+  flutter_datetime_picker: ^1.3.4
   # flutter_alert: ^1.0.3
   http: ^0.12.0+2
   sentry: ^2.2.0
@@ -59,6 +59,8 @@ flutter:
     - lib/assets/images/product.png
     - lib/assets/icons/logo.png
     - lib/assets/images/mastercard.png
+    - lib/assets/icons/mastercard-logo.png
+
     - lib/assets/images/no-orders.png
 
 
