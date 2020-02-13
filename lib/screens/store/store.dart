@@ -56,6 +56,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   bool isLoadingcategory = false;
   List categoryList = List();
   List productsList = List();
+  List dealList = List();
+  List favList = List();
 
   List list = [
     'Apple',
@@ -91,7 +93,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
         });
       }
       await ProductService.getCategoryList().then((onValue) {
-        print("cat $onValue");
+        print("getCategoryList value on store $onValue");
         try {
           if (onValue['response_code'] == 200) {
             if (mounted) {
@@ -158,28 +160,6 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
           backgroundColor: Colors.transparent,
           elevation: 0,
           iconTheme: IconThemeData(color: Colors.grey),
-          title: Row(
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(top: 15.0, right: 27.0),
-                    child: Text(
-                      'Delivery Address',
-                      style: descriptionSemibold(),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 0.0, top: 1.0),
-                    child: Text(
-                      'HSR Layout...',
-                      style: boldHeading(),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
         ),
         body: (isLoadingcategoryList && isLoadingProductsList)
             ? Center(child: CircularProgressIndicator())
@@ -243,7 +223,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                           TextSpan(
                               text: "Explore by Categories", style: comments()),
                           TextSpan(
-                            text: '                               View all',
+                            text: 'View all',
                             style: TextStyle(color: primary),
                           ),
                         ],
@@ -415,7 +395,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                             size: 11.0,
                                           ),
                                           Text(
-                                            productsList[i]['price'].toString(),
+                                            '${productsList[i]['variant'][0]['price']}',
                                             style: TextStyle(
                                                 color: const Color(0xFF00BFA5)),
                                           )

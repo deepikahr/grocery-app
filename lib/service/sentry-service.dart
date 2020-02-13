@@ -2,6 +2,7 @@ import 'package:sentry/sentry.dart';
 
 final SentryClient sentry = new SentryClient(
     dsn: "https://61bcefa6518f4429b7a7c0121519d231@sentry.io/1800138");
+// dsn: "xyz");
 
 class SentryError {
   Future<Null> reportError(dynamic error, dynamic stackTrace) async {

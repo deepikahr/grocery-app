@@ -10,6 +10,9 @@ import 'package:grocery_pro/screens/checkout/checkout.dart';
 import 'package:grocery_pro/style/style.dart';
 
 class MyCart extends StatefulWidget {
+  final int quantity;
+  final int currentIndex;
+  MyCart({Key key, this.quantity, this.currentIndex}) : super(key: key);
   @override
   _MyCartState createState() => _MyCartState();
 }

@@ -5,6 +5,15 @@ import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/store/store.dart';
 import 'package:grocery_pro/service/constants.dart';
 import 'package:grocery_pro/style/style.dart';
+import 'package:grocery_pro/service/cart-service.dart';
+// import 'package:grocery_pro/service/fav-service.dart';
+import 'package:grocery_pro/screens/home/home.dart';
+import 'package:grocery_pro/service/product-service.dart';
+import 'package:grocery_pro/screens/checkout/checkout.dart';
+import 'package:grocery_pro/screens/cart/mycart.dart';
+import 'package:grocery_pro/service/sentry-service.dart';
+
+SentryError sentryError = new SentryError();
 
 class ProductDetails extends StatefulWidget {
   final Map<String, dynamic> productDetail;
@@ -17,8 +26,72 @@ class ProductDetails extends StatefulWidget {
 bool fav = false;
 bool fav1 = false;
 bool fav2 = false;
+int count = 1;
+int index = 0;
+// bool isLoadingSubProductsList = false;
+// List subProductsList = List();
 
 class _ProductDetailsState extends State<ProductDetails> {
+  addToCart(data, buy) async {
+    Map<String, dynamic> buyNowProduct = {
+      'productId': data['_id'],
+      'quantity': 1,
+      "price": double.parse(
+          widget.productDetail['variant'][index]['price'].toString()),
+      "unit": widget.productDetail['variant'][index]['unit'].toString()
+    };
+    print('buyNowProduct, $buyNowProduct');
+    if (buy == 'cart') {
+      await CartService.addProductToCart(buyNowProduct).then((onValue) {
+        try {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => MyCart(
+                      currentIndex: 1,
+                      quantity: count,
+                    )),
+          );
+        } catch (error, stackTrace) {
+          sentryError.reportError(error, stackTrace);
+        }
+      }).catchError((error) {
+        sentryError.reportError(error, null);
+      });
+    } else {
+      await ProductService.getBuyNowInfor(buyNowProduct).then((onValue) {
+        print('checkout $onValue');
+        try {
+          Map<String, dynamic> cartItem = {
+            'cart': [widget.productDetail],
+            'subTotal': onValue["response_data"]["subTotal"],
+            'tax': onValue["response_data"]['tax'],
+            'grandTotal': onValue["response_data"]["grandTotal"],
+            'deliveryCharges': onValue["response_data"]['deliveryCharges'],
+          };
+          if (onValue['response_code'] == 200) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => Checkout(
+                      cartItem: cartItem, buy: 'buy', quantity: count)),
+            );
+          }
+        } catch (error, stackTrace) {
+          sentryError.reportError(error, stackTrace);
+        }
+      }).catchError((error) {
+        sentryError.reportError(error, null);
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    print(widget.productDetail);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,21 +124,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                     ),
                   )),
               Positioned(
-                  top: 40.0,
-                  left: 15.0,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Store()),
-                      );
-                    },
-                    child: Icon(
-                      Icons.arrow_back,
-                      color: Colors.white,
-                    ),
-                  )),
-              Positioned(
                 top: 330.0,
                 left: 45.0,
                 child: Container(
@@ -74,43 +132,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                   child: GFButton(
                     onPressed: () {},
                     boxShadow: BoxShadow(color: Colors.black),
-                    child: Text('500gm', style: TextStyle(color: Colors.black)),
-                    color: GFColor.light,
-                    type: GFButtonType.solid,
-                    // size: GFSize.small,
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 330.0,
-                left: 115.0,
-                child: Container(
-                  height: 25.0,
-                  width: 60.0,
-                  child: GFButton(
-                    onPressed: () {},
-                    boxShadow: BoxShadow(color: Colors.black),
-                    child: Text('1kg', style: TextStyle(color: Colors.black)),
-                    color: GFColor.light,
-                    type: GFButtonType.solid,
-                    // size: GFSize.small,
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 330.0,
-                left: 185.0,
-                child: Container(
-                  height: 25.0,
-                  width: 60.0,
-                  child: GFButton(
-                    onPressed: () {},
-                    // focusColor: Colors.red,
-                    highlightColor: Colors.red,
-                    // hoverColor: Colors.red,
-
-                    boxShadow: BoxShadow(color: Colors.black),
-                    child: Text('2kg', style: TextStyle(color: Colors.black)),
+                    child: Text('${widget.productDetail['variant'][0]['unit']}',
+                        style: TextStyle(color: Colors.black)),
                     color: GFColor.light,
                     type: GFButtonType.solid,
                     // size: GFSize.small,
@@ -185,7 +208,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                     Padding(
                         padding: const EdgeInsets.only(right: 0.0, top: 5.0),
                         child: Text(
-                          '${Constants.currency} ${widget.productDetail['price']}',
+                          '${Constants.currency} ${widget.productDetail['variant'][0]['price']}',
                           style: TextStyle(
                               color: const Color(0xFF00BFA5), fontSize: 17.0),
                         ))
@@ -321,7 +344,9 @@ class _ProductDetailsState extends State<ProductDetails> {
             Padding(
               padding: const EdgeInsets.only(top: 0.0),
               child: GFButton(
-                onPressed: () {},
+                onPressed: () {
+                  addToCart(widget.productDetail, 'buy now');
+                },
                 child: Text(
                   "Buy now",
                 ),
@@ -379,31 +404,39 @@ class _ProductDetailsState extends State<ProductDetails> {
                       ),
                     ),
                   ),
-                  Container(
-                    width: 210.0,
-                    height: 45.0,
-                    child: GFButton(
-                      onPressed: () {},
-                      shape: GFButtonShape.square,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                  Center(
+                    child: Stack(
+                        alignment: AlignmentDirectional.center,
                         children: <Widget>[
-                          Text(
-                            'Add to cart ',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          Icon(
-                            IconData(
-                              0xe911,
-                              fontFamily: 'icomoon',
+                          Container(
+                            width: 210.0,
+                            height: 45.0,
+                            child: GFButton(
+                              onPressed: () {
+                                addToCart(widget.productDetail, 'cart');
+                              },
+                              shape: GFButtonShape.square,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  Text(
+                                    'Add to cart ',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                  Icon(
+                                    IconData(
+                                      0xe911,
+                                      fontFamily: 'icomoon',
+                                    ),
+                                    // color: const Color(0xFF00BFA5),
+                                    // size: 1.0,
+                                  ),
+                                ],
+                              ),
+                              color: GFColor.warning,
                             ),
-                            // color: const Color(0xFF00BFA5),
-                            // size: 1.0,
                           ),
-                        ],
-                      ),
-                      color: GFColor.warning,
-                    ),
+                        ]),
                   )
                 ],
               ),

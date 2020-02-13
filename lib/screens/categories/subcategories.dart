@@ -4,6 +4,9 @@ import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/product/product-details.dart';
 import 'package:grocery_pro/screens/store/store.dart';
 import 'package:grocery_pro/service/product-service.dart';
+import 'package:grocery_pro/service/sentry-service.dart';
+
+SentryError sentryError = new SentryError();
 
 bool fav = false;
 bool fav1 = false;

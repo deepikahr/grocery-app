@@ -69,6 +69,7 @@ class LoginService {
     await Common.getToken().then((onValue) {
       token = onValue;
     });
+    // print(token);
     final response = await client.get(Constants.baseURL + "users/me", headers: {
       'Content-Type': 'application/json',
       'Authorization': 'bearer $token'

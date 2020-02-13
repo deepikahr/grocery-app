@@ -5,21 +5,40 @@ import 'package:getflutter/components/button/gf_button.dart';
 import 'package:getflutter/components/typography/gf_typography.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:getflutter/size/gf_size.dart';
-import 'package:grocery_pro/screens/auth/forgotPassword.dart';
-import 'package:grocery_pro/screens/verification/otp.dart';
+import 'package:grocery_pro/screens/forgetpassword/forgotpassword.dart';
+// import 'package:grocery_pro/screens/verification/otp.dart';
 import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/style/style.dart';
+import 'package:grocery_pro/service/sentry-service.dart';
+import 'package:grocery_pro/service/auth-service.dart';
+import 'package:grocery_pro/translator/localizations.dart';
+import 'package:grocery_pro/screens/profile/profile.dart';
+import 'package:grocery_pro/screens/login/signup.dart';
+import 'package:grocery_pro/screens/saveitems/saveditems.dart';
+import 'package:grocery_pro/screens/cart/mycart.dart';
+import 'package:grocery_pro/screens/home/home.dart';
+
+SentryError sentryError = new SentryError();
 
 class Login extends StatefulWidget {
-  const Login({
-    Key key,
-  }) : super(key: key);
+  const Login({Key key, this.isProfile, this.isCart, this.isStore})
+      : super(key: key);
+  final bool isProfile;
+  final bool isCart;
+  final bool isStore;
   @override
   _LoginState createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKeyForLogin = GlobalKey<FormState>();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  bool isLoading = false;
+  bool registerationLoading = false;
+  bool value = false;
+  String email, password;
 
   @override
   void initState() {
@@ -32,6 +51,189 @@ class _LoginState extends State<Login> {
       print("Value of the Token");
       print(onValue);
     });
+  }
+
+  // returnPage() {
+  //   // final pageToken = ;
+
+  // }
+
+  userLogin() async {
+    final form = _formKeyForLogin.currentState;
+    if (form.validate()) {
+      form.save();
+      if (mounted) {
+        setState(() {
+          isLoading = true;
+        });
+      }
+      Map<String, dynamic> body = {
+        "email": email.toLowerCase(),
+        "password": password
+      };
+      print('I am here 2');
+      print(body);
+      await LoginService.signIn(body).then((onValue) {
+        print('onvalue of login');
+        print(onValue);
+        try {
+          if (mounted) {
+            setState(() {
+              isLoading = false;
+            });
+          }
+          if (onValue['response_code'] == 200) {
+            Common.setToken(onValue['response_data']['token']);
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                // return object of type Dialog
+                return AlertDialog(
+                  contentPadding: EdgeInsets.only(
+                    top: 10.0,
+                  ),
+                  title: new Text(
+                    'Thank you',
+                    // MyLocalizations.of(context).thankYou + "...",
+                    style: hintSfsemiboldb(),
+                    textAlign: TextAlign.center,
+                  ),
+                  content: Container(
+                    height: 100.0,
+                    child: Column(
+                      children: <Widget>[
+                        new Text(
+                          'Login Successful',
+                          // MyLocalizations.of(context).loginSuccessful,
+                          style: hintSfLightsm(),
+                          textAlign: TextAlign.center,
+                        ),
+                        Padding(padding: EdgeInsets.only(top: 20.0)),
+                        Divider(),
+                        IntrinsicHeight(
+                            child: new Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            VerticalDivider(),
+                            Expanded(
+                                child: GestureDetector(
+                              // onTap: returnPage,
+                              onTap: () {
+                                if (widget.isProfile == true) {
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              Home()),
+                                      (Route<dynamic> route) => false);
+                                } else if (widget.isStore == true) {
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              SavedItems()),
+                                      (Route<dynamic> route) => false);
+                                } else {
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              MyCart()),
+                                      (Route<dynamic> route) => false);
+                                }
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+//                            margin: EdgeInsets.only(top:15.0),
+//                                height: 29.0,
+                                decoration: BoxDecoration(
+//                                border: Border.all(color: Colors.black12)
+                                    ),
+                                child: Text(
+                                  'OK',
+                                  style: hintSfLightbig(),
+                                ),
+                              ),
+                            ))
+                          ],
+                        ))
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          } else if (onValue['response_code'] == 401) {
+            showAlert('${onValue['response_data']}');
+          } else {}
+        } catch (error, stackTrace) {
+          sentryError.reportError(error, stackTrace);
+        }
+      }).catchError((error) {
+        sentryError.reportError(error, null);
+      });
+    } else {
+      return;
+    }
+  }
+
+  showAlert(message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          contentPadding: EdgeInsets.only(
+            top: 10.0,
+          ),
+          title: new Text(
+            MyLocalizations.of(context).error,
+            style: hintSfsemiboldb(),
+            textAlign: TextAlign.center,
+          ),
+          content: Container(
+            height: 100.0,
+            child: Column(
+              children: <Widget>[
+                new Text(
+                  "$message",
+                  style: hintSfLightsm(),
+                  textAlign: TextAlign.center,
+                ),
+                Padding(padding: EdgeInsets.only(top: 20.0)),
+                Divider(),
+                IntrinsicHeight(
+                    child: new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    VerticalDivider(),
+                    Expanded(
+                        child: GestureDetector(
+//                              onTap: (){},
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+//                            margin: EdgeInsets.only(top:15.0),
+//                                height: 29.0,
+                        decoration: BoxDecoration(
+//                                border: Border.all(color: Colors.black12)
+                            ),
+                        child: Text(
+                          'OK',
+                          style: hintSfLightbig(),
+                        ),
+                      ),
+                    ))
+                  ],
+                ))
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -62,7 +264,7 @@ class _LoginState extends State<Login> {
 
   Widget buildLoginPageForm() {
     return Form(
-      key: _formKey,
+      key: _formKeyForLogin,
       child: Theme(
         data: ThemeData(
           brightness: Brightness.dark,
@@ -81,6 +283,8 @@ class _LoginState extends State<Login> {
               buildPasswordText(),
               buildPasswordTextField(),
               buildLoginButton(),
+              buildForgotPasswordLink(),
+              buildcontinuetext(),
               buildsignuplink(),
               buildcontinuetext(),
               buildsocialbuttons(),
@@ -134,6 +338,18 @@ class _LoginState extends State<Login> {
         // color: Colors.blue,
         child: TextFormField(
           // initialValue: "user@demo.com",
+          onSaved: (String value) {
+            email = value;
+          },
+          validator: (String value) {
+            if (value.isEmpty ||
+                !RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+                    .hasMatch(value)) {
+              return "Please Enter a Valid Email";
+              // MyLocalizations.of(context).pleaseEnterValidEmail;
+            } else
+              return null;
+          },
           style: labelStyle(),
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
@@ -176,6 +392,16 @@ class _LoginState extends State<Login> {
         // initialValue: "123456",
         style: labelStyle(),
         keyboardType: TextInputType.text,
+        onSaved: (String value) {
+          password = value;
+        },
+        validator: (String value) {
+          if (value.isEmpty || value.length < 8) {
+            return "please Enter Valid Password";
+          } else
+            return null;
+        },
+
         decoration: InputDecoration(
             fillColor: Colors.black,
             focusColor: Colors.black,
@@ -209,13 +435,14 @@ class _LoginState extends State<Login> {
         size: GFSize.large,
         color: GFColor.warning,
         blockButton: true,
+        onPressed: userLogin,
 
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => Otp()),
-          );
-        },
+        // onPressed: () {
+        //   Navigator.push(
+        //     context,
+        //     MaterialPageRoute(builder: (context) => Otp()),
+        //   );
+        // },
         text: 'Log In',
         textStyle: TextStyle(fontSize: 17.0, color: Colors.black),
       ),
@@ -225,7 +452,7 @@ class _LoginState extends State<Login> {
     // );
   }
 
-  Widget buildsignuplink() {
+  Widget buildForgotPasswordLink() {
     return InkWell(
         onTap: () {
           Navigator.push(
@@ -255,6 +482,30 @@ class _LoginState extends State<Login> {
       textAlign: TextAlign.center,
       style: emailTextNormal(),
     );
+  }
+
+  Widget buildsignuplink() {
+    return InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Signup()),
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 20.0),
+          child: RichText(
+            text: TextSpan(
+              children: <TextSpan>[
+                TextSpan(text: "Register?", style: emailTextNormal()),
+                TextSpan(
+                  text: '',
+                  style: TextStyle(color: primary),
+                ),
+              ],
+            ),
+          ),
+        ));
   }
 
   Widget buildsocialbuttons() {
