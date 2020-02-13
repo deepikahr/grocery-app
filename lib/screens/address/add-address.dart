@@ -1,11 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/screens/checkout/checkout.dart';
-import 'package:grocery_pro/screens/profile/profile.dart';
 import 'package:grocery_pro/service/address-service.dart';
 import 'package:grocery_pro/service/product-service.dart';
 import 'package:location/location.dart';
@@ -14,10 +14,15 @@ SentryError sentryError = new SentryError();
 
 class AddAddress extends StatefulWidget {
   const AddAddress(
-      {Key key, this.currentLocation, this.isCheckout, this.isProfile})
+      {Key key,
+      this.currentLocation,
+      this.isCheckout,
+      this.isProfile,
+      this.updateAddressID})
       : super(key: key);
   final bool isCheckout;
   final bool isProfile;
+  final Map<String, dynamic> updateAddressID;
   final LocationData currentLocation;
 
   @override
@@ -26,96 +31,87 @@ class AddAddress extends StatefulWidget {
 
 class _AddAddressState extends State<AddAddress> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  List addressList = List();
-  String flatNumber, landMark, pincode, locality, district, state;
-  bool isLoading = false;
-  bool chooseAddress = false;
-  // StreamSubscription<LocationData> locationSubscription;
+
+  var addressData;
   LocationData currentLocation;
+  Location _location = new Location();
+  bool chooseAddress = false, isLoading = false;
+  StreamSubscription<LocationData> locationSubscription;
+  String flatName, flatNo, street, locality, city, pincode;
 
   // var addressData;
-
+  Map<String, dynamic> address = {
+    "flatNumber": null,
+    "locality": null,
+    "landMark": null,
+    "city": null,
+    "postalCode": null,
+    "state": null
+  };
   addAddress() async {
-    final form = _formKey.currentState;
-    Map<String, dynamic> address = {
-      "flatNumber": flatNumber,
-      "locality": locality,
-      "landMark": landMark,
-      "city": district,
-      "postalCode": pincode,
-      "state": state
-    };
-
-    // if (chooseAddress) {
-    // List data = addressData['formatted_address'].toString().split(',');
-    // Map<String, dynamic> body = {
-    //   "flatNumber": data[1],
-    //   "landMark": data[0] + ' ,' + data[1],
-    //   "locality": addressData['address_components'][0]['long_name'],
-    //   "city": addressData['address_components'][2]['long_name'] +
-    //       ',' +
-    //       addressData['address_components'][1]['long_name'],
-    //   "postalCode": addressData['address_components'][3]['long_name'],
-    //   "state": addressData['address_components'][6]['long_name']
-    // };
-    // print();
-    // await AddressService.addAddress(body).then((onValue) {
-    //   try {
-    //     showAlert();
-    //     if (mounted) {
-    //       setState(() {
-    //         chooseAddress = false;
-    //       });
-    //     }
-    //   } catch (error, stackTrace) {
-    //     sentryError.reportError(error, stackTrace);
-    //   }
-    // }).catchError((error) {
-    //   sentryError.reportError(error, null);
-    // });
-    // } else {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
-      print('address body $address');
-      if (mounted) {
-        setState(() {
-          isLoading = true;
-        });
-      }
-      AddressService.addAddress(address).then((onValue) {
-        print(onValue);
+    if (chooseAddress && widget.updateAddressID == null) {
+      List data = addressData['formatted_address'].toString().split(',');
+      Map<String, dynamic> body = {
+        "flatNumber": data[1],
+        "flatName": data[0] + ' ,' + data[1],
+        "street": addressData['address_components'][0]['long_name'],
+        "locality": addressData['address_components'][2]['long_name'] +
+            ',' +
+            addressData['address_components'][1]['long_name'],
+        "city": addressData['address_components'][3]['long_name'],
+        "postalCode": addressData['address_components'][6]['long_name']
+      };
+      await AddressService.addAddress(body).then((onValue) {
         try {
+          showAlert();
           if (mounted) {
-            if (onValue['response_code'] == 201) {
-              setState(() {
-                isLoading = false;
-                // showAlert(onValue['response_data']['message']);
-                Navigator.of(context).pop(address);
-              });
-            }
+            setState(() {
+              chooseAddress = false;
+            });
           }
         } catch (error, stackTrace) {
           sentryError.reportError(error, stackTrace);
         }
-      }).catchError((onError) {
-        sentryError.reportError(onError, null);
+      }).catchError((error) {
+        sentryError.reportError(error, null);
       });
-    }
+    } else if (!chooseAddress && widget.updateAddressID == null) {
+      if (_formKey.currentState.validate()) {
+        if (mounted) {
+          setState(() {
+            isLoading = true;
+          });
+        }
+        _formKey.currentState.save();
+        AddressService.addAddress(address).then((onValue) {
+          try {
+            if (mounted) {
+              setState(() {
+                isLoading = false;
+                showAlert();
+              });
+            }
+          } catch (error, stackTrace) {
+            sentryError.reportError(error, stackTrace);
+          }
+        }).catchError((onError) {
+          sentryError.reportError(onError, null);
+        });
+      }
+    } else if (widget.updateAddressID != null) {}
   }
-  // }
 
   // show alert
-  showAlert(String message) {
+  showAlert() {
     showDialog<Null>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return new AlertDialog(
-          // title: new Text('Error'),
           content: new SingleChildScrollView(
             child: new ListBody(
               children: <Widget>[
-                new Text(message),
+                new Text('addressAdded'),
               ],
             ),
           ),
@@ -123,12 +119,9 @@ class _AddAddressState extends State<AddAddress> {
             new FlatButton(
               child: new Text('OK'),
               onPressed: () {
-                // Navigator.pop(context);
-
                 if (widget.isCheckout == true) {
                   Navigator.of(context).pop();
-                  // Navigator.of(context).pop();
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(address);
                 } else {
                   Navigator.of(context).pop();
                   Navigator.of(context).pop();
@@ -141,28 +134,35 @@ class _AddAddressState extends State<AddAddress> {
     );
   }
 
-  // getGeoLocation() async {
-  //   await ProductService.geoApi(
-  //           currentLocation.latitude, currentLocation.longitude)
-  //       .then((onValue) {
-  //     try {
-  //       if (mounted) {
-  //         setState(() {
-  //           addressData = onValue['results'][0];
-  //         });
-  //       }
-  //     } catch (error, stackTrace) {
-  //       sentryError.reportError(error, stackTrace);
-  //     }
-  //   }).catchError((error) {
-  //     sentryError.reportError(error, null);
-  //   });
-  // }
+  getGeoLocation() async {
+    await ProductService.geoApi(
+            currentLocation.latitude, currentLocation.longitude)
+        .then((onValue) {
+      try {
+        if (mounted) {
+          setState(() {
+            addressData = onValue['results'][0];
+          });
+        }
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
+  }
 
-  // getResult() async {
-  //   currentLocation = await _location.getLocation();
-  //   getGeoLocation();
-  // }
+  @override
+  void dispose() {
+    if (locationSubscription != null && locationSubscription is Stream)
+      locationSubscription.cancel();
+    super.dispose();
+  }
+
+  getResult() async {
+    currentLocation = await _location.getLocation();
+    getGeoLocation();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -197,7 +197,9 @@ class _AddAddressState extends State<AddAddress> {
               Padding(
                 padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                 child: TextFormField(
-                    // initialValue: "123456",
+                    initialValue: widget.updateAddressID['flatNumber'] == null
+                        ? ""
+                        : widget.updateAddressID['flatNumber'],
                     style: labelStyle(),
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
@@ -216,7 +218,6 @@ class _AddAddressState extends State<AddAddress> {
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: primary),
                         )),
-                    // obscureText: true,
                     validator: (String value) {
                       if (value.isEmpty) {
                         return "please Enter Valid value";
@@ -224,7 +225,7 @@ class _AddAddressState extends State<AddAddress> {
                         return null;
                     },
                     onSaved: (String value) {
-                      flatNumber = value;
+                      address['flatNumber'] = value;
                     }),
               ),
               SizedBox(
@@ -240,7 +241,9 @@ class _AddAddressState extends State<AddAddress> {
               Padding(
                 padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                 child: TextFormField(
-                    // initialValue: "123456",
+                    initialValue: widget.updateAddressID['flatNumber'] == null
+                        ? ""
+                        : widget.updateAddressID['flatNumber'],
                     style: labelStyle(),
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
@@ -259,8 +262,6 @@ class _AddAddressState extends State<AddAddress> {
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: primary),
                         )),
-                    // style: textBlackOSR(),
-                    // obscureText: true,
                     validator: (String value) {
                       if (value.isEmpty) {
                         return "please Enter Valid value";
@@ -268,7 +269,7 @@ class _AddAddressState extends State<AddAddress> {
                         return null;
                     },
                     onSaved: (String value) {
-                      landMark = value;
+                      address['landMark'] = value;
                     }),
               ),
               SizedBox(
@@ -284,7 +285,9 @@ class _AddAddressState extends State<AddAddress> {
               Padding(
                 padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                 child: TextFormField(
-                    // initialValue: "123456",
+                    initialValue: widget.updateAddressID['flatNumber'] == null
+                        ? ""
+                        : widget.updateAddressID['flatNumber'],
                     style: labelStyle(),
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
@@ -303,8 +306,6 @@ class _AddAddressState extends State<AddAddress> {
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: primary),
                         )),
-                    // style: textBlackOSR(),
-                    // obscureText: true,
                     validator: (String value) {
                       if (value.isEmpty) {
                         return "please Enter Valid value";
@@ -312,7 +313,7 @@ class _AddAddressState extends State<AddAddress> {
                         return null;
                     },
                     onSaved: (String value) {
-                      locality = value;
+                      address['locality'] = value;
                     }),
               ),
               SizedBox(
@@ -328,7 +329,9 @@ class _AddAddressState extends State<AddAddress> {
               Padding(
                 padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                 child: TextFormField(
-                    // initialValue: "123456",
+                    initialValue: widget.updateAddressID['flatNumber'] == null
+                        ? ""
+                        : widget.updateAddressID['flatNumber'],
                     style: labelStyle(),
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
@@ -347,8 +350,6 @@ class _AddAddressState extends State<AddAddress> {
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: primary),
                         )),
-                    // style: textBlackOSR(),
-                    // obscureText: true,
                     validator: (String value) {
                       if (value.isEmpty) {
                         return "please Enter Valid value";
@@ -356,7 +357,7 @@ class _AddAddressState extends State<AddAddress> {
                         return null;
                     },
                     onSaved: (String value) {
-                      pincode = value;
+                      address['postalCode'] = value;
                     }),
               ),
               SizedBox(
@@ -365,14 +366,16 @@ class _AddAddressState extends State<AddAddress> {
               Padding(
                 padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
                 child: Text(
-                  'District :',
+                  'City :',
                   style: regular(),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                 child: TextFormField(
-                    // initialValue: "123456",
+                    initialValue: widget.updateAddressID['flatNumber'] == null
+                        ? ""
+                        : widget.updateAddressID['flatNumber'],
                     style: labelStyle(),
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
@@ -391,8 +394,6 @@ class _AddAddressState extends State<AddAddress> {
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: primary),
                         )),
-                    // style: textBlackOSR(),
-                    // obscureText: true,
                     validator: (String value) {
                       if (value.isEmpty) {
                         return "please Enter Valid value";
@@ -400,7 +401,7 @@ class _AddAddressState extends State<AddAddress> {
                         return null;
                     },
                     onSaved: (String value) {
-                      district = value;
+                      address['city'] = value;
                     }),
               ),
               SizedBox(
@@ -416,7 +417,9 @@ class _AddAddressState extends State<AddAddress> {
               Padding(
                 padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                 child: TextFormField(
-                    // initialValue: "123456",
+                    initialValue: widget.updateAddressID['flatNumber'] == null
+                        ? ""
+                        : widget.updateAddressID['flatNumber'],
                     style: labelStyle(),
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
@@ -435,8 +438,6 @@ class _AddAddressState extends State<AddAddress> {
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: primary),
                         )),
-                    // style: textBlackOSR(),
-                    // obscureText: true,
                     validator: (String value) {
                       if (value.isEmpty) {
                         return "please Enter Valid value";
@@ -444,7 +445,7 @@ class _AddAddressState extends State<AddAddress> {
                         return null;
                     },
                     onSaved: (String value) {
-                      state = value;
+                      address['state'] = value;
                     }),
               ),
               SizedBox(

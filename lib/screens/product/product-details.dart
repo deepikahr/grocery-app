@@ -73,8 +73,8 @@ class _ProductDetailsState extends State<ProductDetails> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (BuildContext context) => Checkout(
-                      cartItem: cartItem, buy: 'buy', quantity: count)),
+                  builder: (BuildContext context) =>
+                      Checkout(cartItem: cartItem, buy: 'buy', quantity: 1)),
             );
           }
         } catch (error, stackTrace) {
@@ -339,6 +339,7 @@ class _ProductDetailsState extends State<ProductDetails> {
       )),
       bottomNavigationBar: Container(
         height: 115,
+        width: MediaQuery.of(context).size.width,
         child: Column(
           children: <Widget>[
             Padding(

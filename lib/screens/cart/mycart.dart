@@ -307,7 +307,9 @@ class _MyCartState extends State<MyCart> {
       ),
       bottomNavigationBar: Container(
         height: 80,
+        width: MediaQuery.of(context).size.width,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.only(left: 24.0, top: 15.0),
