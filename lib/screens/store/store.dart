@@ -223,7 +223,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                           TextSpan(
                               text: "Explore by Categories", style: comments()),
                           TextSpan(
-                            text: 'View all',
+                            text: '                   View all',
                             style: TextStyle(color: primary),
                           ),
                         ],

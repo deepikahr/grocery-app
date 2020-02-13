@@ -131,7 +131,7 @@ class _LoginState extends State<Login> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (BuildContext context) =>
-                                              SavedItems()),
+                                              Home()),
                                       (Route<dynamic> route) => false);
                                 } else {
                                   Navigator.pushAndRemoveUntil(

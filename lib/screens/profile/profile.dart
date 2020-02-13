@@ -30,7 +30,6 @@ class _ProfileState extends State<Profile> {
   void initState() {
     super.initState();
     getToken();
-    getUserInfo();
   }
 
   getToken() async {
@@ -40,13 +39,13 @@ class _ProfileState extends State<Profile> {
       if (onValue != null) {
         setState(() {
           isGetTokenLoading = true;
+          getUserInfo();
         });
       } else {
         setState(() {
           isGetTokenLoading = false;
         });
       }
-      // checkToken(onValue);
     }).catchError((error) {
       sentryError.reportError(error, null);
     });
@@ -54,22 +53,20 @@ class _ProfileState extends State<Profile> {
 
   getUserInfo() async {
     if (mounted) {
-      if (mounted)
-        setState(() {
-          isLoading = true;
-        });
+      setState(() {
+        isLoading = true;
+      });
     }
     await LoginService.getUserInfo().then((onValue) {
       print(onValue);
       try {
         if (mounted) {
-          if (mounted)
-            setState(() {
-              isLoading = false;
-              userInfo = onValue['response_data']['userInfo'];
-              print('userData at profile');
-              print(userInfo);
-            });
+          setState(() {
+            isLoading = false;
+            userInfo = onValue['response_data']['userInfo'];
+            print('userData at profile');
+            print(userInfo);
+          });
         }
       } catch (error, stackTrace) {
         sentryError.reportError(error, stackTrace);
@@ -95,13 +92,6 @@ class _ProfileState extends State<Profile> {
             builder: (BuildContext context) => MyApp(),
           ),
           (Route<dynamic> route) => true);
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //       builder: (BuildContext context) => AuthenticationPage(
-      //             popupType: 'login',
-      //           )),
-      // );
     }).catchError((error) {
       sentryError.reportError(error, null);
     });
@@ -171,10 +161,6 @@ class _ProfileState extends State<Profile> {
     );
     return Scaffold(
       appBar: GFAppBar(
-        // shape: RoundedRectangleBorder(
-        //     borderRadius: BorderRadius.only(
-        //         bottomLeft: Radius.circular(20),
-        //         bottomRight: Radius.circular(20))),
         title: Text(
           'Profile',
           style: TextStyle(color: Colors.black),
@@ -182,236 +168,239 @@ class _ProfileState extends State<Profile> {
         centerTitle: true,
         backgroundColor:
             isGetTokenLoading ? primary : Colors.black.withOpacity(0.0),
-
         automaticallyImplyLeading: false,
-        iconTheme: IconThemeData(color: Colors.black, size: 1.0),
       ),
       body: GFFloatingWidget(
         showblurness: isGetTokenLoading ? false : true,
         blurnessColor:
             isGetTokenLoading ? Colors.white : Colors.black.withOpacity(0.3),
-        verticalPosition: 70,
+        // verticalPosition: 70,
         child: isGetTokenLoading
-            ? Container(
-                color: Colors.grey[200],
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      color: Colors.white38,
-                      child: GFListTile(
-                          avatar:
-                              // userInfo == null && userInfo['profilePic'] == null
-                              // ?
-                              Image.asset('lib/assets/images/profile.png')
-                          // : Image.asset('${userInfo['profilePic']}')
-                          ,
-                          title: Padding(
-                            padding: const EdgeInsets.only(bottom: 18.0),
-                            child: Column(
+            ? isLoading
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : SingleChildScrollView(
+                    child: Container(
+                      color: Colors.grey[200],
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            color: Colors.white38,
+                            child: GFListTile(
+                                avatar: Image.asset(
+                                    'lib/assets/images/profile.png'),
+                                title: Padding(
+                                  padding: const EdgeInsets.only(bottom: 18.0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      Padding(
+                                          padding: const EdgeInsets.only(
+                                              right: 56.0, bottom: 4.0),
+                                          child: userInfo == null &&
+                                                  userInfo['firstName'] == null
+                                              ? Text(
+                                                  'Billie Eilsh',
+                                                  style: titleBold(),
+                                                )
+                                              : Text(
+                                                  '${userInfo['firstName']}',
+                                                  style: titleBold(),
+                                                )),
+                                      userInfo == null &&
+                                              userInfo['email'] == null
+                                          ? Text(
+                                              'badguy@email.com',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w300,
+                                                  fontSize: 14.0),
+                                            )
+                                          : Text(
+                                              '${userInfo['email']}',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w300,
+                                                  fontSize: 14.0),
+                                            ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 5.0, right: 4.0),
+                                        child: Text('+91-9756 55 83 13'),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                subTitle: Container(),
+                                description: Container(),
+                                icon: Padding(
+                                    padding: const EdgeInsets.only(top: 18.0),
+                                    child: InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EditProfile()),
+                                        );
+                                      },
+                                      child: Icon(
+                                        Icons.edit,
+                                        color: primary,
+                                      ),
+                                    ))
+                                // showDivider: false,
+                                ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 10.0, bottom: 10.0, left: 20.0),
+                                child: Text(
+                                  'Saved cards',
+                                  style: titleBold(),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: 15.0,
+                            ),
+                            child: Container(
+                              height: 150,
+                              // width: 50,
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                scrollDirection: Axis.horizontal,
+                                itemCount: 2,
+                                itemBuilder:
+                                    (BuildContext context, int index) =>
+                                        Padding(
+                                  padding: const EdgeInsets.only(right: 15.0),
+                                  child: Container(
+                                    // height: 50,
+                                    child: itemCard,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 20.0),
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Address()),
+                              );
+                            },
+                            child: Container(
+                              color: Colors.white38,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 10.0, bottom: 10.0, left: 20.0),
+                                    child: Text(
+                                      'Address',
+                                      style: titleBold(),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Orders()),
+                              );
+                            },
+                            child: Container(
+                              color: Colors.white38,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 10.0, bottom: 10.0, left: 20.0),
+                                    child: Text(
+                                      'Order History',
+                                      style: titleBold(),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          Container(
+                            color: Colors.white38,
+                            child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: <Widget>[
                                 Padding(
-                                    padding: const EdgeInsets.only(
-                                        right: 56.0, bottom: 4.0),
-                                    child: userInfo == null &&
-                                            userInfo['firstName'] == null
-                                        ? Text(
-                                            'Billie Eilsh',
-                                            style: titleBold(),
-                                          )
-                                        : Text(
-                                            '${userInfo['firstName']}',
-                                            style: titleBold(),
-                                          )),
-                                userInfo == null && userInfo['email'] == null
-                                    ? Text(
-                                        'badguy@email.com',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w300,
-                                            fontSize: 14.0),
-                                      )
-                                    : Text(
-                                        '${userInfo['email']}',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w300,
-                                            fontSize: 14.0),
-                                      ),
-                                Padding(
                                   padding: const EdgeInsets.only(
-                                      top: 5.0, right: 4.0),
-                                  child: Text('+91-9756 55 83 13'),
+                                      top: 10.0, bottom: 10.0, left: 20.0),
+                                  child: Text(
+                                    'Help',
+                                    style: titleBold(),
+                                  ),
                                 ),
                               ],
                             ),
                           ),
-                          subTitle: Container(),
-                          description: Container(),
-                          icon: Padding(
-                              padding: const EdgeInsets.only(top: 18.0),
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => EditProfile()),
-                                  );
-                                },
-                                child: Icon(
-                                  Icons.edit,
-                                  color: primary,
-                                ),
-                              ))
-                          // showDivider: false,
+                          SizedBox(
+                            height: 20.0,
                           ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              top: 10.0, bottom: 10.0, left: 20.0),
-                          child: Text(
-                            'Saved cards',
-                            style: titleBold(),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 15.0,
-                      ),
-                      child: Container(
-                        height: 150,
-                        // width: 50,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemCount: 2,
-                          itemBuilder: (BuildContext context, int index) =>
-                              Padding(
-                            padding: const EdgeInsets.only(right: 15.0),
-                            child: Container(
-                              // height: 50,
-                              child: itemCard,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20.0),
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Address()),
-                        );
-                      },
-                      child: Container(
-                        color: Colors.white38,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 10.0, bottom: 10.0, left: 20.0),
-                              child: Text(
-                                'Address',
-                                style: titleBold(),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Orders()),
-                        );
-                      },
-                      child: Container(
-                        color: Colors.white38,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 10.0, bottom: 10.0, left: 20.0),
-                              child: Text(
-                                'Order History',
-                                style: titleBold(),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    Container(
-                      color: Colors.white38,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 10.0, bottom: 10.0, left: 20.0),
-                            child: Text(
-                              'Help',
-                              style: titleBold(),
+                          Container(
+                            color: Colors.white38,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 10.0, bottom: 10.0, left: 20.0),
+                                    child: InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => logout()),
+                                        );
+                                      },
+                                      child: Text(
+                                        'Logout',
+                                        style: titleBold(),
+                                      ),
+                                    )),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(left: 248.0),
+                                      child: Icon(Icons.exit_to_app),
+                                    )
+                                  ],
+                                )
+                              ],
                             ),
                           ),
                         ],
                       ),
                     ),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    Container(
-                      color: Colors.white38,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 10.0, bottom: 10.0, left: 20.0),
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => logout()),
-                                  );
-                                },
-                                child: Text(
-                                  'Logout',
-                                  style: titleBold(),
-                                ),
-                              )),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(left: 248.0),
-                                child: Icon(Icons.exit_to_app),
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 40.0,
-                    )
-                  ],
-                ),
-              )
+                  )
             : GFAlert(
                 title: 'Login First!',
                 bottombar: Row(

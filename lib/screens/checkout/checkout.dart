@@ -104,25 +104,25 @@ class _CheckoutState extends State<Checkout> {
     });
   }
 
-  // deleteAddress(body) async {
-  // print('id $body');
-  // await AddressService.deleteAddress(body).then((onValue) {
-  //   print('id $onValue');
-  //   try {
-  //     getAddress();
-  //     if (mounted) {
-  //       setState(() {
-  //         addressList = addressList;
-  //       });
-  //     }
-  //     Navigator.pop(context);
-  //   } catch (error, stackTrace) {
-  //     sentryError.reportError(error, stackTrace);
-  //   }R
-  // }).catchError((error) {
-  //   sentryError.reportError(error, null);
-  // });
-  // }
+  deleteAddress(body) async {
+    print('id $body');
+    await AddressService.deleteAddress(body).then((onValue) {
+      print('id $onValue');
+      try {
+        getAddress();
+        if (mounted) {
+          setState(() {
+            addressList = addressList;
+          });
+        }
+        // Navigator.pop(context);
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
+  }
 
   getLocations() async {
     await ProductService.getLocationList().then((onValue) {
@@ -531,7 +531,22 @@ class _CheckoutState extends State<Checkout> {
                                                               .start,
                                                       children: <Widget>[
                                                         GFButton(
-                                                          onPressed: null,
+                                                          onPressed: () async {
+                                                            await Navigator
+                                                                .push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder: (context) => AddAddress(
+                                                                      isCheckout:
+                                                                          true,
+                                                                      updateAddressID:
+                                                                          addressList[
+                                                                              i])),
+                                                            );
+                                                            print(address);
+
+                                                            getAddress();
+                                                          },
                                                           child: Padding(
                                                             padding:
                                                                 const EdgeInsets
@@ -556,11 +571,11 @@ class _CheckoutState extends State<Checkout> {
                                                                       .only(
                                                                   left: 20.0),
                                                           child: GFButton(
-                                                            onPressed: null,
-                                                            // deleteAddress(
-                                                            //     addressList[
-                                                            //             i][
-                                                            //         '_id']),
+                                                            onPressed: () {
+                                                              deleteAddress(
+                                                                  addressList[i]
+                                                                      ['_id']);
+                                                            },
                                                             child: Padding(
                                                               padding:
                                                                   const EdgeInsets
