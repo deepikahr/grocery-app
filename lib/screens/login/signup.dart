@@ -7,7 +7,12 @@ import 'package:getflutter/getflutter.dart';
 import 'package:getflutter/size/gf_size.dart';
 import 'package:grocery_pro/service/auth-service.dart';
 import 'package:grocery_pro/style/style.dart';
-import '../../screens/login/login.dart';
+import 'package:grocery_pro/screens/login/login.dart';
+import 'package:grocery_pro/service/sentry-service.dart';
+import 'package:grocery_pro/service/auth-service.dart';
+import 'package:grocery_pro/translator/localizations.dart';
+
+SentryError sentryError = new SentryError();
 
 class Signup extends StatefulWidget {
   @override
@@ -16,7 +21,6 @@ class Signup extends StatefulWidget {
 
 class _SignupState extends State<Signup> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  // final GlobalKey<FormState> _formKeyForLogin = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -28,8 +32,6 @@ class _SignupState extends State<Signup> {
 
   @override
   void initState() {
-    // emailController.text = defultEmail;
-    // passwordController.text = defultPass;
     super.initState();
   }
 
@@ -48,6 +50,7 @@ class _SignupState extends State<Signup> {
         "password": password,
         "role": "User"
       };
+      print('Value on login');
       print(body);
       await LoginService.signUp(body).then((onValue) {
         try {
@@ -132,81 +135,80 @@ class _SignupState extends State<Signup> {
             //   // popupType = 'login';
             // });
           } else if (onValue['statusCode'] == 400) {
-            // showAlert('${onValue['message'][0]['constraints']['isEmail']}');
+            showAlert('${onValue['message'][0]['constraints']['isEmail']}');
           } else {
-            // showAlert('${onValue['response_data']}');
+            showAlert('${onValue['response_data']}');
           }
         } catch (error) {
-          print('Error at 1');
-          // sentryError.reportError(error, stackTrace);
+          sentryError.reportError(error, null);
         }
       }).catchError((error) {
         print('Error at 2');
-        // sentryError.reportError(error, null);
+        sentryError.reportError(error, null);
       });
     } else {
       return;
     }
   }
 
-//   showAlert(message) {
-//     showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         // return object of type Dialog
-//         return AlertDialog(
-//           contentPadding: EdgeInsets.only(
-//             top: 10.0,
-//           ),
-//           title: new Text(
-//             'Error at showalert',
-//             style: hintSfsemiboldb(),
-//             textAlign: TextAlign.center,
-//           ),
-//           content: Container(
-//             height: 100.0,
-//             child: Column(
-//               children: <Widget>[
-//                 new Text(
-//                   "$message",
-//                   style: hintSfLightsm(),
-//                   textAlign: TextAlign.center,
-//                 ),
-//                 Padding(padding: EdgeInsets.only(top: 20.0)),
-//                 Divider(),
-//                 IntrinsicHeight(
-//                     child: new Row(
-//                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                   children: <Widget>[
-//                     VerticalDivider(),
-//                     Expanded(
-//                         child: GestureDetector(
-// //                              onTap: (){},
-//                       onTap: () {
-//                         Navigator.of(context).pop();
-//                       },
-//                       child: Container(
-//                         alignment: Alignment.center,
-// //                            margin: EdgeInsets.only(top:15.0),
-// //                                height: 29.0,
-//                         decoration: BoxDecoration(
-// //                                border: Border.all(color: Colors.black12)
-//                             ),
-//                         child: Text(
-//                           'OK',
-//                           style: hintSfLightbig(),
-//                         ),
-//                       ),
-//                     ))
-//                   ],
-//                 ))
-//               ],
-//             ),
-//           ),
-//         );
-//       },
-//     );
-//   }
+  showAlert(message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          contentPadding: EdgeInsets.only(
+            top: 10.0,
+          ),
+          title: new Text(
+            'Error at showalert',
+            style: hintSfsemiboldb(),
+            textAlign: TextAlign.center,
+          ),
+          content: Container(
+            height: 100.0,
+            child: Column(
+              children: <Widget>[
+                new Text(
+                  "$message",
+                  style: hintSfLightsm(),
+                  textAlign: TextAlign.center,
+                ),
+                Padding(padding: EdgeInsets.only(top: 20.0)),
+                Divider(),
+                IntrinsicHeight(
+                    child: new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    VerticalDivider(),
+                    Expanded(
+                        child: GestureDetector(
+//                              onTap: (){},
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+//                            margin: EdgeInsets.only(top:15.0),
+//                                height: 29.0,
+                        decoration: BoxDecoration(
+//                                border: Border.all(color: Colors.black12)
+                            ),
+                        child: Text(
+                          'OK',
+                          style: hintSfLightbig(),
+                        ),
+                      ),
+                    ))
+                  ],
+                ))
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -462,18 +464,15 @@ class _SignupState extends State<Signup> {
         textStyle: TextStyle(fontSize: 17.0, color: Colors.black),
       ),
     );
-    //     )
-    //   ],
-    // );
   }
 
   Widget buildLoginButton() {
     return InkWell(
         onTap: () {
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => Login()),
-          // );
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Login()),
+          );
         },
         child: Padding(
           padding: const EdgeInsets.only(bottom: 20.0),

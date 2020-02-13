@@ -22,17 +22,27 @@ class ProductService {
   // }
 
   static Future<Map<String, dynamic>> getProductsList() async {
+    String token;
+    await Common.getToken().then((onValue) {
+      token = onValue;
+    });
     final response = await client.get(Constants.baseURL + "products", headers: {
       'Content-Type': 'application/json',
+      'Authorization': 'bearer $token'
     });
     return json.decode(response.body);
   }
 
   // get product to category
   static Future<Map<String, dynamic>> getProductToCategoryList(id) async {
+    String token;
+    await Common.getToken().then((onValue) {
+      token = onValue;
+    });
     final response = await client
         .get(Constants.baseURL + "products/by/category/$id", headers: {
       'Content-Type': 'application/json',
+      'Authorization': 'bearer $token'
     });
     return json.decode(response.body);
   }
@@ -102,7 +112,7 @@ class ProductService {
     await Common.getToken().then((onValue) {
       token = onValue;
     });
-
+    print('checkout $body');
     final response = await client.post(Constants.baseURL + "orders/quick/buy",
         body: json.encode(body),
         headers: {

@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:getflutter/components/accordian/gf_accordian.dart';
-
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/style/style.dart';
-// import 'package:flutter_datetime_picker/flutter_datetime_picker.dart'
+import 'package:grocery_pro/service/sentry-service.dart';
+import 'package:grocery_pro/service/product-service.dart';
+import 'package:grocery_pro/service/auth-service.dart';
+import 'package:grocery_pro/screens/address/add-address.dart';
+import 'package:grocery_pro/service/address-service.dart';
+// import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+
+SentryError sentryError = new SentryError();
 
 class Checkout extends StatefulWidget {
+  final Map<String, dynamic> cartItem;
+  final String buy;
+  final int quantity;
+  Checkout({Key key, this.cartItem, this.buy, this.quantity}) : super(key: key);
   @override
   _CheckoutState createState() => _CheckoutState();
 }
@@ -20,16 +30,126 @@ enum SingingCharacter { lafayette, jefferson }
 
 class _CheckoutState extends State<Checkout> {
   // Declare this variable
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _recipientformKey = GlobalKey<FormState>();
   int selectedRadio;
-
+  Map<String, dynamic> userData, address;
+  Map<String, dynamic> cartItem;
+  int deliveryCharges = 0;
+  bool isCheckout = false;
+  List locationList = List();
+  List addressList = List();
+  var selectedAddress;
+  String locationNotFound;
+  bool isLoading = false;
+  bool addressLoading = false;
+  int groupValue;
+  bool deliveryAddress = false;
+  bool homeDelivery = false;
+  int i = 0;
+  var addressId;
   @override
   void initState() {
     super.initState();
+    getLocations();
+    getUserInfo();
+    getAddress();
     selectedRadio = 0;
+    cartItem = widget.cartItem;
+  }
+
+  getUserInfo() async {
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
+    await LoginService.getUserInfo().then((onValue) {
+      // print('user info at checkout page $onValue');
+      try {
+        if (mounted) {
+          setState(() {
+            isLoading = false;
+            userData = onValue['response_data']['userInfo'];
+          });
+        }
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
+  }
+
+  getAddress() async {
+    if (mounted) {
+      setState(() {
+        addressLoading = true;
+      });
+    }
+    await AddressService.getAddress().then((onValue) {
+      print('get address value $onValue');
+      try {
+        if (mounted) {
+          setState(() {
+            addressList = onValue['response_data'];
+            addressLoading = false;
+          });
+        }
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
+  }
+
+  // deleteAddress(body) async {
+  // print('id $body');
+  // await AddressService.deleteAddress(body).then((onValue) {
+  //   print('id $onValue');
+  //   try {
+  //     getAddress();
+  //     if (mounted) {
+  //       setState(() {
+  //         addressList = addressList;
+  //       });
+  //     }
+  //     Navigator.pop(context);
+  //   } catch (error, stackTrace) {
+  //     sentryError.reportError(error, stackTrace);
+  //   }R
+  // }).catchError((error) {
+  //   sentryError.reportError(error, null);
+  // });
+  // }
+
+  getLocations() async {
+    await ProductService.getLocationList().then((onValue) {
+      try {
+        if (onValue['response_code'] == 200) {
+          if (mounted) {
+            setState(() {
+              locationList = onValue['response_data'];
+            });
+          }
+        } else if (onValue['response_code'] == 400) {
+          if (mounted) {
+            setState(() {
+              locationNotFound = onValue['response_data']['message'];
+            });
+          }
+        }
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
   }
 
 // Changes the selected value on 'onChanged' click on each radio button
-  setSelectedRadio(int val) {
+  setSelectedRadio(int val) async {
     setState(() {
       selectedRadio = val;
     });
@@ -63,7 +183,7 @@ class _CheckoutState extends State<Checkout> {
                 Column(
                   children: <Widget>[
                     Text(
-                      'Sub total ( 2 items )',
+                      'Sub total ( ${widget.quantity} items )',
                       style: regular(),
                     )
                   ],
@@ -84,7 +204,7 @@ class _CheckoutState extends State<Checkout> {
                             size: 10.0,
                           ),
                           Text(
-                            '123',
+                            '${widget.cartItem['subTotal']}',
                             style: regular(),
                           )
                         ],
@@ -103,7 +223,7 @@ class _CheckoutState extends State<Checkout> {
                 Column(
                   children: <Widget>[
                     Text(
-                      'Discount',
+                      'Tax',
                       style: regular(),
                     )
                   ],
@@ -124,7 +244,7 @@ class _CheckoutState extends State<Checkout> {
                             size: 10.0,
                           ),
                           Text(
-                            '123',
+                            '${widget.cartItem['tax']}',
                             style: regular(),
                           )
                         ],
@@ -164,7 +284,7 @@ class _CheckoutState extends State<Checkout> {
                             size: 10.0,
                           ),
                           Text(
-                            '123',
+                            '${widget.cartItem['deliveryCharges']}',
                             style: regular(),
                           )
                         ],
@@ -252,7 +372,7 @@ class _CheckoutState extends State<Checkout> {
                               size: 10.0,
                             ),
                             Text(
-                              '',
+                              '${widget.cartItem['grandTotal']}',
                               style: boldHeading(),
                             )
                           ],
@@ -283,6 +403,9 @@ class _CheckoutState extends State<Checkout> {
                         onChanged: (val) {
                           print("Radio $val");
                           setSelectedRadio(val);
+                          setState(() {
+                            homeDelivery = true;
+                          });
                         },
                       ),
                     ],
@@ -340,157 +463,126 @@ class _CheckoutState extends State<Checkout> {
                           ),
                           child: Row(
                             children: <Widget>[
-                              Column(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      bottom: 60.0,
-                                    ),
-                                    child: Text(
-                                      '1',
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                children: <Widget>[
-                                  Container(
-                                    width: 250.0,
-                                    child: Padding(
-                                      padding:
-                                          const EdgeInsets.only(left: 18.0),
-                                      child: Text(
-                                        'HSR Layout , Agara, Bengaluru, Karnataka 560102, India',
-                                        style: TextStyle(color: Colors.black),
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 0.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        GFButton(
-                                          onPressed: null,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 18.0, right: 18.0),
-                                            child: Text(
-                                              "Edit",
-                                            ),
-                                          ),
-                                          type: GFButtonType.outline,
-                                          color: GFColor.warning,
-                                          size: GFSize.medium,
-                                          // blockButton: true,
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 20.0),
-                                          child: GFButton(
-                                            onPressed: null,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 8.0, right: 8.0),
-                                              child: Text(
-                                                "Delete",
-                                              ),
-                                            ),
-                                            color: GFColor.warning,
-                                            type: GFButtonType.outline,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 18.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom:
-                                  BorderSide(width: 0.0, color: Colors.grey),
-                            ),
-                          ),
-                          child: Row(
-                            children: <Widget>[
-                              Column(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      bottom: 60.0,
-                                    ),
-                                    child: Text(
-                                      '2',
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              // Column(
+                              //   children: <Widget>[
+                              //     Padding(
+                              //       padding: const EdgeInsets.only(
+                              //         bottom: 60.0,
+                              //       ),
+                              //       child: Text(
+                              //         "1",
+                              //         style: TextStyle(
+                              //             color: Colors.black,
+                              //             fontWeight: FontWeight.w500),
+                              //       ),
+                              //     ),
+                              //   ],
+                              // ),
                               Column(
                                 children: <Widget>[
                                   Container(
-                                    width: 250.0,
-                                    child: Padding(
-                                      padding:
-                                          const EdgeInsets.only(left: 18.0),
-                                      child: Text(
-                                        'HSR Layout , Agara, Bengaluru, Karnataka 560102, India',
-                                        style: TextStyle(color: Colors.black),
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 0.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        GFButton(
-                                          onPressed: null,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 18.0, right: 18.0),
-                                            child: Text(
-                                              "Edit",
-                                            ),
-                                          ),
-                                          type: GFButtonType.outline,
-                                          color: GFColor.warning,
-                                          size: GFSize.medium,
-                                          // blockButton: true,
-                                        ),
-                                        Padding(
+                                      width: 250.0,
+                                      child: Padding(
                                           padding:
-                                              const EdgeInsets.only(left: 20.0),
-                                          child: GFButton(
-                                            onPressed: null,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 8.0, right: 8.0),
-                                              child: Text(
-                                                "Delete",
-                                              ),
-                                            ),
-                                            color: GFColor.warning,
-                                            type: GFButtonType.outline,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
+                                              const EdgeInsets.only(left: 1.0),
+                                          child: ListView.builder(
+                                              physics: ScrollPhysics(),
+                                              shrinkWrap: true,
+                                              itemCount:
+                                                  addressList.length == null
+                                                      ? 0
+                                                      : addressList.length,
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int i) {
+                                                return Column(children: <
+                                                    Widget>[
+                                                  Container(
+                                                    width: 250.0,
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 18.0),
+                                                      child: Text(
+                                                          '${addressList[i]['flatNumber']}' +
+                                                              ', ' +
+                                                              '${addressList[i]['locality']}' +
+                                                              ', ' +
+                                                              '${addressList[i]['landMark']}' +
+                                                              ', ' +
+                                                              '${addressList[i]['city']}' +
+                                                              ', ' +
+                                                              '${addressList[i]['postalCode']}' +
+                                                              ', ' +
+                                                              '${addressList[i]['state']}',
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .black)),
+                                                    ),
+                                                  ),
+
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 0.0),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: <Widget>[
+                                                        GFButton(
+                                                          onPressed: null,
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    left: 18.0,
+                                                                    right:
+                                                                        18.0),
+                                                            child: Text(
+                                                              "Edit",
+                                                            ),
+                                                          ),
+                                                          type: GFButtonType
+                                                              .outline,
+                                                          color:
+                                                              GFColor.warning,
+                                                          size: GFSize.medium,
+                                                          // blockButton: true,
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 20.0),
+                                                          child: GFButton(
+                                                            onPressed: null,
+                                                            // deleteAddress(
+                                                            //     addressList[
+                                                            //             i][
+                                                            //         '_id']),
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left: 8.0,
+                                                                      right:
+                                                                          8.0),
+                                                              child: Text(
+                                                                "Delete",
+                                                              ),
+                                                            ),
+                                                            color:
+                                                                GFColor.warning,
+                                                            type: GFButtonType
+                                                                .outline,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ), // buildEditDelete(),
+                                                ]);
+                                              }))),
                                 ],
                               ),
                             ],
@@ -502,7 +594,21 @@ class _CheckoutState extends State<Checkout> {
                           padding:
                               const EdgeInsets.only(top: 10.0, bottom: 10.0),
                           child: GFButton(
-                            onPressed: null,
+                            onPressed: () async {
+                              Map<String, dynamic> address =
+                                  await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AddAddress(
+                                          isCheckout: true,
+                                        )),
+                              );
+                              print(address);
+                              if (address != null) {
+                                addressList.add(address);
+                                getAddress();
+                              }
+                            },
                             child: Padding(
                               padding:
                                   const EdgeInsets.only(left: 8.0, right: 8.0),
@@ -518,6 +624,7 @@ class _CheckoutState extends State<Checkout> {
                     ],
                   ),
                 ),
+
                 title: 'HSR Layout , Agara...',
                 // collapsedIcon: Icon(Icons.location_on),
               ),
@@ -784,40 +891,3 @@ class _CheckoutState extends State<Checkout> {
     );
   }
 }
-// _buildExpandableContent(Vehicle vehicle) {
-//   List<Widget> columnContent = [];
-
-//   for (String content in vehicle.contents)
-//     columnContent.add(
-//       new ListTile(
-//         title: new Text(
-//           content,
-//           style: new TextStyle(fontSize: 18.0),
-//         ),
-//         leading: new Icon(vehicle.icon),
-//       ),
-//     );
-
-//   return columnContent;
-// }
-
-// class Vehicle {
-//   final String title;
-//   List<String> contents = [];
-//   final IconData icon;
-
-//   Vehicle(this.title, this.contents, this.icon);
-// }
-
-// List<Vehicle> vehicles = [
-//   new Vehicle(
-//     'Bike',
-//     ['Vehicle no. 1', 'Vehicle no. 2', 'Vehicle no. 7', 'Vehicle no. 10'],
-//     Icons.motorcycle,
-//   ),
-//   new Vehicle(
-//     'Cars',
-//     ['Vehicle no. 3', 'Vehicle no. 4', 'Vehicle no. 6'],
-//     Icons.directions_car,
-//   ),
-// ];

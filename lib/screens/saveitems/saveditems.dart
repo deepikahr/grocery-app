@@ -5,6 +5,7 @@ import 'package:grocery_pro/screens/product/product-details.dart';
 import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
+import 'package:grocery_pro/screens/login/login.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -28,6 +29,8 @@ class _SavedItemsState extends State<SavedItems> {
 
   getToken() async {
     await Common.getToken().then((onValue) {
+      // print("i am here");
+      print(onValue);
       if (onValue != null) {
         setState(() {
           isGetTokenLoading = true;
@@ -181,7 +184,7 @@ class _SavedItemsState extends State<SavedItems> {
                   ),
                 )
               : GFAlert(
-                  title: 'Login Frist!',
+                  title: 'Login First!',
                   bottombar: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
@@ -193,27 +196,42 @@ class _SavedItemsState extends State<SavedItems> {
                                 border:
                                     Border.all(color: Colors.black, width: 1),
                                 borderRadius: BorderRadius.circular(5.0)),
-                            child: new FlatButton(
+                            child: Center(
+                                child: new FlatButton(
                               child: new Text(
                                 'Login',
                                 style: TextStyle(color: Colors.white),
                               ),
-                              onPressed: () async {},
-                            )),
-                        Container(
-                            height: 40.0,
-                            padding: EdgeInsets.only(left: 5.0, right: 5.0),
-                            decoration: BoxDecoration(
-                                color: primary,
-                                border:
-                                    Border.all(color: Colors.black, width: 1),
-                                borderRadius: BorderRadius.circular(5.0)),
-                            child: new FlatButton(
-                                child: new Text(
-                                  'Cancel',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                onPressed: () async {})),
+                              onPressed: () async {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Login(
+                                            isStore: true,
+                                          )),
+                                );
+                              },
+                            ))),
+                        // Container(
+                        //     height: 40.0,
+                        //     padding: EdgeInsets.only(left: 5.0, right: 5.0),
+                        //     decoration: BoxDecoration(
+                        //         color: primary,
+                        //         border:
+                        //             Border.all(color: Colors.black, width: 1),
+                        //         borderRadius: BorderRadius.circular(5.0)),
+                        //     child: new FlatButton(
+                        //         child: new Text(
+                        //           'Cancel',
+                        //           style: TextStyle(color: Colors.white),
+                        //         ),
+                        //         onPressed: () async {
+                        //           // Navigator.push(
+                        //           //   context,
+                        //           //   MaterialPageRoute(
+                        //           //       builder: (context) => Otp()),
+                        //           // );
+                        //         })),
                       ]),
                 ),
         ));
