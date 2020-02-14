@@ -5,7 +5,6 @@ import 'package:getflutter/components/badge/gf_button_badge.dart';
 
 import 'package:getflutter/components/button/gf_button.dart';
 import 'package:getflutter/shape/gf_button_shape.dart';
-import 'package:grocery_pro/screens/checkout/checkout.dart';
 
 import 'package:grocery_pro/style/style.dart';
 
@@ -55,8 +54,11 @@ class _MyCartState extends State<MyCart> {
               Container(
                 color: Colors.white54,
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    Column(
+                  Row(
+                    children: <Widget>[
+                        Column(
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.only(bottom: 6.0, top: 6.0),
@@ -104,8 +106,10 @@ class _MyCartState extends State<MyCart> {
                         ),
                       ],
                     ),
+                    ],
+                  ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 78.0),
+                      padding: const EdgeInsets.only(left: .0),
                       child: Container(
                         decoration: BoxDecoration(
                             color: Colors.grey[200],
@@ -113,6 +117,7 @@ class _MyCartState extends State<MyCart> {
                         height: 100,
                         width: 30,
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
                             Container(
                               width: 30,
@@ -165,14 +170,16 @@ class _MyCartState extends State<MyCart> {
               Container(
                 color: Colors.white54,
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    Stack(
+                 Row(
+                   children: <Widget>[
+                        Stack(
                       children: <Widget>[
                         Column(
                           children: <Widget>[
                             Container(
-                                // height: 150,
-                                // width: 130,
+                           
                                 child: Padding(
                               padding:
                                   const EdgeInsets.only(bottom: 6.0, top: 6.0),
@@ -243,8 +250,10 @@ class _MyCartState extends State<MyCart> {
                         ),
                       ],
                     ),
+                   ],
+                 ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 78.0),
+                      padding: const EdgeInsets.only(left: .0),
                       child: Container(
                         decoration: BoxDecoration(
                             color: Colors.grey[200],
@@ -305,92 +314,95 @@ class _MyCartState extends State<MyCart> {
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        height: 80,
-        width: MediaQuery.of(context).size.width,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(left: 24.0, top: 15.0),
-              child: Row(
+      bottomNavigationBar: 
+             Container(
+              height: 80,
+              width: MediaQuery.of(context).size.width,
+              child: Column(
                 children: <Widget>[
-                  Container(
-                    width: 105.0,
-                    height: 45.0,
-                    child: GFButton(
-                      onPressed: () {},
-                      // text: 'Warning',
-                      color: GFColor.dark,
-                      shape: GFButtonShape.square,
+                  Padding(
+                    padding: const EdgeInsets.only(left: .0, top: 15.0),
+                    child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+// crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          width: 105.0,
+                          height: 45.0,
+                          child: GFButton(
+                            onPressed: () {},
+                            // text: 'Warning',
+                            color: GFColor.dark,
+                            shape: GFButtonShape.square,
 
-                      child: Column(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(top: 6.0),
-                            child: Text('Grand Total :'),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 12.0),
-                            child: Row(
+                            child: Column(
                               children: <Widget>[
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 10.0),
-                                  child: Icon(
-                                    IconData(
-                                      0xe913,
-                                      fontFamily: 'icomoon',
-                                    ),
-                                    color: Colors.white,
-                                    size: 11.0,
-                                  ),
+                                  padding: const EdgeInsets.only(top: 6.0),
+                                  child: Text('Grand Total :'),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.only(right: 6.0),
-                                  child: Text(
-                                    '123',
-                                    // style: TextStyle(color: const Color(0xFF00BFA5)),
+                                  padding: const EdgeInsets.only(left: 12.0),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 10.0),
+                                        child: Icon(
+                                          IconData(
+                                            0xe913,
+                                            fontFamily: 'icomoon',
+                                          ),
+                                          color: Colors.white,
+                                          size: 11.0,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(right: 6.0),
+                                        child: Text(
+                                          '123',
+                                          // style: TextStyle(color: const Color(0xFF00BFA5)),
+                                        ),
+                                      )
+                                    ],
                                   ),
-                                )
+                                ),
                               ],
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                        Container(
+                          width: 210.0,
+                          height: 45.0,
+                          child: GFButton(
+                            onPressed: () {},
+                            shape: GFButtonShape.square,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                Text(
+                                  'Add to cart ',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                                Icon(
+                                  IconData(
+                                    0xe911,
+                                    fontFamily: 'icomoon',
+                                  ),
+                                  // color: const Color(0xFF00BFA5),
+                                  // size: 1.0,
+                                ),
+                              ],
+                            ),
+                            color: GFColor.warning,
+                          ),
+                        )
+                      ],
                     ),
                   ),
-                  Container(
-                    width: 210.0,
-                    height: 45.0,
-                    child: GFButton(
-                      onPressed: () {},
-                      shape: GFButtonShape.square,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Text(
-                            'Add to cart ',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          Icon(
-                            IconData(
-                              0xe911,
-                              fontFamily: 'icomoon',
-                            ),
-                            // color: const Color(0xFF00BFA5),
-                            // size: 1.0,
-                          ),
-                        ],
-                      ),
-                      color: GFColor.warning,
-                    ),
-                  )
                 ],
               ),
             ),
-          ],
-        ),
-      ),
+        
     );
   }
 }

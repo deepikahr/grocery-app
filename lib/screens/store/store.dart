@@ -156,11 +156,11 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldkey,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          iconTheme: IconThemeData(color: Colors.grey),
-        ),
+        // appBar: AppBar(
+        //   backgroundColor: Colors.transparent,
+        //   elevation: 0,
+        //   iconTheme: IconThemeData(color: Colors.grey),
+        // ),
         body: (isLoadingcategoryList && isLoadingProductsList)
             ? Center(child: CircularProgressIndicator())
             : ListView(children: <Widget>[
@@ -223,7 +223,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                           TextSpan(
                               text: "Explore by Categories", style: comments()),
                           TextSpan(
-                            text: '                   View all',
+                            text: '                            View all',
                             style: TextStyle(color: primary),
                           ),
                         ],
@@ -262,8 +262,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                       Column(
                                         children: <Widget>[
                                           Container(
-                                            width: 60,
-                                            height: 60,
+                                            width: 70,
+                                            height: 70,
                                             child: Column(
                                               children: <Widget>[
                                                 Padding(

@@ -48,7 +48,6 @@ class _SubCategoriesState extends State<SubCategories> {
           setState(() {
             subProductsList = onValue['response_data'];
             isLoadingSubProductsList = false;
-            print(subProductsList);
           });
       } catch (error, stackTrace) {
         sentryError.reportError(error, stackTrace);
