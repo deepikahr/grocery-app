@@ -23,7 +23,6 @@ class _AddressState extends State<Address> {
       });
     }
     await AddressService.getAddress().then((onValue) {
-      print('get address value in profile address  $onValue');
       try {
         if (mounted) {
           setState(() {
@@ -262,80 +261,85 @@ class _AddressState extends State<Address> {
           SizedBox(
             height: 15,
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 18.0),
-            child: Container(
-              child: Row(
-                children: <Widget>[
-                  Column(
+       
+         Row(
+         
+           children: <Widget>[
+             Container(
+                  width: MediaQuery.of(context).size.width ,
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          //  crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          bottom: 60.0,
-                        ),
-                        child: Text(
-                          '2',
-                          style: TextStyle(
-                              color: Colors.black, fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: <Widget>[
-                      Container(
-                        width: 250.0,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 18.0),
-                          child: Text(
-                            'HSR Layout , Agara, Bengaluru, Karnataka 560102, India',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 0.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            GFButton(
-                              onPressed: null,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 18.0, right: 18.0),
-                                child: Text(
-                                  "Edit",
-                                ),
-                              ),
-                              type: GFButtonType.outline,
-                              color: GFColor.warning,
-                              size: GFSize.medium,
-                              // blockButton: true,
+                      Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              bottom: 60.0,
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 20.0),
-                              child: GFButton(
-                                onPressed: null,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 8.0, right: 8.0),
-                                  child: Text(
-                                    "Delete",
-                                  ),
-                                ),
-                                color: GFColor.warning,
-                                type: GFButtonType.outline,
+                            child: Text(
+                              '2',
+                              style: TextStyle(
+                                  color: Colors.black, fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            width: MediaQuery.of(context).size.width-30.0,
+                        
+                              child: Text(
+                                'HSR Layout , Agara, Bengaluru, Karnataka 560102, India',
+                                style: TextStyle(color: Colors.black),
                               ),
-                            )
-                          ],
-                        ),
+                          
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 0.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                GFButton(
+                                  onPressed: null,
+                                 
+                                    child: Text(
+                                      "Edit",
+                                    ),
+                                
+                                  type: GFButtonType.outline,
+                                  color: GFColor.warning,
+                                  size: GFSize.medium,
+                                  // blockButton: true,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 20.0),
+                                  child: GFButton(
+                                    onPressed: null,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 8.0, right: 8.0),
+                                      child: Text(
+                                        "Delete",
+                                      ),
+                                    ),
+                                    color: GFColor.warning,
+                                    type: GFButtonType.outline,
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-          ),
+                ),
+           ],
+         ),
+       
           Center(
             child: Padding(
               padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),

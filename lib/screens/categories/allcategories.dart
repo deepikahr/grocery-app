@@ -43,7 +43,6 @@ class _AllCategoriesState extends State<AllCategories>
       });
     }
     await ProductService.getCategoryList().then((onValue) {
-      print("cat $onValue");
       try {
         if (onValue['response_code'] == 200) {
           if (mounted) {
@@ -68,7 +67,6 @@ class _AllCategoriesState extends State<AllCategories>
   }
 
   getProductToCategory(id, title) async {
-    print(title);
     if (mounted)
       setState(() {
         isLoadingProductsList = true;
@@ -114,7 +112,6 @@ class _AllCategoriesState extends State<AllCategories>
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3),
                     itemBuilder: (BuildContext context, int index) {
-                      print(categoryList.length);
                       return InkWell(
                           onTap: () {
                             Navigator.push(

@@ -188,10 +188,15 @@ class _AddAddressState extends State<AddAddress> {
                 height: 25,
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
-                child: Text(
-                  'House/Flat/Block number :',
-                  style: regular(),
+                padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'House/Flat/Block number :',
+                      style: regular(),
+                    ),
+                  ],
                 ),
               ),
               Padding(

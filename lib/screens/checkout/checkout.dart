@@ -65,7 +65,6 @@ class _CheckoutState extends State<Checkout> {
       });
     }
     await LoginService.getUserInfo().then((onValue) {
-      // print('user info at checkout page $onValue');
       try {
         if (mounted) {
           setState(() {
@@ -88,7 +87,6 @@ class _CheckoutState extends State<Checkout> {
       });
     }
     await AddressService.getAddress().then((onValue) {
-      print('get address value $onValue');
       try {
         if (mounted) {
           setState(() {
@@ -176,9 +174,10 @@ class _CheckoutState extends State<Checkout> {
             child: Text('Cart summary', style: boldHeading()),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 22.0, top: 10.0, bottom: 10.0),
+            padding: const EdgeInsets.only(left: 20.0, top: 10.0, bottom: 10.0,right: 20),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              // crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Column(
                   children: <Widget>[
@@ -190,9 +189,8 @@ class _CheckoutState extends State<Checkout> {
                 ),
                 Column(
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(left: 170.0),
-                      child: Row(
+                   
+                    Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
                           Icon(
@@ -209,16 +207,16 @@ class _CheckoutState extends State<Checkout> {
                           )
                         ],
                       ),
-                    )
+                   
                   ],
                 ),
               ],
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 22.0, bottom: 10.0),
+            padding: const EdgeInsets.only(left: 20.0, bottom: 10.0,right: 20.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Column(
                   children: <Widget>[
@@ -230,9 +228,7 @@ class _CheckoutState extends State<Checkout> {
                 ),
                 Column(
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(left: 230.0),
-                      child: Row(
+                    Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
                           Icon(
@@ -249,16 +245,16 @@ class _CheckoutState extends State<Checkout> {
                           )
                         ],
                       ),
-                    )
+                 
                   ],
                 ),
               ],
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 22.0, bottom: 10.0),
+            padding: const EdgeInsets.only(left: 20.0, bottom: 10.0,right: 20),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Column(
                   children: <Widget>[
@@ -270,9 +266,7 @@ class _CheckoutState extends State<Checkout> {
                 ),
                 Column(
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(left: 187.0),
-                      child: Row(
+                   Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
                           Icon(
@@ -289,7 +283,7 @@ class _CheckoutState extends State<Checkout> {
                           )
                         ],
                       ),
-                    )
+                
                   ],
                 ),
               ],
@@ -341,46 +335,47 @@ class _CheckoutState extends State<Checkout> {
                   ),
                 ],
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 22.0, top: 10.0, bottom: 10.0),
-                        child: Text(
-                          'Total',
-                          style: titleBold(),
-                        ),
-                      )
-                    ],
-                  ),
-                  Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 250.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            Icon(
-                              IconData(
-                                0xe913,
-                                fontFamily: 'icomoon',
+              child: Padding(
+                padding: const EdgeInsets.only(left:20.0,right: 20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 22.0, top: 10.0, bottom: 10.0),
+                          child: Text(
+                            'Total',
+                            style: titleBold(),
+                          ),
+                        )
+                      ],
+                    ),
+                    Column(
+                      children: <Widget>[
+                       Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              Icon(
+                                IconData(
+                                  0xe913,
+                                  fontFamily: 'icomoon',
+                                ),
+                                color: Colors.black,
+                                size: 10.0,
                               ),
-                              color: Colors.black,
-                              size: 10.0,
-                            ),
-                            Text(
-                              '${widget.cartItem['grandTotal']}',
-                              style: boldHeading(),
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ],
+                              Text(
+                                '${widget.cartItem['grandTotal']}',
+                                style: boldHeading(),
+                              )
+                            ],
+                          ),
+                        
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -452,158 +447,169 @@ class _CheckoutState extends State<Checkout> {
                   ),
                   child: Column(
                     children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 18.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom:
-                                  BorderSide(width: 0.0, color: Colors.grey),
+                 Container(
+decoration: BoxDecoration(
+                              border: Border(
+                                bottom:
+                                    BorderSide(width: 0.0, color: Colors.grey),
+                              ),
+                            ),
+                   child: Column(
+children: <Widget>[
+       Padding(
+                          padding: const EdgeInsets.only(left: 18.0),
+                          child: Container(
+                            
+                            child: Row(
+                              children: <Widget>[
+                                Column(
+                                  children: <Widget>[
+                                    Radio(
+                        value: 2,
+                        groupValue: selectedRadio,
+                        activeColor: Colors.green,
+                        onChanged: (val) {
+                          print("Radio $val");
+                          setSelectedRadio(val);
+                        },
+                      ),
+                                  ],
+                                ),
+                                Column(
+                                  children: <Widget>[
+                                    Container(
+                                        width: MediaQuery.of(context).size.width-125,
+                                        child: Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 0),
+                                            child: ListView.builder(
+                                                physics: ScrollPhysics(),
+                                                shrinkWrap: true,
+                                                itemCount:
+                                                    addressList.length == null
+                                                        ? 0
+                                                        : addressList.length,
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int i) {
+                                                  return Column(children: <
+                                                      Widget>[
+                                                    Container(
+                                        width: MediaQuery.of(context).size.width,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets.only(
+                                                                left: 18.0),
+                                                        child: Text(
+                                                            '${addressList[i]['flatNumber']}' +
+                                                                ', ' +
+                                                                '${addressList[i]['locality']}' +
+                                                                ', ' +
+                                                                '${addressList[i]['landMark']}' +
+                                                                ', ' +
+                                                                '${addressList[i]['city']}' +
+                                                                ', ' +
+                                                                '${addressList[i]['postalCode']}' +
+                                                                ', ' +
+                                                                '${addressList[i]['state']}',
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .black)),
+                                                      ),
+                                                    ),
+ // buildEditDelete(),
+                                                  ]);
+                                                }))),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
-                          child: Row(
-                            children: <Widget>[
-                              // Column(
-                              //   children: <Widget>[
-                              //     Padding(
-                              //       padding: const EdgeInsets.only(
-                              //         bottom: 60.0,
-                              //       ),
-                              //       child: Text(
-                              //         "1",
-                              //         style: TextStyle(
-                              //             color: Colors.black,
-                              //             fontWeight: FontWeight.w500),
-                              //       ),
-                              //     ),
-                              //   ],
-                              // ),
-                              Column(
-                                children: <Widget>[
-                                  Container(
-                                      width: 250.0,
-                                      child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 1.0),
-                                          child: ListView.builder(
-                                              physics: ScrollPhysics(),
-                                              shrinkWrap: true,
-                                              itemCount:
-                                                  addressList.length == null
-                                                      ? 0
-                                                      : addressList.length,
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int i) {
-                                                return Column(children: <
-                                                    Widget>[
-                                                  Container(
-                                                    width: 250.0,
-                                                    child: Padding(
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            
+                                                    Padding(
                                                       padding:
                                                           const EdgeInsets.only(
-                                                              left: 18.0),
-                                                      child: Text(
-                                                          '${addressList[i]['flatNumber']}' +
-                                                              ', ' +
-                                                              '${addressList[i]['locality']}' +
-                                                              ', ' +
-                                                              '${addressList[i]['landMark']}' +
-                                                              ', ' +
-                                                              '${addressList[i]['city']}' +
-                                                              ', ' +
-                                                              '${addressList[i]['postalCode']}' +
-                                                              ', ' +
-                                                              '${addressList[i]['state']}',
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .black)),
-                                                    ),
-                                                  ),
+                                                              left: 0.0),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: <Widget>[
+                                                          GFButton(
+                                                            onPressed: () async {
+                                                              await Navigator
+                                                                  .push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                    builder: (context) => AddAddress(
+                                                                        isCheckout:
+                                                                            true,
+                                                                        updateAddressID:
+                                                                            addressList[
+                                                                                i])),
+                                                              );
+                                                              print(address);
 
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 0.0),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      children: <Widget>[
-                                                        GFButton(
-                                                          onPressed: () async {
-                                                            await Navigator
-                                                                .push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                  builder: (context) => AddAddress(
-                                                                      isCheckout:
-                                                                          true,
-                                                                      updateAddressID:
-                                                                          addressList[
-                                                                              i])),
-                                                            );
-                                                            print(address);
-
-                                                            getAddress();
-                                                          },
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    left: 18.0,
-                                                                    right:
-                                                                        18.0),
-                                                            child: Text(
-                                                              "Edit",
-                                                            ),
-                                                          ),
-                                                          type: GFButtonType
-                                                              .outline,
-                                                          color:
-                                                              GFColor.warning,
-                                                          size: GFSize.medium,
-                                                          // blockButton: true,
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 20.0),
-                                                          child: GFButton(
-                                                            onPressed: () {
-                                                              deleteAddress(
-                                                                  addressList[i]
-                                                                      ['_id']);
+                                                              getAddress();
                                                             },
                                                             child: Padding(
                                                               padding:
                                                                   const EdgeInsets
                                                                           .only(
-                                                                      left: 8.0,
+                                                                      left: 18.0,
                                                                       right:
-                                                                          8.0),
+                                                                          18.0),
                                                               child: Text(
-                                                                "Delete",
+                                                                "Edit",
                                                               ),
                                                             ),
-                                                            color:
-                                                                GFColor.warning,
                                                             type: GFButtonType
                                                                 .outline,
+                                                            color:
+                                                                GFColor.warning,
+                                                            size: GFSize.medium,
+                                                            // blockButton: true,
                                                           ),
-                                                        )
-                                                      ],
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    left: 20.0),
+                                                            child: GFButton(
+                                                              onPressed: () {
+                                                                deleteAddress(
+                                                                    addressList[i]
+                                                                        ['_id']);
+                                                              },
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        left: 8.0,
+                                                                        right:
+                                                                            8.0),
+                                                                child: Text(
+                                                                  "Delete",
+                                                                ),
+                                                              ),
+                                                              color:
+                                                                  GFColor.warning,
+                                                              type: GFButtonType
+                                                                  .outline,
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
                                                     ),
-                                                  ), // buildEditDelete(),
-                                                ]);
-                                              }))),
-                                ],
-                              ),
-                            ],
-                          ),
+                          ],
                         ),
-                      ),
+],
+                   ),
+                 ),
                       Center(
                         child: Padding(
                           padding:
