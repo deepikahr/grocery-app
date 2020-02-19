@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:getflutter/components/accordian/gf_accordian.dart';
-
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/service/constants.dart';
 import 'package:grocery_pro/style/style.dart';
@@ -28,6 +26,7 @@ int count = 1;
 int index = 0;
 // bool isLoadingSubProductsList = false;
 // List subProductsList = List();
+String dropdownValue = 'One';
 
 class _ProductDetailsState extends State<ProductDetails> {
   addToCart(data, buy) async {
@@ -95,227 +94,247 @@ class _ProductDetailsState extends State<ProductDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-          child: Column(
-        children: <Widget>[
-          Stack(
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  Image.network(
-                    widget.productDetail['imageUrl'],
-                    height: 370,
-                    width: MediaQuery.of(context).size.width,
-                    fit: BoxFit.fill,
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0, top: 5),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 0.0, top: 3.0),
-                              child: Text(
-                                '${widget.productDetail['title'][0].toUpperCase()}${widget.productDetail['title'].substring(1)}',
-                                style: titleBold(),
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        color: Colors.white,
+        child: SingleChildScrollView(
+            child: Column(
+          children: <Widget>[
+            Stack(
+              children: <Widget>[
+                // Container(
+                //     // height: MediaQuery.of(context).size.height,
+                //     decoration: BoxDecoration(
+                //         borderRadius: BorderRadius.all(
+                //       Radius.circular(30),
+                //     )),
+                //     width: MediaQuery.of(context).size.width,
+
+                //     ),
+                Column(
+                  children: <Widget>[
+// Image.network(
+//                       widget.productDetail['imageUrl'],
+//                       height: 370,
+//                       width: MediaQuery.of(context).size.width,
+//                       fit: BoxFit.fill,
+//                     ),
+                    Container(
+                      height: 340,
+                      width: MediaQuery.of(context).size.width,
+                      decoration: new BoxDecoration(
+                          // shape: BoxShape.circle,
+
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(40),
+                              bottomRight: Radius.circular(40)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey,
+                              blurRadius: 10.0, // soften the shadow
+                              // spreadRadius: 5.0, //extend the shadow
+                              offset: Offset(
+                                2.0, // Move to right 10  horizontally
+                                2.0, // Move to bottom 10 Vertically
                               ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 10.0, top: 3.0),
-                              child: Text(
-                                '${widget.productDetail['description'][0].toUpperCase()}${widget.productDetail['description'].substring(1)}',
-                                style: TextStyle(fontSize: 10.0),
-                              ),
-                            ),
-                            Padding(
-                                padding:
-                                    const EdgeInsets.only(right: 0.0, top: 5.0),
-                                child: Text(
-                                  '${Constants.currency} ${widget.productDetail['variant'][0]['price']}',
-                                  style: TextStyle(
-                                      color: const Color(0xFF00BFA5),
-                                      fontSize: 17.0),
-                                ))
+                            )
                           ],
-                        ),
-                      ),
-                      Column(
-                        children: <Widget>[
-                          Row(
+                          image: new DecorationImage(
+                              fit: BoxFit.fill,
+                              image: new NetworkImage(
+                                  widget.productDetail['imageUrl']))),
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10.0, top: 45),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
                               Padding(
                                 padding:
-                                    const EdgeInsets.only(top: 20.0, left: 0.0),
-                                child: RatingBar(
-                                  initialRating: 3,
-                                  minRating: 1,
-                                  direction: Axis.horizontal,
-                                  allowHalfRating: true,
-                                  itemCount: 5,
-                                  itemSize: 20.0,
-                                  itemPadding:
-                                      EdgeInsets.symmetric(horizontal: 4.0),
-                                  itemBuilder: (context, _) => Icon(
-                                    Icons.star,
-                                    color: Colors.red,
-                                    size: 15.0,
-                                  ),
-                                  onRatingUpdate: (rating) {
-                                    print(rating);
-                                  },
+                                    const EdgeInsets.only(right: 0.0, top: 3.0),
+                                child: Text(
+                                  '${widget.productDetail['title'][0].toUpperCase()}${widget.productDetail['title'].substring(1)}',
+                                  style: titleBold(),
                                 ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    right: 10.0, top: 3.0),
+                                child: Text(
+                                  '${widget.productDetail['description'][0].toUpperCase()}${widget.productDetail['description'].substring(1)}',
+                                  style: TextStyle(fontSize: 10.0),
+                                ),
+                              ),
+                              Padding(
+                                  padding: const EdgeInsets.only(
+                                      right: 0.0, top: 5.0),
+                                  child: Text(
+                                    '${Constants.currency} ${widget.productDetail['variant'][0]['price']}',
+                                    style: TextStyle(
+                                        color: const Color(0xFF00BFA5),
+                                        fontSize: 17.0),
+                                  ))
+                            ],
+                          ),
+                        ),
+                        Column(
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 40.0, left: 0.0),
+                                  child: RatingBar(
+                                    initialRating: 3,
+                                    minRating: 1,
+                                    direction: Axis.horizontal,
+                                    allowHalfRating: true,
+                                    itemCount: 5,
+                                    itemSize: 20.0,
+                                    itemPadding:
+                                        EdgeInsets.symmetric(horizontal: 4.0),
+                                    itemBuilder: (context, _) => Icon(
+                                      Icons.star,
+                                      color: Colors.red,
+                                      size: 15.0,
+                                    ),
+                                    onRatingUpdate: (rating) {
+                                      print(rating);
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Positioned(
+                  top: 310.0,
+                  left: 135.0,
+                  child: Row(
+                    children: <Widget>[
+                      Container(
+                        // height: 64.0,
+                        width: 130.0,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50.0)),
+
+                        // child: InkWell(
+                        //   child: GFButton(
+                        //   // onPressed: () => setState(() => highlight = !highlight),
+                        //   boxShadow: BoxShadow(color: Colors.black),
+                        //   child: Text('${widget.productDetail['variant'][0]['unit']}',
+                        //       style: TextStyle(color: Colors.black)),
+                        //   // color: pressAttention ? Colors.grey : Colors.blue,
+                        //   type: GFButtonType.solid, onPressed: () {  },
+                        //   // size: GFSize.small,
+                        // ),
+                        // )
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: primary),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              DropdownButton<String>(
+                                hint: Text('Variants'),
+                                disabledHint: Text('Variants'),
+                                value: dropdownValue,
+                                icon: Padding(
+                                  padding: const EdgeInsets.only(left: 10.0),
+                                  child: Icon(Icons.arrow_drop_down),
+                                ),
+                                iconSize: 24,
+                                itemHeight: 49.0,
+                                elevation: 16,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                                underline: Container(
+                                  color: Colors.white,
+                                ),
+                                onChanged: (String newValue) {
+                                  setState(() {
+                                    dropdownValue = newValue;
+                                  });
+                                },
+                                items: <String>[
+                                  'One',
+                                  'Two',
+                                  'three',
+                                  'Four'
+                                ].map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
                               ),
                             ],
                           ),
-                        ],
+                        ),
                       ),
                     ],
                   ),
-                ],
-              ),
-              Positioned(
-                top: 310.0,
-                left: 25.0,
-                child: Container(
-                  // height: 64.0,
-                  width: 130.0,
-                  decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(50.0)),
-
-                  child: GFAccordion(
-                    // titleborderColor: GFColors.DARK,
-                    title: "Variants",
-                    expandedTitlebackgroundColor: Colors.grey[300],
-                    collapsedTitlebackgroundColor: Colors.grey[300],
-
-                    contentChild: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
+                ),
+                Positioned(
+                  top: 310.0,
+                  left: 280.0,
+                  child: Container(
+                    height: 50.0,
+                    width: 50.0,
+                    decoration: BoxDecoration(
                         boxShadow: [
                           new BoxShadow(
-                              color: Colors.black38,
-                              // blurRadius: 1.0,
-                              offset: Offset(0.0, 0.50)),
-                        ],
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: <Widget>[
-                          SizedBox(height: 10.0),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                              Column(
-                                children: <Widget>[
-                                  Text('1kg'),
-                                ],
-                              ),
-                              Column(
-                                children: <Widget>[
-                                  Row(
-                                    children: <Widget>[
-                                      Icon(
-                                        IconData(
-                                          0xe913,
-                                          fontFamily: 'icomoon',
-                                        ),
-                                        color: Colors.black,
-                                        size: 11.0,
-                                      ),
-                                      Text('122')
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
+                            color: Colors.black,
+                            blurRadius: 1.0,
                           ),
-                          SizedBox(height: 10.0),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                              Column(
-                                children: <Widget>[
-                                  Text('1kg'),
-                                ],
-                              ),
-                              Column(
-                                children: <Widget>[
-                                  Row(
-                                    children: <Widget>[
-                                      Icon(
-                                        IconData(
-                                          0xe913,
-                                          fontFamily: 'icomoon',
-                                        ),
-                                        color: Colors.black,
-                                        size: 11.0,
-                                      ),
-                                      Text('122')
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10.0),
                         ],
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(50.0)),
+                    child: GFIconButton(
+                      onPressed: null,
+                      icon: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            fav = !fav;
+                          });
+                        },
+                        child: fav
+                            ? Icon(
+                                Icons.favorite,
+                                color: Colors.red,
+                                size: 25.0,
+                              )
+                            : Icon(
+                                Icons.favorite_border,
+                                color: Colors.red,
+                                size: 25.0,
+                              ),
                       ),
+                      type: GFButtonType.transparent,
                     ),
                   ),
                 ),
-              ),
-              Positioned(
-                top: 315.0,
-                left: 280.0,
-                child: Container(
-                  height: 50.0,
-                  width: 50.0,
-                  decoration: BoxDecoration(
-                      boxShadow: [
-                        new BoxShadow(
-                          color: Colors.black,
-                          blurRadius: 1.0,
-                        ),
-                      ],
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(50.0)),
-                  child: GFIconButton(
-                    onPressed: null,
-                    icon: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          fav = !fav;
-                        });
-                      },
-                      child: fav
-                          ? Icon(
-                              Icons.favorite,
-                              color: Colors.red,
-                              size: 25.0,
-                            )
-                          : Icon(
-                              Icons.favorite_border,
-                              color: Colors.red,
-                              size: 25.0,
-                            ),
-                    ),
-                    type: GFButtonType.transparent,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      )),
+              ],
+            ),
+          ],
+        )),
+      ),
       bottomNavigationBar: Container(
         height: 115,
+        color: Colors.white,
         width: MediaQuery.of(context).size.width,
         child: Column(
           // mainAxisAlignment: MainAxisAlignment.center,
@@ -374,7 +393,9 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   padding: const EdgeInsets.only(right: 6.0),
                                   child: Text(
                                     '123',
-                                    // style: TextStyle(color: const Color(0xFF00BFA5)),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16),
                                   ),
                                 )
                               ],
@@ -385,7 +406,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                     ),
                   ),
                   Container(
-                    width: 210.0,
+                    width: MediaQuery.of(context).size.width - 155,
                     height: 45.0,
                     child: GFButton(
                       onPressed: () {
@@ -411,13 +432,20 @@ class _ProductDetailsState extends State<ProductDetails> {
                       ),
                       color: GFColor.warning,
                     ),
+                    // color: const Color(0xFF00BFA5),
+                    // size: 1.0,
                   ),
                 ],
               ),
+              // color: GFColor.warning,
             ),
+            // ),
           ],
         ),
       ),
+      // ],
+      // ),
+      // ),
     );
   }
 }

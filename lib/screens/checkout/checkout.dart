@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:getflutter/components/accordian/gf_accordian.dart';
 import 'package:getflutter/getflutter.dart';
+import 'package:grocery_pro/screens/payment/payment.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/product-service.dart';
@@ -25,8 +25,9 @@ class Checkout extends StatefulWidget {
 enum SingingCharacter { lafayette, jefferson }
 
 class _CheckoutState extends State<Checkout> {
-  // final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  // final GlobalKey<FormState> _recipientformKey = GlobalKey<FormState>();
+  // Declare this variable
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _recipientformKey = GlobalKey<FormState>();
   int selectedRadio;
   Map<String, dynamic> userInfo, address;
   Map<String, dynamic> cartItem;
@@ -140,7 +141,7 @@ class _CheckoutState extends State<Checkout> {
                           Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                  builder: (BuildContext context) => Home(
+                                  builder: (BuildContext context) => Payment(
                                         currentIndex: 0,
                                       )),
                               (Route<dynamic> route) => false);
@@ -350,8 +351,63 @@ class _CheckoutState extends State<Checkout> {
     });
   }
 
+  final List<String> _listViewData = [
+    "rstrs",
+    'hjgch',
+    'hgch',
+    'hgchg'
+        "rstrs",
+    'hjgch',
+    'hgch',
+    'hgchg'
+  ];
+
+  int _selectedIndex = 0;
+
+  _onSelected(int index) {
+    setState(() => _selectedIndex = index);
+  }
+
   @override
   Widget build(BuildContext context) {
+    Widget itemCard(int i) {
+      return Container(
+        color: Colors.grey[200],
+        // width: MediaQuery.of(context).size.width,
+        width: 70,
+        // height: 45,
+        child: Row(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 3, bottom: 3),
+              child: Container(
+                  // color: Colors.grey,
+
+                  width: 60,
+                  margin: EdgeInsets.only(
+                    left: 10,
+                  ),
+                  decoration: BoxDecoration(
+                      color: _selectedIndex != null && _selectedIndex == i
+                          ? primary
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: InkWell(
+                    onTap: () => _onSelected(i),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text('Mon'),
+                        Text('10 Feb'),
+                      ],
+                    ),
+                  )),
+            )
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: GFAppBar(
         title: Text('Checkout',
@@ -485,8 +541,9 @@ class _CheckoutState extends State<Checkout> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 40.0),
+            padding: const EdgeInsets.only(left: 0.0),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 GFButton(
                   onPressed: null,
@@ -542,7 +599,7 @@ class _CheckoutState extends State<Checkout> {
                               left: 22.0, top: 10.0, bottom: 10.0),
                           child: Text(
                             'Total',
-                            style: titleBold(),
+                            style: boldHeading(),
                           ),
                         )
                       ],
@@ -552,14 +609,20 @@ class _CheckoutState extends State<Checkout> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: <Widget>[
-                            Icon(
-                              IconData(
-                                0xe913,
-                                fontFamily: 'icomoon',
+                            Padding(
+                              padding: const EdgeInsets.only(top: 4.0),
+                              child: Icon(
+                                IconData(
+                                  0xe913,
+                                  fontFamily: 'icomoon',
+                                ),
+                                color: Colors.black,
+                                size: 15.0,
                               ),
-                              color: Colors.black,
-                              size: 10.0,
                             ),
+                            // color: Colors.black,
+                            // size: 10.0,
+                            // ),
                             Text(
                               '${widget.cartItem['grandTotal']}',
                               style: boldHeading(),
@@ -579,51 +642,20 @@ class _CheckoutState extends State<Checkout> {
           ),
           Row(children: <Widget>[
             Padding(
-              padding: const EdgeInsets.only(left: 22.0),
+              padding: const EdgeInsets.only(left: 22.0, top: 10),
               child: Column(
                 children: <Widget>[
                   Row(
                     children: <Widget>[
-                      Text('Home Delivery'),
-                      Radio(
-                        value: homeDelivery,
-                        groupValue: deliveryType,
-                        activeColor: Colors.green,
-                        onChanged: (t) {
-                          print("Radio $t");
-                          deliveryTypeRadioValue('homeDelivery');
-                          setState(() {
-                            homeDelivery = 0;
-                            pickUP = 1;
-                          });
-                        },
+                      Text(
+                        'Home Delivery',
+                        style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w400),
                       ),
                     ],
                   )
                 ],
               ),
-            ),
-            Column(
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Text('Pick Up'),
-                    Radio(
-                      value: pickUP,
-                      groupValue: deliveryType,
-                      activeColor: Colors.green,
-                      onChanged: (t) {
-                        print("Radio $t");
-                        deliveryTypeRadioValue(t);
-                        setState(() {
-                          homeDelivery = 1;
-                          pickUP = 0;
-                        });
-                      },
-                    ),
-                  ],
-                )
-              ],
             ),
           ]),
           Padding(
@@ -849,137 +881,133 @@ class _CheckoutState extends State<Checkout> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20.0),
-            child: Text('Payment type', style: boldHeading()),
-          ),
-          Row(children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(left: 22.0),
-              child: Column(
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Text('Credit/Debit Card'),
-                      Radio(
-                        value: cardPayment,
-                        groupValue: paymentType,
-                        activeColor: Colors.green,
-                        onChanged: (val) {
-                          print("Radio $val");
-                          setSelectedRadio(val);
-                          cardPayment = 0;
-                          cashOnDelivery = 1;
-                        },
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            ),
-            Column(
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Text('Cash On Delivery'),
-                    Radio(
-                      value: cashOnDelivery,
-                      groupValue: paymentType,
-                      activeColor: Colors.green,
-                      onChanged: (val) {
-                        print("Radio $val");
-                        setSelectedRadio(val);
-                        cardPayment = 1;
-                        cashOnDelivery = 0;
-                      },
-                    ),
-                  ],
-                )
-              ],
-            ),
-          ]),
-          Padding(
-            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-            child: GFAccordion(
-              title: 'Saved Cards',
-              collapsedTitlebackgroundColor: Colors.grey[300],
-              contentChild: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    new BoxShadow(
-                        color: Colors.black38,
-                        // blurRadius: 1.0,
-                        offset: Offset(0.0, 0.50)),
-                  ],
-                ),
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Column(
-                          children: <Widget>[
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 18.0, top: 10.0),
-                              child: Image.asset(
-                                  'lib/assets/images/mastercard.png'),
-                            )
-                          ],
-                        ),
-                        Column(
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 8.0, top: 10.0, bottom: 5.0),
-                              child: Text('7034xxxx xxxx xxxx'),
-                            ),
-                            Container(
-                              width: 70.0,
-                              height: 50.0,
-                              child: TextFormField(
-                                initialValue: "CVV",
-                                style: labelStyle(),
+          // Padding(
+          //   padding: const EdgeInsets.only(left: 20.0),
+          //   child: Text('Payment type', style: boldHeading()),
+          // ),
+          // Row(children: <Widget>[
+          //   Padding(
+          //     padding: const EdgeInsets.only(left: 22.0),
+          //     child: Column(
+          //       children: <Widget>[
+          //         Row(
+          //           children: <Widget>[
+          //             Text('Credit/Debit Card'),
+          //             Radio(
+          //               value: 1,
+          //               groupValue: selectedRadio,
+          //               activeColor: Colors.green,
+          //               onChanged: (val) {
+          //                 print("Radio $val");
+          //                 setSelectedRadio(val);
+          //               },
+          //             ),
+          //           ],
+          //         )
+          //       ],
+          //     ),
+          //   ),
+          //   Column(
+          //     children: <Widget>[
+          //       Row(
+          //         children: <Widget>[
+          //           Text('Cash On Delivery'),
+          //           Radio(
+          //             value: 2,
+          //             groupValue: selectedRadio,
+          //             activeColor: Colors.green,
+          //             onChanged: (val) {
+          //               print("Radio $val");
+          //               setSelectedRadio(val);
+          //             },
+          //           ),
+          //         ],
+          //       )
+          //     ],
+          //   ),
+          // ]),
+          // Padding(
+          //   padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+          //   child: GFAccordion(
+          //     title: 'Saved Cards',
+          //     collapsedTitlebackgroundColor: Colors.grey[300],
+          //     contentChild: Container(
+          //       decoration: BoxDecoration(
+          //         color: Colors.white,
+          //         boxShadow: [
+          //           new BoxShadow(
+          //               color: Colors.black38,
+          //               // blurRadius: 1.0,
+          //               offset: Offset(0.0, 0.50)),
+          //         ],
+          //       ),
+          //       child: Column(
+          //         children: <Widget>[
+          //           Row(
+          //             children: <Widget>[
+          //               Column(
+          //                 children: <Widget>[
+          //                   Padding(
+          //                     padding:
+          //                         const EdgeInsets.only(left: 18.0, top: 10.0),
+          //                     child: Image.asset(
+          //                         'lib/assets/images/mastercard.png'),
+          //                   )
+          //                 ],
+          //               ),
+          //               Column(
+          //                 children: <Widget>[
+          //                   Padding(
+          //                     padding: const EdgeInsets.only(
+          //                         left: 8.0, top: 10.0, bottom: 5.0),
+          //                     child: Text('7034xxxx xxxx xxxx'),
+          //                   ),
+          //                   Container(
+          //                     width: 70.0,
+          //                     height: 50.0,
+          //                     child: TextFormField(
+          //                       initialValue: "CVV",
+          //                       style: labelStyle(),
 
-                                keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.all(10),
-                                    enabledBorder: const OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                          color: Colors.grey, width: 0.0),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: primary),
-                                    )),
-                                // style: textBlackOSR(),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
-                        child: GFButton(
-                          onPressed: null,
-                          icon: Icon(Icons.add),
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: Text(
-                              "Add Card",
-                            ),
-                          ),
-                          color: GFColor.dark,
-                          type: GFButtonType.outline,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+          //                       keyboardType: TextInputType.number,
+          //                       decoration: InputDecoration(
+          //                           contentPadding: EdgeInsets.all(10),
+          //                           enabledBorder: const OutlineInputBorder(
+          //                             borderSide: const BorderSide(
+          //                                 color: Colors.grey, width: 0.0),
+          //                           ),
+          //                           focusedBorder: OutlineInputBorder(
+          //                             borderSide: BorderSide(color: primary),
+          //                           )),
+          //                       // style: textBlackOSR(),
+          //                     ),
+          //                   ),
+          //                 ],
+          //               ),
+          //             ],
+          //           ),
+          //           Center(
+          //             child: Padding(
+          //               padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+          //               child: GFButton(
+          //                 onPressed: null,
+          //                 icon: Icon(Icons.add),
+          //                 child: Padding(
+          //                   padding: const EdgeInsets.only(right: 8.0),
+          //                   child: Text(
+          //                     "Add Card",
+          //                   ),
+          //                 ),
+          //                 color: GFColor.dark,
+          //                 type: GFButtonType.outline,
+          //               ),
+          //             ),
+          //           ),
+          //         ],
+          //       ),
+          //     ),
+          //   ),
+          // ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -988,104 +1016,183 @@ class _CheckoutState extends State<Checkout> {
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.only(left: 30.0, bottom: 4.0),
-                    child: Text('Pick Up Date'),
+                    child: Text('Choose Delivery slot', style: boldHeading()),
                   ),
                 ],
               ),
-              Center(
-                child: Container(
-                  width: 300,
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(10.0)),
-                  child: FlatButton(
-                      onPressed: () {
-                        DatePicker.showDatePicker(context,
-                            showTitleActions: true,
-                            minTime: DateTime(2010, 3, 5),
-                            maxTime: DateTime(2019, 6, 7), onChanged: (date) {
-                          // print('change $date');
-                        }, onConfirm: (selectedDate) {
-                          print('confirm $selectedDate');
-                        }, currentTime: DateTime.now(), locale: LocaleType.en);
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            'DD/MM/YYYY',
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 148.0),
-                            child:
-                                Icon(Icons.calendar_today, color: Colors.grey),
-                          )
-                        ],
-                      )),
-                ),
+              SizedBox(height: 10),
+              Row(
+                children: <Widget>[
+                  Container(
+                    height: 50,
+                    width: MediaQuery.of(context).size.width,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _listViewData.length,
+                      itemBuilder: (BuildContext context, int index) =>
+                          Container(
+                        // height: 50,
+
+                        child: itemCard(index),
+                      ),
+                    ),
+                  )
+                ],
               ),
+              Column(
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Text('10 Am to 12 Pm'),
+                      Radio(
+                        value: 2,
+                        groupValue: selectedRadio,
+                        activeColor: Colors.green,
+                        onChanged: (val) {
+                          print("Radio $val");
+                          setSelectedRadio(val);
+                        },
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Text('1 Pm to 4 Pm '),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 12.0),
+                        child: Radio(
+                          value: 2,
+                          groupValue: selectedRadio,
+                          activeColor: Colors.green,
+                          onChanged: (val) {
+                            print("Radio $val");
+                            setSelectedRadio(val);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Text('5 Pm to 9 Pm '),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 12.0),
+                        child: Radio(
+                          value: 2,
+                          groupValue: selectedRadio,
+                          activeColor: Colors.green,
+                          onChanged: (val) {
+                            print("Radio $val");
+                            setSelectedRadio(val);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              )
+
+              // Center(
+              //   child: Container(
+              //     width: 300,
+              //     decoration: BoxDecoration(
+              //         border: Border.all(color: Colors.grey),
+              //         borderRadius: BorderRadius.circular(10.0)),
+              //     child: FlatButton(
+              //         onPressed: () {
+              //           DatePicker.showDatePicker(context,
+              //               showTitleActions: true,
+              //               minTime: DateTime(2010, 3, 5),
+              //               maxTime: DateTime(2019, 6, 7), onChanged: (date) {
+              //             print('change $date');
+              //           }, onConfirm: (date) {
+              //             print('confirm $date');
+              //           }, currentTime: DateTime.now(), locale: LocaleType.en);
+              //         },
+              //         child: Row(
+              //           mainAxisAlignment: MainAxisAlignment.start,
+              //           children: <Widget>[
+              //             Text(
+              //               'DD/MM/YYYY',
+              //               style: TextStyle(color: Colors.grey),
+              //             ),
+              //             Padding(
+              //               padding: const EdgeInsets.only(left: 148.0),
+              //               child:
+              //                   Icon(Icons.calendar_today, color: Colors.grey),
+              //             )
+              //           ],
+              //         )),
+              //   ),
+              // ),
             ],
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Text('BreakFast'),
-                      Radio(
-                        value: 2,
-                        groupValue: selectedRadio,
-                        activeColor: Colors.green,
-                        onChanged: (val) {
-                          print("Radio $val");
-                          setSelectedRadio(val);
-                        },
-                      ),
-                    ],
-                  )
-                ],
-              ),
-              Column(
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Text('Lunch'),
-                      Radio(
-                        value: 2,
-                        groupValue: selectedRadio,
-                        activeColor: Colors.green,
-                        onChanged: (val) {
-                          print("Radio $val");
-                          setSelectedRadio(val);
-                        },
-                      ),
-                    ],
-                  )
-                ],
-              ),
-              Column(
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Text('Dinner'),
-                      Radio(
-                        value: 2,
-                        groupValue: selectedRadio,
-                        activeColor: Colors.green,
-                        onChanged: (val) {
-                          print("Radio $val");
-                          setSelectedRadio(val);
-                        },
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            ],
-          ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: <Widget>[
+          //     Column(
+          //       children: <Widget>[
+          //         Row(
+          //           children: <Widget>[
+          //             Text('BreakFast'),
+          //             Radio(
+          //               value: 2,
+          //               groupValue: selectedRadio,
+          //               activeColor: Colors.green,
+          //               onChanged: (val) {
+          //                 print("Radio $val");
+          //                 setSelectedRadio(val);
+          //               },
+          //             ),
+          //           ],
+          //         )
+          //       ],
+          //     ),
+          //     Column(
+          //       children: <Widget>[
+          //         Row(
+          //           children: <Widget>[
+          //             Text('Lunch'),
+          //             Radio(
+          //               value: 2,
+          //               groupValue: selectedRadio,
+          //               activeColor: Colors.green,
+          //               onChanged: (val) {
+          //                 print("Radio $val");
+          //                 setSelectedRadio(val);
+          //               },
+          //             ),
+          //           ],
+          //         )
+          //       ],
+          //     ),
+          //     Column(
+          //       children: <Widget>[
+          //         Row(
+          //           children: <Widget>[
+          //             Text('Dinner'),
+          //             Radio(
+          //               value: 2,
+          //               groupValue: selectedRadio,
+          //               activeColor: Colors.green,
+          //               onChanged: (val) {
+          //                 print("Radio $val");
+          //                 setSelectedRadio(val);
+          //               },
+          //             ),
+          //           ],
+          //         )
+          //       ],
+          //     ),
+          //   ],
+          // ),
           SizedBox(height: 20.0)
         ],
       ),
@@ -1099,9 +1206,14 @@ class _CheckoutState extends State<Checkout> {
             // color: primary,
 
             color: GFColor.warning,
-
+            blockButton: true,
             onPressed: paynow,
-            text: 'place Order',
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(builder: (context) => Payment()),
+            // );
+            // },
+            text: 'Proceed',
             textStyle: TextStyle(fontSize: 17.0, color: Colors.black),
           ),
         ),

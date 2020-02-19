@@ -203,7 +203,9 @@ class _EditProfileState extends State<EditProfile> {
                           image: new DecorationImage(
                               fit: BoxFit.fill,
                               image: new NetworkImage(
-                                  "https://i.imgur.com/BoN9kdC.png")))),
+                                  "https://i.imgur.com/BoN9kdC.png")))
+                                  
+                                  ),
                 ),
                 Positioned(
                   left: 250,
