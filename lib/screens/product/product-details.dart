@@ -211,6 +211,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                             style: TextStyle(fontSize: 10.0),
                                           ),
                                         )),
+                                    //commit
                                     Padding(
                                         padding: const EdgeInsets.only(
                                             right: 0.0, top: 5.0),
