@@ -74,25 +74,12 @@ class _AddressState extends State<Address> {
             child: Container(
               child: Row(
                 children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          bottom: 60.0,
-                        ),
-                        child: Text(
-                          '1',
-                          style: TextStyle(
-                              color: Colors.black, fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                    ],
-                  ),
+                 
                   Column(
                     children: <Widget>[
                       // homeDelivery ?
                       Container(
-                          width: 250.0,
+                          width: MediaQuery.of(context).size.width,
                           child: Padding(
                               padding: const EdgeInsets.only(left: 1.0),
                               child: ListView.builder(
@@ -259,45 +246,57 @@ class _AddressState extends State<Address> {
             ),
           ),
           SizedBox(
-            height: 15,
+            height: 10,
           ),
        
-         Row(
+         Column(
          
            children: <Widget>[
-             Container(
-                  width: MediaQuery.of(context).size.width ,
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+             Padding(
+               padding: const EdgeInsets.only(left:5.0,right: 5.0),
+               child: Container(
+                    width: MediaQuery.of(context).size.width ,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           //  crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Column(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              bottom: 60.0,
-                            ),
-                            child: Text(
-                              '2',
-                              style: TextStyle(
-                                  color: Colors.black, fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            width: MediaQuery.of(context).size.width-30.0,
-                        
-                              child: Text(
-                                'HSR Layout , Agara, Bengaluru, Karnataka 560102, India',
-                                style: TextStyle(color: Colors.black),
+                      children: <Widget>[
+                        Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                bottom: 0.0,
                               ),
+                              child: Text(
+                                '2',
+                                style: TextStyle(
+                                    color: Colors.black, fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              width: MediaQuery.of(context).size.width-30.0,
                           
-                          ),
-                          Padding(
+                                child: Text(
+                                  'HSR Layout , Agara, Bengaluru, Karnataka 560102, India',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                            
+                            ),
+                    
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+             ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                            Padding(
                             padding: const EdgeInsets.only(left: 0.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -332,11 +331,8 @@ class _AddressState extends State<Address> {
                               ],
                             ),
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+                  ],
+                )
            ],
          ),
        

@@ -100,7 +100,7 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     Widget itemCard = Container(
-      padding: const EdgeInsets.only(right: 15.0),
+      padding: const EdgeInsets.only(right: 15.0,left: 15.0),
       height: 141,
       width: 232,
       decoration: BoxDecoration(
@@ -159,6 +159,21 @@ class _ProfileState extends State<Profile> {
         ],
       ),
     );
+     Widget addCard = Container(
+      padding: const EdgeInsets.only(left: 15.0),
+      height: 141,
+      width: 232,
+      decoration: BoxDecoration(
+          color: Colors.grey[400], borderRadius: BorderRadius.circular(5.0)),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+      Icon(Icons.add,size: 40,color: Colors.black54,),
+      SizedBox(height:5),
+      Text('Add new card',style: TextStyle(color: Colors.black54),)
+        ],
+      ),
+    );
     return Scaffold(
       appBar: GFAppBar(
         title: Text(
@@ -197,17 +212,22 @@ class _ProfileState extends State<Profile> {
                                     children: <Widget>[
                                       Padding(
                                           padding: const EdgeInsets.only(
-                                              right: 56.0, bottom: 4.0),
+                                              right: .0, bottom: 4.0),
                                           child: userInfo == null &&
                                                   userInfo['firstName'] == null
                                               ? Text(
                                                   'Billie Eilsh',
                                                   style: titleBold(),
                                                 )
-                                              : Text(
-                                                  '${userInfo['firstName']}',
-                                                  style: titleBold(),
-                                                )),
+                                              : Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Text(
+                                                      '${userInfo['firstName']}',
+                                                      style: titleBold(),
+                                                    ),
+                                                ],
+                                              )),
                                       userInfo == null &&
                                               userInfo['email'] == null
                                           ? Text(
@@ -216,16 +236,26 @@ class _ProfileState extends State<Profile> {
                                                   fontWeight: FontWeight.w300,
                                                   fontSize: 14.0),
                                             )
-                                          : Text(
-                                              '${userInfo['email']}',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w300,
-                                                  fontSize: 14.0),
-                                            ),
+                                          : Row(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text(
+                                                  '${userInfo['email']}',
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight.w300,
+                                                      fontSize: 14.0),
+                                                ),
+                                            ],
+                                          ),
                                       Padding(
                                         padding: const EdgeInsets.only(
-                                            top: 5.0, right: 4.0),
-                                        child: Text('+91-9756 55 83 13'),
+                                            top: 5.0, right: .0),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text('+91-9756 55 83 13'),
+                                          ],
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -274,14 +304,22 @@ class _ProfileState extends State<Profile> {
                               child: ListView.builder(
                                 shrinkWrap: true,
                                 scrollDirection: Axis.horizontal,
-                                itemCount: 2,
+                                itemCount: 1,
                                 itemBuilder:
                                     (BuildContext context, int index) =>
                                         Padding(
                                   padding: const EdgeInsets.only(right: 15.0),
                                   child: Container(
                                     // height: 50,
-                                    child: itemCard,
+                                    child: Row(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: const EdgeInsets.only(right:15.0),
+                                          child: itemCard,
+                                        ),
+                                        addCard,
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),

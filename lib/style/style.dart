@@ -342,8 +342,8 @@ TextStyle hintSfmediumsmallestgrey() {
 
 TextStyle hintSfbold() {
   return TextStyle(
-    fontWeight: FontWeight.w400,
-    fontSize: 22.0,
+    fontWeight: FontWeight.w600,
+    fontSize: 30.0,
     color: blacktext,
     fontFamily: 'SfUiDBold',
   );
@@ -361,7 +361,7 @@ TextStyle hintSfboldsm() {
 TextStyle hintSfboldtext() {
   return TextStyle(
     fontWeight: FontWeight.w500,
-    fontSize: 21.0,
+    fontSize: 18.0,
     color: blacktext,
     fontFamily: 'SfUiDBold',
   );
