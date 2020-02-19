@@ -144,73 +144,87 @@ class _ProductDetailsState extends State<ProductDetails> {
                               image: new NetworkImage(
                                   widget.productDetail['imageUrl']))),
                     ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    SizedBox(
+                      height: 40,
+                    ),
+                    Column(
+                      // crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10.0, top: 45),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(right: 0.0, top: 3.0),
-                                child: Text(
-                                  '${widget.productDetail['title'][0].toUpperCase()}${widget.productDetail['title'].substring(1)}',
-                                  style: titleBold(),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    right: 10.0, top: 3.0),
-                                child: Text(
-                                  '${widget.productDetail['description'][0].toUpperCase()}${widget.productDetail['description'].substring(1)}',
-                                  style: TextStyle(fontSize: 10.0),
-                                ),
-                              ),
-                              Padding(
-                                  padding: const EdgeInsets.only(
-                                      right: 0.0, top: 5.0),
-                                  child: Text(
-                                    '${Constants.currency} ${widget.productDetail['variant'][0]['price']}',
-                                    style: TextStyle(
-                                        color: const Color(0xFF00BFA5),
-                                        fontSize: 17.0),
-                                  ))
-                            ],
-                          ),
-                        ),
-                        Column(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            Row(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 40.0, left: 0.0),
-                                  child: RatingBar(
-                                    initialRating: 3,
-                                    minRating: 1,
-                                    direction: Axis.horizontal,
-                                    allowHalfRating: true,
-                                    itemCount: 5,
-                                    itemSize: 20.0,
-                                    itemPadding:
-                                        EdgeInsets.symmetric(horizontal: 4.0),
-                                    itemBuilder: (context, _) => Icon(
-                                      Icons.star,
-                                      color: Colors.red,
-                                      size: 15.0,
-                                    ),
-                                    onRatingUpdate: (rating) {
-                                      print(rating);
-                                    },
-                                  ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 20),
+                              child: Text(
+                                '${widget.productDetail['title'][0].toUpperCase()}${widget.productDetail['title'].substring(1)}',
+                                style: titleBold(),
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 0.0, right: 20.0),
+                              child: RatingBar(
+                                initialRating: 3,
+                                minRating: 1,
+                                direction: Axis.horizontal,
+                                allowHalfRating: true,
+                                itemCount: 5,
+                                itemSize: 20.0,
+                                itemPadding:
+                                    EdgeInsets.symmetric(horizontal: 4.0),
+                                itemBuilder: (context, _) => Icon(
+                                  Icons.star,
+                                  color: Colors.red,
+                                  size: 15.0,
                                 ),
-                              ],
+                                onRatingUpdate: (rating) {
+                                  print(rating);
+                                },
+                              ),
                             ),
                           ],
+                        ),
+                        Container(
+                          // width: MediaQuery.of(context).size.width,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 20.0,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    Padding(
+                                        padding: const EdgeInsets.only(
+                                            right: 10.0, top: 3.0),
+                                        child: Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width -
+                                              30,
+                                          child: Text(
+                                            '${widget.productDetail['description'][0].toUpperCase()}${widget.productDetail['description'].substring(1)}',
+                                            style: TextStyle(fontSize: 10.0),
+                                          ),
+                                        )),
+                                    Padding(
+                                        padding: const EdgeInsets.only(
+                                            right: 0.0, top: 5.0),
+                                        child: Text(
+                                          '${Constants.currency} ${widget.productDetail['variant'][0]['price']}',
+                                          style: TextStyle(
+                                              color: const Color(0xFF00BFA5),
+                                              fontSize: 17.0),
+                                        ))
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
