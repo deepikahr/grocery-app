@@ -62,6 +62,9 @@ flutter:
     - lib/assets/icons/logo.png
     - lib/assets/images/mastercard.png
     - lib/assets/icons/mastercard-logo.png
+    - lib/assets/images/visa.png
+    - lib/assets/images/thank-you.png
+
 
     - lib/assets/images/no-orders.png
 

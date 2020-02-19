@@ -130,26 +130,50 @@ class _AllCategoriesState extends State<AllCategories>
                                 Column(
                                   children: <Widget>[
                                     Container(
-                                      width: 90,
-                                      height: 90,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color:Colors.grey[300]),
+                                                               borderRadius: BorderRadius.circular(10),
+
+                                      ),
                                       child: Column(
                                         children: <Widget>[
                                           Padding(
-                                              padding: const EdgeInsets.only(
-                                                  bottom: 10.0),
-                                              child: Image.network(
-                                                categoryList[index]['imageUrl'],
-                                                width: 80,
-                                                fit: BoxFit.fill,
-                                                height: 80,
-                                              )),
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: Container(
+                                              width: 80,
+                                              height: 80,
+                                                                            decoration: BoxDecoration(
+                      // border: Border.all(color:Colors.grey),
+                       borderRadius: BorderRadius.circular(10),
+            image: new DecorationImage(
+                              fit: BoxFit.fill,
+                              image: new NetworkImage(categoryList[index]['imageUrl']),
+                     
+                    ),),
+                                              // child: Column(
+                                              //   children: <Widget>[
+                                              //     Padding(
+                                              //         padding: const EdgeInsets.only(
+                                              //             bottom: 10.0),
+                                              //         child: Image.network(
+                                              //           categoryList[index]['imageUrl'],
+                                              //           width: 80,
+                                              //           fit: BoxFit.fill,
+                                              //           height: 80,
+                                              //         )),
+                                              //   ],
+                                              // ),
+                                            ),
+                                          ),
+                                          
                                         ],
                                       ),
                                     ),
+                                    SizedBox(height:2),
                                     Text(
-                                      categoryList[index]['title'],
-                                      maxLines: 2,
-                                    )
+                                            categoryList[index]['title'],
+                                            maxLines: 2,
+                                          )
                                   ],
                                 ),
                               ]));

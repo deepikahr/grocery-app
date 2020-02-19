@@ -179,7 +179,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                           borderSide: BorderSide(
                             color: Colors.grey,
                           ),
-                          borderRadius: BorderRadius.circular(30)),
+                          borderRadius: BorderRadius.circular(15)),
                     ),
                     searchList: list,
                     overlaySearchListHeight: 300.0,
@@ -216,25 +216,25 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                     );
                   },
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 18.0),
-                    child: RichText(
-                      text: TextSpan(
-                        children: <TextSpan>[
-                          TextSpan(
-                              text: "Explore by Categories", style: comments()),
-                          TextSpan(
-                            text: '                            View all',
-                            style: TextStyle(color: primary),
-                          ),
-                        ],
-                      ),
+                    padding: const EdgeInsets.only(left:18.0,right: 18.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                      Text('Explore by Categories',style: comments(),),
+                      Text('View all',style: TextStyle(color: primary),)
+                      ],
                     ),
                   ),
+
                 ),
+                SizedBox(height:10),
                 Container(
                     margin: EdgeInsets.only(left: 5, right: 5.0),
-                    height: 100.0,
+                    height: 110.0,
                     width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      // border: Border.all(color:Colors.grey)
+                    ),
                     child: ListView.builder(
                         physics: ScrollPhysics(),
                         shrinkWrap: true,
@@ -262,24 +262,34 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                       Column(
                                         children: <Widget>[
                                           Container(
-                                            width: 70,
-                                            height: 70,
-                                            child: Column(
-                                              children: <Widget>[
-                                                Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            top: 0.0),
-                                                    child: Image.network(
-                                                      categoryList[index]
-                                                          ['imageUrl'],
-                                                      width: 60,
-                                                      fit: BoxFit.fill,
-                                                      height: 60,
-                                                    )),
-                                              ],
+
+                                            decoration: BoxDecoration(
+                      border: Border.all(color:Colors.grey[300]),
+                       borderRadius: BorderRadius.circular(10),
+
                                             ),
+                                            child: Column(
+                                                children: <Widget>[
+                                                  Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                               10.0),
+                                                      child: Container(
+                                                        height: 45,
+                                                        width: 45,
+                                                        decoration: BoxDecoration(
+                      // border: Border.all(color:Colors.grey),
+                       borderRadius: BorderRadius.circular(10),
+            image: new DecorationImage(
+                              fit: BoxFit.fill,
+                              image: new NetworkImage(categoryList[index]['imageUrl']),
+                     
+                    ),),
+                                                      )),
+                                                ],
+                                              ),
                                           ),
+                                        
                                           Text(categoryList[index]['title'])
                                         ],
                                       ),
@@ -312,44 +322,26 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                         content: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Stack(
-                              fit: StackFit.loose,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
                               children: <Widget>[
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  // mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 20, top: 15.0),
-                                      child: Image.network(
-                                        productsList[i]['imageUrl'],
-                                        fit: BoxFit.fill,
-                                        width: 80,
-                                        height: 70,
-                                      ),
+Container(
+  height: 15,
+  width: 65,
+  decoration: BoxDecoration(
+  borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20))
+  ),
+  child:   GFButtonBadge(
+                                      onPressed: () {},
+                                    //  borderShape: ShapeBorder([ContinuousRectangleBorder]),
+                                      text: '25% off',
+                                      color: Colors.deepOrange[300],
                                     ),
-                                  ],
-                                ),
-                                Positioned(
-                                  height: 15.0,
-                                  width: 60.0,
-                                  // top: 4.0,
-                                  // bottom: 4.0,
-                                  // left: 6.0,
-                                  child: GFButtonBadge(
-                                    onPressed: () {},
-                                    text: '25% off',
-                                    color: Colors.deepOrange[300],
-                                  ),
-                                ),
-                                Positioned(
-                                  height: 15.0,
-                                  width: 60.0,
-                                  // top: 4.0,
-                                  bottom: 78.0,
-                                  left: 80.0,
-                                  child: GFIconButton(
+),
+                                  GFIconButton(
                                     onPressed: null,
                                     icon: GestureDetector(
                                       onTap: () {
@@ -369,9 +361,68 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                     ),
                                     type: GFButtonType.transparent,
                                   ),
-                                ),
                               ],
                             ),
+                            // Stack(
+                            //   fit: StackFit.loose,
+                            //   children: <Widget>[
+                                Row(
+                                  // crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          ),
+                                      child: Image.network(
+                                        productsList[i]['imageUrl'],
+                                        fit: BoxFit.fill,
+                                        width: 124,
+                                        height: 60,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                // Positioned(
+                                //   height: 15.0,
+                                //   width: 60.0,
+                                //   // top: 4.0,
+                                //   // bottom: 4.0,
+                                //   // left: 6.0,
+                                //   child: GFButtonBadge(
+                                //     onPressed: () {},
+                                //     text: '25% off',
+                                //     color: Colors.deepOrange[300],
+                                //   ),
+                                // ),
+                                // Positioned(
+                                //   height: 15.0,
+                                //   width: 60.0,
+                                //   // top: 4.0,
+                                //   bottom: 78.0,
+                                //   left: 80.0,
+                                //   child: GFIconButton(
+                                //     onPressed: null,
+                                //     icon: GestureDetector(
+                                //       onTap: () {
+                                //         setState(() {
+                                //           fav = !fav;
+                                //         });
+                                //       },
+                                //       child: fav
+                                //           ? Icon(
+                                //               Icons.favorite,
+                                //               color: Colors.red,
+                                //             )
+                                //           : Icon(
+                                //               Icons.favorite_border,
+                                //               color: Colors.grey,
+                                //             ),
+                                //     ),
+                                //     type: GFButtonType.transparent,
+                                //   ),
+                                // ),
+                            //   ],
+                            // ),
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
@@ -379,12 +430,10 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Padding(
-                                      padding: const EdgeInsets.only(top: 10.0),
+                                      padding: const EdgeInsets.only(top: 5.0),
                                       child: Text(productsList[i]['title']),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 2.0),
-                                      child: Row(
+                                  Row(
                                         children: <Widget>[
                                           Icon(
                                             IconData(
@@ -401,7 +450,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                           )
                                         ],
                                       ),
-                                    )
+                              
                                   ],
                                 ),
                                 // Column(
@@ -447,13 +496,13 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       title: Row(
         children: <Widget>[
           Container(
-              height: 70,
+              height: 65,
               width: 100,
               child: Image.asset('lib/assets/images/apple.png')),
           Column(
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
+                padding: const EdgeInsets.only(bottom: .0),
                 child: Text(
                   'Apple(1kg)',
                   style: regular(),
