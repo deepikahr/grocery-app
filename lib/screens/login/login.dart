@@ -21,11 +21,17 @@ import 'package:grocery_pro/screens/home/home.dart';
 SentryError sentryError = new SentryError();
 
 class Login extends StatefulWidget {
-  const Login({Key key, this.isProfile, this.isCart, this.isStore})
+  const Login(
+      {Key key,
+      this.isProfile,
+      this.isCart,
+      this.isStore,
+      this.isProductDetails})
       : super(key: key);
   final bool isProfile;
   final bool isCart;
   final bool isStore;
+  final bool isProductDetails;
   @override
   _LoginState createState() => _LoginState();
 }

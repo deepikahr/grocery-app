@@ -8,7 +8,8 @@ import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/service/auth-service.dart';
 import 'package:grocery_pro/screens/address/add-address.dart';
 import 'package:grocery_pro/service/address-service.dart';
-// import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:grocery_pro/screens/address/edit-address.dart';
+import 'package:grocery_pro/screens/home/home.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -23,39 +24,233 @@ class Checkout extends StatefulWidget {
 
 enum SingingCharacter { lafayette, jefferson }
 
-// ...
-
-// SingingCharacter _character = SingingCharacter.lafayette;
-// bool _isRadioSelected = false;
-
 class _CheckoutState extends State<Checkout> {
-  // Declare this variable
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final GlobalKey<FormState> _recipientformKey = GlobalKey<FormState>();
+  // final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  // final GlobalKey<FormState> _recipientformKey = GlobalKey<FormState>();
   int selectedRadio;
-  Map<String, dynamic> userData, address;
+  Map<String, dynamic> userInfo, address;
   Map<String, dynamic> cartItem;
   int deliveryCharges = 0;
   bool isCheckout = false;
   List locationList = List();
   List addressList = List();
+
+  int homeDelivery = 0;
+  int pickUP = 1;
+  int deliveryType = 0;
+  String selectedDeliveryType;
+
   var selectedAddress;
+  var selectedDeliveryAddress;
+
+  int cardPayment = 0;
+  int cashOnDelivery = 1;
+  int paymentType = 0;
+
   String locationNotFound;
   bool isLoading = false;
   bool addressLoading = false;
   int groupValue;
   bool deliveryAddress = false;
-  bool homeDelivery = false;
+  var currentTime = new DateTime.now();
   int i = 0;
+  bool isPlaceOrderLoading = false;
+  String deliveryMessage, name, mobileNumber, cardId;
+  DateTime selectedDate;
   var addressId;
+
   @override
   void initState() {
     super.initState();
     getLocations();
     getUserInfo();
     getAddress();
-    selectedRadio = 0;
-    cartItem = widget.cartItem;
+    print(widget.cartItem);
+    print(widget.quantity);
+  }
+
+  paynow() {
+    if (mounted) {
+      setState(() {
+        name = '${userInfo['firstName']}';
+        // email = '${userInfo['email']}';
+      });
+    }
+    // if (homeDelivery == 1) {
+    //   return 'Please select home delivery';
+    // }
+    // if (selectedDeliveryAddress == 1) {
+    //   return "Please Select Address";
+    // } else if (cashOnDelivery == 1) {
+    //   return 'Please select Cash On Delivery';
+    // } else if (selectedDate == null) {
+    //   return "please select a date";
+    // } else {
+    print('I am here');
+
+    placeOrder();
+  }
+
+  placeOrder() async {
+    Map<String, dynamic> data = {
+      "deliveryType": "Home_Delivery",
+      "paymentType": 'COD',
+    };
+    data['deliveryDate'] = currentTime.millisecondsSinceEpoch;
+    data['deliveryTime'] = currentTime.toString();
+    data['deliveryAddress'] = selectedAddress['_id'].toString();
+    if (widget.buy == null) {
+      if (mounted) {
+        setState(() {
+          isPlaceOrderLoading = true;
+        });
+      }
+      data['cart'] = widget.cartItem['cart']['_id'].toString();
+      data['deliveryCharges'] = '${widget.cartItem['deliveryCharges']}';
+
+      print(data);
+
+      await ProductService.placeOrder(data).then((onValue) {
+        try {
+          if (onValue['response_code'] == 201) {
+            if (mounted) {
+              setState(() {
+                isPlaceOrderLoading = false;
+              });
+            }
+            showDialog<Null>(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return Container(
+                  width: 270.0,
+                  child: new AlertDialog(
+                    title: new Text('Thank You ...!!'),
+                    content: new SingleChildScrollView(
+                      child: new ListBody(
+                        children: <Widget>[
+                          new Text('Order Successful'),
+                        ],
+                      ),
+                    ),
+                    actions: <Widget>[
+                      new FlatButton(
+                        child: new Text('ok'),
+                        onPressed: () {
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) => Home(
+                                        currentIndex: 0,
+                                      )),
+                              (Route<dynamic> route) => false);
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          } else {
+            if (mounted) {
+              setState(() {
+                isPlaceOrderLoading = false;
+              });
+            }
+          }
+        } catch (error, stackTrace) {
+          sentryError.reportError(error, stackTrace);
+        }
+      }).catchError((error) {
+        sentryError.reportError(error, null);
+      });
+    } else {
+      print('apple');
+      print(widget.cartItem['cart']);
+      data['cart'] = {
+        'productId': widget.cartItem['cart'][0]['_id'],
+        'quantity': 1,
+        'subTotal': widget.cartItem['subTotal'],
+      };
+      print(data);
+
+      print(data);
+
+      if (mounted) {
+        setState(() {
+          isPlaceOrderLoading = true;
+        });
+      }
+
+      await ProductService.quickBuyNow(data).then((onValue) {
+        print('value of buy now$onValue');
+        try {
+          if (onValue['response_code'] == 201) {
+            showDialog<Null>(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return Container(
+                  width: 270.0,
+                  child: new AlertDialog(
+                    title: new Text('Thank You ...!!'),
+                    content: new SingleChildScrollView(
+                      child: new ListBody(
+                        children: <Widget>[
+                          new Text('Order Successful'),
+                        ],
+                      ),
+                    ),
+                    actions: <Widget>[
+                      new FlatButton(
+                        child: new Text('ok'),
+                        onPressed: () {
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) => Home(
+                                        currentIndex: 0,
+                                      )),
+                              (Route<dynamic> route) => false);
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          }
+        } catch (error, stackTrace) {
+          sentryError.reportError(error, stackTrace);
+        }
+      }).catchError((error) {
+        sentryError.reportError(error, null);
+      });
+    }
+    print('order details $data');
+  }
+
+  addressRadioValueChanged(int value) async {
+    if (mounted) {
+      setState(() {
+        groupValue = value;
+        selectedAddress = addressList[value];
+      });
+    }
+    print('selected address $selectedAddress');
+
+    return value;
+  }
+
+  deliveryTypeRadioValue(val) async {
+    if (mounted) {
+      setState(() {
+        groupValue = val;
+        selectedDeliveryType = val;
+      });
+    }
+    print(selectedDeliveryType);
+    return val;
   }
 
   getUserInfo() async {
@@ -69,7 +264,8 @@ class _CheckoutState extends State<Checkout> {
         if (mounted) {
           setState(() {
             isLoading = false;
-            userData = onValue['response_data']['userInfo'];
+            userInfo = onValue['response_data']['userInfo'];
+            // print('userinfo at checkout $userInfo ');
           });
         }
       } catch (error, stackTrace) {
@@ -87,6 +283,7 @@ class _CheckoutState extends State<Checkout> {
       });
     }
     await AddressService.getAddress().then((onValue) {
+      // print('available address $onValue');
       try {
         if (mounted) {
           setState(() {
@@ -103,9 +300,9 @@ class _CheckoutState extends State<Checkout> {
   }
 
   deleteAddress(body) async {
-    print('id $body');
+    // print('id $body');
     await AddressService.deleteAddress(body).then((onValue) {
-      print('id $onValue');
+      // print('id $onValue');
       try {
         getAddress();
         if (mounted) {
@@ -174,7 +371,8 @@ class _CheckoutState extends State<Checkout> {
             child: Text('Cart summary', style: boldHeading()),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 20.0, top: 10.0, bottom: 10.0,right: 20),
+            padding: const EdgeInsets.only(
+                left: 20.0, top: 10.0, bottom: 10.0, right: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               // crossAxisAlignment: CrossAxisAlignment.center,
@@ -189,32 +387,31 @@ class _CheckoutState extends State<Checkout> {
                 ),
                 Column(
                   children: <Widget>[
-                   
                     Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Icon(
-                            IconData(
-                              0xe913,
-                              fontFamily: 'icomoon',
-                            ),
-                            color: Colors.black,
-                            size: 10.0,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Icon(
+                          IconData(
+                            0xe913,
+                            fontFamily: 'icomoon',
                           ),
-                          Text(
-                            '${widget.cartItem['subTotal']}',
-                            style: regular(),
-                          )
-                        ],
-                      ),
-                   
+                          color: Colors.black,
+                          size: 10.0,
+                        ),
+                        Text(
+                          '${widget.cartItem['subTotal']}',
+                          style: regular(),
+                        )
+                      ],
+                    ),
                   ],
                 ),
               ],
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 20.0, bottom: 10.0,right: 20.0),
+            padding:
+                const EdgeInsets.only(left: 20.0, bottom: 10.0, right: 20.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -229,30 +426,29 @@ class _CheckoutState extends State<Checkout> {
                 Column(
                   children: <Widget>[
                     Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Icon(
-                            IconData(
-                              0xe913,
-                              fontFamily: 'icomoon',
-                            ),
-                            color: Colors.black,
-                            size: 10.0,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Icon(
+                          IconData(
+                            0xe913,
+                            fontFamily: 'icomoon',
                           ),
-                          Text(
-                            '${widget.cartItem['tax']}',
-                            style: regular(),
-                          )
-                        ],
-                      ),
-                 
+                          color: Colors.black,
+                          size: 10.0,
+                        ),
+                        Text(
+                          '${widget.cartItem['tax']}',
+                          style: regular(),
+                        )
+                      ],
+                    ),
                   ],
                 ),
               ],
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 20.0, bottom: 10.0,right: 20),
+            padding: const EdgeInsets.only(left: 20.0, bottom: 10.0, right: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -266,24 +462,23 @@ class _CheckoutState extends State<Checkout> {
                 ),
                 Column(
                   children: <Widget>[
-                   Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Icon(
-                            IconData(
-                              0xe913,
-                              fontFamily: 'icomoon',
-                            ),
-                            color: Colors.black,
-                            size: 10.0,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Icon(
+                          IconData(
+                            0xe913,
+                            fontFamily: 'icomoon',
                           ),
-                          Text(
-                            '${widget.cartItem['deliveryCharges']}',
-                            style: regular(),
-                          )
-                        ],
-                      ),
-                
+                          color: Colors.black,
+                          size: 10.0,
+                        ),
+                        Text(
+                          '${widget.cartItem['deliveryCharges']}',
+                          style: regular(),
+                        )
+                      ],
+                    ),
                   ],
                 ),
               ],
@@ -336,7 +531,7 @@ class _CheckoutState extends State<Checkout> {
                 ],
               ),
               child: Padding(
-                padding: const EdgeInsets.only(left:20.0,right: 20.0),
+                padding: const EdgeInsets.only(left: 20.0, right: 20.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -354,24 +549,23 @@ class _CheckoutState extends State<Checkout> {
                     ),
                     Column(
                       children: <Widget>[
-                       Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                              Icon(
-                                IconData(
-                                  0xe913,
-                                  fontFamily: 'icomoon',
-                                ),
-                                color: Colors.black,
-                                size: 10.0,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            Icon(
+                              IconData(
+                                0xe913,
+                                fontFamily: 'icomoon',
                               ),
-                              Text(
-                                '${widget.cartItem['grandTotal']}',
-                                style: boldHeading(),
-                              )
-                            ],
-                          ),
-                        
+                              color: Colors.black,
+                              size: 10.0,
+                            ),
+                            Text(
+                              '${widget.cartItem['grandTotal']}',
+                              style: boldHeading(),
+                            )
+                          ],
+                        ),
                       ],
                     ),
                   ],
@@ -392,14 +586,15 @@ class _CheckoutState extends State<Checkout> {
                     children: <Widget>[
                       Text('Home Delivery'),
                       Radio(
-                        value: 1,
-                        groupValue: selectedRadio,
+                        value: homeDelivery,
+                        groupValue: deliveryType,
                         activeColor: Colors.green,
-                        onChanged: (val) {
-                          print("Radio $val");
-                          setSelectedRadio(val);
+                        onChanged: (t) {
+                          print("Radio $t");
+                          deliveryTypeRadioValue('homeDelivery');
                           setState(() {
-                            homeDelivery = true;
+                            homeDelivery = 0;
+                            pickUP = 1;
                           });
                         },
                       ),
@@ -414,12 +609,16 @@ class _CheckoutState extends State<Checkout> {
                   children: <Widget>[
                     Text('Pick Up'),
                     Radio(
-                      value: 2,
-                      groupValue: selectedRadio,
+                      value: pickUP,
+                      groupValue: deliveryType,
                       activeColor: Colors.green,
-                      onChanged: (val) {
-                        print("Radio $val");
-                        setSelectedRadio(val);
+                      onChanged: (t) {
+                        print("Radio $t");
+                        deliveryTypeRadioValue(t);
+                        setState(() {
+                          homeDelivery = 1;
+                          pickUP = 0;
+                        });
                       },
                     ),
                   ],
@@ -447,38 +646,25 @@ class _CheckoutState extends State<Checkout> {
                   ),
                   child: Column(
                     children: <Widget>[
-                 Container(
-decoration: BoxDecoration(
-                              border: Border(
-                                bottom:
-                                    BorderSide(width: 0.0, color: Colors.grey),
-                              ),
-                            ),
-                   child: Column(
-children: <Widget>[
-       Padding(
-                          padding: const EdgeInsets.only(left: 18.0),
-                          child: Container(
-                            
-                            child: Row(
-                              children: <Widget>[
-                                Column(
-                                  children: <Widget>[
-                                    Radio(
-                        value: 2,
-                        groupValue: selectedRadio,
-                        activeColor: Colors.green,
-                        onChanged: (val) {
-                          print("Radio $val");
-                          setSelectedRadio(val);
-                        },
-                      ),
-                                  ],
-                                ),
-                                Column(
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(width: 0.0, color: Colors.grey),
+                          ),
+                        ),
+                        child: Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(left: 18.0),
+                              child: Container(
+                                child: Column(
+                                  //   children: <Widget>[
+                                  // Column(
                                   children: <Widget>[
                                     Container(
-                                        width: MediaQuery.of(context).size.width-125,
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                125,
                                         child: Padding(
                                             padding:
                                                 const EdgeInsets.only(left: 0),
@@ -494,122 +680,132 @@ children: <Widget>[
                                                         int i) {
                                                   return Column(children: <
                                                       Widget>[
-                                                    Container(
-                                        width: MediaQuery.of(context).size.width,
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets.only(
-                                                                left: 18.0),
-                                                        child: Text(
-                                                            '${addressList[i]['flatNumber']}' +
-                                                                ', ' +
-                                                                '${addressList[i]['locality']}' +
-                                                                ', ' +
-                                                                '${addressList[i]['landMark']}' +
-                                                                ', ' +
-                                                                '${addressList[i]['city']}' +
-                                                                ', ' +
-                                                                '${addressList[i]['postalCode']}' +
-                                                                ', ' +
-                                                                '${addressList[i]['state']}',
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .black)),
-                                                      ),
+                                                    RadioListTile(
+                                                      groupValue: groupValue,
+                                                      activeColor: primary,
+                                                      // selected: true,
+                                                      value: i,
+                                                      title: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                                '${addressList[i]['flatNumber']}, ${addressList[i]['locality']},${addressList[i]['landMark']},'),
+                                                            Text(
+                                                                '${addressList[i]['city']}, ${addressList[i]['state']}, ${addressList[i]['postalCode']}'),
+                                                          ]),
+                                                      onChanged:
+                                                          addressRadioValueChanged,
                                                     ),
- // buildEditDelete(),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: <Widget>[
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 0.0),
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
+                                                            children: <Widget>[
+                                                              GFButton(
+                                                                onPressed:
+                                                                    () async {
+                                                                  await Navigator
+                                                                      .push(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                      builder:
+                                                                          (context) =>
+                                                                              EditAddress(
+                                                                        isCheckout:
+                                                                            true,
+                                                                        updateAddressID:
+                                                                            addressList[i],
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                  // print(
+                                                                  // address);
+
+                                                                  getAddress();
+                                                                },
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets
+                                                                          .only(
+                                                                      left:
+                                                                          18.0,
+                                                                      right:
+                                                                          18.0),
+                                                                  child: Text(
+                                                                    "Edit",
+                                                                  ),
+                                                                ),
+                                                                type:
+                                                                    GFButtonType
+                                                                        .outline,
+                                                                color: GFColor
+                                                                    .warning,
+                                                                size: GFSize
+                                                                    .medium,
+                                                                // blockButton: true,
+                                                              ),
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        left:
+                                                                            20.0),
+                                                                child: GFButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    deleteAddress(
+                                                                        addressList[i]
+                                                                            [
+                                                                            '_id']);
+                                                                  },
+                                                                  child:
+                                                                      Padding(
+                                                                    padding: const EdgeInsets
+                                                                            .only(
+                                                                        left:
+                                                                            8.0,
+                                                                        right:
+                                                                            8.0),
+                                                                    child: Text(
+                                                                      "Delete",
+                                                                    ),
+                                                                  ),
+                                                                  color: GFColor
+                                                                      .warning,
+                                                                  type: GFButtonType
+                                                                      .outline,
+                                                                ),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ]);
                                                 }))),
                                   ],
                                 ),
-                              ],
+                                //   ],
+                                // ),
+                              ),
                             ),
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              left: 0.0),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
-                                                        children: <Widget>[
-                                                          GFButton(
-                                                            onPressed: () async {
-                                                              await Navigator
-                                                                  .push(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                    builder: (context) => AddAddress(
-                                                                        isCheckout:
-                                                                            true,
-                                                                        updateAddressID:
-                                                                            addressList[
-                                                                                i])),
-                                                              );
-                                                              print(address);
-
-                                                              getAddress();
-                                                            },
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .only(
-                                                                      left: 18.0,
-                                                                      right:
-                                                                          18.0),
-                                                              child: Text(
-                                                                "Edit",
-                                                              ),
-                                                            ),
-                                                            type: GFButtonType
-                                                                .outline,
-                                                            color:
-                                                                GFColor.warning,
-                                                            size: GFSize.medium,
-                                                            // blockButton: true,
-                                                          ),
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    left: 20.0),
-                                                            child: GFButton(
-                                                              onPressed: () {
-                                                                deleteAddress(
-                                                                    addressList[i]
-                                                                        ['_id']);
-                                                              },
-                                                              child: Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .only(
-                                                                        left: 8.0,
-                                                                        right:
-                                                                            8.0),
-                                                                child: Text(
-                                                                  "Delete",
-                                                                ),
-                                                              ),
-                                                              color:
-                                                                  GFColor.warning,
-                                                              type: GFButtonType
-                                                                  .outline,
-                                                            ),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ),
                           ],
                         ),
-],
-                   ),
-                 ),
+                      ),
                       Center(
                         child: Padding(
                           padding:
@@ -624,7 +820,7 @@ children: <Widget>[
                                           isCheckout: true,
                                         )),
                               );
-                              print(address);
+                              // print(address);
                               if (address != null) {
                                 addressList.add(address);
                                 getAddress();
@@ -646,8 +842,10 @@ children: <Widget>[
                   ),
                 ),
 
-                title: 'HSR Layout , Agara...',
-                // collapsedIcon: Icon(Icons.location_on),
+                title: addressList[0]['flatNumber'] +
+                    ', ' +
+                    addressList[0]['locality'] +
+                    '....', // collapsedIcon: Icon(Icons.location_on),
               ),
             ),
           ),
@@ -664,12 +862,14 @@ children: <Widget>[
                     children: <Widget>[
                       Text('Credit/Debit Card'),
                       Radio(
-                        value: 1,
-                        groupValue: selectedRadio,
+                        value: cardPayment,
+                        groupValue: paymentType,
                         activeColor: Colors.green,
                         onChanged: (val) {
                           print("Radio $val");
                           setSelectedRadio(val);
+                          cardPayment = 0;
+                          cashOnDelivery = 1;
                         },
                       ),
                     ],
@@ -683,12 +883,14 @@ children: <Widget>[
                   children: <Widget>[
                     Text('Cash On Delivery'),
                     Radio(
-                      value: 2,
-                      groupValue: selectedRadio,
+                      value: cashOnDelivery,
+                      groupValue: paymentType,
                       activeColor: Colors.green,
                       onChanged: (val) {
                         print("Radio $val");
                         setSelectedRadio(val);
+                        cardPayment = 1;
+                        cashOnDelivery = 0;
                       },
                     ),
                   ],
@@ -802,9 +1004,9 @@ children: <Widget>[
                             showTitleActions: true,
                             minTime: DateTime(2010, 3, 5),
                             maxTime: DateTime(2019, 6, 7), onChanged: (date) {
-                          print('change $date');
-                        }, onConfirm: (date) {
-                          print('confirm $date');
+                          // print('change $date');
+                        }, onConfirm: (selectedDate) {
+                          print('confirm $selectedDate');
                         }, currentTime: DateTime.now(), locale: LocaleType.en);
                       },
                       child: Row(
@@ -898,13 +1100,8 @@ children: <Widget>[
 
             color: GFColor.warning,
 
-            onPressed: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => Otp()),
-              // );
-            },
-            text: 'Submit',
+            onPressed: paynow,
+            text: 'place Order',
             textStyle: TextStyle(fontSize: 17.0, color: Colors.black),
           ),
         ),

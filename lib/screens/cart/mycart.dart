@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:getflutter/colors/gf_color.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/components/badge/gf_button_badge.dart';
-
 import 'package:getflutter/components/button/gf_button.dart';
 import 'package:getflutter/shape/gf_button_shape.dart';
-
 import 'package:grocery_pro/style/style.dart';
+
+import 'package:grocery_pro/service/cart-service.dart';
+import 'package:grocery_pro/service/sentry-service.dart';
+
+SentryError sentryError = new SentryError();
 
 class MyCart extends StatefulWidget {
   final int quantity;
@@ -17,6 +20,151 @@ class MyCart extends StatefulWidget {
 }
 
 class _MyCartState extends State<MyCart> {
+  @override
+  void initState() {
+    super.initState();
+    // getResult();
+    getCartItems();
+  }
+
+  Map<String, dynamic> cartItem;
+  bool isLoading = false, favSelected = false;
+  int count = 1;
+
+  // getResult() async {
+  //   _currentLocation = await _location.getLocation();
+  // }
+
+  void _incrementCount(index) {
+    if (mounted)
+      setState(() {
+        cartItem['cart'][index]['quantity']++;
+      });
+    updateCart(index);
+  }
+
+  void _decrementCount(index) {
+    if (cartItem['cart'][index]['quantity'] > 1) {
+      if (mounted) {
+        setState(() {
+          cartItem['cart'][index]['quantity']--;
+        });
+      }
+    }
+    updateCart(index);
+  }
+
+  // update cart
+  updateCart(index) async {
+    Map<String, dynamic> body = {
+      'cartId': cartItem['_id'],
+      'productId': cartItem['cart'][index]['productId'],
+      'quantity': cartItem['cart'][index]['quantity']
+    };
+
+    await CartService.updateProductToCart(body).then((onValue) {
+      try {
+        if (mounted) {
+          setState(() {
+            cartItem = onValue['response_data'];
+          });
+        }
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
+  }
+
+  // get to cart
+  getCartItems() async {
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
+    await CartService.getProductToCart().then((onValue) {
+      print('cartlist $onValue');
+      try {
+        if (onValue['response_data'] == 'You have not added items to cart') {
+          if (mounted) {
+            setState(() {
+              cartItem = null;
+              isLoading = false;
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              cartItem = onValue['response_data'];
+              isLoading = false;
+            });
+          }
+        }
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
+  }
+
+  //delete from cart
+  deleteCart(index) async {
+    Map<String, dynamic> body = {
+      'cartId': cartItem['_id'],
+      'productId': cartItem['cart'][index]['productId'],
+    };
+    await CartService.deleteDataFromCart(body).then((onValue) {
+      try {
+        if (onValue['response_data'] == 'Your cart is empty') {
+          if (mounted) {
+            setState(() {
+              cartItem = null;
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              cartItem = onValue['response_data'];
+            });
+          }
+        }
+        Navigator.pop(context);
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
+  }
+
+  deleteAllCart(cartId) async {
+    await CartService.deleteAllDataFromCart(cartId).then((onValue) {
+      try {
+        if (onValue['response_data'] == 'Cart deleted successfully') {
+          if (mounted) {
+            setState(() {
+              cartItem = null;
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              cartItem = onValue['response_data'];
+            });
+          }
+        }
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+      // Navigator.pop(context);
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,58 +204,66 @@ class _MyCartState extends State<MyCart> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                  Row(
-                    children: <Widget>[
+                    Row(
+                      children: <Widget>[
                         Column(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 6.0, top: 6.0),
-                          child: Image.asset('lib/assets/images/cherry.png'),
+                          children: <Widget>[
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(bottom: 6.0, top: 6.0),
+                              child: Image.network(
+                                  cartItem['cart'][0]['imageUrl']),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    Column(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(right: 32.0),
-                          child: Text(
-                            'Cherry',
-                            style: heading(),
-                          ),
-                        ),
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(left: 10.0, bottom: 30.0),
-                          child: Text(
-                            '100% Organic',
-                            style: labelStyle(),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 32.0),
-                          child: Row(
-                            children: <Widget>[
-                              Icon(
-                                IconData(
-                                  0xe913,
-                                  fontFamily: 'icomoon',
-                                ),
-                                color: const Color(0xFF00BFA5),
-                                size: 11.0,
+                        Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(right: 32.0),
+                              child: Text(
+                                cartItem['cart'][0]['title'] == null
+                                    ? " "
+                                    : cartItem['cart'][0]['title'],
+                                style: heading(),
                               ),
-                              Text(
-                                '85/kg',
-                                style: TextStyle(
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 10.0, bottom: 30.0),
+                              child: Text(
+                                cartItem['cart'][0]['desc'] == null
+                                    ? " "
+                                    : cartItem['cart'][0]['desc'],
+                                style: labelStyle(),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 32.0),
+                              child: Row(
+                                children: <Widget>[
+                                  Icon(
+                                    IconData(
+                                      0xe913,
+                                      fontFamily: 'icomoon',
+                                    ),
                                     color: const Color(0xFF00BFA5),
-                                    fontSize: 17.0),
-                              )
-                            ],
-                          ),
+                                    size: 11.0,
+                                  ),
+                                  Text(
+                                    cartItem['cart'][0]['desc'] == null
+                                        ? " "
+                                        : cartItem['cart'][0]['title'],
+                                    style: TextStyle(
+                                        color: const Color(0xFF00BFA5),
+                                        fontSize: 17.0),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                    ],
-                  ),
                     Padding(
                       padding: const EdgeInsets.only(left: .0),
                       child: Container(
@@ -172,86 +328,86 @@ class _MyCartState extends State<MyCart> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                 Row(
-                   children: <Widget>[
-                        Stack(
+                    Row(
                       children: <Widget>[
-                        Column(
+                        Stack(
                           children: <Widget>[
-                            Container(
-                           
-                                child: Padding(
-                              padding:
-                                  const EdgeInsets.only(bottom: 6.0, top: 6.0),
-                              child: Image.asset('lib/assets/images/apple.png'),
-                            )),
+                            Column(
+                              children: <Widget>[
+                                Container(
+                                    child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      bottom: 6.0, top: 6.0),
+                                  child: Image.asset(
+                                      'lib/assets/images/apple.png'),
+                                )),
+                              ],
+                            ),
+                            Positioned(
+                              height: 26.0,
+                              width: 117.0,
+                              top: 77.0,
+                              // left: 20.0,
+                              child: GFButtonBadge(
+                                // icon: GFBadge(
+                                //   // text: '6',
+                                //   shape: GFBadgeShape.pills,
+                                // ),
+                                // fullWidthButton: true,
+                                onPressed: () {},
+                                text: '25% off',
+                                color: Colors.deepOrange[300],
+                              ),
+                            )
                           ],
                         ),
-                        Positioned(
-                          height: 26.0,
-                          width: 117.0,
-                          top: 77.0,
-                          // left: 20.0,
-                          child: GFButtonBadge(
-                            // icon: GFBadge(
-                            //   // text: '6',
-                            //   shape: GFBadgeShape.pills,
-                            // ),
-                            // fullWidthButton: true,
-                            onPressed: () {},
-                            text: '25% off',
-                            color: Colors.deepOrange[300],
-                          ),
-                        )
-                      ],
-                    ),
-                    // Column(
-                    //   children: <Widget>[
-                    //     Image.asset('lib/assets/images/grape.png'),
-                    //   ],
-                    // ),
-                    Column(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(right: 32.0),
-                          child: Text(
-                            'Applee',
-                            style: heading(),
-                          ),
-                        ),
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(left: 10.0, bottom: 30.0),
-                          child: Text(
-                            '100% Organic',
-                            style: labelStyle(),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 32.0),
-                          child: Row(
-                            children: <Widget>[
-                              Icon(
-                                IconData(
-                                  0xe913,
-                                  fontFamily: 'icomoon',
-                                ),
-                                color: const Color(0xFF00BFA5),
-                                size: 11.0,
+                        // Column(
+                        //   children: <Widget>[
+                        //     Image.asset('lib/assets/images/grape.png'),
+                        //   ],
+                        // ),
+                        Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(right: 32.0),
+                              child: Text(
+                                'Applee',
+                                style: heading(),
                               ),
-                              Text(
-                                '85/kg',
-                                style: TextStyle(
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 10.0, bottom: 30.0),
+                              child: Text(
+                                '100% Organic',
+                                style: labelStyle(),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 32.0),
+                              child: Row(
+                                children: <Widget>[
+                                  Icon(
+                                    IconData(
+                                      0xe913,
+                                      fontFamily: 'icomoon',
+                                    ),
                                     color: const Color(0xFF00BFA5),
-                                    fontSize: 17.0),
-                              )
-                            ],
-                          ),
+                                    size: 11.0,
+                                  ),
+                                  Text(
+                                    '85/kg',
+                                    style: TextStyle(
+                                        color: const Color(0xFF00BFA5),
+                                        fontSize: 17.0),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                   ],
-                 ),
                     Padding(
                       padding: const EdgeInsets.only(left: .0),
                       child: Container(
@@ -314,95 +470,93 @@ class _MyCartState extends State<MyCart> {
           ),
         ),
       ),
-      bottomNavigationBar: 
-             Container(
-              height: 80,
-              width: MediaQuery.of(context).size.width,
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(left: .0, top: 15.0),
-                    child: Row(
+      bottomNavigationBar: Container(
+        height: 80,
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(left: .0, top: 15.0),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
 // crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          width: 105.0,
-                          height: 45.0,
-                          child: GFButton(
-                            onPressed: () {},
-                            // text: 'Warning',
-                            color: GFColor.dark,
-                            shape: GFButtonShape.square,
+                children: <Widget>[
+                  Container(
+                    width: 105.0,
+                    height: 45.0,
+                    child: GFButton(
+                      onPressed: () {},
+                      // text: 'Warning',
+                      color: GFColor.dark,
+                      shape: GFButtonShape.square,
 
-                            child: Column(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 6.0),
-                                  child: Text('Grand Total :'),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 12.0),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 10.0),
-                                        child: Icon(
-                                          IconData(
-                                            0xe913,
-                                            fontFamily: 'icomoon',
-                                          ),
-                                          color: Colors.white,
-                                          size: 11.0,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(right: 6.0),
-                                        child: Text(
-                                          '123',
-                                          // style: TextStyle(color: const Color(0xFF00BFA5)),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(top: 6.0),
+                            child: Text('Grand Total :'),
                           ),
-                        ),
-                        Container(
-                          width: 210.0,
-                          height: 45.0,
-                          child: GFButton(
-                            onPressed: () {},
-                            shape: GFButtonShape.square,
+                          Padding(
+                            padding: const EdgeInsets.only(left: 12.0),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
-                                Text(
-                                  'Add to cart ',
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                                Icon(
-                                  IconData(
-                                    0xe911,
-                                    fontFamily: 'icomoon',
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10.0),
+                                  child: Icon(
+                                    IconData(
+                                      0xe913,
+                                      fontFamily: 'icomoon',
+                                    ),
+                                    color: Colors.white,
+                                    size: 11.0,
                                   ),
-                                  // color: const Color(0xFF00BFA5),
-                                  // size: 1.0,
                                 ),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 6.0),
+                                  child: Text(
+                                    '123',
+                                    // style: TextStyle(color: const Color(0xFF00BFA5)),
+                                  ),
+                                )
                               ],
                             ),
-                            color: GFColor.warning,
                           ),
-                        )
-                      ],
+                        ],
+                      ),
                     ),
                   ),
+                  Container(
+                    width: 210.0,
+                    height: 45.0,
+                    child: GFButton(
+                      onPressed: () {},
+                      shape: GFButtonShape.square,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Text(
+                            'Add to cart ',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          Icon(
+                            IconData(
+                              0xe911,
+                              fontFamily: 'icomoon',
+                            ),
+                            // color: const Color(0xFF00BFA5),
+                            // size: 1.0,
+                          ),
+                        ],
+                      ),
+                      color: GFColor.warning,
+                    ),
+                  )
                 ],
               ),
             ),
-        
+          ],
+        ),
+      ),
     );
   }
 }

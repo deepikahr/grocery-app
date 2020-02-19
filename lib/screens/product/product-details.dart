@@ -32,7 +32,7 @@ int index = 0;
 class _ProductDetailsState extends State<ProductDetails> {
   addToCart(data, buy) async {
     Map<String, dynamic> buyNowProduct = {
-      'productId': data['_id'],
+      'productId': data['_id'].toString(),
       'quantity': 1,
       "price": double.parse(
           widget.productDetail['variant'][index]['price'].toString()),
@@ -41,6 +41,7 @@ class _ProductDetailsState extends State<ProductDetails> {
     print('buyNowProduct, $buyNowProduct');
     if (buy == 'cart') {
       await CartService.addProductToCart(buyNowProduct).then((onValue) {
+        print('value of car add product $onValue');
         try {
           Navigator.push(
             context,
@@ -58,7 +59,7 @@ class _ProductDetailsState extends State<ProductDetails> {
       });
     } else {
       await ProductService.getBuyNowInfor(buyNowProduct).then((onValue) {
-        print('checkout $onValue');
+        // print('checkout $onValue');
         try {
           Map<String, dynamic> cartItem = {
             'cart': [widget.productDetail],
@@ -74,6 +75,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                   builder: (BuildContext context) =>
                       Checkout(cartItem: cartItem, buy: 'buy', quantity: 1)),
             );
+            print(cartItem);
           }
         } catch (error, stackTrace) {
           sentryError.reportError(error, stackTrace);
@@ -93,225 +95,182 @@ class _ProductDetailsState extends State<ProductDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: Colors.transparent,
-      //   automaticallyImplyLeading: false,
-      //   elevation: 0.0,
-      // ),
       body: SingleChildScrollView(
           child: Column(
         children: <Widget>[
           Stack(
             children: <Widget>[
-              // Container(
-              //     // height: MediaQuery.of(context).size.height,
-              //     decoration: BoxDecoration(
-              //         borderRadius: BorderRadius.all(
-              //       Radius.circular(30),
-              //     )),
-              //     width: MediaQuery.of(context).size.width,
-               
-
-              //     ),
-                   Column(
-                     children: <Widget>[
-Image.network(
-                      widget.productDetail['imageUrl'],
-                      height: 370,
-                      width: MediaQuery.of(context).size.width,
-                      fit: BoxFit.fill,
-                    ),
-              //       Container(
-              //        decoration: new BoxDecoration(
-              //             // shape: BoxShape.circle,
-                     
-              // borderRadius: BorderRadius.only(
-              //     bottomLeft: Radius.circular(20),
-              //     bottomRight: Radius.circular(20)),
-              //             image: new DecorationImage(
-              //                 fit: BoxFit.fill,
-              //                 image: new NetworkImage(
-              //                     "imageUrl"))),
-              //       ),
-Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 10.0, top: 5),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(right: 0.0, top: 3.0),
-                      child: Text(
-                        '${widget.productDetail['title'][0].toUpperCase()}${widget.productDetail['title'].substring(1)}',
-                        style: titleBold(),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 10.0, top: 3.0),
-                    
-                        child: Text(
-                          '${widget.productDetail['description'][0].toUpperCase()}${widget.productDetail['description'].substring(1)}',
-                          style: TextStyle(fontSize: 10.0),
-                        ),
-                     
-                    ),
-                    Padding(
-                        padding: const EdgeInsets.only(right: 0.0, top: 5.0),
-                        child: Text(
-                          '${Constants.currency} ${widget.productDetail['variant'][0]['price']}',
-                          style: TextStyle(
-                              color: const Color(0xFF00BFA5), fontSize: 17.0),
-                        ))
-                  ],
-                ),
-              ),
               Column(
                 children: <Widget>[
+                  Image.network(
+                    widget.productDetail['imageUrl'],
+                    height: 370,
+                    width: MediaQuery.of(context).size.width,
+                    fit: BoxFit.fill,
+                  ),
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
                       Padding(
-                        padding: const EdgeInsets.only(top: 20.0, left: 0.0),
-                        child: RatingBar(
-                          initialRating: 3,
-                          minRating: 1,
-                          direction: Axis.horizontal,
-                          allowHalfRating: true,
-                          itemCount: 5,
-                          itemSize: 20.0,
-                          itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                          itemBuilder: (context, _) => Icon(
-                            Icons.star,
-                            color: Colors.red,
-                            size: 15.0,
-                          ),
-                          onRatingUpdate: (rating) {
-                            print(rating);
-                          },
+                        padding: const EdgeInsets.only(left: 10.0, top: 5),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(right: 0.0, top: 3.0),
+                              child: Text(
+                                '${widget.productDetail['title'][0].toUpperCase()}${widget.productDetail['title'].substring(1)}',
+                                style: titleBold(),
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(right: 10.0, top: 3.0),
+                              child: Text(
+                                '${widget.productDetail['description'][0].toUpperCase()}${widget.productDetail['description'].substring(1)}',
+                                style: TextStyle(fontSize: 10.0),
+                              ),
+                            ),
+                            Padding(
+                                padding:
+                                    const EdgeInsets.only(right: 0.0, top: 5.0),
+                                child: Text(
+                                  '${Constants.currency} ${widget.productDetail['variant'][0]['price']}',
+                                  style: TextStyle(
+                                      color: const Color(0xFF00BFA5),
+                                      fontSize: 17.0),
+                                ))
+                          ],
                         ),
                       ),
-                      
+                      Column(
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(top: 20.0, left: 0.0),
+                                child: RatingBar(
+                                  initialRating: 3,
+                                  minRating: 1,
+                                  direction: Axis.horizontal,
+                                  allowHalfRating: true,
+                                  itemCount: 5,
+                                  itemSize: 20.0,
+                                  itemPadding:
+                                      EdgeInsets.symmetric(horizontal: 4.0),
+                                  itemBuilder: (context, _) => Icon(
+                                    Icons.star,
+                                    color: Colors.red,
+                                    size: 15.0,
+                                  ),
+                                  onRatingUpdate: (rating) {
+                                    print(rating);
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ],
                   ),
-       
                 ],
               ),
-            ],
-          ),
-                     ],
-                   ),
               Positioned(
                 top: 310.0,
                 left: 25.0,
                 child: Container(
                   // height: 64.0,
-                  width:130.0,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50.0)
-                  ),
-                  
-                  // child: InkWell(
-                  //   child: GFButton(
-                  //   // onPressed: () => setState(() => highlight = !highlight),
-                  //   boxShadow: BoxShadow(color: Colors.black),
-                  //   child: Text('${widget.productDetail['variant'][0]['unit']}',
-                  //       style: TextStyle(color: Colors.black)),
-                  //   // color: pressAttention ? Colors.grey : Colors.blue,
-                  //   type: GFButtonType.solid, onPressed: () {  },
-                  //   // size: GFSize.small,
-                  // ),
-                  // )
-                  
-                 child:GFAccordion(
+                  width: 130.0,
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(50.0)),
+
+                  child: GFAccordion(
                     // titleborderColor: GFColors.DARK,
-                      title: "Variants",
-                      expandedTitlebackgroundColor: Colors.grey[300],
-              collapsedTitlebackgroundColor: Colors.grey[300],
+                    title: "Variants",
+                    expandedTitlebackgroundColor: Colors.grey[300],
+                    collapsedTitlebackgroundColor: Colors.grey[300],
 
-                      contentChild: Container(
-                         decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    new BoxShadow(
-                        color: Colors.black38,
-                        // blurRadius: 1.0,
-                        offset: Offset(0.0, 0.50)),
-                  ],
-                ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: <Widget>[
-                            SizedBox(height:10.0),
-                            Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-
-                              children: <Widget>[
-                                Column(
-                                  children: <Widget>[
-                                    Text('1kg'),
-                                  ],
-                                ),
-                                Column(
-                                  children: <Widget>[
-                                    Row(
-                                      children: <Widget>[
-                                        Icon(
-                                              IconData(
-                                                0xe913,
-                                                fontFamily: 'icomoon',
-                                              ),
-                                              color: Colors.black,
-                                              size: 11.0,
-                                            ),
-                                            Text('122')
-                                      ],
-                                    ),
-                                  ],
-                                ),
-
-                              ],
-                            ),
-                            SizedBox(height:10.0),
-Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-
-                              children: <Widget>[
-                                Column(
-                                  children: <Widget>[
-                                    Text('1kg'),
-                                  ],
-                                ),
-                                Column(
-                                  children: <Widget>[
-                                    Row(
-                                      children: <Widget>[
-                                        Icon(
-                                              IconData(
-                                                0xe913,
-                                                fontFamily: 'icomoon',
-                                              ),
-                                              color: Colors.black,
-                                              size: 11.0,
-                                            ),
-                                            Text('122')
-                                      ],
-                                    ),
-                                  ],
-                                ),
-
-                              ],
-                            ),
-                            SizedBox(height:10.0),
-                          ],
-                        ),
+                    contentChild: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: [
+                          new BoxShadow(
+                              color: Colors.black38,
+                              // blurRadius: 1.0,
+                              offset: Offset(0.0, 0.50)),
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: <Widget>[
+                          SizedBox(height: 10.0),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: <Widget>[
+                              Column(
+                                children: <Widget>[
+                                  Text('1kg'),
+                                ],
+                              ),
+                              Column(
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Icon(
+                                        IconData(
+                                          0xe913,
+                                          fontFamily: 'icomoon',
+                                        ),
+                                        color: Colors.black,
+                                        size: 11.0,
+                                      ),
+                                      Text('122')
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10.0),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: <Widget>[
+                              Column(
+                                children: <Widget>[
+                                  Text('1kg'),
+                                ],
+                              ),
+                              Column(
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Icon(
+                                        IconData(
+                                          0xe913,
+                                          fontFamily: 'icomoon',
+                                        ),
+                                        color: Colors.black,
+                                        size: 11.0,
+                                      ),
+                                      Text('122')
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10.0),
+                        ],
                       ),
                     ),
-               
+                  ),
+                ),
               ),
-               ),
               Positioned(
                 top: 315.0,
                 left: 280.0,
@@ -353,107 +312,6 @@ Row(
               ),
             ],
           ),
-//           Stack(
-//             children: <Widget>[
-// Positioned(
-//   bottom: 100,
-//   child: GFAccordion(
-//   title: 'hgch',
-//   contentChild: Text('ytdcyt'),))
-//             ],
-//           ),
-         
-          // Padding(
-          //   padding: const EdgeInsets.only(top: 20.0),
-          //   child: GFButton(
-          //     onPressed: () {},
-          //     child: Text(
-          //       "Buy now",
-          //     ),
-          //     type: GFButtonType.outline,
-          //     color: GFColor.dark,
-          //     size: GFSize.large,
-          //     blockButton: true,
-          //   ),
-          // ),
-          // Padding(
-          //   padding: const EdgeInsets.only(left: 24.0, top: 15.0),
-          //   child: Row(
-          //     children: <Widget>[
-          //       Container(
-          //         width: 105.0,
-          //         height: 45.0,
-          //         child: GFButton(
-          //           onPressed: () {},
-          //           // text: 'Warning',
-          //           color: GFColor.dark,
-          //           shape: GFButtonShape.square,
-
-          //           child: Column(
-          //             children: <Widget>[
-          //               Padding(
-          //                 padding: const EdgeInsets.only(top: 6.0),
-          //                 child: Text('1kg:'),
-          //               ),
-          //               Padding(
-          //                 padding: const EdgeInsets.only(left: 12.0),
-          //                 child: Row(
-          //                   children: <Widget>[
-          //                     Padding(
-          //                       padding: const EdgeInsets.only(left: 10.0),
-          //                       child: Icon(
-          //                         IconData(
-          //                           0xe913,
-          //                           fontFamily: 'icomoon',
-          //                         ),
-          //                         color: Colors.white,
-          //                         size: 11.0,
-          //                       ),
-          //                     ),
-          //                     Padding(
-          //                       padding: const EdgeInsets.only(right: 6.0),
-          //                       child: Text(
-          //                         '123',
-          //                         // style: TextStyle(color: const Color(0xFF00BFA5)),
-          //                       ),
-          //                     )
-          //                   ],
-          //                 ),
-          //               ),
-          //             ],
-          //           ),
-          //         ),
-          //       ),
-          //       Container(
-          //         width: 210.0,
-          //         height: 45.0,
-          //         child: GFButton(
-          //           onPressed: () {},
-          //           shape: GFButtonShape.square,
-          //           child: Row(
-          //             mainAxisAlignment: MainAxisAlignment.end,
-          //             children: <Widget>[
-          //               Text(
-          //                 'Add to cart ',
-          //                 style: TextStyle(color: Colors.black),
-          //               ),
-          //               Icon(
-          //                 IconData(
-          //                   0xe911,
-          //                   fontFamily: 'icomoon',
-          //                 ),
-          //                 // color: const Color(0xFF00BFA5),
-          //                 // size: 1.0,
-          //               ),
-          //             ],
-          //           ),
-          //           color: GFColor.warning,
-          //         ),
-          //       )
-          //     ],
-          //   ),
-          // ),
-         
         ],
       )),
       bottomNavigationBar: Container(
@@ -481,7 +339,6 @@ Row(
               padding: const EdgeInsets.only(left: .0, top: 15.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-
                 children: <Widget>[
                   Container(
                     width: 105.0,
@@ -527,37 +384,34 @@ Row(
                       ),
                     ),
                   ),
-                
-                          Container(
-                            width: 210.0,
-                            height: 45.0,
-                            child: GFButton(
-                              onPressed: () {
-                                addToCart(widget.productDetail, 'cart');
-                              },
-                              shape: GFButtonShape.square,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: <Widget>[
-                                  Text(
-                                    'Add to cart ',
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                  Icon(
-                                    IconData(
-                                      0xe911,
-                                      fontFamily: 'icomoon',
-                                    ),
-                                    // color: const Color(0xFF00BFA5),
-                                    // size: 1.0,
-                                  ),
-                                ],
-                              ),
-                              color: GFColor.warning,
-                            ),
+                  Container(
+                    width: 210.0,
+                    height: 45.0,
+                    child: GFButton(
+                      onPressed: () {
+                        addToCart(widget.productDetail, 'cart');
+                      },
+                      shape: GFButtonShape.square,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Text(
+                            'Add to cart ',
+                            style: TextStyle(color: Colors.black),
                           ),
-                       
-                  
+                          Icon(
+                            IconData(
+                              0xe911,
+                              fontFamily: 'icomoon',
+                            ),
+                            // color: const Color(0xFF00BFA5),
+                            // size: 1.0,
+                          ),
+                        ],
+                      ),
+                      color: GFColor.warning,
+                    ),
+                  ),
                 ],
               ),
             ),

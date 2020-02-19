@@ -37,7 +37,12 @@ class _AddAddressState extends State<AddAddress> {
   Location _location = new Location();
   bool chooseAddress = false, isLoading = false;
   StreamSubscription<LocationData> locationSubscription;
-  String flatName, flatNo, street, locality, city, pincode;
+  // String flatName, flatNo, street, locality, city, pincode;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   // var addressData;
   Map<String, dynamic> address = {
@@ -52,14 +57,14 @@ class _AddAddressState extends State<AddAddress> {
     if (chooseAddress && widget.updateAddressID == null) {
       List data = addressData['formatted_address'].toString().split(',');
       Map<String, dynamic> body = {
-        "flatNumber": data[1],
-        "flatName": data[0] + ' ,' + data[1],
-        "street": addressData['address_components'][0]['long_name'],
+        "flatNumber": data[0],
+        "landMark": addressData['address_components'][0]['long_name'],
         "locality": addressData['address_components'][2]['long_name'] +
             ',' +
             addressData['address_components'][1]['long_name'],
         "city": addressData['address_components'][3]['long_name'],
-        "postalCode": addressData['address_components'][6]['long_name']
+        "postalCode": addressData['address_components'][6]['long_name'],
+        "state": addressData['address_components'][3]['long_name'],
       };
       await AddressService.addAddress(body).then((onValue) {
         try {
@@ -202,9 +207,9 @@ class _AddAddressState extends State<AddAddress> {
               Padding(
                 padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                 child: TextFormField(
-                    initialValue: widget.updateAddressID['flatNumber'] == null
-                        ? ""
-                        : widget.updateAddressID['flatNumber'],
+                    // initialValue: widget.updateAddressID['flatNumber'] != null
+                    //     ? widget.updateAddressID['flatNumber']
+                    //     : "#123",
                     style: labelStyle(),
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
@@ -246,9 +251,9 @@ class _AddAddressState extends State<AddAddress> {
               Padding(
                 padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                 child: TextFormField(
-                    initialValue: widget.updateAddressID['flatNumber'] == null
-                        ? ""
-                        : widget.updateAddressID['flatNumber'],
+                    // initialValue: widget.updateAddressID['flatNumber'] == null
+                    //     ? ""
+                    //     : widget.updateAddressID['flatNumber'],
                     style: labelStyle(),
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
@@ -290,9 +295,9 @@ class _AddAddressState extends State<AddAddress> {
               Padding(
                 padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                 child: TextFormField(
-                    initialValue: widget.updateAddressID['flatNumber'] == null
-                        ? ""
-                        : widget.updateAddressID['flatNumber'],
+                    // initialValue: widget.updateAddressID['flatNumber'] == null
+                    //     ? ""
+                    //     : widget.updateAddressID['flatNumber'],
                     style: labelStyle(),
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
@@ -334,9 +339,9 @@ class _AddAddressState extends State<AddAddress> {
               Padding(
                 padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                 child: TextFormField(
-                    initialValue: widget.updateAddressID['flatNumber'] == null
-                        ? ""
-                        : widget.updateAddressID['flatNumber'],
+                    // initialValue: widget.updateAddressID['flatNumber'] == null
+                    //     ? ""
+                    //     : widget.updateAddressID['flatNumber'],
                     style: labelStyle(),
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
@@ -378,9 +383,9 @@ class _AddAddressState extends State<AddAddress> {
               Padding(
                 padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                 child: TextFormField(
-                    initialValue: widget.updateAddressID['flatNumber'] == null
-                        ? ""
-                        : widget.updateAddressID['flatNumber'],
+                    // initialValue: widget.updateAddressID['flatNumber'] == null
+                    //     ? ""
+                    //     : widget.updateAddressID['flatNumber'],
                     style: labelStyle(),
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
@@ -422,9 +427,9 @@ class _AddAddressState extends State<AddAddress> {
               Padding(
                 padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                 child: TextFormField(
-                    initialValue: widget.updateAddressID['flatNumber'] == null
-                        ? ""
-                        : widget.updateAddressID['flatNumber'],
+                    // initialValue: widget.updateAddressID['flatNumber'] == null
+                    //     ? ""
+                    //     : widget.updateAddressID['flatNumber'],
                     style: labelStyle(),
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
