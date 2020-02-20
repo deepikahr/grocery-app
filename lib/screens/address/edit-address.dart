@@ -57,7 +57,7 @@ class _EditAddressState extends State<EditAddress> {
     print('I am here');
     // if (chooseAddress && widget.updateAddressID == null) {
     //   List data = addressData['formatted_address'].toString().split(',');
-    //   Map<String, dynamic> body = {
+    //   Map<String, dyn amic> body = {
     //     "flatNumber": data[0],
     //     "landMark": addressData['address_components'][0]['long_name'],
     //     "locality": addressData['address_components'][2]['long_name'] +
