@@ -12,6 +12,7 @@ import 'package:grocery_pro/main.dart';
 import 'package:getflutter/components/alert/gf_alert.dart';
 import 'package:grocery_pro/screens/login/login.dart';
 import 'package:grocery_pro/service/auth-service.dart';
+import 'package:grocery_pro/service/product-service.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -25,6 +26,8 @@ class _ProfileState extends State<Profile> {
   Map<String, dynamic> userInfo;
   bool isLoading = false;
   bool isGetTokenLoading = false;
+  List orderList = List();
+  String userID;
   bool isProfile = true;
   @override
   void initState() {
@@ -58,14 +61,14 @@ class _ProfileState extends State<Profile> {
       });
     }
     await LoginService.getUserInfo().then((onValue) {
-      print(onValue);
       try {
         if (mounted) {
           setState(() {
             isLoading = false;
             userInfo = onValue['response_data']['userInfo'];
             print('userData at profile');
-            print(userInfo);
+            print(userInfo['_id']);
+            userID = userInfo['_id'];
           });
         }
       } catch (error, stackTrace) {
@@ -359,7 +362,9 @@ class _ProfileState extends State<Profile> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Orders()),
+                                    builder: (context) => Orders(
+                                          userID: userID,
+                                        )),
                               );
                             },
                             child: Container(

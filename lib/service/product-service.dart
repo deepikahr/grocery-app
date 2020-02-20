@@ -107,7 +107,7 @@ class ProductService {
     return json.decode(response.body);
   }
 
-  static Future<Map<String, dynamic>> buyNow(body) async {
+  static Future<Map<String, dynamic>> quickBuyNow(body) async {
     String token;
     await Common.getToken().then((onValue) {
       token = onValue;
@@ -133,6 +133,21 @@ class ProductService {
       'Content-Type': 'application/json',
       'Authorization': 'bearer $token'
     });
+    return json.decode(response.body);
+  }
+
+//order info by user ID
+  static Future<Map<String, dynamic>> getOrderByUserID(userID) async {
+    String token;
+    await Common.getToken().then((onValue) {
+      token = onValue;
+    });
+    final response = await client.get(
+        Constants.baseURL + "orders/history/of/user/mobile/data/$userID",
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'bearer $token'
+        });
     return json.decode(response.body);
   }
 
