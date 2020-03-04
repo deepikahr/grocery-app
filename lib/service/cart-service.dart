@@ -9,6 +9,7 @@ class CartService {
   // add product in cart
   static Future<Map<String, dynamic>> addProductToCart(body) async {
     String token;
+    print(body);
     await Common.getToken().then((onValue) {
       token = onValue;
     });
@@ -62,6 +63,8 @@ class CartService {
           'Content-Type': 'application/json',
           'Authorization': 'bearer $token'
         });
+    print('000000000000000000000000000000');
+    print(json.decode(response.body));
     return json.decode(response.body);
   }
 

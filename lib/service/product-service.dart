@@ -108,11 +108,18 @@ class ProductService {
   }
 
   static Future<Map<String, dynamic>> quickBuyNow(body) async {
+    print('ajgar...........');
+    print(body);
+    print('subtotal ${body['cart']['subTotal']}');
+    print(body['cart']['subTotal'].runtimeType);
+    print('grandtotal ${body['cart']['grandTotal']}');
+    print(body['cart']['grandTotal'].runtimeType);
+
     String token;
     await Common.getToken().then((onValue) {
       token = onValue;
     });
-    print('checkout $body');
+    // print('checkout $body');
     final response = await client.post(Constants.baseURL + "orders/quick/buy",
         body: json.encode(body),
         headers: {

@@ -30,7 +30,7 @@ class _SavedItemsState extends State<SavedItems> {
   getToken() async {
     await Common.getToken().then((onValue) {
       // print("i am here");
-      print(onValue);
+      // print(onValue);
       if (onValue != null) {
         setState(() {
           isGetTokenLoading = true;

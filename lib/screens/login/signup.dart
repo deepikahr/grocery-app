@@ -50,18 +50,18 @@ class _SignupState extends State<Signup> {
         "password": password,
         "role": "User"
       };
-      print('Value on login');
-      print(body);
+      // print('Value on login');
+      // print(body);
       await LoginService.signUp(body).then((onValue) {
         try {
           if (mounted) {
             setState(() {
-              print('I am here too');
+              // print('I am here too');
               registerationLoading = false;
             });
           }
-          print('I am here');
-          print(body);
+          // print('I am here');
+          // print(body);
           if (onValue['response_code'] == 201) {
             // showAlert('${onValue['response_data']}');
             showDialog(

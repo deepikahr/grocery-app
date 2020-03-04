@@ -83,7 +83,7 @@ class _SearchState extends State<Search> {
 //              ),
                 onItemSelected: (item) {
                   setState(() {
-                    print('ssssssss $item');
+                    // print('ssssssss $item');
                   });
                 }),
           ),
@@ -221,7 +221,7 @@ class _SearchState extends State<Search> {
                                 size: 15.0,
                               ),
                               onRatingUpdate: (rating) {
-                                print(rating);
+                                // print(rating);
                               },
                             ),
                           )

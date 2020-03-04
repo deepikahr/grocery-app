@@ -54,7 +54,7 @@ class _EditAddressState extends State<EditAddress> {
     "state": null
   };
   updateAddress() async {
-    print('I am here');
+    // print('I am here');
     // if (chooseAddress && widget.updateAddressID == null) {
     //   List data = addressData['formatted_address'].toString().split(',');
     //   Map<String, dyn amic> body = {
@@ -91,7 +91,7 @@ class _EditAddressState extends State<EditAddress> {
       _formKey.currentState.save();
       AddressService.updateAddress(address, widget.updateAddressID['_id'])
           .then((onValue) {
-        print('address at update address $onValue');
+        // print('address at update address $onValue');
         try {
           if (mounted) {
             setState(() {

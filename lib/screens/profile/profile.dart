@@ -37,8 +37,8 @@ class _ProfileState extends State<Profile> {
 
   getToken() async {
     await Common.getToken().then((onValue) {
-      print('Token at the profile');
-      print(onValue);
+      // print('Token at the profile');
+      // print(onValue);
       if (onValue != null) {
         setState(() {
           isGetTokenLoading = true;
@@ -66,8 +66,8 @@ class _ProfileState extends State<Profile> {
           setState(() {
             isLoading = false;
             userInfo = onValue['response_data']['userInfo'];
-            print('userData at profile');
-            print(userInfo['_id']);
+            // print('userData at profile');
+            // print(userInfo['_id']);
             userID = userInfo['_id'];
           });
         }
@@ -81,8 +81,8 @@ class _ProfileState extends State<Profile> {
 
   logout() {
     Common.setToken(null).then((onValue) async {
-      print('logout ');
-      print(onValue);
+      // print('logout ');
+      // print(onValue);
       // SharedPreferences prefs = await SharedPreferences.getInstance();
       if (mounted) {
         setState(() {
@@ -103,7 +103,7 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     Widget itemCard = Container(
-      padding: const EdgeInsets.only(right: 15.0,left: 15.0),
+      padding: const EdgeInsets.only(right: 15.0, left: 15.0),
       height: 141,
       width: 232,
       decoration: BoxDecoration(
@@ -162,7 +162,7 @@ class _ProfileState extends State<Profile> {
         ],
       ),
     );
-     Widget addCard = Container(
+    Widget addCard = Container(
       padding: const EdgeInsets.only(left: 15.0),
       height: 141,
       width: 232,
@@ -171,9 +171,16 @@ class _ProfileState extends State<Profile> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-      Icon(Icons.add,size: 40,color: Colors.black54,),
-      SizedBox(height:5),
-      Text('Add new card',style: TextStyle(color: Colors.black54),)
+          Icon(
+            Icons.add,
+            size: 40,
+            color: Colors.black54,
+          ),
+          SizedBox(height: 5),
+          Text(
+            'Add new card',
+            style: TextStyle(color: Colors.black54),
+          )
         ],
       ),
     );
@@ -223,14 +230,15 @@ class _ProfileState extends State<Profile> {
                                                   style: titleBold(),
                                                 )
                                               : Row(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: <Widget>[
-                                                  Text(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    Text(
                                                       '${userInfo['firstName']}',
                                                       style: titleBold(),
                                                     ),
-                                                ],
-                                              )),
+                                                  ],
+                                                )),
                                       userInfo == null &&
                                               userInfo['email'] == null
                                           ? Text(
@@ -240,21 +248,24 @@ class _ProfileState extends State<Profile> {
                                                   fontSize: 14.0),
                                             )
                                           : Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              Text(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: <Widget>[
+                                                Text(
                                                   '${userInfo['email']}',
                                                   style: TextStyle(
-                                                      fontWeight: FontWeight.w300,
+                                                      fontWeight:
+                                                          FontWeight.w300,
                                                       fontSize: 14.0),
                                                 ),
-                                            ],
-                                          ),
+                                              ],
+                                            ),
                                       Padding(
                                         padding: const EdgeInsets.only(
                                             top: 5.0, right: .0),
                                         child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
                                           children: <Widget>[
                                             Text('+91-9756 55 83 13'),
                                           ],
@@ -317,7 +328,8 @@ class _ProfileState extends State<Profile> {
                                     child: Row(
                                       children: <Widget>[
                                         Padding(
-                                          padding: const EdgeInsets.only(right:15.0),
+                                          padding: const EdgeInsets.only(
+                                              right: 15.0),
                                           child: itemCard,
                                         ),
                                         addCard,
