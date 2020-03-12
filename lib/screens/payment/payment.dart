@@ -99,7 +99,7 @@ class _PaymentState extends State<Payment> {
                           Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                  builder: (BuildContext context) => Payment(
+                                  builder: (BuildContext context) => Home(
                                         currentIndex: 0,
                                       )),
                               (Route<dynamic> route) => false);

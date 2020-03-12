@@ -190,6 +190,50 @@ class _MyCartState extends State<MyCart> {
     }).catchError((error) {
       sentryError.reportError(error, null);
     });
+    print('cartItem $cartItem');
+  }
+
+  onProceed() {
+    if (cartItem == null) {
+      showDialog<Null>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Container(
+            width: 270.0,
+            child: new AlertDialog(
+              // title: new Text('Thank You ...!!'),
+              content: new SingleChildScrollView(
+                child: new ListBody(
+                  children: <Widget>[
+                    new Text('Your Cart Is Empty.'),
+                    new Text('Add Some Items To Proceed To Checkout.'),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text('ok'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    } else {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => Checkout(
+                    cartItem: cartItem,
+                    buy: 'cart',
+                    quantity: cartItem['cart'].length.toString(),
+                    id: cartItem['_id'].toString(),
+                  )));
+    }
   }
 
   //delete from cart
@@ -200,16 +244,17 @@ class _MyCartState extends State<MyCart> {
     };
     await CartService.deleteDataFromCart(body).then((onValue) {
       try {
-        if (onValue['response_data'] == 'Your cart is empty') {
+        if (onValue['response_data'] == 'You have not added items to cart') {
           if (mounted) {
             setState(() {
               cartItem = null;
             });
           }
+          getCartItems();
         } else {
           if (mounted) {
             setState(() {
-              // cartItem = onValue['response_data'];
+              cartItem = onValue['response_data'];
             });
           }
         }
@@ -259,6 +304,7 @@ class _MyCartState extends State<MyCart> {
               cartItem = null;
             });
           }
+          getCartItems();
         } else {
           if (mounted) {
             setState(() {
@@ -301,7 +347,7 @@ class _MyCartState extends State<MyCart> {
               ? Center(child: CircularProgressIndicator())
               : ListView(
                   children: <Widget>[
-                    cartItem.length == 0
+                    cartItem == null
                         ? Center(
                             child:
                                 Image.asset('lib/assets/images/no-orders.png'))
@@ -318,10 +364,13 @@ class _MyCartState extends State<MyCart> {
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       bottom: 8.0, left: 10.0),
-                                  child: Text(
-                                    '${cartItem['cart'].length}' + '  Items',
-                                    style: comments(),
-                                  ),
+                                  child: cartItem == null
+                                      ? Text('0 Items')
+                                      : Text(
+                                          '${cartItem['cart'].length}' +
+                                              '  Items',
+                                          style: comments(),
+                                        ),
                                 ),
                               ],
                             ),
@@ -331,20 +380,24 @@ class _MyCartState extends State<MyCart> {
                             child: ListView.builder(
                               physics: ScrollPhysics(),
                               shrinkWrap: true,
-                              itemCount: cartItem['cart'].length == null
+                              itemCount: cartItem == null
+                                  // &&
+                                  // cartItem['cart'].length == null
                                   ? 0
                                   : cartItem['cart'].length,
                               itemBuilder: (BuildContext context, int i) {
                                 return GFListTile(
                                   avatar: Container(
-                                      height: 100,
-                                      width: 100,
-                                      child: cartItem['cart'][i]['imageUrl'] ==
-                                              null
-                                          ? Image.asset(
-                                              'lib/assets/images/no-orders.png')
-                                          : Image.network(
-                                              cartItem['cart'][i]['imageUrl'])),
+                                    height: 100,
+                                    width: 100,
+                                    child: cartItem['cart'][i]['imageUrl'] ==
+                                            null
+                                        ? Image.asset(
+                                            'lib/assets/images/no-orders.png')
+                                        : Image.network(
+                                            cartItem['cart'][i]['imageUrl'],
+                                          ),
+                                  ),
                                   title: Padding(
                                     padding: const EdgeInsets.only(
                                         bottom: 18.0, right: 25.0),
@@ -440,9 +493,14 @@ class _MyCartState extends State<MyCart> {
                                                       const EdgeInsets.only(
                                                           top: 14.0),
                                                   child: Container(
-                                                      child: Text(
-                                                    '${cartItem['cart'][i]['quantity']}',
-                                                  )),
+                                                      child: cartItem['cart'][i]
+                                                                  [
+                                                                  'quantity'] ==
+                                                              null
+                                                          ? Text('0')
+                                                          : Text(
+                                                              '${cartItem['cart'][i]['quantity']}',
+                                                            )),
                                                 ),
                                                 Text(''),
                                                 InkWell(
@@ -483,9 +541,9 @@ class _MyCartState extends State<MyCart> {
                         ],
                       ),
                     ),
-                    // SizedBox(
-                    //   height: 20.0,
-                    // ),
+                    SizedBox(
+                      height: 20.0,
+                    ),
                     Container(
                       color: Colors.white54,
                       child: Row(
@@ -671,11 +729,14 @@ class _MyCartState extends State<MyCart> {
                                       Padding(
                                         padding:
                                             const EdgeInsets.only(right: 6.0),
-                                        child: Text(
-                                          '${cartItem['grandTotal']}',
-                                          style: TextStyle(
-                                              color: const Color(0xFF00BFA5)),
-                                        ),
+                                        child: cartItem == null
+                                            ? Text("  0")
+                                            : Text(
+                                                '${cartItem['grandTotal']}',
+                                                style: TextStyle(
+                                                    color: const Color(
+                                                        0xFF00BFA5)),
+                                              ),
                                       )
                                     ],
                                   ),
@@ -688,20 +749,21 @@ class _MyCartState extends State<MyCart> {
                           width: 210.0,
                           height: 45.0,
                           child: GFButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Checkout(
-                                          cartItem: cartItem,
-                                          buy: 'cart',
-                                          quantity: cartItem['cart']
-                                              .length
-                                              .toString(),
-                                          id: cartItem['_id'].toString(),
-                                        )),
-                              );
-                            },
+                            onPressed: onProceed,
+                            // () {
+                            //   Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => Checkout(
+                            //               cartItem: cartItem,
+                            //               buy: 'cart',
+                            //               quantity: cartItem['cart']
+                            //                   .length
+                            //                   .toString(),
+                            //               id: cartItem['_id'].toString(),
+                            //             )),
+                            //   );
+                            // },
                             shape: GFButtonShape.square,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,

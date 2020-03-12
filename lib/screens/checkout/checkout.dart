@@ -9,7 +9,7 @@ import 'package:grocery_pro/service/auth-service.dart';
 import 'package:grocery_pro/screens/address/add-address.dart';
 import 'package:grocery_pro/service/address-service.dart';
 import 'package:grocery_pro/screens/address/edit-address.dart';
-import 'package:grocery_pro/screens/home/home.dart';
+import 'package:grocery_pro/service/common.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -28,6 +28,8 @@ enum SingingCharacter { lafayette, jefferson }
 
 class _CheckoutState extends State<Checkout> {
   // Declare this variable
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _recipientformKey = GlobalKey<FormState>();
   int selectedRadio;
@@ -46,6 +48,7 @@ class _CheckoutState extends State<Checkout> {
   bool isProdcutDetailLoading = false;
 
   var selectedAddress;
+  var selectedTime;
   var selectedDeliveryAddress;
 
   int cardPayment = 0;
@@ -76,13 +79,18 @@ class _CheckoutState extends State<Checkout> {
   bool addressLoading = false;
   bool deliverySlotsLoading = false;
   int groupValue;
+  int groupValue1;
+  int groupValue2;
+  int daySlot;
   bool deliveryAddress = false;
   var currentTime = new DateTime.now();
   int i = 0;
   bool isPlaceOrderLoading = false;
   String deliveryMessage, name, mobileNumber, cardId;
-  DateTime selectedDate;
+  // DateTime selectedDate;
+  var selectedDate;
   var addressId;
+  String token;
 
   @override
   void initState() {
@@ -92,6 +100,7 @@ class _CheckoutState extends State<Checkout> {
     getAddress();
 
     getDeliverySlot();
+    getTokenApi();
     // print('cartitem at checkout ${widget.cartItem}');
     // print(widget.cartItem['_id']);
     // print(widget.quantity);
@@ -104,6 +113,13 @@ class _CheckoutState extends State<Checkout> {
     // print(widget.cartItem['deliveryCharges'].runtimeType);
   }
 
+  getTokenApi() async {
+    await Common.getToken().then((onValue) {
+      token = onValue;
+    });
+    print('token $token');
+  }
+
   proceed() {
     if (mounted) {
       setState(() {
@@ -111,172 +127,37 @@ class _CheckoutState extends State<Checkout> {
         // email = '${userInfo['email']}';
       });
     }
-    print('I am here');
+    // print('I am here');
 
     placeOrder();
   }
 
-  placeOrder() async {
-    Map<String, dynamic> data = {
-      "deliveryType": "Home_Delivery",
-      "paymentType": 'COD',
-    };
-    data['deliveryDate'] = currentTime.millisecondsSinceEpoch;
-    data['deliveryTime'] = currentTime.toString();
-    data['deliveryAddress'] = selectedAddress['_id'].toString();
-    if (widget.buy == 'cart') {
-      if (mounted) {
-        setState(() {
-          isPlaceOrderLoading = true;
-        });
-      }
-      data['cart'] = widget.cartItem['cart'];
-      print(data['cart']);
-      data['cart'] = widget.cartItem['_id'].toString();
-      data['cart'] = widget.id;
-      print('apple at the data house');
-      print(data);
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //       builder: (context) => Payment(data: data, type: widget.buy)),
-      // );
-
-      // await ProductService.placeOrder(data).then((onValue) {
-      //   try {
-      //     if (onValue['response_code'] == 201) {
-      //       if (mounted) {
-      //         setState(() {
-      //           isPlaceOrderLoading = false;
-      //         });
-      //       }
-      //       showDialog<Null>(
-      //         context: context,
-      //         barrierDismissible: false,
-      //         builder: (BuildContext context) {
-      //           return Container(
-      //             width: 270.0,
-      //             child: new AlertDialog(
-      //               title: new Text('Thank You ...!!'),
-      //               content: new SingleChildScrollView(
-      //                 child: new ListBody(
-      //                   children: <Widget>[
-      //                     new Text('Order Successful'),
-      //                   ],
-      //                 ),
-      //               ),
-      //               actions: <Widget>[
-      //                 new FlatButton(
-      //                   child: new Text('ok'),
-      //                   onPressed: () {
-      //                     Navigator.pushAndRemoveUntil(
-      //                         context,
-      //                         MaterialPageRoute(
-      //                             builder: (BuildContext context) => Payment(
-      //                                   currentIndex: 0,
-      //                                 )),
-      //                         (Route<dynamic> route) => false);
-      //                   },
-      //                 ),
-      //               ],
-      //             ),
-      //           );
-      //         },
-      //       );
-      //     } else {
-      //       if (mounted) {
-      //         setState(() {
-      //           isPlaceOrderLoading = false;
-      //         });
-      //       }
-      //     }
-      //   } catch (error, stackTrace) {
-      //     sentryError.reportError(error, stackTrace);
-      //   }
-      // }).catchError((error) {
-      //   sentryError.reportError(error, null);
-      // });
-    } else {
-      // print(widget.cartItem['cart']);
-      data['cart'] = {
-        'productId': widget.cartItem['cart'][0]['_id'],
-        'quantity': 1,
-        'subTotal': widget.cartItem['subTotal'],
-        'grandTotal': widget.cartItem['grandTotal'],
-      };
-      // data['buyType'] = 'buy';
-      print('ajgar......boa');
-      print(data);
-
-      if (mounted) {
-        setState(() {
-          isPlaceOrderLoading = false;
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => Payment(data: data, type: widget.buy)),
-          );
-        });
-      }
-
-      // await ProductService.quickBuyNow(data).then((onValue) {
-      //   print('value of buy now$onValue');
-      //   try {
-      //     if (onValue['response_code'] == 201) {
-      //       showDialog<Null>(
-      //         context: context,
-      //         barrierDismissible: false,
-      //         builder: (BuildContext context) {
-      //           return Container(
-      //             width: 270.0,
-      //             child: new AlertDialog(
-      //               title: new Text('Thank You ...!!'),
-      //               content: new SingleChildScrollView(
-      //                 child: new ListBody(
-      //                   children: <Widget>[
-      //                     new Text('Order Successful'),
-      //                   ],
-      //                 ),
-      //               ),
-      //               actions: <Widget>[
-      //                 new FlatButton(
-      //                   child: new Text('ok'),
-      //                   onPressed: () {
-      //                     Navigator.pushAndRemoveUntil(
-      //                         context,
-      //                         MaterialPageRoute(
-      //                             builder: (BuildContext context) => Home(
-      //                                   currentIndex: 0,
-      //                                 )),
-      //                         (Route<dynamic> route) => false);
-      //                   },
-      //                 ),
-      //               ],
-      //             ),
-      //           );
-      //         },
-      //       );
-      //     }
-      //   } catch (error, stackTrace) {
-      //     sentryError.reportError(error, stackTrace);
-      //   }
-      // }).catchError((error) {
-      //   sentryError.reportError(error, null);
-      // });
-    }
-    print('order details $data');
+  showSnackbar(message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(milliseconds: 3000),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   addressRadioValueChanged(int value) async {
     if (mounted) {
       setState(() {
-        groupValue = value;
+        groupValue1 = value;
         selectedAddress = addressList[value];
       });
     }
-    print('selected address $selectedAddress');
+    // print('selected address $selectedAddress');
 
     return value;
+  }
+
+  setSelectedRadio(int val) async {
+    setState(() {
+      selectedRadio = val;
+      print(deliverySlotList[0]['timeSchedule'][val]['slot']);
+      selectedTime = deliverySlotList[0]['timeSchedule'][val]['slot'];
+    });
   }
 
   deliveryTypeRadioValue(val) async {
@@ -286,7 +167,7 @@ class _CheckoutState extends State<Checkout> {
         selectedDeliveryType = val;
       });
     }
-    print(selectedDeliveryType);
+    // print(selectedDeliveryType);
     return val;
   }
 
@@ -319,7 +200,7 @@ class _CheckoutState extends State<Checkout> {
       });
     }
     await AddressService.deliverySlot().then((onValue) {
-      print(onValue);
+      // print(onValue);
       try {
         if (mounted) {
           setState(() {
@@ -333,8 +214,11 @@ class _CheckoutState extends State<Checkout> {
     }).catchError((error) {
       sentryError.reportError(error, null);
     });
-    print('List of the slots');
-    print('deliverySlotList $deliverySlotList');
+    // print('List of the slots');
+    print('deliverySlotList ${deliverySlotList[0]['timeSchedule']}');
+    // print(deliverySlotList[0]['day'].runtimeType);
+    // print(deliverySlotList[0]['timeSchedule'][0]['slot']);
+    // print(deliverySlotList[0]['timeSchedule'][0]['slot'].runtimeType);
   }
 
   getAddress() async {
@@ -358,7 +242,7 @@ class _CheckoutState extends State<Checkout> {
     }).catchError((error) {
       sentryError.reportError(error, null);
     });
-    print('addressList ${addressList.length}');
+    // print('addressList ${addressList.length}');
   }
 
   deleteAddress(body) async {
@@ -406,11 +290,6 @@ class _CheckoutState extends State<Checkout> {
   }
 
 // Changes the selected value on 'onChanged' click on each radio button
-  setSelectedRadio(int val) async {
-    setState(() {
-      selectedRadio = val;
-    });
-  }
 
   final List<String> _listViewData = [
     "rstrs",
@@ -427,7 +306,196 @@ class _CheckoutState extends State<Checkout> {
 
   _onSelected(int index) {
     setState(() => _selectedIndex = index);
+    print('selected date $_selectedIndex');
+    print(deliverySlotList[index]['day']);
+    print(deliverySlotList[index]['date']);
+    selectedDate = deliverySlotList[index]['date'];
   }
+
+  placeOrder() async {
+    Map<String, dynamic> data = {
+      "deliveryType": "Home_Delivery",
+      "paymentType": 'COD',
+    };
+    // data['deliveryDate'] = currentTime.millisecondsSinceEpoch;
+    // data['deliveryTime'] = currentTime.toString();
+    // if (selectedAddress['id'] == null) {
+    // showSnackbar('Please select an address.');
+    // } else {
+    data['deliveryAddress'] = selectedAddress['_id'].toString();
+    // }
+    // if (selectedAddress['id'] == null) {
+    //   showSnackbar('Please select the delivery date.');
+    // } else {
+    data['deliveryDate'] = selectedDate.toString();
+    // }
+    // if (selectedAddress['id'] == null) {
+    //   showSnackbar('Please select a delivery time.');
+    // } else {
+    data['deliveryTime'] = selectedTime.toString();
+    // }
+    // data['cart'] = {
+    //   'productId': widget.cartItem['cart'][0]['_id'],
+    //   'quantity': 1,
+    //   'subTotal': widget.cartItem['subTotal'],
+    //   'grandTotal': widget.cartItem['grandTotal'],
+    // };
+    data['cart'] = widget.cartItem['cart'];
+    data['cart'] = widget.cartItem['_id'].toString();
+    data['cart'] = widget.id;
+    if (mounted) {
+      setState(() {
+        isPlaceOrderLoading = true;
+      });
+    }
+    print(data['deliveryAddress']);
+    print(data['deliveryDate']);
+    print(data['deliveryTime']);
+    if (mounted) {
+      setState(() {
+        isPlaceOrderLoading = false;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => Payment(data: data, type: widget.buy)),
+        );
+      });
+    }
+
+    print('apple at the data house');
+    print(data);
+    // }
+  }
+  // Navigator.push(
+  //   context,
+  //   MaterialPageRoute(
+  //       builder: (context) => Payment(data: data, type: widget.buy)),
+  // );
+
+  // await ProductService.placeOrder(data).then((onValue) {
+  //   try {
+  //     if (onValue['response_code'] == 201) {
+  //       if (mounted) {
+  //         setState(() {
+  //           isPlaceOrderLoading = false;
+  //         });
+  //       }
+  //       showDialog<Null>(
+  //         context: context,
+  //         barrierDismissible: false,
+  //         builder: (BuildContext context) {
+  //           return Container(
+  //             width: 270.0,
+  //             child: new AlertDialog(
+  //               title: new Text('Thank You ...!!'),
+  //               content: new SingleChildScrollView(
+  //                 child: new ListBody(
+  //                   children: <Widget>[
+  //                     new Text('Order Successful'),
+  //                   ],
+  //                 ),
+  //               ),
+  //               actions: <Widget>[
+  //                 new FlatButton(
+  //                   child: new Text('ok'),
+  //                   onPressed: () {
+  //                     Navigator.pushAndRemoveUntil(
+  //                         context,
+  //                         MaterialPageRoute(
+  //                             builder: (BuildContext context) => Payment(
+  //                                   currentIndex: 0,
+  //                                 )),
+  //                         (Route<dynamic> route) => false);
+  //                   },
+  //                 ),
+  //               ],
+  //             ),
+  //           );
+  //         },
+  //       );
+  //     } else {
+  //       if (mounted) {
+  //         setState(() {
+  //           isPlaceOrderLoading = false;
+  //         });
+  //       }
+  //     }
+  //   } catch (error, stackTrace) {
+  //     sentryError.reportError(error, stackTrace);
+  //   }
+  // }).catchError((error) {
+  //   sentryError.reportError(error, null);
+  // });
+  // } else {
+  // print(widget.cartItem['cart']);
+  // data['cart'] = {
+  //   'productId': widget.cartItem['cart'][0]['_id'],
+  //   'quantity': 1,
+  //   'subTotal': widget.cartItem['subTotal'],
+  //   'grandTotal': widget.cartItem['grandTotal'],
+  // };
+  // data['buyType'] = 'buy';
+  // print('ajgar......boa');
+  // print(data);
+
+  // if (mounted) {
+  //   setState(() {
+  //     isPlaceOrderLoading = false;
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //           builder: (context) => Payment(data: data, type: widget.buy)),
+  //     );
+  //   });
+  // }
+
+  // await ProductService.quickBuyNow(data).then((onValue) {
+  //   print('value of buy now$onValue');
+  //   try {
+  //     if (onValue['response_code'] == 201) {
+  //       showDialog<Null>(
+  //         context: context,
+  //         barrierDismissible: false,
+  //         builder: (BuildContext context) {
+  //           return Container(
+  //             width: 270.0,
+  //             child: new AlertDialog(
+  //               title: new Text('Thank You ...!!'),
+  //               content: new SingleChildScrollView(
+  //                 child: new ListBody(
+  //                   children: <Widget>[
+  //                     new Text('Order Successful'),
+  //                   ],
+  //                 ),
+  //               ),
+  //               actions: <Widget>[
+  //                 new FlatButton(
+  //                   child: new Text('ok'),
+  //                   onPressed: () {
+  //                     Navigator.pushAndRemoveUntil(
+  //                         context,
+  //                         MaterialPageRoute(
+  //                             builder: (BuildContext context) => Home(
+  //                                   currentIndex: 0,
+  //                                 )),
+  //                         (Route<dynamic> route) => false);
+  //                   },
+  //                 ),
+  //               ],
+  //             ),
+  //           );
+  //         },
+  //       );
+  //     }
+  //   } catch (error, stackTrace) {
+  //     sentryError.reportError(error, stackTrace);
+  //   }
+  // }).catchError((error) {
+  //   sentryError.reportError(error, null);
+  // });
+  // }
+  // print('order details $data');
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -471,6 +539,7 @@ class _CheckoutState extends State<Checkout> {
     // }
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: GFAppBar(
         title: Text('Checkout',
             style: TextStyle(
@@ -785,7 +854,7 @@ class _CheckoutState extends State<Checkout> {
                                                             children: <Widget>[
                                                               RadioListTile(
                                                                 groupValue:
-                                                                    groupValue,
+                                                                    groupValue1,
                                                                 activeColor:
                                                                     primary,
                                                                 // selected: true,
@@ -1005,12 +1074,14 @@ class _CheckoutState extends State<Checkout> {
                                               Text(
                                                   '${deliverySlotList[index]['day'].substring(0, 3)}'),
                                               Text('0' +
-                                                  '${deliverySlotList[index]['date'].substring(0, 1)}' +
-                                                  ' ' +
-                                                  renderMonth(
-                                                      deliverySlotList[index]
-                                                              ['date']
-                                                          .substring(2, 3))),
+                                                      '${deliverySlotList[index]['date'].substring(0, 1)}' //  +
+                                                  // ' ' +
+                                                  // "" +
+                                                  // renderMonth(
+                                                  //     deliverySlotList[index]
+                                                  //             ['date']
+                                                  //         .substring(2, 3)),
+                                                  ),
                                             ],
                                           ),
                                         ),
@@ -1038,29 +1109,49 @@ class _CheckoutState extends State<Checkout> {
                                 : deliverySlotList[0]['timeSchedule'].length,
                             itemBuilder: (BuildContext context, int i) {
                               return Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  deliverySlotList.length == 0
-                                      ? Text(
-                                          'Sorry ! No Slots Available Today !!!')
-                                      : Text(
-                                          '${deliverySlotList[0]['timeSchedule'][i]['slot']}'),
-                                  Radio(
-                                    value: 2,
-                                    groupValue: selectedRadio,
-                                    activeColor: Colors.green,
-                                    onChanged: (val) {
-                                      print("Radio $val");
-                                      setSelectedRadio(val);
-                                    },
-                                  ),
-                                ],
-                              );
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    deliverySlotList.length == 0
+                                        ? Text(
+                                            'Sorry ! No Slots Available Today !!!')
+                                        : Text(
+                                            '${deliverySlotList[0]['timeSchedule'][i]['slot']}'),
+                                    Radio(
+                                      value: i,
+                                      groupValue: selectedRadio,
+                                      activeColor: Colors.green,
+                                      onChanged: (value) {
+                                        setSelectedRadio(value);
+                                      },
+                                    ),
+                                  ]);
+                              // children: <Widget>[
+                              //   RadioListTile(
+                              //     groupValue: groupValue2,
+                              //     activeColor: Colors.green,
+                              //     value: i,
+                              //     title: Column(
+                              //         crossAxisAlignment:
+                              //             CrossAxisAlignment.center,
+                              //         mainAxisAlignment:
+                              //             MainAxisAlignment.spaceEvenly,
+                              //         children: [
+                              //           deliverySlotList.length == 0
+                              //               ? Text(
+                              //                   'Sorry ! No Slots Available Today !!!')
+                              //               : Text(
+                              //                   '${deliverySlotList[0]['timeSchedule'][i]['slot']}'),
+                              //         ]),
+                              //     onChanged: setSelectedRadio,
+                              //   ),
+                              // ],
+                              //       );
                             },
                           ),
                         ),
+
                         // Row(
                         //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         //   crossAxisAlignment: CrossAxisAlignment.center,
