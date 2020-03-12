@@ -9,8 +9,6 @@ import 'package:grocery_pro/service/auth-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/screens/login/login.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/service/auth-service.dart';
-import 'package:grocery_pro/translator/localizations.dart';
 
 SentryError sentryError = new SentryError();
 

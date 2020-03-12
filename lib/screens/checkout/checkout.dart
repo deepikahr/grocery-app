@@ -291,16 +291,7 @@ class _CheckoutState extends State<Checkout> {
 
 // Changes the selected value on 'onChanged' click on each radio button
 
-  final List<String> _listViewData = [
-    "rstrs",
-    'hjgch',
-    'hgch',
-    'hgchg'
-        "rstrs",
-    'hjgch',
-    'hgch',
-    'hgchg'
-  ];
+ 
 
   int _selectedIndex = 0;
 

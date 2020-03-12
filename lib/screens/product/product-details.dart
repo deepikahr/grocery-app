@@ -4,8 +4,6 @@ import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/service/constants.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/cart-service.dart';
-import 'package:grocery_pro/service/product-service.dart';
-import 'package:grocery_pro/screens/checkout/checkout.dart';
 import 'package:grocery_pro/screens/cart/mycart.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/fav-service.dart';

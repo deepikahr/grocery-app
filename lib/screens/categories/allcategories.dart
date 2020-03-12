@@ -3,7 +3,6 @@ import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/categories/subcategories.dart';
 
-import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 
