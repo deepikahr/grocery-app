@@ -6,6 +6,8 @@ import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/screens/login/login.dart';
+// import 'package:grocery_pro/service/fav-service.dart';
+import 'package:grocery_pro/service/fav-service.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -16,10 +18,13 @@ class SavedItems extends StatefulWidget {
 
 class _SavedItemsState extends State<SavedItems> {
   bool isGetTokenLoading = false;
+  bool isFavListLoading = false;
+  List<dynamic> favProductList;
   @override
   void initState() {
     super.initState();
     getToken();
+    getFavListApi();
   }
 
   @override
@@ -27,10 +32,29 @@ class _SavedItemsState extends State<SavedItems> {
     super.dispose();
   }
 
+  getFavListApi() async {
+    await FavouriteService.getFavList().then((onValue) {
+      if (onValue != null) {
+        setState(() {
+          isFavListLoading = true;
+        });
+        favProductList = onValue['response_data'];
+        print('I am here');
+        print(favProductList);
+      } else {
+        setState(() {
+          isFavListLoading = false;
+        });
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
+  }
+
   getToken() async {
     await Common.getToken().then((onValue) {
       // print("i am here");
-      print(onValue);
+      // print(onValue);
       if (onValue != null) {
         setState(() {
           isGetTokenLoading = true;

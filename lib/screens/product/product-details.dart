@@ -8,27 +8,84 @@ import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/screens/checkout/checkout.dart';
 import 'package:grocery_pro/screens/cart/mycart.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
+import 'package:grocery_pro/service/fav-service.dart';
 
 SentryError sentryError = new SentryError();
 
 class ProductDetails extends StatefulWidget {
+  final int currentIndex;
+  final Map<String, Map<String, String>> localizedValues;
+
   final Map<String, dynamic> productDetail;
 
-  ProductDetails({Key key, this.productDetail}) : super(key: key);
+  ProductDetails(
+      {Key key, this.productDetail, this.currentIndex, this.localizedValues})
+      : super(key: key);
   @override
   _ProductDetailsState createState() => _ProductDetailsState();
 }
 
 bool fav = false;
-bool fav1 = false;
+bool fav1 = true;
 bool fav2 = false;
 int count = 1;
 int index = 0;
+// String productIdForFav;
 // bool isLoadingSubProductsList = false;
 // List subProductsList = List();
 String dropdownValue = 'One';
 
-class _ProductDetailsState extends State<ProductDetails> {
+class _ProductDetailsState extends State<ProductDetails>
+    with TickerProviderStateMixin {
+  TabController tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    print('productDetail ${widget.productDetail}');
+
+    // tabController = TabController(length: 4, vsync: this);
+  }
+
+  addToFavApi(id) async {
+    if (fav) {
+      Map<String, dynamic> body = {"product": id};
+      await FavouriteService.addToFav(body).then((onValue) {
+        try {
+          // if (mounted) {
+          //   setState(() {
+          //     fav = fav;
+          //   });
+          // }
+          print('onValue1');
+
+          print(onValue);
+        } catch (error, stackTrace) {
+          sentryError.reportError(error, stackTrace);
+        }
+      }).catchError((error) {
+        sentryError.reportError(error, null);
+      });
+    } else {
+      await FavouriteService.deleteToFav(id).then((onValue) {
+        try {
+          // if (mounted) {
+          //   setState(() {
+          //     fav = !fav;
+          //   });
+          // }
+        } catch (error, stackTrace) {
+          sentryError.reportError(error, stackTrace);
+        }
+        print('onValue1');
+
+        print(onValue);
+      }).catchError((error) {
+        sentryError.reportError(error, null);
+      });
+    }
+  }
+
   addToCart(data, buy) async {
     Map<String, dynamic> buyNowProduct = {
       'productId': data['_id'].toString(),
@@ -41,54 +98,87 @@ class _ProductDetailsState extends State<ProductDetails> {
     if (buy == 'cart') {
       await CartService.addProductToCart(buyNowProduct).then((onValue) {
         print('value of car add product $onValue');
-        try {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => MyCart(
-                      currentIndex: 1,
-                      quantity: count,
-                    )),
-          );
-        } catch (error, stackTrace) {
-          sentryError.reportError(error, stackTrace);
-        }
-      }).catchError((error) {
-        sentryError.reportError(error, null);
-      });
-    } else {
-      await ProductService.getBuyNowInfor(buyNowProduct).then((onValue) {
-        // print('checkout $onValue');
-        try {
-          Map<String, dynamic> cartItem = {
-            'cart': [widget.productDetail],
-            'subTotal': onValue["response_data"]["subTotal"],
-            'tax': onValue["response_data"]['tax'],
-            'grandTotal': onValue["response_data"]["grandTotal"],
-            'deliveryCharges': onValue["response_data"]['deliveryCharges'],
-          };
-          if (onValue['response_code'] == 200) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) =>
-                      Checkout(cartItem: cartItem, buy: 'buy', quantity: 1)),
+        if (onValue['response_code'] == 200) {
+          try {
+            showDialog<Null>(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return Container(
+                  width: 270.0,
+                  child: new AlertDialog(
+                    title: new Text('Thank You ...!!'),
+                    content: new SingleChildScrollView(
+                      child: new ListBody(
+                        children: <Widget>[
+                          new Text('Product Added To Cart'),
+                        ],
+                      ),
+                    ),
+                    actions: <Widget>[
+                      new FlatButton(
+                        child: new Text('ok'),
+                        onPressed: () {
+                          // Navigator.pop(context);
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) => MyCart(
+                                        currentIndex: 2,
+                                      )),
+                              (Route<dynamic> route) => false);
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
             );
-            print(cartItem);
+            // if (onValue['response_code'] == 200) {
+            //   try {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //           builder: (BuildContext context) => MyCart(
+            //                 currentIndex: 1,
+            //                 quantity: count,
+            //               )),
+            //     );
+          } catch (error, stackTrace) {
+            sentryError.reportError(error, stackTrace);
           }
-        } catch (error, stackTrace) {
-          sentryError.reportError(error, stackTrace);
         }
       }).catchError((error) {
         sentryError.reportError(error, null);
       });
     }
-  }
-
-  @override
-  void initState() {
-    print(widget.productDetail);
-    super.initState();
+    // else {
+    //   await ProductService.getBuyNowInfor(buyNowProduct).then((onValue) {
+    //     // print('checkout $onValue');
+    //     try {
+    //       Map<String, dynamic> cartItem = {
+    //         'cart': [widget.productDetail],
+    //         'subTotal': onValue["response_data"]["subTotal"],
+    //         'tax': onValue["response_data"]['tax'],
+    //         'grandTotal': onValue["response_data"]["grandTotal"],
+    //         'deliveryCharges': onValue["response_data"]['deliveryCharges'],
+    //       };
+    //       if (onValue['response_code'] == 200) {
+    //         Navigator.push(
+    //           context,
+    //           MaterialPageRoute(
+    //               builder: (BuildContext context) =>
+    //                   Checkout(cartItem: cartItem, buy: 'buy', quantity: 1)),
+    //         );
+    //         print(cartItem);
+    //       }
+    //     } catch (error, stackTrace) {
+    //       sentryError.reportError(error, stackTrace);
+    //     }
+    //   }).catchError((error) {
+    //     sentryError.reportError(error, null);
+    //   });
+    // }
   }
 
   @override
@@ -320,10 +410,19 @@ class _ProductDetailsState extends State<ProductDetails> {
                         borderRadius: BorderRadius.circular(50.0)),
                     child: GFIconButton(
                       onPressed: null,
+                      // onPressed: () {
+                      //   addToFavApi(widget.productDetail['_id']);
+                      // },
                       icon: GestureDetector(
                         onTap: () {
                           setState(() {
-                            fav = !fav;
+                            if (fav == true) {
+                              fav = false;
+                              addToFavApi(widget.productDetail['_id']);
+                            } else {
+                              fav = true;
+                              addToFavApi(widget.productDetail['_id']);
+                            }
                           });
                         },
                         child: fav
@@ -348,29 +447,29 @@ class _ProductDetailsState extends State<ProductDetails> {
         )),
       ),
       bottomNavigationBar: Container(
-        height: 115,
+        height: 110,
         color: Colors.white,
         width: MediaQuery.of(context).size.width,
         child: Column(
           // mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            // Padding(
+            //   padding: const EdgeInsets.only(top: 0.0),
+            //   child: GFButton(
+            //     onPressed: () {
+            //       addToCart(widget.productDetail, 'buy now');
+            //     },
+            //     child: Text(
+            //       "Buy now",
+            //     ),
+            //     type: GFButtonType.outline,
+            //     color: GFColor.dark,
+            //     size: GFSize.large,
+            //     blockButton: true,
+            //   ),
+            // ),
             Padding(
-              padding: const EdgeInsets.only(top: 0.0),
-              child: GFButton(
-                onPressed: () {
-                  addToCart(widget.productDetail, 'buy now');
-                },
-                child: Text(
-                  "Buy now",
-                ),
-                type: GFButtonType.outline,
-                color: GFColor.dark,
-                size: GFSize.large,
-                blockButton: true,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: .0, top: 15.0),
+              padding: const EdgeInsets.only(left: .0, bottom: 20.0, top: 15.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -458,6 +557,70 @@ class _ProductDetailsState extends State<ProductDetails> {
           ],
         ),
       ),
+
+      // GFTabBar(
+      //   initialIndex: 0,
+      //   length: 4,
+      //   controller: tabController,
+      //   tabs: [
+      //     Tab(
+      //       icon: Icon(
+      //         IconData(
+      //           0xe90f,
+      //           fontFamily: 'icomoon',
+      //         ),
+      //       ),
+      //       text: "Store",
+      //     ),
+      //     Tab(
+      //       icon: Icon(
+      //         IconData(
+      //           0xe90d,
+      //           fontFamily: 'icomoon',
+      //         ),
+      //       ),
+      //       text: "Saved Items",
+      //     ),
+      //     Tab(
+      //       icon: Icon(
+      //         IconData(
+      //           0xe911,
+      //           fontFamily: 'icomoon',
+      //         ),
+      //       ),
+      //       text: "My Cart",
+      //     ),
+      //     Tab(
+      //       icon: Icon(
+      //         IconData(
+      //           0xe912,
+      //           fontFamily: 'icomoon',
+      //         ),
+      //       ),
+      //       text: "Profile",
+      //     ),
+      //   ],
+      //   indicatorColor: primary,
+      //   labelColor: primary,
+      //   labelPadding: EdgeInsets.all(0),
+      //   tabBarColor: Colors.black,
+      //   unselectedLabelColor: Colors.white,
+      //   labelStyle: TextStyle(
+      //     fontWeight: FontWeight.w300,
+      //     fontSize: 10.0,
+      //     color: primary,
+      //     fontFamily: 'OpenSansBold',
+      //   ),
+      //   unselectedLabelStyle: TextStyle(
+      //     fontWeight: FontWeight.w300,
+      //     fontSize: 10.0,
+      //     color: Colors.black,
+      //     fontFamily: 'OpenSansBold',
+      //   ),
+      // ),
+      //     ],
+      //   ),
+      // ),
       // ],
       // ),
       // ),

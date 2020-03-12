@@ -107,12 +107,14 @@ class _OrdersState extends State<Orders> {
               itemBuilder: (BuildContext context, int i) {
                 return GFListTile(
                   avatar: Container(
-                      height: 100,
-                      width: 100,
-                      child: orderList[i]['cart']['cart'][0]['imageUrl'] == null
-                          ? Image.asset('lib/assets/images/no-orders.png')
-                          : Image.network(
-                              orderList[i]['cart']['cart'][0]['imageUrl'])),
+                    height: 100,
+                    width: 100,
+                    child: orderList[i]['cart']['cart'][0]['imageUrl'] == null
+                        ? Image.asset('lib/assets/images/no-orders.png')
+                        : Image.network(
+                            orderList[i]['cart']['cart'][0]['imageUrl'],
+                          ),
+                  ),
                   title: Padding(
                     padding: const EdgeInsets.only(bottom: 18.0, right: 25.0),
                     child: Column(

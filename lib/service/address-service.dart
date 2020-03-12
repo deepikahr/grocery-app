@@ -35,6 +35,20 @@ class AddressService {
     return json.decode(response.body);
   }
 
+//getDeliverySlots
+  static Future<Map<String, dynamic>> deliverySlot() async {
+    String token;
+    await Common.getToken().then((onValue) {
+      token = onValue;
+    });
+    final response = await client
+        .get(Constants.baseURL + "setting/working/time/user", headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'bearer $token'
+    });
+    return json.decode(response.body);
+  }
+
   // update address
   static Future<Map<String, dynamic>> updateAddress(body, addressId) async {
     String token;

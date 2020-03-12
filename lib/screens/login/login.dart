@@ -54,8 +54,8 @@ class _LoginState extends State<Login> {
 
   getToken() async {
     await Common.getToken().then((onValue) {
-      print("Value of the Token");
-      print(onValue);
+      // print("Value of the Token");
+      // print(onValue);
     });
   }
 
@@ -77,11 +77,11 @@ class _LoginState extends State<Login> {
         "email": email.toLowerCase(),
         "password": password
       };
-      print('I am here 2');
-      print(body);
+      // print('I am here 2');
+      // print(body);
       await LoginService.signIn(body).then((onValue) {
-        print('onvalue of login');
-        print(onValue);
+        // print('onvalue of login');
+        // print(onValue);
         try {
           if (mounted) {
             setState(() {

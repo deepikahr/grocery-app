@@ -46,7 +46,7 @@ class _EditProfileState extends State<EditProfile> {
         });
     }
     await LoginService.getUserInfo().then((onValue) {
-      print(onValue);
+      // print(onValue);
       try {
         if (mounted) {
           if (mounted)
@@ -65,8 +65,8 @@ class _EditProfileState extends State<EditProfile> {
 
   getToken() async {
     await Common.getToken().then((onValue) {
-      print('Token at the edit profile');
-      print(onValue);
+      // print('Token at the edit profile');
+      // print(onValue);
       if (onValue != null) {
         setState(() {
           isGetTokenLoading = true;
@@ -203,9 +203,7 @@ class _EditProfileState extends State<EditProfile> {
                           image: new DecorationImage(
                               fit: BoxFit.fill,
                               image: new NetworkImage(
-                                  "https://i.imgur.com/BoN9kdC.png")))
-                                  
-                                  ),
+                                  "https://i.imgur.com/BoN9kdC.png")))),
                 ),
                 Positioned(
                   left: 250,

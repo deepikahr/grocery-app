@@ -93,7 +93,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
         });
       }
       await ProductService.getCategoryList().then((onValue) {
-        print("getCategoryList value on store $onValue");
+        // print("getCategoryList value on store $onValue");
         try {
           if (onValue['response_code'] == 200) {
             if (mounted) {
@@ -126,7 +126,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
         });
       }
       await ProductService.getProductsList().then((onValue) {
-        print("prod $onValue");
+        // print("prod $onValue");
 
         try {
           if (onValue['response_code'] == 200) {
@@ -205,7 +205,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                         ),
                     onItemSelected: (item) {
                       setState(() {
-                        print('ssssssss $item');
+                        // print('ssssssss $item');
                       });
                     }),
                 InkWell(
@@ -216,25 +216,30 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                     );
                   },
                   child: Padding(
-                    padding: const EdgeInsets.only(left:18.0,right: 18.0),
+                    padding: const EdgeInsets.only(left: 18.0, right: 18.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                      Text('Explore by Categories',style: comments(),),
-                      Text('View all',style: TextStyle(color: primary),)
+                        Text(
+                          'Explore by Categories',
+                          style: comments(),
+                        ),
+                        Text(
+                          'View all',
+                          style: TextStyle(color: primary),
+                        )
                       ],
                     ),
                   ),
-
                 ),
-                SizedBox(height:10),
+                SizedBox(height: 10),
                 Container(
                     margin: EdgeInsets.only(left: 5, right: 5.0),
                     height: 110.0,
                     width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
-                      // border: Border.all(color:Colors.grey)
-                    ),
+                        // border: Border.all(color:Colors.grey)
+                        ),
                     child: ListView.builder(
                         physics: ScrollPhysics(),
                         shrinkWrap: true,
@@ -243,7 +248,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                             ? 0
                             : categoryList.length,
                         itemBuilder: (BuildContext context, int index) {
-                          print(categoryList.length);
+                          // print(categoryList.length);
                           return SingleChildScrollView(
                               child: InkWell(
                                   onTap: () {
@@ -262,34 +267,39 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                       Column(
                                         children: <Widget>[
                                           Container(
-
                                             decoration: BoxDecoration(
-                      border: Border.all(color:Colors.grey[300]),
-                       borderRadius: BorderRadius.circular(10),
-
+                                              border: Border.all(
+                                                  color: Colors.grey[300]),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
                                             ),
                                             child: Column(
-                                                children: <Widget>[
-                                                  Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                               10.0),
-                                                      child: Container(
-                                                        height: 45,
-                                                        width: 45,
-                                                        decoration: BoxDecoration(
-                      // border: Border.all(color:Colors.grey),
-                       borderRadius: BorderRadius.circular(10),
-            image: new DecorationImage(
-                              fit: BoxFit.fill,
-                              image: new NetworkImage(categoryList[index]['imageUrl']),
-                     
-                    ),),
-                                                      )),
-                                                ],
-                                              ),
+                                              children: <Widget>[
+                                                Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            10.0),
+                                                    child: Container(
+                                                      height: 45,
+                                                      width: 45,
+                                                      decoration: BoxDecoration(
+                                                        // border: Border.all(color:Colors.grey),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                        image:
+                                                            new DecorationImage(
+                                                          fit: BoxFit.fill,
+                                                          image: new NetworkImage(
+                                                              categoryList[
+                                                                      index]
+                                                                  ['imageUrl']),
+                                                        ),
+                                                      ),
+                                                    )),
+                                              ],
+                                            ),
                                           ),
-                                        
                                           Text(categoryList[index]['title'])
                                         ],
                                       ),
@@ -324,103 +334,100 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                           children: <Widget>[
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
                               children: <Widget>[
-Container(
-  height: 15,
-  width: 65,
-  decoration: BoxDecoration(
-  borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  bottomRight: Radius.circular(20))
-  ),
-  child:   GFButtonBadge(
-                                      onPressed: () {},
+                                Container(
+                                  height: 15,
+                                  width: 65,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(20),
+                                          bottomRight: Radius.circular(20))),
+                                  child: GFButtonBadge(
+                                    onPressed: () {},
                                     //  borderShape: ShapeBorder([ContinuousRectangleBorder]),
-                                      text: '25% off',
-                                      color: Colors.deepOrange[300],
-                                    ),
-),
-                                  GFIconButton(
-                                    onPressed: null,
-                                    icon: GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          fav = !fav;
-                                        });
-                                      },
-                                      child: fav
-                                          ? Icon(
-                                              Icons.favorite,
-                                              color: Colors.red,
-                                            )
-                                          : Icon(
-                                              Icons.favorite_border,
-                                              color: Colors.grey,
-                                            ),
-                                    ),
-                                    type: GFButtonType.transparent,
+                                    text: '25% off',
+                                    color: Colors.deepOrange[300],
                                   ),
+                                ),
+                                GFIconButton(
+                                  onPressed: null,
+                                  icon: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        fav = !fav;
+                                      });
+                                    },
+                                    child: fav
+                                        ? Icon(
+                                            Icons.favorite,
+                                            color: Colors.red,
+                                          )
+                                        : Icon(
+                                            Icons.favorite_border,
+                                            color: Colors.grey,
+                                          ),
+                                  ),
+                                  type: GFButtonType.transparent,
+                                ),
                               ],
                             ),
                             // Stack(
                             //   fit: StackFit.loose,
                             //   children: <Widget>[
-                                Row(
-                                  // crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          ),
-                                      child: Image.network(
-                                        productsList[i]['imageUrl'],
-                                        fit: BoxFit.fill,
-                                        width: 124,
-                                        height: 60,
-                                      ),
-                                    ),
-                                  ],
+                            Row(
+                              // crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(),
+                                  child: Image.network(
+                                    productsList[i]['imageUrl'],
+                                    fit: BoxFit.fill,
+                                    width: 124,
+                                    height: 60,
+                                  ),
                                 ),
-                                // Positioned(
-                                //   height: 15.0,
-                                //   width: 60.0,
-                                //   // top: 4.0,
-                                //   // bottom: 4.0,
-                                //   // left: 6.0,
-                                //   child: GFButtonBadge(
-                                //     onPressed: () {},
-                                //     text: '25% off',
-                                //     color: Colors.deepOrange[300],
-                                //   ),
-                                // ),
-                                // Positioned(
-                                //   height: 15.0,
-                                //   width: 60.0,
-                                //   // top: 4.0,
-                                //   bottom: 78.0,
-                                //   left: 80.0,
-                                //   child: GFIconButton(
-                                //     onPressed: null,
-                                //     icon: GestureDetector(
-                                //       onTap: () {
-                                //         setState(() {
-                                //           fav = !fav;
-                                //         });
-                                //       },
-                                //       child: fav
-                                //           ? Icon(
-                                //               Icons.favorite,
-                                //               color: Colors.red,
-                                //             )
-                                //           : Icon(
-                                //               Icons.favorite_border,
-                                //               color: Colors.grey,
-                                //             ),
-                                //     ),
-                                //     type: GFButtonType.transparent,
-                                //   ),
-                                // ),
+                              ],
+                            ),
+                            // Positioned(
+                            //   height: 15.0,
+                            //   width: 60.0,
+                            //   // top: 4.0,
+                            //   // bottom: 4.0,
+                            //   // left: 6.0,
+                            //   child: GFButtonBadge(
+                            //     onPressed: () {},
+                            //     text: '25% off',
+                            //     color: Colors.deepOrange[300],
+                            //   ),
+                            // ),
+                            // Positioned(
+                            //   height: 15.0,
+                            //   width: 60.0,
+                            //   // top: 4.0,
+                            //   bottom: 78.0,
+                            //   left: 80.0,
+                            //   child: GFIconButton(
+                            //     onPressed: null,
+                            //     icon: GestureDetector(
+                            //       onTap: () {
+                            //         setState(() {
+                            //           fav = !fav;
+                            //         });
+                            //       },
+                            //       child: fav
+                            //           ? Icon(
+                            //               Icons.favorite,
+                            //               color: Colors.red,
+                            //             )
+                            //           : Icon(
+                            //               Icons.favorite_border,
+                            //               color: Colors.grey,
+                            //             ),
+                            //     ),
+                            //     type: GFButtonType.transparent,
+                            //   ),
+                            // ),
                             //   ],
                             // ),
                             Row(
@@ -433,24 +440,23 @@ Container(
                                       padding: const EdgeInsets.only(top: 5.0),
                                       child: Text(productsList[i]['title']),
                                     ),
-                                  Row(
-                                        children: <Widget>[
-                                          Icon(
-                                            IconData(
-                                              0xe913,
-                                              fontFamily: 'icomoon',
-                                            ),
-                                            color: const Color(0xFF00BFA5),
-                                            size: 11.0,
+                                    Row(
+                                      children: <Widget>[
+                                        Icon(
+                                          IconData(
+                                            0xe913,
+                                            fontFamily: 'icomoon',
                                           ),
-                                          Text(
-                                            '${productsList[i]['variant'][0]['price']}',
-                                            style: TextStyle(
-                                                color: const Color(0xFF00BFA5)),
-                                          )
-                                        ],
-                                      ),
-                              
+                                          color: const Color(0xFF00BFA5),
+                                          size: 11.0,
+                                        ),
+                                        Text(
+                                          '${productsList[i]['variant'][0]['price']}',
+                                          style: TextStyle(
+                                              color: const Color(0xFF00BFA5)),
+                                        )
+                                      ],
+                                    ),
                                   ],
                                 ),
                                 // Column(

@@ -10,6 +10,8 @@ class LoginService {
   static Future<Map<String, dynamic>> signUp(body) async {
     final response = await client.post(Constants.baseURL + "users/register",
         body: json.encode(body), headers: {'Content-Type': 'application/json'});
+    var repo = jsonDecode(response.body);
+    print('response at register $repo');
     return json.decode(response.body);
   }
 
@@ -17,6 +19,8 @@ class LoginService {
   static Future<Map<String, dynamic>> signIn(body) async {
     final response = await client.post(Constants.baseURL + "users/login",
         body: json.encode(body), headers: {'Content-Type': 'application/json'});
+    var repo = jsonDecode(response.body);
+    print('response at register $repo');
     return json.decode(response.body);
   }
 
