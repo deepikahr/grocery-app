@@ -3,7 +3,6 @@ import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/categories/subcategories.dart';
 
-import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 
@@ -131,9 +130,9 @@ class _AllCategoriesState extends State<AllCategories>
                                   children: <Widget>[
                                     Container(
                                       decoration: BoxDecoration(
-                                        border: Border.all(color:Colors.grey[300]),
-                                                               borderRadius: BorderRadius.circular(10),
-
+                                        border:
+                                            Border.all(color: Colors.grey[300]),
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: Column(
                                         children: <Widget>[
@@ -142,14 +141,17 @@ class _AllCategoriesState extends State<AllCategories>
                                             child: Container(
                                               width: 80,
                                               height: 80,
-                                                                            decoration: BoxDecoration(
-                      // border: Border.all(color:Colors.grey),
-                       borderRadius: BorderRadius.circular(10),
-            image: new DecorationImage(
-                              fit: BoxFit.fill,
-                              image: new NetworkImage(categoryList[index]['imageUrl']),
-                     
-                    ),),
+                                              decoration: BoxDecoration(
+                                                // border: Border.all(color:Colors.grey),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                image: new DecorationImage(
+                                                  fit: BoxFit.fill,
+                                                  image: new NetworkImage(
+                                                      categoryList[index]
+                                                          ['imageUrl']),
+                                                ),
+                                              ),
                                               // child: Column(
                                               //   children: <Widget>[
                                               //     Padding(
@@ -165,15 +167,14 @@ class _AllCategoriesState extends State<AllCategories>
                                               // ),
                                             ),
                                           ),
-                                          
                                         ],
                                       ),
                                     ),
-                                    SizedBox(height:2),
+                                    SizedBox(height: 2),
                                     Text(
-                                            categoryList[index]['title'],
-                                            maxLines: 2,
-                                          )
+                                      categoryList[index]['title'],
+                                      maxLines: 2,
+                                    )
                                   ],
                                 ),
                               ]));

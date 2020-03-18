@@ -472,40 +472,13 @@ class _OrdersState extends State<Orders> {
                                           )
                                         ],
                                       ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(top: 28.0),
-                                        child: Row(
-                                          children: <Widget>[
-                                            Expanded(
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    color: Colors.black,
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                            bottomLeft: Radius
-                                                                .circular(32),
-                                                            bottomRight:
-                                                                Radius.circular(
-                                                                    32))),
-                                                height: 70,
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 110.0,
-                                                          right: 110.0,
-                                                          top: 15,
-                                                          bottom: 15),
-                                                  child: GFButton(
-                                                    onPressed: () {},
-                                                    text: 'Submit',
-                                                    textColor: Colors.black,
-                                                    color: primary,
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                          ],
+                                      SizedBox(height: 50),
+                                      Center(
+                                        child: GFButton(
+                                          onPressed: () {},
+                                          text: 'Submit',
+                                          textColor: Colors.black,
+                                          color: primary,
                                         ),
                                       )
 

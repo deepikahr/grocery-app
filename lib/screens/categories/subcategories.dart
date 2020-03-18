@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/product/product-details.dart';
-import 'package:grocery_pro/screens/store/store.dart';
 import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 
@@ -11,7 +10,6 @@ SentryError sentryError = new SentryError();
 bool fav = false;
 bool fav1 = false;
 bool fav2 = false;
-bool _isChecked = false;
 
 class SubCategories extends StatefulWidget {
   // final List productDetail;

@@ -12,9 +12,7 @@ import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/auth-service.dart';
 import 'package:grocery_pro/translator/localizations.dart';
-import 'package:grocery_pro/screens/profile/profile.dart';
 import 'package:grocery_pro/screens/login/signup.dart';
-import 'package:grocery_pro/screens/saveitems/saveditems.dart';
 import 'package:grocery_pro/screens/cart/mycart.dart';
 import 'package:grocery_pro/screens/home/home.dart';
 

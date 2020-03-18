@@ -242,10 +242,15 @@ class _AddAddressState extends State<AddAddress> {
                 height: 25,
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
-                child: Text(
-                  'LandMark :',
-                  style: regular(),
+                padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'LandMark :',
+                      style: regular(),
+                    ),
+                  ],
                 ),
               ),
               Padding(
@@ -286,10 +291,15 @@ class _AddAddressState extends State<AddAddress> {
                 height: 25,
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
-                child: Text(
-                  'Area :',
-                  style: regular(),
+                padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'Area :',
+                      style: regular(),
+                    ),
+                  ],
                 ),
               ),
               Padding(
@@ -330,10 +340,15 @@ class _AddAddressState extends State<AddAddress> {
                 height: 25,
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
-                child: Text(
-                  'Pincode :',
-                  style: regular(),
+                padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'Pincode :',
+                      style: regular(),
+                    ),
+                  ],
                 ),
               ),
               Padding(
@@ -374,10 +389,15 @@ class _AddAddressState extends State<AddAddress> {
                 height: 25,
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
-                child: Text(
-                  'City :',
-                  style: regular(),
+                padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'City :',
+                      style: regular(),
+                    ),
+                  ],
                 ),
               ),
               Padding(
@@ -418,10 +438,15 @@ class _AddAddressState extends State<AddAddress> {
                 height: 25,
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
-                child: Text(
-                  'State :',
-                  style: regular(),
+                padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'State :',
+                      style: regular(),
+                    ),
+                  ],
                 ),
               ),
               Padding(

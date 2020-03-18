@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/colors/gf_color.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
-import 'package:getflutter/components/badge/gf_button_badge.dart';
 import 'package:getflutter/components/button/gf_button.dart';
 import 'package:getflutter/shape/gf_button_shape.dart';
 import 'package:grocery_pro/style/style.dart';
-import 'package:getflutter/components/list_tile/gf_list_tile.dart';
 import 'package:grocery_pro/service/cart-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/screens/checkout/checkout.dart';
 import 'package:getflutter/getflutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -345,341 +342,374 @@ class _MyCartState extends State<MyCart> {
           // child:
           isLoadingCart
               ? Center(child: CircularProgressIndicator())
-              : ListView(
-                  children: <Widget>[
-                    cartItem == null
-                        ? Center(
-                            child:
-                                Image.asset('lib/assets/images/no-orders.png'))
-                        : SizedBox(height: 20),
-                    Container(
-                      color: Colors.grey[100],
-                      child: Column(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      bottom: 8.0, left: 10.0),
-                                  child: cartItem == null
-                                      ? Text('0 Items')
-                                      : Text(
-                                          '${cartItem['cart'].length}' +
-                                              '  Items',
-                                          style: comments(),
-                                        ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            color: Colors.white54,
-                            child: ListView.builder(
-                              physics: ScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: cartItem == null
-                                  // &&
-                                  // cartItem['cart'].length == null
-                                  ? 0
-                                  : cartItem['cart'].length,
-                              itemBuilder: (BuildContext context, int i) {
-                                return GFListTile(
-                                  avatar: Container(
-                                    height: 100,
-                                    width: 100,
-                                    child: cartItem['cart'][i]['imageUrl'] ==
-                                            null
-                                        ? Image.asset(
-                                            'lib/assets/images/no-orders.png')
-                                        : Image.network(
-                                            cartItem['cart'][i]['imageUrl'],
+              : Container(
+                  margin: EdgeInsets.only(left: 20.0, right: 20.0),
+                  child: ListView(
+                    children: <Widget>[
+                      cartItem == null
+                          ? Center(
+                              child: Image.asset(
+                                  'lib/assets/images/no-orders.png'))
+                          : SizedBox(height: 20),
+                      Container(
+                        // color: Colors.grey[100],
+                        child: Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        bottom: 8.0, left: 10.0),
+                                    child: cartItem == null
+                                        ? Text('0 Items')
+                                        : Text(
+                                            '${cartItem['cart'].length}' +
+                                                '  Items',
+                                            style: comments(),
                                           ),
                                   ),
-                                  title: Padding(
-                                    padding: const EdgeInsets.only(
-                                        bottom: 18.0, right: 25.0),
-                                    child: Column(
+                                ],
+                              ),
+                            ),
+                            Container(
+                              // color: Colors.white54,
+                              child: ListView.builder(
+                                physics: ScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: cartItem == null
+                                    // &&
+                                    // cartItem['cart'].length == null
+                                    ? 0
+                                    : cartItem['cart'].length,
+                                itemBuilder: (BuildContext context, int i) {
+                                  return Container(
+                                    margin: EdgeInsets.only(bottom: 20),
+                                    color: Colors.white60,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              right: 32.0),
-                                          child: Text(
-                                            cartItem['cart'][i]['title'] == null
-                                                ? " "
-                                                : cartItem['cart'][i]['title'],
-                                            style: heading(),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 10.0, bottom: 30.0),
-                                          child: Text(
-                                            cartItem['cart'][i]
-                                                        ['discription'] ==
-                                                    null
-                                                ? " "
-                                                : cartItem['cart'][i]
-                                                    ['discription'],
-                                            style: labelStyle(),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              right: 32.0),
-                                          child: Row(
-                                            children: <Widget>[
-                                              Icon(
-                                                IconData(
-                                                  0xe913,
-                                                  fontFamily: 'icomoon',
-                                                ),
-                                                color: const Color(0xFF00BFA5),
-                                                size: 11.0,
-                                              ),
-                                              Text(
-                                                cartItem['cart'][i]['price'] ==
-                                                        null
-                                                    ? " "
-                                                    : cartItem['cart'][i]
-                                                                ['price']
-                                                            .toString() +
-                                                        " / " +
-                                                        cartItem['cart'][i]
-                                                                ['unit']
-                                                            .toString(),
-                                                style: TextStyle(
-                                                    color:
-                                                        const Color(0xFF00BFA5),
-                                                    fontSize: 17.0),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: .0),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                                color: Colors.grey[200],
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        20.0)),
-                                            height: 132,
-                                            width: 30,
-                                            child: Column(
+                                        // GFListTile(
+
+                                        Row(
+                                          children: <Widget>[
+                                            Container(
+                                              height: 100,
+                                              width: 100,
+                                              child: cartItem['cart'][i]
+                                                          ['imageUrl'] ==
+                                                      null
+                                                  ? Image.asset(
+                                                      'lib/assets/images/no-orders.png')
+                                                  : Image.network(
+                                                      cartItem['cart'][i]
+                                                          ['imageUrl'],
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                            ),
+                                            Column(
+                                              // mainAxisAlignment: MainAxisAlignment.start,
+                                              // crossAxisAlignment: CrossAxisAlignment.start,
                                               children: <Widget>[
-                                                InkWell(
-                                                  onTap: () {
-                                                    _incrementCount(i);
-                                                  },
-                                                  child: Container(
-                                                    width: 30,
-                                                    height: 30,
-                                                    decoration: BoxDecoration(
-                                                        color: primary,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                                    20.0)),
-                                                    child: Icon(Icons.add),
-                                                  ),
-                                                ),
-                                                Text(''),
                                                 Padding(
                                                   padding:
                                                       const EdgeInsets.only(
-                                                          top: 14.0),
-                                                  child: Container(
-                                                      child: cartItem['cart'][i]
-                                                                  [
-                                                                  'quantity'] ==
-                                                              null
-                                                          ? Text('0')
-                                                          : Text(
-                                                              '${cartItem['cart'][i]['quantity']}',
-                                                            )),
+                                                          left: 8.0, bottom: 0),
+                                                  child: Text(
+                                                    cartItem['cart'][i]
+                                                                ['title'] ==
+                                                            null
+                                                        ? " "
+                                                        : cartItem['cart'][i]
+                                                            ['title'],
+                                                    style: heading(),
+                                                  ),
                                                 ),
-                                                Text(''),
-                                                InkWell(
-                                                  onTap: () {
-                                                    _decrementCount(i);
-                                                  },
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            top: 10.0),
-                                                    child: Container(
-                                                      width: 30,
-                                                      height: 30,
-                                                      decoration: BoxDecoration(
-                                                          color: Colors.black,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      20.0)),
-                                                      child: Icon(
-                                                        Icons.remove,
-                                                        color: Colors.white,
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 8.0,
+                                                          bottom: 0.0),
+                                                  child: Text(
+                                                    cartItem['cart'][i][
+                                                                'discription'] ==
+                                                            null
+                                                        ? " "
+                                                        : cartItem['cart'][i]
+                                                            ['discription'],
+                                                    style: labelStyle(),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 0,
+                                                          bottom: 50.0),
+                                                  child: Row(
+                                                    children: <Widget>[
+                                                      Icon(
+                                                        IconData(
+                                                          0xe913,
+                                                          fontFamily: 'icomoon',
+                                                        ),
+                                                        color: const Color(
+                                                            0xFF00BFA5),
+                                                        size: 11.0,
                                                       ),
-                                                    ),
+                                                      Text(
+                                                        cartItem['cart'][i]
+                                                                    ['price'] ==
+                                                                null
+                                                            ? " "
+                                                            : cartItem['cart']
+                                                                            [i][
+                                                                        'price']
+                                                                    .toString() +
+                                                                " / " +
+                                                                cartItem['cart']
+                                                                            [i]
+                                                                        ['unit']
+                                                                    .toString(),
+                                                        style: TextStyle(
+                                                            color: const Color(
+                                                                0xFF00BFA5),
+                                                            fontSize: 17.0),
+                                                      )
+                                                    ],
                                                   ),
                                                 ),
                                               ],
                                             ),
-                                          ),
+                                            // ),
+                                          ],
+                                        ),
+                                        Column(
+                                          children: <Widget>[
+                                            Container(
+                                              // margin: EdgeInsets.only(bottom:2.0),
+                                              decoration: BoxDecoration(
+                                                  color: Colors.grey[200],
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20.0)),
+                                              height: 132,
+                                              width: 30,
+                                              child: Column(
+                                                children: <Widget>[
+                                                  InkWell(
+                                                    onTap: () {
+                                                      _incrementCount(i);
+                                                    },
+                                                    child: Container(
+                                                      width: 30,
+                                                      height: 30,
+                                                      decoration: BoxDecoration(
+                                                          color: primary,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      20.0)),
+                                                      child: Icon(Icons.add),
+                                                    ),
+                                                  ),
+                                                  Text(''),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            top: 14.0),
+                                                    child: Container(
+                                                        child: cartItem['cart']
+                                                                        [i][
+                                                                    'quantity'] ==
+                                                                null
+                                                            ? Text('0')
+                                                            : Text(
+                                                                '${cartItem['cart'][i]['quantity']}',
+                                                              )),
+                                                  ),
+                                                  Text(''),
+                                                  InkWell(
+                                                    onTap: () {
+                                                      _decrementCount(i);
+                                                    },
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 10.0),
+                                                      child: Container(
+                                                        width: 30,
+                                                        height: 30,
+                                                        decoration: BoxDecoration(
+                                                            color: Colors.black,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        20.0)),
+                                                        child: Icon(
+                                                          Icons.remove,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  // SizedBox(height:30),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
-                                  ),
-                                );
-                              },
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    Container(
-                      color: Colors.white54,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              Stack(
-                                children: <Widget>[
-                                  Column(
-                                    children: <Widget>[
-                                      Container(
-                                          child: Padding(
-                                        padding: const EdgeInsets.only(
-                                            bottom: 6.0, top: 6.0),
-                                        child: Image.asset(
-                                            'lib/assets/images/apple.png'),
-                                      )),
-                                    ],
-                                  ),
-                                  Positioned(
-                                    height: 26.0,
-                                    width: 117.0,
-                                    top: 77.0,
-                                    // left: 20.0,
-                                    child: GFButtonBadge(
-                                      // icon: GFBadge(
-                                      //   // text: '6',
-                                      //   shape: GFBadgeShape.pills,
-                                      // ),
-                                      // fullWidthButton: true,
-                                      onPressed: () {},
-                                      text: '25% off',
-                                      color: Colors.deepOrange[300],
-                                    ),
-                                  )
-                                ],
-                              ),
-                              // Column(
-                              //   children: <Widget>[
-                              //     Image.asset('lib/assets/images/grape.png'),
-                              //   ],
-                              // ),
-                              Column(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 32.0),
-                                    child: Text(
-                                      'Applee',
-                                      style: heading(),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 10.0, bottom: 30.0),
-                                    child: Text(
-                                      '100% Organic',
-                                      style: labelStyle(),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 32.0),
-                                    child: Row(
-                                      children: <Widget>[
-                                        Icon(
-                                          IconData(
-                                            0xe913,
-                                            fontFamily: 'icomoon',
-                                          ),
-                                          color: const Color(0xFF00BFA5),
-                                          size: 11.0,
-                                        ),
-                                        Text(
-                                          '85/kg',
-                                          style: TextStyle(
-                                              color: const Color(0xFF00BFA5),
-                                              fontSize: 17.0),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: .0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.grey[200],
-                                  borderRadius: BorderRadius.circular(20.0)),
-                              height: 132,
-                              width: 30,
-                              child: Column(
-                                children: <Widget>[
-                                  Container(
-                                    width: 30,
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                        color: primary,
-                                        borderRadius:
-                                            BorderRadius.circular(20.0)),
-                                    child: Icon(Icons.add),
-                                  ),
-                                  Text(''),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 14.0),
-                                    child: Container(child: Text('1')),
-                                  ),
-                                  Text(''),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 10.0),
-                                    child: Container(
-                                      width: 30,
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                          color: Colors.black,
-                                          borderRadius:
-                                              BorderRadius.circular(20.0)),
-                                      child: Icon(
-                                        Icons.remove,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                  );
+                                },
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 200.0,
-                    ),
-                  ],
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      // Container(
+                      //   color: Colors.white54,
+                      //   child: Row(
+                      //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      //     children: <Widget>[
+                      //       Row(
+                      //         children: <Widget>[
+                      //           Stack(
+                      //             children: <Widget>[
+                      //               Column(
+                      //                 children: <Widget>[
+                      //                   Container(
+                      //                       child: Padding(
+                      //                     padding: const EdgeInsets.only(
+                      //                         bottom: 6.0, top: 6.0),
+                      //                     child: Image.asset(
+                      //                         'lib/assets/images/apple.png'),
+                      //                   )),
+                      //                 ],
+                      //               ),
+                      //               Positioned(
+                      //                 height: 26.0,
+                      //                 width: 117.0,
+                      //                 top: 77.0,
+                      //                 // left: 20.0,
+                      //                 child: GFButtonBadge(
+                      //                   // icon: GFBadge(
+                      //                   //   // text: '6',
+                      //                   //   shape: GFBadgeShape.pills,
+                      //                   // ),
+                      //                   // fullWidthButton: true,
+                      //                   onPressed: () {},
+                      //                   text: '25% off',
+                      //                   color: Colors.deepOrange[300],
+                      //                 ),
+                      //               )
+                      //             ],
+                      //           ),
+                      //           // Column(
+                      //           //   children: <Widget>[
+                      //           //     Image.asset('lib/assets/images/grape.png'),
+                      //           //   ],
+                      //           // ),
+                      //           Column(
+                      //             children: <Widget>[
+                      //               Padding(
+                      //                 padding: const EdgeInsets.only(right: 32.0),
+                      //                 child: Text(
+                      //                   'Applee',
+                      //                   style: heading(),
+                      //                 ),
+                      //               ),
+                      //               Padding(
+                      //                 padding: const EdgeInsets.only(
+                      //                     left: 10.0, bottom: 30.0),
+                      //                 child: Text(
+                      //                   '100% Organic',
+                      //                   style: labelStyle(),
+                      //                 ),
+                      //               ),
+                      //               Padding(
+                      //                 padding: const EdgeInsets.only(right: 32.0),
+                      //                 child: Row(
+                      //                   children: <Widget>[
+                      //                     Icon(
+                      //                       IconData(
+                      //                         0xe913,
+                      //                         fontFamily: 'icomoon',
+                      //                       ),
+                      //                       color: const Color(0xFF00BFA5),
+                      //                       size: 11.0,
+                      //                     ),
+                      //                     Text(
+                      //                       '85/kg',
+                      //                       style: TextStyle(
+                      //                           color: const Color(0xFF00BFA5),
+                      //                           fontSize: 17.0),
+                      //                     )
+                      //                   ],
+                      //                 ),
+                      //               ),
+                      //             ],
+                      //           ),
+                      //         ],
+                      //       ),
+                      //       Padding(
+                      //         padding: const EdgeInsets.only(left: .0),
+                      //         child: Container(
+                      //           decoration: BoxDecoration(
+                      //               color: Colors.grey[200],
+                      //               borderRadius: BorderRadius.circular(20.0)),
+                      //           height: 132,
+                      //           width: 30,
+                      //           child: Column(
+                      //             children: <Widget>[
+                      //               Container(
+                      //                 width: 30,
+                      //                 height: 30,
+                      //                 decoration: BoxDecoration(
+                      //                     color: primary,
+                      //                     borderRadius:
+                      //                         BorderRadius.circular(20.0)),
+                      //                 child: Icon(Icons.add),
+                      //               ),
+                      //               Text(''),
+                      //               Padding(
+                      //                 padding: const EdgeInsets.only(top: 14.0),
+                      //                 child: Container(child: Text('1')),
+                      //               ),
+                      //               Text(''),
+                      //               Padding(
+                      //                 padding: const EdgeInsets.only(top: 10.0),
+                      //                 child: Container(
+                      //                   width: 30,
+                      //                   height: 30,
+                      //                   decoration: BoxDecoration(
+                      //                       color: Colors.black,
+                      //                       borderRadius:
+                      //                           BorderRadius.circular(20.0)),
+                      //                   child: Icon(
+                      //                     Icons.remove,
+                      //                     color: Colors.white,
+                      //                   ),
+                      //                 ),
+                      //               ),
+                      //             ],
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
+                      SizedBox(
+                        height: 40.0,
+                      ),
+                    ],
+                  ),
                 ),
       // ),
       bottomNavigationBar: isLoadingCart

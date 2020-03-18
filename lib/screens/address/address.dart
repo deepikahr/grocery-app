@@ -74,7 +74,6 @@ class _AddressState extends State<Address> {
             child: Container(
               child: Row(
                 children: <Widget>[
-                 
                   Column(
                     children: <Widget>[
                       // homeDelivery ?
@@ -248,94 +247,89 @@ class _AddressState extends State<Address> {
           SizedBox(
             height: 10,
           ),
-       
-         Column(
-         
-           children: <Widget>[
-             Padding(
-               padding: const EdgeInsets.only(left:5.0,right: 5.0),
-               child: Container(
-                    width: MediaQuery.of(context).size.width ,
+          Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(left: 5.0, right: 5.0),
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    //  crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              bottom: 0.0,
+                            ),
+                            child: Text(
+                              '2',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            width: MediaQuery.of(context).size.width - 30.0,
+                            child: Text(
+                              'HSR Layout , Agara, Bengaluru, Karnataka 560102, India',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(left: 0.0),
                     child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          //  crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        Column(
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                bottom: 0.0,
-                              ),
+                        GFButton(
+                          onPressed: null,
+
+                          child: Text(
+                            "Edit",
+                          ),
+
+                          type: GFButtonType.outline,
+                          color: GFColor.warning,
+                          size: GFSize.medium,
+                          // blockButton: true,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20.0),
+                          child: GFButton(
+                            onPressed: null,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 8.0, right: 8.0),
                               child: Text(
-                                '2',
-                                style: TextStyle(
-                                    color: Colors.black, fontWeight: FontWeight.w500),
+                                "Delete",
                               ),
                             ),
-                          ],
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                              width: MediaQuery.of(context).size.width-30.0,
-                          
-                                child: Text(
-                                  'HSR Layout , Agara, Bengaluru, Karnataka 560102, India',
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                            
-                            ),
-                    
-                          ],
-                        ),
+                            color: GFColor.warning,
+                            type: GFButtonType.outline,
+                          ),
+                        )
                       ],
                     ),
                   ),
-             ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                            Padding(
-                            padding: const EdgeInsets.only(left: 0.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                GFButton(
-                                  onPressed: null,
-                                 
-                                    child: Text(
-                                      "Edit",
-                                    ),
-                                
-                                  type: GFButtonType.outline,
-                                  color: GFColor.warning,
-                                  size: GFSize.medium,
-                                  // blockButton: true,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 20.0),
-                                  child: GFButton(
-                                    onPressed: null,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 8.0, right: 8.0),
-                                      child: Text(
-                                        "Delete",
-                                      ),
-                                    ),
-                                    color: GFColor.warning,
-                                    type: GFButtonType.outline,
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                  ],
-                )
-           ],
-         ),
-       
+                ],
+              )
+            ],
+          ),
           Center(
             child: Padding(
               padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),

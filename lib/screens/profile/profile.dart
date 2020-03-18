@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:getflutter/getflutter.dart';
+import 'package:grocery_pro/screens/chat/chatpage.dart';
 import 'package:grocery_pro/screens/orders/orders.dart';
 import 'package:grocery_pro/screens/address/address.dart';
 import 'package:grocery_pro/style/style.dart';
@@ -195,317 +196,369 @@ class _ProfileState extends State<Profile> {
             isGetTokenLoading ? primary : Colors.black.withOpacity(0.0),
         automaticallyImplyLeading: false,
       ),
-      body: GFFloatingWidget(
-        showblurness: isGetTokenLoading ? false : true,
-        blurnessColor:
-            isGetTokenLoading ? Colors.white : Colors.black.withOpacity(0.3),
-        // verticalPosition: 70,
-        child: isGetTokenLoading
-            ? isLoading
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : SingleChildScrollView(
-                    child: Container(
-                      color: Colors.grey[200],
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            color: Colors.white38,
-                            child: GFListTile(
-                                avatar: Image.asset(
-                                    'lib/assets/images/profile.png'),
-                                title: Padding(
-                                  padding: const EdgeInsets.only(bottom: 18.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      Padding(
-                                          padding: const EdgeInsets.only(
-                                              right: .0, bottom: 4.0),
-                                          child: userInfo == null &&
-                                                  userInfo['firstName'] == null
+      body: ListView(
+        children: <Widget>[
+          GFFloatingWidget(
+            showblurness: isGetTokenLoading ? false : true,
+            blurnessColor: isGetTokenLoading
+                ? Colors.white
+                : Colors.black.withOpacity(0.3),
+            // verticalPosition: 70,
+            child: isGetTokenLoading
+                ? isLoading
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : SingleChildScrollView(
+                        child: Container(
+                          color: Colors.grey[200],
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                color: Colors.white38,
+                                child: GFListTile(
+                                    avatar: Image.asset(
+                                        'lib/assets/images/profile.png'),
+                                    title: Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 18.0),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: .0, bottom: 4.0),
+                                              child: userInfo == null &&
+                                                      userInfo['firstName'] ==
+                                                          null
+                                                  ? Text(
+                                                      'Billie Eilsh',
+                                                      style: titleBold(),
+                                                    )
+                                                  : Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: <Widget>[
+                                                        Text(
+                                                          '${userInfo['firstName']}',
+                                                          style: titleBold(),
+                                                        ),
+                                                      ],
+                                                    )),
+                                          userInfo == null &&
+                                                  userInfo['email'] == null
                                               ? Text(
-                                                  'Billie Eilsh',
-                                                  style: titleBold(),
+                                                  'badguy@email.com',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w300,
+                                                      fontSize: 14.0),
                                                 )
                                               : Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.start,
                                                   children: <Widget>[
                                                     Text(
-                                                      '${userInfo['firstName']}',
-                                                      style: titleBold(),
+                                                      '${userInfo['email']}',
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                          fontSize: 14.0),
                                                     ),
                                                   ],
-                                                )),
-                                      userInfo == null &&
-                                              userInfo['email'] == null
-                                          ? Text(
-                                              'badguy@email.com',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w300,
-                                                  fontSize: 14.0),
-                                            )
-                                          : Row(
+                                                ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0, right: .0),
+                                            child: Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.start,
                                               children: <Widget>[
-                                                Text(
-                                                  '${userInfo['email']}',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w300,
-                                                      fontSize: 14.0),
-                                                ),
+                                                Text('+91-9756 55 83 13'),
                                               ],
                                             ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    subTitle: Container(),
+                                    description: Container(),
+                                    icon: Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 18.0),
+                                        child: InkWell(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      EditProfile()),
+                                            );
+                                          },
+                                          child: Icon(
+                                            Icons.edit,
+                                            color: primary,
+                                          ),
+                                        ))
+                                    // showDivider: false,
+                                    ),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 10.0, bottom: 10.0, left: 20.0),
+                                    child: Text(
+                                      'Saved cards',
+                                      style: titleBold(),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 15.0,
+                                ),
+                                child: Container(
+                                  height: 150,
+                                  // width: 50,
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: 1,
+                                    itemBuilder:
+                                        (BuildContext context, int index) =>
+                                            Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 15.0),
+                                      child: Container(
+                                        // height: 50,
+                                        child: Row(
+                                          children: <Widget>[
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 15.0),
+                                              child: itemCard,
+                                            ),
+                                            addCard,
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 20.0),
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Address()),
+                                  );
+                                },
+                                child: Container(
+                                  color: Colors.white38,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
                                       Padding(
                                         padding: const EdgeInsets.only(
-                                            top: 5.0, right: .0),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: <Widget>[
-                                            Text('+91-9756 55 83 13'),
-                                          ],
+                                            top: 10.0,
+                                            bottom: 10.0,
+                                            left: 20.0),
+                                        child: Text(
+                                          'Address',
+                                          style: titleBold(),
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
-                                subTitle: Container(),
-                                description: Container(),
-                                icon: Padding(
-                                    padding: const EdgeInsets.only(top: 18.0),
-                                    child: InkWell(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  EditProfile()),
-                                        );
-                                      },
-                                      child: Icon(
-                                        Icons.edit,
-                                        color: primary,
+                              ),
+                              SizedBox(
+                                height: 20.0,
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Orders(
+                                              userID: userID,
+                                            )),
+                                  );
+                                },
+                                child: Container(
+                                  color: Colors.white38,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 10.0,
+                                            bottom: 10.0,
+                                            left: 20.0),
+                                        child: Text(
+                                          'Order History',
+                                          style: titleBold(),
+                                        ),
                                       ),
-                                    ))
-                                // showDivider: false,
+                                    ],
+                                  ),
                                 ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 10.0, bottom: 10.0, left: 20.0),
-                                child: Text(
-                                  'Saved cards',
-                                  style: titleBold(),
+                              ),
+                              SizedBox(
+                                height: 20.0,
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Chat(
+                                            // userID: userID,
+                                            )),
+                                  );
+                                },
+                                child: Container(
+                                  color: Colors.white38,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 10.0,
+                                            bottom: 10.0,
+                                            left: 20.0),
+                                        child: Text(
+                                          'Support',
+                                          style: titleBold(),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 20.0,
+                              ),
+                              Container(
+                                color: Colors.white38,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 10.0, bottom: 10.0, left: 20.0),
+                                      child: Text(
+                                        'Help',
+                                        style: titleBold(),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                height: 20.0,
+                              ),
+                              Container(
+                                color: Colors.white38,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 10.0,
+                                            bottom: 10.0,
+                                            left: 20.0),
+                                        child: InkWell(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      logout()),
+                                            );
+                                          },
+                                          child: Text(
+                                            'Logout',
+                                            style: titleBold(),
+                                          ),
+                                        )),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 248.0),
+                                          child: Icon(Icons.exit_to_app),
+                                        )
+                                      ],
+                                    )
+                                  ],
                                 ),
                               ),
                             ],
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 15.0,
-                            ),
-                            child: Container(
-                              height: 150,
-                              // width: 50,
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                itemCount: 1,
-                                itemBuilder:
-                                    (BuildContext context, int index) =>
-                                        Padding(
-                                  padding: const EdgeInsets.only(right: 15.0),
-                                  child: Container(
-                                    // height: 50,
-                                    child: Row(
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              right: 15.0),
-                                          child: itemCard,
-                                        ),
-                                        addCard,
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 20.0),
-                          InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Address()),
-                              );
-                            },
-                            child: Container(
-                              color: Colors.white38,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 10.0, bottom: 10.0, left: 20.0),
-                                    child: Text(
-                                      'Address',
-                                      style: titleBold(),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 20.0,
-                          ),
-                          InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Orders(
-                                          userID: userID,
-                                        )),
-                              );
-                            },
-                            child: Container(
-                              color: Colors.white38,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 10.0, bottom: 10.0, left: 20.0),
-                                    child: Text(
-                                      'Order History',
-                                      style: titleBold(),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 20.0,
-                          ),
+                        ),
+                      )
+                : GFAlert(
+                    title: 'Login First!',
+                    bottombar: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
                           Container(
-                            color: Colors.white38,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 10.0, bottom: 10.0, left: 20.0),
-                                  child: Text(
-                                    'Help',
-                                    style: titleBold(),
-                                  ),
+                              height: 40.0,
+                              padding: EdgeInsets.only(left: 5.0, right: 5.0),
+                              decoration: BoxDecoration(
+                                  color: primary,
+                                  border:
+                                      Border.all(color: Colors.black, width: 1),
+                                  borderRadius: BorderRadius.circular(5.0)),
+                              child: Center(
+                                  child: new FlatButton(
+                                child: new Text(
+                                  'Login',
+                                  style: TextStyle(color: Colors.white),
                                 ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: 20.0,
-                          ),
-                          Container(
-                            color: Colors.white38,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 10.0, bottom: 10.0, left: 20.0),
-                                    child: InkWell(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => logout()),
-                                        );
-                                      },
-                                      child: Text(
-                                        'Logout',
-                                        style: titleBold(),
-                                      ),
-                                    )),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: <Widget>[
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(left: 248.0),
-                                      child: Icon(Icons.exit_to_app),
-                                    )
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-            : GFAlert(
-                title: 'Login First!',
-                bottombar: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Container(
-                          height: 40.0,
-                          padding: EdgeInsets.only(left: 5.0, right: 5.0),
-                          decoration: BoxDecoration(
-                              color: primary,
-                              border: Border.all(color: Colors.black, width: 1),
-                              borderRadius: BorderRadius.circular(5.0)),
-                          child: Center(
-                              child: new FlatButton(
-                            child: new Text(
-                              'Login',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            onPressed: () async {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Login(
-                                          isProfile: true,
-                                        )),
-                              );
-                            },
-                          ))),
-                      // Container(
-                      //     height: 40.0,
-                      //     padding: EdgeInsets.only(left: 5.0, right: 5.0),
-                      //     decoration: BoxDecoration(
-                      //         color: primary,
-                      //         border:
-                      //             Border.all(color: Colors.black, width: 1),
-                      //         borderRadius: BorderRadius.circular(5.0)),
-                      //     child: new FlatButton(
-                      //         child: new Text(
-                      //           'Cancel',
-                      //           style: TextStyle(color: Colors.white),
-                      //         ),
-                      //         onPressed: () async {
-                      //           // Navigator.push(
-                      //           //   context,
-                      //           //   MaterialPageRoute(
-                      //           //       builder: (context) => Otp()),
-                      //           // );
-                      //         })),
-                    ]),
-              ),
+                                onPressed: () async {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Login(
+                                              isProfile: true,
+                                            )),
+                                  );
+                                },
+                              ))),
+                          // Container(
+                          //     height: 40.0,
+                          //     padding: EdgeInsets.only(left: 5.0, right: 5.0),
+                          //     decoration: BoxDecoration(
+                          //         color: primary,
+                          //         border:
+                          //             Border.all(color: Colors.black, width: 1),
+                          //         borderRadius: BorderRadius.circular(5.0)),
+                          //     child: new FlatButton(
+                          //         child: new Text(
+                          //           'Cancel',
+                          //           style: TextStyle(color: Colors.white),
+                          //         ),
+                          //         onPressed: () async {
+                          //           // Navigator.push(
+                          //           //   context,
+                          //           //   MaterialPageRoute(
+                          //           //       builder: (context) => Otp()),
+                          //           // );
+                          //         })),
+                        ]),
+                  ),
+          ),
+        ],
       ),
     );
   }
