@@ -291,8 +291,6 @@ class _CheckoutState extends State<Checkout> {
 
 // Changes the selected value on 'onChanged' click on each radio button
 
- 
-
   int _selectedIndex = 0;
 
   _onSelected(int index) {

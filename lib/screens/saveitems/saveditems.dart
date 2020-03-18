@@ -198,21 +198,21 @@ class _SavedItemsState extends State<SavedItems> {
           child: isGetTokenLoading
               // ? Container(
               //     height: MediaQuery.of(context).size.height,
-                  ? Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: GridView.builder(
-                          itemCount: 8,
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2),
-                          itemBuilder: (BuildContext context, int index) {
-                            return Container(child: itemCard);
-                          },
-                        ),
+              ? Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: GridView.builder(
+                        itemCount: 8,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2),
+                        itemBuilder: (BuildContext context, int index) {
+                          return Container(child: itemCard);
+                        },
                       ),
-                    ],
-                  )
-                // )
+                    ),
+                  ],
+                )
+              // )
               : GFAlert(
                   title: 'Login First!',
                   bottombar: Row(

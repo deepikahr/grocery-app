@@ -472,17 +472,15 @@ class _OrdersState extends State<Orders> {
                                           )
                                         ],
                                       ),
-                                      SizedBox(height:50),
+                                      SizedBox(height: 50),
                                       Center(
-                                     
-                                                  child: GFButton(
-                                                    onPressed: () {},
-                                                    text: 'Submit',
-                                                    textColor: Colors.black,
-                                                    color: primary,
-                                                  ),)
-                                                
-                                      
+                                        child: GFButton(
+                                          onPressed: () {},
+                                          text: 'Submit',
+                                          textColor: Colors.black,
+                                          color: primary,
+                                        ),
+                                      )
 
                                       //   children: <Widget>[
                                       //     // Expanded(
