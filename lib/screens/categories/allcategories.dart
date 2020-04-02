@@ -26,7 +26,6 @@ class _AllCategoriesState extends State<AllCategories>
     super.initState();
     tabController = TabController(length: 4, vsync: this);
     getCategoryList();
-    // getProductsList();
   }
 
   @override
@@ -88,97 +87,84 @@ class _AllCategoriesState extends State<AllCategories>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: GFAppBar(
-          title: Text('All Categories',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 17.0,
-                  fontWeight: FontWeight.w600)),
-          centerTitle: true,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          iconTheme: IconThemeData(color: Colors.black, size: 15.0),
-        ),
-        body: isLoadingProductsList && isLoadingcategoryList
-            ? Center(child: CircularProgressIndicator())
-            : Container(
-                child: GridView.builder(
-                    physics: ScrollPhysics(),
-                    shrinkWrap: true,
-                    // scrollDirection: Axis.horizontal,
-                    itemCount:
-                        categoryList.length == null ? 0 : categoryList.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3),
-                    itemBuilder: (BuildContext context, int index) {
-                      return InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) => SubCategories(
-                                      catId: categoryList[index]['_id'],
-                                      catTitle:
-                                          '${categoryList[index]['title'][0].toUpperCase()}${categoryList[index]['title'].substring(1)}')),
-                            );
-                          },
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Column(
-                                  children: <Widget>[
-                                    Container(
+      appBar: GFAppBar(
+        title: Text('All Categories',
+            style: TextStyle(
+                color: Colors.black,
+                fontSize: 17.0,
+                fontWeight: FontWeight.w600)),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: IconThemeData(color: Colors.black, size: 15.0),
+      ),
+      body: isLoadingProductsList && isLoadingcategoryList
+          ? Center(child: CircularProgressIndicator())
+          : Container(
+              child: GridView.builder(
+                physics: ScrollPhysics(),
+                shrinkWrap: true,
+                itemCount:
+                    categoryList.length == null ? 0 : categoryList.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3),
+                itemBuilder: (BuildContext context, int index) {
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => SubCategories(
+                              catId: categoryList[index]['_id'],
+                              catTitle:
+                                  '${categoryList[index]['title'][0].toUpperCase()}${categoryList[index]['title'].substring(1)}'),
+                        ),
+                      );
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Column(
+                          children: <Widget>[
+                            Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey[300]),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Column(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Container(
+                                      width: 80,
+                                      height: 80,
                                       decoration: BoxDecoration(
-                                        border:
-                                            Border.all(color: Colors.grey[300]),
                                         borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Column(
-                                        children: <Widget>[
-                                          Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: Container(
-                                              width: 80,
-                                              height: 80,
-                                              decoration: BoxDecoration(
-                                                // border: Border.all(color:Colors.grey),
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                image: new DecorationImage(
-                                                  fit: BoxFit.fill,
-                                                  image: new NetworkImage(
-                                                      categoryList[index]
-                                                          ['imageUrl']),
-                                                ),
-                                              ),
-                                              // child: Column(
-                                              //   children: <Widget>[
-                                              //     Padding(
-                                              //         padding: const EdgeInsets.only(
-                                              //             bottom: 10.0),
-                                              //         child: Image.network(
-                                              //           categoryList[index]['imageUrl'],
-                                              //           width: 80,
-                                              //           fit: BoxFit.fill,
-                                              //           height: 80,
-                                              //         )),
-                                              //   ],
-                                              // ),
-                                            ),
-                                          ),
-                                        ],
+                                        image: new DecorationImage(
+                                          fit: BoxFit.fill,
+                                          image: new NetworkImage(
+                                              categoryList[index]['imageUrl']),
+                                        ),
                                       ),
                                     ),
-                                    SizedBox(height: 2),
-                                    Text(
-                                      categoryList[index]['title'],
-                                      maxLines: 2,
-                                    )
-                                  ],
-                                ),
-                              ]));
-                    }),
-              ));
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 2),
+                            Text(
+                              categoryList[index]['title'],
+                              maxLines: 2,
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+    );
   }
 }

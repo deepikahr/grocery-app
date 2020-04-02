@@ -4,7 +4,7 @@ import 'package:getflutter/colors/gf_color.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/components/button/gf_button.dart';
 import 'package:getflutter/components/typography/gf_typography.dart';
-import 'package:grocery_pro/screens/verification/otp.dart';
+import 'package:grocery_pro/screens/authe/otp.dart';
 import 'package:grocery_pro/style/style.dart';
 
 class Verification extends StatefulWidget {
@@ -33,7 +33,6 @@ class _VerificationState extends State<Verification> {
       ),
       body: Container(
         child: ListView(
-          // mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Padding(
               padding:
@@ -46,44 +45,16 @@ class _VerificationState extends State<Verification> {
             Padding(
               padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
               child: GFTypography(
-                // color: Colors.blue,
                 showDivider: false,
                 child: Text(
                   'Enter Mobile Number',
-                  // style: emailTextNormal(),
                 ),
               ),
             ),
-            // Row(
-            //   children: <Widget>[
-            //     Expanded(
-            //       // flex: 5,
-            //       child: Padding(
-            //         padding: const EdgeInsets.only(right: 38.0, left: 7.0),
-            //         child: Container(
-            //           width: 20.0,
-            //           decoration: BoxDecoration(
-            //               border: Border.all(
-            //             color: Colors.black,
-            //           )),
-            //           child: CountryPickerDropdown(
-            //             initialValue: 'tr',
-            //             itemBuilder: _buildDropdownItem,
-            //             onValuePicked: (Country country) {
-            //               print("${country.name}");
-            //             },
-            //           ),
-            //         ),
-            //       ),
-            //     ),
-            // Expanded(
-            //   flex: 5,
             Container(
               child: Padding(
                 padding: const EdgeInsets.only(left: 20.0, right: 20.0),
                 child: TextFormField(
-                  // initialValue: "+91",
-                  // style: labelStyle(),
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                       labelText: "+91",
@@ -100,17 +71,11 @@ class _VerificationState extends State<Verification> {
                 ),
               ),
             ),
-            //     )
-            //   ],
-            // ),
             Padding(
               padding:
                   const EdgeInsets.only(left: 20.0, right: 20.0, top: 30.0),
               child: GFButton(
-                // color: primary,
-
-                color: GFColor.warning,
-
+                color: GFColors.WARNING,
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -126,16 +91,4 @@ class _VerificationState extends State<Verification> {
       ),
     );
   }
-
-  // Widget _buildDropdownItem(Country country) => Container(
-  //       child: Row(
-  //         children: <Widget>[
-  //           // CountryPickerUtils.getDefaultFlagImage(country),
-  //           SizedBox(
-  //             width: 8.0,
-  //           ),
-  //           Text("+${country.phoneCode}(${country.isoCode})"),
-  //         ],
-  //       ),
-  //     );
 }

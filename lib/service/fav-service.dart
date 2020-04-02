@@ -48,4 +48,17 @@ class FavouriteService {
         });
     return json.decode(response.body);
   }
+
+  static Future<Map<String, dynamic>> checkFavProduct(id) async {
+    String token;
+    await Common.getToken().then((onValue) {
+      token = onValue;
+    });
+    final response = await client.get(Constants.baseURL + "favourites/$id",
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'bearer $token'
+        });
+    return json.decode(response.body);
+  }
 }

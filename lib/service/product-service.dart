@@ -89,6 +89,20 @@ class ProductService {
     return json.decode(response.body);
   }
 
+  static Future<Map<String, dynamic>> placeOrderCardType(body) async {
+    String token;
+    await Common.getToken().then((onValue) {
+      token = onValue;
+    });
+    final response = await client.post(Constants.baseURL + "orders/place/order",
+        body: json.encode(body),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'bearer $token'
+        });
+    return json.decode(response.body);
+  }
+
   // buy now order
   static Future<Map<String, dynamic>> getBuyNowInfor(body) async {
     String token;
@@ -149,6 +163,8 @@ class ProductService {
     await Common.getToken().then((onValue) {
       token = onValue;
     });
+    print(userID);
+    print(token);
     final response = await client.get(
         Constants.baseURL + "orders/history/of/user/mobile/data/$userID",
         headers: {
@@ -165,6 +181,22 @@ class ProductService {
       token = onValue;
     });
     final response = await client.post(Constants.baseURL + "orders/ratings",
+        body: json.encode(body),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'bearer $token'
+        });
+    return json.decode(response.body);
+  }
+
+  static Future<Map<String, dynamic>> orderRating(body, orderId) async {
+    String token;
+
+    await Common.getToken().then((onValue) {
+      token = onValue;
+    });
+    final response = await client.post(
+        Constants.baseURL + "orders/ratings/$orderId",
         body: json.encode(body),
         headers: {
           'Content-Type': 'application/json',
@@ -210,6 +242,14 @@ class ProductService {
           'Content-Type': 'application/json',
           'Authorization': 'bearer $token'
         });
+    return json.decode(response.body);
+  }
+
+  static Future<Map<String, dynamic>> productRating(productId) async {
+    final response = await client
+        .get(Constants.baseURL + "rating/get/product/$productId", headers: {
+      'Content-Type': 'application/json',
+    });
     return json.decode(response.body);
   }
 

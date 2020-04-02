@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grocery_pro/screens/home/home.dart';
 
 import 'package:grocery_pro/style/style.dart';
 
@@ -11,9 +12,11 @@ class _ThankyouState extends State<Thankyou> {
   int selectedRadio;
 
   setSelectedRadio(int val) async {
-    setState(() {
-      selectedRadio = val;
-    });
+    if (mounted) {
+      setState(() {
+        selectedRadio = val;
+      });
+    }
   }
 
   @override
@@ -36,6 +39,23 @@ class _ThankyouState extends State<Thankyou> {
             Text(
               'THANK YOU!',
               style: hintSfbold(),
+            ),
+            SizedBox(height: 30.0),
+            InkWell(
+              onTap: () {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Home(
+                        currentIndex: 2,
+                      ),
+                    ),
+                    (Route<dynamic> route) => false);
+              },
+              child: Text(
+                'Back To Home',
+                style: hintSfbold(),
+              ),
             )
           ],
         ),

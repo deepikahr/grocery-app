@@ -3,7 +3,7 @@ import '../../style/style.dart';
 
 class SpalshScreen extends StatefulWidget {
   final Map<String, Map<String, String>> localizedValues;
-  var locale;
+  final String locale;
   SpalshScreen({Key key, this.locale, this.localizedValues}) : super(key: key);
 
   @override
