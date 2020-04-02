@@ -330,7 +330,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                 padding: const EdgeInsets.only(left: 20),
                                 child: Text(
                                   '${widget.productDetail['title'][0].toUpperCase()}${widget.productDetail['title'].substring(1)}',
-                                  style: titleBold(),
+                                  style: textBarlowSemiBoldBlack(),
                                 ),
                               ),
                               Padding(
@@ -384,7 +384,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                                 30,
                                             child: Text(
                                               '${widget.productDetail['description'][0].toUpperCase()}${widget.productDetail['description'].substring(1)}',
-                                              style: TextStyle(fontSize: 10.0),
+                                              style: textbarlowRegularBlack(),
                                             ),
                                           )),
                                       Padding(
@@ -392,9 +392,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                             right: 0.0, top: 5.0),
                                         child: Text(
                                           '$currency ${variantPrice == null ? widget.productDetail['variant'][0]['price'] : variantPrice}',
-                                          style: TextStyle(
-                                              color: const Color(0xFF00BFA5),
-                                              fontSize: 17.0),
+                                          style: textbarlowBoldGreen(),
                                         ),
                                       )
                                     ],
@@ -427,7 +425,9 @@ class _ProductDetailsState extends State<ProductDetails>
                               children: <Widget>[
                                 DropdownButton<Variants>(
                                   hint: Text(
-                                      '${widget.productDetail['variant'][0]["unit"].toString()}'),
+                                    '${widget.productDetail['variant'][0]["unit"].toString()}',
+                                    style: textBarlowRegularBlack(),
+                                  ),
                                   value: dropdownValue,
                                   icon: Padding(
                                     padding: const EdgeInsets.only(left: 10.0),
@@ -459,8 +459,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                         children: <Widget>[
                                           Text(
                                             user.unit,
-                                            style:
-                                                TextStyle(color: Colors.black),
+                                            style: textBarlowRegularBlack(),
                                           ),
                                         ],
                                       ),
@@ -598,9 +597,9 @@ class _ProductDetailsState extends State<ProductDetails>
               height: 50.0,
               child: Padding(
                 padding: const EdgeInsetsDirectional.only(
-                    start: 20.0, end: 20.0, bottom: 1.0),
+                    start: 20.0, end: 20.0, bottom: 5.0),
                 child: RawMaterialButton(
-                  padding: EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
+                  padding: EdgeInsetsDirectional.only(start: .0, end: 15.0),
                   fillColor: primary,
                   constraints: const BoxConstraints(minHeight: 44.0),
                   shape: RoundedRectangleBorder(
@@ -608,22 +607,33 @@ class _ProductDetailsState extends State<ProductDetails>
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    // crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: <Widget>[
-                            new Text(
-                              '${variantUnit == null ? widget.productDetail['variant'][0]['unit'] : variantUnit}',
-                            ),
-                            SizedBox(
-                              height: 1.0,
-                            ),
-                            new Text(
-                              '$currency ${variantPrice == null ? (widget.productDetail['variant'][0]['price'] * quantity) : (variantPrice * quantity)}',
-                            ),
-                          ],
+                        padding: const EdgeInsets.only(right: .0),
+                        child: Container(
+                          color: Colors.black,
+                          margin: EdgeInsets.only(right: 50),
+                          width: 120,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              SizedBox(
+                                height: 2.0,
+                              ),
+                              new Text(
+                                '${variantUnit == null ? widget.productDetail['variant'][0]['unit'] : variantUnit}',
+                                style: textBarlowRegularWhite(),
+                              ),
+                              SizedBox(
+                                height: 1.0,
+                              ),
+                              new Text(
+                                '$currency ${variantPrice == null ? (widget.productDetail['variant'][0]['price'] * quantity) : (variantPrice * quantity)}',
+                                style: textbarlowBoldWhite(),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       addProductTocart
@@ -634,9 +644,14 @@ class _ProductDetailsState extends State<ProductDetails>
                               color: Colors.black,
                             )
                           : Text(""),
-                      new Text(
-                        "ADD TO CART",
+                      Padding(
+                        padding: const EdgeInsets.only(left: 0.0),
+                        child: new Text(
+                          "ADD TO CART",
+                          style: textBarlowRegularBlack(),
+                        ),
                       ),
+                      Icon(Icons.shopping_cart, color: Colors.black)
                     ],
                   ),
                   onPressed: () {

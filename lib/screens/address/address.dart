@@ -165,7 +165,7 @@ class _AddressState extends State<Address> {
               );
               getAddress();
             },
-            text: 'Add Address',
+            text: 'Add New Address',
             textStyle: TextStyle(fontSize: 17.0, color: Colors.black),
           ),
         ),

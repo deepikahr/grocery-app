@@ -274,10 +274,7 @@ class _MyCartState extends State<MyCart> {
               : GFAppBar(
                   title: Text(
                     'My Cart',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 17.0,
-                        fontWeight: FontWeight.w600),
+                    style: textbarlowSemiBoldBlack(),
                   ),
                   centerTitle: true,
                   backgroundColor: Colors.transparent,
@@ -311,11 +308,14 @@ class _MyCartState extends State<MyCart> {
                                         padding: const EdgeInsets.only(
                                             bottom: 8.0, left: 10.0),
                                         child: cartItem == null
-                                            ? Text('0 Items')
+                                            ? Text(
+                                                '0 Items',
+                                                style: textBarlowMediumBlack(),
+                                              )
                                             : Text(
                                                 '${cartItem['cart'].length}' +
                                                     '  Items',
-                                                style: comments(),
+                                                style: textBarlowMediumBlack(),
                                               ),
                                       ),
                                     ],
@@ -366,7 +366,8 @@ class _MyCartState extends State<MyCart> {
                                                             ? " "
                                                             : cartItem['cart']
                                                                 [i]['title'],
-                                                        style: heading(),
+                                                        style:
+                                                            textBarlowRegularBlack(),
                                                       ),
                                                     ),
                                                     Padding(
@@ -382,7 +383,8 @@ class _MyCartState extends State<MyCart> {
                                                             : cartItem['cart']
                                                                     [i]
                                                                 ['discription'],
-                                                        style: labelStyle(),
+                                                        style:
+                                                            textbarlowRegularBlack(),
                                                       ),
                                                     ),
                                                     Padding(
@@ -413,10 +415,8 @@ class _MyCartState extends State<MyCart> {
                                                                             [
                                                                             'unit']
                                                                         .toString(),
-                                                            style: TextStyle(
-                                                                color: const Color(
-                                                                    0xFF00BFA5),
-                                                                fontSize: 17.0),
+                                                            style:
+                                                                textbarlowBoldGreen(),
                                                           )
                                                         ],
                                                       ),
@@ -461,7 +461,7 @@ class _MyCartState extends State<MyCart> {
                                                         padding:
                                                             const EdgeInsets
                                                                     .only(
-                                                                top: 14.0),
+                                                                top: 11.0),
                                                         child: Container(
                                                             child: cartItem['cart']
                                                                             [i][
@@ -470,6 +470,8 @@ class _MyCartState extends State<MyCart> {
                                                                 ? Text('0')
                                                                 : Text(
                                                                     '${cartItem['cart'][i]['quantity']}',
+                                                                    style:
+                                                                        textBarlowRegularBlack(),
                                                                   )),
                                                       ),
                                                       Text(''),
@@ -537,7 +539,7 @@ class _MyCartState extends State<MyCart> {
                   ? Center(child: CircularProgressIndicator())
                   : cartItem == null
                       ? Container(
-                          height: 110.0,
+                          height: 120.0,
                         )
                       : Container(
                           height: 110.0,
@@ -553,13 +555,17 @@ class _MyCartState extends State<MyCart> {
                                   children: <Widget>[
                                     new Text(
                                       "Sub Total",
+                                      style: textbarlowRegularBlack(),
                                     ),
                                     new Text(
                                       '$currency ${cartItem['subTotal']}',
+                                      style: textbarlowBoldsmBlack(),
                                     ),
                                   ],
                                 ),
                               ),
+                              // SizedBox(height:),
+
                               Padding(
                                 padding: const EdgeInsets.only(
                                     left: 20.0, right: 20.0),
@@ -570,17 +576,21 @@ class _MyCartState extends State<MyCart> {
                                   children: <Widget>[
                                     new Text(
                                       "Tax",
+                                      style: textbarlowRegularBlack(),
                                     ),
                                     new Text(
                                       '$currency ${cartItem['tax']}',
+                                      style: textbarlowBoldsmBlack(),
                                       // style: titleLightWhiteOSR(),
                                     ),
                                   ],
                                 ),
                               ),
+                              // SizedBox(height:3),
+
                               Padding(
                                 padding: const EdgeInsets.only(
-                                    left: 20.0, right: 20.0, bottom: 5.0),
+                                    left: 20.0, right: 20.0, bottom: 6.0),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -588,21 +598,24 @@ class _MyCartState extends State<MyCart> {
                                   children: <Widget>[
                                     new Text(
                                       "Delivery Charges",
+                                      style: textbarlowRegularBlack(),
                                     ),
                                     new Text(
                                       '$currency ${cartItem['deliveryCharges']}',
+                                      style: textbarlowBoldsmBlack(),
                                     ),
                                   ],
                                 ),
                               ),
+
                               Container(
                                 height: 50.0,
                                 child: Padding(
                                   padding: const EdgeInsetsDirectional.only(
                                       start: 20.0, end: 20.0, bottom: 5.0),
                                   child: RawMaterialButton(
-                                    padding: EdgeInsetsDirectional.only(
-                                        start: 15.0, end: 0.0),
+                                    padding:
+                                        EdgeInsetsDirectional.only(end: 15.0),
                                     fillColor: primary,
                                     constraints:
                                         const BoxConstraints(minHeight: 44.0),
@@ -616,12 +629,30 @@ class _MyCartState extends State<MyCart> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: <Widget>[
+                                        Container(
+                                          color: Colors.black,
+                                          width: 120,
+                                          margin: EdgeInsets.only(right: 90),
+                                          child: Column(
+                                            children: <Widget>[
+                                              SizedBox(height: 5),
+                                              new Text(
+                                                "Grand Total",
+                                                style: textBarlowRegularWhite(),
+                                              ),
+                                              SizedBox(height: 1),
+                                              new Text(
+                                                '$currency ${cartItem['grandTotal']}  ',
+                                                style: textbarlowBoldWhite(),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                         new Text(
                                           "Checkout",
+                                          style: textBarlowRegularBlack(),
                                         ),
-                                        new Text(
-                                          '$currency ${cartItem['grandTotal']}  ',
-                                        ),
+                                        Icon(Icons.arrow_forward)
                                       ],
                                     ),
                                     onPressed: () {
