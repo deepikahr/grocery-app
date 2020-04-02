@@ -1,4 +1,4 @@
-package com.example.grocery_pro
+package com.ionicfirebaseapp.groceryapp
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

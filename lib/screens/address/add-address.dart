@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
@@ -37,10 +36,10 @@ class _AddAddressState extends State<AddAddress> {
   Location _location = new Location();
   bool chooseAddress = false, isLoading = false;
   StreamSubscription<LocationData> locationSubscription;
-  // String flatName, flatNo, street, locality, city, pincode;
 
   @override
   void initState() {
+    getResult();
     super.initState();
   }
 
@@ -54,24 +53,36 @@ class _AddAddressState extends State<AddAddress> {
     "state": null
   };
   addAddress() async {
-    if (chooseAddress && widget.updateAddressID == null) {
+    print("jj");
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
+    if (chooseAddress) {
       List data = addressData['formatted_address'].toString().split(',');
+      print(data);
+      print(data[0]);
+      print(addressData['address_components']);
       Map<String, dynamic> body = {
         "flatNumber": data[0],
-        "landMark": addressData['address_components'][0]['long_name'],
-        "locality": addressData['address_components'][2]['long_name'] +
-            ',' +
-            addressData['address_components'][1]['long_name'],
+        "landMark": addressData['address_components'][1]['long_name'],
+        "locality": addressData['address_components'][1]['long_name'] +
+            ', ' +
+            addressData['address_components'][2]['long_name'],
         "city": addressData['address_components'][3]['long_name'],
         "postalCode": addressData['address_components'][6]['long_name'],
-        "state": addressData['address_components'][3]['long_name'],
+        "state": addressData['address_components'][4]['long_name'],
       };
+      print(body);
       await AddressService.addAddress(body).then((onValue) {
+        print(onValue);
         try {
-          showAlert();
           if (mounted) {
             setState(() {
               chooseAddress = false;
+              isLoading = true;
+              showAlert();
             });
           }
         } catch (error, stackTrace) {
@@ -80,13 +91,8 @@ class _AddAddressState extends State<AddAddress> {
       }).catchError((error) {
         sentryError.reportError(error, null);
       });
-    } else if (!chooseAddress && widget.updateAddressID == null) {
+    } else {
       if (_formKey.currentState.validate()) {
-        if (mounted) {
-          setState(() {
-            isLoading = true;
-          });
-        }
         _formKey.currentState.save();
         AddressService.addAddress(address).then((onValue) {
           try {
@@ -102,8 +108,10 @@ class _AddAddressState extends State<AddAddress> {
         }).catchError((onError) {
           sentryError.reportError(onError, null);
         });
+      } else {
+        return;
       }
-    } else if (widget.updateAddressID != null) {}
+    }
   }
 
   // show alert
@@ -143,10 +151,13 @@ class _AddAddressState extends State<AddAddress> {
     await ProductService.geoApi(
             currentLocation.latitude, currentLocation.longitude)
         .then((onValue) {
+      print(onValue);
       try {
         if (mounted) {
           setState(() {
             addressData = onValue['results'][0];
+            chooseAddress = true;
+            addAddress();
           });
         }
       } catch (error, stackTrace) {
@@ -172,44 +183,52 @@ class _AddAddressState extends State<AddAddress> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: GFAppBar(
-          iconTheme: IconThemeData(
+      appBar: GFAppBar(
+        iconTheme: IconThemeData(
+          color: Colors.black,
+        ),
+        title: Text(
+          'Add Address',
+          style: TextStyle(
             color: Colors.black,
           ),
-          title: Text(
-            'Add Address',
-            style: TextStyle(
-              color: Colors.black,
+        ),
+        centerTitle: true,
+        backgroundColor: primary,
+        actions: <Widget>[
+          InkWell(
+            onTap: getResult,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(Icons.add_location),
             ),
           ),
-          centerTitle: true,
-          backgroundColor: primary,
-        ),
-        body: Form(
-          key: _formKey,
-          child: ListView(children: <Widget>[
-            Column(children: <Widget>[
-              SizedBox(
-                height: 25,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      'House/Flat/Block number :',
-                      style: regular(),
-                    ),
-                  ],
+        ],
+      ),
+      body: Form(
+        key: _formKey,
+        child: ListView(
+          children: <Widget>[
+            Column(
+              children: <Widget>[
+                SizedBox(
+                  height: 25,
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                child: TextFormField(
-                    // initialValue: widget.updateAddressID['flatNumber'] != null
-                    //     ? widget.updateAddressID['flatNumber']
-                    //     : "#123",
+                Padding(
+                  padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'House/Flat/Block number :',
+                        style: regular(),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                  child: TextFormField(
                     style: labelStyle(),
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
@@ -236,32 +255,30 @@ class _AddAddressState extends State<AddAddress> {
                     },
                     onSaved: (String value) {
                       address['flatNumber'] = value;
-                    }),
-              ),
-              SizedBox(
-                height: 25,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      'LandMark :',
-                      style: regular(),
-                    ),
-                  ],
+                    },
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                child: TextFormField(
-                    // initialValue: widget.updateAddressID['flatNumber'] == null
-                    //     ? ""
-                    //     : widget.updateAddressID['flatNumber'],
-                    style: labelStyle(),
-                    keyboardType: TextInputType.text,
-                    decoration: InputDecoration(
+                SizedBox(
+                  height: 25,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'LandMark :',
+                        style: regular(),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                  child: TextFormField(
+                      style: labelStyle(),
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
                         fillColor: Colors.black,
                         focusColor: Colors.black,
                         contentPadding: EdgeInsets.only(
@@ -276,41 +293,39 @@ class _AddAddressState extends State<AddAddress> {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: primary),
-                        )),
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return "please Enter Valid value";
-                      } else
-                        return null;
-                    },
-                    onSaved: (String value) {
-                      address['landMark'] = value;
-                    }),
-              ),
-              SizedBox(
-                height: 25,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      'Area :',
-                      style: regular(),
-                    ),
-                  ],
+                        ),
+                      ),
+                      validator: (String value) {
+                        if (value.isEmpty) {
+                          return "please Enter Valid value";
+                        } else
+                          return null;
+                      },
+                      onSaved: (String value) {
+                        address['landMark'] = value;
+                      }),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                child: TextFormField(
-                    // initialValue: widget.updateAddressID['flatNumber'] == null
-                    //     ? ""
-                    //     : widget.updateAddressID['flatNumber'],
-                    style: labelStyle(),
-                    keyboardType: TextInputType.text,
-                    decoration: InputDecoration(
+                SizedBox(
+                  height: 25,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'Area :',
+                        style: regular(),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                  child: TextFormField(
+                      style: labelStyle(),
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
                         fillColor: Colors.black,
                         focusColor: Colors.black,
                         contentPadding: EdgeInsets.only(
@@ -325,41 +340,39 @@ class _AddAddressState extends State<AddAddress> {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: primary),
-                        )),
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return "please Enter Valid value";
-                      } else
-                        return null;
-                    },
-                    onSaved: (String value) {
-                      address['locality'] = value;
-                    }),
-              ),
-              SizedBox(
-                height: 25,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      'Pincode :',
-                      style: regular(),
-                    ),
-                  ],
+                        ),
+                      ),
+                      validator: (String value) {
+                        if (value.isEmpty) {
+                          return "please Enter Valid value";
+                        } else
+                          return null;
+                      },
+                      onSaved: (String value) {
+                        address['locality'] = value;
+                      }),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                child: TextFormField(
-                    // initialValue: widget.updateAddressID['flatNumber'] == null
-                    //     ? ""
-                    //     : widget.updateAddressID['flatNumber'],
-                    style: labelStyle(),
-                    keyboardType: TextInputType.text,
-                    decoration: InputDecoration(
+                SizedBox(
+                  height: 25,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'Pincode :',
+                        style: regular(),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                  child: TextFormField(
+                      style: labelStyle(),
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
                         fillColor: Colors.black,
                         focusColor: Colors.black,
                         contentPadding: EdgeInsets.only(
@@ -374,38 +387,36 @@ class _AddAddressState extends State<AddAddress> {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: primary),
-                        )),
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return "please Enter Valid value";
-                      } else
-                        return null;
-                    },
-                    onSaved: (String value) {
-                      address['postalCode'] = value;
-                    }),
-              ),
-              SizedBox(
-                height: 25,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      'City :',
-                      style: regular(),
-                    ),
-                  ],
+                        ),
+                      ),
+                      validator: (String value) {
+                        if (value.isEmpty) {
+                          return "please Enter Valid value";
+                        } else
+                          return null;
+                      },
+                      onSaved: (String value) {
+                        address['postalCode'] = value;
+                      }),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                child: TextFormField(
-                    // initialValue: widget.updateAddressID['flatNumber'] == null
-                    //     ? ""
-                    //     : widget.updateAddressID['flatNumber'],
+                SizedBox(
+                  height: 25,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'City :',
+                        style: regular(),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                  child: TextFormField(
                     style: labelStyle(),
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
@@ -432,32 +443,30 @@ class _AddAddressState extends State<AddAddress> {
                     },
                     onSaved: (String value) {
                       address['city'] = value;
-                    }),
-              ),
-              SizedBox(
-                height: 25,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      'State :',
-                      style: regular(),
-                    ),
-                  ],
+                    },
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                child: TextFormField(
-                    // initialValue: widget.updateAddressID['flatNumber'] == null
-                    //     ? ""
-                    //     : widget.updateAddressID['flatNumber'],
-                    style: labelStyle(),
-                    keyboardType: TextInputType.text,
-                    decoration: InputDecoration(
+                SizedBox(
+                  height: 25,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'State :',
+                        style: regular(),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                  child: TextFormField(
+                      style: labelStyle(),
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
                         fillColor: Colors.black,
                         focusColor: Colors.black,
                         contentPadding: EdgeInsets.only(
@@ -472,34 +481,51 @@ class _AddAddressState extends State<AddAddress> {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: primary),
-                        )),
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return "please Enter Valid value";
-                      } else
-                        return null;
-                    },
-                    onSaved: (String value) {
-                      address['state'] = value;
-                    }),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Container(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                  child: GFButton(
-                    onPressed: addAddress,
-                    color: primary,
-                    text: 'Save',
-                    textColor: Colors.black,
-                    blockButton: true,
+                        ),
+                      ),
+                      validator: (String value) {
+                        if (value.isEmpty) {
+                          return "please Enter Valid value";
+                        } else
+                          return null;
+                      },
+                      onSaved: (String value) {
+                        address['state'] = value;
+                      }),
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Container(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                    child: GFButton(
+                      onPressed: addAddress,
+                      color: primary,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text("Save"),
+                          isLoading
+                              ? Image.asset(
+                                  'lib/assets/images/spinner.gif',
+                                  width: 15.0,
+                                  height: 15.0,
+                                  color: Colors.black,
+                                )
+                              : Text("")
+                        ],
+                      ),
+                      textColor: Colors.black,
+                      blockButton: true,
+                    ),
                   ),
                 ),
-              ),
-            ]),
-          ]),
-        ));
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

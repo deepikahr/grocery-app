@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_pro/style/style.dart';
 
-// import 'package:multi_restaurant_firestore/styles/style.dart';
-
 class Chat extends StatefulWidget {
   @override
   _ChatState createState() => _ChatState();
@@ -16,11 +14,11 @@ class _ChatState extends State<Chat> {
         centerTitle: true,
         backgroundColor: primary,
         elevation: 0,
-        title: Text('Chat',
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 17.0,
-                fontWeight: FontWeight.w600)),
+        title: Text(
+          'Chat',
+          style: TextStyle(
+              color: Colors.black, fontSize: 17.0, fontWeight: FontWeight.w600),
+        ),
         iconTheme: new IconThemeData(color: Colors.black),
       ),
       body: Container(

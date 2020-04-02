@@ -399,7 +399,7 @@ class _SearchState extends State<Search> {
                     child: GFButton(
                       onPressed: () {},
                       // text: 'Warning',
-                      color: GFColor.dark,
+                      color: GFColors.DARK,
                       shape: GFButtonShape.square,
 
                       child: Column(
@@ -459,7 +459,7 @@ class _SearchState extends State<Search> {
                           ),
                         ],
                       ),
-                      color: GFColor.warning,
+                      color: GFColors.WARNING,
                     ),
                   )
                 ],

@@ -1,74 +1,157 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
+import 'package:grocery_pro/screens/payment/addCard.dart';
+import 'package:grocery_pro/screens/thank-you/thankyou.dart';
+import 'package:grocery_pro/service/payment-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/product-service.dart';
-import 'package:grocery_pro/screens/home/home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
 
 class Payment extends StatefulWidget {
   final int quantity;
   final String type;
+  final int grandTotal;
   final int currentIndex;
   final Map<String, dynamic> data;
 
-  Payment({Key key, this.data, this.quantity, this.currentIndex, this.type})
+  Payment(
+      {Key key,
+      this.data,
+      this.quantity,
+      this.currentIndex,
+      this.type,
+      this.grandTotal})
       : super(key: key);
   @override
   _PaymentState createState() => _PaymentState();
 }
 
 class _PaymentState extends State<Payment> {
-  int selectedRadio;
-  int cashOnDelivery = 0;
-  int payByCard = 1;
-  String paymentType;
-  String selectedPaymentType;
-  bool isPlaceOrderLoading = false;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  int selectedRadio,
+      cashOnDelivery = 0,
+      payByCard = 1,
+      groupValue = 0,
+      cardValue = 0;
+  String paymentType, cvv, selectedPaymentType, cardID, currency;
+  bool isPlaceOrderLoading = false,
+      ispaymentMethodLoading = false,
+      isFirstTime = true,
+      isCardDelete = false,
+      isCardListLoading = false;
+  var paymentMethodValue;
+  List cardList;
+
+  List<Map<String, dynamic>> paymentTypes = [
+    {
+      'type': 'COD',
+      'icon': Icons.attach_money,
+      'gateway': 'COD',
+      'isSelected': true
+    },
+    {
+      'type': 'CARD',
+      'icon': Icons.credit_card,
+      'gateway': 'CARD',
+      'isSelected': false
+    },
+  ];
 
   @override
   void initState() {
+    fetchCardInfo();
     super.initState();
-    print('cartitem at payment ${widget.data}');
-    print(widget.data['_id']);
-    print(widget.quantity);
-    print(widget.currentIndex);
-    print(widget.type);
   }
 
-  setSelectedRadio(int val) async {
-    setState(() {
-      selectedRadio = val;
-      // print(val);
-      if (val == 0) {
+  fetchCardInfo() async {
+    if (mounted) {
+      setState(() {
+        isCardListLoading = true;
+      });
+    }
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    currency = prefs.getString('currency');
+    await PaymentService.getCardList().then((onValue) {
+      if (mounted) {
         setState(() {
-          paymentType = 'COD';
+          cardList = onValue['response_data'];
+          isCardListLoading = false;
         });
-      } else {
+      }
+    });
+  }
+
+  deleteCard(id) async {
+    if (mounted) {
+      setState(() {
+        isCardDelete = true;
+      });
+    }
+    await PaymentService.deleteCard(id).then((onValue) {
+      if (mounted) {
         setState(() {
-          paymentType = 'payByCard';
+          fetchCardInfo();
+          isCardDelete = false;
+          Navigator.pop(context);
         });
       }
     });
   }
 
   placeOrder() async {
-    // Map<String, dynamic> placeOrderData = {
-    //   "paymentType": paymentType,
-    // };
-    print('I am here');
-    widget.data['paymentType'] = paymentType;
-    print(widget.type);
-    print(widget.data);
-    if (widget.type == 'cart') {
-      if (mounted) {
-        setState(() {
-          isPlaceOrderLoading = true;
-        });
+    if (mounted) {
+      setState(() {
+        isPlaceOrderLoading = true;
+      });
+    }
+
+    if (groupValue == null) {
+      widget.data['paymentType'] = "COD";
+    } else {
+      widget.data['paymentType'] = paymentMethodValue.toString();
+    }
+
+    if (widget.data['paymentType'] == "CARD") {
+      if (cardID == null) {
+        cardID = cardList[0]['_id'];
       }
-      await ProductService.placeOrder(widget.data).then((onValue) {
+      widget.data['cardId'] = cardID.toString();
+
+      await ProductService.placeOrderCardType(widget.data).then((onValue) {
         print(onValue);
+        try {
+          if (onValue['response_code'] == 201) {
+            if (mounted) {
+              setState(() {
+                isPlaceOrderLoading = false;
+              });
+            }
+
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => Thankyou(),
+                ),
+                (Route<dynamic> route) => false);
+          } else {
+            if (mounted) {
+              setState(() {
+                isPlaceOrderLoading = false;
+              });
+            }
+          }
+        } catch (error, stackTrace) {
+          sentryError.reportError(error, stackTrace);
+        }
+      }).catchError((error) {
+        sentryError.reportError(error, null);
+      });
+    } else {
+      await ProductService.placeOrder(widget.data).then((onValue) {
         try {
           if (onValue['response_code'] == 201) {
             if (mounted) {
@@ -98,9 +181,8 @@ class _PaymentState extends State<Payment> {
                           Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                  builder: (BuildContext context) => Home(
-                                        currentIndex: 0,
-                                      )),
+                                builder: (BuildContext context) => Thankyou(),
+                              ),
                               (Route<dynamic> route) => false);
                         },
                       ),
@@ -122,65 +204,220 @@ class _PaymentState extends State<Payment> {
       }).catchError((error) {
         sentryError.reportError(error, null);
       });
-    } else {
-      if (mounted) {
-        setState(() {
-          isPlaceOrderLoading = true;
-        });
-      }
-      print('mangoooooooooo');
-      print(widget.data);
-      await ProductService.quickBuyNow(widget.data).then((onValue) {
-        print('value of buy now$onValue');
-        try {
-          if (onValue['response_code'] == 201) {
-            showDialog<Null>(
-              context: context,
-              barrierDismissible: false,
-              builder: (BuildContext context) {
-                return Container(
-                  width: 270.0,
-                  child: new AlertDialog(
-                    title: new Text('Thank You ...!!'),
-                    content: new SingleChildScrollView(
-                      child: new ListBody(
-                        children: <Widget>[
-                          new Text('Order Successful'),
-                        ],
-                      ),
-                    ),
-                    actions: <Widget>[
-                      new FlatButton(
-                        child: new Text('ok'),
-                        onPressed: () {
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) => Home(
-                                        currentIndex: 0,
-                                      )),
-                              (Route<dynamic> route) => false);
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              },
-            );
-          }
-        } catch (error, stackTrace) {
-          sentryError.reportError(error, stackTrace);
-        }
-      }).catchError((error) {
-        sentryError.reportError(error, null);
-      });
     }
-    // print('order details ${widget.data}');
   }
 
   @override
   Widget build(BuildContext context) {
+    if (isFirstTime) {
+      paymentMethodValue = 'COD';
+      isFirstTime = false;
+    }
+    Widget paymentMethod() {
+      return isCardListLoading
+          ? Center(child: CircularProgressIndicator())
+          : Container(
+              margin: EdgeInsetsDirectional.only(top: 10.0),
+              decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                BoxShadow(
+                    color: Colors.black.withOpacity(0.16), blurRadius: 4.0)
+              ]),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 15.0),
+                    child: new Text(
+                      'Select Card',
+                    ),
+                  ),
+                  RawMaterialButton(
+                    onPressed: () {
+                      var result = Navigator.push(
+                          context,
+                          new MaterialPageRoute(
+                            builder: (BuildContext context) => new AddCard(),
+                          ));
+
+                      if (result != null) {
+                        result.then((onValue) {
+                          fetchCardInfo();
+                          if (mounted) {
+                            setState(() {
+                              cardList = cardList;
+                            });
+                          }
+                        });
+                      }
+                    },
+                    child: new Text(
+                      'Add Card',
+                    ),
+                  ),
+                ],
+              ),
+            );
+    }
+
+    Widget buildSaveCardInfo() {
+      return cardList.length == 0
+          ? Center(
+              child: Text(
+                'No Saved Cards. Please add one!',
+              ),
+            )
+          : ListView.builder(
+              physics: ScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: cardList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return RadioListTile(
+                  value: index,
+                  groupValue: cardValue,
+                  activeColor: primary,
+                  title: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
+                      decoration: BoxDecoration(
+                          color: Colors.blue[400],
+                          borderRadius: BorderRadius.circular(5.0)),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 38.0, top: 20.0),
+                                child: cardList[index]['cardImage'] == null
+                                    ? Image.asset(
+                                        'lib/assets/icons/mastercard-logo.png')
+                                    : Image.network(
+                                        '${cardList[index]['cardImage']}'),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 15.0),
+                                child: Text(
+                                  '${cardList[index]['bank']}',
+                                  style: TextStyle(
+                                      fontSize: 19.0, color: Colors.white),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 20),
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 15.0),
+                              child: Text(
+                                '************${cardList[index]['lastFourDigits']}',
+                                style: TextStyle(
+                                    fontSize: 19.0, color: Colors.white),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 15),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              Column(
+                                children: <Widget>[
+                                  Text(
+                                    'Card holder',
+                                    style: TextStyle(
+                                        fontSize: 12.0, color: Colors.white),
+                                  ),
+                                  Text(
+                                    '${cardList[index]['cardHolderName']}',
+                                    style: TextStyle(
+                                        fontSize: 12.0, color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                children: <Widget>[
+                                  Text(
+                                    'Expires',
+                                    style: TextStyle(
+                                        fontSize: 12.0, color: Colors.white),
+                                  ),
+                                  Text(
+                                    '${cardList[index]['expiryMonth']}/${cardList[index]['expiryYear']}',
+                                    style: TextStyle(
+                                        fontSize: 12.0, color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  onChanged: (int selected) {
+                    if (mounted) {
+                      setState(() {
+                        cardValue = selected;
+                        cardID = cardList[index]['_id'];
+                      });
+                    }
+                  },
+                  secondary: InkWell(
+                    onTap: () {
+                      showDialog<Null>(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return Container(
+                            width: 270.0,
+                            child: new AlertDialog(
+                              title: new Text('Are You Sure?'),
+                              content: new SingleChildScrollView(
+                                child: new ListBody(
+                                  children: <Widget>[
+                                    new Text('Delete Card'),
+                                  ],
+                                ),
+                              ),
+                              actions: <Widget>[
+                                new FlatButton(
+                                  child: new Text('Cancel'),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                new FlatButton(
+                                  child: isCardDelete
+                                      ? Image.asset(
+                                          'lib/assets/images/spinner.gif',
+                                          width: 10.0,
+                                          height: 10.0,
+                                          color: Colors.black,
+                                        )
+                                      : Text('ok'),
+                                  onPressed: () {
+                                    deleteCard(cardList[index]['_id']);
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    child: Icon(
+                      Icons.delete,
+                      color: primary,
+                    ),
+                  ),
+                );
+              },
+            );
+    }
+
     return Scaffold(
+      key: _scaffoldKey,
       appBar: GFAppBar(
         title: Text('Payment',
             style: TextStyle(
@@ -192,386 +429,117 @@ class _PaymentState extends State<Payment> {
         elevation: 0,
         iconTheme: IconThemeData(color: Colors.black, size: 15.0),
       ),
-      body: ListView(
-        children: <Widget>[
-          Container(
-            color: Colors.grey[100],
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  top: 8.0, bottom: 8.0, left: 20, right: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      Text(
-                        'Total',
-                        style: boldHeading(),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(top: 4.0),
-                            child: Icon(
-                              IconData(
-                                0xe913,
-                                fontFamily: 'icomoon',
-                              ),
-                              color: Colors.black,
-                              size: 15.0,
+      body: isCardListLoading
+          ? Center(child: CircularProgressIndicator())
+          : ListView(
+              children: <Widget>[
+                Container(
+                  color: Colors.grey[100],
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 8.0, bottom: 8.0, left: 20, right: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Column(
+                          children: <Widget>[
+                            Text(
+                              'Total',
+                              style: boldHeading(),
                             ),
-                          ),
-                          Text(
-                            '123',
-                            style: boldHeading(),
-                          )
-                        ],
-                      )
-                    ],
-                  )
-                ],
-              ),
-            ),
-          ),
-          SizedBox(height: 10),
-          Row(
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  Text('Yes Bank'),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 18.0, top: 10.0),
-                    child: Image.asset('lib/assets/images/mastercard.png'),
-                  )
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 25.0),
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(right: 14.0, bottom: 5.0),
-                      child: Text('7034xxxx xxxx xxxx'),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      // crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        Container(
-                          margin: EdgeInsets.only(left: 20),
-                          width: 60.0,
-                          height: 40.0,
-                          child: TextFormField(
-                            initialValue: "CVV",
-                            style: labelStyle(),
-
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                                contentPadding: EdgeInsets.all(10),
-                                enabledBorder: const OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                      color: Colors.grey, width: 0.0),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: primary),
-                                )),
-                            // style: textBlackOSR(),
-                          ),
+                          ],
                         ),
-                        Container(
-                          margin: EdgeInsets.only(left: 20),
-                          child: GFButton(
-                            color: GFColors.WARNING,
-                            text: 'Submit',
-                            onPressed: null,
-                            textColor: Colors.black,
-                          ),
+                        Column(
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 4.0),
+                                  child: Text(
+                                    currency,
+                                    style: boldHeading(),
+                                  ),
+                                ),
+                                Text(
+                                  '${widget.grandTotal.toString()}',
+                                  style: boldHeading(),
+                                ),
+                              ],
+                            )
+                          ],
                         )
                       ],
                     ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 20),
-          Row(
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text('SBI'),
-                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 18.0, top: 10.0),
-                    child: Image.asset('lib/assets/images/visa.png'),
-                  )
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 25.0),
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(right: 14.0, bottom: 5.0),
-                      child: Text('7034xxxx xxxx xxxx'),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      // crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        Container(
-                          margin: EdgeInsets.only(left: 20),
-                          width: 60.0,
-                          height: 40.0,
-                          child: TextFormField(
-                            initialValue: "CVV",
-                            style: labelStyle(),
+                ),
+                SizedBox(height: 10),
+                Column(
+                  children: [
+                    ListView.builder(
+                      physics: ScrollPhysics(),
+                      shrinkWrap: true,
+                      padding: EdgeInsets.only(right: 0.0),
+                      itemCount: paymentTypes.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        if (widget.grandTotal >= 50) {
+                          paymentTypes[0]['isSelected'] = true;
+                          paymentTypes[1]['isSelected'] = true;
+                        } else {
+                          paymentTypes[0]['isSelected'] = true;
+                          paymentTypes[1]['isSelected'] = false;
+                        }
+                        return paymentTypes[index]['isSelected'] == true
+                            ? Container(
+                                margin: EdgeInsets.all(8.0),
+                                color: Colors.white,
+                                child: RadioListTile(
+                                  value: index,
+                                  groupValue: groupValue,
+                                  selected: paymentTypes[index]['isSelected'],
+                                  activeColor: primary,
+                                  title: Text(
+                                    paymentTypes[index]['type'],
+                                    style: TextStyle(color: primary),
+                                  ),
+                                  onChanged: (int selected) {
+                                    if (mounted) {
+                                      setState(() {
+                                        groupValue = selected;
+                                        paymentTypes[index]['isSelected'] =
+                                            !paymentTypes[index]['isSelected'];
 
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                                contentPadding: EdgeInsets.all(10),
-                                enabledBorder: const OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                      color: Colors.grey, width: 0.0),
+                                        paymentMethodValue =
+                                            paymentTypes[index]['type'];
+                                        if (paymentTypes[index]['type'] ==
+                                            "COD") {
+                                          ispaymentMethodLoading = false;
+                                        }
+                                      });
+                                    }
+                                  },
+                                  secondary:
+                                      paymentTypes[index]['type'] == "COD"
+                                          ? Icon(
+                                              Icons.attach_money,
+                                              color: primary,
+                                              size: 16.0,
+                                            )
+                                          : Icon(
+                                              Icons.credit_card,
+                                              color: primary,
+                                              size: 16.0,
+                                            ),
                                 ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: primary),
-                                )),
-                            // style: textBlackOSR(),
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(left: 20),
-                          child: GFButton(
-                            color: GFColors.WARNING,
-                            text: 'Submit',
-                            onPressed: null,
-                            textColor: Colors.black,
-                          ),
-                        )
-                      ],
+                              )
+                            : Container();
+                      },
                     ),
                   ],
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.only(left: 18.0, right: 18.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              // crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Text('Cash On Delivery', style: boldHeading()),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Radio(
-                    value: cashOnDelivery,
-                    groupValue: selectedRadio,
-                    activeColor: Colors.green,
-                    onChanged: (val) {
-                      // print("Radio $val");
-                      setSelectedRadio(val);
-                    },
-                  ),
-                ),
+                paymentMethodValue != 'COD' ? paymentMethod() : Container(),
+                paymentMethodValue != 'COD' ? buildSaveCardInfo() : Container(),
               ],
             ),
-          ),
-          SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.only(left: 18.0, right: 18.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              // crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Text('Credit/Debit Card', style: boldHeading()),
-                Padding(
-                  padding: const EdgeInsets.only(top: 5.0),
-                  child: Radio(
-                    value: payByCard,
-                    groupValue: selectedRadio,
-                    activeColor: Colors.green,
-                    onChanged: (val) {
-                      // print("Radio $val");
-                      setSelectedRadio(val);
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 10),
-          Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 20.0),
-                child: Row(
-                  children: <Widget>[
-                    Text('Account number'),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                    top: 5.0, bottom: 10.0, left: 20, right: 20),
-                child: Container(
-                  // color: Colors.blue,
-                  child: TextFormField(
-                    // initialValue: "user@demo.com",
-                    onSaved: (String value) {},
-                    validator: (String value) {
-                      if (value.isEmpty ||
-                          !RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
-                              .hasMatch(value)) {
-                        return "Please Enter a Valid Email";
-                        // MyLocalizations.of(context).pleaseEnterValidEmail;
-                      } else
-                        return null;
-                    },
-                    style: labelStyle(),
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                        contentPadding: EdgeInsets.all(10),
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: Colors.grey, width: 0.0),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
-                        )),
-                    // style: textBlackOSR(),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 10),
-          Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 20.0),
-                child: Row(
-                  children: <Widget>[
-                    Text('Account Name'),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                    top: 5.0, bottom: 10.0, left: 20, right: 20),
-                child: Container(
-                  // color: Colors.blue,
-                  child: TextFormField(
-                    // initialValue: "user@demo.com",
-                    onSaved: (String value) {},
-                    validator: (String value) {
-                      if (value.isEmpty ||
-                          !RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
-                              .hasMatch(value)) {
-                        return "Please Enter a Valid Email";
-                        // MyLocalizations.of(context).pleaseEnterValidEmail;
-                      } else
-                        return null;
-                    },
-                    style: labelStyle(),
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                        contentPadding: EdgeInsets.all(10),
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: Colors.grey, width: 0.0),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
-                        )),
-                    // style: textBlackOSR(),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 10),
-          Row(
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(right: 60.0, bottom: 4),
-                    child: Row(
-                      children: <Widget>[
-                        Text('Expiring On'),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(left: 20),
-                    width: 160.0,
-                    height: 40.0,
-                    child: TextFormField(
-                      style: labelStyle(),
-
-                      keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(10),
-                          enabledBorder: const OutlineInputBorder(
-                            borderSide: const BorderSide(
-                                color: Colors.grey, width: 0.0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: primary),
-                          )),
-                      // style: textBlackOSR(),
-                    ),
-                  ),
-                ],
-              ),
-              Column(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(right: 60.0, bottom: 4),
-                    child: Row(
-                      children: <Widget>[
-                        Text('CVV'),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(left: 20),
-                    width: 110.0,
-                    height: 40.0,
-                    child: TextFormField(
-                      style: labelStyle(),
-
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(10),
-                          enabledBorder: const OutlineInputBorder(
-                            borderSide: const BorderSide(
-                                color: Colors.grey, width: 0.0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: primary),
-                          )),
-                      // style: textBlackOSR(),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(height: 30),
-        ],
-      ),
       bottomNavigationBar: Container(
         child: Padding(
           padding: const EdgeInsets.only(
@@ -579,22 +547,35 @@ class _PaymentState extends State<Payment> {
             right: 20.0,
           ),
           child: GFButton(
-            // color: primary,
-
-            color: GFColor.warning,
+            color: GFColors.WARNING,
             blockButton: true,
             onPressed: placeOrder,
-            // () {
-            //   Navigator.push(
-            //     context,
-            //     MaterialPageRoute(builder: (context) => Thankyou()),
-            //   );
-            // },
-            text: 'Pay Now',
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text("Pay Now"),
+                isPlaceOrderLoading
+                    ? Image.asset(
+                        'lib/assets/images/spinner.gif',
+                        width: 15.0,
+                        height: 15.0,
+                        color: Colors.black,
+                      )
+                    : Text("")
+              ],
+            ),
             textStyle: TextStyle(fontSize: 17.0, color: Colors.black),
           ),
         ),
       ),
     );
+  }
+
+  void showSnackbar(message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(milliseconds: 3000),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 }

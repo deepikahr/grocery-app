@@ -5,9 +5,9 @@ import 'package:getflutter/components/button/gf_button.dart';
 import 'package:getflutter/components/typography/gf_typography.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:getflutter/size/gf_size.dart';
+import 'package:grocery_pro/screens/authe/login.dart';
 import 'package:grocery_pro/service/auth-service.dart';
 import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/screens/login/login.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 
 SentryError sentryError = new SentryError();
@@ -21,12 +21,13 @@ class _SignupState extends State<Signup> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   bool isLoading = false;
   bool registerationLoading = false;
   bool rememberMe = false;
   bool value = false;
-  String userName, email, password;
+  String userName, email, password, mobileNumber, firstName, lastName;
 
   @override
   void initState() {
@@ -43,99 +44,55 @@ class _SignupState extends State<Signup> {
         });
       }
       Map<String, dynamic> body = {
-        "firstName": userName,
+        "firstName": firstName,
+        "lastName": lastName,
         "email": email.toLowerCase(),
         "password": password,
-        "role": "User"
+        "role": "User",
+        "mobileNumber": mobileNumber
       };
-      // print('Value on login');
-      // print(body);
+
       await LoginService.signUp(body).then((onValue) {
         try {
           if (mounted) {
             setState(() {
-              // print('I am here too');
               registerationLoading = false;
             });
           }
-          // print('I am here');
-          // print(body);
+
           if (onValue['response_code'] == 201) {
-            // showAlert('${onValue['response_data']}');
-            showDialog(
+            showDialog<Null>(
               context: context,
+              barrierDismissible: false, // user must tap button!
               builder: (BuildContext context) {
-                // return object of type Dialog
-                return AlertDialog(
-                  contentPadding: EdgeInsets.only(
-                    top: 10.0,
-                  ),
-                  // title: new Text(
-                  //   "Thank You.......",
-                  //   style: hintSfsemiboldb(),
-                  //   textAlign: TextAlign.center,
-                  // ),
-                  content: Container(
-                    height: 100.0,
-                    child: Column(
+                return new AlertDialog(
+                  content: new SingleChildScrollView(
+                    child: new ListBody(
                       children: <Widget>[
-                        new Text(
-                          "${onValue['response_data']}",
-                          style: hintSfLightsm(),
-                          textAlign: TextAlign.center,
-                        ),
-                        Padding(padding: EdgeInsets.only(top: 20.0)),
-                        Divider(),
-                        IntrinsicHeight(
-                            child: new Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            VerticalDivider(),
-                            Expanded(
-                                child: GestureDetector(
-//                              onTap: (){},
-                              onTap: () {
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            Login()),
-                                    (Route<dynamic> route) => false);
-                              },
-                              child: Container(
-                                alignment: Alignment.center,
-//                            margin: EdgeInsets.only(top:15.0),
-//                                height: 29.0,
-                                decoration: BoxDecoration(
-//                                border: Border.all(color: Colors.black12)
-                                    ),
-                                child: Text(
-                                  'OK',
-                                  style: hintSfLightbig(),
-                                ),
-                              ),
-                            ))
-                          ],
-                        ))
+                        new Text(onValue['response_data']),
                       ],
                     ),
                   ),
+                  actions: <Widget>[
+                    new FlatButton(
+                      child: new Text('OK'),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => Login(),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 );
               },
             );
-
-            // if (mounted)
-            //   Navigator.pushAndRemoveUntil(
-            //       context,
-            //       MaterialPageRoute(builder: (BuildContext context) => Login()),
-            //       (Route<dynamic> route) => false);
-            // setState(() {
-            //   // popupType = 'login';
-            // });
-          } else if (onValue['statusCode'] == 400) {
-            showAlert('${onValue['message'][0]['constraints']['isEmail']}');
+          } else if (onValue['statusCode'] == 401) {
+            showSnackbar('${onValue['response_data']}');
           } else {
-            showAlert('${onValue['response_data']}');
+            showSnackbar('${onValue['response_data']}');
           }
         } catch (error) {
           sentryError.reportError(error, null);
@@ -153,7 +110,6 @@ class _SignupState extends State<Signup> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        // return object of type Dialog
         return AlertDialog(
           contentPadding: EdgeInsets.only(
             top: 10.0,
@@ -181,17 +137,12 @@ class _SignupState extends State<Signup> {
                     VerticalDivider(),
                     Expanded(
                         child: GestureDetector(
-//                              onTap: (){},
                       onTap: () {
                         Navigator.of(context).pop();
                       },
                       child: Container(
                         alignment: Alignment.center,
-//                            margin: EdgeInsets.only(top:15.0),
-//                                height: 29.0,
-                        decoration: BoxDecoration(
-//                                border: Border.all(color: Colors.black12)
-                            ),
+                        decoration: BoxDecoration(),
                         child: Text(
                           'OK',
                           style: hintSfLightbig(),
@@ -211,27 +162,29 @@ class _SignupState extends State<Signup> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: GFAppBar(
-          automaticallyImplyLeading: false,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(20),
-                  bottomRight: Radius.circular(20))),
-          title: Text(
-            'Sign up',
-            style: TextStyle(color: Colors.black, fontSize: 20.0),
-          ),
-          centerTitle: true,
-          backgroundColor: primary,
+      key: _scaffoldKey,
+      appBar: GFAppBar(
+        automaticallyImplyLeading: false,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20))),
+        title: Text(
+          'Sign up',
+          style: TextStyle(color: Colors.black, fontSize: 20.0),
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              buildLoginPageForm(),
-            ],
-          ),
-        ));
+        centerTitle: true,
+        backgroundColor: primary,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            buildLoginPageForm(),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget buildLoginPageForm() {
@@ -248,16 +201,20 @@ class _SignupState extends State<Signup> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               buildwelcometext(),
-              buildusername(),
-              buildusernameField(),
+              buildUserFirstName(),
+              buildUserFirstNameField(),
+              buildUserLastName(),
+              buildUserLastNameField(),
               buildEmailText(),
               buildEmailTextField(),
               buildPasswordText(),
               buildPasswordTextField(),
+              buildMobileNumberText(),
+              buildMobileNumberTextField(),
               buildsignuplink(),
               buildLoginButton(),
-              buildcontinuetext(),
-              buildsocialbuttons(),
+              // buildcontinuetext(),
+              // buildsocialbuttons(),
               // buildForgotPasswordButton(),
             ],
           ),
@@ -270,7 +227,6 @@ class _SignupState extends State<Signup> {
     return Padding(
       padding: const EdgeInsets.only(top: 10.0),
       child: GFTypography(
-        // color: Colors.blue,
         showDivider: false,
         child: Text(
           "Let's get started !",
@@ -280,16 +236,15 @@ class _SignupState extends State<Signup> {
     );
   }
 
-  Widget buildusername() {
+  Widget buildUserFirstName() {
     return Padding(
       padding: const EdgeInsets.only(top: 20.0),
       child: GFTypography(
-        // color: Colors.blue,
         showDivider: false,
         child: RichText(
           text: TextSpan(
             children: <TextSpan>[
-              TextSpan(text: "UserName", style: emailTextNormal()),
+              TextSpan(text: "First Name", style: emailTextNormal()),
               TextSpan(
                 text: ' *',
                 style: TextStyle(color: Colors.red),
@@ -301,34 +256,81 @@ class _SignupState extends State<Signup> {
     );
   }
 
-  Widget buildusernameField() {
+  Widget buildUserFirstNameField() {
     return Padding(
       padding: const EdgeInsets.only(top: 5.0, bottom: 10.0),
       child: Container(
-        // color: Colors.blue,
         child: TextFormField(
-          initialValue: "John Snow",
           style: labelStyle(),
           keyboardType: TextInputType.emailAddress,
           validator: (String value) {
             if (value.isEmpty || !RegExp(r'^[A-Za-z ]+$').hasMatch(value)) {
-              return "Please Enter Valid Name";
+              return "Please Enter Valid First Name";
             } else
               return null;
           },
           onSaved: (String value) {
-            userName = value;
+            firstName = value;
           },
-
           decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(10),
-              enabledBorder: const OutlineInputBorder(
-                borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+            contentPadding: EdgeInsets.all(10),
+            enabledBorder: const OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: primary),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildUserLastName() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 20.0),
+      child: GFTypography(
+        showDivider: false,
+        child: RichText(
+          text: TextSpan(
+            children: <TextSpan>[
+              TextSpan(text: "Last Name", style: emailTextNormal()),
+              TextSpan(
+                text: ' *',
+                style: TextStyle(color: Colors.red),
               ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: primary),
-              )),
-          // style: textBlackOSR(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildUserLastNameField() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 5.0, bottom: 10.0),
+      child: Container(
+        child: TextFormField(
+          style: labelStyle(),
+          keyboardType: TextInputType.emailAddress,
+          validator: (String value) {
+            if (value.isEmpty || !RegExp(r'^[A-Za-z ]+$').hasMatch(value)) {
+              return "Please Enter Valid Last Name";
+            } else
+              return null;
+          },
+          onSaved: (String value) {
+            lastName = value;
+          },
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.all(10),
+            enabledBorder: const OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: primary),
+            ),
+          ),
         ),
       ),
     );
@@ -338,7 +340,6 @@ class _SignupState extends State<Signup> {
     return Padding(
       padding: const EdgeInsets.only(),
       child: GFTypography(
-        // color: Colors.blue,
         showDivider: false,
         child: RichText(
           text: TextSpan(
@@ -359,13 +360,13 @@ class _SignupState extends State<Signup> {
     return Padding(
       padding: const EdgeInsets.only(top: 5.0, bottom: 10.0),
       child: Container(
-        // color: Colors.blue,
         child: TextFormField(
-          initialValue: "user@demo.com",
           style: labelStyle(),
           keyboardType: TextInputType.emailAddress,
           validator: (String value) {
-            if (value.isEmpty) {
+            if (value.isEmpty ||
+                !RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+                    .hasMatch(value)) {
               return "Please Enter Valid Email";
             } else
               return null;
@@ -373,16 +374,15 @@ class _SignupState extends State<Signup> {
           onSaved: (String value) {
             email = value;
           },
-
           decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(10),
-              enabledBorder: const OutlineInputBorder(
-                borderSide: const BorderSide(color: Colors.grey, width: 0.0),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: primary),
-              )),
-          // style: textBlackOSR(),
+            contentPadding: EdgeInsets.all(10),
+            enabledBorder: const OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: primary),
+            ),
+          ),
         ),
       ),
     );
@@ -390,7 +390,6 @@ class _SignupState extends State<Signup> {
 
   Widget buildPasswordText() {
     return GFTypography(
-      // color: Colors.blue,
       showDivider: false,
       child: RichText(
         text: TextSpan(
@@ -409,9 +408,7 @@ class _SignupState extends State<Signup> {
   Widget buildPasswordTextField() {
     return Container(
       margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
-      // color: Colors.blue,
       child: TextFormField(
-        initialValue: "123456",
         style: labelStyle(),
         keyboardType: TextInputType.text,
         validator: (String value) {
@@ -424,26 +421,82 @@ class _SignupState extends State<Signup> {
           password = value;
         },
         decoration: InputDecoration(
-            fillColor: Colors.black,
-            focusColor: Colors.black,
-            contentPadding: EdgeInsets.only(
-              left: 15.0,
-              right: 15.0,
-              top: 10.0,
-              bottom: 10.0,
-            ),
-            suffixIcon: Icon(
-              Icons.remove_red_eye,
-              color: Colors.grey,
-            ),
-            enabledBorder: const OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.grey, width: 0.0),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: primary),
-            )),
-        // style: textBlackOSR(),
+          fillColor: Colors.black,
+          focusColor: Colors.black,
+          contentPadding: EdgeInsets.only(
+            left: 15.0,
+            right: 15.0,
+            top: 10.0,
+            bottom: 10.0,
+          ),
+          suffixIcon: Icon(
+            Icons.remove_red_eye,
+            color: Colors.grey,
+          ),
+          enabledBorder: const OutlineInputBorder(
+            borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: primary),
+          ),
+        ),
         obscureText: true,
+      ),
+    );
+  }
+
+  Widget buildMobileNumberText() {
+    return GFTypography(
+      showDivider: false,
+      child: RichText(
+        text: TextSpan(
+          children: <TextSpan>[
+            TextSpan(text: "Mobile Number", style: emailTextNormal()),
+            TextSpan(
+              text: ' *',
+              style: TextStyle(color: Colors.red),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildMobileNumberTextField() {
+    return Container(
+      margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
+      child: TextFormField(
+        style: labelStyle(),
+        keyboardType: TextInputType.number,
+        validator: (String value) {
+          if (value.isEmpty || value.length != 10) {
+            return "please Enter Valid Mobile Number";
+          } else
+            return null;
+        },
+        onSaved: (String value) {
+          mobileNumber = value;
+        },
+        decoration: InputDecoration(
+          fillColor: Colors.black,
+          focusColor: Colors.black,
+          contentPadding: EdgeInsets.only(
+            left: 15.0,
+            right: 15.0,
+            top: 10.0,
+            bottom: 10.0,
+          ),
+          suffixIcon: Icon(
+            Icons.remove_red_eye,
+            color: Colors.grey,
+          ),
+          enabledBorder: const OutlineInputBorder(
+            borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: primary),
+          ),
+        ),
       ),
     );
   }
@@ -452,13 +505,24 @@ class _SignupState extends State<Signup> {
     return Padding(
       padding: const EdgeInsets.only(top: 20.0, bottom: 15.0),
       child: GFButton(
-        // color: primary,
-        size: GFSize.large,
-        color: GFColor.warning,
+        size: GFSize.LARGE,
+        color: GFColors.WARNING,
         blockButton: true,
-
         onPressed: userSignup,
-        text: 'Sign Up',
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text("Sign Up"),
+            registerationLoading
+                ? Image.asset(
+                    'lib/assets/images/spinner.gif',
+                    width: 15.0,
+                    height: 15.0,
+                    color: Colors.black,
+                  )
+                : Text("")
+          ],
+        ),
         textStyle: TextStyle(fontSize: 17.0, color: Colors.black),
       ),
     );
@@ -480,7 +544,7 @@ class _SignupState extends State<Signup> {
                 TextSpan(
                     text: "Have got an account?", style: emailTextNormal()),
                 TextSpan(
-                  text: '  Log in!',
+                  text: '  Login!',
                   style: TextStyle(color: primary),
                 ),
               ],
@@ -504,7 +568,7 @@ class _SignupState extends State<Signup> {
           child: Padding(
             padding: const EdgeInsets.only(top: 10.0, left: 0.0, right: 0.0),
             child: GFButton(
-              size: GFSize.large,
+              size: GFSize.LARGE,
               icon: Icon(
                 IconData(
                   0xe906,
@@ -528,5 +592,13 @@ class _SignupState extends State<Signup> {
         ),
       ],
     );
+  }
+
+  void showSnackbar(message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(milliseconds: 3000),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 }

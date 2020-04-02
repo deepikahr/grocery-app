@@ -15,10 +15,10 @@ class _NoDataState extends State<NoData> {
   Widget build(BuildContext context) {
     return Container(
       child: Padding(
-          padding:
-              EdgeInsets.symmetric(vertical: widget.verticalPadding ?? 100.0),
-          child: Center(
-              child: Column(
+        padding:
+            EdgeInsets.symmetric(vertical: widget.verticalPadding ?? 100.0),
+        child: Center(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               widget.icon != null
@@ -33,7 +33,9 @@ class _NoDataState extends State<NoData> {
               //   style: hintSfMediumprimary(),
               // ),
             ],
-          ))),
+          ),
+        ),
+      ),
     );
   }
 }
