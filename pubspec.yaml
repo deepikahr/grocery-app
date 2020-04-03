@@ -51,6 +51,26 @@ flutter:
       fonts:   
         - asset: lib/assets/fonts/icomoon.ttf
 
+    - family: 'BarlowBold'
+      fonts:   
+        - asset: lib/assets/fonts/barlowBold.ttf
+          weight: 400
+    - family: 'BarlowMedium'
+      fonts:   
+        - asset: lib/assets/fonts/barlowMedium.ttf
+          weight: 400
+
+    - family: 'BarlowRegular'
+      fonts:   
+        - asset: lib/assets/fonts/barlowRegular.ttf
+          weight: 400
+          
+    - family: 'BarlowSemiBold'
+      fonts:   
+        - asset: lib/assets/fonts/barlowSemiBold.ttf
+          weight: 400      
+
+
   # To add assets to your application, add an assets section, like this:
   assets:
     - lib/assets/icons/Group.png
@@ -80,29 +100,3 @@ flutter:
     - lib/assets/icons/minus.png
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700

@@ -105,7 +105,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 bottomRight: Radius.circular(20))),
         title: Text(
           'Forgot Password',
-          style: TextStyle(color: Colors.black),
+          style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
         backgroundColor: primary,
@@ -117,16 +117,18 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             children: <Widget>[
               Padding(
                 padding:
-                    const EdgeInsets.only(top: 40.0, left: 18.0, bottom: 4.0),
+                    const EdgeInsets.only(top: 40.0, left: 18.0, bottom: 8.0),
                 child: Text(
                   "Password reset",
-                  style: boldHeading(),
+                  style: textbarlowMediumBlack(),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 18.0, bottom: 25.0),
                 child: Text(
-                    "Please enter your registered Email to send the reset code."),
+                  "Please enter your registered Email to send the reset code.",
+                  style: textbarlowRegularBlack(),
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
@@ -135,7 +137,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   child: RichText(
                     text: TextSpan(
                       children: <TextSpan>[
-                        TextSpan(text: "Email", style: emailTextNormal()),
+                        TextSpan(
+                            text: "Email", style: textbarlowRegularBlack()),
                         TextSpan(
                           text: ' *',
                           style: TextStyle(color: Colors.red),
@@ -161,7 +164,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       } else
                         return null;
                     },
-                    style: labelStyle(),
+                    style: textBarlowRegularBlack(),
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                         contentPadding: EdgeInsets.all(10),
@@ -186,7 +189,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text("Submit"),
+                      Text(
+                        "Submit",
+                        style: textBarlowRegularrBlack(),
+                      ),
                       isVerfyEmailLoading
                           ? Image.asset(
                               'lib/assets/images/spinner.gif',
