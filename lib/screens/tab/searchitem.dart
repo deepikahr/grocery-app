@@ -51,7 +51,13 @@ class _SearchItemState extends State<SearchItem> {
                       borderSide: BorderSide(
                         color: Colors.grey,
                       ),
-                      borderRadius: BorderRadius.circular(30)),
+                      borderRadius: BorderRadius.circular(10)),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: primary,
+                      ),
+                      borderRadius: BorderRadius.circular(10)),
+                  focusColor: primary,
                 ),
                 searchList: list,
 //              hideSearchBoxWhenItemSelected: false,
@@ -166,8 +172,8 @@ class _SearchItemState extends State<SearchItem> {
                   itemCount: 3,
                   itemBuilder: (BuildContext context, int i) {
                     return Container(
-                      margin: EdgeInsets.only(bottom: 0),
-                      color: Colors.white60,
+                      margin: EdgeInsets.only(bottom: 10, left: 10, right: 10),
+                      color: Colors.white70,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
@@ -185,7 +191,7 @@ class _SearchItemState extends State<SearchItem> {
                                 children: <Widget>[
                                   Padding(
                                     padding: const EdgeInsets.only(
-                                        right: 8.0, bottom: 0),
+                                        right: 8.0, bottom: 4),
                                     child: Text(
                                       'title',
                                       style: textBarlowRegularBlack(),
@@ -193,7 +199,7 @@ class _SearchItemState extends State<SearchItem> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(
-                                        left: 36.0, bottom: 0.0),
+                                        left: 36.0, bottom: 4.0),
                                     child: Text(
                                       'description',
                                       style: textbarlowRegularBlack(),

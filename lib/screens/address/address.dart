@@ -73,9 +73,7 @@ class _AddressState extends State<Address> {
         ),
         title: Text(
           'Address',
-          style: TextStyle(
-            color: Colors.black,
-          ),
+          style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
         backgroundColor: primary,
@@ -92,7 +90,7 @@ class _AddressState extends State<Address> {
                           top: 10.0, bottom: 10.0, left: 20.0),
                       child: Text(
                         'Saved Address',
-                        style: titleBold(),
+                        style: textbarlowSemiBoldBlack(),
                       ),
                     ),
                   ],
@@ -133,7 +131,7 @@ class _AddressState extends State<Address> {
                                               '${addressList[index]['postalCode']}' +
                                           ', ' +
                                           '${addressList[index]['state']}',
-                                      style: TextStyle(color: Colors.black),
+                                      style: textBarlowRegularBlack(),
                                     ),
                                   ),
                                   SizedBox(height: 20),
@@ -166,7 +164,7 @@ class _AddressState extends State<Address> {
               getAddress();
             },
             text: 'Add New Address',
-            textStyle: TextStyle(fontSize: 17.0, color: Colors.black),
+            textStyle: textBarlowRegularrBlack(),
           ),
         ),
       ),
@@ -195,6 +193,7 @@ class _AddressState extends State<Address> {
               padding: const EdgeInsets.only(left: 18.0, right: 18.0),
               child: Text(
                 "Edit",
+                style: textbarlowRegularaPrimar(),
               ),
             ),
             type: GFButtonType.outline,
@@ -211,6 +210,7 @@ class _AddressState extends State<Address> {
                 padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                 child: Text(
                   "Delete",
+                  style: textbarlowRegularaPrimar(),
                 ),
               ),
               color: GFColors.WARNING,

@@ -166,17 +166,26 @@ class _PaymentState extends State<Payment> {
                 return Container(
                   width: 270.0,
                   child: new AlertDialog(
-                    title: new Text('Thank You ...!!'),
+                    title: new Text(
+                      'Thank You ...!!',
+                      style: textBarlowRegularBlack(),
+                    ),
                     content: new SingleChildScrollView(
                       child: new ListBody(
                         children: <Widget>[
-                          new Text('Order Successful'),
+                          new Text(
+                            'Order Successful',
+                            style: textBarlowRegularBlack(),
+                          ),
                         ],
                       ),
                     ),
                     actions: <Widget>[
                       new FlatButton(
-                        child: new Text('ok'),
+                        child: new Text(
+                          'ok',
+                          style: textbarlowRegularaPrimar(),
+                        ),
                         onPressed: () {
                           Navigator.pushAndRemoveUntil(
                               context,
@@ -229,6 +238,7 @@ class _PaymentState extends State<Payment> {
                     padding: EdgeInsets.only(left: 15.0),
                     child: new Text(
                       'Select Card',
+                      style: textBarlowRegularBlack(),
                     ),
                   ),
                   RawMaterialButton(
@@ -252,6 +262,7 @@ class _PaymentState extends State<Payment> {
                     },
                     child: new Text(
                       'Add Card',
+                      style: textBarlowRegularBlack(),
                     ),
                   ),
                 ],
@@ -264,6 +275,7 @@ class _PaymentState extends State<Payment> {
           ? Center(
               child: Text(
                 'No Saved Cards. Please add one!',
+                style: textBarlowRegularBlack(),
               ),
             )
           : ListView.builder(
@@ -300,8 +312,7 @@ class _PaymentState extends State<Payment> {
                                 padding: const EdgeInsets.only(left: 15.0),
                                 child: Text(
                                   '${cardList[index]['bank']}',
-                                  style: TextStyle(
-                                      fontSize: 19.0, color: Colors.white),
+                                  style: textBarlowRegularWhite(),
                                 ),
                               ),
                             ],
@@ -312,8 +323,7 @@ class _PaymentState extends State<Payment> {
                               padding: const EdgeInsets.only(left: 15.0),
                               child: Text(
                                 '************${cardList[index]['lastFourDigits']}',
-                                style: TextStyle(
-                                    fontSize: 19.0, color: Colors.white),
+                                style: textBarlowRegularWhite(),
                               ),
                             ),
                           ),
@@ -325,13 +335,11 @@ class _PaymentState extends State<Payment> {
                                 children: <Widget>[
                                   Text(
                                     'Card holder',
-                                    style: TextStyle(
-                                        fontSize: 12.0, color: Colors.white),
+                                    style: textBarlowRegularWhit(),
                                   ),
                                   Text(
                                     '${cardList[index]['cardHolderName']}',
-                                    style: TextStyle(
-                                        fontSize: 12.0, color: Colors.white),
+                                    style: textBarlowRegularWhit(),
                                   ),
                                 ],
                               ),
@@ -339,13 +347,11 @@ class _PaymentState extends State<Payment> {
                                 children: <Widget>[
                                   Text(
                                     'Expires',
-                                    style: TextStyle(
-                                        fontSize: 12.0, color: Colors.white),
+                                    style: textBarlowRegularWhit(),
                                   ),
                                   Text(
                                     '${cardList[index]['expiryMonth']}/${cardList[index]['expiryYear']}',
-                                    style: TextStyle(
-                                        fontSize: 12.0, color: Colors.white),
+                                    style: textBarlowRegularWhit(),
                                   ),
                                 ],
                               ),
@@ -372,17 +378,26 @@ class _PaymentState extends State<Payment> {
                           return Container(
                             width: 270.0,
                             child: new AlertDialog(
-                              title: new Text('Are You Sure?'),
+                              title: new Text(
+                                'Are You Sure?',
+                                style: textBarlowRegularBlack(),
+                              ),
                               content: new SingleChildScrollView(
                                 child: new ListBody(
                                   children: <Widget>[
-                                    new Text('Delete Card'),
+                                    new Text(
+                                      'Delete Card',
+                                      style: textBarlowRegularBlack(),
+                                    ),
                                   ],
                                 ),
                               ),
                               actions: <Widget>[
                                 new FlatButton(
-                                  child: new Text('Cancel'),
+                                  child: new Text(
+                                    'Cancel',
+                                    style: textbarlowRegularaPrimar(),
+                                  ),
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
@@ -395,7 +410,10 @@ class _PaymentState extends State<Payment> {
                                           height: 10.0,
                                           color: Colors.black,
                                         )
-                                      : Text('ok'),
+                                      : Text(
+                                          'Ok',
+                                          style: textbarlowRegularaPrimar(),
+                                        ),
                                   onPressed: () {
                                     deleteCard(cardList[index]['_id']);
                                   },
@@ -419,11 +437,7 @@ class _PaymentState extends State<Payment> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: GFAppBar(
-        title: Text('Payment',
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 17.0,
-                fontWeight: FontWeight.w600)),
+        title: Text('Payment', style: textbarlowSemiBoldBlack()),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -445,7 +459,7 @@ class _PaymentState extends State<Payment> {
                           children: <Widget>[
                             Text(
                               'Total',
-                              style: boldHeading(),
+                              style: textbarlowMediumBlack(),
                             ),
                           ],
                         ),
@@ -457,12 +471,12 @@ class _PaymentState extends State<Payment> {
                                   padding: const EdgeInsets.only(top: 4.0),
                                   child: Text(
                                     currency,
-                                    style: boldHeading(),
+                                    style: textbarlowBoldBlack(),
                                   ),
                                 ),
                                 Text(
                                   '${widget.grandTotal.toString()}',
-                                  style: boldHeading(),
+                                  style: textbarlowBoldBlack(),
                                 ),
                               ],
                             )
@@ -553,7 +567,10 @@ class _PaymentState extends State<Payment> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text("Pay Now"),
+                Text(
+                  "Pay Now",
+                  style: textBarlowRegularrBlack(),
+                ),
                 isPlaceOrderLoading
                     ? Image.asset(
                         'lib/assets/images/spinner.gif',

@@ -54,17 +54,26 @@ class _AddCardState extends State<AddCard> {
                 barrierDismissible: false,
                 builder: (BuildContext context) {
                   return new AlertDialog(
-                    title: new Text('Success'),
+                    title: new Text(
+                      'Success',
+                      style: textBarlowRegularBlack(),
+                    ),
                     content: new SingleChildScrollView(
                       child: new ListBody(
                         children: <Widget>[
-                          new Text('${onValue['response_data']}'),
+                          new Text(
+                            '${onValue['response_data']}',
+                            style: textBarlowRegularBlack(),
+                          ),
                         ],
                       ),
                     ),
                     actions: <Widget>[
                       new FlatButton(
-                        child: new Text('OK'),
+                        child: new Text(
+                          'OK',
+                          style: textbarlowRegularaPrimar(),
+                        ),
                         onPressed: () {
                           Navigator.pop(context, onValue['data']);
                           Navigator.pop(context);
@@ -115,11 +124,7 @@ class _AddCardState extends State<AddCard> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: GFAppBar(
-        title: Text('Add Card',
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 17.0,
-                fontWeight: FontWeight.w600)),
+        title: Text('Add Card', style: textbarlowSemiBoldBlack()),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -135,7 +140,10 @@ class _AddCardState extends State<AddCard> {
                   padding: const EdgeInsets.only(left: 20.0),
                   child: Row(
                     children: <Widget>[
-                      Text('Card Number'),
+                      Text(
+                        'Card Number',
+                        style: textBarlowRegularBlack(),
+                      ),
                     ],
                   ),
                 ),
@@ -154,9 +162,13 @@ class _AddCardState extends State<AddCard> {
                         } else
                           return null;
                       },
-                      style: labelStyle(),
+                      style: textBarlowRegularBlack(),
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
+                        errorBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 0, color: Color(0xFFF44242))),
+                        errorStyle: TextStyle(color: Color(0xFFF44242)),
                         counterText: "",
                         contentPadding: EdgeInsets.all(10),
                         enabledBorder: const OutlineInputBorder(
@@ -179,7 +191,10 @@ class _AddCardState extends State<AddCard> {
                   padding: const EdgeInsets.only(left: 20.0),
                   child: Row(
                     children: <Widget>[
-                      Text('Card Holder Name'),
+                      Text(
+                        'Card Holder Name',
+                        style: textBarlowRegularBlack(),
+                      ),
                     ],
                   ),
                 ),
@@ -197,9 +212,13 @@ class _AddCardState extends State<AddCard> {
                         } else
                           return null;
                       },
-                      style: labelStyle(),
+                      style: textBarlowRegularBlack(),
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
+                        errorBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 0, color: Color(0xFFF44242))),
+                        errorStyle: TextStyle(color: Color(0xFFF44242)),
                         contentPadding: EdgeInsets.all(10),
                         enabledBorder: const OutlineInputBorder(
                           borderSide:
@@ -221,7 +240,7 @@ class _AddCardState extends State<AddCard> {
                   padding: const EdgeInsets.only(left: 20.0),
                   child: Row(
                     children: <Widget>[
-                      Text('Card Bank Name'),
+                      Text('Card Bank Name', style: textBarlowRegularBlack()),
                     ],
                   ),
                 ),
@@ -239,9 +258,13 @@ class _AddCardState extends State<AddCard> {
                         } else
                           return null;
                       },
-                      style: labelStyle(),
+                      style: textBarlowRegularBlack(),
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
+                        errorBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 0, color: Color(0xFFF44242))),
+                        errorStyle: TextStyle(color: Color(0xFFF44242)),
                         contentPadding: EdgeInsets.all(10),
                         enabledBorder: const OutlineInputBorder(
                           borderSide:
@@ -263,7 +286,8 @@ class _AddCardState extends State<AddCard> {
                   padding: const EdgeInsets.only(left: 20.0),
                   child: Row(
                     children: <Widget>[
-                      Text('Card Expire Month'),
+                      Text('Card Expire Month',
+                          style: textBarlowRegularBlack()),
                     ],
                   ),
                 ),
@@ -282,9 +306,13 @@ class _AddCardState extends State<AddCard> {
                         } else
                           return null;
                       },
-                      style: labelStyle(),
+                      style: textBarlowRegularBlack(),
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
+                        errorBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 0, color: Color(0xFFF44242))),
+                        errorStyle: TextStyle(color: Color(0xFFF44242)),
                         counterText: "",
                         contentPadding: EdgeInsets.all(10),
                         enabledBorder: const OutlineInputBorder(
@@ -307,7 +335,7 @@ class _AddCardState extends State<AddCard> {
                   padding: const EdgeInsets.only(left: 20.0),
                   child: Row(
                     children: <Widget>[
-                      Text('Card Expire Year'),
+                      Text('Card Expire Year', style: textBarlowRegularBlack()),
                     ],
                   ),
                 ),
@@ -326,9 +354,13 @@ class _AddCardState extends State<AddCard> {
                         } else
                           return null;
                       },
-                      style: labelStyle(),
+                      style: textBarlowRegularBlack(),
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
+                        errorBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 0, color: Color(0xFFF44242))),
+                        errorStyle: TextStyle(color: Color(0xFFF44242)),
                         counterText: "",
                         contentPadding: EdgeInsets.all(10),
                         enabledBorder: const OutlineInputBorder(
@@ -351,7 +383,7 @@ class _AddCardState extends State<AddCard> {
                   padding: const EdgeInsets.only(left: 20.0),
                   child: Row(
                     children: <Widget>[
-                      Text('Card Expire CVV'),
+                      Text('Card Expire CVV', style: textBarlowRegularBlack()),
                     ],
                   ),
                 ),
@@ -370,9 +402,13 @@ class _AddCardState extends State<AddCard> {
                         } else
                           return null;
                       },
-                      style: labelStyle(),
+                      style: textBarlowRegularBlack(),
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
+                        errorBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 0, color: Color(0xFFF44242))),
+                        errorStyle: TextStyle(color: Color(0xFFF44242)),
                         counterText: "",
                         contentPadding: EdgeInsets.all(10),
                         enabledBorder: const OutlineInputBorder(
@@ -404,7 +440,10 @@ class _AddCardState extends State<AddCard> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text("Save"),
+                Text(
+                  "Save",
+                  style: textBarlowRegularrBlack(),
+                ),
                 isCardListLoading
                     ? Image.asset(
                         'lib/assets/images/spinner.gif',

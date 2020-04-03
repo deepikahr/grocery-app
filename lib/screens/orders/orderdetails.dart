@@ -17,9 +17,7 @@ class _OrderDetailsState extends State<OrderDetails> {
       appBar: GFAppBar(
         title: Text(
           'Order Details',
-          style: TextStyle(
-            color: Colors.black,
-          ),
+          style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
         backgroundColor: primary,
@@ -36,12 +34,12 @@ class _OrderDetailsState extends State<OrderDetails> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Text('Order ID:', style: titleBold()),
+                    Text('Order ID:', style: textBarlowMediumBlack()),
                     Container(
                       margin: EdgeInsets.only(top: 20, left: 8),
                       width: MediaQuery.of(context).size.width * 0.4,
                       child: Text('12342435262735482528152825',
-                          style: subtitleBold()),
+                          style: textBarlowMediumBlack()),
                     ),
                   ],
                 ),
@@ -49,10 +47,10 @@ class _OrderDetailsState extends State<OrderDetails> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Text('Delivery Date:', style: titleBold()),
+                    Text('Delivery Date:', style: textBarlowMediumBlack()),
                     Container(
                       margin: EdgeInsets.only(left: 8),
-                      child: Text('11/12/1234', style: subtitleBold()),
+                      child: Text('11/12/1234', style: textBarlowMediumBlack()),
                     ),
                   ],
                 ),
@@ -60,13 +58,13 @@ class _OrderDetailsState extends State<OrderDetails> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Text('Delivery Time:', style: titleBold()),
+                    Text('Delivery Time:', style: textBarlowMediumBlack()),
                     Container(
                       margin: EdgeInsets.only(left: 8),
                       child: Row(
                         children: <Widget>[
-                          Text('12.30', style: subtitleBold()),
-                          Text('PM', style: subtitleBold()),
+                          Text('12.30', style: textBarlowMediumBlack()),
+                          Text('PM', style: textBarlowMediumBlack()),
                         ],
                       ),
                     ),
@@ -76,10 +74,10 @@ class _OrderDetailsState extends State<OrderDetails> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Text('Payment Type:', style: titleBold()),
+                    Text('Payment Type:', style: textBarlowMediumBlack()),
                     Container(
                       margin: EdgeInsets.only(left: 8),
-                      child: Text('COD', style: subtitleBold()),
+                      child: Text('COD', style: textBarlowMediumBlack()),
                     ),
                   ],
                 ),
@@ -87,10 +85,10 @@ class _OrderDetailsState extends State<OrderDetails> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Text('Order Status:', style: titleBold()),
+                    Text('Order Status:', style: textBarlowMediumBlack()),
                     Container(
                       margin: EdgeInsets.only(left: 8),
-                      child: Text('Delivered', style: subtitleBoldgreen()),
+                      child: Text('Delivered', style: textBarlowMediumGreen()),
                     ),
                   ],
                 ),
@@ -102,7 +100,7 @@ class _OrderDetailsState extends State<OrderDetails> {
             padding: const EdgeInsets.all(18.0),
             child: Text(
               'Items List',
-              style: titleBold(),
+              style: textBarlowMediumBlack(),
             ),
           ),
           Container(
@@ -123,7 +121,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                           padding: const EdgeInsets.only(bottom: 6.0),
                           child: Text(
                             'White walker',
-                            style: titleBold(),
+                            style: textBarlowMediumBlack(),
                           ),
                         ),
                       ],
@@ -137,8 +135,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                             width: MediaQuery.of(context).size.width * 0.41,
                             child: Text(
                               'Blended scotch whiskey Blended scotch whiskey',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w300, fontSize: 14.0),
+                              style: textBarlowRegularBlack(),
                             ),
                           ),
                         ),
@@ -160,7 +157,10 @@ class _OrderDetailsState extends State<OrderDetails> {
                             color: Colors.black,
                             size: 11.0,
                           ),
-                          Text('4566')
+                          Text(
+                            '4566',
+                            style: textBarlowBoldBlack(),
+                          )
                         ],
                       ),
                     ),
@@ -174,8 +174,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                         // ),
                         Text(
                           '1kg',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w400, fontSize: 15.0),
+                          style: textBarlowMediumBlack(),
                         ),
                         GFButton(
                           onPressed: () {
@@ -260,6 +259,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                           },
                           color: primary,
                           text: 'Rate',
+                          textStyle: textBarlowRegularWhite(),
                         )
                       ],
                     ),
@@ -281,7 +281,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text('Sub Total:', style: titleBold()),
+                    Text('Sub Total:', style: textBarlowMediumBlack()),
                     Container(
                       margin: EdgeInsets.only(left: 8),
                       child: Padding(
@@ -302,7 +302,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                             ),
                             Text(
                               '4566',
-                              style: titleBold(),
+                              style: textBarlowBoldBlack(),
                             )
                           ],
                         ),
@@ -316,7 +316,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text('Tax:', style: titleBold()),
+                    Text('Tax:', style: textBarlowMediumBlack()),
                     Container(
                       margin: EdgeInsets.only(left: 8),
                       child: Padding(
@@ -337,7 +337,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                             ),
                             Text(
                               '4566',
-                              style: titleBold(),
+                              style: textBarlowBoldBlack(),
                             )
                           ],
                         ),
@@ -351,7 +351,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text('Delivery Charges:', style: titleBold()),
+                    Text('Delivery Charges:', style: textBarlowMediumBlack()),
                     Container(
                       margin: EdgeInsets.only(left: 8),
                       child: Padding(
@@ -372,7 +372,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                             ),
                             Text(
                               '4566',
-                              style: titleBold(),
+                              style: textBarlowBoldBlack(),
                             )
                           ],
                         ),
@@ -394,7 +394,7 @@ class _OrderDetailsState extends State<OrderDetails> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text('Grand Total:', style: titleBold()),
+                Text('Grand Total:', style: textBarlowMediumBlack()),
                 Container(
                   margin: EdgeInsets.only(left: 8),
                   child: Padding(
@@ -415,7 +415,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                         ),
                         Text(
                           '4566',
-                          style: titleBold(),
+                          style: textBarlowBoldBlack(),
                         )
                       ],
                     ),
@@ -435,6 +435,7 @@ class _OrderDetailsState extends State<OrderDetails> {
               child: GFButton(
                 onPressed: () {},
                 text: 'ReOrder',
+                textStyle: textBarlowRegularWhite(),
                 color: primary,
                 size: GFSize.SMALL,
               ),
@@ -446,6 +447,7 @@ class _OrderDetailsState extends State<OrderDetails> {
               child: GFButton(
                 onPressed: () {},
                 text: 'Rate',
+                textStyle: textbarlowRegularaPrimary(),
                 type: GFButtonType.outline,
                 color: primary,
                 size: GFSize.SMALL,

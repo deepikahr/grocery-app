@@ -14,11 +14,7 @@ class _ChatState extends State<Chat> {
         centerTitle: true,
         backgroundColor: primary,
         elevation: 0,
-        title: Text(
-          'Chat',
-          style: TextStyle(
-              color: Colors.black, fontSize: 17.0, fontWeight: FontWeight.w600),
-        ),
+        title: Text('Chat', style: textbarlowSemiBoldBlack()),
         iconTheme: new IconThemeData(color: Colors.black),
       ),
       body: Container(
@@ -74,7 +70,7 @@ class _ChatState extends State<Chat> {
                                           bottomLeft: Radius.circular(40))),
                                   child: Text(
                                     'Hi, How can I help you ?',
-                                    // style: hintTextPopregularwhitesm(),
+                                    style: textBarlowRegularBlack(),
                                   ),
                                 ))
                           ],
@@ -105,7 +101,7 @@ class _ChatState extends State<Chat> {
                                           bottomLeft: Radius.circular(40))),
                                   child: Text(
                                     'Hello',
-                                    // style: hintTextPopregularwhitesm(),
+                                    style: textBarlowRegularBlack(),
                                   ),
                                 )),
                             Flexible(
@@ -151,11 +147,10 @@ class _ChatState extends State<Chat> {
                         decoration: InputDecoration(
                           fillColor: Colors.white,
                           border: InputBorder.none,
-
                           hintText: 'Type Message',
-                          // hintStyle: regular(),
+                          hintStyle: textBarlowRegularBlack(),
                         ),
-                        // style: hintTextPopregular(),
+                        style: textBarlowRegularBlack(),
                       ),
                     ),
                     Padding(

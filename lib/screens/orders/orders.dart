@@ -194,9 +194,7 @@ class _OrdersState extends State<Orders> {
       appBar: GFAppBar(
         title: Text(
           'Orders',
-          style: TextStyle(
-            color: Colors.black,
-          ),
+          style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
         backgroundColor: primary,
@@ -261,7 +259,8 @@ class _OrdersState extends State<Orders> {
                                                 child: Text(
                                                   orderList[i]['cart']['cart']
                                                       [0]['title'],
-                                                  style: titleBold(),
+                                                  style:
+                                                      textBarlowMediumBlack(),
                                                 ),
                                               ),
                                             ],
@@ -288,10 +287,8 @@ class _OrdersState extends State<Orders> {
                                                                   ['description']
                                                               .toString() ??
                                                           "",
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w300,
-                                                      fontSize: 14.0),
+                                                  style:
+                                                      textbarlowRegularBlack(),
                                                 ),
                                               ),
                                             ],
@@ -307,14 +304,14 @@ class _OrdersState extends State<Orders> {
                                               children: <Widget>[
                                                 Text(
                                                   currency,
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 11.0,
-                                                  ),
+                                                  style: textBarlowBoldBlack(),
                                                 ),
-                                                Text(orderList[i]['grandTotal']
-                                                        .toString() ??
-                                                    "")
+                                                Text(
+                                                  orderList[i]['grandTotal']
+                                                          .toString() ??
+                                                      "",
+                                                  style: textBarlowBoldBlack(),
+                                                )
                                               ],
                                             ),
                                           ),
@@ -322,11 +319,6 @@ class _OrdersState extends State<Orders> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.start,
                                             children: <Widget>[
-                                              Icon(
-                                                Icons.check_circle_outline,
-                                                size: 15,
-                                                color: Colors.grey,
-                                              ),
                                               Text(
                                                 'Ordered At : ' +
                                                         orderList[i]
@@ -338,9 +330,7 @@ class _OrdersState extends State<Orders> {
                                                             .substring(
                                                                 11, 16) ??
                                                     "",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.w300,
-                                                    fontSize: 11.0),
+                                                style: textbarlowRegularBlack(),
                                               ),
                                             ],
                                           ),
@@ -351,8 +341,7 @@ class _OrdersState extends State<Orders> {
                                               Text(
                                                 'Order ' +
                                                     "${orderList[i]['orderStatus'] ?? ""}",
-                                                style: TextStyle(
-                                                    color: Colors.green),
+                                                style: textBarlowRegularGreen(),
                                               ),
                                             ],
                                           ),
@@ -361,11 +350,10 @@ class _OrdersState extends State<Orders> {
                                                 MainAxisAlignment.start,
                                             children: <Widget>[
                                               Text(
-                                                'Payment Type ' +
-                                                    "${orderList[i]['paymentType'] ?? ""}",
-                                                style: TextStyle(
-                                                    color: Colors.green),
-                                              ),
+                                                  'Payment Type ' +
+                                                      "${orderList[i]['paymentType'] ?? ""}",
+                                                  style:
+                                                      textBarlowRegularGreen()),
                                             ],
                                           ),
                                         ],

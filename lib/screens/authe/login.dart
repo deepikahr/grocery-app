@@ -77,13 +77,19 @@ class _LoginState extends State<Login> {
                   content: new SingleChildScrollView(
                     child: new ListBody(
                       children: <Widget>[
-                        new Text('Login successfully'),
+                        new Text(
+                          'Login successfully',
+                          style: textBarlowRegularBlack(),
+                        ),
                       ],
                     ),
                   ),
                   actions: <Widget>[
                     new FlatButton(
-                      child: new Text('OK'),
+                      child: new Text(
+                        'OK',
+                        style: textbarlowRegularaPrimary(),
+                      ),
                       onPressed: () {
                         Navigator.pushAndRemoveUntil(
                             context,
@@ -197,7 +203,7 @@ class _LoginState extends State<Login> {
               TextSpan(text: "Email", style: textbarlowRegularBlack()),
               TextSpan(
                 text: ' *',
-                style: TextStyle(color: Colors.red),
+                style: TextStyle(color: Color(0xFFF44242)),
               ),
             ],
           ),
@@ -226,6 +232,9 @@ class _LoginState extends State<Login> {
           style: textBarlowRegularBlack(),
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
+            errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
+            errorStyle: TextStyle(color: Color(0xFFF44242)),
             contentPadding: EdgeInsets.all(10),
             enabledBorder: const OutlineInputBorder(
               borderSide: const BorderSide(color: Colors.grey, width: 0.0),
@@ -248,7 +257,7 @@ class _LoginState extends State<Login> {
             TextSpan(text: "Password", style: textbarlowRegularBlack()),
             TextSpan(
               text: ' *',
-              style: TextStyle(color: Colors.red),
+              style: TextStyle(color: Color(0xFFF44242)),
             ),
           ],
         ),
@@ -273,6 +282,9 @@ class _LoginState extends State<Login> {
             return null;
         },
         decoration: InputDecoration(
+          errorBorder: OutlineInputBorder(
+              borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
+          errorStyle: TextStyle(color: Color(0xFFF44242)),
           fillColor: Colors.black,
           focusColor: Colors.black,
           contentPadding: EdgeInsets.only(

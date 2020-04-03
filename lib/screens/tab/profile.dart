@@ -194,7 +194,7 @@ class _ProfileState extends State<Profile> {
                   SizedBox(height: 5),
                   Text(
                     'Add new card',
-                    style: TextStyle(color: Colors.black54),
+                    style: textBarlowRegularBlack(),
                   )
                 ],
               ),
@@ -215,7 +215,7 @@ class _ProfileState extends State<Profile> {
                       width: 232,
                       padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
                       decoration: BoxDecoration(
-                          color: Colors.blue[400],
+                          color: Color(0xFF5FB8E5),
                           borderRadius: BorderRadius.circular(5.0)),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -229,14 +229,14 @@ class _ProfileState extends State<Profile> {
                                     ? Image.asset(
                                         'lib/assets/icons/mastercard-logo.png')
                                     : Image.network(
-                                        '${cardList[index]['cardImage']}'),
+                                        '${cardList[index]['cardImage']}',
+                                      ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 15.0),
                                 child: Text(
                                   '${cardList[index]['bank']}',
-                                  style: TextStyle(
-                                      fontSize: 19.0, color: Colors.white),
+                                  style: textBarlowRegularWhite(),
                                 ),
                               ),
                             ],
@@ -247,8 +247,7 @@ class _ProfileState extends State<Profile> {
                               padding: const EdgeInsets.only(left: 15.0),
                               child: Text(
                                 '************${cardList[index]['lastFourDigits']}',
-                                style: TextStyle(
-                                    fontSize: 19.0, color: Colors.white),
+                                style: textBarlowRegularWhite(),
                               ),
                             ),
                           ),
@@ -260,13 +259,11 @@ class _ProfileState extends State<Profile> {
                                 children: <Widget>[
                                   Text(
                                     'Card holder',
-                                    style: TextStyle(
-                                        fontSize: 12.0, color: Colors.white),
+                                    style: textBarlowRegularWhit(),
                                   ),
                                   Text(
                                     '${cardList[index]['cardHolderName']}',
-                                    style: TextStyle(
-                                        fontSize: 12.0, color: Colors.white),
+                                    style: textBarlowRegularWhit(),
                                   ),
                                 ],
                               ),
@@ -274,13 +271,11 @@ class _ProfileState extends State<Profile> {
                                 children: <Widget>[
                                   Text(
                                     'Expires',
-                                    style: TextStyle(
-                                        fontSize: 12.0, color: Colors.white),
+                                    style: textBarlowRegularWhit(),
                                   ),
                                   Text(
                                     '${cardList[index]['expiryMonth']}/${cardList[index]['expiryYear']}',
-                                    style: TextStyle(
-                                        fontSize: 12.0, color: Colors.white),
+                                    style: textBarlowRegularWhit(),
                                   ),
                                 ],
                               ),
@@ -293,11 +288,18 @@ class _ProfileState extends State<Profile> {
                                       return Container(
                                         width: 270.0,
                                         child: new AlertDialog(
-                                          title: new Text('Are You Sure?'),
+                                          title: new Text(
+                                            'Are You Sure?',
+                                            style: textBarlowRegularBlack(),
+                                          ),
                                           content: new SingleChildScrollView(
                                             child: new ListBody(
                                               children: <Widget>[
-                                                new Text('Delete Card'),
+                                                new Text(
+                                                  'Delete Card',
+                                                  style:
+                                                      textBarlowRegularBlack(),
+                                                ),
                                               ],
                                             ),
                                           ),
@@ -316,7 +318,11 @@ class _ProfileState extends State<Profile> {
                                                       height: 10.0,
                                                       color: Colors.black,
                                                     )
-                                                  : Text('ok'),
+                                                  : Text(
+                                                      'Ok',
+                                                      style:
+                                                          textBarlowRegularBlack(),
+                                                    ),
                                               onPressed: () {
                                                 deleteCard(
                                                     cardList[index]['_id']);
@@ -379,7 +385,7 @@ class _ProfileState extends State<Profile> {
                       SizedBox(height: 5),
                       Text(
                         'Add new card',
-                        style: TextStyle(color: Colors.black54),
+                        style: textBarlowRegularBlack(),
                       )
                     ],
                   ),
@@ -396,7 +402,7 @@ class _ProfileState extends State<Profile> {
               : GFAppBar(
                   title: Text(
                     'Profile',
-                    style: TextStyle(color: Colors.black),
+                    style: textbarlowSemiBoldBlack(),
                   ),
                   centerTitle: true,
                   backgroundColor: primary,
@@ -490,20 +496,20 @@ class _ProfileState extends State<Profile> {
                                                   userInfo['lastName'] == null
                                               ? Text(
                                                   '',
-                                                  style: titleBold(),
+                                                  style:
+                                                      textBarlowMediumBlack(),
                                                 )
                                               : Text(
                                                   '${userInfo['firstName']} ${userInfo['lastName'] == null ? "" : userInfo['lastName']}',
-                                                  style: titleBold(),
+                                                  style:
+                                                      textBarlowMediumBlack(),
                                                 ),
                                         ),
                                         userInfo == null &&
                                                 userInfo['email'] == null
                                             ? Text(
                                                 '',
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.w300,
-                                                    fontSize: 14.0),
+                                                style: textBarlowRegularBlack(),
                                               )
                                             : Row(
                                                 mainAxisAlignment:
@@ -511,10 +517,8 @@ class _ProfileState extends State<Profile> {
                                                 children: <Widget>[
                                                   Text(
                                                     '${userInfo['email']}',
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w300,
-                                                        fontSize: 14.0),
+                                                    style:
+                                                        textBarlowRegularBlack(),
                                                   ),
                                                 ],
                                               ),
@@ -526,10 +530,8 @@ class _ProfileState extends State<Profile> {
                                                       null
                                               ? Text(
                                                   '',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w300,
-                                                      fontSize: 14.0),
+                                                  style:
+                                                      textBarlowRegularBlack(),
                                                 )
                                               : Row(
                                                   mainAxisAlignment:
@@ -537,10 +539,8 @@ class _ProfileState extends State<Profile> {
                                                   children: <Widget>[
                                                     Text(
                                                       '${userInfo['mobileNumber'] == null ? "" : userInfo['mobileNumber']}',
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w300,
-                                                          fontSize: 14.0),
+                                                      style:
+                                                          textBarlowRegularBlack(),
                                                     ),
                                                   ],
                                                 ),
@@ -559,7 +559,7 @@ class _ProfileState extends State<Profile> {
                                       top: 10.0, bottom: 10.0, left: 20.0),
                                   child: Text(
                                     'Saved cards',
-                                    style: titleBold(),
+                                    style: textBarlowMediumBlack(),
                                   ),
                                 ),
                               ],
@@ -619,7 +619,7 @@ class _ProfileState extends State<Profile> {
                                           top: 10.0, bottom: 10.0, left: 20.0),
                                       child: Text(
                                         'Address',
-                                        style: titleBold(),
+                                        style: textBarlowMediumBlack(),
                                       ),
                                     ),
                                   ],
@@ -650,7 +650,7 @@ class _ProfileState extends State<Profile> {
                                           top: 10.0, bottom: 10.0, left: 20.0),
                                       child: Text(
                                         'Order History',
-                                        style: titleBold(),
+                                        style: textBarlowMediumBlack(),
                                       ),
                                     ),
                                   ],
@@ -679,7 +679,7 @@ class _ProfileState extends State<Profile> {
                                           top: 10.0, bottom: 10.0, left: 20.0),
                                       child: Text(
                                         'Support',
-                                        style: titleBold(),
+                                        style: textBarlowMediumBlack(),
                                       ),
                                     ),
                                   ],
@@ -699,7 +699,7 @@ class _ProfileState extends State<Profile> {
                                         top: 10.0, bottom: 10.0, left: 20.0),
                                     child: Text(
                                       'Help',
-                                      style: titleBold(),
+                                      style: textBarlowMediumBlack(),
                                     ),
                                   ),
                                 ],
@@ -722,7 +722,7 @@ class _ProfileState extends State<Profile> {
                                       },
                                       child: Text(
                                         'Logout',
-                                        style: titleBold(),
+                                        style: textBarlowMediumBlack(),
                                       ),
                                     ),
                                   ),
@@ -742,10 +742,11 @@ class _ProfileState extends State<Profile> {
                                             : Icon(Icons.exit_to_app),
                                       )
                                     ],
-                                  )
+                                  ),
                                 ],
                               ),
                             ),
+                            SizedBox(height: 30)
                           ],
                         ),
     );
