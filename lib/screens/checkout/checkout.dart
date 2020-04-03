@@ -456,7 +456,7 @@ class _CheckoutState extends State<Checkout> {
                                         left: 22.0, top: 10.0, bottom: 10.0),
                                     child: Text(
                                       'Total',
-                                      style: boldHeading(),
+                                      style: textbarlowMediumBlack(),
                                     ),
                                   )
                                 ],
@@ -471,12 +471,12 @@ class _CheckoutState extends State<Checkout> {
                                             const EdgeInsets.only(top: 2.0),
                                         child: Text(
                                           currency,
-                                          style: boldHeading(),
+                                          style: textBarlowBoldBlack(),
                                         ),
                                       ),
                                       Text(
                                         '${widget.cartItem['grandTotal']}',
-                                        style: boldHeading(),
+                                        style: textBarlowBoldBlack(),
                                       )
                                     ],
                                   ),
@@ -490,7 +490,8 @@ class _CheckoutState extends State<Checkout> {
                     SizedBox(height: 10),
                     Padding(
                       padding: const EdgeInsets.only(left: 20.0),
-                      child: Text('Delivery type', style: boldHeading()),
+                      child: Text('Delivery type',
+                          style: textBarlowSemiBoldBlack()),
                     ),
                     Row(children: <Widget>[
                       Padding(
@@ -501,9 +502,7 @@ class _CheckoutState extends State<Checkout> {
                               children: <Widget>[
                                 Text(
                                   'Home Delivery',
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w400),
+                                  style: textBarlowRegularBlack(),
                                 ),
                               ],
                             )
@@ -743,7 +742,7 @@ class _CheckoutState extends State<Checkout> {
                                   left: 20.0, bottom: 4.0),
                               child: Text(
                                 'Choose Delivery Date and Time Slot',
-                                style: boldHeading(),
+                                style: textBarlowSemiBoldBlack(),
                               ),
                             ),
                           ],

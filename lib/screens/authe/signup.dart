@@ -273,6 +273,9 @@ class _SignupState extends State<Signup> {
             firstName = value;
           },
           decoration: InputDecoration(
+            errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
+            errorStyle: TextStyle(color: Color(0xFFF44242)),
             contentPadding: EdgeInsets.all(10),
             enabledBorder: const OutlineInputBorder(
               borderSide: const BorderSide(color: Colors.grey, width: 0.0),
@@ -323,6 +326,9 @@ class _SignupState extends State<Signup> {
             lastName = value;
           },
           decoration: InputDecoration(
+            errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
+            errorStyle: TextStyle(color: Color(0xFFF44242)),
             contentPadding: EdgeInsets.all(10),
             enabledBorder: const OutlineInputBorder(
               borderSide: const BorderSide(color: Colors.grey, width: 0.0),
@@ -375,6 +381,9 @@ class _SignupState extends State<Signup> {
             email = value;
           },
           decoration: InputDecoration(
+            errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
+            errorStyle: TextStyle(color: Color(0xFFF44242)),
             contentPadding: EdgeInsets.all(10),
             enabledBorder: const OutlineInputBorder(
               borderSide: const BorderSide(color: Colors.grey, width: 0.0),
@@ -397,7 +406,7 @@ class _SignupState extends State<Signup> {
             TextSpan(text: "Password", style: textbarlowRegularBlack()),
             TextSpan(
               text: ' *',
-              style: TextStyle(color: Colors.red),
+              style: TextStyle(color: Color(0xFFF44242)),
             ),
           ],
         ),
@@ -421,6 +430,9 @@ class _SignupState extends State<Signup> {
           password = value;
         },
         decoration: InputDecoration(
+          errorBorder: OutlineInputBorder(
+              borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
+          errorStyle: TextStyle(color: Color(0xFFF44242)),
           fillColor: Colors.black,
           focusColor: Colors.black,
           contentPadding: EdgeInsets.only(
@@ -478,6 +490,9 @@ class _SignupState extends State<Signup> {
           mobileNumber = value;
         },
         decoration: InputDecoration(
+          errorBorder: OutlineInputBorder(
+              borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
+          errorStyle: TextStyle(color: Color(0xFFF44242)),
           fillColor: Colors.black,
           focusColor: Colors.black,
           contentPadding: EdgeInsets.only(

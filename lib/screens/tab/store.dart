@@ -3,6 +3,7 @@ import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/categories/allcategories.dart';
 import 'package:grocery_pro/screens/categories/subcategories.dart';
 import 'package:grocery_pro/screens/product/product-details.dart';
+import 'package:grocery_pro/screens/tab/searchitem.dart';
 import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/service/fav-service.dart';
 import 'package:grocery_pro/service/product-service.dart';
@@ -190,56 +191,266 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
           ? Center(child: CircularProgressIndicator())
           : ListView(
               children: <Widget>[
-                GFSearchBar(
-                  searchBoxInputDecoration: InputDecoration(
-                    prefixIcon: Icon(Icons.search),
-                    labelText: 'What Are You Buying Today?',
-                    labelStyle: textBarlowRegularBlack(),
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.grey,
-                        ),
-                        borderRadius: BorderRadius.circular(15)),
-                  ),
-                  searchList: productsList,
-                  overlaySearchListHeight: 300.0,
-                  searchQueryBuilder: (query, productsList) => productsList
-                      .where((item) => item['title']
-                          .toLowerCase()
-                          .contains(query.toLowerCase()))
-                      .toList(),
-                  overlaySearchListItemBuilder: (item) => Container(
-                    padding: const EdgeInsets.all(8),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SearchItem()),
+                    );
+                  },
+                  child: Container(
+                    margin: EdgeInsets.all(20),
+                    padding: EdgeInsets.only(left: 15, right: 15),
+                    width: MediaQuery.of(context).size.width,
+                    height: 50,
+                    decoration: BoxDecoration(
+                        color: Color(0xFFF0F0F0),
+                        borderRadius: BorderRadius.circular(10)),
                     child: Row(
                       children: <Widget>[
+                        Icon(Icons.search),
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Icon(Icons.search, color: Colors.black),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 10.0),
-                          child: Text(item['title'].toLowerCase(),
+                          padding: const EdgeInsets.only(left: 4.0, bottom: 4),
+                          child: Text('What are you buying today?',
                               style: textBarlowRegularBlack()),
-                        ),
+                        )
                       ],
                     ),
                   ),
-                  onItemSelected: (item) {
-                    setState(
-                      () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ProductDetails(
-                                productDetail: item,
-                                favProductList:
-                                    getTokenValue ? favProductList : null),
-                          ),
-                        );
-                      },
-                    );
-                  },
+                  // child: GFSearchBar(
+                  //   searchBoxInputDecoration: InputDecoration(
+                  //     prefixIcon: Icon(Icons.search),
+                  //     labelText: 'What Are You Buying Today?',
+                  //     labelStyle: textBarlowRegularBlack(),
+                  //     enabledBorder: OutlineInputBorder(
+                  //         borderSide: BorderSide(
+                  //           color: Colors.grey,
+                  //         ),
+                  //         borderRadius: BorderRadius.circular(15)),
+                  //   ),
+                  //   searchList: productsList,
+                  //   overlaySearchListHeight: 300.0,
+                  //   searchQueryBuilder: (query, productsList) => productsList
+                  //       .where((item) => item['title']
+                  //           .toLowerCase()
+                  //           .contains(query.toLowerCase()))
+                  //       .toList(),
+                  //   overlaySearchListItemBuilder: (item) => Container(
+                  //     padding: const EdgeInsets.all(8),
+                  //     child: Row(
+                  //       children: <Widget>[
+                  //         Padding(
+                  //           padding: const EdgeInsets.only(bottom: 8.0),
+                  //           child: Icon(Icons.search, color: Colors.black),
+                  //         ),
+                  //         Padding(
+                  //           padding: const EdgeInsets.only(bottom: 10.0),
+                  //           child: Text(item['title'].toLowerCase(),
+                  //               style: textBarlowRegularBlack()),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  //   onItemSelected: (item) {
+                  //     setState(
+                  //       () {
+                  //         Navigator.push(
+                  //           context,
+                  //           MaterialPageRoute(
+                  //             builder: (context) => ProductDetails(
+                  //                 productDetail: item,
+                  //                 favProductList:
+                  //                     getTokenValue ? favProductList : null),
+                  //           ),
+                  //         );
+                  //       },
+                  //     );
+                  //   },
+                  // ),
                 ),
+
+//         Row(
+//           children: <Widget>[
+//                                                Stack(
+//                                       children: <Widget>[
+//                                         GFCard(
+//                                           shape: RoundedRectangleBorder(
+//                                               borderRadius: BorderRadius.circular(20.0)),
+//                                           boxFit: BoxFit.fill,
+//                                           colorFilter: new ColorFilter.mode(
+//                                               Colors.black.withOpacity(0.67),
+//                                               BlendMode.darken),
+//                                           content: Row(
+//                                             // crossAxisAlignment: CrossAxisAlignment.start,
+//                                             children: <Widget>[
+
+//                                                   Column(
+//                                                     crossAxisAlignment: CrossAxisAlignment.start,
+//                                                     children: <Widget>[
+//                                                       Container(
+//                                                         height: 100,
+//                                                         width: 100,
+//                                                         decoration: BoxDecoration(
+// image: DecorationImage(image: AssetImage('lib/assets/images/grape.png'),fit: BoxFit.cover),
+//                                                         ),
+//                                                       ),
+//   Row(
+//                                     crossAxisAlignment:
+//                                         CrossAxisAlignment.start,
+//                                     children: <Widget>[
+//                                       Column(
+//                                         crossAxisAlignment:
+//                                             CrossAxisAlignment.start,
+//                                         children: <Widget>[
+//                                           Padding(
+//                                             padding:
+//                                                 const EdgeInsets.only(top: 5.0),
+//                                             child: Text(
+//                                             'title',
+//                                               style: textbarlowRegularBlack(),
+//                                             ),
+//                                           ),
+//                                           Row(
+//                                             children: <Widget>[
+//                                               Text(
+//                                                 currency,
+//                                                 style: TextStyle(
+//                                                     color: const Color(
+//                                                         0xFF00BFA5)),
+//                                               ),
+//                                               Text(
+//                                                 '43',
+//                                                 style: TextStyle(
+//                                                     color: const Color(
+//                                                         0xFF00BFA5)),
+//                                               )
+//                                             ],
+//                                           ),
+//                                         ],
+//                                       ),
+//                                     ],
+//                                   )
+//                                                     ],
+//                                                   ),
+
+//                                             ],
+//                                           ),
+//                                         ),
+//                                            Positioned(
+//                            top: 16,
+//                            left: 15,
+//                             width: 126.0,
+//                             height: 155.0,
+//                             child: Container(
+//                               padding: EdgeInsets.only(left:10,right:10),
+//                               decoration: BoxDecoration(
+//                                   color: Colors.black45,
+//                                   borderRadius: BorderRadius.circular(20.0)),
+//                               child:  Center(
+//                                 child: Text(
+//                                     'oops! Out of stock',
+//                                     style: textBarlowMediumsmallWhite(
+
+//                                     ),
+//                                   ),
+//                               ),
+
+//                             ),
+//                           )
+//                                       ],
+//                                     ),
+
+//                                     Stack(
+//                                       children: <Widget>[
+//                                         GFCard(
+//                                           shape: RoundedRectangleBorder(
+//                                               borderRadius: BorderRadius.circular(20.0)),
+//                                           boxFit: BoxFit.fill,
+//                                           colorFilter: new ColorFilter.mode(
+//                                               Colors.black.withOpacity(0.67),
+//                                               BlendMode.darken),
+//                                           content: Row(
+//                                             // crossAxisAlignment: CrossAxisAlignment.start,
+//                                             children: <Widget>[
+
+//                                                   Column(
+//                                                     crossAxisAlignment: CrossAxisAlignment.start,
+//                                                     children: <Widget>[
+//                                                       Container(
+//                                                         height: 100,
+//                                                         width: 100,
+//                                                         decoration: BoxDecoration(
+// image: DecorationImage(image: AssetImage('lib/assets/images/grape.png'),fit: BoxFit.cover),
+//                                                         ),
+//                                                       ),
+//   Row(
+//                                     crossAxisAlignment:
+//                                         CrossAxisAlignment.start,
+//                                     children: <Widget>[
+//                                       Column(
+//                                         crossAxisAlignment:
+//                                             CrossAxisAlignment.start,
+//                                         children: <Widget>[
+//                                           Padding(
+//                                             padding:
+//                                                 const EdgeInsets.only(top: 5.0),
+//                                             child: Text(
+//                                             'title',
+//                                               style: textbarlowRegularBlack(),
+//                                             ),
+//                                           ),
+//                                           Row(
+//                                             children: <Widget>[
+//                                               Text(
+//                                                 currency,
+//                                                 style: TextStyle(
+//                                                     color: const Color(
+//                                                         0xFF00BFA5)),
+//                                               ),
+//                                               Text(
+//                                                 '43',
+//                                                 style: TextStyle(
+//                                                     color: const Color(
+//                                                         0xFF00BFA5)),
+//                                               )
+//                                             ],
+//                                           ),
+//                                         ],
+//                                       ),
+//                                     ],
+//                                   )
+//                                                     ],
+//                                                   ),
+
+//                                             ],
+//                                           ),
+//                                         ),
+//                                            Positioned(
+//                            top: 16,
+//                            left: 15,
+//                             width: 126.0,
+//                             height: 155.0,
+//                             child: Container(
+//                               padding: EdgeInsets.only(left:10,right:10),
+//                               decoration: BoxDecoration(
+//                                   color: Colors.black45,
+//                                   borderRadius: BorderRadius.circular(20.0)),
+//                               child:  Center(
+//                                 child: Text(
+//                                     'oops! Out of stock',
+//                                     style: textBarlowMediumsmallWhite(
+
+//                                     ),
+//                                   ),
+//                               ),
+
+//                             ),
+//                           )
+//                                       ],
+//                                     ),
+//           ],
+//         ),
+
                 Padding(
                   padding: const EdgeInsets.only(left: 18.0, right: 18.0),
                   child: Row(
