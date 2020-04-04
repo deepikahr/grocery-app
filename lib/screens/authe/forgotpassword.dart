@@ -52,13 +52,19 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   content: new SingleChildScrollView(
                     child: new ListBody(
                       children: <Widget>[
-                        new Text('${onValue['response_data']['message']}'),
+                        new Text(
+                          '${onValue['response_data']['message']}',
+                          style: textBarlowRegularBlack(),
+                        ),
                       ],
                     ),
                   ),
                   actions: <Widget>[
                     new FlatButton(
-                      child: new Text('OK'),
+                      child: new Text(
+                        'OK',
+                        style: textbarlowRegularaPrimary(),
+                      ),
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -124,7 +130,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 18.0, bottom: 25.0),
+                padding:
+                    const EdgeInsets.only(left: 18.0, bottom: 25.0, right: 10),
                 child: Text(
                   "Please enter your registered Email to send the reset code.",
                   style: textbarlowRegularBlack(),
@@ -167,6 +174,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     style: textBarlowRegularBlack(),
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
+                        errorBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 0, color: Color(0xFFF44242))),
+                        errorStyle: TextStyle(color: Color(0xFFF44242)),
                         contentPadding: EdgeInsets.all(10),
                         enabledBorder: const OutlineInputBorder(
                           borderSide:

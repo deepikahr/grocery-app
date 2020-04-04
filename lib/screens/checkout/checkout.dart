@@ -518,6 +518,7 @@ class _CheckoutState extends State<Checkout> {
                         ),
                         child: GFAccordion(
                           collapsedTitlebackgroundColor: Colors.grey[300],
+                          textStyle: textBarlowRegularBlack(),
                           contentChild: Container(
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -581,9 +582,15 @@ class _CheckoutState extends State<Checkout> {
                                                                         .start,
                                                                 children: [
                                                                   Text(
-                                                                      '${addressList[i]['flatNumber']}, ${addressList[i]['locality']},${addressList[i]['landMark']},'),
+                                                                    '${addressList[i]['flatNumber']}, ${addressList[i]['locality']},${addressList[i]['landMark']},',
+                                                                    style:
+                                                                        textBarlowRegularBlack(),
+                                                                  ),
                                                                   Text(
-                                                                      '${addressList[i]['city']}, ${addressList[i]['state']}, ${addressList[i]['postalCode']}'),
+                                                                    '${addressList[i]['city']}, ${addressList[i]['state']}, ${addressList[i]['postalCode']}',
+                                                                    style:
+                                                                        textBarlowRegularBlack(),
+                                                                  ),
                                                                 ]),
                                                             onChanged:
                                                                 addressRadioValueChanged,
@@ -631,6 +638,8 @@ class _CheckoutState extends State<Checkout> {
                                                                         child:
                                                                             Text(
                                                                           "Edit",
+                                                                          style:
+                                                                              textbarlowRegularaPrimar(),
                                                                         ),
                                                                       ),
                                                                       type: GFButtonType
@@ -661,6 +670,8 @@ class _CheckoutState extends State<Checkout> {
                                                                           child:
                                                                               Text(
                                                                             "Delete",
+                                                                            style:
+                                                                                textbarlowRegularaPrimar(),
                                                                           ),
                                                                         ),
                                                                         color: GFColors
@@ -711,6 +722,7 @@ class _CheckoutState extends State<Checkout> {
                                             left: 8.0, right: 8.0),
                                         child: Text(
                                           "Add new address",
+                                          style: textBarlowRegularBlack(),
                                         ),
                                       ),
                                       color: GFColors.DARK,
@@ -794,9 +806,15 @@ class _CheckoutState extends State<Checkout> {
                                                               .center,
                                                       children: <Widget>[
                                                         Text(
-                                                            '${deliverySlotList[index]['day'].substring(0, 3)}'),
+                                                          '${deliverySlotList[index]['day'].substring(0, 3)}',
+                                                          style:
+                                                              textBarlowMediumBlack(),
+                                                        ),
                                                         Text(
-                                                            '${deliverySlotList[index]['date'][1] == "-" ? "0" + deliverySlotList[index]['date'].substring(0, 1) : deliverySlotList[index]['date'].substring(0, 2)}'),
+                                                          '${deliverySlotList[index]['date'][1] == "-" ? "0" + deliverySlotList[index]['date'].substring(0, 1) : deliverySlotList[index]['date'].substring(0, 2)}',
+                                                          style:
+                                                              textbarlowRegularBlack(),
+                                                        ),
                                                       ],
                                                     ),
                                                   ),
@@ -858,7 +876,10 @@ class _CheckoutState extends State<Checkout> {
                                                   ? Text(
                                                       'Sorry ! No Slots Available Today !!!')
                                                   : Text(
-                                                      '${deliverySlotList[_selectedIndex]['timeSchedule'][i]['slot']}'),
+                                                      '${deliverySlotList[_selectedIndex]['timeSchedule'][i]['slot']}',
+                                                      style:
+                                                          textBarlowRegularBlack(),
+                                                    ),
                                               Radio(
                                                 value: i,
                                                 groupValue: selectedRadio,
@@ -894,7 +915,10 @@ class _CheckoutState extends State<Checkout> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text("Proceed"),
+                Text(
+                  "Proceed",
+                  style: textBarlowRegularrBlack(),
+                ),
                 isPlaceOrderLoading
                     ? Image.asset(
                         'lib/assets/images/spinner.gif',

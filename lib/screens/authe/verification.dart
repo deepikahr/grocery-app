@@ -25,8 +25,8 @@ class _VerificationState extends State<Verification> {
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20))),
         title: Text(
-          'Welcome',
-          style: TextStyle(color: Colors.black),
+          'Welcomeeeeee',
+          style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
         backgroundColor: primary,

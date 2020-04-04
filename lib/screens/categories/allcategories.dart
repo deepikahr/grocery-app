@@ -5,6 +5,7 @@ import 'package:grocery_pro/screens/categories/subcategories.dart';
 
 import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
+import 'package:grocery_pro/style/style.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -88,11 +89,7 @@ class _AllCategoriesState extends State<AllCategories>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: GFAppBar(
-        title: Text('All Categories',
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 17.0,
-                fontWeight: FontWeight.w600)),
+        title: Text('Categories', style: textbarlowSemiBoldBlack()),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -135,7 +132,7 @@ class _AllCategoriesState extends State<AllCategories>
                               child: Column(
                                 children: <Widget>[
                                   Padding(
-                                    padding: const EdgeInsets.all(10.0),
+                                    padding: const EdgeInsets.all(9.0),
                                     child: Container(
                                       width: 80,
                                       height: 80,
@@ -155,6 +152,7 @@ class _AllCategoriesState extends State<AllCategories>
                             SizedBox(height: 2),
                             Text(
                               categoryList[index]['title'],
+                              style: textbarlowRegularBlack(),
                               maxLines: 2,
                             )
                           ],

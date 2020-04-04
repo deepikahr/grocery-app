@@ -33,12 +33,12 @@ class _ThankyouState extends State<Thankyou> {
             SizedBox(height: 10.0),
             Text(
               'Order Placed',
-              style: hintSfboldtext(),
+              style: textbarlowMediumBlack(),
             ),
             SizedBox(height: 13.0),
             Text(
               'THANK YOU!',
-              style: hintSfbold(),
+              style: textbarlowMediumlgBlack(),
             ),
             SizedBox(height: 30.0),
             InkWell(
@@ -54,7 +54,7 @@ class _ThankyouState extends State<Thankyou> {
               },
               child: Text(
                 'Back To Home',
-                style: hintSfbold(),
+                style: textbarlowMediumBlack(),
               ),
             )
           ],

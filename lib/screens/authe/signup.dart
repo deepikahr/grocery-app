@@ -116,7 +116,7 @@ class _SignupState extends State<Signup> {
           ),
           title: new Text(
             'Error at showalert',
-            style: hintSfsemiboldb(),
+            style: textBarlowRegularBlack(),
             textAlign: TextAlign.center,
           ),
           content: Container(
@@ -125,7 +125,7 @@ class _SignupState extends State<Signup> {
               children: <Widget>[
                 new Text(
                   "$message",
-                  style: hintSfLightsm(),
+                  style: textBarlowRegularBlack(),
                   textAlign: TextAlign.center,
                 ),
                 Padding(padding: EdgeInsets.only(top: 20.0)),
@@ -145,7 +145,7 @@ class _SignupState extends State<Signup> {
                         decoration: BoxDecoration(),
                         child: Text(
                           'OK',
-                          style: hintSfLightbig(),
+                          style: textbarlowRegularaPrimary(),
                         ),
                       ),
                     ))
@@ -353,7 +353,7 @@ class _SignupState extends State<Signup> {
               TextSpan(text: "Email", style: textbarlowRegularBlack()),
               TextSpan(
                 text: ' *',
-                style: TextStyle(color: Colors.red),
+                style: TextStyle(color: Color(0xFFF44242)),
               ),
             ],
           ),
@@ -466,7 +466,7 @@ class _SignupState extends State<Signup> {
             TextSpan(text: "Mobile Number", style: textbarlowRegularBlack()),
             TextSpan(
               text: ' *',
-              style: TextStyle(color: Colors.red),
+              style: TextStyle(color: Color(0xFFF44242)),
             ),
           ],
         ),

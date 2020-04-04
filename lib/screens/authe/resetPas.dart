@@ -61,13 +61,19 @@ class _ResetPasswordState extends State<ResetPassword> {
                   content: new SingleChildScrollView(
                     child: new ListBody(
                       children: <Widget>[
-                        new Text('${onValue['response_data']}'),
+                        new Text(
+                          '${onValue['response_data']}',
+                          style: textBarlowRegularBlack(),
+                        ),
                       ],
                     ),
                   ),
                   actions: <Widget>[
                     new FlatButton(
-                      child: new Text('OK'),
+                      child: new Text(
+                        'OK',
+                        style: textbarlowRegularaPrimary(),
+                      ),
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -108,7 +114,7 @@ class _ResetPasswordState extends State<ResetPassword> {
         ),
         title: Text(
           'Password reset',
-          style: TextStyle(color: Colors.black),
+          style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
         backgroundColor: primary,
@@ -130,7 +136,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                         children: <TextSpan>[
                           TextSpan(
                               text: "Enter new password",
-                              style: emailTextNormal()),
+                              style: textBarlowRegularBlack()),
                           TextSpan(
                             text: ' ',
                             style: TextStyle(color: Colors.red),
@@ -148,6 +154,10 @@ class _ResetPasswordState extends State<ResetPassword> {
                   child: TextFormField(
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
+                      errorBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(width: 0, color: Color(0xFFF44242))),
+                      errorStyle: TextStyle(color: Color(0xFFF44242)),
                       contentPadding: EdgeInsets.all(10),
                       enabledBorder: const OutlineInputBorder(
                         borderSide:
@@ -180,7 +190,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                       children: <TextSpan>[
                         TextSpan(
                             text: "Re enter new password",
-                            style: emailTextNormal()),
+                            style: textBarlowRegularBlack()),
                         TextSpan(
                           text: ' ',
                           style: TextStyle(color: Colors.red),
@@ -196,6 +206,10 @@ class _ResetPasswordState extends State<ResetPassword> {
                   child: TextFormField(
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
+                      errorBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(width: 0, color: Color(0xFFF44242))),
+                      errorStyle: TextStyle(color: Color(0xFFF44242)),
                       contentPadding: EdgeInsets.all(10),
                       enabledBorder: const OutlineInputBorder(
                         borderSide:
@@ -229,7 +243,10 @@ class _ResetPasswordState extends State<ResetPassword> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text("Submit"),
+                      Text(
+                        "Submit",
+                        style: textbarlowMediumBlack(),
+                      ),
                       isResetPasswordLoading
                           ? Image.asset(
                               'lib/assets/images/spinner.gif',

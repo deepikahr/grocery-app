@@ -650,8 +650,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                         child: Image.network(
                                           productsList[i]['imageUrl'],
                                           fit: BoxFit.fill,
-                                          width: 124,
-                                          height: 60,
+                                          width: 117,
+                                          height: 66,
                                         ),
                                       ),
                                     ],
@@ -665,8 +665,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                             CrossAxisAlignment.start,
                                         children: <Widget>[
                                           Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 5.0),
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0, bottom: 1),
                                             child: Text(
                                               productsList[i]['title'],
                                               style: textbarlowRegularBlack(),
@@ -676,15 +676,11 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                             children: <Widget>[
                                               Text(
                                                 currency,
-                                                style: TextStyle(
-                                                    color: const Color(
-                                                        0xFF00BFA5)),
+                                                style: textBarlowMediumGreen(),
                                               ),
                                               Text(
                                                 '${productsList[i]['variant'][0]['price']}',
-                                                style: TextStyle(
-                                                    color: const Color(
-                                                        0xFF00BFA5)),
+                                                style: textBarlowMediumGreen(),
                                               )
                                             ],
                                           ),

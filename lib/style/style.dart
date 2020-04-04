@@ -839,6 +839,15 @@ TextStyle textBarlowBoldBlack() {
       letterSpacing: 0.1);
 }
 
+TextStyle textBarlowBoldPrimary() {
+  return TextStyle(
+      fontSize: 18.0,
+      fontWeight: FontWeight.bold,
+      fontFamily: 'BarlowBold',
+      color: primary,
+      letterSpacing: 0.1);
+}
+
 TextStyle textbarlowBoldsmBlack() {
   return TextStyle(
       fontSize: 13.0,
@@ -879,6 +888,15 @@ TextStyle textbarlowMediumBlack() {
       letterSpacing: 0.1);
 }
 
+TextStyle textbarlowMediumlgBlack() {
+  return TextStyle(
+      fontSize: 45.0,
+      fontWeight: FontWeight.w400,
+      fontFamily: 'BarlowMedium',
+      color: Colors.black,
+      letterSpacing: 0.1);
+}
+
 TextStyle textBarlowMediumBlack() {
   return TextStyle(
       fontSize: 17.0,
@@ -897,6 +915,15 @@ TextStyle textBarlowMediumPrimary() {
       letterSpacing: 0.1);
 }
 
+TextStyle textBarlowMediumGreen() {
+  return TextStyle(
+      fontSize: 16.0,
+      fontWeight: FontWeight.w400,
+      fontFamily: 'BarlowMedium',
+      color: Color(0xFF20C978),
+      letterSpacing: 0.1);
+}
+
 TextStyle textBarlowMediumsmBlack() {
   return TextStyle(
       fontSize: 10.0,
@@ -911,7 +938,7 @@ TextStyle textBarlowMediumsmWhite() {
       fontSize: 10.0,
       fontWeight: FontWeight.w400,
       fontFamily: 'BarlowMedium',
-      color: Colors.white,
+      color: Color(0xFF8E8E93),
       letterSpacing: 0.1);
 }
 
@@ -935,7 +962,16 @@ TextStyle textbarlowRegularBlack() {
 
 TextStyle textbarlowRegularaPrimary() {
   return TextStyle(
-      fontSize: 15.0,
+      fontSize: 16.0,
+      fontFamily: 'BarlowRegular',
+      fontWeight: FontWeight.w600,
+      color: primary,
+      letterSpacing: 0.1);
+}
+
+TextStyle textbarlowRegularaPrimar() {
+  return TextStyle(
+      fontSize: 16.0,
       fontFamily: 'BarlowRegular',
       color: primary,
       letterSpacing: 0.1);
@@ -965,10 +1001,26 @@ TextStyle textBarlowRegularWhite() {
       letterSpacing: 0.1);
 }
 
+TextStyle textBarlowRegularWhit() {
+  return TextStyle(
+      fontSize: 15.0,
+      fontFamily: 'BarlowRegular',
+      color: Colors.white,
+      letterSpacing: 0.1);
+}
+
 TextStyle textBarlowRegularrBlack() {
   return TextStyle(
       fontSize: 20.0,
       fontFamily: 'BarlowRegular',
       color: Colors.black,
+      letterSpacing: 0.1);
+}
+
+TextStyle textBarlowRegularGreen() {
+  return TextStyle(
+      fontSize: 16.0,
+      fontFamily: 'BarlowRegular',
+      color: Color(0xFF20C978),
       letterSpacing: 0.1);
 }
