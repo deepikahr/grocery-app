@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
+import 'package:google_map_location_picker/google_map_location_picker.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:grocery_pro/screens/address/add-address.dart';
 import 'package:grocery_pro/screens/address/edit-address.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
@@ -19,6 +21,8 @@ class _AddressState extends State<Address> {
   bool isProfile = false;
   bool addressLoading = false;
   List addressList = List();
+  LocationResult _pickedLocation;
+
   @override
   void initState() {
     getAddress();
@@ -31,7 +35,9 @@ class _AddressState extends State<Address> {
         addressLoading = true;
       });
     }
+
     await AddressService.getAddress().then((onValue) {
+      print(onValue);
       try {
         if (mounted) {
           setState(() {
@@ -122,17 +128,17 @@ class _AddressState extends State<Address> {
                                     padding: const EdgeInsets.only(
                                         top: 20.0, left: 30.0),
                                     child: Text(
-                                      '${addressList[index]['flatNumber']}' +
+                                      '${addressList[index]['flatNo']}' +
                                           ', ' +
-                                          '${addressList[index]['locality']}' +
+                                          '${addressList[index]['apartmentName']}' +
                                           ', ' +
-                                          '${addressList[index]['landMark']}' +
+                                          '${addressList[index]['address']}' +
                                           ', ' +
-                                          '${addressList[index]['city']}' +
+                                          '${addressList[index]['landmark']}' +
                                           ', '
-                                              '${addressList[index]['postalCode']}' +
+                                              '${addressList[index]['postalCode'].toString()}' +
                                           ', ' +
-                                          '${addressList[index]['state']}',
+                                          '${addressList[index]['contactNumber']}',
                                       style: TextStyle(color: Colors.black),
                                     ),
                                   ),
@@ -156,14 +162,30 @@ class _AddressState extends State<Address> {
             color: primary,
             blockButton: true,
             onPressed: () async {
-              await Navigator.push(
+              //
+              // getAddress();
+              LocationResult result = await showLocationPicker(
                 context,
-                new MaterialPageRoute(
-                  builder: (BuildContext context) =>
-                      new AddAddress(isCheckout: true),
-                ),
+                "AIzaSyD6Q4UgAYOL203nuwNeBr4j_-yAd1U1gko",
+                initialCenter: LatLng(31.1975844, 29.9598339),
+                myLocationButtonEnabled: true,
+                layersButtonEnabled: true,
               );
-              getAddress();
+              print("result = $result");
+              if (result != null) {
+                setState(() {
+                  _pickedLocation = result;
+                  Navigator.push(
+                    context,
+                    new MaterialPageRoute(
+                      builder: (BuildContext context) => new AddAddress(
+                        isProfile: true,
+                        pickedLocation: _pickedLocation,
+                      ),
+                    ),
+                  );
+                });
+              }
             },
             text: 'Add Address',
             textStyle: TextStyle(fontSize: 17.0, color: Colors.black),
@@ -181,11 +203,12 @@ class _AddressState extends State<Address> {
         children: <Widget>[
           GFButton(
             onPressed: () async {
+              print("adrewsss $addressList");
               await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => EditAddress(
-                      updateAddressID: addressList, isCheckout: true),
+                      updateAddressID: addressList, isProfile: true),
                 ),
               );
 

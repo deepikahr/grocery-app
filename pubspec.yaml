@@ -34,10 +34,12 @@ dependencies:
   image_picker: ^0.6.3+1
   image_cropper: ^1.2.1
   async_loader: ^0.1.2
-
+  google_map_location_picker: ^3.2.1+2
+  google_maps_place_picker: ^0.9.0
   flutter_local_notifications: ^0.8.0
-
-
+  google_maps_flutter: ^0.5.25+3
+  socket_io_client: ^0.9.9
+  onesignal_flutter: ^2.3.4 
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -79,22 +81,6 @@ flutter:
     - lib/assets/icons/addbtn.png
     - lib/assets/icons/minus.png
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
   # fonts:
   #   - family: Schyler
   #     fonts:

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/components/accordian/gf_accordian.dart';
 import 'package:getflutter/getflutter.dart';
+import 'package:google_map_location_picker/google_map_location_picker.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:grocery_pro/screens/payment/payment.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
@@ -43,7 +45,7 @@ class _CheckoutState extends State<Checkout> {
       deliverySlotsLoading = false,
       isPlaceOrderLoading = false,
       isSelectSlot = false;
-
+  LocationResult _pickedLocation;
   @override
   void initState() {
     super.initState();
@@ -563,6 +565,9 @@ class _CheckoutState extends State<Checkout> {
                                                         (BuildContext context,
                                                             int i) {
                                                       return Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
                                                         children: <Widget>[
                                                           RadioListTile(
                                                             groupValue:
@@ -579,9 +584,10 @@ class _CheckoutState extends State<Checkout> {
                                                                         .start,
                                                                 children: [
                                                                   Text(
-                                                                      '${addressList[i]['flatNumber']}, ${addressList[i]['locality']},${addressList[i]['landMark']},'),
+                                                                      '${addressList[i]['flatNo']}, ${addressList[i]['apartmentName']},${addressList[i]['address']},'),
                                                                   Text(
-                                                                      '${addressList[i]['city']}, ${addressList[i]['state']}, ${addressList[i]['postalCode']}'),
+                                                                      " ${addressList[i]['landmark']} ,"
+                                                                      '${addressList[i]['postalCode']}, ${addressList[i]['contactNumber']}'),
                                                                 ]),
                                                             onChanged:
                                                                 addressRadioValueChanged,
@@ -691,18 +697,48 @@ class _CheckoutState extends State<Checkout> {
                                         top: 10.0, bottom: 10.0),
                                     child: GFButton(
                                       onPressed: () async {
-                                        Map<String, dynamic> address =
-                                            await Navigator.push(
+                                        LocationResult result =
+                                            await showLocationPicker(
                                           context,
-                                          MaterialPageRoute(
-                                              builder: (context) => AddAddress(
-                                                    isCheckout: true,
-                                                  )),
+                                          "AIzaSyD6Q4UgAYOL203nuwNeBr4j_-yAd1U1gko",
+                                          initialCenter:
+                                              LatLng(31.1975844, 29.9598339),
+                                          myLocationButtonEnabled: true,
+                                          layersButtonEnabled: true,
                                         );
-                                        if (address != null) {
-                                          addressList.add(address);
-                                          getAddress();
+                                        print("result = $result");
+                                        if (result != null) {
+                                          setState(() {
+                                            _pickedLocation = result;
+
+                                            Navigator.push(
+                                              context,
+                                              new MaterialPageRoute(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        new AddAddress(
+                                                  isCheckout: true,
+                                                  pickedLocation:
+                                                      _pickedLocation,
+                                                ),
+                                              ),
+                                            );
+                                            getAddress();
+                                          });
                                         }
+
+                                        // Map<String, dynamic> address =
+                                        //     await Navigator.push(
+                                        //   context,
+                                        //   MaterialPageRoute(
+                                        //       builder: (context) => AddAddress(
+                                        //             isCheckout: true,
+                                        //           )),
+                                        // );
+                                        // if (address != null) {
+                                        //   addressList.add(address);
+                                        //   getAddress();
+                                        // }
                                       },
                                       child: Padding(
                                         padding: const EdgeInsets.only(
@@ -721,9 +757,9 @@ class _CheckoutState extends State<Checkout> {
                           ),
                           title: addressList.length == 0
                               ? " You have not added any address yet."
-                              : addressList[0]['flatNumber'] +
-                                  ', ' +
-                                  addressList[0]['locality'] +
+                              : addressList[0]['flatNo'] +
+                                  " ," +
+                                  addressList[0]['apartmentName'] +
                                   '....',
                         ),
                       ),

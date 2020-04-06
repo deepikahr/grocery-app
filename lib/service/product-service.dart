@@ -26,7 +26,8 @@ class ProductService {
     await Common.getToken().then((onValue) {
       token = onValue;
     });
-    final response = await client.get(Constants.baseURL + "products", headers: {
+    final response = await client
+        .get(Constants.baseURL + "products/All/Enable/Products", headers: {
       'Content-Type': 'application/json',
       'Authorization': 'bearer $token'
     });
@@ -235,6 +236,7 @@ class ProductService {
     await Common.getToken().then((onValue) {
       token = onValue;
     });
+    print(token);
     final response = await client.post(
         Constants.baseURL + "rating/rate/product",
         body: json.encode(body),

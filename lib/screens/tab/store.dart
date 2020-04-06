@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/categories/allcategories.dart';
+import 'package:grocery_pro/screens/categories/search.dart';
 import 'package:grocery_pro/screens/categories/subcategories.dart';
 import 'package:grocery_pro/screens/product/product-details.dart';
 import 'package:grocery_pro/service/common.dart';
@@ -192,55 +193,78 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
               ? Center(child: CircularProgressIndicator())
               : ListView(
                   children: <Widget>[
-                    GFSearchBar(
-                      searchBoxInputDecoration: InputDecoration(
-                        prefixIcon: Icon(Icons.search),
-                        labelText: 'What Are You Buying Today?',
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.grey,
-                            ),
-                            borderRadius: BorderRadius.circular(15)),
-                      ),
-                      searchList: productsList,
-                      overlaySearchListHeight: 300.0,
-                      searchQueryBuilder: (query, productsList) => productsList
-                          .where((item) => item['title']
-                              .toLowerCase()
-                              .contains(query.toLowerCase()))
-                          .toList(),
-                      overlaySearchListItemBuilder: (item) => Container(
-                        padding: const EdgeInsets.all(8),
-                        child: Row(
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: Icon(Icons.search, color: Colors.grey),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 10.0),
-                              child: Text(item['title'].toLowerCase(),
-                                  style: TextStyle(color: Colors.grey)),
-                            ),
-                          ],
-                        ),
-                      ),
-                      onItemSelected: (item) {
-                        setState(
-                          () {
+                    Container(
+                      height: 75.0,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: GFButton(
+                          color: Colors.grey,
+                          type: GFButtonType.outline,
+                          child: Row(
+                            children: <Widget>[
+                              Icon(Icons.search),
+                              Text("  What Are You Buying Today?")
+                            ],
+                          ),
+                          onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                builder: (context) => ProductDetails(
-                                    productDetail: item,
-                                    favProductList:
-                                        getTokenValue ? favProductList : null),
+                              new MaterialPageRoute(
+                                builder: (BuildContext context) => new Search(
+                                    productsList: productsList,
+                                    currency: currency),
                               ),
                             );
                           },
-                        );
-                      },
+                        ),
+                      ),
                     ),
+                    // GFSearchBar(
+                    //   searchBoxInputDecoration: InputDecoration(
+                    //     prefixIcon: Icon(Icons.search),
+                    //     labelText: 'What Are You Buying Today?',
+                    //     enabledBorder: OutlineInputBorder(
+                    //         borderSide: BorderSide(
+                    //           color: Colors.grey,
+                    //         ),
+                    //         borderRadius: BorderRadius.circular(15)),
+                    //   ),
+                    //   searchList: productsList,
+                    //   overlaySearchListHeight: 300.0,
+                    //   searchQueryBuilder: null,
+                    //   overlaySearchListItemBuilder: null,
+                    //   // overlaySearchListItemBuilder: (item) => Container(
+                    //   //   padding: const EdgeInsets.all(8),
+                    //   //   child: Row(
+                    //   //     children: <Widget>[
+                    //   //       Padding(
+                    //   //         padding: const EdgeInsets.only(bottom: 8.0),
+                    //   //         child: Icon(Icons.search, color: Colors.grey),
+                    //   //       ),
+                    //   //       Padding(
+                    //   //         padding: const EdgeInsets.only(bottom: 10.0),
+                    //   //         child: Text(item['title'].toLowerCase(),
+                    //   //             style: TextStyle(color: Colors.grey)),
+                    //   //       ),
+                    //   //     ],
+                    //   //   ),
+                    //   // ),
+                    //   // onItemSelected: (item) {
+                    //   //   setState(
+                    //   //     () {
+                    //   //       Navigator.push(
+                    //   //         context,
+                    //   //         MaterialPageRoute(
+                    //   //           builder: (context) => ProductDetails(
+                    //   //               productDetail: item,
+                    //   //               favProductList:
+                    //   //                   getTokenValue ? favProductList : null),
+                    //   //         ),
+                    //   //       );
+                    //   //     },
+                    //   //   );
+                    //   // },
+                    // ),
                     Padding(
                       padding: const EdgeInsets.only(left: 18.0, right: 18.0),
                       child: Row(

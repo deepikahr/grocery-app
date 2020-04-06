@@ -11,9 +11,11 @@ import 'package:grocery_pro/screens/tab/saveditems.dart';
 import 'package:grocery_pro/screens/tab/store.dart';
 import 'package:grocery_pro/service/auth-service.dart';
 import 'package:grocery_pro/service/common.dart';
+import 'package:grocery_pro/service/constants.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/settings/globalSettings.dart';
 import 'package:grocery_pro/style/style.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
@@ -83,83 +85,30 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   getToken() async {
     await Common.getToken().then((onValue) {
       if (onValue != null) {
-        firebaseToken();
+        // firebaseToken();
       } else {}
     }).catchError((error) {
       sentryError.reportError(error, null);
     });
   }
 
-  firebaseToken() {
-    _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print(message);
-        if (message['notification']['title'] != "Registration confirmation") {
-          showNotification(message['notification']);
-        }
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        print(message);
-      },
-      onResume: (Map<String, dynamic> message) async {
-        print(message);
-      },
-    );
-    _firebaseMessaging.requestNotificationPermissions(
-        const IosNotificationSettings(sound: true, badge: true, alert: true));
-    _firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings) {});
-
-    _firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings) {});
-    _firebaseMessaging.getToken().then((String token) async {
-      print(token);
-      assert(token != null);
-      setTokenData(token);
-      await Common.setFirbaseToken(token);
-      await Common.getFirebaseToken().then((onValue) {
-        print(onValue);
-      });
-    }).catchError((error) {
-      sentryError.reportError(error, null);
+  Future<void> configLocalNotification() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    OneSignal.shared.init(Constants.ONE_SIGNAL_KEY, iOSSettings: {
+      OSiOSSettings.autoPrompt: false,
+      OSiOSSettings.inAppLaunchUrl: true
     });
-  }
-
-  void configLocalNotification() {
-    var initializationSettingsAndroid =
-        new AndroidInitializationSettings('@mipmap/ic_launcher');
-    var initializationSettingsIOS = new IOSInitializationSettings();
-    var initializationSettings = new InitializationSettings(
-        initializationSettingsAndroid, initializationSettingsIOS);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings);
-  }
-
-  showNotification(message) async {
-    var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-      Platform.isAndroid
-          ? 'com.ionicfirebaseapp.groceryapp'
-          : 'com.ionicfirebaseapp.groceryapp',
-      'Grocery Pro',
-      'Grocery Pro',
-      playSound: true,
-      enableVibration: true,
-      importance: Importance.Max,
-      priority: Priority.High,
+    OneSignal.shared.setInFocusDisplayType(
+      OSNotificationDisplayType.notification,
     );
-    var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
-    var platformChannelSpecifics = new NotificationDetails(
-        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(0, message['title'].toString(),
-        message['body'].toString(), platformChannelSpecifics,
-        payload: json.encode(message));
-  }
-
-  setTokenData(token) async {
-    print(token);
-    await LoginService.setDeviceToken(token).then((onValue) {
-      print(onValue);
-    }).catchError((error) {
-      sentryError.reportError(error, null);
+    OneSignal.shared.getPermissionSubscriptionState().then((onValue) async {
+      var playerId = onValue.subscriptionStatus.userId;
+      print("kkkkkkkkkkkkk $playerId");
+      if (playerId == null) {
+        configLocalNotification();
+      } else {
+        prefs.setString("payerId", playerId);
+      }
     });
   }
 

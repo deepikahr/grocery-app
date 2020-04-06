@@ -47,6 +47,15 @@ TextStyle hintSfLightsmall() {
   );
 }
 
+TextStyle subtitleBold() {
+  return TextStyle(
+    fontSize: 17.0,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'OpenSansSemiBold',
+    color: Colors.black,
+  );
+}
+
 TextStyle hintSfLight() {
   return TextStyle(
     fontWeight: FontWeight.w500,
