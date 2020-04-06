@@ -114,6 +114,7 @@ class _ProfileState extends State<Profile> {
       });
     }
     await LoginService.getUserInfo().then((onValue) {
+      print(onValue);
       try {
         if (mounted) {
           setState(() {
@@ -684,25 +685,6 @@ class _ProfileState extends State<Profile> {
                                     ),
                                   ],
                                 ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 20.0,
-                            ),
-                            Container(
-                              color: Colors.white38,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 10.0, bottom: 10.0, left: 20.0),
-                                    child: Text(
-                                      'Help',
-                                      style: textBarlowMediumBlack(),
-                                    ),
-                                  ),
-                                ],
                               ),
                             ),
                             SizedBox(

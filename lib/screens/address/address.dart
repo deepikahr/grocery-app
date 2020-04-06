@@ -160,8 +160,6 @@ class _AddressState extends State<Address> {
             color: primary,
             blockButton: true,
             onPressed: () async {
-              //
-              // getAddress();
               LocationResult result = await showLocationPicker(
                 context,
                 "AIzaSyD6Q4UgAYOL203nuwNeBr4j_-yAd1U1gko",
@@ -169,7 +167,6 @@ class _AddressState extends State<Address> {
                 myLocationButtonEnabled: true,
                 layersButtonEnabled: true,
               );
-              print("result = $result");
               if (result != null) {
                 setState(() {
                   _pickedLocation = result;

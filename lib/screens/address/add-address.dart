@@ -46,7 +46,6 @@ class _AddAddressState extends State<AddAddress> {
   }
 
   List<String> addressType = ['Home', "Work", "Others"];
-  // var addressData;
   Map<String, dynamic> address = {
     "location": {},
     "address": null,
@@ -72,7 +71,6 @@ class _AddAddressState extends State<AddAddress> {
     address['location'] = location;
     address['addressType'] = addressType[
         selectedRadioFirst == null ? selectedRadio : selectedRadioFirst];
-    print(address);
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       AddressService.addAddress(address).then((onValue) {
@@ -497,38 +495,6 @@ class _AddAddressState extends State<AddAddress> {
                     );
                   },
                 ),
-                // Padding(
-                //   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                //   child: TextFormField(
-                //       style: labelStyle(),
-                //       keyboardType: TextInputType.text,
-                //       decoration: InputDecoration(
-                //         fillColor: Colors.black,
-                //         focusColor: Colors.black,
-                //         contentPadding: EdgeInsets.only(
-                //           left: 15.0,
-                //           right: 15.0,
-                //           top: 10.0,
-                //           bottom: 10.0,
-                //         ),
-                //         enabledBorder: const OutlineInputBorder(
-                //           borderSide:
-                //               const BorderSide(color: Colors.grey, width: 0.0),
-                //         ),
-                //         focusedBorder: OutlineInputBorder(
-                //           borderSide: BorderSide(color: primary),
-                //         ),
-                //       ),
-                //       validator: (String value) {
-                //         if (value.isEmpty) {
-                //           return "please Enter Valid value";
-                //         } else
-                //           return null;
-                //       },
-                //       onSaved: (String value) {
-                //         address['Address type'] = value;
-                //       }),
-                // ),
                 SizedBox(
                   height: 30,
                 ),

@@ -23,7 +23,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   var chatInfo;
   String name, id, image;
   Timer chatTimer;
-  var socket = io.io(Constants.socketURL, <String, dynamic>{
+  var socket = io.io(Constants.baseURL, <String, dynamic>{
     'transports': ['websocket'],
     'extraHeaders': {'foo': 'bar'}
   });
@@ -131,110 +131,28 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   }
 
   @override
-  Widget build(BuildContext context) {
-    Widget otherMessage(message) {
-      return Row(
-        children: <Widget>[
-          Flexible(
-            flex: 2,
-            fit: FlexFit.tight,
-            child: Container(
-              margin: EdgeInsets.only(left: 15, right: 10),
-              width: 55,
-              height: 55,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(image: AssetImage(''), fit: BoxFit.fill),
-              ),
-            ),
+  Widget build(BuildContext ctx) {
+    return new Scaffold(
+      appBar: new AppBar(
+        leading: InkWell(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
           ),
-          Flexible(
-            flex: 20,
-            fit: FlexFit.tight,
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              constraints: BoxConstraints(maxWidth: 280, minHeight: 56),
-              margin: EdgeInsets.only(
-                left: 0,
-                right: 20,
-                top: 30,
-              ),
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                  color: Color(0xFFF0F0F0),
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(0),
-                      topRight: Radius.circular(40),
-                      bottomRight: Radius.circular(40),
-                      bottomLeft: Radius.circular(40))),
-              child: Text(
-                'Hi, How can I help you ?',
-                // style: hintTextPopregularwhitesm(),
-              ),
-            ),
-          )
-        ],
-      );
-    }
-
-    Widget ownMessage(message) {
-      return Row(
-        children: <Widget>[
-          Flexible(
-            flex: 20,
-            fit: FlexFit.tight,
-            child: Container(
-              alignment: Alignment.topRight,
-              width: MediaQuery.of(context).size.width,
-              constraints: BoxConstraints(maxWidth: 280, minHeight: 56),
-              margin: EdgeInsets.only(
-                left: 20,
-                // right: 0,
-                top: 30,
-              ),
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Color(0xFFFFECAC).withOpacity(0.60),
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(40),
-                  topRight: Radius.circular(0),
-                  bottomRight: Radius.circular(40),
-                  bottomLeft: Radius.circular(40),
-                ),
-              ),
-              child: Text(
-                'Hello',
-                // style: hintTextPopregularwhitesm(),
-              ),
-            ),
-          ),
-          Flexible(
-            flex: 2,
-            fit: FlexFit.tight,
-            child: Container(
-              margin: EdgeInsets.only(left: 15, right: 10),
-              width: 55,
-              height: 55,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                // image: DecorationImage(
-                //     image: AssetImage(
-                //         'lib/assets/images/profile.png'),
-                //     fit: BoxFit.fill)
-              ),
-            ),
-          ),
-        ],
-      );
-    }
-
-    return Scaffold(
-      appBar: AppBar(
+        ),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20))),
+        title: new Text(
+          "chat",
+        ),
         centerTitle: true,
         backgroundColor: primary,
-        elevation: 0,
-        title: Text('Chat', style: textbarlowSemiBoldBlack()),
-        iconTheme: new IconThemeData(color: Colors.black),
+        iconTheme: new IconThemeData(color: Colors.white),
       ),
       body: isChatLoading
           ? Center(
@@ -243,6 +161,13 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
           : Stack(
               fit: StackFit.expand,
               children: <Widget>[
+                // new Container(),
+                // new Image(
+                //   image: new AssetImage("assets/5.jpeg"),
+                //   fit: BoxFit.cover,
+                //   color: Colors.black54,
+                //   colorBlendMode: BlendMode.darken,
+                // ),
                 Column(
                   children: <Widget>[
                     Expanded(
@@ -257,10 +182,10 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                             isOwnMessage = true;
                           }
                           return isOwnMessage
-                              ? ownMessage(
+                              ? _ownMessage(
                                   chatList[index]['message'],
                                 )
-                              : otherMessage(
+                              : _message(
                                   chatList[index]['message'],
                                 );
                         },
@@ -288,7 +213,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                                     },
                                     onSubmitted: _submitMsg,
                                     decoration: new InputDecoration.collapsed(
-                                        hintText: "Enter text here" + "..."),
+                                        hintText: "entertexthere" + "..."),
                                   ),
                                 ),
                                 new Container(
@@ -331,6 +256,88 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
     );
   }
 
+  Widget _ownMessage(String message) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: <Widget>[
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.only(
+                        top: 12.0, bottom: 14.0, left: 16.0, right: 16.0),
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width * 0.6,
+                    ),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: const Radius.circular(8.0),
+                          topRight: const Radius.circular(8.0),
+                          bottomRight: const Radius.circular(8.0),
+                        ),
+                        color: Colors.teal),
+                    child: Text(
+                      message,
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _message(String message) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: <Widget>[
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.only(
+                        top: 12.0, bottom: 14.0, left: 16.0, right: 16.0),
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width * 0.6,
+                    ),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: const Radius.circular(8.0),
+                          topRight: const Radius.circular(8.0),
+                          bottomRight: const Radius.circular(8.0),
+                        ),
+                        color: Colors.white),
+                    child: Text(
+                      message,
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _submitMsg(String txt) async {
     _scrollController.animateTo(_scrollController.position.maxScrollExtent,
         duration: Duration(milliseconds: 1000), curve: Curves.easeOut);
@@ -346,7 +353,6 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
       animationController: new AnimationController(
           vsync: this, duration: new Duration(milliseconds: 800)),
     );
-    print(resInfo['_id']);
     var chatInfo = {
       "message": txt,
       "sentBy": 'user',
@@ -356,9 +362,11 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
     print(chatInfo);
     socket.emit('chat', [chatInfo]);
     socket.on('userListen$id', (data) {
+      print(data);
       if (mounted) {
         setState(() {
           chatList = data['message'];
+          print(chatList);
         });
       }
     });
@@ -387,14 +395,16 @@ class Msg extends StatelessWidget {
               child: new CircleAvatar(
                 child: new Text('${name[0]}'),
                 backgroundColor: primary,
-                foregroundColor: Colors.lightBlue,
+                // foregroundColor: lightBlue,
               ),
             ),
             new Expanded(
               child: new Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  new Text('${name[0]}'),
+                  new Text(
+                    '${name[0]}',
+                  ),
                   new Container(
                     margin: const EdgeInsets.only(top: 6.0),
                     child: new Text(

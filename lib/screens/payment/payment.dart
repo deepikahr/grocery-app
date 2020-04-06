@@ -120,8 +120,8 @@ class _PaymentState extends State<Payment> {
         cardID = cardList[0]['_id'];
       }
       widget.data['cardId'] = cardID.toString();
-
       await ProductService.placeOrderCardType(widget.data).then((onValue) {
+        print(onValue);
         print(onValue);
         try {
           if (onValue['response_code'] == 201) {
@@ -145,13 +145,18 @@ class _PaymentState extends State<Payment> {
             }
           }
         } catch (error, stackTrace) {
+          print(error);
           sentryError.reportError(error, stackTrace);
         }
       }).catchError((error) {
+        print(error);
+
         sentryError.reportError(error, null);
       });
     } else {
+      print(widget.data);
       await ProductService.placeOrder(widget.data).then((onValue) {
+        print(onValue);
         try {
           if (onValue['response_code'] == 201) {
             if (mounted) {
@@ -208,9 +213,11 @@ class _PaymentState extends State<Payment> {
             }
           }
         } catch (error, stackTrace) {
+          print(error);
           sentryError.reportError(error, stackTrace);
         }
       }).catchError((error) {
+        print(error);
         sentryError.reportError(error, null);
       });
     }
@@ -468,7 +475,7 @@ class _PaymentState extends State<Payment> {
                             Row(
                               children: <Widget>[
                                 Padding(
-                                  padding: const EdgeInsets.only(top: 4.0),
+                                  padding: const EdgeInsets.only(top: 0.0),
                                   child: Text(
                                     currency,
                                     style: textbarlowBoldBlack(),

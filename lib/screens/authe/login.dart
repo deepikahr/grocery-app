@@ -12,6 +12,7 @@ import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/auth-service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -48,6 +49,8 @@ class _LoginState extends State<Login> {
   }
 
   userLogin() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
     final form = _formKeyForLogin.currentState;
     if (form.validate()) {
       form.save();
@@ -58,8 +61,10 @@ class _LoginState extends State<Login> {
       }
       Map<String, dynamic> body = {
         "email": email.toLowerCase(),
-        "password": password
+        "password": password,
+        "playerId": prefs.getString("playerId")
       };
+      print(body);
       await LoginService.signIn(body).then((onValue) {
         try {
           if (mounted) {
