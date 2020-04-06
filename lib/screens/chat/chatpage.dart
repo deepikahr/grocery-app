@@ -34,12 +34,6 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   }
 
   Future getUserInfor() async {
-    // getUserInfo().then((value) {
-    //   try {
-    //
-    //   } catch (error, stackTrace) {
-    //     sentryError.reportError(error, stackTrace);
-    //   }
     await LoginService.getUserInfo().then((onValue) {
       try {
         if (mounted) {
@@ -73,7 +67,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
     socket.on('connect', (data) {
       print('connect ');
     });
-    socket.emit('userChatList', [
+    socket.emit('user-chat-list', [
       {"id": id}
     ]);
     socket.on('event', (data) {
@@ -85,14 +79,16 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
     socket.on('fromServer', (_) {
       print(_);
     });
-    socket.on('userListen$id', (data) {
+    socket.on('chat-list$id', (data) {
       print(data);
-      if (mounted) {
-        setState(() {
-          isChatLoading = false;
-          chatList = data['message'];
-          print(chatList);
-        });
+      if (data.length > 0) {
+        if (mounted) {
+          setState(() {
+            isChatLoading = false;
+            chatList = data['message'];
+            print(chatList);
+          });
+        }
       }
     });
     socket.on('userListenLastMessage$id', (data) {
@@ -140,7 +136,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
           },
           child: Icon(
             Icons.arrow_back,
-            color: Colors.white,
+            color: Colors.black,
           ),
         ),
         shape: RoundedRectangleBorder(
@@ -148,11 +144,11 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20))),
         title: new Text(
-          "chat",
+          "Chat",
+          style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
         backgroundColor: primary,
-        iconTheme: new IconThemeData(color: Colors.white),
       ),
       body: isChatLoading
           ? Center(
@@ -178,7 +174,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                             chatList.length == null ? 0 : chatList.length,
                         itemBuilder: (BuildContext context, int index) {
                           bool isOwnMessage = false;
-                          if (chatList[index]['sentBy'] == 'user') {
+                          if (chatList[index]['sentBy'] == 'User') {
                             isOwnMessage = true;
                           }
                           return isOwnMessage
@@ -192,62 +188,96 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                       ),
                     ),
                     new Divider(height: 1.0),
-                    new IconTheme(
-                      data: new IconThemeData(
-                          color: Theme.of(context).accentColor),
-                      child: new Container(
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 10.0),
-                            child: Row(
-                              children: <Widget>[
-                                new Flexible(
-                                  child: new TextField(
-                                    maxLines: 2,
-                                    controller: _textController,
-                                    onChanged: (String txt) {
-                                      if (mounted) {
-                                        setState(() {
-                                          _isWriting = txt.length > 0;
-                                        });
-                                      }
-                                    },
-                                    onSubmitted: _submitMsg,
-                                    decoration: new InputDecoration.collapsed(
-                                        hintText: "entertexthere" + "..."),
+                    Container(
+                      decoration: Theme.of(context).platform ==
+                              TargetPlatform.iOS
+                          ? new BoxDecoration(
+                              border: new Border(
+                                  top: new BorderSide(color: Colors.grey[70])),
+                              color: Colors.grey,
+                            )
+                          : BoxDecoration(
+                              color: Colors.grey,
+                            ),
+                      child: new IconTheme(
+                        data: new IconThemeData(
+                            color: Theme.of(context).accentColor),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: new Container(
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 10.0),
+                              child: Row(
+                                children: <Widget>[
+                                  new Flexible(
+                                    child: new TextField(
+                                      maxLines: 2,
+                                      controller: _textController,
+                                      onChanged: (String txt) {
+                                        if (mounted) {
+                                          setState(() {
+                                            _isWriting = txt.length > 0;
+                                          });
+                                        }
+                                      },
+                                      onSubmitted: _submitMsg,
+                                      decoration: new InputDecoration.collapsed(
+                                          hintText: "Enter Text Here" + "..."),
+                                    ),
                                   ),
-                                ),
-                                new Container(
-                                    margin: new EdgeInsets.symmetric(
-                                        horizontal: 3.0),
+                                  new Container(
+                                    decoration: Theme.of(context).platform ==
+                                            TargetPlatform.iOS
+                                        ? new BoxDecoration(
+                                            border: new Border(
+                                                top: new BorderSide(
+                                                    color: Colors.grey[70])),
+                                            color: Colors.grey,
+                                          )
+                                        : BoxDecoration(
+                                            color: Colors.grey,
+                                          ),
                                     child: Theme.of(context).platform ==
                                             TargetPlatform.iOS
-                                        ? new CupertinoButton(
-                                            child: new Text("submit"),
+                                        ? new IconButton(
+                                            icon: new Icon(
+                                              Icons.send,
+                                              color: primary,
+                                              size: 30,
+                                            ),
                                             onPressed: _isWriting
                                                 ? () => _submitMsg(
                                                     _textController.text)
                                                 : null)
                                         : new IconButton(
-                                            icon: new Icon(Icons.send),
+                                            icon: new Icon(
+                                              Icons.send,
+                                              color: primary,
+                                              size: 30,
+                                            ),
                                             onPressed: _isWriting
                                                 ? () => _submitMsg(
                                                     _textController.text)
                                                 : null,
-                                          )),
-                              ],
+                                          ),
+                                  ),
+                                ],
+                              ),
                             ),
+                            decoration:
+                                Theme.of(context).platform == TargetPlatform.iOS
+                                    ? new BoxDecoration(
+                                        border: new Border(
+                                            top: new BorderSide(
+                                                color: Colors.white70)),
+                                        color: Colors.white,
+                                      )
+                                    : BoxDecoration(
+                                        color: Colors.white,
+                                      ),
                           ),
-                          decoration:
-                              Theme.of(context).platform == TargetPlatform.iOS
-                                  ? new BoxDecoration(
-                                      border: new Border(
-                                          top: new BorderSide(
-                                              color: Colors.white70)),
-                                      color: Colors.white,
-                                    )
-                                  : BoxDecoration(
-                                      color: Colors.white,
-                                    )),
+                        ),
+                      ),
                     )
                   ],
                 )
@@ -339,8 +369,8 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   }
 
   void _submitMsg(String txt) async {
-    _scrollController.animateTo(_scrollController.position.maxScrollExtent,
-        duration: Duration(milliseconds: 1000), curve: Curves.easeOut);
+    // _scrollController.animateTo(_scrollController.position.maxScrollExtent,
+    //     duration: Duration(milliseconds: 1000), curve: Curves.easeOut);
     _textController.clear();
     if (mounted) {
       setState(() {
@@ -355,17 +385,19 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
     );
     var chatInfo = {
       "message": txt,
-      "sentBy": 'user',
+      "sentBy": 'User',
       "user": id,
-      "receiver": resInfo['_id'],
+      "store": resInfo['_id'],
+      "createdAt": DateTime.now().millisecondsSinceEpoch,
+      "chatId": ""
     };
     print(chatInfo);
-    socket.emit('chat', [chatInfo]);
-    socket.on('userListen$id', (data) {
+    socket.emit('initialize-chat', [chatInfo]);
+    socket.on('chat-list$id', (data) {
       print(data);
       if (mounted) {
         setState(() {
-          chatList = data['message'];
+          chatList = data['message'][0];
           print(chatList);
         });
       }

@@ -607,71 +607,6 @@ class _ProductDetailsState extends State<ProductDetails>
                 ),
               ),
             ),
-            // Padding(
-            //   padding: const EdgeInsetsDirectional.only(
-            //     start: 20.0,
-            //     end: 20.0,
-            //     bottom: 10.0,
-            //   ),
-            //   child: Container(
-            //     width: 170,
-            //     decoration: BoxDecoration(
-            //       borderRadius: BorderRadius.circular(20)
-            //     ),
-            //     child: RawMaterialButton(
-
-            //       onPressed: null,
-            //       padding: EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
-            //       fillColor: primaryLight,
-            //       constraints: const BoxConstraints(minHeight: 44.0),
-            //       shape: RoundedRectangleBorder(
-            //         borderRadius: new BorderRadius.circular(5.0),
-            //       ),
-            //       child: Row(
-            //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //         crossAxisAlignment: CrossAxisAlignment.center,
-            //         children: <Widget>[
-            //           InkWell(
-            //             onTap: () {
-            //               _changeProductQuantity(false);
-            //             },
-            //             child: Container(
-            //               child: Image(
-            //                 image: AssetImage('lib/assets/icons/minus.png'),
-            //                 width: 26.0,
-            //                 color: primary,
-            //               ),
-            //             ),
-            //           ),
-            //           new Container(
-            //             alignment: AlignmentDirectional.center,
-            //             width: 26.0,
-            //             height: 26.0,
-            //             decoration: new BoxDecoration(
-            //               shape: BoxShape.circle,
-            //               color: primary,
-            //             ),
-            //             child: new Text(
-            //               quantity.toString(),
-            //               textAlign: TextAlign.center,
-            //             ),
-            //           ),
-            //           InkWell(
-            //             onTap: () {
-            //               _changeProductQuantity(true);
-            //             },
-            //             child: Container(
-            //                 child: Image(
-            //               image: AssetImage('lib/assets/icons/addbtn.png'),
-            //               width: 26.0,
-            //               color: primary,
-            //             )),
-            //           )
-            //         ],
-            //       ),
-            //     ),
-            //   ),
-            // ),
             Container(
               height: 50.0,
               child: Padding(
@@ -686,7 +621,6 @@ class _ProductDetailsState extends State<ProductDetails>
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    // crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.only(right: .0),
