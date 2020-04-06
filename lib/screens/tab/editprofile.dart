@@ -6,7 +6,6 @@ import 'package:grocery_pro/service/auth-service.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/common.dart';
-import 'package:file/file.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../service/constants.dart';

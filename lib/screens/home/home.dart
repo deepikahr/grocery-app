@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/tab/mycart.dart';
 import 'package:grocery_pro/screens/tab/profile.dart';
@@ -30,8 +29,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   TabController tabController;
   bool isGetTokenLoading = true;
   int currentIndex = 0;
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      new FlutterLocalNotificationsPlugin();
+
   @override
   void initState() {
     getGlobalSettingsData();
