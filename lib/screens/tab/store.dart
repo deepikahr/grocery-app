@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/categories/allcategories.dart';
-import 'package:grocery_pro/screens/categories/search.dart';
 import 'package:grocery_pro/screens/categories/subcategories.dart';
 import 'package:grocery_pro/screens/product/product-details.dart';
 import 'package:grocery_pro/screens/tab/searchitem.dart';
@@ -196,7 +195,12 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => SearchItem()),
+                      MaterialPageRoute(
+                          builder: (context) => SearchItem(
+                              productsList: productsList,
+                              currency: currency,
+                              favProductList:
+                                  getTokenValue ? favProductList : null)),
                     );
                   },
                   child: Container(
@@ -218,240 +222,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       ],
                     ),
                   ),
-                  // child: GFSearchBar(
-                  //   searchBoxInputDecoration: InputDecoration(
-                  //     prefixIcon: Icon(Icons.search),
-                  //     labelText: 'What Are You Buying Today?',
-                  //     labelStyle: textBarlowRegularBlack(),
-                  //     enabledBorder: OutlineInputBorder(
-                  //         borderSide: BorderSide(
-                  //           color: Colors.grey,
-                  //         ),
-                  //         borderRadius: BorderRadius.circular(15)),
-                  //   ),
-                  //   searchList: productsList,
-                  //   overlaySearchListHeight: 300.0,
-                  //   searchQueryBuilder: (query, productsList) => productsList
-                  //       .where((item) => item['title']
-                  //           .toLowerCase()
-                  //           .contains(query.toLowerCase()))
-                  //       .toList(),
-                  //   overlaySearchListItemBuilder: (item) => Container(
-                  //     padding: const EdgeInsets.all(8),
-                  //     child: Row(
-                  //       children: <Widget>[
-                  //         Padding(
-                  //           padding: const EdgeInsets.only(bottom: 8.0),
-                  //           child: Icon(Icons.search, color: Colors.black),
-                  //         ),
-                  //         Padding(
-                  //           padding: const EdgeInsets.only(bottom: 10.0),
-                  //           child: Text(item['title'].toLowerCase(),
-                  //               style: textBarlowRegularBlack()),
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ),
-                  //   onItemSelected: (item) {
-                  //     setState(
-                  //       () {
-                  //         Navigator.push(
-                  //           context,
-                  //           MaterialPageRoute(
-                  //             builder: (context) => ProductDetails(
-                  //                 productDetail: item,
-                  //                 favProductList:
-                  //                     getTokenValue ? favProductList : null),
-                  //           ),
-                  //         );
-                  //       },
-                  //     );
-                  //   },
-                  // ),
                 ),
-
-//         Row(
-//           children: <Widget>[
-//                                                Stack(
-//                                       children: <Widget>[
-//                                         GFCard(
-//                                           shape: RoundedRectangleBorder(
-//                                               borderRadius: BorderRadius.circular(20.0)),
-//                                           boxFit: BoxFit.fill,
-//                                           colorFilter: new ColorFilter.mode(
-//                                               Colors.black.withOpacity(0.67),
-//                                               BlendMode.darken),
-//                                           content: Row(
-//                                             // crossAxisAlignment: CrossAxisAlignment.start,
-//                                             children: <Widget>[
-
-//                                                   Column(
-//                                                     crossAxisAlignment: CrossAxisAlignment.start,
-//                                                     children: <Widget>[
-//                                                       Container(
-//                                                         height: 100,
-//                                                         width: 100,
-//                                                         decoration: BoxDecoration(
-// image: DecorationImage(image: AssetImage('lib/assets/images/grape.png'),fit: BoxFit.cover),
-//                                                         ),
-//                                                       ),
-//   Row(
-//                                     crossAxisAlignment:
-//                                         CrossAxisAlignment.start,
-//                                     children: <Widget>[
-//                                       Column(
-//                                         crossAxisAlignment:
-//                                             CrossAxisAlignment.start,
-//                                         children: <Widget>[
-//                                           Padding(
-//                                             padding:
-//                                                 const EdgeInsets.only(top: 5.0),
-//                                             child: Text(
-//                                             'title',
-//                                               style: textbarlowRegularBlack(),
-//                                             ),
-//                                           ),
-//                                           Row(
-//                                             children: <Widget>[
-//                                               Text(
-//                                                 currency,
-//                                                 style: TextStyle(
-//                                                     color: const Color(
-//                                                         0xFF00BFA5)),
-//                                               ),
-//                                               Text(
-//                                                 '43',
-//                                                 style: TextStyle(
-//                                                     color: const Color(
-//                                                         0xFF00BFA5)),
-//                                               )
-//                                             ],
-//                                           ),
-//                                         ],
-//                                       ),
-//                                     ],
-//                                   )
-//                                                     ],
-//                                                   ),
-
-//                                             ],
-//                                           ),
-//                                         ),
-//                                            Positioned(
-//                            top: 16,
-//                            left: 15,
-//                             width: 126.0,
-//                             height: 155.0,
-//                             child: Container(
-//                               padding: EdgeInsets.only(left:10,right:10),
-//                               decoration: BoxDecoration(
-//                                   color: Colors.black45,
-//                                   borderRadius: BorderRadius.circular(20.0)),
-//                               child:  Center(
-//                                 child: Text(
-//                                     'oops! Out of stock',
-//                                     style: textBarlowMediumsmallWhite(
-
-//                                     ),
-//                                   ),
-//                               ),
-
-//                             ),
-//                           )
-//                                       ],
-//                                     ),
-
-//                                     Stack(
-//                                       children: <Widget>[
-//                                         GFCard(
-//                                           shape: RoundedRectangleBorder(
-//                                               borderRadius: BorderRadius.circular(20.0)),
-//                                           boxFit: BoxFit.fill,
-//                                           colorFilter: new ColorFilter.mode(
-//                                               Colors.black.withOpacity(0.67),
-//                                               BlendMode.darken),
-//                                           content: Row(
-//                                             // crossAxisAlignment: CrossAxisAlignment.start,
-//                                             children: <Widget>[
-
-//                                                   Column(
-//                                                     crossAxisAlignment: CrossAxisAlignment.start,
-//                                                     children: <Widget>[
-//                                                       Container(
-//                                                         height: 100,
-//                                                         width: 100,
-//                                                         decoration: BoxDecoration(
-// image: DecorationImage(image: AssetImage('lib/assets/images/grape.png'),fit: BoxFit.cover),
-//                                                         ),
-//                                                       ),
-//   Row(
-//                                     crossAxisAlignment:
-//                                         CrossAxisAlignment.start,
-//                                     children: <Widget>[
-//                                       Column(
-//                                         crossAxisAlignment:
-//                                             CrossAxisAlignment.start,
-//                                         children: <Widget>[
-//                                           Padding(
-//                                             padding:
-//                                                 const EdgeInsets.only(top: 5.0),
-//                                             child: Text(
-//                                             'title',
-//                                               style: textbarlowRegularBlack(),
-//                                             ),
-//                                           ),
-//                                           Row(
-//                                             children: <Widget>[
-//                                               Text(
-//                                                 currency,
-//                                                 style: TextStyle(
-//                                                     color: const Color(
-//                                                         0xFF00BFA5)),
-//                                               ),
-//                                               Text(
-//                                                 '43',
-//                                                 style: TextStyle(
-//                                                     color: const Color(
-//                                                         0xFF00BFA5)),
-//                                               )
-//                                             ],
-//                                           ),
-//                                         ],
-//                                       ),
-//                                     ],
-//                                   )
-//                                                     ],
-//                                                   ),
-
-//                                             ],
-//                                           ),
-//                                         ),
-//                                            Positioned(
-//                            top: 16,
-//                            left: 15,
-//                             width: 126.0,
-//                             height: 155.0,
-//                             child: Container(
-//                               padding: EdgeInsets.only(left:10,right:10),
-//                               decoration: BoxDecoration(
-//                                   color: Colors.black45,
-//                                   borderRadius: BorderRadius.circular(20.0)),
-//                               child:  Center(
-//                                 child: Text(
-//                                     'oops! Out of stock',
-//                                     style: textBarlowMediumsmallWhite(
-
-//                                     ),
-//                                   ),
-//                               ),
-
-//                             ),
-//                           )
-//                                       ],
-//                                     ),
-//           ],
-//         ),
-
                 Padding(
                   padding: const EdgeInsets.only(left: 18.0, right: 18.0),
                   child: Row(

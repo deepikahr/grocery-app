@@ -57,7 +57,6 @@ class _EditAddressState extends State<EditAddress> {
     }
   }
 
-  // var addressData;
   Map<String, dynamic> address = {
     "location": {},
     "address": null,
@@ -216,14 +215,15 @@ class _EditAddressState extends State<EditAddress> {
                   ),
                 ),
                 Padding(
-                    padding: const EdgeInsets.only(
-                        left: 15.0, right: 15.0, bottom: 5.0),
-                    child: Text(
-                      fullAddress == null
-                          ? widget.updateAddressID['address'].toString()
-                          : fullAddress,
-                      style: labelStyle(),
-                    )),
+                  padding: const EdgeInsets.only(
+                      left: 15.0, right: 15.0, bottom: 5.0),
+                  child: Text(
+                    fullAddress == null
+                        ? widget.updateAddressID['address'].toString()
+                        : fullAddress,
+                    style: labelStyle(),
+                  ),
+                ),
                 Container(
                   child: Padding(
                     padding: const EdgeInsets.only(
@@ -234,8 +234,6 @@ class _EditAddressState extends State<EditAddress> {
                       color: primary,
                       blockButton: true,
                       onPressed: () async {
-                        //
-                        // getAddress();
                         LocationResult result = await showLocationPicker(
                           context,
                           "AIzaSyD6Q4UgAYOL203nuwNeBr4j_-yAd1U1gko",
@@ -243,7 +241,6 @@ class _EditAddressState extends State<EditAddress> {
                           myLocationButtonEnabled: true,
                           layersButtonEnabled: true,
                         );
-                        print("result = $result");
                         setState(() {
                           _pickedLocation = result;
                           fullAddress = result.address.toString();
@@ -404,7 +401,7 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'Postl Code :',
+                        'Postel Code :',
                         style: regular(),
                       ),
                     ],
@@ -537,38 +534,6 @@ class _EditAddressState extends State<EditAddress> {
                     );
                   },
                 ),
-                // Padding(
-                //   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                //   child: TextFormField(
-                //       style: labelStyle(),
-                //       keyboardType: TextInputType.text,
-                //       decoration: InputDecoration(
-                //         fillColor: Colors.black,
-                //         focusColor: Colors.black,
-                //         contentPadding: EdgeInsets.only(
-                //           left: 15.0,
-                //           right: 15.0,
-                //           top: 10.0,
-                //           bottom: 10.0,
-                //         ),
-                //         enabledBorder: const OutlineInputBorder(
-                //           borderSide:
-                //               const BorderSide(color: Colors.grey, width: 0.0),
-                //         ),
-                //         focusedBorder: OutlineInputBorder(
-                //           borderSide: BorderSide(color: primary),
-                //         ),
-                //       ),
-                //       validator: (String value) {
-                //         if (value.isEmpty) {
-                //           return "please Enter Valid value";
-                //         } else
-                //           return null;
-                //       },
-                //       onSaved: (String value) {
-                //         address['Address type'] = value;
-                //       }),
-                // ),
                 SizedBox(
                   height: 30,
                 ),

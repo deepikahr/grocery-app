@@ -14,13 +14,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 SentryError sentryError = new SentryError();
 
 class Variants {
-  const Variants(
-    this.id,
-    this.price,
-    this.unit,
-  );
+  const Variants(this.id, this.price, this.unit, this.productstock);
   final String id, unit;
-  final int price;
+  final int price, productstock;
 }
 
 class ProductDetails extends StatefulWidget {
@@ -57,7 +53,7 @@ class _ProductDetailsState extends State<ProductDetails>
       isFavListLoading = false,
       addProductTocart = false,
       isGetProductRating = false;
-  int quantity = 1, variantPrice;
+  int quantity = 1, variantPrice, variantProductstock;
   void _changeProductQuantity(bool increase) {
     if (increase) {
       if (mounted) {
@@ -78,7 +74,7 @@ class _ProductDetailsState extends State<ProductDetails>
 
   @override
   void initState() {
-    print(widget.favProductList);
+    print(widget.productDetail);
     getToken();
     if (widget.favProductList != null) {
       _checkFavourite();
@@ -92,6 +88,9 @@ class _ProductDetailsState extends State<ProductDetails>
           widget.productDetail['variant'][i]['_id'].toString(),
           widget.productDetail['variant'][i]['price'],
           widget.productDetail['variant'][i]['unit'],
+          widget.productDetail['variant'][i]['productstock'] == null
+              ? 1
+              : widget.productDetail['variant'][i]['productstock'],
         ),
       );
     }
@@ -445,6 +444,8 @@ class _ProductDetailsState extends State<ProductDetails>
                                         variantPrice = newValue.price;
                                         variantUnit = newValue.unit;
                                         variantId = newValue.id;
+                                        variantProductstock =
+                                            newValue.productstock;
                                       });
                                     }
                                   },
@@ -558,15 +559,20 @@ class _ProductDetailsState extends State<ProductDetails>
                       decoration: BoxDecoration(
                           color: Colors.black,
                           borderRadius: BorderRadius.circular(20.0)),
-                      child: Icon(
-                        Icons.remove,
-                        color: Colors.white,
+                      child: InkWell(
+                        onTap: () {
+                          _changeProductQuantity(false);
+                        },
+                        child: Icon(
+                          Icons.remove,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                     Text(''),
                     Padding(
                       padding: const EdgeInsets.only(left: 14.0),
-                      child: Container(child: Text('1')),
+                      child: Container(child: Text(quantity.toString())),
                     ),
                     Text(''),
                     Padding(
@@ -577,7 +583,24 @@ class _ProductDetailsState extends State<ProductDetails>
                         decoration: BoxDecoration(
                             color: primary,
                             borderRadius: BorderRadius.circular(20.0)),
-                        child: Icon(Icons.add),
+                        child: InkWell(
+                          onTap: () {
+                            if ((variantProductstock == null
+                                    ? widget.productDetail['variant'][0]
+                                                ['productstock'] ==
+                                            null
+                                        ? 1
+                                        : widget.productDetail['variant'][0]
+                                            ['productstock']
+                                    : variantProductstock) ==
+                                quantity) {
+                              showSnackbar("Product only few stock");
+                            } else {
+                              _changeProductQuantity(true);
+                            }
+                          },
+                          child: Icon(Icons.add),
+                        ),
                       ),
                     ),
                   ],
@@ -707,7 +730,7 @@ class _ProductDetailsState extends State<ProductDetails>
                           style: textBarlowRegularBlack(),
                         ),
                       ),
-                      Icon(Icons.shopping_cart, color: Colors.black)
+                      // Icon(Icons.shopping_cart, color: Colors.black)
                     ],
                   ),
                   onPressed: () {

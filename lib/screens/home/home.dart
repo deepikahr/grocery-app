@@ -1,7 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:getflutter/getflutter.dart';
@@ -9,7 +5,6 @@ import 'package:grocery_pro/screens/tab/mycart.dart';
 import 'package:grocery_pro/screens/tab/profile.dart';
 import 'package:grocery_pro/screens/tab/saveditems.dart';
 import 'package:grocery_pro/screens/tab/store.dart';
-import 'package:grocery_pro/service/auth-service.dart';
 import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/service/constants.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
@@ -35,7 +30,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   TabController tabController;
   bool isGetTokenLoading = true;
   int currentIndex = 0;
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       new FlutterLocalNotificationsPlugin();
   @override
@@ -93,6 +87,40 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   }
 
   Future<void> configLocalNotification() async {
+    var _debugLabelString = "";
+    OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
+
+    OneSignal.shared.setNotificationReceivedHandler((notification) {
+      this.setState(() {
+        _debugLabelString =
+            "Received notification: \n${notification.jsonRepresentation().replaceAll("\\n", "\n")}";
+        print(_debugLabelString);
+      });
+    });
+
+    OneSignal.shared
+        .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
+      this.setState(() {
+        _debugLabelString =
+            "Opened notification: \n${result.notification.jsonRepresentation().replaceAll("\\n", "\n")}";
+        print(_debugLabelString);
+      });
+    });
+
+    OneSignal.shared
+        .setSubscriptionObserver((OSSubscriptionStateChanges changes) {
+      // print("SUBSCRIPTION STATE CHANGED: ${changes.jsonRepresentation()}");
+    });
+
+    OneSignal.shared.setPermissionObserver((OSPermissionStateChanges changes) {
+      // print("PERMISSION STATE CHANGED: ${changes.jsonRepresentation()}");
+    });
+
+    OneSignal.shared.setEmailSubscriptionObserver(
+        (OSEmailSubscriptionStateChanges changes) {
+      // print("EMAIL SUBSCRIPTION STATE CHANGED ${changes.jsonRepresentation()}");
+    });
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     OneSignal.shared.init(Constants.ONE_SIGNAL_KEY, iOSSettings: {
       OSiOSSettings.autoPrompt: false,
@@ -107,7 +135,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       if (playerId == null) {
         configLocalNotification();
       } else {
-        prefs.setString("payerId", playerId);
+        prefs.setString("playerId", playerId);
       }
     });
   }
