@@ -47,6 +47,15 @@ TextStyle hintSfLightsmall() {
   );
 }
 
+TextStyle subtitleBold() {
+  return TextStyle(
+    fontSize: 17.0,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'OpenSansSemiBold',
+    color: Colors.black,
+  );
+}
+
 TextStyle hintSfLight() {
   return TextStyle(
     fontWeight: FontWeight.w500,
@@ -696,15 +705,6 @@ TextStyle titleBold() {
   return TextStyle(
     fontSize: 15.0,
     fontWeight: FontWeight.w500,
-    fontFamily: 'OpenSansSemiBold',
-    color: Colors.black,
-  );
-}
-
-TextStyle subtitleBold() {
-  return TextStyle(
-    fontSize: 17.0,
-    fontWeight: FontWeight.w400,
     fontFamily: 'OpenSansSemiBold',
     color: Colors.black,
   );

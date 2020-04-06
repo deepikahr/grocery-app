@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:grocery_pro/screens/home/home.dart';
 import 'package:grocery_pro/service/auth-service.dart';
 import 'package:grocery_pro/service/common.dart';
+import 'package:grocery_pro/service/constants.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -43,7 +45,7 @@ class MyApp extends StatelessWidget {
     getToken();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Grocery Pro',
+      title: 'Readymade Grocery App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

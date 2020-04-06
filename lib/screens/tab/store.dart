@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/categories/allcategories.dart';
+import 'package:grocery_pro/screens/categories/search.dart';
 import 'package:grocery_pro/screens/categories/subcategories.dart';
 import 'package:grocery_pro/screens/product/product-details.dart';
 import 'package:grocery_pro/screens/tab/searchitem.dart';

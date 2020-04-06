@@ -5,6 +5,14 @@ import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/style/style.dart';
 
 class Search extends StatefulWidget {
+  const Search({
+    Key key,
+    this.productsList,
+    this.currency,
+  }) : super(key: key);
+
+  final List productsList;
+  final String currency;
   @override
   _SearchState createState() => _SearchState();
 }
@@ -54,12 +62,13 @@ class _SearchState extends State<Search> {
                       ),
                       borderRadius: BorderRadius.circular(30)),
                 ),
-                searchList: list,
+                searchList: widget.productsList,
 //              hideSearchBoxWhenItemSelected: false,
                 overlaySearchListHeight: 300.0,
-                searchQueryBuilder: (query, list) => list
-                    .where((item) =>
-                        item.toLowerCase().contains(query.toLowerCase()))
+                searchQueryBuilder: (query, list) => widget.productsList
+                    .where((item) => item['title']
+                        .toLowerCase()
+                        .contains(query.toLowerCase()))
                     .toList(),
                 overlaySearchListItemBuilder: (item) => Container(
                       padding: const EdgeInsets.all(8),

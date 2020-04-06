@@ -78,9 +78,8 @@ class _ProductDetailsState extends State<ProductDetails>
 
   @override
   void initState() {
-    print(widget.productDetail);
+    print(widget.favProductList);
     getToken();
-    // getProductRating();
     if (widget.favProductList != null) {
       _checkFavourite();
     }
@@ -137,6 +136,7 @@ class _ProductDetailsState extends State<ProductDetails>
                         isFavListLoading = false;
                         isFavProduct = true;
                         favId = favProductList[i]['_id'];
+                        print(favId);
                       });
                     }
                   }
@@ -503,19 +503,17 @@ class _ProductDetailsState extends State<ProductDetails>
                                     });
                                   }
                                 },
-                                child: isFavListLoading
-                                    ? Center()
-                                    : isFavProduct
-                                        ? Icon(
-                                            Icons.favorite,
-                                            color: Colors.red,
-                                            size: 25.0,
-                                          )
-                                        : Icon(
-                                            Icons.favorite_border,
-                                            color: Colors.red,
-                                            size: 25.0,
-                                          ),
+                                child: isFavProduct
+                                    ? Icon(
+                                        Icons.favorite,
+                                        color: Colors.red,
+                                        size: 25.0,
+                                      )
+                                    : Icon(
+                                        Icons.favorite_border,
+                                        color: Colors.red,
+                                        size: 25.0,
+                                      ),
                               ),
                               type: GFButtonType.transparent,
                             ),

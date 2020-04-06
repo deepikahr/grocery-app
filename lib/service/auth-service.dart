@@ -174,4 +174,26 @@ class LoginService {
     });
     return json.decode(response.body);
   }
+
+  static Future<Map<String, dynamic>> getOrderHistory(orderId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString('token');
+    final response = await client
+        .get(Constants.baseURL + "orders/info/$orderId", headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'bearer $token'
+    });
+    return json.decode(response.body);
+  }
+
+  static Future<Map<String, dynamic>> restoInfo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString('token');
+    final response = await client
+        .get(Constants.baseURL + "users/admin/infomation", headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'bearer $token'
+    });
+    return json.decode(response.body);
+  }
 }

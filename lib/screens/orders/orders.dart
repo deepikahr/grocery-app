@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
-import 'package:grocery_pro/screens/orders/orderdetails.dart';
+import 'package:grocery_pro/screens/orders/ordersDetails.dart';
 import 'package:grocery_pro/screens/tab/mycart.dart';
 import 'package:grocery_pro/service/cart-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
@@ -212,23 +212,26 @@ class _OrdersState extends State<Orders> {
                 )
               : ListView(
                   children: <Widget>[
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => OrderDetails()),
-                        );
-                      },
-                      child: Container(
-                        color: Colors.white38,
-                        child: ListView.builder(
-                          physics: ScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount:
-                              orderList.length == null ? 0 : orderList.length,
-                          itemBuilder: (BuildContext context, int i) {
-                            return Column(
+                    Container(
+                      color: Colors.white38,
+                      child: ListView.builder(
+                        physics: ScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount:
+                            orderList.length == null ? 0 : orderList.length,
+                        itemBuilder: (BuildContext context, int i) {
+                          return InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                new MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      new OrderDetails(
+                                          orderId: orderList[i]["_id"]),
+                                ),
+                              );
+                            },
+                            child: Column(
                               children: <Widget>[
                                 Container(
                                   width: MediaQuery.of(context).size.width,
@@ -259,8 +262,7 @@ class _OrdersState extends State<Orders> {
                                                 child: Text(
                                                   orderList[i]['cart']['cart']
                                                       [0]['title'],
-                                                  style:
-                                                      textBarlowMediumBlack(),
+                                                  style: titleBold(),
                                                 ),
                                               ),
                                             ],
@@ -287,8 +289,10 @@ class _OrdersState extends State<Orders> {
                                                                   ['description']
                                                               .toString() ??
                                                           "",
-                                                  style:
-                                                      textbarlowRegularBlack(),
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w300,
+                                                      fontSize: 14.0),
                                                 ),
                                               ),
                                             ],
@@ -304,14 +308,14 @@ class _OrdersState extends State<Orders> {
                                               children: <Widget>[
                                                 Text(
                                                   currency,
-                                                  style: textBarlowBoldBlack(),
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 11.0,
+                                                  ),
                                                 ),
-                                                Text(
-                                                  orderList[i]['grandTotal']
-                                                          .toString() ??
-                                                      "",
-                                                  style: textBarlowBoldBlack(),
-                                                )
+                                                Text(orderList[i]['grandTotal']
+                                                        .toString() ??
+                                                    "")
                                               ],
                                             ),
                                           ),
@@ -319,6 +323,11 @@ class _OrdersState extends State<Orders> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.start,
                                             children: <Widget>[
+                                              Icon(
+                                                Icons.check_circle_outline,
+                                                size: 15,
+                                                color: Colors.grey,
+                                              ),
                                               Text(
                                                 'Ordered At : ' +
                                                         orderList[i]
@@ -330,7 +339,9 @@ class _OrdersState extends State<Orders> {
                                                             .substring(
                                                                 11, 16) ??
                                                     "",
-                                                style: textbarlowRegularBlack(),
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w300,
+                                                    fontSize: 11.0),
                                               ),
                                             ],
                                           ),
@@ -339,9 +350,10 @@ class _OrdersState extends State<Orders> {
                                                 MainAxisAlignment.start,
                                             children: <Widget>[
                                               Text(
-                                                'Order ' +
+                                                'Order : ' +
                                                     "${orderList[i]['orderStatus'] ?? ""}",
-                                                style: textBarlowRegularGreen(),
+                                                style: TextStyle(
+                                                    color: Colors.green),
                                               ),
                                             ],
                                           ),
@@ -350,10 +362,11 @@ class _OrdersState extends State<Orders> {
                                                 MainAxisAlignment.start,
                                             children: <Widget>[
                                               Text(
-                                                  'Payment Type ' +
-                                                      "${orderList[i]['paymentType'] ?? ""}",
-                                                  style:
-                                                      textBarlowRegularGreen()),
+                                                'Payment Type : ' +
+                                                    "${orderList[i]['paymentType'] ?? ""}",
+                                                style: TextStyle(
+                                                    color: Colors.green),
+                                              ),
                                             ],
                                           ),
                                         ],
@@ -395,55 +408,54 @@ class _OrdersState extends State<Orders> {
                                             SizedBox(
                                               height: 20.0,
                                             ),
-                                            orderList[i]['rating'] == null
-                                                ? Expanded(
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              left: 20.0,
-                                                              right: 20.0),
-                                                      child: GFButton(
-                                                        onPressed: () {
-                                                          ratingAlert(
-                                                              orderList[i]
-                                                                  ['_id']);
-                                                        },
-                                                        text: 'Order Rate',
-                                                        color: primary,
-                                                        type: GFButtonType
-                                                            .outline,
-                                                        size: GFSize.SMALL,
-                                                      ),
-                                                    ),
-                                                  )
-                                                : Expanded(
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              left: 20.0,
-                                                              right: 20.0),
-                                                      child: GFButton(
-                                                        onPressed: null,
-                                                        text: orderList[i]
-                                                                    ['rating']
-                                                                .toString() +
-                                                            " Order Rate",
-                                                        color: Colors.black,
-                                                        type: GFButtonType
-                                                            .outline,
-                                                        size: GFSize.SMALL,
-                                                      ),
-                                                    ),
-                                                  )
+                                            // orderList[i]['rating'] == null
+                                            //     ? Expanded(
+                                            //         child: Padding(
+                                            //           padding:
+                                            //               const EdgeInsets.only(
+                                            //                   left: 20.0,
+                                            //                   right: 20.0),
+                                            //           child: GFButton(
+                                            //             onPressed: () {
+                                            //               ratingAlert(orderList[i]
+                                            //                   ['_id']);
+                                            //             },
+                                            //             text: 'Order Rate',
+                                            //             color: primary,
+                                            //             type:
+                                            //                 GFButtonType.outline,
+                                            //             size: GFSize.SMALL,
+                                            //           ),
+                                            //         ),
+                                            //       )
+                                            //     : Expanded(
+                                            //         child: Padding(
+                                            //           padding:
+                                            //               const EdgeInsets.only(
+                                            //                   left: 20.0,
+                                            //                   right: 20.0),
+                                            //           child: GFButton(
+                                            //             onPressed: null,
+                                            //             text: orderList[i]
+                                            //                         ['rating']
+                                            //                     .toString() +
+                                            //                 " Order Rate",
+                                            //             color: Colors.black,
+                                            //             type:
+                                            //                 GFButtonType.outline,
+                                            //             size: GFSize.SMALL,
+                                            //           ),
+                                            // ),
+                                            // )
                                           ],
                                         ),
                                       )
                                     : Container(),
                                 Divider()
                               ],
-                            );
-                          },
-                        ),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ],

@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
+import 'package:google_map_location_picker/google_map_location_picker.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/address-service.dart';
@@ -37,20 +39,34 @@ class _EditAddressState extends State<EditAddress> {
   Location _location = new Location();
   bool chooseAddress = false, isUpdateAddress = false;
   StreamSubscription<LocationData> locationSubscription;
-
+  int selectedRadio = 0;
+  int selectedRadioFirst;
+  LocationResult _pickedLocation;
+  String fullAddress;
   @override
   void initState() {
     super.initState();
   }
 
+  List<String> addressType = ['Home', "Work", "Others"];
+  setSelectedRadio(int val) async {
+    if (mounted) {
+      setState(() {
+        selectedRadioFirst = val;
+      });
+    }
+  }
+
   // var addressData;
   Map<String, dynamic> address = {
-    "flatNumber": null,
-    "locality": null,
-    "landMark": null,
-    "city": null,
+    "location": {},
+    "address": null,
+    "flatNo": null,
+    "apartmentame": null,
+    "landmark": null,
     "postalCode": null,
-    "state": null
+    "contactNumber": null,
+    "addressType": null
   };
   updateAddress() async {
     if (_formKey.currentState.validate()) {
@@ -60,13 +76,32 @@ class _EditAddressState extends State<EditAddress> {
         });
       }
       _formKey.currentState.save();
+
+      if (_pickedLocation == null) {
+        address['address'] = fullAddress == null
+            ? widget.updateAddressID['address']
+            : fullAddress;
+        address['location'] = widget.updateAddressID['location'];
+      } else {
+        address['address'] = _pickedLocation.address;
+        var location = {
+          "lat": _pickedLocation.latLng.latitude,
+          "long": _pickedLocation.latLng.longitude
+        };
+        address['location'] = location;
+      }
+
+      address['addressType'] = addressType[
+          selectedRadioFirst == null ? selectedRadio : selectedRadioFirst];
+      print(address);
       AddressService.updateAddress(address, widget.updateAddressID['_id'])
           .then((onValue) {
+        print(onValue);
         try {
           if (mounted) {
             setState(() {
               isUpdateAddress = false;
-              showAlert();
+              showAlert(onValue['response_data']);
             });
           }
         } catch (error, stackTrace) {
@@ -81,7 +116,7 @@ class _EditAddressState extends State<EditAddress> {
   }
 
   // show alert
-  showAlert() {
+  showAlert(message) {
     showDialog<Null>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -90,7 +125,7 @@ class _EditAddressState extends State<EditAddress> {
           content: new SingleChildScrollView(
             child: new ListBody(
               children: <Widget>[
-                new Text('Address Edited Successfully'),
+                new Text(message),
               ],
             ),
           ),
@@ -98,7 +133,7 @@ class _EditAddressState extends State<EditAddress> {
             new FlatButton(
               child: new Text('OK'),
               onPressed: () {
-                if (widget.isCheckout == true) {
+                if (widget.isProfile == true) {
                   Navigator.of(context).pop();
                   Navigator.of(context).pop(address);
                 } else {
@@ -174,6 +209,57 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
+                        'Loaction :',
+                        style: regular(),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                    padding: const EdgeInsets.only(
+                        left: 15.0, right: 15.0, bottom: 5.0),
+                    child: Text(
+                      fullAddress == null
+                          ? widget.updateAddressID['address'].toString()
+                          : fullAddress,
+                      style: labelStyle(),
+                    )),
+                Container(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: 20.0,
+                      right: 20.0,
+                    ),
+                    child: GFButton(
+                      color: primary,
+                      blockButton: true,
+                      onPressed: () async {
+                        //
+                        // getAddress();
+                        LocationResult result = await showLocationPicker(
+                          context,
+                          "AIzaSyD6Q4UgAYOL203nuwNeBr4j_-yAd1U1gko",
+                          initialCenter: LatLng(31.1975844, 29.9598339),
+                          myLocationButtonEnabled: true,
+                          layersButtonEnabled: true,
+                        );
+                        print("result = $result");
+                        setState(() {
+                          _pickedLocation = result;
+                          fullAddress = result.address.toString();
+                        });
+                      },
+                      text: 'Update Address',
+                      textStyle: TextStyle(fontSize: 17.0, color: Colors.black),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
                         'House/Flat/Block number :',
                         style: regular(),
                       ),
@@ -183,28 +269,25 @@ class _EditAddressState extends State<EditAddress> {
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
-                    initialValue: widget.updateAddressID['flatNumber'] != null
-                        ? widget.updateAddressID['flatNumber']
-                        : " ",
+                    initialValue: widget.updateAddressID['flatNo'],
                     style: labelStyle(),
-                    keyboardType: TextInputType.text,
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      fillColor: Colors.black,
-                      focusColor: Colors.black,
-                      contentPadding: EdgeInsets.only(
-                        left: 15.0,
-                        right: 15.0,
-                        top: 10.0,
-                        bottom: 10.0,
-                      ),
-                      enabledBorder: const OutlineInputBorder(
-                        borderSide:
-                            const BorderSide(color: Colors.grey, width: 0.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: primary),
-                      ),
-                    ),
+                        fillColor: Colors.black,
+                        focusColor: Colors.black,
+                        contentPadding: EdgeInsets.only(
+                          left: 15.0,
+                          right: 15.0,
+                          top: 10.0,
+                          bottom: 10.0,
+                        ),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.grey, width: 0.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: primary),
+                        )),
                     validator: (String value) {
                       if (value.isEmpty) {
                         return "please Enter Valid value";
@@ -212,7 +295,7 @@ class _EditAddressState extends State<EditAddress> {
                         return null;
                     },
                     onSaved: (String value) {
-                      address['flatNumber'] = value;
+                      address['flatNo'] = value;
                     },
                   ),
                 ),
@@ -220,45 +303,194 @@ class _EditAddressState extends State<EditAddress> {
                   height: 25,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
-                  child: Text(
-                    'LandMark :',
-                    style: regular(),
+                  padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'Apartment Name :',
+                        style: regular(),
+                      ),
+                    ],
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
-                    initialValue: widget.updateAddressID['landMark'] == null
-                        ? " "
-                        : widget.updateAddressID['landMark'],
+                      initialValue: widget.updateAddressID['apartmentName'],
+                      style: labelStyle(),
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
+                        fillColor: Colors.black,
+                        focusColor: Colors.black,
+                        contentPadding: EdgeInsets.only(
+                          left: 15.0,
+                          right: 15.0,
+                          top: 10.0,
+                          bottom: 10.0,
+                        ),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.grey, width: 0.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: primary),
+                        ),
+                      ),
+                      validator: (String value) {
+                        if (value.isEmpty) {
+                          return "please Enter Valid value";
+                        } else
+                          return null;
+                      },
+                      onSaved: (String value) {
+                        address['apartmentName'] = value;
+                      }),
+                ),
+                SizedBox(
+                  height: 25,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'Land Mark :',
+                        style: regular(),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                  child: TextFormField(
+                      initialValue: widget.updateAddressID['landmark'],
+                      style: labelStyle(),
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
+                        fillColor: Colors.black,
+                        focusColor: Colors.black,
+                        contentPadding: EdgeInsets.only(
+                          left: 15.0,
+                          right: 15.0,
+                          top: 10.0,
+                          bottom: 10.0,
+                        ),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.grey, width: 0.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: primary),
+                        ),
+                      ),
+                      validator: (String value) {
+                        if (value.isEmpty) {
+                          return "please Enter Valid value";
+                        } else
+                          return null;
+                      },
+                      onSaved: (String value) {
+                        address['landmark'] = value;
+                      }),
+                ),
+                SizedBox(
+                  height: 25,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'Postl Code :',
+                        style: regular(),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                  child: TextFormField(
+                      initialValue:
+                          widget.updateAddressID['postalCode'].toString(),
+                      style: labelStyle(),
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
+                        fillColor: Colors.black,
+                        focusColor: Colors.black,
+                        contentPadding: EdgeInsets.only(
+                          left: 15.0,
+                          right: 15.0,
+                          top: 10.0,
+                          bottom: 10.0,
+                        ),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.grey, width: 0.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: primary),
+                        ),
+                      ),
+                      validator: (String value) {
+                        if (value.isEmpty) {
+                          return "please Enter Valid value";
+                        } else
+                          return null;
+                      },
+                      onSaved: (String value) {
+                        address['postalCode'] = value;
+                      }),
+                ),
+                SizedBox(
+                  height: 25,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'Contact Number :',
+                        style: regular(),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                  child: TextFormField(
+                    initialValue: widget.updateAddressID['contactNumber'],
+                    maxLength: 10,
                     style: labelStyle(),
-                    keyboardType: TextInputType.text,
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      fillColor: Colors.black,
-                      focusColor: Colors.black,
-                      contentPadding: EdgeInsets.only(
-                        left: 15.0,
-                        right: 15.0,
-                        top: 10.0,
-                        bottom: 10.0,
-                      ),
-                      enabledBorder: const OutlineInputBorder(
-                        borderSide:
-                            const BorderSide(color: Colors.grey, width: 0.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: primary),
-                      ),
-                    ),
+                        counterText: "",
+                        fillColor: Colors.black,
+                        focusColor: Colors.black,
+                        contentPadding: EdgeInsets.only(
+                          left: 15.0,
+                          right: 15.0,
+                          top: 10.0,
+                          bottom: 10.0,
+                        ),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.grey, width: 0.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: primary),
+                        )),
                     validator: (String value) {
-                      if (value.isEmpty) {
+                      if (value.isEmpty || value.length != 10) {
                         return "please Enter Valid value";
                       } else
                         return null;
                     },
                     onSaved: (String value) {
-                      address['landMark'] = value;
+                      address['contactNumber'] = value;
                     },
                   ),
                 ),
@@ -266,186 +498,77 @@ class _EditAddressState extends State<EditAddress> {
                   height: 25,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
-                  child: Text(
-                    'Area :',
-                    style: regular(),
+                  padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'Address Type (Home, Work, Others etc.):',
+                        style: regular(),
+                      ),
+                    ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                  child: TextFormField(
-                    initialValue: widget.updateAddressID['locality'] == null
-                        ? " "
-                        : widget.updateAddressID['locality'],
-                    style: labelStyle(),
-                    keyboardType: TextInputType.text,
-                    decoration: InputDecoration(
-                      fillColor: Colors.black,
-                      focusColor: Colors.black,
-                      contentPadding: EdgeInsets.only(
-                        left: 15.0,
-                        right: 15.0,
-                        top: 10.0,
-                        bottom: 10.0,
+                ListView.builder(
+                  physics: ScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount:
+                      addressType.length == null ? 0 : addressType.length,
+                  itemBuilder: (BuildContext context, int i) {
+                    return Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Radio(
+                            value: i,
+                            groupValue: selectedRadioFirst == null
+                                ? selectedRadio
+                                : selectedRadioFirst,
+                            activeColor: Colors.green,
+                            onChanged: (value) {
+                              setSelectedRadio(value);
+                            },
+                          ),
+                          Text('${addressType[i]}'),
+                        ],
                       ),
-                      enabledBorder: const OutlineInputBorder(
-                        borderSide:
-                            const BorderSide(color: Colors.grey, width: 0.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: primary),
-                      ),
-                    ),
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return "please Enter Valid value";
-                      } else
-                        return null;
-                    },
-                    onSaved: (String value) {
-                      address['locality'] = value;
-                    },
-                  ),
+                    );
+                  },
                 ),
-                SizedBox(
-                  height: 25,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
-                  child: Text(
-                    'Pincode :',
-                    style: regular(),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                  child: TextFormField(
-                    initialValue: widget.updateAddressID['postalCode'] == null
-                        ? ""
-                        : widget.updateAddressID['postalCode'],
-                    style: labelStyle(),
-                    keyboardType: TextInputType.text,
-                    decoration: InputDecoration(
-                      fillColor: Colors.black,
-                      focusColor: Colors.black,
-                      contentPadding: EdgeInsets.only(
-                        left: 15.0,
-                        right: 15.0,
-                        top: 10.0,
-                        bottom: 10.0,
-                      ),
-                      enabledBorder: const OutlineInputBorder(
-                        borderSide:
-                            const BorderSide(color: Colors.grey, width: 0.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: primary),
-                      ),
-                    ),
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return "please Enter Valid value";
-                      } else
-                        return null;
-                    },
-                    onSaved: (String value) {
-                      address['postalCode'] = value;
-                    },
-                  ),
-                ),
-                SizedBox(
-                  height: 25,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
-                  child: Text(
-                    'City :',
-                    style: regular(),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                  child: TextFormField(
-                    initialValue: widget.updateAddressID['city'] == null
-                        ? ""
-                        : widget.updateAddressID['city'],
-                    style: labelStyle(),
-                    keyboardType: TextInputType.text,
-                    decoration: InputDecoration(
-                      fillColor: Colors.black,
-                      focusColor: Colors.black,
-                      contentPadding: EdgeInsets.only(
-                        left: 15.0,
-                        right: 15.0,
-                        top: 10.0,
-                        bottom: 10.0,
-                      ),
-                      enabledBorder: const OutlineInputBorder(
-                        borderSide:
-                            const BorderSide(color: Colors.grey, width: 0.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: primary),
-                      ),
-                    ),
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return "please Enter Valid value";
-                      } else
-                        return null;
-                    },
-                    onSaved: (String value) {
-                      address['city'] = value;
-                    },
-                  ),
-                ),
-                SizedBox(
-                  height: 25,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
-                  child: Text(
-                    'State :',
-                    style: regular(),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                  child: TextFormField(
-                    initialValue: widget.updateAddressID['state'] == null
-                        ? ""
-                        : widget.updateAddressID['state'],
-                    style: labelStyle(),
-                    keyboardType: TextInputType.text,
-                    decoration: InputDecoration(
-                      fillColor: Colors.black,
-                      focusColor: Colors.black,
-                      contentPadding: EdgeInsets.only(
-                        left: 15.0,
-                        right: 15.0,
-                        top: 10.0,
-                        bottom: 10.0,
-                      ),
-                      enabledBorder: const OutlineInputBorder(
-                        borderSide:
-                            const BorderSide(color: Colors.grey, width: 0.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: primary),
-                      ),
-                    ),
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return "please Enter Valid value";
-                      } else
-                        return null;
-                    },
-                    onSaved: (String value) {
-                      address['state'] = value;
-                    },
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                //   child: TextFormField(
+                //       style: labelStyle(),
+                //       keyboardType: TextInputType.text,
+                //       decoration: InputDecoration(
+                //         fillColor: Colors.black,
+                //         focusColor: Colors.black,
+                //         contentPadding: EdgeInsets.only(
+                //           left: 15.0,
+                //           right: 15.0,
+                //           top: 10.0,
+                //           bottom: 10.0,
+                //         ),
+                //         enabledBorder: const OutlineInputBorder(
+                //           borderSide:
+                //               const BorderSide(color: Colors.grey, width: 0.0),
+                //         ),
+                //         focusedBorder: OutlineInputBorder(
+                //           borderSide: BorderSide(color: primary),
+                //         ),
+                //       ),
+                //       validator: (String value) {
+                //         if (value.isEmpty) {
+                //           return "please Enter Valid value";
+                //         } else
+                //           return null;
+                //       },
+                //       onSaved: (String value) {
+                //         address['Address type'] = value;
+                //       }),
+                // ),
                 SizedBox(
                   height: 30,
                 ),
@@ -458,7 +581,7 @@ class _EditAddressState extends State<EditAddress> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text("Save"),
+                          Text("Update"),
                           isUpdateAddress
                               ? Image.asset(
                                   'lib/assets/images/spinner.gif',

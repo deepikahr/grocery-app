@@ -3,10 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
+import 'package:google_map_location_picker/google_map_location_picker.dart';
+import 'package:grocery_pro/screens/address/address.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/address-service.dart';
-import 'package:grocery_pro/service/product-service.dart';
 import 'package:location/location.dart';
 
 SentryError sentryError = new SentryError();
@@ -17,10 +18,12 @@ class AddAddress extends StatefulWidget {
       this.currentLocation,
       this.isCheckout,
       this.isProfile,
+      this.pickedLocation,
       this.updateAddressID})
       : super(key: key);
   final bool isCheckout;
   final bool isProfile;
+  final LocationResult pickedLocation;
   final Map<String, dynamic> updateAddressID;
   final LocationData currentLocation;
 
@@ -33,89 +36,73 @@ class _AddAddressState extends State<AddAddress> {
 
   var addressData;
   LocationData currentLocation;
-  Location _location = new Location();
   bool chooseAddress = false, isLoading = false;
   StreamSubscription<LocationData> locationSubscription;
-
+  int selectedRadio = 0;
+  int selectedRadioFirst;
   @override
   void initState() {
-    getResult();
     super.initState();
   }
 
+  List<String> addressType = ['Home', "Work", "Others"];
   // var addressData;
   Map<String, dynamic> address = {
-    "flatNumber": null,
-    "locality": null,
-    "landMark": null,
-    "city": null,
+    "location": {},
+    "address": null,
+    "flatNo": null,
+    "apartmentName": null,
+    "landmark": null,
     "postalCode": null,
-    "state": null
+    "contactNumber": null,
+    "addressType": null
   };
   addAddress() async {
-    print("jj");
     if (mounted) {
       setState(() {
         isLoading = true;
       });
     }
-    if (chooseAddress) {
-      List data = addressData['formatted_address'].toString().split(',');
-      print(data);
-      print(data[0]);
-      print(addressData['address_components']);
-      Map<String, dynamic> body = {
-        "flatNumber": data[0],
-        "landMark": addressData['address_components'][1]['long_name'],
-        "locality": addressData['address_components'][1]['long_name'] +
-            ', ' +
-            addressData['address_components'][2]['long_name'],
-        "city": addressData['address_components'][3]['long_name'],
-        "postalCode": addressData['address_components'][6]['long_name'],
-        "state": addressData['address_components'][4]['long_name'],
-      };
-      print(body);
-      await AddressService.addAddress(body).then((onValue) {
+
+    address['address'] = widget.pickedLocation.address;
+    var location = {
+      "lat": widget.pickedLocation.latLng.latitude,
+      "long": widget.pickedLocation.latLng.longitude
+    };
+    address['location'] = location;
+    address['addressType'] = addressType[
+        selectedRadioFirst == null ? selectedRadio : selectedRadioFirst];
+    print(address);
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+      AddressService.addAddress(address).then((onValue) {
         print(onValue);
         try {
           if (mounted) {
             setState(() {
-              chooseAddress = false;
-              isLoading = true;
-              showAlert();
+              isLoading = false;
+              showAlert(onValue['response_data']['message']);
             });
           }
         } catch (error, stackTrace) {
+          print(error);
           sentryError.reportError(error, stackTrace);
         }
-      }).catchError((error) {
-        sentryError.reportError(error, null);
+      }).catchError((onError) {
+        sentryError.reportError(onError, null);
       });
     } else {
-      if (_formKey.currentState.validate()) {
-        _formKey.currentState.save();
-        AddressService.addAddress(address).then((onValue) {
-          try {
-            if (mounted) {
-              setState(() {
-                isLoading = false;
-                showAlert();
-              });
-            }
-          } catch (error, stackTrace) {
-            sentryError.reportError(error, stackTrace);
-          }
-        }).catchError((onError) {
-          sentryError.reportError(onError, null);
+      if (mounted) {
+        setState(() {
+          isLoading = false;
         });
-      } else {
-        return;
       }
+      return;
     }
   }
 
   // show alert
-  showAlert() {
+  showAlert(message) {
     showDialog<Null>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -125,7 +112,7 @@ class _AddAddressState extends State<AddAddress> {
             child: new ListBody(
               children: <Widget>[
                 new Text(
-                  'Address Added',
+                  message,
                   style: textBarlowRegularrBlack(),
                 ),
               ],
@@ -138,12 +125,19 @@ class _AddAddressState extends State<AddAddress> {
                 style: textbarlowRegularaPrimar(),
               ),
               onPressed: () {
-                if (widget.isCheckout == true) {
+                if (widget.isProfile == true) {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                  Navigator.push(
+                    context,
+                    new MaterialPageRoute(
+                      builder: (BuildContext context) => new Address(),
+                    ),
+                  );
+                } else if (widget.isCheckout == true) {
                   Navigator.of(context).pop();
                   Navigator.of(context).pop(address);
-                } else {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
                 }
               },
             ),
@@ -153,25 +147,12 @@ class _AddAddressState extends State<AddAddress> {
     );
   }
 
-  getGeoLocation() async {
-    await ProductService.geoApi(
-            currentLocation.latitude, currentLocation.longitude)
-        .then((onValue) {
-      print(onValue);
-      try {
-        if (mounted) {
-          setState(() {
-            addressData = onValue['results'][0];
-            chooseAddress = true;
-            addAddress();
-          });
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      sentryError.reportError(error, null);
-    });
+  setSelectedRadio(int val) async {
+    if (mounted) {
+      setState(() {
+        selectedRadioFirst = val;
+      });
+    }
   }
 
   @override
@@ -179,11 +160,6 @@ class _AddAddressState extends State<AddAddress> {
     if (locationSubscription != null && locationSubscription is Stream)
       locationSubscription.cancel();
     super.dispose();
-  }
-
-  getResult() async {
-    currentLocation = await _location.getLocation();
-    getGeoLocation();
   }
 
   @override
@@ -199,15 +175,6 @@ class _AddAddressState extends State<AddAddress> {
         ),
         centerTitle: true,
         backgroundColor: primary,
-        actions: <Widget>[
-          InkWell(
-            onTap: getResult,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Icon(Icons.add_location),
-            ),
-          ),
-        ],
       ),
       body: Form(
         key: _formKey,
@@ -218,6 +185,25 @@ class _AddAddressState extends State<AddAddress> {
                 SizedBox(
                   height: 25,
                 ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'Loaction :',
+                        style: regular(),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                    padding: const EdgeInsets.only(
+                        left: 15.0, right: 15.0, bottom: 5.0),
+                    child: Text(
+                      widget.pickedLocation.address,
+                      style: labelStyle(),
+                    )),
                 Padding(
                   padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
                   child: Row(
@@ -262,7 +248,7 @@ class _AddAddressState extends State<AddAddress> {
                         return null;
                     },
                     onSaved: (String value) {
-                      address['flatNumber'] = value;
+                      address['flatNo'] = value;
                     },
                   ),
                 ),
@@ -275,7 +261,7 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'LandMark :',
+                        'Apartment Name :',
                         style: textbarlowRegularBlack(),
                       ),
                     ],
@@ -314,7 +300,7 @@ class _AddAddressState extends State<AddAddress> {
                           return null;
                       },
                       onSaved: (String value) {
-                        address['landMark'] = value;
+                        address['apartmentName'] = value;
                       }),
                 ),
                 SizedBox(
@@ -326,7 +312,7 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'Area :',
+                        'Land Mark :',
                         style: textbarlowRegularBlack(),
                       ),
                     ],
@@ -365,7 +351,7 @@ class _AddAddressState extends State<AddAddress> {
                           return null;
                       },
                       onSaved: (String value) {
-                        address['locality'] = value;
+                        address['landmark'] = value;
                       }),
                 ),
                 SizedBox(
@@ -377,7 +363,7 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'Pincode :',
+                        'Postel Code :',
                         style: textbarlowRegularBlack(),
                       ),
                     ],
@@ -428,7 +414,7 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'City :',
+                        'Contact Number :',
                         style: textbarlowRegularBlack(),
                       ),
                     ],
@@ -437,13 +423,11 @@ class _AddAddressState extends State<AddAddress> {
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
-                    style: textBarlowRegularBlack(),
-                    keyboardType: TextInputType.text,
+                    maxLength: 10,
+                    style: labelStyle(),
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                        errorBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(width: 0, color: Color(0xFFF44242))),
-                        errorStyle: TextStyle(color: Color(0xFFF44242)),
+                        counterText: "",
                         fillColor: Colors.black,
                         focusColor: Colors.black,
                         contentPadding: EdgeInsets.only(
@@ -460,13 +444,13 @@ class _AddAddressState extends State<AddAddress> {
                           borderSide: BorderSide(color: primary),
                         )),
                     validator: (String value) {
-                      if (value.isEmpty) {
+                      if (value.isEmpty || value.length != 10) {
                         return "please Enter Valid value";
                       } else
                         return null;
                     },
                     onSaved: (String value) {
-                      address['city'] = value;
+                      address['contactNumber'] = value;
                     },
                   ),
                 ),
@@ -479,48 +463,72 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'State :',
+                        'Address Type (Home, Work, Others etc.):',
                         style: textbarlowRegularBlack(),
                       ),
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                  child: TextFormField(
-                      style: textBarlowRegularBlack(),
-                      keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
-                        errorBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(width: 0, color: Color(0xFFF44242))),
-                        errorStyle: TextStyle(color: Color(0xFFF44242)),
-                        fillColor: Colors.black,
-                        focusColor: Colors.black,
-                        contentPadding: EdgeInsets.only(
-                          left: 15.0,
-                          right: 15.0,
-                          top: 10.0,
-                          bottom: 10.0,
-                        ),
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: Colors.grey, width: 0.0),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
-                        ),
+                ListView.builder(
+                  physics: ScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount:
+                      addressType.length == null ? 0 : addressType.length,
+                  itemBuilder: (BuildContext context, int i) {
+                    return Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Radio(
+                            value: i,
+                            groupValue: selectedRadioFirst == null
+                                ? selectedRadio
+                                : selectedRadioFirst,
+                            activeColor: Colors.green,
+                            onChanged: (value) {
+                              setSelectedRadio(value);
+                            },
+                          ),
+                          Text('${addressType[i]}'),
+                        ],
                       ),
-                      validator: (String value) {
-                        if (value.isEmpty) {
-                          return "please Enter Valid value";
-                        } else
-                          return null;
-                      },
-                      onSaved: (String value) {
-                        address['state'] = value;
-                      }),
+                    );
+                  },
                 ),
+                // Padding(
+                //   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                //   child: TextFormField(
+                //       style: labelStyle(),
+                //       keyboardType: TextInputType.text,
+                //       decoration: InputDecoration(
+                //         fillColor: Colors.black,
+                //         focusColor: Colors.black,
+                //         contentPadding: EdgeInsets.only(
+                //           left: 15.0,
+                //           right: 15.0,
+                //           top: 10.0,
+                //           bottom: 10.0,
+                //         ),
+                //         enabledBorder: const OutlineInputBorder(
+                //           borderSide:
+                //               const BorderSide(color: Colors.grey, width: 0.0),
+                //         ),
+                //         focusedBorder: OutlineInputBorder(
+                //           borderSide: BorderSide(color: primary),
+                //         ),
+                //       ),
+                //       validator: (String value) {
+                //         if (value.isEmpty) {
+                //           return "please Enter Valid value";
+                //         } else
+                //           return null;
+                //       },
+                //       onSaved: (String value) {
+                //         address['Address type'] = value;
+                //       }),
+                // ),
                 SizedBox(
                   height: 30,
                 ),
