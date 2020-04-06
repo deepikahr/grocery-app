@@ -116,7 +116,7 @@ class _SignupState extends State<Signup> {
           ),
           title: new Text(
             'Error at showalert',
-            style: hintSfsemiboldb(),
+            style: textBarlowRegularBlack(),
             textAlign: TextAlign.center,
           ),
           content: Container(
@@ -125,7 +125,7 @@ class _SignupState extends State<Signup> {
               children: <Widget>[
                 new Text(
                   "$message",
-                  style: hintSfLightsm(),
+                  style: textBarlowRegularBlack(),
                   textAlign: TextAlign.center,
                 ),
                 Padding(padding: EdgeInsets.only(top: 20.0)),
@@ -145,7 +145,7 @@ class _SignupState extends State<Signup> {
                         decoration: BoxDecoration(),
                         child: Text(
                           'OK',
-                          style: hintSfLightbig(),
+                          style: textbarlowRegularaPrimary(),
                         ),
                       ),
                     ))
@@ -171,7 +171,7 @@ class _SignupState extends State<Signup> {
                 bottomRight: Radius.circular(20))),
         title: Text(
           'Sign up',
-          style: TextStyle(color: Colors.black, fontSize: 20.0),
+          style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
         backgroundColor: primary,
@@ -230,7 +230,7 @@ class _SignupState extends State<Signup> {
         showDivider: false,
         child: Text(
           "Let's get started !",
-          style: authHeader(),
+          style: textbarlowMediumBlack(),
         ),
       ),
     );
@@ -244,7 +244,7 @@ class _SignupState extends State<Signup> {
         child: RichText(
           text: TextSpan(
             children: <TextSpan>[
-              TextSpan(text: "First Name", style: emailTextNormal()),
+              TextSpan(text: "First Name", style: textbarlowRegularBlack()),
               TextSpan(
                 text: ' *',
                 style: TextStyle(color: Colors.red),
@@ -261,7 +261,7 @@ class _SignupState extends State<Signup> {
       padding: const EdgeInsets.only(top: 5.0, bottom: 10.0),
       child: Container(
         child: TextFormField(
-          style: labelStyle(),
+          style: textBarlowRegularBlack(),
           keyboardType: TextInputType.emailAddress,
           validator: (String value) {
             if (value.isEmpty || !RegExp(r'^[A-Za-z ]+$').hasMatch(value)) {
@@ -273,6 +273,9 @@ class _SignupState extends State<Signup> {
             firstName = value;
           },
           decoration: InputDecoration(
+            errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
+            errorStyle: TextStyle(color: Color(0xFFF44242)),
             contentPadding: EdgeInsets.all(10),
             enabledBorder: const OutlineInputBorder(
               borderSide: const BorderSide(color: Colors.grey, width: 0.0),
@@ -294,7 +297,7 @@ class _SignupState extends State<Signup> {
         child: RichText(
           text: TextSpan(
             children: <TextSpan>[
-              TextSpan(text: "Last Name", style: emailTextNormal()),
+              TextSpan(text: "Last Name", style: textbarlowRegularBlack()),
               TextSpan(
                 text: ' *',
                 style: TextStyle(color: Colors.red),
@@ -311,7 +314,7 @@ class _SignupState extends State<Signup> {
       padding: const EdgeInsets.only(top: 5.0, bottom: 10.0),
       child: Container(
         child: TextFormField(
-          style: labelStyle(),
+          style: textBarlowRegularBlack(),
           keyboardType: TextInputType.emailAddress,
           validator: (String value) {
             if (value.isEmpty || !RegExp(r'^[A-Za-z ]+$').hasMatch(value)) {
@@ -323,6 +326,9 @@ class _SignupState extends State<Signup> {
             lastName = value;
           },
           decoration: InputDecoration(
+            errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
+            errorStyle: TextStyle(color: Color(0xFFF44242)),
             contentPadding: EdgeInsets.all(10),
             enabledBorder: const OutlineInputBorder(
               borderSide: const BorderSide(color: Colors.grey, width: 0.0),
@@ -344,10 +350,10 @@ class _SignupState extends State<Signup> {
         child: RichText(
           text: TextSpan(
             children: <TextSpan>[
-              TextSpan(text: "Email", style: emailTextNormal()),
+              TextSpan(text: "Email", style: textbarlowRegularBlack()),
               TextSpan(
                 text: ' *',
-                style: TextStyle(color: Colors.red),
+                style: TextStyle(color: Color(0xFFF44242)),
               ),
             ],
           ),
@@ -361,7 +367,7 @@ class _SignupState extends State<Signup> {
       padding: const EdgeInsets.only(top: 5.0, bottom: 10.0),
       child: Container(
         child: TextFormField(
-          style: labelStyle(),
+          style: textBarlowRegularBlack(),
           keyboardType: TextInputType.emailAddress,
           validator: (String value) {
             if (value.isEmpty ||
@@ -375,6 +381,9 @@ class _SignupState extends State<Signup> {
             email = value;
           },
           decoration: InputDecoration(
+            errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
+            errorStyle: TextStyle(color: Color(0xFFF44242)),
             contentPadding: EdgeInsets.all(10),
             enabledBorder: const OutlineInputBorder(
               borderSide: const BorderSide(color: Colors.grey, width: 0.0),
@@ -394,10 +403,10 @@ class _SignupState extends State<Signup> {
       child: RichText(
         text: TextSpan(
           children: <TextSpan>[
-            TextSpan(text: "Password", style: emailTextNormal()),
+            TextSpan(text: "Password", style: textbarlowRegularBlack()),
             TextSpan(
               text: ' *',
-              style: TextStyle(color: Colors.red),
+              style: TextStyle(color: Color(0xFFF44242)),
             ),
           ],
         ),
@@ -409,7 +418,7 @@ class _SignupState extends State<Signup> {
     return Container(
       margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
       child: TextFormField(
-        style: labelStyle(),
+        style: textBarlowRegularBlack(),
         keyboardType: TextInputType.text,
         validator: (String value) {
           if (value.isEmpty || value.length < 6) {
@@ -421,6 +430,9 @@ class _SignupState extends State<Signup> {
           password = value;
         },
         decoration: InputDecoration(
+          errorBorder: OutlineInputBorder(
+              borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
+          errorStyle: TextStyle(color: Color(0xFFF44242)),
           fillColor: Colors.black,
           focusColor: Colors.black,
           contentPadding: EdgeInsets.only(
@@ -451,10 +463,10 @@ class _SignupState extends State<Signup> {
       child: RichText(
         text: TextSpan(
           children: <TextSpan>[
-            TextSpan(text: "Mobile Number", style: emailTextNormal()),
+            TextSpan(text: "Mobile Number", style: textbarlowRegularBlack()),
             TextSpan(
               text: ' *',
-              style: TextStyle(color: Colors.red),
+              style: TextStyle(color: Color(0xFFF44242)),
             ),
           ],
         ),
@@ -466,7 +478,7 @@ class _SignupState extends State<Signup> {
     return Container(
       margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
       child: TextFormField(
-        style: labelStyle(),
+        style: textBarlowRegularBlack(),
         keyboardType: TextInputType.number,
         validator: (String value) {
           if (value.isEmpty || value.length != 10) {
@@ -478,6 +490,9 @@ class _SignupState extends State<Signup> {
           mobileNumber = value;
         },
         decoration: InputDecoration(
+          errorBorder: OutlineInputBorder(
+              borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
+          errorStyle: TextStyle(color: Color(0xFFF44242)),
           fillColor: Colors.black,
           focusColor: Colors.black,
           contentPadding: EdgeInsets.only(
@@ -512,7 +527,10 @@ class _SignupState extends State<Signup> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text("Sign Up"),
+            Text(
+              "Sign Up",
+              style: textBarlowRegularrBlack(),
+            ),
             registerationLoading
                 ? Image.asset(
                     'lib/assets/images/spinner.gif',
@@ -542,10 +560,11 @@ class _SignupState extends State<Signup> {
             text: TextSpan(
               children: <TextSpan>[
                 TextSpan(
-                    text: "Have got an account?", style: emailTextNormal()),
+                    text: "Have got an account?",
+                    style: textbarlowRegularBlack()),
                 TextSpan(
                   text: '  Login!',
-                  style: TextStyle(color: primary),
+                  style: textbarlowRegularaPrimary(),
                 ),
               ],
             ),

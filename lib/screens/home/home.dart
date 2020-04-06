@@ -185,18 +185,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           labelPadding: EdgeInsets.all(0),
           tabBarColor: Colors.black,
           unselectedLabelColor: Colors.white,
-          labelStyle: TextStyle(
-            fontWeight: FontWeight.w300,
-            fontSize: 10.0,
-            color: primary,
-            fontFamily: 'OpenSansBold',
-          ),
-          unselectedLabelStyle: TextStyle(
-            fontWeight: FontWeight.w300,
-            fontSize: 10.0,
-            color: Colors.black,
-            fontFamily: 'OpenSansBold',
-          ),
+          labelStyle: textBarlowMediumsmBlack(),
+          unselectedLabelStyle: textBarlowMediumsmWhite(),
         ),
       ),
     );

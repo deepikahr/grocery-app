@@ -201,7 +201,7 @@ class _EditProfileState extends State<EditProfile> {
       appBar: GFAppBar(
         title: Text(
           'Edit Profile',
-          style: TextStyle(color: Colors.black),
+          style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
         backgroundColor: primary,
@@ -287,7 +287,11 @@ class _EditProfileState extends State<EditProfile> {
                       ],
                     ),
                   ),
-                  Center(child: Text(userInfo['email'])),
+                  Center(
+                      child: Text(
+                    userInfo['email'],
+                    style: textBarlowRegularBlack(),
+                  )),
                   SizedBox(
                     height: 25,
                   ),
@@ -295,16 +299,20 @@ class _EditProfileState extends State<EditProfile> {
                     padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
                     child: Text(
                       'First Name :',
-                      style: regular(),
+                      style: textbarlowRegularBlack(),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                     child: TextFormField(
                       initialValue: userInfo['firstName'] ?? "",
-                      style: labelStyle(),
+                      style: textBarlowRegularBlack(),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
+                        errorBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 0, color: Color(0xFFF44242))),
+                        errorStyle: TextStyle(color: Color(0xFFF44242)),
                         fillColor: Colors.black,
                         focusColor: Colors.black,
                         contentPadding: EdgeInsets.only(
@@ -340,16 +348,20 @@ class _EditProfileState extends State<EditProfile> {
                     padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
                     child: Text(
                       'Last Name :',
-                      style: regular(),
+                      style: textbarlowRegularBlack(),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                     child: TextFormField(
                       initialValue: userInfo['lastName'] ?? "",
-                      style: labelStyle(),
+                      style: textBarlowRegularBlack(),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
+                        errorBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 0, color: Color(0xFFF44242))),
+                        errorStyle: TextStyle(color: Color(0xFFF44242)),
                         fillColor: Colors.black,
                         focusColor: Colors.black,
                         contentPadding: EdgeInsets.only(
@@ -385,16 +397,20 @@ class _EditProfileState extends State<EditProfile> {
                     padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
                     child: Text(
                       'Phone Number :',
-                      style: regular(),
+                      style: textbarlowRegularBlack(),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                     child: TextFormField(
                       initialValue: userInfo['mobileNumber'] ?? "",
-                      style: labelStyle(),
+                      style: textBarlowRegularBlack(),
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
+                        errorBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 0, color: Color(0xFFF44242))),
+                        errorStyle: TextStyle(color: Color(0xFFF44242)),
                         fillColor: Colors.black,
                         focusColor: Colors.black,
                         contentPadding: EdgeInsets.only(
@@ -437,7 +453,10 @@ class _EditProfileState extends State<EditProfile> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text("Save"),
+                Text(
+                  "Save",
+                  style: textBarlowRegularrBlack(),
+                ),
                 profileEdit
                     ? Image.asset(
                         'lib/assets/images/spinner.gif',

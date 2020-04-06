@@ -139,13 +139,19 @@ class _OtpState extends State<Otp> {
           content: new SingleChildScrollView(
             child: new ListBody(
               children: <Widget>[
-                new Text('$message'),
+                new Text(
+                  '$message',
+                  style: textBarlowRegularBlack(),
+                ),
               ],
             ),
           ),
           actions: <Widget>[
             new FlatButton(
-              child: new Text('OK'),
+              child: new Text(
+                'OK',
+                style: textbarlowRegularaPrimary(),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -170,9 +176,7 @@ class _OtpState extends State<Otp> {
         ),
         title: Text(
           'Welcome',
-          style: TextStyle(
-            color: Colors.black,
-          ),
+          style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
         backgroundColor: primary,
@@ -186,7 +190,7 @@ class _OtpState extends State<Otp> {
             ),
             child: Text(
               "Verify OTP",
-              style: boldHeading(),
+              style: textbarlowMediumBlack(),
             ),
           ),
           Padding(
@@ -196,10 +200,10 @@ class _OtpState extends State<Otp> {
                 children: <TextSpan>[
                   TextSpan(
                       text: "We have sent a 4 digit code to",
-                      style: TextStyle(color: Colors.black)),
+                      style: textBarlowRegularBlack()),
                   TextSpan(
                     text: ' ${widget.email}',
-                    style: TextStyle(color: Colors.green),
+                    style: textBarlowMediumGreen(),
                   ),
                 ],
               ),
@@ -211,6 +215,7 @@ class _OtpState extends State<Otp> {
               showDivider: false,
               child: Text(
                 'Enter Verification code',
+                style: textBarlowRegularBlack(),
               ),
             ),
           ),
@@ -239,7 +244,10 @@ class _OtpState extends State<Otp> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text("Submit OTP"),
+                  Text(
+                    "Submit OTP",
+                    style: textbarlowMediumBlack(),
+                  ),
                   isOtpVerifyLoading
                       ? Image.asset(
                           'lib/assets/images/spinner.gif',

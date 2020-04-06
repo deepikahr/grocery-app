@@ -111,13 +111,19 @@ class _AddAddressState extends State<AddAddress> {
           content: new SingleChildScrollView(
             child: new ListBody(
               children: <Widget>[
-                new Text(message),
+                new Text(
+                  message,
+                  style: textBarlowRegularrBlack(),
+                ),
               ],
             ),
           ),
           actions: <Widget>[
             new FlatButton(
-              child: new Text('OK'),
+              child: new Text(
+                'OK',
+                style: textbarlowRegularaPrimar(),
+              ),
               onPressed: () {
                 if (widget.isProfile == true) {
                   Navigator.of(context).pop();
@@ -165,9 +171,7 @@ class _AddAddressState extends State<AddAddress> {
         ),
         title: Text(
           'Add Address',
-          style: TextStyle(
-            color: Colors.black,
-          ),
+          style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
         backgroundColor: primary,
@@ -207,7 +211,7 @@ class _AddAddressState extends State<AddAddress> {
                     children: <Widget>[
                       Text(
                         'House/Flat/Block number :',
-                        style: regular(),
+                        style: textbarlowRegularBlack(),
                       ),
                     ],
                   ),
@@ -215,25 +219,28 @@ class _AddAddressState extends State<AddAddress> {
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
-                    style: labelStyle(),
-                    keyboardType: TextInputType.number,
+                    style: textBarlowRegularBlack(),
+                    keyboardType: TextInputType.text,
                     decoration: InputDecoration(
-                      fillColor: Colors.black,
-                      focusColor: Colors.black,
-                      contentPadding: EdgeInsets.only(
-                        left: 15.0,
-                        right: 15.0,
-                        top: 10.0,
-                        bottom: 10.0,
-                      ),
-                      enabledBorder: const OutlineInputBorder(
-                        borderSide:
-                            const BorderSide(color: Colors.grey, width: 0.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: primary),
-                      ),
-                    ),
+                        errorBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 0, color: Color(0xFFF44242))),
+                        errorStyle: TextStyle(color: Color(0xFFF44242)),
+                        fillColor: Colors.black,
+                        focusColor: Colors.black,
+                        contentPadding: EdgeInsets.only(
+                          left: 15.0,
+                          right: 15.0,
+                          top: 10.0,
+                          bottom: 10.0,
+                        ),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.grey, width: 0.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: primary),
+                        )),
                     validator: (String value) {
                       if (value.isEmpty) {
                         return "please Enter Valid value";
@@ -255,7 +262,7 @@ class _AddAddressState extends State<AddAddress> {
                     children: <Widget>[
                       Text(
                         'Apartment Name :',
-                        style: regular(),
+                        style: textbarlowRegularBlack(),
                       ),
                     ],
                   ),
@@ -263,9 +270,13 @@ class _AddAddressState extends State<AddAddress> {
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
-                      style: labelStyle(),
+                      style: textBarlowRegularBlack(),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
+                        errorBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 0, color: Color(0xFFF44242))),
+                        errorStyle: TextStyle(color: Color(0xFFF44242)),
                         fillColor: Colors.black,
                         focusColor: Colors.black,
                         contentPadding: EdgeInsets.only(
@@ -302,7 +313,7 @@ class _AddAddressState extends State<AddAddress> {
                     children: <Widget>[
                       Text(
                         'Land Mark :',
-                        style: regular(),
+                        style: textbarlowRegularBlack(),
                       ),
                     ],
                   ),
@@ -310,9 +321,13 @@ class _AddAddressState extends State<AddAddress> {
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
-                      style: labelStyle(),
+                      style: textBarlowRegularBlack(),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
+                        errorBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 0, color: Color(0xFFF44242))),
+                        errorStyle: TextStyle(color: Color(0xFFF44242)),
                         fillColor: Colors.black,
                         focusColor: Colors.black,
                         contentPadding: EdgeInsets.only(
@@ -348,8 +363,8 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'Postl Code :',
-                        style: regular(),
+                        'Postel Code :',
+                        style: textbarlowRegularBlack(),
                       ),
                     ],
                   ),
@@ -357,9 +372,13 @@ class _AddAddressState extends State<AddAddress> {
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
-                      style: labelStyle(),
+                      style: textBarlowRegularBlack(),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
+                        errorBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 0, color: Color(0xFFF44242))),
+                        errorStyle: TextStyle(color: Color(0xFFF44242)),
                         fillColor: Colors.black,
                         focusColor: Colors.black,
                         contentPadding: EdgeInsets.only(
@@ -396,7 +415,7 @@ class _AddAddressState extends State<AddAddress> {
                     children: <Widget>[
                       Text(
                         'Contact Number :',
-                        style: regular(),
+                        style: textbarlowRegularBlack(),
                       ),
                     ],
                   ),
@@ -445,7 +464,7 @@ class _AddAddressState extends State<AddAddress> {
                     children: <Widget>[
                       Text(
                         'Address Type (Home, Work, Others etc.):',
-                        style: regular(),
+                        style: textbarlowRegularBlack(),
                       ),
                     ],
                   ),
@@ -522,7 +541,10 @@ class _AddAddressState extends State<AddAddress> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text("Save"),
+                          Text(
+                            "Save",
+                            style: textBarlowRegularrBlack(),
+                          ),
                           isLoading
                               ? Image.asset(
                                   'lib/assets/images/spinner.gif',

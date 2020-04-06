@@ -194,9 +194,7 @@ class _OrdersState extends State<Orders> {
       appBar: GFAppBar(
         title: Text(
           'Orders',
-          style: TextStyle(
-            color: Colors.black,
-          ),
+          style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
         backgroundColor: primary,
@@ -377,8 +375,7 @@ class _OrdersState extends State<Orders> {
                                   ),
                                 ),
                                 orderList[i]['orderStatus'] == "DELIVERED"
-                                    ? 
-                                    Container(
+                                    ? Container(
                                         color: Colors.white38,
                                         child: Row(
                                           children: <Widget>[

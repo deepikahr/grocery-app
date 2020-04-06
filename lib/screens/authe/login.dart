@@ -77,13 +77,19 @@ class _LoginState extends State<Login> {
                   content: new SingleChildScrollView(
                     child: new ListBody(
                       children: <Widget>[
-                        new Text('Login successfully'),
+                        new Text(
+                          'Login successfully',
+                          style: textBarlowRegularBlack(),
+                        ),
                       ],
                     ),
                   ),
                   actions: <Widget>[
                     new FlatButton(
-                      child: new Text('OK'),
+                      child: new Text(
+                        'OK',
+                        style: textbarlowRegularaPrimary(),
+                      ),
                       onPressed: () {
                         Navigator.pushAndRemoveUntil(
                             context,
@@ -127,7 +133,7 @@ class _LoginState extends State<Login> {
                 bottomRight: Radius.circular(20))),
         title: Text(
           'Login',
-          style: TextStyle(color: Colors.black, fontSize: 20.0),
+          style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
         backgroundColor: primary,
@@ -164,6 +170,7 @@ class _LoginState extends State<Login> {
               buildLoginButton(),
               buildForgotPasswordLink(),
               buildcontinuetext(),
+              SizedBox(height: 10),
               buildsignuplink(),
             ],
           ),
@@ -179,7 +186,7 @@ class _LoginState extends State<Login> {
         showDivider: false,
         child: Text(
           "Let's get started !",
-          style: authHeader(),
+          style: textbarlowMediumBlack(),
         ),
       ),
     );
@@ -193,10 +200,10 @@ class _LoginState extends State<Login> {
         child: RichText(
           text: TextSpan(
             children: <TextSpan>[
-              TextSpan(text: "Email", style: emailTextNormal()),
+              TextSpan(text: "Email", style: textbarlowRegularBlack()),
               TextSpan(
                 text: ' *',
-                style: TextStyle(color: Colors.red),
+                style: TextStyle(color: Color(0xFFF44242)),
               ),
             ],
           ),
@@ -222,9 +229,12 @@ class _LoginState extends State<Login> {
             } else
               return null;
           },
-          style: labelStyle(),
+          style: textBarlowRegularBlack(),
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
+            errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
+            errorStyle: TextStyle(color: Color(0xFFF44242)),
             contentPadding: EdgeInsets.all(10),
             enabledBorder: const OutlineInputBorder(
               borderSide: const BorderSide(color: Colors.grey, width: 0.0),
@@ -244,10 +254,10 @@ class _LoginState extends State<Login> {
       child: RichText(
         text: TextSpan(
           children: <TextSpan>[
-            TextSpan(text: "Password", style: emailTextNormal()),
+            TextSpan(text: "Password", style: textbarlowRegularBlack()),
             TextSpan(
               text: ' *',
-              style: TextStyle(color: Colors.red),
+              style: TextStyle(color: Color(0xFFF44242)),
             ),
           ],
         ),
@@ -260,7 +270,7 @@ class _LoginState extends State<Login> {
       margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
       child: TextFormField(
         initialValue: "123456",
-        style: labelStyle(),
+        style: textBarlowRegularBlack(),
         keyboardType: TextInputType.text,
         onSaved: (String value) {
           password = value;
@@ -272,6 +282,9 @@ class _LoginState extends State<Login> {
             return null;
         },
         decoration: InputDecoration(
+          errorBorder: OutlineInputBorder(
+              borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
+          errorStyle: TextStyle(color: Color(0xFFF44242)),
           fillColor: Colors.black,
           focusColor: Colors.black,
           contentPadding: EdgeInsets.only(
@@ -307,7 +320,10 @@ class _LoginState extends State<Login> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text("Login"),
+            Text(
+              "Login",
+              style: textBarlowRegularrBlack(),
+            ),
             isUserLoaginLoading
                 ? Image.asset(
                     'lib/assets/images/spinner.gif',
@@ -331,11 +347,12 @@ class _LoginState extends State<Login> {
         );
       },
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 20.0),
+        padding: const EdgeInsets.only(bottom: 10.0),
         child: RichText(
           text: TextSpan(
             children: <TextSpan>[
-              TextSpan(text: "Forgot Password?", style: emailTextNormal()),
+              TextSpan(
+                  text: "Forgot Password?", style: textbarlowRegularBlack()),
               TextSpan(
                 text: '',
                 style: TextStyle(color: primary),
@@ -351,7 +368,7 @@ class _LoginState extends State<Login> {
     return Text(
       'OR',
       textAlign: TextAlign.center,
-      style: emailTextNormal(),
+      style: textbarlowRegularBlack(),
     );
   }
 
@@ -368,7 +385,7 @@ class _LoginState extends State<Login> {
         child: RichText(
           text: TextSpan(
             children: <TextSpan>[
-              TextSpan(text: "Register?", style: emailTextNormal()),
+              TextSpan(text: "Register?", style: textbarlowRegularBlack()),
               TextSpan(
                 text: '',
                 style: TextStyle(color: primary),

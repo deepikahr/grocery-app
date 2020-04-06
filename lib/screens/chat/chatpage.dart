@@ -233,11 +233,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
         centerTitle: true,
         backgroundColor: primary,
         elevation: 0,
-        title: Text(
-          'Chat',
-          style: TextStyle(
-              color: Colors.black, fontSize: 17.0, fontWeight: FontWeight.w600),
-        ),
+        title: Text('Chat', style: textbarlowSemiBoldBlack()),
         iconTheme: new IconThemeData(color: Colors.black),
       ),
       body: isChatLoading

@@ -96,13 +96,10 @@ class _SavedItemsState extends State<SavedItems> {
               : GFAppBar(
                   title: Text(
                     'Saved Items',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 17.0,
-                        fontWeight: FontWeight.w600),
+                    style: textbarlowSemiBoldBlack(),
                   ),
                   centerTitle: true,
-                  backgroundColor: primary,
+                  backgroundColor: Colors.transparent,
                   elevation: 0,
                   automaticallyImplyLeading: false,
                 ),
@@ -247,24 +244,23 @@ class _SavedItemsState extends State<SavedItems> {
                                             Padding(
                                               padding: const EdgeInsets.only(
                                                   top: 5.0),
-                                              child: Text(favProductList[i]
-                                                  ['product']['title']),
+                                              child: Text(
+                                                favProductList[i]['product']
+                                                    ['title'],
+                                                style: textBarlowRegularBlack(),
+                                              ),
                                             ),
                                             Row(
                                               children: <Widget>[
                                                 Text(
                                                   currency,
-                                                  style: TextStyle(
-                                                    color:
-                                                        const Color(0xFF00BFA5),
-                                                  ),
+                                                  style:
+                                                      textBarlowMediumGreen(),
                                                 ),
                                                 Text(
                                                   '${favProductList[i]['product']['variant'][0]['price']}',
-                                                  style: TextStyle(
-                                                    color:
-                                                        const Color(0xFF00BFA5),
-                                                  ),
+                                                  style:
+                                                      textBarlowMediumGreen(),
                                                 )
                                               ],
                                             ),
