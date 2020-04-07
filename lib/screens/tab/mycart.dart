@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:grocery_pro/screens/authe/login.dart';
+import 'package:grocery_pro/screens/home/home.dart';
 import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/cart-service.dart';
@@ -279,7 +280,16 @@ class _MyCartState extends State<MyCart> {
                   centerTitle: true,
                   backgroundColor: Colors.transparent,
                   elevation: 0,
-                  iconTheme: IconThemeData(color: Colors.black),
+                  automaticallyImplyLeading: false,
+                  // iconTheme: IconThemeData(color: Colors.black),
+                  //             leading: InkWell(
+                  //                onTap: () {
+                  //   Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(builder: (context) => Home()),
+                  //   );
+                  // },
+                  //               child: Icon(Icons.arrow_back)),
                 ),
       body: isGetTokenLoading
           ? Center(

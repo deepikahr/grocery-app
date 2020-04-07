@@ -568,7 +568,7 @@ class _PaymentState extends State<Payment> {
             right: 20.0,
           ),
           child: GFButton(
-            color: GFColors.WARNING,
+            color: primary,
             blockButton: true,
             onPressed: placeOrder,
             child: Row(

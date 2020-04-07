@@ -186,6 +186,28 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        title: Container(
+          margin: EdgeInsets.only(left: 7, top: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                'Delivery Address',
+                style: textBarlowRegularrBlacksm(),
+              ),
+              Text(
+                'HSR Layout...',
+                style: textBarlowSemiBoldBlack(),
+              )
+            ],
+          ),
+        ),
+        iconTheme: IconThemeData(color: Colors.black),
+      ),
+      endDrawer: Drawer(),
       key: _scaffoldkey,
       body: (isLoadingcategoryList || isLoadingProductsList)
           ? Center(child: CircularProgressIndicator())

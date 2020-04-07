@@ -4,6 +4,7 @@ import 'package:getflutter/getflutter.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:grocery_pro/screens/payment/payment.dart';
+import 'package:grocery_pro/service/coupon-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/product-service.dart';
@@ -32,27 +33,54 @@ enum SingingCharacter { lafayette, jefferson }
 class _CheckoutState extends State<Checkout> {
   // Declare this variable
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Map<String, dynamic> userInfo, address, cartItem;
 
-  List locationList, addressList, deliverySlotList;
+  List locationList, addressList, deliverySlotList, couponList;
   int selectedRadio, groupValue, groupValue1, _selectedIndex = 0;
-  String selectedDeliveryType, locationNotFound, name, currency;
+  String selectedDeliveryType, locationNotFound, name, currency, couponCode;
 
   var selectedAddress, selectedTime, selectedDate;
   bool isLoading = false,
       addressLoading = false,
       deliverySlotsLoading = false,
       isPlaceOrderLoading = false,
-      isSelectSlot = false;
+      isCouponLoading = false,
+      isSelectSlot = false,
+      couponApplied = false;
   LocationResult _pickedLocation;
   @override
   void initState() {
+    cartItem = widget.cartItem;
     super.initState();
     getLocations();
     getUserInfo();
     getAddress();
+    getCoupons();
     getDeliverySlot();
+  }
+
+  getCoupons() async {
+    if (mounted) {
+      setState(() {
+        isCouponLoading = true;
+      });
+    }
+    await CouponService.getCoupons().then((onValue) {
+      print("wwwwww $onValue");
+      try {
+        if (mounted) {
+          setState(() {
+            couponList = onValue['response_data'];
+            isCouponLoading = false;
+          });
+        }
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
   }
 
   proceed() {
@@ -241,9 +269,9 @@ class _CheckoutState extends State<Checkout> {
 
       data['deliveryTime'] = selectedTime.toString();
 
-      data['cart'] = widget.cartItem['cart'];
+      data['cart'] = cartItem['cart'];
 
-      data['cart'] = widget.cartItem['_id'].toString();
+      data['cart'] = cartItem['_id'].toString();
       data['cart'] = widget.id;
       if (mounted) {
         setState(() {
@@ -260,7 +288,7 @@ class _CheckoutState extends State<Checkout> {
                 builder: (context) => Payment(
                   data: data,
                   type: widget.buy,
-                  grandTotal: widget.cartItem['grandTotal'],
+                  grandTotal: cartItem['grandTotal'],
                 ),
               ),
             );
@@ -268,6 +296,125 @@ class _CheckoutState extends State<Checkout> {
         );
       }
     }
+  }
+
+  couponCodeApply() {
+    if (!_formKey.currentState.validate()) {
+      return;
+    } else {
+      print("bbb");
+      _formKey.currentState.save();
+      for (int i = 0; i < couponList.length; i++) {
+        if (couponCode.toLowerCase() ==
+            couponList[i]['couponCode'].toString().toLowerCase()) {
+          if (mounted) {
+            setState(() {
+              updateCoupons(couponCode);
+            });
+          }
+        } else {}
+      }
+    }
+  }
+
+  updateCoupons(data) async {
+    print("nn");
+    if (mounted) {
+      setState(() {
+        isCouponLoading = true;
+      });
+    }
+    await CouponService.applyCoupons(data).then((onValue) {
+      print(onValue);
+      try {
+        if (onValue['response_code'] == 200) {
+          if (mounted) {
+            setState(() {
+              cartItem = onValue['response_data'];
+
+              couponApplied = true;
+            });
+          }
+
+          showError('', 'Coupon is applied');
+        } else if (onValue['response_code'] == 400) {
+          showSnackbar('${onValue['response_data']}');
+        } else {
+          showSnackbar('${onValue['response_data']}');
+        }
+        if (mounted) {
+          setState(() {
+            isCouponLoading = false;
+          });
+        }
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
+  }
+
+  showError(error, message) async {
+    showDialog<Null>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.only(
+            top: 10.0,
+          ),
+          title: new Text(
+            "$error",
+            style: hintSfsemiboldb(),
+            textAlign: TextAlign.center,
+          ),
+          content: Container(
+            height: 100.0,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                  child: new Text(
+                    "$message",
+                    style: hintSfLightsm(),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Column(
+                  children: <Widget>[
+                    Divider(),
+                    IntrinsicHeight(
+                        child: new Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Expanded(
+                            child: GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Container(
+                            alignment: Alignment.center,
+                            margin: EdgeInsets.only(bottom: 12.0),
+                            height: 30.0,
+                            decoration: BoxDecoration(),
+                            child: Text(
+                              'OK',
+                              style: hintSfLightbig(),
+                            ),
+                          ),
+                        ))
+                      ],
+                    ))
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -316,11 +463,11 @@ class _CheckoutState extends State<Checkout> {
                                 children: <Widget>[
                                   Text(
                                     currency,
-                                    style: regular(),
+                                    style: textbarlowBoldsmBlack(),
                                   ),
                                   Text(
-                                    '${widget.cartItem['subTotal']}',
-                                    style: textBarlowRegularBlack(),
+                                    '${cartItem['subTotal']}',
+                                    style: textbarlowBoldsmBlack(),
                                   )
                                 ],
                               ),
@@ -350,11 +497,11 @@ class _CheckoutState extends State<Checkout> {
                                 children: <Widget>[
                                   Text(
                                     currency,
-                                    style: regular(),
+                                    style: textbarlowBoldsmBlack(),
                                   ),
                                   Text(
-                                    '${widget.cartItem['tax']}',
-                                    style: regular(),
+                                    '${cartItem['tax']}',
+                                    style: textbarlowBoldsmBlack(),
                                   )
                                 ],
                               ),
@@ -387,7 +534,7 @@ class _CheckoutState extends State<Checkout> {
                                     style: textbarlowBoldsmBlack(),
                                   ),
                                   Text(
-                                    '${widget.cartItem['deliveryCharges']}',
+                                    '${cartItem['deliveryCharges']}',
                                     style: textbarlowBoldsmBlack(),
                                   )
                                 ],
@@ -397,41 +544,69 @@ class _CheckoutState extends State<Checkout> {
                         ],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 0.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          GFButton(
-                            onPressed: null,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 18.0, right: 18.0),
-                              child: Text(
-                                " Enter Coupon code ",
-                              ),
-                            ),
-                            textStyle: textBarlowRegularBlack(),
-                            type: GFButtonType.outline,
-                            color: GFColors.DARK,
-                            size: GFSize.MEDIUM,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 20.0),
-                            child: GFButton(
-                              onPressed: null,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 8.0, right: 8.0),
+                    Form(
+                      key: _formKey,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 0.0),
+                        child: couponApplied
+                            ? Padding(
+                                padding: EdgeInsets.only(left: 5.0),
                                 child: Text(
-                                  "Apply ",
-                                  style: textBarlowRegularBlack(),
-                                ),
+                                  "Coupon Applied",
+                                  style: textbarlowRegularBlack(),
+                                ))
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Container(
+                                    width: 107,
+                                    height: 34,
+                                    padding: EdgeInsets.only(left: 10.0),
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Color(0xFFD4D4E0)),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(1.81))),
+                                    child: TextFormField(
+                                      decoration: InputDecoration(
+                                          border: InputBorder.none),
+                                      cursorColor: primary,
+                                      validator: (String value) {
+                                        if (value.isEmpty) {
+                                          return null;
+                                        } else {
+                                          return null;
+                                        }
+                                      },
+                                      onSaved: (String value) {
+                                        couponCode = value;
+                                      },
+                                    ),
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      print("vb");
+                                      couponCodeApply();
+                                    },
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(left: 20.0),
+                                      child: GFButton(
+                                        onPressed: null,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 8.0, right: 8.0),
+                                          child: Text(
+                                            "Apply ",
+                                            style: textBarlowRegularBlack(),
+                                          ),
+                                        ),
+                                        color: primary,
+                                      ),
+                                    ),
+                                  )
+                                ],
                               ),
-                              color: GFColors.WARNING,
-                            ),
-                          )
-                        ],
                       ),
                     ),
                     Padding(
@@ -477,7 +652,7 @@ class _CheckoutState extends State<Checkout> {
                                         ),
                                       ),
                                       Text(
-                                        '${widget.cartItem['grandTotal']}',
+                                        '${cartItem['grandTotal']}',
                                         style: textBarlowBoldBlack(),
                                       )
                                     ],
@@ -549,9 +724,8 @@ class _CheckoutState extends State<Checkout> {
                                             children: <Widget>[
                                               Container(
                                                 width: MediaQuery.of(context)
-                                                        .size
-                                                        .width -
-                                                    125,
+                                                    .size
+                                                    .width,
                                                 child: Padding(
                                                   padding:
                                                       const EdgeInsets.only(
@@ -939,7 +1113,7 @@ class _CheckoutState extends State<Checkout> {
             right: 20.0,
           ),
           child: GFButton(
-            color: GFColors.WARNING,
+            color: primary,
             blockButton: true,
             onPressed: proceed,
             child: Row(

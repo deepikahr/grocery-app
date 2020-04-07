@@ -23,10 +23,11 @@ class _SignupState extends State<Signup> {
   TextEditingController passwordController = TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  bool isLoading = false;
-  bool registerationLoading = false;
-  bool rememberMe = false;
-  bool value = false;
+  bool isLoading = false,
+      registerationLoading = false,
+      rememberMe = false,
+      value = false,
+      passwordVisible = true;
   String userName, email, password, mobileNumber, firstName, lastName;
 
   bool _obscureText = true;
@@ -218,7 +219,7 @@ class _SignupState extends State<Signup> {
               buildPasswordTextField(),
               buildsignuplink(),
               buildLoginButton(),
-              buildcontinuetext(),
+              // buildcontinuetext(),
               // buildsocialbuttons(),
             ],
           ),

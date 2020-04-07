@@ -119,29 +119,43 @@ class _AddressState extends State<Address> {
                               decoration: BoxDecoration(
                                   color: Colors.white70,
                                   borderRadius: BorderRadius.circular(5.0)),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              child: Row(
                                 children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 20.0, left: 30.0),
-                                    child: Text(
-                                      '${addressList[index]['flatNo']}' +
-                                          ', ' +
-                                          '${addressList[index]['apartmentName']}' +
-                                          ', ' +
-                                          '${addressList[index]['address']}' +
-                                          ', ' +
-                                          '${addressList[index]['landmark']}' +
-                                          ', '
-                                              '${addressList[index]['postalCode'].toString()}' +
-                                          ', ' +
-                                          '${addressList[index]['contactNumber']}',
-                                      style: textBarlowRegularBlack(),
-                                    ),
+                                  Container(
+                                      margin:
+                                          EdgeInsets.only(bottom: 100, left: 7),
+                                      child: Text('1')),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.9,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 10.0, left: 10.0),
+                                          child: Text(
+                                            '${addressList[index]['flatNo']}' +
+                                                ', ' +
+                                                '${addressList[index]['apartmentName']}' +
+                                                ', ' +
+                                                '${addressList[index]['address']}' +
+                                                ', ' +
+                                                '${addressList[index]['landmark']}' +
+                                                ', '
+                                                    '${addressList[index]['postalCode'].toString()}' +
+                                                ', ' +
+                                                '${addressList[index]['contactNumber']}',
+                                            style: textBarlowRegularBlack(),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 20),
+                                      buildEditDelete(addressList[index])
+                                    ],
                                   ),
-                                  SizedBox(height: 20),
-                                  buildEditDelete(addressList[index])
                                 ],
                               ),
                             ),
@@ -217,7 +231,7 @@ class _AddressState extends State<Address> {
               ),
             ),
             type: GFButtonType.outline,
-            color: GFColors.WARNING,
+            color: primary,
             size: GFSize.MEDIUM,
           ),
           Padding(
@@ -233,7 +247,7 @@ class _AddressState extends State<Address> {
                   style: textbarlowRegularaPrimar(),
                 ),
               ),
-              color: GFColors.WARNING,
+              color: primary,
               type: GFButtonType.outline,
             ),
           )

@@ -418,8 +418,8 @@ class _ProductDetailsState extends State<ProductDetails>
                                     // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: <Widget>[
                                       Container(
-                                        width: 35,
-                                        height: 35,
+                                        width: 32,
+                                        height: 32,
                                         decoration: BoxDecoration(
                                             color: Colors.black,
                                             borderRadius:
@@ -438,17 +438,17 @@ class _ProductDetailsState extends State<ProductDetails>
                                       Text(''),
                                       Padding(
                                         padding:
-                                            const EdgeInsets.only(left: 38.0),
+                                            const EdgeInsets.only(left: 40.0),
                                         child: Container(
                                             child: Text(quantity.toString())),
                                       ),
                                       Text(''),
                                       Padding(
                                         padding:
-                                            const EdgeInsets.only(left: 34.0),
+                                            const EdgeInsets.only(left: 37.0),
                                         child: Container(
-                                          width: 35,
-                                          height: 35,
+                                          width: 32,
+                                          height: 32,
                                           decoration: BoxDecoration(
                                               color: primary,
                                               borderRadius:

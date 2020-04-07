@@ -38,9 +38,10 @@ class _LoginState extends State<Login> {
   TextEditingController passwordController = TextEditingController();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  bool isUserLoaginLoading = false;
-  bool registerationLoading = false;
-  bool value = false;
+  bool isUserLoaginLoading = false,
+      registerationLoading = false,
+      value = false,
+      passwordVisible = true;
   String email, password;
 
   bool _obscureText = true;
