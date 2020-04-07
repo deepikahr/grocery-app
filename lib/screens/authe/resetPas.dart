@@ -118,7 +118,7 @@ class _ResetPasswordState extends State<ResetPassword> {
         ),
         centerTitle: true,
         backgroundColor: primary,
-        automaticallyImplyLeading: false,
+        iconTheme: IconThemeData(color:Colors.black),
       ),
       body: Form(
         key: _formKey,

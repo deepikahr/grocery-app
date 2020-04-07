@@ -25,11 +25,12 @@ class _VerificationState extends State<Verification> {
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20))),
         title: Text(
-          'Welcomeeeeee',
+          'Welcome',
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
         backgroundColor: primary,
+        iconTheme: IconThemeData(color:Colors.black),
       ),
       body: Container(
         child: ListView(
@@ -75,7 +76,7 @@ class _VerificationState extends State<Verification> {
               padding:
                   const EdgeInsets.only(left: 20.0, right: 20.0, top: 30.0),
               child: GFButton(
-                color: GFColors.WARNING,
+                color: primary,
                 onPressed: () {
                   Navigator.push(
                     context,

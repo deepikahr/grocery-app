@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
+import 'package:grocery_pro/screens/home/home.dart';
 import 'package:grocery_pro/screens/product/product-details.dart';
 import 'package:grocery_pro/style/style.dart';
 
@@ -57,112 +58,131 @@ class _SearchItemState extends State<SearchItem> {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.only(
-                              top: 8.0, bottom: 8.0, left: 20.0),
-                          child: Text(
-                              searchresult.length.toString() + " Items Founds",
-                              style: textBarlowMediumBlack()),
+                              top: 18.0, bottom: 10.0, left: 20.0,right:20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                  searchresult.length.toString() + " Items Founds",
+                                  style: textBarlowMediumBlack()
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Home(
+                                        ),
+                                    ),
+                                  );
+                                },
+                                    child: Text('Show More',style:textBarlowMediumPrimary()))
+                            ],
+                          ),
                         ),
-                        Divider(),
+                        // Divider(),
                         new ListView.builder(
                           shrinkWrap: true,
                           itemCount: searchresult.length,
                           itemBuilder: (BuildContext context, int index) {
-                            return InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ProductDetails(
-                                        productDetail: searchresult[index],
-                                        favProductList:
-                                            widget.favProductList == null
-                                                ? null
-                                                : widget.favProductList),
-                                  ),
-                                );
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  children: <Widget>[
-                                    new ListTile(
-                                      leading: Image(
-                                        height: 60,
-                                        width: 90,
-                                        image: NetworkImage(
-                                            searchresult[index]['imageUrl']),
-                                      ),
-                                      title: new Text(
-                                        searchresult[index]['title'].toString(),
-                                        style: heading(),
-                                      ),
-                                      subtitle: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          new Text(
-                                              searchresult[index]['description']
-                                                      .toString() ??
-                                                  "",
-                                              style: TextStyle(
-                                                  color:
-                                                      const Color(0xFF00BFA5),
-                                                  fontSize: 17.0)),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                              new Text(
-                                                widget.currency +
-                                                    searchresult[index]
-                                                                ['variant'][0]
-                                                            ['price']
-                                                        .toString() +
-                                                    "/" +
-                                                    searchresult[index]
-                                                                ['variant'][0]
-                                                            ['unit']
-                                                        .toString(),
-                                                style: TextStyle(
-                                                    color:
-                                                        const Color(0xFF00BFA5),
-                                                    fontSize: 17.0),
-                                              ),
-                                              searchresult[index]['discount'] ==
-                                                      null
-                                                  ? Container()
-                                                  : Container(
-                                                      height: 20,
-                                                      decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius.only(
-                                                          topLeft:
-                                                              Radius.circular(
-                                                                  20),
-                                                          bottomRight:
-                                                              Radius.circular(
-                                                                  20),
-                                                        ),
-                                                      ),
-                                                      child: GFButtonBadge(
-                                                        text:
-                                                            "${searchresult[index]['discount']}% off",
-                                                        onPressed: null,
-                                                        color: Colors
-                                                            .deepOrange[300],
-                                                      ),
-                                                    )
-                                            ],
-                                          ),
-                                        ],
-                                      ),
+                            return Container(
+                              margin: EdgeInsets.only(bottom:20),
+                              color: Colors.white,
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ProductDetails(
+                                          productDetail: searchresult[index],
+                                          favProductList:
+                                              widget.favProductList == null
+                                                  ? null
+                                                  : widget.favProductList),
                                     ),
-                                    Divider()
-                                  ],
+                                  );
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: <Widget>[
+                                      new ListTile(
+                                        leading: Image(
+                                          height: 60,
+                                          width: 90,
+                                          image: NetworkImage(
+                                              searchresult[index]['imageUrl']),
+                                        ),
+                                        title: new Text(
+                                          searchresult[index]['title'].toString(),
+                                          style: textbarlowRegularBlack(),
+                                        ),
+                                        subtitle: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            new Text(
+                                                searchresult[index]['description']
+                                                        .toString() ??
+                                                    "",
+                                                style: textBarlowRegularrBlacksm(
+                                                   )),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceBetween,
+                                              children: <Widget>[
+                                                new Text(
+                                                  widget.currency +
+                                                      searchresult[index]
+                                                                  ['variant'][0]
+                                                              ['price']
+                                                          .toString() +
+                                                      "/" +
+                                                      searchresult[index]
+                                                                  ['variant'][0]
+                                                              ['unit']
+                                                          .toString(),
+                                                  style: textBarlowMediumGreen(
+                                                     ),
+                                                ),
+                                                searchresult[index]['discount'] ==
+                                                        null
+                                                    ? Container()
+                                                    : Container(
+                                                        height: 20,
+                                                        decoration: BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                            topLeft:
+                                                                Radius.circular(
+                                                                    20),
+                                                            bottomRight:
+                                                                Radius.circular(
+                                                                    20),
+                                                          ),
+                                                        ),
+                                                        child: GFButtonBadge(
+                                                          text:
+                                                              "${searchresult[index]['discount']}% off",
+                                                          onPressed: null,
+                                                          color: Colors
+                                                              .deepOrange[300],
+                                                        ),
+                                                      )
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      // Divider()
+                                    ],
+                                  ),
                                 ),
                               ),
                             );
+                            
                           },
+                          
                         ),
                       ],
                     )
@@ -177,21 +197,34 @@ class _SearchItemState extends State<SearchItem> {
   Widget buildAppBar(BuildContext context) {
     return new AppBar(
       centerTitle: true,
+      elevation: 0.0,
       title: Container(
+        width: 343,
+        height: 45,
+        margin: EdgeInsets.only(top:10),
         child: new TextField(
           controller: _controller,
-          style: new TextStyle(
-            color: Colors.white,
+          
+          style:textBarlowRegularBlackwithOpa(
           ),
           decoration: new InputDecoration(
-            prefixIcon: new Icon(Icons.search, color: Colors.white),
-            hintText: "Search...",
-            hintStyle: new TextStyle(color: Colors.white),
+            contentPadding: EdgeInsets.only(top:5),
+            prefixIcon: new Icon(Icons.arrow_back, color: Colors.black54),
+            hintText: "What are you buying today?",
+            hintStyle: textBarlowRegularBlackwithOpa(),
+             enabledBorder: const OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: primary),
+            ),
           ),
           onChanged: searchOperation,
         ),
       ),
-      backgroundColor: primary,
+      backgroundColor: Colors.transparent,
+      iconTheme: IconThemeData(color:Colors.black54),
+      automaticallyImplyLeading: false,
     );
   }
 

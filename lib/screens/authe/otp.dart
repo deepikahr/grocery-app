@@ -167,7 +167,6 @@ class _OtpState extends State<Otp> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: GFAppBar(
-        automaticallyImplyLeading: false,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(20),
@@ -180,6 +179,7 @@ class _OtpState extends State<Otp> {
         ),
         centerTitle: true,
         backgroundColor: primary,
+        iconTheme: IconThemeData(color:Colors.black),
       ),
       body: ListView(
         children: <Widget>[
@@ -239,7 +239,7 @@ class _OtpState extends State<Otp> {
           Padding(
             padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 30.0),
             child: GFButton(
-              color: GFColors.WARNING,
+              color: primary,
               onPressed: verifyOTP,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,

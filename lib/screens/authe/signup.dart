@@ -29,6 +29,16 @@ class _SignupState extends State<Signup> {
   bool value = false;
   String userName, email, password, mobileNumber, firstName, lastName;
 
+bool _obscureText = true;
+
+  // Toggles the password
+  void _toggle() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
+
+
   @override
   void initState() {
     super.initState();
@@ -203,19 +213,14 @@ class _SignupState extends State<Signup> {
               buildwelcometext(),
               buildUserFirstName(),
               buildUserFirstNameField(),
-              buildUserLastName(),
-              buildUserLastNameField(),
               buildEmailText(),
               buildEmailTextField(),
               buildPasswordText(),
               buildPasswordTextField(),
-              buildMobileNumberText(),
-              buildMobileNumberTextField(),
               buildsignuplink(),
               buildLoginButton(),
-              // buildcontinuetext(),
+              buildcontinuetext(),
               // buildsocialbuttons(),
-              // buildForgotPasswordButton(),
             ],
           ),
         ),
@@ -244,7 +249,7 @@ class _SignupState extends State<Signup> {
         child: RichText(
           text: TextSpan(
             children: <TextSpan>[
-              TextSpan(text: "First Name", style: textbarlowRegularBlack()),
+              TextSpan(text: "User Name", style: textbarlowRegularBlack()),
               TextSpan(
                 text: ' *',
                 style: TextStyle(color: Colors.red),
@@ -289,58 +294,58 @@ class _SignupState extends State<Signup> {
     );
   }
 
-  Widget buildUserLastName() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 20.0),
-      child: GFTypography(
-        showDivider: false,
-        child: RichText(
-          text: TextSpan(
-            children: <TextSpan>[
-              TextSpan(text: "Last Name", style: textbarlowRegularBlack()),
-              TextSpan(
-                text: ' *',
-                style: TextStyle(color: Colors.red),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget buildUserLastName() {
+  //   return Padding(
+  //     padding: const EdgeInsets.only(top: 20.0),
+  //     child: GFTypography(
+  //       showDivider: false,
+  //       child: RichText(
+  //         text: TextSpan(
+  //           children: <TextSpan>[
+  //             TextSpan(text: "Last Name", style: textbarlowRegularBlack()),
+  //             TextSpan(
+  //               text: ' *',
+  //               style: TextStyle(color: Colors.red),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  Widget buildUserLastNameField() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 5.0, bottom: 10.0),
-      child: Container(
-        child: TextFormField(
-          style: textBarlowRegularBlack(),
-          keyboardType: TextInputType.emailAddress,
-          validator: (String value) {
-            if (value.isEmpty || !RegExp(r'^[A-Za-z ]+$').hasMatch(value)) {
-              return "Please Enter Valid Last Name";
-            } else
-              return null;
-          },
-          onSaved: (String value) {
-            lastName = value;
-          },
-          decoration: InputDecoration(
-            errorBorder: OutlineInputBorder(
-                borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
-            errorStyle: TextStyle(color: Color(0xFFF44242)),
-            contentPadding: EdgeInsets.all(10),
-            enabledBorder: const OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.grey, width: 0.0),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: primary),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget buildUserLastNameField() {
+  //   return Padding(
+  //     padding: const EdgeInsets.only(top: 5.0, bottom: 10.0),
+  //     child: Container(
+  //       child: TextFormField(
+  //         style: textBarlowRegularBlack(),
+  //         keyboardType: TextInputType.emailAddress,
+  //         validator: (String value) {
+  //           if (value.isEmpty || !RegExp(r'^[A-Za-z ]+$').hasMatch(value)) {
+  //             return "Please Enter Valid Last Name";
+  //           } else
+  //             return null;
+  //         },
+  //         onSaved: (String value) {
+  //           lastName = value;
+  //         },
+  //         decoration: InputDecoration(
+  //           errorBorder: OutlineInputBorder(
+  //               borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
+  //           errorStyle: TextStyle(color: Color(0xFFF44242)),
+  //           contentPadding: EdgeInsets.all(10),
+  //           enabledBorder: const OutlineInputBorder(
+  //             borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+  //           ),
+  //           focusedBorder: OutlineInputBorder(
+  //             borderSide: BorderSide(color: primary),
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget buildEmailText() {
     return Padding(
@@ -441,9 +446,9 @@ class _SignupState extends State<Signup> {
             top: 10.0,
             bottom: 10.0,
           ),
-          suffixIcon: Icon(
-            Icons.remove_red_eye,
-            color: Colors.grey,
+          suffixIcon: InkWell(
+            onTap: _toggle,
+            child: _obscureText? Icon(Icons.remove_red_eye,color:Colors.black54):Icon(Icons.remove_red_eye,color:Colors.black26),
           ),
           enabledBorder: const OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.grey, width: 0.0),
@@ -452,76 +457,76 @@ class _SignupState extends State<Signup> {
             borderSide: BorderSide(color: primary),
           ),
         ),
-        obscureText: true,
+              obscureText: _obscureText,
       ),
     );
   }
 
-  Widget buildMobileNumberText() {
-    return GFTypography(
-      showDivider: false,
-      child: RichText(
-        text: TextSpan(
-          children: <TextSpan>[
-            TextSpan(text: "Mobile Number", style: textbarlowRegularBlack()),
-            TextSpan(
-              text: ' *',
-              style: TextStyle(color: Color(0xFFF44242)),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget buildMobileNumberText() {
+  //   return GFTypography(
+  //     showDivider: false,
+  //     child: RichText(
+  //       text: TextSpan(
+  //         children: <TextSpan>[
+  //           TextSpan(text: "Mobile Number", style: textbarlowRegularBlack()),
+  //           TextSpan(
+  //             text: ' *',
+  //             style: TextStyle(color: Color(0xFFF44242)),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  Widget buildMobileNumberTextField() {
-    return Container(
-      margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
-      child: TextFormField(
-        style: textBarlowRegularBlack(),
-        keyboardType: TextInputType.number,
-        validator: (String value) {
-          if (value.isEmpty || value.length != 10) {
-            return "please Enter Valid Mobile Number";
-          } else
-            return null;
-        },
-        onSaved: (String value) {
-          mobileNumber = value;
-        },
-        decoration: InputDecoration(
-          errorBorder: OutlineInputBorder(
-              borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
-          errorStyle: TextStyle(color: Color(0xFFF44242)),
-          fillColor: Colors.black,
-          focusColor: Colors.black,
-          contentPadding: EdgeInsets.only(
-            left: 15.0,
-            right: 15.0,
-            top: 10.0,
-            bottom: 10.0,
-          ),
-          suffixIcon: Icon(
-            Icons.remove_red_eye,
-            color: Colors.grey,
-          ),
-          enabledBorder: const OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.grey, width: 0.0),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: primary),
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget buildMobileNumberTextField() {
+  //   return Container(
+  //     margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
+  //     child: TextFormField(
+  //       style: textBarlowRegularBlack(),
+  //       keyboardType: TextInputType.number,
+  //       validator: (String value) {
+  //         if (value.isEmpty || value.length != 10) {
+  //           return "please Enter Valid Mobile Number";
+  //         } else
+  //           return null;
+  //       },
+  //       onSaved: (String value) {
+  //         mobileNumber = value;
+  //       },
+  //       decoration: InputDecoration(
+  //         errorBorder: OutlineInputBorder(
+  //             borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
+  //         errorStyle: TextStyle(color: Color(0xFFF44242)),
+  //         fillColor: Colors.black,
+  //         focusColor: Colors.black,
+  //         contentPadding: EdgeInsets.only(
+  //           left: 15.0,
+  //           right: 15.0,
+  //           top: 10.0,
+  //           bottom: 10.0,
+  //         ),
+  //         suffixIcon: Icon(
+  //           Icons.remove_red_eye,
+  //           color: Colors.grey,
+  //         ),
+  //         enabledBorder: const OutlineInputBorder(
+  //           borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+  //         ),
+  //         focusedBorder: OutlineInputBorder(
+  //           borderSide: BorderSide(color: primary),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget buildsignuplink() {
     return Padding(
       padding: const EdgeInsets.only(top: 20.0, bottom: 15.0),
       child: GFButton(
         size: GFSize.LARGE,
-        color: GFColors.WARNING,
+        color: primary,
         blockButton: true,
         onPressed: userSignup,
         child: Row(
@@ -541,7 +546,7 @@ class _SignupState extends State<Signup> {
                 : Text("")
           ],
         ),
-        textStyle: TextStyle(fontSize: 17.0, color: Colors.black),
+        // textStyle: TextStyle(fontSize: 17.0, color: Colors.black),
       ),
     );
   }
@@ -576,7 +581,7 @@ class _SignupState extends State<Signup> {
     return Text(
       'OR',
       textAlign: TextAlign.center,
-      style: emailTextNormal(),
+      style: textBarlowRegularBlack(),
     );
   }
 
@@ -594,13 +599,14 @@ class _SignupState extends State<Signup> {
                   fontFamily: 'icomoon',
                 ),
                 color: Colors.white,
+                size: 28,
               ),
               buttonBoxShadow: true,
               color: Color(0xFF3B5998),
               onPressed: () {},
               child: Text(
                 "Sign Up with Facebook",
-                style: TextStyle(fontSize: 20.0),
+                style: textBarlowRegularrWhite(),
               ),
             ),
           ),

@@ -279,7 +279,7 @@ class _MyCartState extends State<MyCart> {
                   centerTitle: true,
                   backgroundColor: Colors.transparent,
                   elevation: 0,
-                  automaticallyImplyLeading: false,
+iconTheme: IconThemeData(color:Colors.black),
                 ),
       body: isGetTokenLoading
           ? Center(
@@ -515,15 +515,14 @@ class _MyCartState extends State<MyCart> {
                                     },
                                   ),
                                 ),
+                            
                               ],
                             ),
                           ),
                           SizedBox(
                             height: 20.0,
                           ),
-                          SizedBox(
-                            height: 40.0,
-                          ),
+                         
                         ],
                       ),
                     ),
@@ -542,7 +541,7 @@ class _MyCartState extends State<MyCart> {
                           height: 120.0,
                         )
                       : Container(
-                          height: 110.0,
+                          height: 140.0,
                           child: Column(
                             children: <Widget>[
                               Padding(
@@ -555,7 +554,7 @@ class _MyCartState extends State<MyCart> {
                                   children: <Widget>[
                                     new Text(
                                       "Sub Total",
-                                      style: textbarlowRegularBlack(),
+                                      style: textBarlowRegularBlack(),
                                     ),
                                     new Text(
                                       '$currency ${cartItem['subTotal']}',
@@ -564,7 +563,7 @@ class _MyCartState extends State<MyCart> {
                                   ],
                                 ),
                               ),
-                              // SizedBox(height:),
+                              SizedBox(height:6),
 
                               Padding(
                                 padding: const EdgeInsets.only(
@@ -576,7 +575,7 @@ class _MyCartState extends State<MyCart> {
                                   children: <Widget>[
                                     new Text(
                                       "Tax",
-                                      style: textbarlowRegularBlack(),
+                                      style: textBarlowRegularBlack(),
                                     ),
                                     new Text(
                                       '$currency ${cartItem['tax']}',
@@ -586,7 +585,7 @@ class _MyCartState extends State<MyCart> {
                                   ],
                                 ),
                               ),
-                              // SizedBox(height:3),
+                              SizedBox(height:6),
 
                               Padding(
                                 padding: const EdgeInsets.only(
@@ -598,7 +597,7 @@ class _MyCartState extends State<MyCart> {
                                   children: <Widget>[
                                     new Text(
                                       "Delivery Charges",
-                                      style: textbarlowRegularBlack(),
+                                      style: textBarlowRegularBlack(),
                                     ),
                                     new Text(
                                       '$currency ${cartItem['deliveryCharges']}',
@@ -607,7 +606,7 @@ class _MyCartState extends State<MyCart> {
                                   ],
                                 ),
                               ),
-
+SizedBox(height:12),
                               Container(
                                 height: 50.0,
                                 child: Padding(
@@ -635,7 +634,7 @@ class _MyCartState extends State<MyCart> {
                                           margin: EdgeInsets.only(right: 90),
                                           child: Column(
                                             children: <Widget>[
-                                              SizedBox(height: 5),
+                                              SizedBox(height: 3),
                                               new Text(
                                                 "Grand Total",
                                                 style: textBarlowRegularWhite(),
