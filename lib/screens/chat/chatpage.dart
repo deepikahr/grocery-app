@@ -21,9 +21,9 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   bool _isWriting = false, isChatLoading = false;
   var resInfo;
   var chatInfo;
-  String name, id, image;
+  String name, id, image, chatID;
   Timer chatTimer;
-  var socket = io.io(Constants.baseURL, <String, dynamic>{
+  var socket = io.io("http://73b68bb4.ngrok.io/", <String, dynamic>{
     'transports': ['websocket'],
     'extraHeaders': {'foo': 'bar'}
   });
@@ -80,12 +80,22 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
       print(_);
     });
     socket.on('chat-list$id', (data) {
+      if (data.length > 0) {
+        if (mounted) {
+          setState(() {
+            isChatLoading = false;
+            chatList = data['messages'];
+          });
+        }
+      }
+    });
+    socket.on("listen-new-messages", (data) {
       print(data);
       if (data.length > 0) {
         if (mounted) {
           setState(() {
             isChatLoading = false;
-            chatList = data['message'];
+            chatList = data['messages'];
             print(chatList);
           });
         }
@@ -312,7 +322,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                           topRight: const Radius.circular(8.0),
                           bottomRight: const Radius.circular(8.0),
                         ),
-                        color: Colors.teal),
+                        color: primary),
                     child: Text(
                       message,
                       textAlign: TextAlign.left,
@@ -389,19 +399,40 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
       "user": id,
       "store": resInfo['_id'],
       "createdAt": DateTime.now().millisecondsSinceEpoch,
-      "chatId": ""
+      "chatId": chatID
     };
-    print(chatInfo);
-    socket.emit('initialize-chat', [chatInfo]);
-    socket.on('chat-list$id', (data) {
-      print(data);
-      if (mounted) {
+    if (chatID == null) {
+      print(chatInfo);
+      socket.emit('initialize-chat', [chatInfo]);
+      socket.on('chat-list$id', (data) {
         setState(() {
-          chatList = data['message'][0];
-          print(chatList);
+          isChatLoading = false;
+          chatList = data['messages'];
+          if (data['_id'] == null) {
+            chatID = "";
+          } else {
+            setState(() {
+              chatID = data['_id'];
+            });
+          }
         });
-      }
-    });
+      });
+    } else {
+      socket.emit('send-message', [chatInfo]);
+      socket.on('chat-list$id', (data) {
+        print(data);
+        if (data.length > 0) {
+          if (mounted) {
+            setState(() {
+              isChatLoading = false;
+              chatList = data['messages'];
+              print(chatList);
+            });
+          }
+        }
+      });
+    }
+
     msg.animationController.forward();
   }
 }
