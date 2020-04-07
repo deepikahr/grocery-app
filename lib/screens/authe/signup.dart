@@ -23,10 +23,11 @@ class _SignupState extends State<Signup> {
   TextEditingController passwordController = TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  bool isLoading = false;
-  bool registerationLoading = false;
-  bool rememberMe = false;
-  bool value = false;
+  bool isLoading = false,
+      registerationLoading = false,
+      rememberMe = false,
+      value = false,
+      passwordVisible = true;
   String userName, email, password, mobileNumber, firstName, lastName;
 
   @override
@@ -441,9 +442,18 @@ class _SignupState extends State<Signup> {
             top: 10.0,
             bottom: 10.0,
           ),
-          suffixIcon: Icon(
-            Icons.remove_red_eye,
-            color: Colors.grey,
+          suffixIcon: InkWell(
+            onTap: () {
+              if (mounted) {
+                setState(() {
+                  passwordVisible = !passwordVisible;
+                });
+              }
+            },
+            child: Icon(
+              Icons.remove_red_eye,
+              color: Colors.grey,
+            ),
           ),
           enabledBorder: const OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.grey, width: 0.0),
@@ -452,7 +462,7 @@ class _SignupState extends State<Signup> {
             borderSide: BorderSide(color: primary),
           ),
         ),
-        obscureText: true,
+        obscureText: passwordVisible,
       ),
     );
   }
@@ -500,10 +510,6 @@ class _SignupState extends State<Signup> {
             right: 15.0,
             top: 10.0,
             bottom: 10.0,
-          ),
-          suffixIcon: Icon(
-            Icons.remove_red_eye,
-            color: Colors.grey,
           ),
           enabledBorder: const OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.grey, width: 0.0),

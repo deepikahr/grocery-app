@@ -30,7 +30,7 @@ class _ResetPasswordState extends State<ResetPassword> {
 
   String password1;
   String password2;
-  bool success = false;
+  bool success = false, passwordVisible = true;
 
   bool isResetPasswordLoading = false;
 
@@ -163,6 +163,19 @@ class _ResetPasswordState extends State<ResetPassword> {
                         borderSide:
                             const BorderSide(color: Colors.grey, width: 0.0),
                       ),
+                      suffixIcon: InkWell(
+                        onTap: () {
+                          if (mounted) {
+                            setState(() {
+                              passwordVisible = !passwordVisible;
+                            });
+                          }
+                        },
+                        child: Icon(
+                          Icons.remove_red_eye,
+                          color: Colors.grey,
+                        ),
+                      ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: primary),
                       ),
@@ -177,7 +190,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                     onSaved: (String value) {
                       password1 = value;
                     },
-                    obscureText: true,
+                    obscureText: passwordVisible,
                   ),
                 ),
               ),
@@ -215,6 +228,19 @@ class _ResetPasswordState extends State<ResetPassword> {
                         borderSide:
                             const BorderSide(color: Colors.grey, width: 0.0),
                       ),
+                      suffixIcon: InkWell(
+                        onTap: () {
+                          if (mounted) {
+                            setState(() {
+                              passwordVisible = !passwordVisible;
+                            });
+                          }
+                        },
+                        child: Icon(
+                          Icons.remove_red_eye,
+                          color: Colors.grey,
+                        ),
+                      ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: primary),
                       ),
@@ -228,7 +254,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                     onSaved: (String value) {
                       password2 = value;
                     },
-                    obscureText: true,
+                    obscureText: passwordVisible,
                   ),
                 ),
               ),

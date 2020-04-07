@@ -47,11 +47,47 @@ class _SearchItemState extends State<SearchItem> {
   Widget build(BuildContext context) {
     return new Scaffold(
         key: globalKey,
-        appBar: buildAppBar(context),
         body: ListView(
           children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Container(
+                child: new TextField(
+                  controller: _controller,
+                  style: new TextStyle(
+                    color: Colors.black,
+                  ),
+                  decoration: new InputDecoration(
+                    prefixIcon: InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: new Icon(Icons.arrow_back, color: Colors.black),
+                    ),
+                    hintText: "What are you buying today?",
+                    fillColor: Colors.black,
+                    focusColor: Colors.black,
+                    contentPadding: EdgeInsets.only(
+                      left: 15.0,
+                      right: 15.0,
+                      top: 10.0,
+                      bottom: 10.0,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: primary, width: 0.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: primary),
+                    ),
+                  ),
+                  onChanged: searchOperation,
+                ),
+              ),
+            ),
             new Flexible(
-              child: searchresult.length != 0 || _controller.text.isNotEmpty
+              child: searchresult.length > 0 ||
+                      searchresult.length != 0 ||
+                      _controller.text.length > 3
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -167,7 +203,9 @@ class _SearchItemState extends State<SearchItem> {
                       ],
                     )
                   : Center(
-                      child: Image.asset('lib/assets/images/no-orders.png'),
+                      child: Container(
+                        child: Image.asset('lib/assets/images/no-orders.png'),
+                      ),
                     ),
             )
           ],
@@ -197,15 +235,20 @@ class _SearchItemState extends State<SearchItem> {
 
   void searchOperation(String searchText) {
     searchresult.clear();
-    if (_isSearching != null) {
+    if (_isSearching != null && searchText.length > 3) {
       for (int i = 0; i < widget.productsList.length; i++) {
-        Map data = widget.productsList[i];
-        if (data['title'].toLowerCase().contains(searchText.toLowerCase())) {
+        if (widget.productsList[i]['title']
+            .toLowerCase()
+            .contains(searchText.toLowerCase())) {
           setState(() {
-            searchresult.add(data);
+            searchresult.add(widget.productsList[i]);
           });
         }
       }
+    } else if (searchText.length == 0 || searchText.length < 3) {
+      setState(() {
+        searchresult.clear();
+      });
     }
   }
 }
