@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:grocery_pro/screens/home/home.dart';
 import 'package:grocery_pro/service/auth-service.dart';
 import 'package:grocery_pro/service/constants.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
@@ -23,9 +24,8 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   var chatInfo;
   String name, id, image, chatID;
   Timer chatTimer;
-  var socket = io.io("http://73b68bb4.ngrok.io/", <String, dynamic>{
-    'transports': ['websocket'],
-    'extraHeaders': {'foo': 'bar'}
+  var socket = io.io("http://162.243.171.81:3000/", <String, dynamic>{
+    'transports': ['websocket']
   });
   @override
   void initState() {
@@ -51,7 +51,6 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
               image = onValue['response_data']['userInfo']['profilePic'];
             }
             fetchRestaurantInfo();
-            socketInt();
           });
         }
       } catch (error, stackTrace) {
@@ -67,47 +66,74 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
     socket.on('connect', (data) {
       print('connect ');
     });
-    socket.emit('user-chat-list', [
-      {"id": id}
-    ]);
-    socket.on('event', (data) {
-      print(data);
-    });
+    socket.emit('user-chat-list', {"id": id});
+
     socket.on('disconnect', (_) {
       print('disconnect');
     });
-    socket.on('fromServer', (_) {
-      print(_);
-    });
+
     socket.on('chat-list$id', (data) {
+      print(data);
+
       if (data.length > 0) {
         if (mounted) {
           setState(() {
             isChatLoading = false;
-            chatList = data['messages'];
+            if (data['response_data'] != null) {
+              setState(() {
+                chatList = data['response_data']['messages'];
+                chatID = data['response_data']['_id'];
+              });
+              print(chatID);
+            } else {
+              if (mounted) {
+                setState(() {
+                  chatID = null;
+                });
+              }
+            }
           });
         }
       }
     });
-    socket.on("listen-new-messages", (data) {
+    if (chatID == null) {
+      print("jn");
+      var chatInfo = {
+        "message": "hi",
+        "sentBy": 'User',
+        "user": id,
+        "store": resInfo['_id'],
+        "createdAt": DateTime.now().millisecondsSinceEpoch,
+        "chatId": ""
+      };
+      socket.emit('initialize-chat', chatInfo);
+      socket.on('chat-list$id', (data) {
+        print("nnnnnnnnnnnn $data");
+        setState(() {
+          isChatLoading = false;
+          chatList = data['response_data']['messages'];
+
+          if (data['response_data']['_id'] == null) {
+            chatID = "";
+          } else {
+            setState(() {
+              chatID = data['response_data']['_id'];
+            });
+          }
+        });
+      });
+    }
+    socket.on("listen-new-messages$id", (data) {
       print(data);
+      chatList.add(data);
       if (data.length > 0) {
         if (mounted) {
           setState(() {
             isChatLoading = false;
-            chatList = data['messages'];
+            chatList = chatList;
             print(chatList);
           });
         }
-      }
-    });
-    socket.on('userListenLastMessage$id', (data) {
-      chatList.add(data);
-      if (mounted) {
-        setState(() {
-          isChatLoading = false;
-          chatList = chatList;
-        });
       }
     });
   }
@@ -118,6 +144,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
       try {
         resInfo = response['response_data'];
         print(resInfo);
+        socketInt();
         if (resInfo == null) {
           Navigator.pop(context);
           throw new Exception("Error while fetching data");
@@ -136,163 +163,248 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext ctx) {
-    return new Scaffold(
-      appBar: new AppBar(
-        leading: InkWell(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Icon(
-            Icons.arrow_back,
-            color: Colors.black,
-          ),
-        ),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20))),
-        title: new Text(
-          "Chat",
-          style: textbarlowSemiBoldBlack(),
-        ),
-        centerTitle: true,
-        backgroundColor: primary,
-      ),
-      body: isChatLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : Stack(
-              fit: StackFit.expand,
+  showAlert(message) {
+    showDialog<Null>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return new AlertDialog(
+          content: new SingleChildScrollView(
+            child: new ListBody(
               children: <Widget>[
-                // new Container(),
-                // new Image(
-                //   image: new AssetImage("assets/5.jpeg"),
-                //   fit: BoxFit.cover,
-                //   color: Colors.black54,
-                //   colorBlendMode: BlendMode.darken,
-                // ),
-                Column(
-                  children: <Widget>[
-                    Expanded(
-                      child: new ListView.builder(
-                        controller: _scrollController,
-                        padding: new EdgeInsets.all(8.0),
-                        itemCount:
-                            chatList.length == null ? 0 : chatList.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          bool isOwnMessage = false;
-                          if (chatList[index]['sentBy'] == 'User') {
-                            isOwnMessage = true;
-                          }
-                          return isOwnMessage
-                              ? _ownMessage(
-                                  chatList[index]['message'],
-                                )
-                              : _message(
-                                  chatList[index]['message'],
-                                );
-                        },
-                      ),
-                    ),
-                    new Divider(height: 1.0),
-                    Container(
-                      decoration: Theme.of(context).platform ==
-                              TargetPlatform.iOS
-                          ? new BoxDecoration(
-                              border: new Border(
-                                  top: new BorderSide(color: Colors.grey[70])),
-                              color: Colors.grey,
-                            )
-                          : BoxDecoration(
-                              color: Colors.grey,
-                            ),
-                      child: new IconTheme(
-                        data: new IconThemeData(
-                            color: Theme.of(context).accentColor),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: new Container(
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 10.0),
-                              child: Row(
-                                children: <Widget>[
-                                  new Flexible(
-                                    child: new TextField(
-                                      maxLines: 2,
-                                      controller: _textController,
-                                      onChanged: (String txt) {
-                                        if (mounted) {
-                                          setState(() {
-                                            _isWriting = txt.length > 0;
-                                          });
-                                        }
-                                      },
-                                      onSubmitted: _submitMsg,
-                                      decoration: new InputDecoration.collapsed(
-                                          hintText: "Enter Text Here" + "..."),
-                                    ),
-                                  ),
-                                  new Container(
-                                    decoration: Theme.of(context).platform ==
-                                            TargetPlatform.iOS
-                                        ? new BoxDecoration(
-                                            border: new Border(
-                                                top: new BorderSide(
-                                                    color: Colors.grey[70])),
-                                            color: Colors.grey,
-                                          )
-                                        : BoxDecoration(
-                                            color: Colors.grey,
-                                          ),
-                                    child: Theme.of(context).platform ==
-                                            TargetPlatform.iOS
-                                        ? new IconButton(
-                                            icon: new Icon(
-                                              Icons.send,
-                                              color: primary,
-                                              size: 30,
-                                            ),
-                                            onPressed: _isWriting
-                                                ? () => _submitMsg(
-                                                    _textController.text)
-                                                : null)
-                                        : new IconButton(
-                                            icon: new Icon(
-                                              Icons.send,
-                                              color: primary,
-                                              size: 30,
-                                            ),
-                                            onPressed: _isWriting
-                                                ? () => _submitMsg(
-                                                    _textController.text)
-                                                : null,
-                                          ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            decoration:
-                                Theme.of(context).platform == TargetPlatform.iOS
-                                    ? new BoxDecoration(
-                                        border: new Border(
-                                            top: new BorderSide(
-                                                color: Colors.white70)),
-                                        color: Colors.white,
-                                      )
-                                    : BoxDecoration(
-                                        color: Colors.white,
-                                      ),
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                )
+                new Text(message),
               ],
             ),
+          ),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              child: new Text('Yes'),
+              onPressed: () {
+                print(chatID);
+                print(resInfo['_id']);
+                socket.emit(
+                    "close-chat", {"chatId": chatID, "store": resInfo['_id']});
+
+                Navigator.push(
+                  context,
+                  new MaterialPageRoute(
+                    builder: (BuildContext context) => new Home(),
+                  ),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<bool> _onWillPop() {
+    return showDialog(
+          context: context,
+          builder: (context) => new AlertDialog(
+            // title: new Text(MyLocalizations.of(context).areYouSure),
+            content: new Text("Are you sure? close chat"),
+            actions: <Widget>[
+              new FlatButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: new Text(
+                  "No",
+                ),
+              ),
+              new FlatButton(
+                onPressed: () {
+                  print(chatID);
+                  print(resInfo['_id']);
+                  socket.emit("close-chat",
+                      {"chatId": chatID, "store": resInfo['_id']});
+
+                  Navigator.push(
+                    context,
+                    new MaterialPageRoute(
+                      builder: (BuildContext context) => new Home(),
+                    ),
+                  );
+                },
+                child: new Text(
+                  "Yes",
+                ),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+  }
+
+  @override
+  Widget build(BuildContext ctx) {
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: new Scaffold(
+        appBar: new AppBar(
+          leading: InkWell(
+            onTap: () {
+              showAlert("Are you sure? close chat");
+            },
+            child: Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            ),
+          ),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20))),
+          title: new Text(
+            "Chat",
+            style: textbarlowSemiBoldBlack(),
+          ),
+          centerTitle: true,
+          backgroundColor: primary,
+        ),
+        body: isChatLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Stack(
+                fit: StackFit.expand,
+                children: <Widget>[
+                  // new Container(),
+                  // new Image(
+                  //   image: new AssetImage("assets/5.jpeg"),
+                  //   fit: BoxFit.cover,
+                  //   color: Colors.black54,
+                  //   colorBlendMode: BlendMode.darken,
+                  // ),
+                  Column(
+                    children: <Widget>[
+                      Expanded(
+                        child: new ListView.builder(
+                          controller: _scrollController,
+                          padding: new EdgeInsets.all(8.0),
+                          itemCount:
+                              chatList.length == null ? 0 : chatList.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            bool isOwnMessage = false;
+                            if (chatList[index]['sentBy'] == 'User') {
+                              isOwnMessage = true;
+                            }
+                            return isOwnMessage
+                                ? _ownMessage(
+                                    chatList[index]['message'],
+                                  )
+                                : _message(
+                                    chatList[index]['message'],
+                                  );
+                          },
+                        ),
+                      ),
+                      new Divider(height: 1.0),
+                      Container(
+                        decoration: Theme.of(context).platform ==
+                                TargetPlatform.iOS
+                            ? new BoxDecoration(
+                                border: new Border(
+                                    top:
+                                        new BorderSide(color: Colors.grey[70])),
+                                color: Colors.grey,
+                              )
+                            : BoxDecoration(
+                                color: Colors.grey,
+                              ),
+                        child: new IconTheme(
+                          data: new IconThemeData(
+                              color: Theme.of(context).accentColor),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: new Container(
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 10.0),
+                                child: Row(
+                                  children: <Widget>[
+                                    new Flexible(
+                                      child: new TextField(
+                                        maxLines: 2,
+                                        controller: _textController,
+                                        onChanged: (String txt) {
+                                          if (mounted) {
+                                            setState(() {
+                                              _isWriting = txt.length > 0;
+                                            });
+                                          }
+                                        },
+                                        onSubmitted: _submitMsg,
+                                        decoration:
+                                            new InputDecoration.collapsed(
+                                                hintText:
+                                                    "Enter Text Here" + "..."),
+                                      ),
+                                    ),
+                                    new Container(
+                                      decoration: Theme.of(context).platform ==
+                                              TargetPlatform.iOS
+                                          ? new BoxDecoration(
+                                              border: new Border(
+                                                  top: new BorderSide(
+                                                      color: Colors.grey[70])),
+                                              color: Colors.grey,
+                                            )
+                                          : BoxDecoration(
+                                              color: Colors.grey,
+                                            ),
+                                      child: Theme.of(context).platform ==
+                                              TargetPlatform.iOS
+                                          ? new IconButton(
+                                              icon: new Icon(
+                                                Icons.send,
+                                                color: primary,
+                                                size: 30,
+                                              ),
+                                              onPressed: _isWriting
+                                                  ? () => _submitMsg(
+                                                      _textController.text)
+                                                  : null)
+                                          : new IconButton(
+                                              icon: new Icon(
+                                                Icons.send,
+                                                color: primary,
+                                                size: 30,
+                                              ),
+                                              onPressed: _isWriting
+                                                  ? () => _submitMsg(
+                                                      _textController.text)
+                                                  : null,
+                                            ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              decoration: Theme.of(context).platform ==
+                                      TargetPlatform.iOS
+                                  ? new BoxDecoration(
+                                      border: new Border(
+                                          top: new BorderSide(
+                                              color: Colors.white70)),
+                                      color: Colors.white,
+                                    )
+                                  : BoxDecoration(
+                                      color: Colors.white,
+                                    ),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  )
+                ],
+              ),
+      ),
     );
   }
 
@@ -318,11 +430,12 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                     ),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.only(
-                          topLeft: const Radius.circular(8.0),
-                          topRight: const Radius.circular(8.0),
-                          bottomRight: const Radius.circular(8.0),
+                          topLeft: Radius.circular(40),
+                          topRight: Radius.circular(0),
+                          bottomRight: Radius.circular(40),
+                          bottomLeft: Radius.circular(40),
                         ),
-                        color: primary),
+                        color: Color(0xFFFFECAC).withOpacity(0.60)),
                     child: Text(
                       message,
                       textAlign: TextAlign.left,
@@ -359,11 +472,11 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                     ),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.only(
-                          topLeft: const Radius.circular(8.0),
-                          topRight: const Radius.circular(8.0),
-                          bottomRight: const Radius.circular(8.0),
-                        ),
-                        color: Colors.white),
+                            topLeft: Radius.circular(0),
+                            topRight: Radius.circular(40),
+                            bottomRight: Radius.circular(40),
+                            bottomLeft: Radius.circular(40)),
+                        color: Color(0xFFF0F0F0)),
                     child: Text(
                       message,
                       textAlign: TextAlign.left,
@@ -379,8 +492,8 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   }
 
   void _submitMsg(String txt) async {
-    // _scrollController.animateTo(_scrollController.position.maxScrollExtent,
-    //     duration: Duration(milliseconds: 1000), curve: Curves.easeOut);
+    _scrollController.animateTo(_scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 1000), curve: Curves.easeOut);
     _textController.clear();
     if (mounted) {
       setState(() {
@@ -401,37 +514,16 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
       "createdAt": DateTime.now().millisecondsSinceEpoch,
       "chatId": chatID
     };
-    if (chatID == null) {
-      print(chatInfo);
-      socket.emit('initialize-chat', [chatInfo]);
-      socket.on('chat-list$id', (data) {
-        setState(() {
-          isChatLoading = false;
-          chatList = data['messages'];
-          if (data['_id'] == null) {
-            chatID = "";
-          } else {
-            setState(() {
-              chatID = data['_id'];
-            });
-          }
-        });
+
+    socket.emit('send-message', chatInfo);
+    socket.on('chat-list$id', (data) {
+      print(data);
+      chatList.add(chatInfo);
+      setState(() {
+        isChatLoading = false;
+        chatList = chatList;
       });
-    } else {
-      socket.emit('send-message', [chatInfo]);
-      socket.on('chat-list$id', (data) {
-        print(data);
-        if (data.length > 0) {
-          if (mounted) {
-            setState(() {
-              isChatLoading = false;
-              chatList = data['messages'];
-              print(chatList);
-            });
-          }
-        }
-      });
-    }
+    });
 
     msg.animationController.forward();
   }

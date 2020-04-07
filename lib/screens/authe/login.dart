@@ -38,9 +38,10 @@ class _LoginState extends State<Login> {
   TextEditingController passwordController = TextEditingController();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  bool isUserLoaginLoading = false;
-  bool registerationLoading = false;
-  bool value = false;
+  bool isUserLoaginLoading = false,
+      registerationLoading = false,
+      value = false,
+      passwordVisible = true;
   String email, password;
 
   @override
@@ -298,9 +299,18 @@ class _LoginState extends State<Login> {
             top: 10.0,
             bottom: 10.0,
           ),
-          suffixIcon: Icon(
-            Icons.remove_red_eye,
-            color: Colors.grey,
+          suffixIcon: InkWell(
+            onTap: () {
+              if (mounted) {
+                setState(() {
+                  passwordVisible = !passwordVisible;
+                });
+              }
+            },
+            child: Icon(
+              Icons.remove_red_eye,
+              color: Colors.grey,
+            ),
           ),
           enabledBorder: const OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.grey, width: 0.0),
@@ -309,7 +319,7 @@ class _LoginState extends State<Login> {
             borderSide: BorderSide(color: primary),
           ),
         ),
-        obscureText: true,
+        obscureText: passwordVisible,
       ),
     );
   }
