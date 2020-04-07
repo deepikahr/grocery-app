@@ -3,7 +3,7 @@ class Constants {
   // static const baseURL = "https://grocery-pro-new.herokuapp.com/";
 
   // delopy url
-  static const baseURL = "http://162.243.171.81:3000/";
+  static const baseURL = "http://fa9e256a.ngrok.io/";
 
   // local url
   // static const baseURL = 'http://fa9e256a.ngrok.io/';
