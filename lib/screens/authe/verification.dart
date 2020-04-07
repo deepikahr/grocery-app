@@ -30,7 +30,7 @@ class _VerificationState extends State<Verification> {
         ),
         centerTitle: true,
         backgroundColor: primary,
-        iconTheme: IconThemeData(color:Colors.black),
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       body: Container(
         child: ListView(

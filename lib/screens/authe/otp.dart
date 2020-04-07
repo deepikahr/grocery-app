@@ -179,7 +179,7 @@ class _OtpState extends State<Otp> {
         ),
         centerTitle: true,
         backgroundColor: primary,
-        iconTheme: IconThemeData(color:Colors.black),
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       body: ListView(
         children: <Widget>[

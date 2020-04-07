@@ -279,7 +279,7 @@ class _MyCartState extends State<MyCart> {
                   centerTitle: true,
                   backgroundColor: Colors.transparent,
                   elevation: 0,
-iconTheme: IconThemeData(color:Colors.black),
+                  iconTheme: IconThemeData(color: Colors.black),
                 ),
       body: isGetTokenLoading
           ? Center(
@@ -515,14 +515,12 @@ iconTheme: IconThemeData(color:Colors.black),
                                     },
                                   ),
                                 ),
-                            
                               ],
                             ),
                           ),
                           SizedBox(
                             height: 20.0,
                           ),
-                         
                         ],
                       ),
                     ),
@@ -563,8 +561,7 @@ iconTheme: IconThemeData(color:Colors.black),
                                   ],
                                 ),
                               ),
-                              SizedBox(height:6),
-
+                              SizedBox(height: 6),
                               Padding(
                                 padding: const EdgeInsets.only(
                                     left: 20.0, right: 20.0),
@@ -585,8 +582,7 @@ iconTheme: IconThemeData(color:Colors.black),
                                   ],
                                 ),
                               ),
-                              SizedBox(height:6),
-
+                              SizedBox(height: 6),
                               Padding(
                                 padding: const EdgeInsets.only(
                                     left: 20.0, right: 20.0, bottom: 6.0),
@@ -606,7 +602,7 @@ iconTheme: IconThemeData(color:Colors.black),
                                   ],
                                 ),
                               ),
-SizedBox(height:12),
+                              SizedBox(height: 12),
                               Container(
                                 height: 50.0,
                                 child: Padding(

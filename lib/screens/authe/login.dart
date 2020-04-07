@@ -43,7 +43,7 @@ class _LoginState extends State<Login> {
   bool value = false;
   String email, password;
 
-bool _obscureText = true;
+  bool _obscureText = true;
 
   // Toggles the password
   void _toggle() {
@@ -150,7 +150,7 @@ bool _obscureText = true;
         ),
         centerTitle: true,
         backgroundColor: primary,
-        iconTheme: IconThemeData(color:Colors.black),
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -309,8 +309,10 @@ bool _obscureText = true;
             bottom: 10.0,
           ),
           suffixIcon: InkWell(
-           onTap: _toggle,
-            child: _obscureText? Icon(Icons.remove_red_eye,color:Colors.black54):Icon(Icons.remove_red_eye,color:Colors.black26),
+            onTap: _toggle,
+            child: _obscureText
+                ? Icon(Icons.remove_red_eye, color: Colors.black54)
+                : Icon(Icons.remove_red_eye, color: Colors.black26),
           ),
           enabledBorder: const OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.grey, width: 0.0),

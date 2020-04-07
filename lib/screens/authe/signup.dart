@@ -29,7 +29,7 @@ class _SignupState extends State<Signup> {
   bool value = false;
   String userName, email, password, mobileNumber, firstName, lastName;
 
-bool _obscureText = true;
+  bool _obscureText = true;
 
   // Toggles the password
   void _toggle() {
@@ -37,7 +37,6 @@ bool _obscureText = true;
       _obscureText = !_obscureText;
     });
   }
-
 
   @override
   void initState() {
@@ -448,7 +447,9 @@ bool _obscureText = true;
           ),
           suffixIcon: InkWell(
             onTap: _toggle,
-            child: _obscureText? Icon(Icons.remove_red_eye,color:Colors.black54):Icon(Icons.remove_red_eye,color:Colors.black26),
+            child: _obscureText
+                ? Icon(Icons.remove_red_eye, color: Colors.black54)
+                : Icon(Icons.remove_red_eye, color: Colors.black26),
           ),
           enabledBorder: const OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.grey, width: 0.0),
@@ -457,7 +458,7 @@ bool _obscureText = true;
             borderSide: BorderSide(color: primary),
           ),
         ),
-              obscureText: _obscureText,
+        obscureText: _obscureText,
       ),
     );
   }

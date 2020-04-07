@@ -58,25 +58,25 @@ class _SearchItemState extends State<SearchItem> {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.only(
-                              top: 18.0, bottom: 10.0, left: 20.0,right:20),
+                              top: 18.0, bottom: 10.0, left: 20.0, right: 20),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
-                                  searchresult.length.toString() + " Items Founds",
-                                  style: textBarlowMediumBlack()
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Home(
-                                        ),
-                                    ),
-                                  );
-                                },
-                                    child: Text('Show More',style:textBarlowMediumPrimary()))
+                                  searchresult.length.toString() +
+                                      " Items Founds",
+                                  style: textBarlowMediumBlack()),
+                              InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => Home(),
+                                      ),
+                                    );
+                                  },
+                                  child: Text('Show More',
+                                      style: textBarlowMediumPrimary()))
                             ],
                           ),
                         ),
@@ -86,7 +86,7 @@ class _SearchItemState extends State<SearchItem> {
                           itemCount: searchresult.length,
                           itemBuilder: (BuildContext context, int index) {
                             return Container(
-                              margin: EdgeInsets.only(bottom:20),
+                              margin: EdgeInsets.only(bottom: 20),
                               color: Colors.white,
                               child: InkWell(
                                 onTap: () {
@@ -114,7 +114,8 @@ class _SearchItemState extends State<SearchItem> {
                                               searchresult[index]['imageUrl']),
                                         ),
                                         title: new Text(
-                                          searchresult[index]['title'].toString(),
+                                          searchresult[index]['title']
+                                              .toString(),
                                           style: textbarlowRegularBlack(),
                                         ),
                                         subtitle: Column(
@@ -122,14 +123,16 @@ class _SearchItemState extends State<SearchItem> {
                                               CrossAxisAlignment.start,
                                           children: <Widget>[
                                             new Text(
-                                                searchresult[index]['description']
+                                                searchresult[index]
+                                                            ['description']
                                                         .toString() ??
                                                     "",
-                                                style: textBarlowRegularrBlacksm(
-                                                   )),
+                                                style:
+                                                    textBarlowRegularrBlacksm()),
                                             Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.spaceBetween,
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: <Widget>[
                                                 new Text(
                                                   widget.currency +
@@ -142,15 +145,17 @@ class _SearchItemState extends State<SearchItem> {
                                                                   ['variant'][0]
                                                               ['unit']
                                                           .toString(),
-                                                  style: textBarlowMediumGreen(
-                                                     ),
+                                                  style:
+                                                      textBarlowMediumGreen(),
                                                 ),
-                                                searchresult[index]['discount'] ==
+                                                searchresult[index]
+                                                            ['discount'] ==
                                                         null
                                                     ? Container()
                                                     : Container(
                                                         height: 20,
-                                                        decoration: BoxDecoration(
+                                                        decoration:
+                                                            BoxDecoration(
                                                           borderRadius:
                                                               BorderRadius.only(
                                                             topLeft:
@@ -180,9 +185,7 @@ class _SearchItemState extends State<SearchItem> {
                                 ),
                               ),
                             );
-                            
                           },
-                          
                         ),
                       ],
                     )
@@ -201,18 +204,16 @@ class _SearchItemState extends State<SearchItem> {
       title: Container(
         width: 343,
         height: 45,
-        margin: EdgeInsets.only(top:10),
+        margin: EdgeInsets.only(top: 10),
         child: new TextField(
           controller: _controller,
-          
-          style:textBarlowRegularBlackwithOpa(
-          ),
+          style: textBarlowRegularBlackwithOpa(),
           decoration: new InputDecoration(
-            contentPadding: EdgeInsets.only(top:5),
+            contentPadding: EdgeInsets.only(top: 5),
             prefixIcon: new Icon(Icons.arrow_back, color: Colors.black54),
             hintText: "What are you buying today?",
             hintStyle: textBarlowRegularBlackwithOpa(),
-             enabledBorder: const OutlineInputBorder(
+            enabledBorder: const OutlineInputBorder(
               borderSide: const BorderSide(color: Colors.grey, width: 0.0),
             ),
             focusedBorder: OutlineInputBorder(
@@ -223,7 +224,7 @@ class _SearchItemState extends State<SearchItem> {
         ),
       ),
       backgroundColor: Colors.transparent,
-      iconTheme: IconThemeData(color:Colors.black54),
+      iconTheme: IconThemeData(color: Colors.black54),
       automaticallyImplyLeading: false,
     );
   }

@@ -374,7 +374,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                         padding: const EdgeInsets.only(
                                             right: 0.0, top: 3.0),
                                         child: Container(
-                                          margin: EdgeInsets.only(left:10),
+                                          margin: EdgeInsets.only(left: 10),
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width -
@@ -392,88 +392,97 @@ class _ProductDetailsState extends State<ProductDetails>
                                         style: textbarlowBoldGreen(),
                                       ),
                                     ),
-
-                        
                                   ],
                                 ),
                               ],
                             ),
                           ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(left: 20.0, right: 20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Text(
+                                  'Quantity:',
+                                  style: textBarlowMediumBlack(),
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey[300],
+                                      borderRadius:
+                                          BorderRadius.circular(30.0)),
+                                  height: 34,
+                                  width: 150,
+                                  child: Row(
+                                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: <Widget>[
+                                      Container(
+                                        width: 35,
+                                        height: 35,
+                                        decoration: BoxDecoration(
+                                            color: Colors.black,
+                                            borderRadius:
+                                                BorderRadius.circular(20.0)),
+                                        child: InkWell(
+                                          onTap: () {
+                                            _changeProductQuantity(false);
+                                          },
+                                          child: Icon(
+                                            Icons.remove,
+                                            color: primary,
+                                          ),
+                                        ),
+                                      ),
+                                      Text(''),
+                                      Text(''),
                                       Padding(
-                                        padding: const EdgeInsets.only(left:20.0,right:20),
-                                        child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Text('Quantity:',style: textBarlowMediumBlack(),),
-                                          
-              Container(
-                decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(30.0)),
-                height: 34,
-                width: 150,
-                child: Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Container(
-                      width: 35,
-                      height: 35,
-                      decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(20.0)),
-                      child: InkWell(
-                        onTap: () {
-                          _changeProductQuantity(false);
-                        },
-                        child: Icon(
-                          Icons.remove,
-                          color: primary,
-                        ),
-                      ),
-                    ),
-                    Text(''),
-                    Text(''),
-
-                    Padding(
-                      padding: const EdgeInsets.only(left: 38.0),
-                      child: Container(child: Text(quantity.toString())),
-                    ),
-                    Text(''),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 34.0),
-                      child: Container(
-                        width: 35,
-                        height: 35,
-                        decoration: BoxDecoration(
-                            color: primary,
-                            borderRadius: BorderRadius.circular(20.0)),
-                        child: InkWell(
-                          onTap: () {
-                            if ((variantProductstock == null
-                                    ? widget.productDetail['variant'][0]
-                                                  ['productstock'] ==
-                                              null
-                                          ? 1
-                                          : widget.productDetail['variant'][0]
-                                              ['productstock']
-                                    : variantProductstock) ==
-                                quantity) {
-                              showSnackbar("Product only few stock");
-                            } else {
-                              _changeProductQuantity(true);
-                            }
-                          },
-                          child: Icon(Icons.add),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            
-                                        ],
-                                    ),
-                                      )
+                                        padding:
+                                            const EdgeInsets.only(left: 38.0),
+                                        child: Container(
+                                            child: Text(quantity.toString())),
+                                      ),
+                                      Text(''),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 34.0),
+                                        child: Container(
+                                          width: 35,
+                                          height: 35,
+                                          decoration: BoxDecoration(
+                                              color: primary,
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0)),
+                                          child: InkWell(
+                                            onTap: () {
+                                              if ((variantProductstock == null
+                                                      ? widget.productDetail[
+                                                                      'variant'][0]
+                                                                  [
+                                                                  'productstock'] ==
+                                                              null
+                                                          ? 1
+                                                          : widget.productDetail[
+                                                                  'variant'][0]
+                                                              ['productstock']
+                                                      : variantProductstock) ==
+                                                  quantity) {
+                                                showSnackbar(
+                                                    "Product only few stock");
+                                              } else {
+                                                _changeProductQuantity(true);
+                                              }
+                                            },
+                                            child: Icon(Icons.add),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
                         ],
                       ),
                     ],
@@ -615,138 +624,138 @@ class _ProductDetailsState extends State<ProductDetails>
           ),
         ),
       ),
-      bottomNavigationBar: 
-            // Padding(
-            //   padding: const EdgeInsets.only(bottom: 10.0, left: 10, right: 10),
-            //   child: Container(
-            //     decoration: BoxDecoration(
-            //         color: Colors.grey[300],
-            //         borderRadius: BorderRadius.circular(30.0)),
-            //     height: 47,
-            //     width: 150,
-            //     child: Row(
-            //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            //       children: <Widget>[
-            //         Container(
-            //           width: 40,
-            //           height: 40,
-            //           decoration: BoxDecoration(
-            //               color: Colors.black,
-            //               borderRadius: BorderRadius.circular(20.0)),
-            //           child: InkWell(
-            //             onTap: () {
-            //               _changeProductQuantity(false);
-            //             },
-            //             child: Icon(
-            //               Icons.remove,
-            //               color: Colors.white,
-            //             ),
-            //           ),
-            //         ),
-            //         Text(''),
-            //         Padding(
-            //           padding: const EdgeInsets.only(left: 14.0),
-            //           child: Container(child: Text(quantity.toString())),
-            //         ),
-            //         Text(''),
-            //         Padding(
-            //           padding: const EdgeInsets.only(left: 17.0),
-            //           child: Container(
-            //             width: 40,
-            //             height: 40,
-            //             decoration: BoxDecoration(
-            //                 color: primary,
-            //                 borderRadius: BorderRadius.circular(20.0)),
-            //             child: InkWell(
-            //               onTap: () {
-            //                 if ((variantProductstock == null
-            //                         ? widget.productDetail['variant'][0]
-            //                                     ['productstock'] ==
-            //                                 null
-            //                             ? 1
-            //                             : widget.productDetail['variant'][0]
-            //                                 ['productstock']
-            //                         : variantProductstock) ==
-            //                     quantity) {
-            //                   showSnackbar("Product only few stock");
-            //                 } else {
-            //                   _changeProductQuantity(true);
-            //                 }
-            //               },
-            //               child: Icon(Icons.add),
-            //             ),
-            //           ),
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            // ),
-            Container(
-              height: 50.0,
-              child: Padding(
-                padding: const EdgeInsetsDirectional.only(
-                    start: 20.0, end: 20.0, bottom: 5.0),
-                child: RawMaterialButton(
-                  padding: EdgeInsetsDirectional.only(start: .0, end: 15.0),
-                  fillColor: primary,
-                  constraints: const BoxConstraints(minHeight: 44.0),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(5.0),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(right: .0),
-                        child: Container(
-                          color: Colors.black,
-                          margin: EdgeInsets.only(right: 50),
-                          width: 120,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              SizedBox(
-                                height: 2.0,
-                              ),
-                              new Text(
-                                '${variantUnit == null ? widget.productDetail['variant'][0]['unit'] : variantUnit}',
-                                style: textBarlowRegularWhite(),
-                              ),
-                              SizedBox(
-                                height: 1.0,
-                              ),
-                              new Text(
-                                '$currency ${variantPrice == null ? (widget.productDetail['variant'][0]['price'] * quantity) : (variantPrice * quantity)}',
-                                style: textbarlowBoldWhite(),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      addProductTocart
-                          ? Image.asset(
-                              'lib/assets/images/spinner.gif',
-                              width: 15.0,
-                              height: 15.0,
-                              color: Colors.black,
-                            )
-                          : Text(""),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 0.0),
-                        child: new Text(
-                          "ADD TO CART",
-                          style: textBarlowRegularBlack(),
-                        ),
-                      ),
-                      Icon(Icons.shopping_cart, color: Colors.black)
-                    ],
-                  ),
-                  onPressed: () {
-                    addToCart(widget.productDetail, 'cart');
-                  },
-                ),
-              ),
+      bottomNavigationBar:
+          // Padding(
+          //   padding: const EdgeInsets.only(bottom: 10.0, left: 10, right: 10),
+          //   child: Container(
+          //     decoration: BoxDecoration(
+          //         color: Colors.grey[300],
+          //         borderRadius: BorderRadius.circular(30.0)),
+          //     height: 47,
+          //     width: 150,
+          //     child: Row(
+          //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          //       children: <Widget>[
+          //         Container(
+          //           width: 40,
+          //           height: 40,
+          //           decoration: BoxDecoration(
+          //               color: Colors.black,
+          //               borderRadius: BorderRadius.circular(20.0)),
+          //           child: InkWell(
+          //             onTap: () {
+          //               _changeProductQuantity(false);
+          //             },
+          //             child: Icon(
+          //               Icons.remove,
+          //               color: Colors.white,
+          //             ),
+          //           ),
+          //         ),
+          //         Text(''),
+          //         Padding(
+          //           padding: const EdgeInsets.only(left: 14.0),
+          //           child: Container(child: Text(quantity.toString())),
+          //         ),
+          //         Text(''),
+          //         Padding(
+          //           padding: const EdgeInsets.only(left: 17.0),
+          //           child: Container(
+          //             width: 40,
+          //             height: 40,
+          //             decoration: BoxDecoration(
+          //                 color: primary,
+          //                 borderRadius: BorderRadius.circular(20.0)),
+          //             child: InkWell(
+          //               onTap: () {
+          //                 if ((variantProductstock == null
+          //                         ? widget.productDetail['variant'][0]
+          //                                     ['productstock'] ==
+          //                                 null
+          //                             ? 1
+          //                             : widget.productDetail['variant'][0]
+          //                                 ['productstock']
+          //                         : variantProductstock) ==
+          //                     quantity) {
+          //                   showSnackbar("Product only few stock");
+          //                 } else {
+          //                   _changeProductQuantity(true);
+          //                 }
+          //               },
+          //               child: Icon(Icons.add),
+          //             ),
+          //           ),
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // ),
+          Container(
+        height: 50.0,
+        child: Padding(
+          padding: const EdgeInsetsDirectional.only(
+              start: 20.0, end: 20.0, bottom: 5.0),
+          child: RawMaterialButton(
+            padding: EdgeInsetsDirectional.only(start: .0, end: 15.0),
+            fillColor: primary,
+            constraints: const BoxConstraints(minHeight: 44.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(5.0),
             ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(right: .0),
+                  child: Container(
+                    color: Colors.black,
+                    margin: EdgeInsets.only(right: 50),
+                    width: 120,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 2.0,
+                        ),
+                        new Text(
+                          '${variantUnit == null ? widget.productDetail['variant'][0]['unit'] : variantUnit}',
+                          style: textBarlowRegularWhite(),
+                        ),
+                        SizedBox(
+                          height: 1.0,
+                        ),
+                        new Text(
+                          '$currency ${variantPrice == null ? (widget.productDetail['variant'][0]['price'] * quantity) : (variantPrice * quantity)}',
+                          style: textbarlowBoldWhite(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                addProductTocart
+                    ? Image.asset(
+                        'lib/assets/images/spinner.gif',
+                        width: 15.0,
+                        height: 15.0,
+                        color: Colors.black,
+                      )
+                    : Text(""),
+                Padding(
+                  padding: const EdgeInsets.only(left: 0.0),
+                  child: new Text(
+                    "ADD TO CART",
+                    style: textBarlowRegularBlack(),
+                  ),
+                ),
+                Icon(Icons.shopping_cart, color: Colors.black)
+              ],
+            ),
+            onPressed: () {
+              addToCart(widget.productDetail, 'cart');
+            },
+          ),
+        ),
+      ),
     );
   }
 

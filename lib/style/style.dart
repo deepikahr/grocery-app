@@ -999,9 +999,7 @@ TextStyle textBarlowRegularBlackwithOpa() {
       fontFamily: 'BarlowRegular',
       color: Colors.black.withOpacity(0.50),
       letterSpacing: 0.1);
-    
 }
-
 
 TextStyle textBarlowRegularWhite() {
   return TextStyle(
@@ -1036,7 +1034,6 @@ TextStyle textBarlowRegularrWhite() {
       color: Colors.white,
       letterSpacing: 0.1);
 }
-
 
 TextStyle textBarlowRegularGreen() {
   return TextStyle(
