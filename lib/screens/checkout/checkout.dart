@@ -51,6 +51,7 @@ class _CheckoutState extends State<Checkout> {
   LocationResult _pickedLocation;
   @override
   void initState() {
+    cartItem = widget.cartItem;
     super.initState();
     getLocations();
     getUserInfo();
@@ -268,9 +269,9 @@ class _CheckoutState extends State<Checkout> {
 
       data['deliveryTime'] = selectedTime.toString();
 
-      data['cart'] = widget.cartItem['cart'];
+      data['cart'] = cartItem['cart'];
 
-      data['cart'] = widget.cartItem['_id'].toString();
+      data['cart'] = cartItem['_id'].toString();
       data['cart'] = widget.id;
       if (mounted) {
         setState(() {
@@ -287,7 +288,7 @@ class _CheckoutState extends State<Checkout> {
                 builder: (context) => Payment(
                   data: data,
                   type: widget.buy,
-                  grandTotal: widget.cartItem['grandTotal'],
+                  grandTotal: cartItem['grandTotal'],
                 ),
               ),
             );
@@ -330,6 +331,7 @@ class _CheckoutState extends State<Checkout> {
           if (mounted) {
             setState(() {
               cartItem = onValue['response_data'];
+
               couponApplied = true;
             });
           }
@@ -464,7 +466,7 @@ class _CheckoutState extends State<Checkout> {
                                     style: regular(),
                                   ),
                                   Text(
-                                    '${widget.cartItem['subTotal']}',
+                                    '${cartItem['subTotal']}',
                                     style: textBarlowRegularBlack(),
                                   )
                                 ],
@@ -498,7 +500,7 @@ class _CheckoutState extends State<Checkout> {
                                     style: regular(),
                                   ),
                                   Text(
-                                    '${widget.cartItem['tax']}',
+                                    '${cartItem['tax']}',
                                     style: regular(),
                                   )
                                 ],
@@ -532,7 +534,7 @@ class _CheckoutState extends State<Checkout> {
                                     style: textbarlowBoldsmBlack(),
                                   ),
                                   Text(
-                                    '${widget.cartItem['deliveryCharges']}',
+                                    '${cartItem['deliveryCharges']}',
                                     style: textbarlowBoldsmBlack(),
                                   )
                                 ],
@@ -546,56 +548,65 @@ class _CheckoutState extends State<Checkout> {
                       key: _formKey,
                       child: Padding(
                         padding: const EdgeInsets.only(left: 0.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                              width: 107,
-                              height: 34,
-                              padding: EdgeInsets.only(left: 10.0),
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Color(0xFFD4D4E0)),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(1.81))),
-                              child: TextFormField(
-                                decoration:
-                                    InputDecoration(border: InputBorder.none),
-                                cursorColor: primary,
-                                validator: (String value) {
-                                  if (value.isEmpty) {
-                                    return null;
-                                  } else {
-                                    return null;
-                                  }
-                                },
-                                onSaved: (String value) {
-                                  couponCode = value;
-                                },
-                              ),
-                            ),
-                            InkWell(
-                              onTap: () {
-                                print("vb");
-                                couponCodeApply();
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 20.0),
-                                child: GFButton(
-                                  onPressed: null,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 8.0, right: 8.0),
-                                    child: Text(
-                                      "Apply ",
-                                      style: textBarlowRegularBlack(),
+                        child: couponApplied
+                            ? Padding(
+                                padding: EdgeInsets.only(left: 5.0),
+                                child: Text(
+                                  "Coupon Applied",
+                                  style: hintSfMediumprimarysm(),
+                                ))
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Container(
+                                    width: 107,
+                                    height: 34,
+                                    padding: EdgeInsets.only(left: 10.0),
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Color(0xFFD4D4E0)),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(1.81))),
+                                    child: TextFormField(
+                                      decoration: InputDecoration(
+                                          border: InputBorder.none),
+                                      cursorColor: primary,
+                                      validator: (String value) {
+                                        if (value.isEmpty) {
+                                          return null;
+                                        } else {
+                                          return null;
+                                        }
+                                      },
+                                      onSaved: (String value) {
+                                        couponCode = value;
+                                      },
                                     ),
                                   ),
-                                  color: GFColors.WARNING,
-                                ),
+                                  InkWell(
+                                    onTap: () {
+                                      print("vb");
+                                      couponCodeApply();
+                                    },
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(left: 20.0),
+                                      child: GFButton(
+                                        onPressed: null,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 8.0, right: 8.0),
+                                          child: Text(
+                                            "Apply ",
+                                            style: textBarlowRegularBlack(),
+                                          ),
+                                        ),
+                                        color: GFColors.WARNING,
+                                      ),
+                                    ),
+                                  )
+                                ],
                               ),
-                            )
-                          ],
-                        ),
                       ),
                     ),
                     Padding(
@@ -641,7 +652,7 @@ class _CheckoutState extends State<Checkout> {
                                         ),
                                       ),
                                       Text(
-                                        '${widget.cartItem['grandTotal']}',
+                                        '${cartItem['grandTotal']}',
                                         style: textBarlowBoldBlack(),
                                       )
                                     ],
