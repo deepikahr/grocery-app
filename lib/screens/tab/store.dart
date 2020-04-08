@@ -186,6 +186,29 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        automaticallyImplyLeading: false,
+        title: Container(
+          margin: EdgeInsets.only(left: 7, top: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                'Delivery Address',
+                style: textBarlowRegularrBlacksm(),
+              ),
+              Text(
+                'HSR Layout...',
+                style: textbarlowSemiBoldBlack(),
+              )
+            ],
+          ),
+        ),
+        iconTheme: IconThemeData(color: Colors.black),
+      ),
+      endDrawer: Drawer(),
       key: _scaffoldkey,
       body: (isLoadingcategoryList || isLoadingProductsList)
           ? Center(child: CircularProgressIndicator())
@@ -408,6 +431,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                                   onPressed: null,
                                                   text: productsList[i]
                                                       ['discount'],
+                                                  textStyle:
+                                                      textbarlowRegularBlack(),
                                                   color: Colors.deepOrange[300],
                                                 ),
                                               ),
@@ -421,9 +446,9 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                         padding: const EdgeInsets.only(),
                                         child: Image.network(
                                           productsList[i]['imageUrl'],
-                                          fit: BoxFit.fill,
+                                          fit: BoxFit.cover,
                                           width: 117,
-                                          height: 66,
+                                          height: 63,
                                         ),
                                       ),
                                     ],
@@ -448,11 +473,11 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                             children: <Widget>[
                                               Text(
                                                 currency,
-                                                style: textBarlowMediumGreen(),
+                                                style: textbarlowBoldGreen(),
                                               ),
                                               Text(
                                                 '${productsList[i]['variant'][0]['price']}',
-                                                style: textBarlowMediumGreen(),
+                                                style: textbarlowBoldGreen(),
                                               )
                                             ],
                                           ),

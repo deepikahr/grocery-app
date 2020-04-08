@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:getflutter/colors/gf_color.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/components/button/gf_button.dart';
 import 'package:getflutter/components/typography/gf_typography.dart';
@@ -43,6 +42,15 @@ class _LoginState extends State<Login> {
       value = false,
       passwordVisible = true;
   String email, password;
+
+  bool _obscureText = true;
+
+  // Toggles the password
+  void _toggle() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
 
   @override
   void initState() {
@@ -132,7 +140,6 @@ class _LoginState extends State<Login> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: GFAppBar(
-        automaticallyImplyLeading: false,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(20),
@@ -143,6 +150,7 @@ class _LoginState extends State<Login> {
         ),
         centerTitle: true,
         backgroundColor: primary,
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -178,6 +186,7 @@ class _LoginState extends State<Login> {
               buildcontinuetext(),
               SizedBox(height: 10),
               buildsignuplink(),
+              // buildsocialbuttons()
             ],
           ),
         ),
@@ -300,17 +309,10 @@ class _LoginState extends State<Login> {
             bottom: 10.0,
           ),
           suffixIcon: InkWell(
-            onTap: () {
-              if (mounted) {
-                setState(() {
-                  passwordVisible = !passwordVisible;
-                });
-              }
-            },
-            child: Icon(
-              Icons.remove_red_eye,
-              color: Colors.grey,
-            ),
+            onTap: _toggle,
+            child: _obscureText
+                ? Icon(Icons.remove_red_eye, color: Colors.black54)
+                : Icon(Icons.remove_red_eye, color: Colors.black26),
           ),
           enabledBorder: const OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.grey, width: 0.0),
@@ -319,7 +321,7 @@ class _LoginState extends State<Login> {
             borderSide: BorderSide(color: primary),
           ),
         ),
-        obscureText: passwordVisible,
+        obscureText: _obscureText,
       ),
     );
   }
@@ -329,7 +331,7 @@ class _LoginState extends State<Login> {
       padding: const EdgeInsets.only(top: 20.0, bottom: 15.0),
       child: GFButton(
         size: GFSize.LARGE,
-        color: GFColors.WARNING,
+        color: primary,
         blockButton: true,
         onPressed: userLogin,
         child: Row(
@@ -432,7 +434,7 @@ class _LoginState extends State<Login> {
               onPressed: () {},
               child: Text(
                 "Log in with Facebook",
-                style: TextStyle(fontSize: 20.0),
+                style: textBarlowRegularrWhite(),
               ),
             ),
           ),

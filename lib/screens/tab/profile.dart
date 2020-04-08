@@ -536,12 +536,21 @@ class _ProfileState extends State<Profile> {
                                                 )
                                               : Row(
                                                   mainAxisAlignment:
-                                                      MainAxisAlignment.start,
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
                                                   children: <Widget>[
                                                     Text(
                                                       '${userInfo['mobileNumber'] == null ? "" : userInfo['mobileNumber']}',
                                                       style:
                                                           textBarlowRegularBlack(),
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 118.0,
+                                                              top: 5),
+                                                      child: Icon(Icons.edit,
+                                                          color: primary),
                                                     ),
                                                   ],
                                                 ),

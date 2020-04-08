@@ -297,7 +297,7 @@ class _EditProfileState extends State<EditProfile> {
                   Padding(
                     padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
                     child: Text(
-                      'First Name :',
+                      'User Name :',
                       style: textbarlowRegularBlack(),
                     ),
                   ),
@@ -340,55 +340,55 @@ class _EditProfileState extends State<EditProfile> {
                       },
                     ),
                   ),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
-                    child: Text(
-                      'Last Name :',
-                      style: textbarlowRegularBlack(),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                    child: TextFormField(
-                      initialValue: userInfo['lastName'] ?? "",
-                      style: textBarlowRegularBlack(),
-                      keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
-                        errorBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(width: 0, color: Color(0xFFF44242))),
-                        errorStyle: TextStyle(color: Color(0xFFF44242)),
-                        fillColor: Colors.black,
-                        focusColor: Colors.black,
-                        contentPadding: EdgeInsets.only(
-                          left: 15.0,
-                          right: 15.0,
-                          top: 10.0,
-                          bottom: 10.0,
-                        ),
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: Colors.grey, width: 0.0),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
-                        ),
-                      ),
-                      onSaved: (String value) {
-                        lastName = value;
-                      },
-                      validator: (String value) {
-                        if (value.isEmpty ||
-                            !RegExp(r'^[A-Za-z ]+$').hasMatch(value)) {
-                          return "Please Enter Valid Last Name";
-                        } else
-                          return null;
-                      },
-                    ),
-                  ),
+                  // SizedBox(
+                  //   height: 25,
+                  // ),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
+                  //   child: Text(
+                  //     'Last Name :',
+                  //     style: textbarlowRegularBlack(),
+                  //   ),
+                  // ),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                  //   child: TextFormField(
+                  //     initialValue: userInfo['lastName'] ?? "",
+                  //     style: textBarlowRegularBlack(),
+                  //     keyboardType: TextInputType.text,
+                  //     decoration: InputDecoration(
+                  //       errorBorder: OutlineInputBorder(
+                  //           borderSide:
+                  //               BorderSide(width: 0, color: Color(0xFFF44242))),
+                  //       errorStyle: TextStyle(color: Color(0xFFF44242)),
+                  //       fillColor: Colors.black,
+                  //       focusColor: Colors.black,
+                  //       contentPadding: EdgeInsets.only(
+                  //         left: 15.0,
+                  //         right: 15.0,
+                  //         top: 10.0,
+                  //         bottom: 10.0,
+                  //       ),
+                  //       enabledBorder: const OutlineInputBorder(
+                  //         borderSide:
+                  //             const BorderSide(color: Colors.grey, width: 0.0),
+                  //       ),
+                  //       focusedBorder: OutlineInputBorder(
+                  //         borderSide: BorderSide(color: primary),
+                  //       ),
+                  //     ),
+                  //     onSaved: (String value) {
+                  //       lastName = value;
+                  //     },
+                  //     validator: (String value) {
+                  //       if (value.isEmpty ||
+                  //           !RegExp(r'^[A-Za-z ]+$').hasMatch(value)) {
+                  //         return "Please Enter Valid Last Name";
+                  //       } else
+                  //         return null;
+                  //     },
+                  //   ),
+                  // ),
                   SizedBox(
                     height: 25,
                   ),

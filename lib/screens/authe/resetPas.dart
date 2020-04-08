@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:getflutter/colors/gf_color.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/components/button/gf_button.dart';
 import 'package:getflutter/components/typography/gf_typography.dart';
@@ -118,7 +117,7 @@ class _ResetPasswordState extends State<ResetPassword> {
         ),
         centerTitle: true,
         backgroundColor: primary,
-        automaticallyImplyLeading: false,
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       body: Form(
         key: _formKey,
@@ -262,7 +261,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                 padding:
                     const EdgeInsets.only(left: 20.0, right: 20.0, top: 30.0),
                 child: GFButton(
-                  color: GFColors.WARNING,
+                  color: primary,
                   size: GFSize.LARGE,
                   blockButton: true,
                   onPressed: resetPassword,

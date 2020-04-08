@@ -189,18 +189,18 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'Loaction :',
-                        style: regular(),
+                        'Location :',
+                        style: textbarlowRegularBlack(),
                       ),
                     ],
                   ),
                 ),
                 Padding(
                     padding: const EdgeInsets.only(
-                        left: 15.0, right: 15.0, bottom: 5.0),
+                        left: 20.0, right: 15.0, bottom: 5.0),
                     child: Text(
                       widget.pickedLocation.address,
-                      style: labelStyle(),
+                      style: textBarlowRegularBlack(),
                     )),
                 Padding(
                   padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),

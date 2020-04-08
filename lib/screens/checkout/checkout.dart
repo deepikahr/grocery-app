@@ -463,11 +463,11 @@ class _CheckoutState extends State<Checkout> {
                                 children: <Widget>[
                                   Text(
                                     currency,
-                                    style: regular(),
+                                    style: textbarlowBoldsmBlack(),
                                   ),
                                   Text(
                                     '${cartItem['subTotal']}',
-                                    style: textBarlowRegularBlack(),
+                                    style: textbarlowBoldsmBlack(),
                                   )
                                 ],
                               ),
@@ -497,11 +497,11 @@ class _CheckoutState extends State<Checkout> {
                                 children: <Widget>[
                                   Text(
                                     currency,
-                                    style: regular(),
+                                    style: textbarlowBoldsmBlack(),
                                   ),
                                   Text(
                                     '${cartItem['tax']}',
-                                    style: regular(),
+                                    style: textbarlowBoldsmBlack(),
                                   )
                                 ],
                               ),
@@ -553,7 +553,7 @@ class _CheckoutState extends State<Checkout> {
                                 padding: EdgeInsets.only(left: 5.0),
                                 child: Text(
                                   "Coupon Applied",
-                                  style: hintSfMediumprimarysm(),
+                                  style: textbarlowRegularBlack(),
                                 ))
                             : Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -601,7 +601,7 @@ class _CheckoutState extends State<Checkout> {
                                             style: textBarlowRegularBlack(),
                                           ),
                                         ),
-                                        color: GFColors.WARNING,
+                                        color: primary,
                                       ),
                                     ),
                                   )
@@ -724,9 +724,8 @@ class _CheckoutState extends State<Checkout> {
                                             children: <Widget>[
                                               Container(
                                                 width: MediaQuery.of(context)
-                                                        .size
-                                                        .width -
-                                                    125,
+                                                    .size
+                                                    .width,
                                                 child: Padding(
                                                   padding:
                                                       const EdgeInsets.only(
@@ -1114,7 +1113,7 @@ class _CheckoutState extends State<Checkout> {
             right: 20.0,
           ),
           child: GFButton(
-            color: GFColors.WARNING,
+            color: primary,
             blockButton: true,
             onPressed: proceed,
             child: Row(
