@@ -134,151 +134,144 @@ class _AddCardState extends State<AddCard> {
         key: _formKey,
         child: ListView(
           children: <Widget>[
-            Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 20.0),
-                  child: Row(
-                    children: <Widget>[
-                      Text(
-                        'Card Number',
-                        style: textBarlowRegularBlack(),
-                      ),
-                    ],
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0),
+              child: Row(
+                children: <Widget>[
+                  Text(
+                    'Account Number:',
+                    style: textBarlowRegularBlack(),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      top: 5.0, bottom: 10.0, left: 20, right: 20),
-                  child: Container(
-                    child: TextFormField(
-                      maxLength: 16,
-                      onSaved: (String value) {
-                        cardNumber = value;
-                      },
-                      validator: (String value) {
-                        if (value.isEmpty || value.length != 16) {
-                          return "Please Enter a Card Number";
-                        } else
-                          return null;
-                      },
-                      style: textBarlowRegularBlack(),
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        errorBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(width: 0, color: Color(0xFFF44242))),
-                        errorStyle: TextStyle(color: Color(0xFFF44242)),
-                        counterText: "",
-                        contentPadding: EdgeInsets.all(10),
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: Colors.grey, width: 0.0),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
-                        ),
-                      ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                  top: 5.0, bottom: 10.0, left: 20, right: 20),
+              child: Container(
+                child: TextFormField(
+                  maxLength: 16,
+                  onSaved: (String value) {
+                    cardNumber = value;
+                  },
+                  validator: (String value) {
+                    if (value.isEmpty || value.length != 16) {
+                      return "Please Enter a Card Number";
+                    } else
+                      return null;
+                  },
+                  style: textBarlowRegularBlack(),
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    errorBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(width: 0, color: Color(0xFFF44242))),
+                    errorStyle: TextStyle(color: Color(0xFFF44242)),
+                    counterText: "",
+                    contentPadding: EdgeInsets.all(10),
+                    enabledBorder: const OutlineInputBorder(
+                      borderSide:
+                          const BorderSide(color: Colors.grey, width: 0.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: primary),
                     ),
                   ),
                 ),
-              ],
+              ),
             ),
+
             SizedBox(height: 10),
-            Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 20.0),
-                  child: Row(
-                    children: <Widget>[
-                      Text(
-                        'Card Holder Name',
-                        style: textBarlowRegularBlack(),
-                      ),
-                    ],
+
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0),
+              child: Row(
+                children: <Widget>[
+                  Text(
+                    'Account Name',
+                    style: textBarlowRegularBlack(),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      top: 5.0, bottom: 10.0, left: 20, right: 20),
-                  child: Container(
-                    child: TextFormField(
-                      onSaved: (String value) {
-                        cardHolderName = value;
-                      },
-                      validator: (String value) {
-                        if (value.isEmpty) {
-                          return "Please Enter a Card holder name";
-                        } else
-                          return null;
-                      },
-                      style: textBarlowRegularBlack(),
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        errorBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(width: 0, color: Color(0xFFF44242))),
-                        errorStyle: TextStyle(color: Color(0xFFF44242)),
-                        contentPadding: EdgeInsets.all(10),
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: Colors.grey, width: 0.0),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
-                        ),
-                      ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                  top: 5.0, bottom: 10.0, left: 20, right: 20),
+              child: Container(
+                child: TextFormField(
+                  onSaved: (String value) {
+                    cardHolderName = value;
+                  },
+                  validator: (String value) {
+                    if (value.isEmpty) {
+                      return "Please Enter a Card holder name";
+                    } else
+                      return null;
+                  },
+                  style: textBarlowRegularBlack(),
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                    errorBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(width: 0, color: Color(0xFFF44242))),
+                    errorStyle: TextStyle(color: Color(0xFFF44242)),
+                    contentPadding: EdgeInsets.all(10),
+                    enabledBorder: const OutlineInputBorder(
+                      borderSide:
+                          const BorderSide(color: Colors.grey, width: 0.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: primary),
                     ),
                   ),
                 ),
-              ],
+              ),
             ),
+
             SizedBox(height: 10),
-            Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 20.0),
-                  child: Row(
-                    children: <Widget>[
-                      Text('Card Bank Name', style: textBarlowRegularBlack()),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      top: 5.0, bottom: 10.0, left: 20, right: 20),
-                  child: Container(
-                    child: TextFormField(
-                      onSaved: (String value) {
-                        bank = value;
-                      },
-                      validator: (String value) {
-                        if (value.isEmpty) {
-                          return "Please Enter a Card Bank name";
-                        } else
-                          return null;
-                      },
-                      style: textBarlowRegularBlack(),
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        errorBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(width: 0, color: Color(0xFFF44242))),
-                        errorStyle: TextStyle(color: Color(0xFFF44242)),
-                        contentPadding: EdgeInsets.all(10),
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: Colors.grey, width: 0.0),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
-                        ),
-                      ),
+
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0),
+              child: Row(
+                children: <Widget>[
+                  Text('Card Bank Name', style: textBarlowRegularBlack()),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                  top: 5.0, bottom: 10.0, left: 20, right: 20),
+              child: Container(
+                child: TextFormField(
+                  onSaved: (String value) {
+                    bank = value;
+                  },
+                  validator: (String value) {
+                    if (value.isEmpty) {
+                      return "Please Enter a Card Bank name";
+                    } else
+                      return null;
+                  },
+                  style: textBarlowRegularBlack(),
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                    errorBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(width: 0, color: Color(0xFFF44242))),
+                    errorStyle: TextStyle(color: Color(0xFFF44242)),
+                    contentPadding: EdgeInsets.all(10),
+                    enabledBorder: const OutlineInputBorder(
+                      borderSide:
+                          const BorderSide(color: Colors.grey, width: 0.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: primary),
                     ),
                   ),
                 ),
-              ],
+              ),
             ),
+
             SizedBox(height: 10),
             Column(
               children: <Widget>[
@@ -328,6 +321,12 @@ class _AddCardState extends State<AddCard> {
                 ),
               ],
             ),
+            // Column(
+            // children: <Widget>[
+            //   Text('hhhh')
+            // ],
+            // )
+
             SizedBox(height: 10),
             Column(
               children: <Widget>[

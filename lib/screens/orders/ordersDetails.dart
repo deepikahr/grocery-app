@@ -166,9 +166,7 @@ class _OrderDetailsState extends State<OrderDetails> {
       appBar: GFAppBar(
         title: Text(
           'Order Details',
-          style: TextStyle(
-            color: Colors.black,
-          ),
+          style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
         backgroundColor: primary,
@@ -183,18 +181,18 @@ class _OrderDetailsState extends State<OrderDetails> {
           : ListView(
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
+                  padding: const EdgeInsets.only(left: 20.0),
                   child: Column(
                     children: <Widget>[
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          Text('Order ID:', style: titleBold()),
+                          Text('Order ID:', style: textBarlowMediumBlack()),
                           Container(
                             margin: EdgeInsets.only(top: 20, left: 8),
                             width: MediaQuery.of(context).size.width * 0.5,
                             child: Text(orderHistory['_id'],
-                                style: subtitleBold()),
+                                style: textBarlowMediumBlack()),
                           ),
                         ],
                       ),
@@ -202,11 +200,12 @@ class _OrderDetailsState extends State<OrderDetails> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          Text('Delivery Date:', style: titleBold()),
+                          Text('Delivery Date:',
+                              style: textBarlowMediumBlack()),
                           Container(
                             margin: EdgeInsets.only(left: 8),
                             child: Text(orderHistory['deliveryDate'],
-                                style: subtitleBold()),
+                                style: textBarlowMediumBlack()),
                           ),
                         ],
                       ),
@@ -214,11 +213,12 @@ class _OrderDetailsState extends State<OrderDetails> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          Text('Delivery Time:', style: titleBold()),
+                          Text('Delivery Time:',
+                              style: textBarlowMediumBlack()),
                           Container(
                             margin: EdgeInsets.only(left: 8),
                             child: Text(orderHistory['deliveryTime'],
-                                style: subtitleBold()),
+                                style: textBarlowMediumBlack()),
                           ),
                         ],
                       ),
@@ -226,11 +226,11 @@ class _OrderDetailsState extends State<OrderDetails> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          Text('Payment Type:', style: titleBold()),
+                          Text('Payment Type:', style: textBarlowMediumBlack()),
                           Container(
                             margin: EdgeInsets.only(left: 8),
                             child: Text(orderHistory['paymentType'],
-                                style: subtitleBold()),
+                                style: textBarlowMediumBlack()),
                           ),
                         ],
                       ),
@@ -238,11 +238,11 @@ class _OrderDetailsState extends State<OrderDetails> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          Text('Order Status:', style: titleBold()),
+                          Text('Order Status:', style: textBarlowMediumBlack()),
                           Container(
                             margin: EdgeInsets.only(left: 8),
                             child: Text(orderHistory['orderStatus'],
-                                style: subtitleBold()),
+                                style: textBarlowMediumGreen()),
                           ),
                         ],
                       ),
@@ -254,7 +254,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                   padding: const EdgeInsets.all(18.0),
                   child: Text(
                     'Items List',
-                    style: titleBold(),
+                    style: textBarlowBoldBlack(),
                   ),
                 ),
                 ListView.builder(
@@ -290,7 +290,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                         child: Text(
                                           orderHistory['cart']['cart'][i]
                                               ['title'],
-                                          style: titleBold(),
+                                          style: textBarlowMediumBlack(),
                                         ),
                                       ),
                                     ],
@@ -309,9 +309,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                           child: Text(
                                             orderHistory['cart']['cart'][i]
                                                 ['description'],
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w300,
-                                                fontSize: 14.0),
+                                            style: textBarlowRegularBlack(),
                                           ),
                                         ),
                                       ),
@@ -326,11 +324,15 @@ class _OrderDetailsState extends State<OrderDetails> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
                                       children: <Widget>[
-                                        Text(currency),
+                                        Text(
+                                          currency,
+                                          style: textBarlowBoldBlack(),
+                                        ),
                                         Text(
                                           orderHistory['cart']['cart'][i]
                                                   ['price']
                                               .toString(),
+                                          style: textBarlowBoldBlack(),
                                         ),
                                       ],
                                     ),
@@ -346,9 +348,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                             orderHistory['cart']['cart'][i]
                                                     ['quantity']
                                                 .toString(),
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 15.0),
+                                        style: textBarlowMediumBlack(),
                                       ),
                                       orderHistory['orderStatus'] == "DELIVERED"
                                           ? orderHistory['cart']['cart'][i]
@@ -373,6 +373,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                   },
                                                   color: primary,
                                                   text: 'Rate',
+                                                  // textStyle: ,
                                                 )
                                               : GFButton(
                                                   onPressed: null,
@@ -409,24 +410,23 @@ class _OrderDetailsState extends State<OrderDetails> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text('Sub Total:', style: titleBold()),
+                          Text('Sub Total:', style: textBarlowMediumBlack()),
                           Container(
                             margin: EdgeInsets.only(left: 8),
                             child: Padding(
                               padding: const EdgeInsets.only(
                                 top: 15.0,
-                                bottom: 15.0,
                               ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: <Widget>[
                                   Text(
                                     currency,
-                                    style: titleBold(),
+                                    style: textBarlowBoldBlack(),
                                   ),
                                   Text(
                                     orderHistory['subTotal'].toString(),
-                                    style: titleBold(),
+                                    style: textBarlowBoldBlack(),
                                   )
                                 ],
                               ),
@@ -440,24 +440,23 @@ class _OrderDetailsState extends State<OrderDetails> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text('Tax:', style: titleBold()),
+                          Text('Tax:', style: textBarlowMediumBlack()),
                           Container(
                             margin: EdgeInsets.only(left: 8),
                             child: Padding(
                               padding: const EdgeInsets.only(
                                 top: 15.0,
-                                bottom: 15.0,
                               ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: <Widget>[
                                   Text(
                                     currency,
-                                    style: titleBold(),
+                                    style: textBarlowBoldBlack(),
                                   ),
                                   Text(
                                     orderHistory['tax'].toString(),
-                                    style: titleBold(),
+                                    style: textBarlowBoldBlack(),
                                   )
                                 ],
                               ),
@@ -471,24 +470,25 @@ class _OrderDetailsState extends State<OrderDetails> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text('Delivery Charges:', style: titleBold()),
+                          Text('Delivery Charges:',
+                              style: textBarlowMediumBlack()),
                           Container(
                             margin: EdgeInsets.only(left: 8),
                             child: Padding(
                               padding: const EdgeInsets.only(
                                 top: 15.0,
-                                bottom: 15.0,
+                                bottom: 5.0,
                               ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: <Widget>[
                                   Text(
                                     currency,
-                                    style: titleBold(),
+                                    style: textBarlowBoldBlack(),
                                   ),
                                   Text(
                                     orderHistory['deliveryCharges'].toString(),
-                                    style: titleBold(),
+                                    style: textBarlowBoldBlack(),
                                   )
                                 ],
                               ),
@@ -510,7 +510,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text('Grand Total:', style: titleBold()),
+                      Text('Grand Total:', style: textBarlowMediumBlack()),
                       Container(
                         margin: EdgeInsets.only(left: 8),
                         child: Padding(
@@ -523,11 +523,11 @@ class _OrderDetailsState extends State<OrderDetails> {
                             children: <Widget>[
                               Text(
                                 currency,
-                                style: titleBold(),
+                                style: textBarlowBoldBlack(),
                               ),
                               Text(
                                 orderHistory['grandTotal'].toString(),
-                                style: titleBold(),
+                                style: textBarlowBoldBlack(),
                               )
                             ],
                           ),

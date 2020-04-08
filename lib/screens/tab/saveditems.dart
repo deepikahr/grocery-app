@@ -226,9 +226,9 @@ class _SavedItemsState extends State<SavedItems> {
                                                 child: Image.network(
                                                   favProductList[i]['product']
                                                       ['imageUrl'],
-                                                  fit: BoxFit.fill,
+                                                  fit: BoxFit.cover,
                                                   width: 124,
-                                                  height: 60,
+                                                  height: 63,
                                                 ),
                                               ),
                                             ],
@@ -254,13 +254,11 @@ class _SavedItemsState extends State<SavedItems> {
                                               children: <Widget>[
                                                 Text(
                                                   currency,
-                                                  style:
-                                                      textBarlowMediumGreen(),
+                                                  style: textbarlowBoldGreen(),
                                                 ),
                                                 Text(
                                                   '${favProductList[i]['product']['variant'][0]['price']}',
-                                                  style:
-                                                      textBarlowMediumGreen(),
+                                                  style: textbarlowBoldGreen(),
                                                 )
                                               ],
                                             ),
