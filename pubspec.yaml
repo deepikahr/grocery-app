@@ -24,6 +24,7 @@ dependencies:
   socket_io_client: ^0.9.9
   onesignal_flutter: ^2.3.4 
   flutter_rating_bar: ^3.0.1+1
+  dotted_border: ^1.0.5
 
 dev_dependencies:
   flutter_test:
@@ -40,22 +41,22 @@ flutter:
 
     - family: 'BarlowBold'
       fonts:   
-        - asset: lib/assets/fonts/barlowBold.ttf
+        - asset: lib/assets/fonts/Barlow-Bold.ttf
           weight: 400
 
     - family: 'BarlowMedium'
       fonts:   
-        - asset: lib/assets/fonts/barlowMedium.ttf
+        - asset: lib/assets/fonts/Barlow-Medium.ttf
           weight: 400
 
     - family: 'BarlowRegular'
       fonts:   
-        - asset: lib/assets/fonts/barlowRegular.ttf
+        - asset: lib/assets/fonts/Barlow-Regular.ttf
           weight: 400
           
     - family: 'BarlowSemiBold'
       fonts:   
-        - asset: lib/assets/fonts/barlowSemiBold.ttf
+        - asset: lib/assets/fonts/Barlow-SemiBold.ttf
           weight: 400  
     
 
@@ -86,5 +87,9 @@ flutter:
     - lib/assets/images/no-orders.png
     - lib/assets/icons/addbtn.png
     - lib/assets/icons/minus.png
+    - lib/assets/icons/sale.png
+    - lib/assets/icons/edit.png
+    - lib/assets/icons/logout.png
+    - lib/assets/icons/menu.png
 
 

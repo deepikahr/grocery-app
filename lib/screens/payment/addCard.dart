@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/service/payment-service.dart';
@@ -234,7 +235,7 @@ class _AddCardState extends State<AddCard> {
               padding: const EdgeInsets.only(left: 20.0),
               child: Row(
                 children: <Widget>[
-                  Text('Card Bank Name', style: textBarlowRegularBlack()),
+                  Text(' Bank Name', style: textBarlowRegularBlack()),
                 ],
               ),
             ),
@@ -248,7 +249,7 @@ class _AddCardState extends State<AddCard> {
                   },
                   validator: (String value) {
                     if (value.isEmpty) {
-                      return "Please Enter a Card Bank name";
+                      return "Please Enter  Bank name";
                     } else
                       return null;
                   },
@@ -273,54 +274,164 @@ class _AddCardState extends State<AddCard> {
             ),
 
             SizedBox(height: 10),
-            Column(
+
+            Row(
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 20.0),
-                  child: Row(
-                    children: <Widget>[
-                      Text('Card Expire Month',
-                          style: textBarlowRegularBlack()),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      top: 5.0, bottom: 10.0, left: 20, right: 200),
-                  child: Container(
-                    child: TextFormField(
-                      maxLength: 2,
-                      onSaved: (String value) {
-                        expiryMonth = int.parse(value);
-                      },
-                      validator: (String value) {
-                        if (value.isEmpty || value.length != 2) {
-                          return "Please Enter a Card Correct Card Expired Month";
-                        } else
-                          return null;
-                      },
-                      style: textBarlowRegularBlack(),
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        errorBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(width: 0, color: Color(0xFFF44242))),
-                        errorStyle: TextStyle(color: Color(0xFFF44242)),
-                        counterText: "",
-                        contentPadding: EdgeInsets.all(10),
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: Colors.grey, width: 0.0),
+
+                    Flexible(
+                        flex: 3,
+                        fit: FlexFit.tight,
+                        child: Column(children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20.0),
+                        child: Row(
+                          children: <Widget>[
+                            Text('Expiry Month',
+                                style: textBarlowRegularBlack()),
+                          ],
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 5.0, bottom: 10.0, left: 20,),
+                        child: Container(
+                          child: TextFormField(
+                            maxLength: 2,
+                            onSaved: (String value) {
+                              expiryMonth = int.parse(value);
+                            },
+                            validator: (String value) {
+                              if (value.isEmpty || value.length != 2) {
+                                return "Please Enter a Card Correct Card Expired Month";
+                              } else
+                                return null;
+                            },
+                            style: textBarlowRegularBlack(),
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              errorBorder: OutlineInputBorder(
+                                  borderSide:
+                                  BorderSide(width: 0, color: Color(0xFFF44242))),
+                              errorStyle: TextStyle(color: Color(0xFFF44242)),
+                              counterText: "",
+                              contentPadding: EdgeInsets.all(10),
+                              enabledBorder: const OutlineInputBorder(
+                                borderSide:
+                                const BorderSide(color: Colors.grey, width: 0.0),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: primary),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],)),
+                Flexible(
+                  flex: 3,
+                  fit: FlexFit.tight,
+                  child:  Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0, right:10),
+                      child: Row(
+                        children: <Widget>[
+                          Text('Expiry Year', style: textBarlowRegularBlack()),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          top: 5.0, bottom: 10.0, left: 10, right:10),
+                      child: Container(
+                        child: TextFormField(
+                          maxLength: 4,
+                          onSaved: (String value) {
+                            expiryYear = int.parse(value);
+                          },
+                          validator: (String value) {
+                            if (value.isEmpty || value.length != 4) {
+                              return "Please Enter a Card Correct Card Expired Year";
+                            } else
+                              return null;
+                          },
+                          style: textBarlowRegularBlack(),
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            errorBorder: OutlineInputBorder(
+                                borderSide:
+                                BorderSide(width: 0, color: Color(0xFFF44242))),
+                            errorStyle: TextStyle(color: Color(0xFFF44242)),
+                            counterText: "",
+                            contentPadding: EdgeInsets.all(10),
+                            enabledBorder: const OutlineInputBorder(
+                              borderSide:
+                              const BorderSide(color: Colors.grey, width: 0.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: primary),
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ),
+                  ],
+                ),),
+
+                Flexible(
+                  flex: 2,
+                  fit: FlexFit.tight,
+                  child:  Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 0.0),
+                      child: Row(
+                        children: <Widget>[
+                          Text(' CVV', style: textBarlowRegularBlack()),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          top: 5.0, bottom: 10.0, right:20),
+                      child: Container(
+                        child: TextFormField(
+                          maxLength: 3,
+                          onSaved: (String value) {
+                            cvv = value;
+                          },
+                          validator: (String value) {
+                            if (value.isEmpty || value.length != 3) {
+                              return "Please Enter a Card Correct Card CVV";
+                            } else
+                              return null;
+                          },
+                          style: textBarlowRegularBlack(),
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            errorBorder: OutlineInputBorder(
+                                borderSide:
+                                BorderSide(width: 0, color: Color(0xFFF44242))),
+                            errorStyle: TextStyle(color: Color(0xFFF44242)),
+                            counterText: "",
+                            contentPadding: EdgeInsets.all(10),
+                            enabledBorder: const OutlineInputBorder(
+                              borderSide:
+                              const BorderSide(color: Colors.grey, width: 0.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: primary),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ), )
+
               ],
             ),
+           
             // Column(
             // children: <Widget>[
             //   Text('hhhh')
@@ -328,111 +439,24 @@ class _AddCardState extends State<AddCard> {
             // )
 
             SizedBox(height: 10),
-            Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 20.0),
-                  child: Row(
-                    children: <Widget>[
-                      Text('Card Expire Year', style: textBarlowRegularBlack()),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      top: 5.0, bottom: 10.0, left: 20, right: 200),
-                  child: Container(
-                    child: TextFormField(
-                      maxLength: 4,
-                      onSaved: (String value) {
-                        expiryYear = int.parse(value);
-                      },
-                      validator: (String value) {
-                        if (value.isEmpty || value.length != 4) {
-                          return "Please Enter a Card Correct Card Expired Year";
-                        } else
-                          return null;
-                      },
-                      style: textBarlowRegularBlack(),
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        errorBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(width: 0, color: Color(0xFFF44242))),
-                        errorStyle: TextStyle(color: Color(0xFFF44242)),
-                        counterText: "",
-                        contentPadding: EdgeInsets.all(10),
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: Colors.grey, width: 0.0),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+           
             SizedBox(height: 10),
-            Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 20.0),
-                  child: Row(
-                    children: <Widget>[
-                      Text('Card Expire CVV', style: textBarlowRegularBlack()),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      top: 5.0, bottom: 10.0, left: 20, right: 200),
-                  child: Container(
-                    child: TextFormField(
-                      maxLength: 3,
-                      onSaved: (String value) {
-                        cvv = value;
-                      },
-                      validator: (String value) {
-                        if (value.isEmpty || value.length != 3) {
-                          return "Please Enter a Card Correct Card CVV";
-                        } else
-                          return null;
-                      },
-                      style: textBarlowRegularBlack(),
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        errorBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(width: 0, color: Color(0xFFF44242))),
-                        errorStyle: TextStyle(color: Color(0xFFF44242)),
-                        counterText: "",
-                        contentPadding: EdgeInsets.all(10),
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: Colors.grey, width: 0.0),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+
           ],
         ),
       ),
       bottomNavigationBar: Container(
-        child: Padding(
-          padding: const EdgeInsets.only(
-            left: 20.0,
-            right: 20.0,
-          ),
-          child: GFButton(
+        height: 55,
+        margin: EdgeInsets.only(left:18, right:18, bottom: 20),
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.29),
+              blurRadius: 9
+            )
+          ]
+        ),
+        child:  GFButton(
             color: primary,
             blockButton: true,
             onPressed: saveCard,
@@ -454,7 +478,7 @@ class _AddCardState extends State<AddCard> {
               ],
             ),
           ),
-        ),
+
       ),
     );
   }

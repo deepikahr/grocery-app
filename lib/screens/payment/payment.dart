@@ -562,10 +562,20 @@ class _PaymentState extends State<Payment> {
               ],
             ),
       bottomNavigationBar: Container(
+        margin: EdgeInsets.only(left:15, right:15, bottom: 20),
+        height:55,
+        decoration:BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black.withOpacity(0.33),
+                  blurRadius: 6
+              )
+            ]
+        ),
         child: Padding(
           padding: const EdgeInsets.only(
-            left: 20.0,
-            right: 20.0,
+            left: 0.0,
+            right: 0.0,
           ),
           child: GFButton(
             color: primary,

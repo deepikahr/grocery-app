@@ -11,6 +11,8 @@ import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/product-service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../style/style.dart';
+
 SentryError sentryError = new SentryError();
 
 class Orders extends StatefulWidget {
@@ -25,6 +27,9 @@ class _OrdersState extends State<Orders> {
   bool isLoading = false, isLoadingSubProductsList = false;
   List subProductsList = List();
   List<dynamic> orderList;
+  bool showRating= false;
+  bool showblur = false;
+  double _rating = 3;
   var orderedTime;
   double rating;
   String currency;
@@ -197,285 +202,464 @@ class _OrdersState extends State<Orders> {
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
+        elevation: 0,
         backgroundColor: primary,
         iconTheme: IconThemeData(
           color: Colors.black,
         ),
       ),
-      body: isLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : orderList.length == 0
-              ? Center(
-                  child: Image.asset('lib/assets/images/no-orders.png'),
-                )
-              : ListView(
-                  children: <Widget>[
+      body:
+      GFFloatingWidget(
+        verticalPosition:MediaQuery.of(context).size.height* 0.3,
+        blurnessColor: Colors.black.withOpacity(0.33),
+        showblurness: showblur,
+        child: showRating?GFAlert(
+
+          type: GFAlertType.rounded,
+          alignment: Alignment.center,
+          backgroundColor: Colors.white,
+          child: Text('Rate Product', style: textbarlowmediumwred(),),
+          contentChild:  Column(
+            children: <Widget>[
+              GFRating(
+                color: GFColors.SUCCESS,
+                borderColor: GFColors.SUCCESS,
+                value: _rating,
+                onChanged: (value) {
+                  setState(() {
+                    _rating = value;
+                  });
+                },
+              ),
+            ],
+          ),
+          bottombar:Container(
+//            height: 48,
+alignment: Alignment.center,
+            child:  GFButton(
+              padding: EdgeInsets.only(left:20, right:20),
+              onPressed: () {
+                setState(() {
+                  showRating = false;
+                  showblur=false;
+
+                });
+              },
+              fullWidthButton: false,
+              color: primary,
+              text: 'Submit',
+              textStyle: textbarlowmediumwblack(),
+            ),
+          )
+        ):Container(),
+        body: isLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : orderList.length == 0
+                ? Center(
+                    child: Image.asset('lib/assets/images/no-orders.png'),
+                  )
+                : ListView(
+                    children: <Widget>[
                     Container(
-                      color: Colors.white38,
-                      child: ListView.builder(
-                        physics: ScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount:
-                            orderList.length == null ? 0 : orderList.length,
-                        itemBuilder: (BuildContext context, int i) {
-                          return orderList[i]['cart'] == null
-                              ? Container()
-                              : InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      new MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            new OrderDetails(
-                                                orderId: orderList[i]["_id"]),
-                                      ),
-                                    );
-                                  },
-                                  child: Column(
-                                    children: <Widget>[
-                                      Container(
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        color: Colors.white38,
-                                        child: GFListTile(
-                                          avatar: Container(
-                                            width: 90.0,
-                                            height: 90.0,
-                                            child: Image.network(
-                                              orderList[i]['cart']['cart'][0]
-                                                  ['imageUrl'],
+margin: EdgeInsets.only(top:20, bottom:10),
+                      decoration: BoxDecoration(
+                          color: Color(0xFFFDFDFD),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.10),
+                            blurRadius: 6
+                          )
+                        ]
+                      ),
+                      child: Column(
+                        children: <Widget>[
+                          product(),
+                          orderTrack(),
+                        ],
+                      ),
+                    ),
+                      Container(
+                        color: Colors.white38,
+                        child: ListView.builder(
+                          physics: ScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount:
+                              orderList.length == null ? 0 : orderList.length,
+                          itemBuilder: (BuildContext context, int i) {
+                            return orderList[i]['cart'] == null
+                                ? Container()
+                                : InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        new MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              new OrderDetails(
+                                                  orderId: orderList[i]["_id"]),
+                                        ),
+                                      );
+                                    },
+                                    child: Column(
+                                      children: <Widget>[
+                                        Container(
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          color: Colors.white38,
+                                          child: GFListTile(
+                                            avatar: Container(
+                                              width: 90.0,
+                                              height: 90.0,
+                                              child: Image.network(
+                                                orderList[i]['cart']['cart'][0]
+                                                    ['imageUrl'],
+                                              ),
                                             ),
-                                          ),
-                                          title: Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 4.0),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: <Widget>[
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              bottom: 2.0),
-                                                      child: Text(
-                                                        orderList[i]['cart']
-                                                                ['cart'][0]
-                                                            ['title'],
-                                                        style: titleBold(),
+                                            title: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 4.0),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: <Widget>[
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets.only(
+                                                                bottom: 2.0),
+                                                        child: Text(
+                                                          orderList[i]['cart']
+                                                                  ['cart'][0]
+                                                              ['title'],
+                                                          style: titleBold(),
+                                                        ),
                                                       ),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: <Widget>[
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets.only(
+                                                                bottom: 2.0),
+                                                        child: Text(
+                                                          orderList[i]['cart']['cart'][0][
+                                                                          'description']
+                                                                      .length >
+                                                                  25
+                                                              ? orderList[i]['cart']
+                                                                          ['cart'][0][
+                                                                      'description']
+                                                                  .substring(
+                                                                      0, 25)
+                                                              : orderList[i]['cart']['cart'][0]
+                                                                          ['description']
+                                                                      .toString() ??
+                                                                  "",
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight.w300,
+                                                              fontSize: 14.0),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                      top: 3.0,
+                                                      bottom: 5.0,
                                                     ),
-                                                  ],
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              bottom: 2.0),
-                                                      child: Text(
-                                                        orderList[i]['cart']['cart'][0][
-                                                                        'description']
-                                                                    .length >
-                                                                25
-                                                            ? orderList[i]['cart']
-                                                                        ['cart'][0][
-                                                                    'description']
-                                                                .substring(
-                                                                    0, 25)
-                                                            : orderList[i]['cart']['cart'][0]
-                                                                        ['description']
-                                                                    .toString() ??
-                                                                "",
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.start,
+                                                      children: <Widget>[
+                                                        Text(
+                                                          currency,
+                                                          style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 11.0,
+                                                          ),
+                                                        ),
+                                                        Text(orderList[i]
+                                                                    ['grandTotal']
+                                                                .toString() ??
+                                                            "")
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: <Widget>[
+                                                      Icon(
+                                                        Icons
+                                                            .check_circle_outline,
+                                                        size: 15,
+                                                        color: Colors.grey,
+                                                      ),
+                                                      Text(
+                                                        'Ordered At : ' +
+                                                                orderList[i][
+                                                                        'createdAt']
+                                                                    .substring(
+                                                                        0, 10) +
+                                                                " " +
+                                                                orderList[i][
+                                                                        'createdAt']
+                                                                    .substring(
+                                                                        11, 16) ??
+                                                            "",
                                                         style: TextStyle(
                                                             fontWeight:
                                                                 FontWeight.w300,
-                                                            fontSize: 14.0),
+                                                            fontSize: 11.0),
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                    top: 3.0,
-                                                    bottom: 5.0,
+                                                    ],
                                                   ),
-                                                  child: Row(
+                                                  Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment.start,
                                                     children: <Widget>[
                                                       Text(
-                                                        currency,
-                                                        style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 11.0,
-                                                        ),
+                                                        'Order : ' ,
+                                                        style: textBarlowRegularBlackwithOpa(),
                                                       ),
-                                                      Text(orderList[i]
-                                                                  ['grandTotal']
-                                                              .toString() ??
-                                                          "")
+                                                      Text("${orderList[i]['orderStatus'] ?? ""}", style: textBarlowRegularGreen(),)
                                                     ],
                                                   ),
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    Icon(
-                                                      Icons
-                                                          .check_circle_outline,
-                                                      size: 15,
-                                                      color: Colors.grey,
-                                                    ),
-                                                    Text(
-                                                      'Ordered At : ' +
-                                                              orderList[i][
-                                                                      'createdAt']
-                                                                  .substring(
-                                                                      0, 10) +
-                                                              " " +
-                                                              orderList[i][
-                                                                      'createdAt']
-                                                                  .substring(
-                                                                      11, 16) ??
-                                                          "",
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w300,
-                                                          fontSize: 11.0),
-                                                    ),
-                                                  ],
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    Text(
-                                                      'Order : ' +
-                                                          "${orderList[i]['orderStatus'] ?? ""}",
-                                                      style: TextStyle(
-                                                          color: Colors.green),
-                                                    ),
-                                                  ],
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    Text(
-                                                      'Payment Type : ' +
-                                                          "${orderList[i]['paymentType'] ?? ""}",
-                                                      style: TextStyle(
-                                                          color: Colors.green),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
+//                                                Row(
+//                                                  mainAxisAlignment:
+//                                                      MainAxisAlignment.start,
+//                                                  children: <Widget>[
+//                                                    Text(
+//                                                      'Payment Type : ' +
+//                                                          "${orderList[i]['paymentType'] ?? ""}",
+//                                                      style: TextStyle(
+//                                                          color: Colors.green),
+//                                                    ),
+//                                                  ],
+//                                                ),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      orderList[i]['orderStatus'] == "DELIVERED"
-                                          ? Container(
-                                              color: Colors.white38,
-                                              child: Row(
-                                                children: <Widget>[
-                                                  Expanded(
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              left: 20.0,
-                                                              right: 20.0),
-                                                      child: GFButton(
-                                                        onPressed: () {
-                                                          for (int j = 0;
-                                                              j <
-                                                                  orderList[i][
-                                                                              'cart']
-                                                                          [
-                                                                          'cart']
-                                                                      .length;
-                                                              j++) {
-                                                            addToCart(
-                                                                orderList[i]
-                                                                        ['cart']
-                                                                    ['cart'][j],
+                                        orderList[i]['orderStatus'] == "DELIVERED"
+                                            ? Container(
+                                                color: Colors.white38,
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Expanded(
+                                                      child: Container(
+                                                        height:45,
+                                                        margin:EdgeInsets.only(left:20, right:15),
+                                                        child: GFButton(
+                                                          onPressed: () {
+                                                            for (int j = 0;
+                                                            j <
                                                                 orderList[i][
-                                                                            'cart']
-                                                                        ['cart']
-                                                                    .length,
-                                                                j);
-                                                          }
-                                                        },
-                                                        text: 'ReOrder',
+                                                                'cart']
+                                                                [
+                                                                'cart']
+                                                                    .length;
+                                                            j++) {
+                                                              addToCart(
+                                                                  orderList[i]
+                                                                  ['cart']
+                                                                  ['cart'][j],
+                                                                  orderList[i][
+                                                                  'cart']
+                                                                  ['cart']
+                                                                      .length,
+                                                                  j);
+                                                            }
+                                                          },
+                                                          text: 'Reorder',
+                                                          color: primary,
+                                                        ),
+                                                      )
+                                                    ),
+                                                    Expanded(child: Container(
+                                                      height:45,
+                                                      margin:EdgeInsets.only(right:20),
+                                                      child: GFButton(onPressed: (){
+                                                        setState(() {
+                                                          showblur=true;
+                                                          showRating= !showRating;
+                                                        });
+                                                      },
+                                                      text: 'Rate',
+                                                      type: GFButtonType.outline,
                                                         color: primary,
                                                       ),
+                                                    )),
+//                                                  showRating? Text('hi'):Container(),
+                                                    SizedBox(
+                                                      height: 20.0,
                                                     ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 20.0,
-                                                  ),
-                                                  // orderList[i]['rating'] == null
-                                                  //     ? Expanded(
-                                                  //         child: Padding(
-                                                  //           padding:
-                                                  //               const EdgeInsets.only(
-                                                  //                   left: 20.0,
-                                                  //                   right: 20.0),
-                                                  //           child: GFButton(
-                                                  //             onPressed: () {
-                                                  //               ratingAlert(orderList[i]
-                                                  //                   ['_id']);
-                                                  //             },
-                                                  //             text: 'Order Rate',
-                                                  //             color: primary,
-                                                  //             type:
-                                                  //                 GFButtonType.outline,
-                                                  //             size: GFSize.SMALL,
-                                                  //           ),
-                                                  //         ),
-                                                  //       )
-                                                  //     : Expanded(
-                                                  //         child: Padding(
-                                                  //           padding:
-                                                  //               const EdgeInsets.only(
-                                                  //                   left: 20.0,
-                                                  //                   right: 20.0),
-                                                  //           child: GFButton(
-                                                  //             onPressed: null,
-                                                  //             text: orderList[i]
-                                                  //                         ['rating']
-                                                  //                     .toString() +
-                                                  //                 " Order Rate",
-                                                  //             color: Colors.black,
-                                                  //             type:
-                                                  //                 GFButtonType.outline,
-                                                  //             size: GFSize.SMALL,
-                                                  //           ),
-                                                  // ),
-                                                  // )
-                                                ],
-                                              ),
-                                            )
-                                          : Container(),
-                                      Divider()
-                                    ],
-                                  ),
-                                );
-                        },
+                                                    // orderList[i]['rating'] == null
+                                                    //     ? Expanded(
+                                                    //         child: Padding(
+                                                    //           padding:
+                                                    //               const EdgeInsets.only(
+                                                    //                   left: 20.0,
+                                                    //                   right: 20.0),
+                                                    //           child: GFButton(
+                                                    //             onPressed: () {
+                                                    //               ratingAlert(orderList[i]
+                                                    //                   ['_id']);
+                                                    //             },
+                                                    //             text: 'Order Rate',
+                                                    //             color: primary,
+                                                    //             type:
+                                                    //                 GFButtonType.outline,
+                                                    //             size: GFSize.SMALL,
+                                                    //           ),
+                                                    //         ),
+                                                    //       )
+                                                    //     : Expanded(
+                                                    //         child: Padding(
+                                                    //           padding:
+                                                    //               const EdgeInsets.only(
+                                                    //                   left: 20.0,
+                                                    //                   right: 20.0),
+                                                    //           child: GFButton(
+                                                    //             onPressed: null,
+                                                    //             text: orderList[i]
+                                                    //                         ['rating']
+                                                    //                     .toString() +
+                                                    //                 " Order Rate",
+                                                    //             color: Colors.black,
+                                                    //             type:
+                                                    //                 GFButtonType.outline,
+                                                    //             size: GFSize.SMALL,
+                                                    //           ),
+                                                    // ),
+                                                    // )
+                                                  ],
+                                                ),
+                                              )
+                                            : Container(),
+                                        Divider()
+                                      ],
+                                    ),
+                                  );
+
+                          },
+                        ),
                       ),
-                    ),
-                  ],
-                ),
+
+
+                    ],
+                  ),
+      ),
+    );
+
+
+  }
+
+  product(){
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 24),
+//      color: bg,
+      child: Row(
+        children: <Widget>[
+          Image.asset('lib/assets/images/cherry.png'),
+          SizedBox(width: 17),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text('Lays lassic', style: textBarlowRegularrdark(),),
+              SizedBox(height: 5),
+              Text('Party pack (200 g)', style: textSMBarlowRegularrBlack(),),
+              SizedBox(height: 10),
+              Text('\$ 80', style: titleLargeSegoeBlack(),),
+              SizedBox(height: 10),
+              Text('Ordered : 02/02/2020,4.30 pm', style: textSMBarlowRegularrBlack(),)
+            ],
+          )
+        ],
+      ),
     );
   }
+  orderTrack(){
+    return Container(
+//      color: bg,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          GFListTile(
+            avatar: Column(
+              children: <Widget>[
+                GFAvatar(
+                  backgroundColor: green,
+                  radius: 6,
+                ),
+                SizedBox(height: 10,),
+                CustomPaint(painter: LineDashedPainter()),
+              ],
+            ),
+            title: Text('Order Confirmed', style: titleSegoeGreen(),),
+            subTitle: Text('4.30 pm', style: textSMBarlowRegularrGreyb(),),
+          ),
+          GFListTile(
+            avatar: Column(
+              children: <Widget>[
+                GFAvatar(
+                  backgroundColor: greyb.withOpacity(0.5),
+                  radius: 6,
+                ),
+                SizedBox(height: 10,),
+                CustomPaint(painter: LineDashedPainter()),
+              ],
+            ),
+            title: Text('Out for delivery', style: titleSegoeGrey(),),
+            subTitle: Text('', style: textSMBarlowRegularrGreyb(),),
+          ),
+          GFListTile(
+            avatar: Column(
+              children: <Widget>[
+                GFAvatar(
+                  backgroundColor: greyb.withOpacity(0.5),
+                  radius: 6,
+                ),
+                SizedBox(height: 10,),
+//                CustomPaint(painter: LineDashedPainter()),
+              ],
+            ),
+            title: Text('Order delivered', style: titleSegoeGrey(),),
+            subTitle: Text('', style: textSMBarlowRegularrGreyb(),),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+class LineDashedPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    var paint = Paint()..strokeWidth = 1;
+    var max = 55;
+    var dashWidth = 3;
+    var dashSpace = 4;
+    double startY = 0;
+    while (max >= 0) {
+      canvas.drawLine(Offset(0, startY), Offset(0, startY + dashWidth), paint);
+      final space = (dashSpace + dashWidth);
+      startY += space;
+      max -= space;
+    }
+  }
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

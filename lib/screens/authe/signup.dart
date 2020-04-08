@@ -248,7 +248,7 @@ class _SignupState extends State<Signup> {
         child: RichText(
           text: TextSpan(
             children: <TextSpan>[
-              TextSpan(text: "User Name", style: textbarlowRegularBlack()),
+              TextSpan(text: "User Name", style: textbarlowRegularBlackdull()),
               TextSpan(
                 text: ' *',
                 style: TextStyle(color: Colors.red),
@@ -301,7 +301,7 @@ class _SignupState extends State<Signup> {
   //       child: RichText(
   //         text: TextSpan(
   //           children: <TextSpan>[
-  //             TextSpan(text: "Last Name", style: textbarlowRegularBlack()),
+  //             TextSpan(text: "Last Name", style: textbarlowRegularBlackdull()),
   //             TextSpan(
   //               text: ' *',
   //               style: TextStyle(color: Colors.red),
@@ -354,7 +354,7 @@ class _SignupState extends State<Signup> {
         child: RichText(
           text: TextSpan(
             children: <TextSpan>[
-              TextSpan(text: "Email", style: textbarlowRegularBlack()),
+              TextSpan(text: "Email", style: textbarlowRegularBlackdull()),
               TextSpan(
                 text: ' *',
                 style: TextStyle(color: Color(0xFFF44242)),
@@ -407,7 +407,7 @@ class _SignupState extends State<Signup> {
       child: RichText(
         text: TextSpan(
           children: <TextSpan>[
-            TextSpan(text: "Password", style: textbarlowRegularBlack()),
+            TextSpan(text: "Password", style: textbarlowRegularBlackdull()),
             TextSpan(
               text: ' *',
               style: TextStyle(color: Color(0xFFF44242)),
@@ -523,8 +523,17 @@ class _SignupState extends State<Signup> {
   // }
 
   Widget buildsignuplink() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 20.0, bottom: 15.0),
+    return Container(
+      height:55,
+      margin: EdgeInsets.only(top:30, bottom: 20),
+      decoration:BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withOpacity(0.29),
+                blurRadius: 5
+            )
+          ]
+      ),
       child: GFButton(
         size: GFSize.LARGE,
         color: primary,
@@ -539,11 +548,11 @@ class _SignupState extends State<Signup> {
             ),
             registerationLoading
                 ? Image.asset(
-                    'lib/assets/images/spinner.gif',
-                    width: 15.0,
-                    height: 15.0,
-                    color: Colors.black,
-                  )
+              'lib/assets/images/spinner.gif',
+              width: 15.0,
+              height: 15.0,
+              color: Colors.black,
+            )
                 : Text("")
           ],
         ),

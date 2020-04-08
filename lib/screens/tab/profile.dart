@@ -222,10 +222,11 @@ class _ProfileState extends State<Profile> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: <Widget>[
                               Padding(
                                 padding: const EdgeInsets.only(
-                                    left: 38.0, top: 20.0),
+                                    left: 8.0, top: 20.0),
                                 child: cardList[index]['cardImage'] == null
                                     ? Image.asset(
                                         'lib/assets/icons/mastercard-logo.png')
@@ -234,51 +235,11 @@ class _ProfileState extends State<Profile> {
                                       ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(left: 15.0),
+                                padding: const EdgeInsets.only(left: 0.0),
                                 child: Text(
                                   '${cardList[index]['bank']}',
                                   style: textBarlowRegularWhite(),
                                 ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 20),
-                          Center(
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 15.0),
-                              child: Text(
-                                '************${cardList[index]['lastFourDigits']}',
-                                style: textBarlowRegularWhite(),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 15),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              Column(
-                                children: <Widget>[
-                                  Text(
-                                    'Card holder',
-                                    style: textBarlowRegularWhit(),
-                                  ),
-                                  Text(
-                                    '${cardList[index]['cardHolderName']}',
-                                    style: textBarlowRegularWhit(),
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                children: <Widget>[
-                                  Text(
-                                    'Expires',
-                                    style: textBarlowRegularWhit(),
-                                  ),
-                                  Text(
-                                    '${cardList[index]['expiryMonth']}/${cardList[index]['expiryYear']}',
-                                    style: textBarlowRegularWhit(),
-                                  ),
-                                ],
                               ),
                               InkWell(
                                 onTap: () {
@@ -299,7 +260,7 @@ class _ProfileState extends State<Profile> {
                                                 new Text(
                                                   'Delete Card',
                                                   style:
-                                                      textBarlowRegularBlack(),
+                                                  textBarlowRegularBlack(),
                                                 ),
                                               ],
                                             ),
@@ -314,16 +275,16 @@ class _ProfileState extends State<Profile> {
                                             new FlatButton(
                                               child: isCardDelete
                                                   ? Image.asset(
-                                                      'lib/assets/images/spinner.gif',
-                                                      width: 10.0,
-                                                      height: 10.0,
-                                                      color: Colors.black,
-                                                    )
+                                                'lib/assets/images/spinner.gif',
+                                                width: 10.0,
+                                                height: 10.0,
+                                                color: Colors.black,
+                                              )
                                                   : Text(
-                                                      'Ok',
-                                                      style:
-                                                          textBarlowRegularBlack(),
-                                                    ),
+                                                'Ok',
+                                                style:
+                                                textBarlowRegularBlack(),
+                                              ),
                                               onPressed: () {
                                                 deleteCard(
                                                     cardList[index]['_id']);
@@ -337,9 +298,52 @@ class _ProfileState extends State<Profile> {
                                 },
                                 child: Icon(
                                   Icons.delete,
-                                  color: Colors.black54,
+                                  color: Colors.black45,
                                 ),
                               ),
+                            ],
+                          ),
+                          SizedBox(height: 20),
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 15.0),
+                              child: Text(
+                                '************${cardList[index]['lastFourDigits']}',
+                                style: textBarlowRegularWhite(),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 15),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    'Card holder',
+                                    style: textbarlowmediumwhitedull(),
+                                  ),
+                                  Text(
+                                    '${cardList[index]['cardHolderName']}',
+                                    style: textbarlowmediumwhite(),
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: <Widget>[
+                                  Text(
+                                    'Expires',
+                                    style: textbarlowmediumwhitedull(),
+                                  ),
+                                  Text(
+                                    '${cardList[index]['expiryMonth']}/${cardList[index]['expiryYear']}',
+                                    style: textbarlowmediumwhite(),
+                                  ),
+                                ],
+                              ),
+
                             ],
                           ),
                         ],
@@ -401,6 +405,7 @@ class _ProfileState extends State<Profile> {
           : token == null
               ? null
               : GFAppBar(
+        elevation: 0,
                   title: Text(
                     'Profile',
                     style: textbarlowSemiBoldBlack(),
@@ -432,131 +437,139 @@ class _ProfileState extends State<Profile> {
                                 );
                               },
                               child: Container(
-                                padding: const EdgeInsets.only(left: 15.0),
-                                width: 232,
+                                padding: const EdgeInsets.only(left: 10.0),
+margin: EdgeInsets.only(top:20,),
+//                                width: 232,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5.0),
                                 ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Container(
-                                        height: 80.0,
-                                        width: 80.0,
-                                        child: userInfo == null ||
-                                                userInfo['profilePic'] == null
-                                            ? Center(
-                                                child: new Container(
-                                                  width: 200.0,
-                                                  height: 200.0,
-                                                  decoration: new BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20.0),
-                                                    image: new DecorationImage(
-                                                      fit: BoxFit.fill,
-                                                      image: new AssetImage(
-                                                          'lib/assets/images/profile.png'),
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                            : Center(
-                                                child: new Container(
-                                                  width: 200.0,
-                                                  height: 200.0,
-                                                  decoration: new BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20.0),
-                                                    image: new DecorationImage(
-                                                      fit: BoxFit.fill,
-                                                      image: new NetworkImage(
-                                                          userInfo[
-                                                              'profilePic']),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
+                                  Flexible(
+                                    flex: 2,
+                                    fit: FlexFit.tight,
+                                    child:   Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      height: 90.0,
+                                      width: 91.0,
+                                      child: userInfo == null ||
+                                          userInfo['profilePic'] == null
+                                          ? Center(
+                                        child: new Container(
+                                          width: 200.0,
+                                          height: 200.0,
+                                          decoration: new BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                27.0),
+                                            image: new DecorationImage(
+                                              fit: BoxFit.fill,
+                                              image: new AssetImage(
+                                                  'lib/assets/images/profile.png'),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                          : Center(
+                                        child: new Container(
+                                          width: 200.0,
+                                          height: 200.0,
+                                          decoration: new BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                20.0),
+                                            image: new DecorationImage(
+                                              fit: BoxFit.fill,
+                                              image: new NetworkImage(
+                                                  userInfo[
+                                                  'profilePic']),
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                  ),),
+                                   Flexible(
+                                     flex: 4,
+                                     fit: FlexFit.tight,
+                                     child:  Column(
+                                     mainAxisAlignment:
+                                     MainAxisAlignment.start,
+                                     crossAxisAlignment:
+                                     CrossAxisAlignment.start,
+                                     children: <Widget>[
+                                       Padding(
+                                         padding: const EdgeInsets.only(
+                                             right: .0, bottom: 4.0),
+                                         child: userInfo == null &&
+                                             userInfo['firstName'] ==
+                                                 null &&
+                                             userInfo['lastName'] == null
+                                             ? Text(
+                                           '',
+                                           style:
+                                           textBarlowMediumBlack(),
+                                         )
+                                             : Text(
+                                           '${userInfo['firstName']} ${userInfo['lastName'] == null ? "" : userInfo['lastName']}',
+                                           style:
+                                           textBarlowMediumBlack(),
+                                         ),
+                                       ),
+                                       userInfo == null &&
+                                           userInfo['email'] == null
+                                           ? Text(
+                                         '',
+                                         style: textbarlowmedium(),
+                                       )
+                                           : Row(
+                                         mainAxisAlignment:
+                                         MainAxisAlignment.start,
+                                         children: <Widget>[
+                                           Text(
+                                             '${userInfo['email']}',
+                                             style:
+                                             textbarlowmedium(),
+                                           ),
+                                         ],
+                                       ),
+                                       Padding(
+                                         padding: const EdgeInsets.only(
+                                             top: 5.0, right: .0),
+                                         child: userInfo == null &&
+                                             userInfo['mobileNumber'] ==
+                                                 null
+                                             ? Text(
+                                           '',
+                                           style:
+                                           textbarlowmedium(),
+                                         )
+                                             :  Text(
+                                           '${userInfo['mobileNumber'] == null ? "" : userInfo['mobileNumber']}',
+                                           style:
+                                           textbarlowmedium(),
+                                         ),
+                                       ),
+                                     ],
+                                   ),),
+
+                                    Flexible(
+//                                      fit: FlexFit.tight,
+//                                      flex: 1,
+                                      child: Row(
+
                                       children: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              right: .0, bottom: 4.0),
-                                          child: userInfo == null &&
-                                                  userInfo['firstName'] ==
-                                                      null &&
-                                                  userInfo['lastName'] == null
-                                              ? Text(
-                                                  '',
-                                                  style:
-                                                      textBarlowMediumBlack(),
-                                                )
-                                              : Text(
-                                                  '${userInfo['firstName']} ${userInfo['lastName'] == null ? "" : userInfo['lastName']}',
-                                                  style:
-                                                      textBarlowMediumBlack(),
-                                                ),
-                                        ),
-                                        userInfo == null &&
-                                                userInfo['email'] == null
-                                            ? Text(
-                                                '',
-                                                style: textBarlowRegularBlack(),
-                                              )
-                                            : Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: <Widget>[
-                                                  Text(
-                                                    '${userInfo['email']}',
-                                                    style:
-                                                        textBarlowRegularBlack(),
-                                                  ),
-                                                ],
-                                              ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0, right: .0),
-                                          child: userInfo == null &&
-                                                  userInfo['mobileNumber'] ==
-                                                      null
-                                              ? Text(
-                                                  '',
-                                                  style:
-                                                      textBarlowRegularBlack(),
-                                                )
-                                              : Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: <Widget>[
-                                                    Text(
-                                                      '${userInfo['mobileNumber'] == null ? "" : userInfo['mobileNumber']}',
-                                                      style:
-                                                          textBarlowRegularBlack(),
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              left: 118.0,
-                                                              top: 5),
-                                                      child: Icon(Icons.edit,
-                                                          color: primary),
-                                                    ),
-                                                  ],
-                                                ),
-                                        ),
+
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: <Widget>[
+                                          Padding(padding: EdgeInsets.only(top:40), child:   Image.asset('lib/assets/icons/edit.png'),)
+                                          ],
+                                        )
                                       ],
-                                    ),
+                                    ), )
                                   ],
                                 ),
                               ),
@@ -620,7 +633,17 @@ class _ProfileState extends State<Profile> {
                                 );
                               },
                               child: Container(
-                                color: Colors.white38,
+                                height: 55,
+
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFFDFDFD),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.10),
+                                      blurRadius: 3
+                                    )
+                                  ]
+                                ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: <Widget>[
@@ -651,7 +674,17 @@ class _ProfileState extends State<Profile> {
                                 );
                               },
                               child: Container(
-                                color: Colors.white38,
+                                height: 55,
+
+                                decoration: BoxDecoration(
+                                    color: Color(0xFFFDFDFD),
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.black.withOpacity(0.10),
+                                          blurRadius: 3
+                                      )
+                                    ]
+                                ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: <Widget>[
@@ -680,7 +713,17 @@ class _ProfileState extends State<Profile> {
                                 );
                               },
                               child: Container(
-                                color: Colors.white38,
+                                height: 55,
+
+                                decoration: BoxDecoration(
+                                    color: Color(0xFFFDFDFD),
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.black.withOpacity(0.10),
+                                          blurRadius: 3
+                                      )
+                                    ]
+                                ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: <Widget>[
@@ -700,38 +743,51 @@ class _ProfileState extends State<Profile> {
                               height: 20.0,
                             ),
                             Container(
-                              color: Colors.white38,
+                              height: 55,
+                          padding: EdgeInsets.only(right:20),
+                              decoration: BoxDecoration(
+                                  color: Color(0xFFFDFDFD),
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.black.withOpacity(0.10),
+                                        blurRadius: 3
+                                    )
+                                  ]
+                              ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Padding(
                                     padding: const EdgeInsets.only(
-                                        top: 10.0, bottom: 10.0, left: 20.0),
+                                        top: 10.0, bottom: 10.0, left: 20.0, right:20),
                                     child: InkWell(
                                       onTap: () {
                                         logout();
                                       },
-                                      child: Text(
-                                        'Logout',
-                                        style: textBarlowMediumBlack(),
-                                      ),
+                                      child:Row(
+//                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Text(
+                                            'Logout',
+                                            style: textBarlowMediumBlack(),
+                                          ),
+
+                                        ],
+                                      )
                                     ),
                                   ),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
+
                                     children: <Widget>[
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 248.0),
-                                        child: logoutLoading
+                                      logoutLoading
                                             ? Image.asset(
                                                 'lib/assets/images/spinner.gif',
                                                 width: 10.0,
                                                 height: 10.0,
                                                 color: Colors.black,
                                               )
-                                            : Icon(Icons.exit_to_app),
-                                      )
+                                            : Image.asset('lib/assets/icons/logout.png')
+
                                     ],
                                   ),
                                 ],

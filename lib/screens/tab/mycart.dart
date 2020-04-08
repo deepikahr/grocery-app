@@ -267,6 +267,7 @@ class _MyCartState extends State<MyCart> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFFDFDFD),
       key: _scaffoldkey,
       appBar: isGetTokenLoading
           ? null
@@ -301,7 +302,7 @@ class _MyCartState extends State<MyCart> {
                       child: Image.asset('lib/assets/images/no-orders.png'),
                     )
                   : Container(
-                      margin: EdgeInsets.only(left: 20.0, right: 20.0),
+//                      margin: EdgeInsets.only(left: 20.0, right: 20.0),
                       child: ListView(
                         children: <Widget>[
                           SizedBox(height: 20),
@@ -315,7 +316,7 @@ class _MyCartState extends State<MyCart> {
                                     children: <Widget>[
                                       Padding(
                                         padding: const EdgeInsets.only(
-                                            bottom: 8.0, left: 10.0),
+                                            bottom: 20.0, left: 10.0),
                                         child: cartItem == null
                                             ? Text(
                                                 '0 Items',
@@ -330,8 +331,8 @@ class _MyCartState extends State<MyCart> {
                                     ],
                                   ),
                                 ),
-                                Container(
-                                  child: ListView.builder(
+
+                               ListView.builder(
                                     physics: ScrollPhysics(),
                                     shrinkWrap: true,
                                     itemCount: cartItem == null
@@ -340,7 +341,18 @@ class _MyCartState extends State<MyCart> {
                                     itemBuilder: (BuildContext context, int i) {
                                       return Container(
                                         margin: EdgeInsets.only(bottom: 20),
-                                        color: Colors.white60,
+                                        padding: EdgeInsets.all(10) ,
+                                         decoration: BoxDecoration(
+                                           color: Color(0XFFFDFDFD),
+                                           boxShadow: [
+                                             BoxShadow(
+                                               color: Colors.black.withOpacity(0.33),
+                                               blurRadius: 6
+                                             )
+                                           ]
+                                         ),
+//                                        color: Colors.white60,
+
                                         child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
@@ -348,6 +360,17 @@ class _MyCartState extends State<MyCart> {
                                             Row(
                                               children: <Widget>[
                                                 Container(
+                                                  margin:EdgeInsets.only(right:5),
+                                                  decoration: BoxDecoration(
+//                                                      color: Color(0xFFFDFDFD),
+                                                      borderRadius: BorderRadius.all(Radius.circular(6)),
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                            color: Color(0xFF0000000D).withOpacity(0.20),
+                                                            blurRadius: 30
+                                                        )
+                                                      ]
+                                                  ),
                                                   height: 100,
                                                   width: 100,
                                                   child: cartItem['cart'][i]
@@ -437,13 +460,14 @@ class _MyCartState extends State<MyCart> {
                                             Column(
                                               children: <Widget>[
                                                 Container(
+
                                                   decoration: BoxDecoration(
                                                       color: Colors.grey[200],
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               20.0)),
-                                                  height: 132,
-                                                  width: 30,
+//                                                  height: 132,
+                                                  width: 37,
                                                   child: Column(
                                                     children: <Widget>[
                                                       InkWell(
@@ -451,8 +475,8 @@ class _MyCartState extends State<MyCart> {
                                                           _incrementCount(i);
                                                         },
                                                         child: Container(
-                                                          width: 30,
-                                                          height: 30,
+                                                          width: 37,
+                                                          height: 37,
                                                           decoration:
                                                               BoxDecoration(
                                                             color: primary,
@@ -494,8 +518,8 @@ class _MyCartState extends State<MyCart> {
                                                                       .only(
                                                                   top: 10.0),
                                                           child: Container(
-                                                            width: 30,
-                                                            height: 30,
+                                                            width: 37,
+                                                            height: 37,
                                                             decoration:
                                                                 BoxDecoration(
                                                               color:
@@ -523,7 +547,7 @@ class _MyCartState extends State<MyCart> {
                                       );
                                     },
                                   ),
-                                ),
+
                               ],
                             ),
                           ),
@@ -539,7 +563,7 @@ class _MyCartState extends State<MyCart> {
             )
           : token == null
               ? Container(
-                  height: 110,
+                  height: 120,
                 )
               : isLoadingCart
                   ? Center(child: CircularProgressIndicator())
@@ -548,7 +572,7 @@ class _MyCartState extends State<MyCart> {
                           height: 120.0,
                         )
                       : Container(
-                          height: 140.0,
+                          height: 150.0,
                           child: Column(
                             children: <Widget>[
                               Padding(
@@ -579,10 +603,16 @@ class _MyCartState extends State<MyCart> {
                                       MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>[
-                                    new Text(
-                                      "Tax",
-                                      style: textBarlowRegularBlack(),
-                                    ),
+                                   Row(
+                                     children: <Widget>[
+                                       Image.asset('lib/assets/icons/sale.png'),
+                                       SizedBox(width:5),
+                                       new Text(
+                                         "Tax",
+                                         style: textBarlowRegularBlack(),
+                                       ),
+                                     ],
+                                   ),
                                     new Text(
                                       '$currency ${cartItem['tax']}',
                                       style: textbarlowBoldsmBlack(),
@@ -613,7 +643,8 @@ class _MyCartState extends State<MyCart> {
                               ),
                               SizedBox(height: 12),
                               Container(
-                                height: 50.0,
+                                height: 55.0,
+
                                 child: Padding(
                                   padding: const EdgeInsetsDirectional.only(
                                       start: 20.0, end: 20.0, bottom: 5.0),
@@ -634,14 +665,24 @@ class _MyCartState extends State<MyCart> {
                                           CrossAxisAlignment.center,
                                       children: <Widget>[
                                         Container(
-                                          color: Colors.black,
+                                         height: 55,
                                           width: 120,
+                                          decoration: BoxDecoration(
+                                              color: Colors.black,
+
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black.withOpacity(0.29),
+                                                blurRadius: 6
+                                              )
+                                            ]
+                                          ),
                                           margin: EdgeInsets.only(right: 90),
                                           child: Column(
                                             children: <Widget>[
                                               SizedBox(height: 3),
                                               new Text(
-                                                "Grand Total",
+                                                "Grand Totaly",
                                                 style: textBarlowRegularWhite(),
                                               ),
                                               SizedBox(height: 1),
