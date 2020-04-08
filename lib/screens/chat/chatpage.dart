@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_pro/screens/home/home.dart';
 import 'package:grocery_pro/service/auth-service.dart';
-import 'package:grocery_pro/service/constants.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
@@ -35,14 +34,11 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
 
   Future getUserInfor() async {
     await LoginService.getUserInfo().then((onValue) {
+      print(onValue);
       try {
         if (mounted) {
           setState(() {
-            name = onValue['response_data']['userInfo']['firstName'] +
-                        onValue['response_data']['userInfo']['lastName'] ==
-                    null
-                ? ""
-                : onValue['response_data']['userInfo']['lastName'];
+            name = onValue['response_data']['userInfo']['firstName'];
             id = onValue['response_data']['userInfo']['_id'];
             if (onValue['response_data']['userInfo']['profilePic'] == null) {
               image =
@@ -140,7 +136,10 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
 
 //fetchres info
   fetchRestaurantInfo() async {
+    print("response");
+
     LoginService.restoInfo().then((response) {
+      print(response);
       try {
         resInfo = response['response_data'];
         print(resInfo);
@@ -191,12 +190,12 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                 socket.emit(
                     "close-chat", {"chatId": chatID, "store": resInfo['_id']});
 
-                Navigator.push(
-                  context,
-                  new MaterialPageRoute(
-                    builder: (BuildContext context) => new Home(),
-                  ),
-                );
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Home(),
+                    ),
+                    (Route<dynamic> route) => false);
               },
             ),
           ],
@@ -225,12 +224,12 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                   socket.emit("close-chat",
                       {"chatId": chatID, "store": resInfo['_id']});
 
-                  Navigator.push(
-                    context,
-                    new MaterialPageRoute(
-                      builder: (BuildContext context) => new Home(),
-                    ),
-                  );
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => Home(),
+                      ),
+                      (Route<dynamic> route) => false);
                 },
                 child: new Text(
                   "Yes",
@@ -257,10 +256,10 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
               color: Colors.black,
             ),
           ),
-          // shape: RoundedRectangleBorder(
-          //     borderRadius: BorderRadius.only(
-          //         bottomLeft: Radius.circular(20),
-          //         bottomRight: Radius.circular(20))),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20))),
           title: new Text(
             "Chat",
             style: textbarlowSemiBoldBlack(),

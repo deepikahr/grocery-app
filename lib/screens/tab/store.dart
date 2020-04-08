@@ -189,6 +189,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0.0,
+        automaticallyImplyLeading: false,
         title: Container(
           margin: EdgeInsets.only(left: 7, top: 10),
           child: Column(
@@ -200,7 +201,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
               ),
               Text(
                 'HSR Layout...',
-                style: textBarlowSemiBoldBlack(),
+                style: textbarlowSemiBoldBlack(),
               )
             ],
           ),
@@ -430,6 +431,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                                   onPressed: null,
                                                   text: productsList[i]
                                                       ['discount'],
+                                                  textStyle:
+                                                      textbarlowRegularBlack(),
                                                   color: Colors.deepOrange[300],
                                                 ),
                                               ),
@@ -443,9 +446,9 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                         padding: const EdgeInsets.only(),
                                         child: Image.network(
                                           productsList[i]['imageUrl'],
-                                          fit: BoxFit.fill,
+                                          fit: BoxFit.cover,
                                           width: 117,
-                                          height: 66,
+                                          height: 63,
                                         ),
                                       ),
                                     ],
@@ -470,11 +473,11 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                             children: <Widget>[
                                               Text(
                                                 currency,
-                                                style: textBarlowMediumGreen(),
+                                                style: textbarlowBoldGreen(),
                                               ),
                                               Text(
                                                 '${productsList[i]['variant'][0]['price']}',
-                                                style: textBarlowMediumGreen(),
+                                                style: textbarlowBoldGreen(),
                                               )
                                             ],
                                           ),

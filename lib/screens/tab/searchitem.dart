@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
-import 'package:grocery_pro/screens/home/home.dart';
 import 'package:grocery_pro/screens/product/product-details.dart';
 import 'package:grocery_pro/style/style.dart';
 
