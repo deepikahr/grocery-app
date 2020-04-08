@@ -444,8 +444,18 @@ class _EditProfileState extends State<EditProfile> {
               ),
             ),
       bottomNavigationBar: Container(
+        height: 55,
+        margin: EdgeInsets.only(bottom: 20, left: 15, right: 15),
+        decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black.withOpacity(0.29),
+                  blurRadius: 5
+              )
+            ]
+        ),
         child: Padding(
-          padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+          padding: const EdgeInsets.only(left: 0.0, right: 0.0),
           child: GFButton(
             onPressed: updateUserInformation,
             color: primary,

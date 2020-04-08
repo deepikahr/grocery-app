@@ -181,73 +181,89 @@ class _OrderDetailsState extends State<OrderDetails> {
           : ListView(
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(left: 20.0),
-                  child: Column(
+                  padding: const EdgeInsets.only(left: 20.0, right: 20, top:20),
+                  child: Row(
                     children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                      Flexible(
+                        flex: 6,
+                        fit: FlexFit.tight,
+                        child: Column(
                         children: <Widget>[
-                          Text('Order ID:', style: textBarlowMediumBlack()),
-                          Container(
-                            margin: EdgeInsets.only(top: 20, left: 8),
-                            width: MediaQuery.of(context).size.width * 0.5,
-                            child: Text(orderHistory['_id'],
-                                style: textBarlowMediumBlack()),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Text('Order ID:', style: textBarlowMediumBlack()),
+                              SizedBox(width: 5),
+                             Expanded(child:  Text(orderHistory['_id'],
+                                 style: textBarlowMediumBlack()),)
+
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Text('Date:',
+                                  style: textBarlowMediumBlack()),
+                              SizedBox(width: 5),
+                             Expanded(child:  Text(orderHistory['deliveryDate'],
+                                 style: textBarlowMediumBlack()),)
+
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Text('Time:',
+                                  style: textBarlowMediumBlack()),
+                              SizedBox(width: 3),
+                            Expanded(child:   Text(orderHistory['deliveryTime'],
+                                style: textBarlowMediumBlack()),)
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Text('Payment Type:', style: textBarlowMediumBlack()),
+                              SizedBox(width: 5),
+                             Expanded(child:  Text(orderHistory['paymentType'],
+                                 style: textBarlowMediumBlack()),)
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Text('Order Status:', style: textBarlowMediumBlack()),
+                              SizedBox(width: 5),
+                              Expanded(child: Text(orderHistory['orderStatus'],
+                                  style: textBarlowMediumGreen()),)
+                            ],
                           ),
                         ],
-                      ),
-                      SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Text('Delivery Date:',
-                              style: textBarlowMediumBlack()),
-                          Container(
-                            margin: EdgeInsets.only(left: 8),
-                            child: Text(orderHistory['deliveryDate'],
-                                style: textBarlowMediumBlack()),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Text('Delivery Time:',
-                              style: textBarlowMediumBlack()),
-                          Container(
-                            margin: EdgeInsets.only(left: 8),
-                            child: Text(orderHistory['deliveryTime'],
-                                style: textBarlowMediumBlack()),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Text('Payment Type:', style: textBarlowMediumBlack()),
-                          Container(
-                            margin: EdgeInsets.only(left: 8),
-                            child: Text(orderHistory['paymentType'],
-                                style: textBarlowMediumBlack()),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Text('Order Status:', style: textBarlowMediumBlack()),
-                          Container(
-                            margin: EdgeInsets.only(left: 8),
-                            child: Text(orderHistory['orderStatus'],
-                                style: textBarlowMediumGreen()),
-                          ),
-                        ],
-                      ),
+                      ),),
+                      SizedBox(width: 5),
+                      
+                      Flexible(
+                        fit: FlexFit.tight,
+                          flex: 3,
+                          child:Container(
+                            height: 141,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(5)),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.33),
+                                  blurRadius: 6
+                                )
+                              ],
+                              image: DecorationImage(image: AssetImage('lib/assets/images/product.png'), fit: BoxFit.fill)
+                            ),
+                          ))
                     ],
-                  ),
+                  )
                 ),
                 SizedBox(height: 20),
                 Padding(
@@ -270,11 +286,11 @@ class _OrderDetailsState extends State<OrderDetails> {
                         Container(
                           color: Colors.white38,
                           child: GFListTile(
-                            avatar: Container(
-                              width: 60,
-                              child: Image.network(
-                                  orderHistory['cart']['cart'][i]['imageUrl']),
-                            ),
+//                            avatar: Container(
+//                              width: 60,
+//                              child: Image.network(
+//                                  orderHistory['cart']['cart'][i]['imageUrl']),
+//                            ),
                             title: Padding(
                               padding: const EdgeInsets.only(
                                   bottom: 0.0, right: 5.0),

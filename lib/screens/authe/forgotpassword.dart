@@ -189,9 +189,17 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   ),
                 ),
               ),
-              Padding(
-                padding:
-                    const EdgeInsets.only(left: 20.0, right: 20.0, top: 30.0),
+              Container(
+                height:55,
+                margin: EdgeInsets.only(top:30, bottom: 20, right:20, left:20),
+                decoration:BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black.withOpacity(0.29),
+                          blurRadius: 5
+                      )
+                    ]
+                ),
                 child: GFButton(
                   color: primary,
                   size: GFSize.LARGE,

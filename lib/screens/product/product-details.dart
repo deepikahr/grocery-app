@@ -568,8 +568,8 @@ class _ProductDetailsState extends State<ProductDetails>
                             decoration: BoxDecoration(
                                 boxShadow: [
                                   new BoxShadow(
-                                    color: Colors.black,
-                                    blurRadius: 1.0,
+                                    color: Colors.black.withOpacity(0.29),
+                                    blurRadius: 6.0,
                                   ),
                                 ],
                                 color: Colors.white,

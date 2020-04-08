@@ -163,7 +163,13 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         ],
       ),
       bottomNavigationBar: Container(
-        decoration: BoxDecoration(),
+
+        decoration: BoxDecoration(
+            color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20)
+          )
+        ),
         child: GFTabBar(
           initialIndex: currentIndex,
           length: 4,
