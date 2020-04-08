@@ -12,7 +12,7 @@ dependencies:
   getflutter: ^1.0.11
   shared_preferences: ^0.5.3+4
   pin_entry_text_field: ^0.1.3
-  location: ^2.3.5 
+  location: ^2.3.5
   intl: ^0.16.1
   http: ^0.12.0+2
   sentry: ^2.2.0
@@ -22,7 +22,7 @@ dependencies:
   google_map_location_picker: ^3.2.1+2
   google_maps_flutter: ^0.5.25+3
   socket_io_client: ^0.9.9
-  onesignal_flutter: ^2.3.4 
+  onesignal_flutter: ^2.3.4
   flutter_rating_bar: ^3.0.1+1
 
 dev_dependencies:
@@ -30,34 +30,32 @@ dev_dependencies:
     sdk: flutter
 
 flutter:
-
   uses-material-design: true
-    
+
   fonts:
     - family: icomoon
-      fonts:   
+      fonts:
         - asset: lib/assets/fonts/icomoon.ttf
 
-    - family: 'BarlowBold'
-      fonts:   
+    - family: "BarlowBold"
+      fonts:
         - asset: lib/assets/fonts/barlowBold.ttf
           weight: 400
 
-    - family: 'BarlowMedium'
-      fonts:   
+    - family: "BarlowMedium"
+      fonts:
         - asset: lib/assets/fonts/barlowMedium.ttf
           weight: 400
 
-    - family: 'BarlowRegular'
-      fonts:   
+    - family: "BarlowRegular"
+      fonts:
         - asset: lib/assets/fonts/barlowRegular.ttf
           weight: 400
-          
-    - family: 'BarlowSemiBold'
-      fonts:   
+
+    - family: "BarlowSemiBold"
+      fonts:
         - asset: lib/assets/fonts/barlowSemiBold.ttf
-          weight: 400  
-    
+          weight: 400
 
   # To add assets to your application, add an assets section, like this:
   assets:
@@ -86,5 +84,3 @@ flutter:
     - lib/assets/images/no-orders.png
     - lib/assets/icons/addbtn.png
     - lib/assets/icons/minus.png
-
-
