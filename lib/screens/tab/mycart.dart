@@ -636,6 +636,15 @@ class _MyCartState extends State<MyCart> {
                               // SizedBox(height: 12),
                               Container(
                                 height: 55.0,
+//                                decoration: BoxDecoration(
+//                                  color: Colors.white,
+//                                  boxShadow: [
+//                                    BoxShadow(
+//                                        color: Colors.black
+//                                            .withOpacity(0.33),
+//                                        blurRadius: 2)
+//                                  ],
+//                                ),
                                 child: Padding(
                                   padding: const EdgeInsetsDirectional.only(
                                       start: 20.0, end: 20.0, bottom: 5.0),
@@ -663,8 +672,8 @@ class _MyCartState extends State<MyCart> {
                                             boxShadow: [
                                               BoxShadow(
                                                   color: Colors.black
-                                                      .withOpacity(0.29),
-                                                  blurRadius: 6)
+                                                      .withOpacity(0.33),
+                                                  blurRadius: 2)
                                             ],
                                           ),
                                           margin: EdgeInsets.only(right: 90),

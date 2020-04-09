@@ -356,7 +356,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                                         .substring(0, 6) +
                                                     ".."
                                                 : categoryList[index]['title'],
-                                            style: textbarlowRegularBlack(),
+                                            style: textBarlowRegularrdarkdull(),
                                             textAlign: TextAlign.center,
                                           )
                                         ],
@@ -380,6 +380,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                             ? 0
                             : productsList.length,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+
                             crossAxisCount: 2),
                         itemBuilder: (BuildContext context, int i) {
                           return productsList[i]['outOfStock'] != null ||
@@ -397,9 +398,9 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                       ),
                                     );
                                   },
-                                  child: Column(
-                                    children: <Widget>[
+                                  child:
                                       GFCard(
+
                                         shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(20.0)),
@@ -488,11 +489,11 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                                 ),
                                                 Row(
                                                   children: <Widget>[
-                                                    Text(
-                                                      productsList[i]['title'],
-                                                      style:
-                                                          textbarlowRegularBlack(),
-                                                    ),
+                                                  Expanded(child:   Text(
+                                                    productsList[i]['title'],
+                                                    style:
+                                                    textbarlowRegularBlackb(),
+                                                  ),)
                                                   ],
                                                 ),
                                                 Row(
@@ -500,7 +501,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                                     Text(
                                                       currency,
                                                       style:
-                                                          textbarlowBoldGreen(),
+                                                      textbarlowBoldgreen(),
                                                     ),
                                                     Text(
                                                       '${productsList[i]['variant'][0]['price']}',
@@ -514,8 +515,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                           ],
                                         ),
                                       ),
-                                    ],
-                                  ),
+
                                 )
                               : Expanded(
                                   child: Stack(

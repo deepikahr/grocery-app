@@ -597,7 +597,7 @@ class _PaymentState extends State<Payment> {
               children: <Widget>[
                 Text(
                   "Pay Now",
-                  style: textBarlowRegularrBlack(),
+                  style: textBarlowRegularBlack(),
                 ),
                 isPlaceOrderLoading
                     ? Image.asset(
