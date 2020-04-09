@@ -27,7 +27,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> with TickerProviderStateMixin {
   TabController tabController;
-  bool isGetTokenLoading = true;
+  bool isGetTokenLoading = true, currencyLoading = false;
   int currentIndex = 0;
 
   @override
@@ -55,7 +55,11 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
 
   getGlobalSettingsData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
+    if (mounted) {
+      setState(() {
+        currencyLoading = true;
+      });
+    }
     getGlobalSettings().then((onValue) {
       print(onValue['response_data']);
       try {
@@ -65,6 +69,11 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         } else {
           prefs.setString('currency',
               '${onValue['response_data']['currency'][0]['currencySign']}');
+        }
+        if (mounted) {
+          setState(() {
+            currencyLoading = false;
+          });
         }
       } catch (error, stackTrace) {
         sentryError.reportError(error, stackTrace);
@@ -141,27 +150,31 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GFTabBarView(
-        controller: tabController,
-        children: <Widget>[
-          Container(
-            color: Colors.white,
-            child: Store(),
-          ),
-          Container(
-            color: Colors.white,
-            child: SavedItems(),
-          ),
-          Container(
-            color: Colors.white,
-            child: MyCart(),
-          ),
-          Container(
-            color: Colors.white,
-            child: Profile(),
-          ),
-        ],
-      ),
+      body: currencyLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : GFTabBarView(
+              controller: tabController,
+              children: <Widget>[
+                Container(
+                  color: Colors.white,
+                  child: Store(),
+                ),
+                Container(
+                  color: Colors.white,
+                  child: SavedItems(),
+                ),
+                Container(
+                  color: Colors.white,
+                  child: MyCart(),
+                ),
+                Container(
+                  color: Colors.white,
+                  child: Profile(),
+                ),
+              ],
+            ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(),
         child: GFTabBar(

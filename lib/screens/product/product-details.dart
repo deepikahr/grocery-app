@@ -225,6 +225,7 @@ class _ProductDetailsState extends State<ProductDetails>
             : variantUnit.toString()
       };
       await CartService.addProductToCart(buyNowProduct).then((onValue) {
+        print(onValue);
         try {
           if (mounted) {
             setState(() {
@@ -455,23 +456,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                                   BorderRadius.circular(20.0)),
                                           child: InkWell(
                                             onTap: () {
-                                              if ((variantProductstock == null
-                                                      ? widget.productDetail[
-                                                                      'variant'][0]
-                                                                  [
-                                                                  'productstock'] ==
-                                                              null
-                                                          ? 1
-                                                          : widget.productDetail[
-                                                                  'variant'][0]
-                                                              ['productstock']
-                                                      : variantProductstock) ==
-                                                  quantity) {
-                                                showSnackbar(
-                                                    "Product only few stock");
-                                              } else {
-                                                _changeProductQuantity(true);
-                                              }
+                                              _changeProductQuantity(true);
                                             },
                                             child: Icon(Icons.add),
                                           ),

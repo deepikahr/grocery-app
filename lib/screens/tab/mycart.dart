@@ -277,18 +277,11 @@ class _MyCartState extends State<MyCart> {
                     'My Cart',
                     style: textbarlowSemiBoldBlack(),
                   ),
+                  automaticallyImplyLeading: false,
                   centerTitle: true,
                   backgroundColor: Colors.transparent,
                   elevation: 0,
                   iconTheme: IconThemeData(color: Colors.black),
-                  leading: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Home()),
-                        );
-                      },
-                      child: Icon(Icons.arrow_back)),
                 ),
       body: isGetTokenLoading
           ? Center(

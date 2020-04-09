@@ -164,47 +164,13 @@ class _PaymentState extends State<Payment> {
                 isPlaceOrderLoading = false;
               });
             }
-            showDialog<Null>(
-              context: context,
-              barrierDismissible: false,
-              builder: (BuildContext context) {
-                return Container(
-                  width: 270.0,
-                  child: new AlertDialog(
-                    title: new Text(
-                      'Thank You ...!!',
-                      style: textBarlowRegularBlack(),
-                    ),
-                    content: new SingleChildScrollView(
-                      child: new ListBody(
-                        children: <Widget>[
-                          new Text(
-                            'Order Successful',
-                            style: textBarlowRegularBlack(),
-                          ),
-                        ],
-                      ),
-                    ),
-                    actions: <Widget>[
-                      new FlatButton(
-                        child: new Text(
-                          'ok',
-                          style: textbarlowRegularaPrimar(),
-                        ),
-                        onPressed: () {
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder: (BuildContext context) => Thankyou(),
-                              ),
-                              (Route<dynamic> route) => false);
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              },
-            );
+
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => Thankyou(),
+                ),
+                (Route<dynamic> route) => false);
           } else {
             if (mounted) {
               setState(() {
