@@ -246,16 +246,12 @@ class _EditProfileState extends State<EditProfile> {
         isPicUploading = true;
       });
     }
-    print(userInfo['profilePicId']);
     LoginService.imagedelete(userInfo['profilePicId'].toString()).then((value) {
-      print(value);
       if (value['response_code'] == 200) {
         if (mounted) {
           setState(() {
             isPicUploading = false;
-            // // getUserInfo();
-            // userInfo['profilePic'] = null;
-            // image = null;
+
             Navigator.pop(context);
 
             updateUserInfo(null, null);

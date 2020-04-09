@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/components/button/gf_button.dart';
 import 'package:getflutter/components/typography/gf_typography.dart';
-import 'package:getflutter/size/gf_size.dart';
 import 'package:grocery_pro/screens/authe/login.dart';
 import 'package:grocery_pro/service/auth-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
@@ -44,7 +43,6 @@ class _ResetPasswordState extends State<ResetPassword> {
       }
       Map<String, dynamic> body = {"password": password1};
       await LoginService.resetPassword(body, widget.token).then((onValue) {
-        print(onValue);
         try {
           if (mounted) {
             setState(() {
@@ -182,8 +180,10 @@ class _ResetPasswordState extends State<ResetPassword> {
                       ),
                     ),
                     validator: (String value) {
-                      if (value.isEmpty || value.length < 6) {
-                        return "password invalid";
+                      if (value.isEmpty) {
+                        return "Please Enter a Password";
+                      } else if (value.length < 6) {
+                        return "Please Enter Min 6 Digit Password";
                       } else
                         return null;
                     },
@@ -247,7 +247,11 @@ class _ResetPasswordState extends State<ResetPassword> {
                       ),
                     ),
                     validator: (String value) {
-                      if (_passwordTextController.text != value) {
+                      if (value.isEmpty) {
+                        return "Please Enter a Password";
+                      } else if (value.length < 6) {
+                        return "Please Enter Min 6 Digit Password";
+                      } else if (_passwordTextController.text != value) {
                         return "passwords do not match" + '.';
                       } else
                         return null;

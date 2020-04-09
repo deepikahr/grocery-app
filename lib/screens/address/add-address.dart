@@ -74,7 +74,6 @@ class _AddAddressState extends State<AddAddress> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       AddressService.addAddress(address).then((onValue) {
-        print(onValue);
         try {
           if (mounted) {
             setState(() {
@@ -83,7 +82,6 @@ class _AddAddressState extends State<AddAddress> {
             });
           }
         } catch (error, stackTrace) {
-          print(error);
           sentryError.reportError(error, stackTrace);
         }
       }).catchError((onError) {
@@ -241,7 +239,7 @@ class _AddAddressState extends State<AddAddress> {
                         )),
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return "please Enter Valid value";
+                        return "please Enter House/Flat/Block number";
                       } else
                         return null;
                     },
@@ -293,7 +291,7 @@ class _AddAddressState extends State<AddAddress> {
                       ),
                       validator: (String value) {
                         if (value.isEmpty) {
-                          return "please Enter Valid value";
+                          return "please Enter Apartment Name";
                         } else
                           return null;
                       },
@@ -344,7 +342,7 @@ class _AddAddressState extends State<AddAddress> {
                       ),
                       validator: (String value) {
                         if (value.isEmpty) {
-                          return "please Enter Valid value";
+                          return "please Enter Land Mark";
                         } else
                           return null;
                       },
@@ -370,9 +368,11 @@ class _AddAddressState extends State<AddAddress> {
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
+                      maxLength: 6,
                       style: textBarlowRegularBlack(),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
+                        counterText: "",
                         errorBorder: OutlineInputBorder(
                             borderSide:
                                 BorderSide(width: 0, color: Color(0xFFF44242))),
@@ -395,7 +395,9 @@ class _AddAddressState extends State<AddAddress> {
                       ),
                       validator: (String value) {
                         if (value.isEmpty) {
-                          return "please Enter Valid value";
+                          return "please Enter Postel Code";
+                        } else if (value.length != 6) {
+                          return "please Enter 6 digit Postel Code ";
                         } else
                           return null;
                       },
@@ -442,8 +444,10 @@ class _AddAddressState extends State<AddAddress> {
                           borderSide: BorderSide(color: primary),
                         )),
                     validator: (String value) {
-                      if (value.isEmpty || value.length != 10) {
-                        return "please Enter Valid value";
+                      if (value.isEmpty) {
+                        return "please Enter Contact Number";
+                      } else if (value.length != 10) {
+                        return "please Enter 10 Digit Contact Number";
                       } else
                         return null;
                     },

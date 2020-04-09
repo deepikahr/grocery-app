@@ -92,10 +92,8 @@ class _EditAddressState extends State<EditAddress> {
 
       address['addressType'] = addressType[
           selectedRadioFirst == null ? selectedRadio : selectedRadioFirst];
-      print(address);
       AddressService.updateAddress(address, widget.updateAddressID['_id'])
           .then((onValue) {
-        print(onValue);
         try {
           if (mounted) {
             setState(() {
@@ -184,10 +182,7 @@ class _EditAddressState extends State<EditAddress> {
         iconTheme: IconThemeData(
           color: Colors.black,
         ),
-        title: Text(
-          'Edit Address',
-          style: textbarlowSemiBoldBlack()
-        ),
+        title: Text('Edit Address', style: textbarlowSemiBoldBlack()),
         centerTitle: true,
         elevation: 0,
         backgroundColor: primary,
@@ -225,15 +220,12 @@ class _EditAddressState extends State<EditAddress> {
                 ),
                 Container(
                   height: 45,
-                  margin: EdgeInsets.only(left:12, right:12, top:15, bottom: 15),
-                  decoration:BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.33),
-                        blurRadius: 6
-                      )
-                    ]
-                  ),
+                  margin:
+                      EdgeInsets.only(left: 12, right: 12, top: 15, bottom: 15),
+                  decoration: BoxDecoration(boxShadow: [
+                    BoxShadow(
+                        color: Colors.black.withOpacity(0.33), blurRadius: 6)
+                  ]),
                   child: Padding(
                     padding: const EdgeInsets.only(
                       left: 0.0,
@@ -296,7 +288,7 @@ class _EditAddressState extends State<EditAddress> {
                         )),
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return "please Enter Valid value";
+                        return "please Enter House/Flat/Block number ";
                       } else
                         return null;
                     },
@@ -345,7 +337,7 @@ class _EditAddressState extends State<EditAddress> {
                       ),
                       validator: (String value) {
                         if (value.isEmpty) {
-                          return "please Enter Valid value";
+                          return "please Enter Apartment Name";
                         } else
                           return null;
                       },
@@ -393,7 +385,7 @@ class _EditAddressState extends State<EditAddress> {
                       ),
                       validator: (String value) {
                         if (value.isEmpty) {
-                          return "please Enter Valid value";
+                          return "please Enter Land Mark";
                         } else
                           return null;
                       },
@@ -442,7 +434,9 @@ class _EditAddressState extends State<EditAddress> {
                       ),
                       validator: (String value) {
                         if (value.isEmpty) {
-                          return "please Enter Valid value";
+                          return "please Enter Postel Code";
+                        } else if (value.length != 6) {
+                          return "please Enter 6 digit Postel Code ";
                         } else
                           return null;
                       },
@@ -490,8 +484,10 @@ class _EditAddressState extends State<EditAddress> {
                           borderSide: BorderSide(color: primary),
                         )),
                     validator: (String value) {
-                      if (value.isEmpty || value.length != 10) {
-                        return "please Enter Valid value";
+                      if (value.isEmpty) {
+                        return "please Enter Contact Number";
+                      } else if (value.length != 10) {
+                        return "please Enter 10 Digit Contact Number";
                       } else
                         return null;
                     },
@@ -548,15 +544,11 @@ class _EditAddressState extends State<EditAddress> {
                 ),
                 Container(
                   margin: EdgeInsets.only(bottom: 20),
-                  height:45,
-                  decoration:BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black.withOpacity(0.33),
-                            blurRadius: 6
-                        )
-                      ]
-                  ),
+                  height: 45,
+                  decoration: BoxDecoration(boxShadow: [
+                    BoxShadow(
+                        color: Colors.black.withOpacity(0.33), blurRadius: 6)
+                  ]),
                   child: Padding(
                     padding: const EdgeInsets.only(left: 0.0, right: 0.0),
                     child: GFButton(

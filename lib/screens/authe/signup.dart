@@ -107,7 +107,6 @@ class _SignupState extends State<Signup> {
           sentryError.reportError(error, null);
         }
       }).catchError((error) {
-        print('Error at 2');
         sentryError.reportError(error, null);
       });
     } else {
@@ -270,8 +269,10 @@ class _SignupState extends State<Signup> {
           style: textBarlowRegularBlack(),
           keyboardType: TextInputType.emailAddress,
           validator: (String value) {
-            if (value.isEmpty || !RegExp(r'^[A-Za-z ]+$').hasMatch(value)) {
-              return "Please Enter Valid First Name";
+            if (value.isEmpty) {
+              return "Please Enter Full Name";
+            } else if (!RegExp(r'^[A-Za-z ]+$').hasMatch(value)) {
+              return "Please Enter Valid Full Name";
             } else
               return null;
           },
@@ -376,9 +377,11 @@ class _SignupState extends State<Signup> {
           style: textBarlowRegularBlack(),
           keyboardType: TextInputType.emailAddress,
           validator: (String value) {
-            if (value.isEmpty ||
-                !RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
-                    .hasMatch(value)) {
+            if (value.isEmpty) {
+              return "Please Enter a Email";
+            } else if (!RegExp(
+                    r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+                .hasMatch(value)) {
               return "Please Enter Valid Email";
             } else
               return null;
@@ -427,8 +430,10 @@ class _SignupState extends State<Signup> {
         style: textBarlowRegularBlack(),
         keyboardType: TextInputType.text,
         validator: (String value) {
-          if (value.isEmpty || value.length < 6) {
-            return "please Enter Valid Password";
+          if (value.isEmpty) {
+            return "please Enter a Password";
+          } else if (value.length < 6) {
+            return "please Enter a Min 6 digit Password";
           } else
             return null;
         },
@@ -486,10 +491,13 @@ class _SignupState extends State<Signup> {
     return Container(
       margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
       child: TextFormField(
+        maxLength: 10,
         style: textBarlowRegularBlack(),
         keyboardType: TextInputType.number,
         validator: (String value) {
-          if (value.isEmpty || value.length != 10) {
+          if (value.isEmpty) {
+            return "please Enter a Mobile Number";
+          } else if (value.length != 10) {
             return "please Enter Valid Mobile Number";
           } else
             return null;
@@ -498,6 +506,7 @@ class _SignupState extends State<Signup> {
           mobileNumber = value;
         },
         decoration: InputDecoration(
+          counterText: "",
           errorBorder: OutlineInputBorder(
               borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
           errorStyle: TextStyle(color: Color(0xFFF44242)),

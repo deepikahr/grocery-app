@@ -235,9 +235,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                     color: Colors.red,
                                                     size: 15.0,
                                                   ),
-                                                  onRatingUpdate: (rating) {
-                                                    // print(rating);
-                                                  },
+                                                  onRatingUpdate: (rating) {},
                                                 ),
                                               )
                                             ],

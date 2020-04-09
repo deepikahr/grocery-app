@@ -6,11 +6,9 @@ import 'package:grocery_pro/screens/tab/saveditems.dart';
 import 'package:grocery_pro/screens/tab/store.dart';
 import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/service/constants.dart';
-import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/settings/globalSettings.dart';
 import 'package:grocery_pro/style/style.dart';
-import 'package:location/location.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -39,12 +37,9 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       isCurrentLoactionLoading = false,
       isLocationLoading = false;
   int currentIndex = 0;
-  LocationData currentLocation;
-  Location _location = new Location();
-  var addressData;
+
   @override
   void initState() {
-    getResult();
     getGlobalSettingsData();
     getToken();
     configLocalNotification();
@@ -58,6 +53,16 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     super.initState();
 
     tabController = TabController(length: 4, vsync: this);
+  }
+
+  getToken() async {
+    await Common.getToken().then((onValue) {
+      if (onValue != null) {
+        // firebaseToken();
+      } else {}
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
   }
 
   @override
@@ -74,7 +79,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       });
     }
     getGlobalSettings().then((onValue) {
-      print(onValue['response_data']);
       try {
         if (onValue['response_data']['currency'] == null &&
             onValue['response_data']['currency'][0]['currencySign'] == null) {
@@ -96,48 +100,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     });
   }
 
-  getResult() async {
-    currentLocation = await _location.getLocation();
-    if (currentLocation != null) {
-      getGeoLocation();
-    }
-  }
-
-  getGeoLocation() async {
-    if (mounted) {
-      setState(() {
-        isLocationLoading = true;
-      });
-    }
-    await ProductService.geoApi(
-            currentLocation.latitude, currentLocation.longitude)
-        .then((onValue) {
-      print(onValue);
-      try {
-        if (mounted) {
-          setState(() {
-            addressData = onValue['results'][0]['formatted_address'];
-            isLocationLoading = false;
-          });
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      sentryError.reportError(error, null);
-    });
-  }
-
-  getToken() async {
-    await Common.getToken().then((onValue) {
-      if (onValue != null) {
-        // firebaseToken();
-      } else {}
-    }).catchError((error) {
-      sentryError.reportError(error, null);
-    });
-  }
-
   Future<void> configLocalNotification() async {
     var _debugLabelString = "";
     OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
@@ -146,7 +108,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       this.setState(() {
         _debugLabelString =
             "Received notification: \n${notification.jsonRepresentation().replaceAll("\\n", "\n")}";
-        print(_debugLabelString);
       });
     });
 
@@ -155,23 +116,17 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       this.setState(() {
         _debugLabelString =
             "Opened notification: \n${result.notification.jsonRepresentation().replaceAll("\\n", "\n")}";
-        print(_debugLabelString);
       });
     });
 
     OneSignal.shared
-        .setSubscriptionObserver((OSSubscriptionStateChanges changes) {
-      // print("SUBSCRIPTION STATE CHANGED: ${changes.jsonRepresentation()}");
-    });
+        .setSubscriptionObserver((OSSubscriptionStateChanges changes) {});
 
-    OneSignal.shared.setPermissionObserver((OSPermissionStateChanges changes) {
-      // print("PERMISSION STATE CHANGED: ${changes.jsonRepresentation()}");
-    });
+    OneSignal.shared
+        .setPermissionObserver((OSPermissionStateChanges changes) {});
 
     OneSignal.shared.setEmailSubscriptionObserver(
-        (OSEmailSubscriptionStateChanges changes) {
-      // print("EMAIL SUBSCRIPTION STATE CHANGED ${changes.jsonRepresentation()}");
-    });
+        (OSEmailSubscriptionStateChanges changes) {});
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     OneSignal.shared.init(Constants.ONE_SIGNAL_KEY, iOSSettings: {
@@ -183,7 +138,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     );
     OneSignal.shared.getPermissionSubscriptionState().then((onValue) async {
       var playerId = onValue.subscriptionStatus.userId;
-      print("kkkkkkkkkkkkk $playerId");
       if (playerId == null) {
         configLocalNotification();
       } else {
@@ -208,9 +162,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                   children: <Widget>[
                     Container(
                       color: Colors.white,
-                      child: Store(
-                        currentLocation: addressData,
-                      ),
+                      child: Store(),
                     ),
                     Container(
                       color: Colors.white,

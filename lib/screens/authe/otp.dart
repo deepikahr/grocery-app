@@ -62,69 +62,72 @@ class _OtpState extends State<Otp> {
   }
 
   verifyOTP() async {
-    final form = _formKey.currentState;
-    if (form.validate()) {
-      form.save();
-      if (mounted) {
-        setState(() {
-          isOtpVerifyLoading = true;
-        });
-      }
-      Map<String, dynamic> body = {"otp": enteredOtp};
-      await LoginService.verifyOtp(body, widget.token).then((onValue) {
-        print(onValue);
-        try {
-          if (mounted) {
-            setState(() {
-              isOtpVerifyLoading = false;
-            });
-          }
-          if (onValue['response_code'] == 200) {
-            showDialog<Null>(
-              context: context,
-              barrierDismissible: false, // user must tap button!
-              builder: (BuildContext context) {
-                return new AlertDialog(
-                  content: new SingleChildScrollView(
-                    child: new ListBody(
-                      children: <Widget>[
-                        new Text('${onValue['response_data']['message']}'),
-                      ],
-                    ),
-                  ),
-                  actions: <Widget>[
-                    new FlatButton(
-                      child: new Text('OK'),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ResetPassword(
-                              token: onValue['response_data']['token'],
-                              locale: widget.locale,
-                              localizedValues: widget.localizedValues,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                );
-              },
-            );
-          } else if (onValue['response_code'] == 401) {
-            showSnackbar('${onValue['response_data']}');
-          } else {
-            showSnackbar('${onValue['response_data']}');
-          }
-        } catch (error, stackTrace) {
-          sentryError.reportError(error, stackTrace);
+    if (enteredOtp != null) {
+      final form = _formKey.currentState;
+      if (form.validate()) {
+        form.save();
+        if (mounted) {
+          setState(() {
+            isOtpVerifyLoading = true;
+          });
         }
-      }).catchError((error) {
-        sentryError.reportError(error, null);
-      });
+        Map<String, dynamic> body = {"otp": enteredOtp};
+        await LoginService.verifyOtp(body, widget.token).then((onValue) {
+          try {
+            if (mounted) {
+              setState(() {
+                isOtpVerifyLoading = false;
+              });
+            }
+            if (onValue['response_code'] == 200) {
+              showDialog<Null>(
+                context: context,
+                barrierDismissible: false, // user must tap button!
+                builder: (BuildContext context) {
+                  return new AlertDialog(
+                    content: new SingleChildScrollView(
+                      child: new ListBody(
+                        children: <Widget>[
+                          new Text('${onValue['response_data']['message']}'),
+                        ],
+                      ),
+                    ),
+                    actions: <Widget>[
+                      new FlatButton(
+                        child: new Text('OK'),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ResetPassword(
+                                token: onValue['response_data']['token'],
+                                locale: widget.locale,
+                                localizedValues: widget.localizedValues,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            } else if (onValue['response_code'] == 401) {
+              showSnackbar('${onValue['response_data']}');
+            } else {
+              showSnackbar('${onValue['response_data']}');
+            }
+          } catch (error, stackTrace) {
+            sentryError.reportError(error, stackTrace);
+          }
+        }).catchError((error) {
+          sentryError.reportError(error, null);
+        });
+      } else {
+        return;
+      }
     } else {
-      return;
+      showSnackbar('Please Enter 4 Digit OTP');
     }
   }
 

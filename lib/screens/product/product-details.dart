@@ -75,7 +75,6 @@ class _ProductDetailsState extends State<ProductDetails>
 
   @override
   void initState() {
-    print(widget.productDetail);
     getToken();
     if (widget.favProductList != null) {
       _checkFavourite();
@@ -104,7 +103,6 @@ class _ProductDetailsState extends State<ProductDetails>
       });
     }
     ProductService.productRating(widget.productDetail['_id']).then((value) {
-      print(value);
       if (mounted) {
         setState(() {
           isGetProductRating = false;
@@ -136,7 +134,6 @@ class _ProductDetailsState extends State<ProductDetails>
                         isFavListLoading = false;
                         isFavProduct = true;
                         favId = favProductList[i]['_id'];
-                        print(favId);
                       });
                     }
                   }
@@ -226,7 +223,6 @@ class _ProductDetailsState extends State<ProductDetails>
             : variantUnit.toString()
       };
       await CartService.addProductToCart(buyNowProduct).then((onValue) {
-        print(onValue);
         try {
           if (mounted) {
             setState(() {
@@ -234,7 +230,6 @@ class _ProductDetailsState extends State<ProductDetails>
             });
           }
           if (onValue['response_code'] == 200) {
-            // showSnackbar("Product Added To Cart Successfully");
             Navigator.push(
               context,
               new MaterialPageRoute(
