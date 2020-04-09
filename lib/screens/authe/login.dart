@@ -83,42 +83,42 @@ class _LoginState extends State<Login> {
           }
           if (onValue['response_code'] == 200) {
             Common.setToken(onValue['response_data']['token']);
-            showDialog<Null>(
-              context: context,
-              barrierDismissible: false, // user must tap button!
-              builder: (BuildContext context) {
-                return new AlertDialog(
-                  content: new SingleChildScrollView(
-                    child: new ListBody(
-                      children: <Widget>[
-                        new Text(
-                          'Login successfully',
-                          style: textBarlowRegularBlack(),
-                        ),
-                      ],
-                    ),
+            // showDialog<Null>(
+            //   context: context,
+            //   barrierDismissible: false, // user must tap button!
+            //   builder: (BuildContext context) {
+            //     return new AlertDialog(
+            //       content: new SingleChildScrollView(
+            //         child: new ListBody(
+            //           children: <Widget>[
+            //             new Text(
+            //               'Login successfully',
+            //               style: textBarlowRegularBlack(),
+            //             ),
+            //           ],
+            //         ),
+            //       ),
+            //       actions: <Widget>[
+            //         new FlatButton(
+            //           child: new Text(
+            //             'OK',
+            //             style: textbarlowRegularaPrimary(),
+            //           ),
+            //           onPressed: () {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => Home(
+                    currentIndex: 2,
                   ),
-                  actions: <Widget>[
-                    new FlatButton(
-                      child: new Text(
-                        'OK',
-                        style: textbarlowRegularaPrimary(),
-                      ),
-                      onPressed: () {
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) => Home(
-                                currentIndex: 2,
-                              ),
-                            ),
-                            (Route<dynamic> route) => false);
-                      },
-                    ),
-                  ],
-                );
-              },
-            );
+                ),
+                (Route<dynamic> route) => false);
+            //           },
+            //         ),
+            //       ],
+            //     );
+            //   },
+            // );
           } else if (onValue['response_code'] == 401) {
             showSnackbar(onValue['response_data']);
           } else {
@@ -145,7 +145,7 @@ class _LoginState extends State<Login> {
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20))),
         title: Text(
-          'Login',
+          'Log in',
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -200,7 +200,7 @@ class _LoginState extends State<Login> {
       child: GFTypography(
         showDivider: false,
         child: Text(
-          "Let's get started !",
+          "Welcome back!",
           style: textbarlowMediumBlack(),
         ),
       ),
@@ -215,7 +215,7 @@ class _LoginState extends State<Login> {
         child: RichText(
           text: TextSpan(
             children: <TextSpan>[
-              TextSpan(text: "Email", style: textbarlowRegularBlack()),
+              TextSpan(text: "Email", style: textbarlowRegularBlackdull()),
               TextSpan(
                 text: ' *',
                 style: TextStyle(color: Color(0xFFF44242)),
@@ -269,7 +269,7 @@ class _LoginState extends State<Login> {
       child: RichText(
         text: TextSpan(
           children: <TextSpan>[
-            TextSpan(text: "Password", style: textbarlowRegularBlack()),
+            TextSpan(text: "Password", style: textbarlowRegularBlackdull()),
             TextSpan(
               text: ' *',
               style: TextStyle(color: Color(0xFFF44242)),
@@ -327,8 +327,12 @@ class _LoginState extends State<Login> {
   }
 
   Widget buildLoginButton() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 20.0, bottom: 15.0),
+    return Container(
+      height: 55,
+      margin: EdgeInsets.only(top: 30, bottom: 20),
+      decoration: BoxDecoration(boxShadow: [
+        BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 5)
+      ]),
       child: GFButton(
         size: GFSize.LARGE,
         color: primary,
@@ -338,7 +342,7 @@ class _LoginState extends State<Login> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              "Login",
+              "Log in",
               style: textBarlowRegularrBlack(),
             ),
             isUserLoaginLoading
@@ -369,7 +373,7 @@ class _LoginState extends State<Login> {
           text: TextSpan(
             children: <TextSpan>[
               TextSpan(
-                  text: "Forgot Password?", style: textbarlowRegularBlack()),
+                  text: "Forgot Password?", style: textbarlowRegularBlackd()),
               TextSpan(
                 text: '',
                 style: TextStyle(color: primary),
@@ -385,7 +389,7 @@ class _LoginState extends State<Login> {
     return Text(
       'OR',
       textAlign: TextAlign.center,
-      style: textbarlowRegularBlack(),
+      style: textBarlowRegularBlack(),
     );
   }
 
@@ -402,7 +406,7 @@ class _LoginState extends State<Login> {
         child: RichText(
           text: TextSpan(
             children: <TextSpan>[
-              TextSpan(text: "Register?", style: textbarlowRegularBlack()),
+              TextSpan(text: "Register?", style: textbarlowRegularaPrimary()),
               TextSpan(
                 text: '',
                 style: TextStyle(color: primary),

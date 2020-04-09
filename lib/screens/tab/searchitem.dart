@@ -159,9 +159,17 @@ class _SearchItemState extends State<SearchItem> {
                                           children: <Widget>[
                                             new Text(
                                                 searchresult[index]
-                                                            ['description']
-                                                        .toString() ??
-                                                    "",
+                                                                ['description']
+                                                            .length >
+                                                        15
+                                                    ? searchresult[index]
+                                                                ['description'](
+                                                            0, 15) +
+                                                        ".."
+                                                    : searchresult[index]
+                                                                ['description']
+                                                            .toString() ??
+                                                        "",
                                                 style:
                                                     textBarlowRegularrBlacksm()),
                                             Row(

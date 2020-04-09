@@ -13,34 +13,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
 
-class Post {
-  final String title;
-  final String description;
-
-  Post(this.title, this.description);
-}
-
-Future<List<Post>> search(String search) async {
-  await Future.delayed(Duration(seconds: 2));
-  return List.generate(search.length, (int index) {
-    return Post(
-      "Title : $search $index",
-      "Description :$search $index",
-    );
-  });
-}
-
 class Store extends StatefulWidget {
-  Future<List<Post>> search(String search) async {
-    await Future.delayed(Duration(seconds: 2));
-    return List.generate(search.length, (int index) {
-      return Post(
-        "Title : $search $index",
-        "Description :$search $index",
-      );
-    });
-  }
+  const Store({Key key, this.currentLocation}) : super(key: key);
 
+  final String currentLocation;
   @override
   _StoreState createState() => _StoreState();
 }
@@ -48,25 +24,20 @@ class Store extends StatefulWidget {
 class _StoreState extends State<Store> with TickerProviderStateMixin {
   final _scaffoldkey = new GlobalKey<ScaffoldState>();
 
+  final GlobalKey<ScaffoldState> _scaffoldKeydrawer =
+      new GlobalKey<ScaffoldState>();
+
   bool isLoadingcategory = false,
       isFavListLoading = false,
       isLoadingProducts = false,
       isLoadingcategoryList = false,
       isLoadingSubProductsList = false,
       isLoadingProductsList = false,
-      getTokenValue = true;
+      getTokenValue = true,
+      isCurrentLoactionLoading = false;
   List categoryList, productsList, dealList, favList, favProductList;
   String currency;
-  List list = [
-    'Apple',
-    'Orange',
-    'Milk',
-    'Coffee',
-    'Grapes',
-    'Cherry',
-    'Avocado',
-    'Mango',
-  ];
+
   TabController tabController;
 
   @override
@@ -142,6 +113,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
           if (mounted) {
             setState(() {
               categoryList = [];
+              isLoadingcategoryList = false;
             });
           }
         }
@@ -186,6 +158,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKeydrawer,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0.0,
@@ -200,16 +173,24 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                 style: textBarlowRegularrBlacksm(),
               ),
               Text(
-                'HSR Layout...',
-                style: textbarlowSemiBoldBlack(),
+                widget.currentLocation.substring(0, 15) + '...',
+                style: textBarlowSemiBoldBlackbig(),
               )
             ],
           ),
         ),
+        // actions: <Widget>[
+        //   InkWell(
+        //     onTap: () => _scaffoldKeydrawer.currentState.openEndDrawer(),
+        //     child: Image.asset('lib/assets/icons/menu.png'),
+        //   ),
+        // ],
         iconTheme: IconThemeData(color: Colors.black),
       ),
-      endDrawer: Drawer(),
-      key: _scaffoldkey,
+      // endDrawer: Drawer(
+      //   child: Drawer(),
+      // ),
+//      key: _scaffoldkey,
       body: (isLoadingcategoryList || isLoadingProductsList)
           ? Center(child: CircularProgressIndicator())
           : ListView(
@@ -219,11 +200,12 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => SearchItem(
-                              productsList: productsList,
-                              currency: currency,
-                              favProductList:
-                                  getTokenValue ? favProductList : null)),
+                        builder: (context) => SearchItem(
+                            productsList: productsList,
+                            currency: currency,
+                            favProductList:
+                                getTokenValue ? favProductList : null),
+                      ),
                     );
                   },
                   child: Container(
@@ -240,7 +222,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                         Padding(
                           padding: const EdgeInsets.only(left: 4.0, bottom: 4),
                           child: Text('What are you buying today?',
-                              style: textBarlowRegularBlack()),
+                              style: textbarlowRegularad()),
                         )
                       ],
                     ),
@@ -277,7 +259,6 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                         margin: EdgeInsets.only(left: 5, right: 5.0),
                         height: 110.0,
                         width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(),
                         child: ListView.builder(
                           physics: ScrollPhysics(),
                           shrinkWrap: true,
@@ -300,52 +281,52 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                     ),
                                   );
                                 },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Column(
+                                child: Row(
+                                  children: <Widget>[
+                                    Container(
+                                      width: 80,
+                                      padding: EdgeInsets.all(10),
+                                      child: Column(
                                         children: <Widget>[
                                           Container(
+                                            padding: EdgeInsets.all(5),
                                             decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10)),
                                               border: Border.all(
-                                                  color: Colors.grey[300]),
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
+                                                  color: Colors.black
+                                                      .withOpacity(0.20)),
                                             ),
-                                            child: Column(
-                                              children: <Widget>[
-                                                Padding(
-                                                  padding: const EdgeInsets.all(
-                                                      10.0),
-                                                  child: Container(
-                                                    height: 45,
-                                                    width: 45,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      image:
-                                                          new DecorationImage(
-                                                        fit: BoxFit.fill,
-                                                        image: new NetworkImage(
-                                                            categoryList[index]
-                                                                ['imageUrl']),
-                                                      ),
-                                                    ),
-                                                  ),
+                                            child: Container(
+                                              height: 45,
+                                              width: 45,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(10)),
+                                                image: new DecorationImage(
+                                                  fit: BoxFit.fill,
+                                                  image: new NetworkImage(
+                                                      categoryList[index]
+                                                          ['imageUrl']),
                                                 ),
-                                              ],
+                                              ),
                                             ),
                                           ),
                                           Text(
-                                            categoryList[index]['title'],
+                                            categoryList[index]['title']
+                                                        .length >
+                                                    7
+                                                ? categoryList[index]['title']
+                                                        .substring(0, 7) +
+                                                    ".."
+                                                : categoryList[index]['title'],
                                             style: textbarlowRegularBlack(),
+                                            textAlign: TextAlign.center,
                                           )
                                         ],
                                       ),
-                                    ],
-                                  ),
+                                    )
+                                  ],
                                 ),
                               ),
                             );
@@ -365,130 +346,219 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2),
                         itemBuilder: (BuildContext context, int i) {
-                          return InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ProductDetails(
-                                      productDetail: productsList[i],
-                                      favProductList: getTokenValue
-                                          ? favProductList
-                                          : null),
-                                ),
-                              );
-                            },
-                            child: GFCard(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.0)),
-                              boxFit: BoxFit.fill,
-                              colorFilter: new ColorFilter.mode(
-                                  Colors.black.withOpacity(0.67),
-                                  BlendMode.darken),
-                              content: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 8.0),
-                                        child: productsList[i]['discount'] ==
-                                                null
-                                            ? Container(
-                                                height: 15,
-                                                width: 65,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.only(
-                                                    topLeft:
-                                                        Radius.circular(20),
-                                                    bottomRight:
-                                                        Radius.circular(20),
-                                                  ),
-                                                ),
-                                                child: GFButtonBadge(
-                                                  onPressed: null,
-                                                  text: '',
-                                                  color: Colors.white,
-                                                ),
-                                              )
-                                            : Container(
-                                                height: 15,
-                                                width: 65,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.only(
-                                                    topLeft:
-                                                        Radius.circular(20),
-                                                    bottomRight:
-                                                        Radius.circular(20),
-                                                  ),
-                                                ),
-                                                child: GFButtonBadge(
-                                                  onPressed: null,
-                                                  text: productsList[i]
-                                                      ['discount'],
-                                                  textStyle:
-                                                      textbarlowRegularBlack(),
-                                                  color: Colors.deepOrange[300],
-                                                ),
-                                              ),
+                          return productsList[i]['outOfStock'] != null ||
+                                  productsList[i]['outOfStock'] != false
+                              ? InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ProductDetails(
+                                            productDetail: productsList[i],
+                                            favProductList: getTokenValue
+                                                ? favProductList
+                                                : null),
                                       ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    );
+                                  },
+                                  child: Column(
                                     children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.only(),
-                                        child: Image.network(
-                                          productsList[i]['imageUrl'],
-                                          fit: BoxFit.cover,
-                                          width: 117,
-                                          height: 63,
+                                      GFCard(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20.0)),
+                                        boxFit: BoxFit.fill,
+                                        colorFilter: new ColorFilter.mode(
+                                            Colors.black.withOpacity(0.67),
+                                            BlendMode.darken),
+                                        content: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: <Widget>[
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          bottom: 8.0),
+                                                  child: productsList[i]
+                                                              ['discount'] ==
+                                                          null
+                                                      ? Container(
+                                                          height: 15,
+                                                          width: 65,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .only(
+                                                              topLeft: Radius
+                                                                  .circular(20),
+                                                              bottomRight:
+                                                                  Radius
+                                                                      .circular(
+                                                                          20),
+                                                            ),
+                                                          ),
+                                                          child: GFButtonBadge(
+                                                            onPressed: null,
+                                                            text: '',
+                                                            color: Colors.white,
+                                                          ),
+                                                        )
+                                                      : Container(
+                                                          height: 15,
+                                                          width: 65,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .only(
+                                                              topLeft: Radius
+                                                                  .circular(20),
+                                                              bottomRight:
+                                                                  Radius
+                                                                      .circular(
+                                                                          20),
+                                                            ),
+                                                          ),
+                                                          child: GFButtonBadge(
+                                                            onPressed: null,
+                                                            text: productsList[
+                                                                i]['discount'],
+                                                            textStyle:
+                                                                textbarlowRegularBlack(),
+                                                            color: Colors
+                                                                    .deepOrange[
+                                                                300],
+                                                          ),
+                                                        ),
+                                                ),
+                                              ],
+                                            ),
+                                            Column(
+                                              children: <Widget>[
+                                                Image.network(
+                                                  productsList[i]['imageUrl'],
+                                                  fit: BoxFit.cover,
+                                                  width: 117,
+                                                  height: 63,
+                                                ),
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Row(
+                                                  children: <Widget>[
+                                                    Text(
+                                                      productsList[i]['title'],
+                                                      style:
+                                                          textbarlowRegularBlack(),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: <Widget>[
+                                                    Text(
+                                                      currency,
+                                                      style:
+                                                          textbarlowBoldGreen(),
+                                                    ),
+                                                    Text(
+                                                      '${productsList[i]['variant'][0]['price']}',
+                                                      style:
+                                                          textbarlowBoldGreen(),
+                                                    )
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],
                                   ),
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                )
+                              : Expanded(
+                                  child: Stack(
                                     children: <Widget>[
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 5.0, bottom: 1),
-                                            child: Text(
-                                              productsList[i]['title'],
-                                              style: textbarlowRegularBlack(),
-                                            ),
-                                          ),
-                                          Row(
+                                      Container(
+                                        child: GFCard(
+                                          content: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: <Widget>[
-                                              Text(
-                                                currency,
-                                                style: textbarlowBoldGreen(),
+                                              Container(
+                                                height: 90.0,
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                    image: NetworkImage(
+                                                        productsList[i]
+                                                            ['imageUrl']),
+                                                  ),
+                                                ),
                                               ),
-                                              Text(
-                                                '${productsList[i]['variant'][0]['price']}',
-                                                style: textbarlowBoldGreen(),
-                                              )
+                                              Text(productsList[i]['title']),
+                                              Row(
+                                                children: <Widget>[
+                                                  Text(
+                                                    currency,
+                                                    style:
+                                                        textbarlowBoldGreen(),
+                                                  ),
+                                                  Text(
+                                                    productsList[i]['variant']
+                                                            [0]['price']
+                                                        .toString(),
+                                                    style:
+                                                        textbarlowBoldGreen(),
+                                                  )
+                                                ],
+                                              ),
                                             ],
                                           ),
-                                        ],
+                                        ),
                                       ),
+                                      Positioned(
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          margin: EdgeInsets.only(
+                                              left: 15,
+                                              right: 16,
+                                              top: 16,
+                                              bottom: 16),
+                                          height: 171,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5)),
+                                            color:
+                                                Colors.black.withOpacity(0.40),
+                                          ),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Text(
+                                                'Oops !',
+                                                style:
+                                                    textBarlowSemiBoldwhite(),
+                                              ),
+                                              Text(
+                                                'Out of stock',
+                                                style:
+                                                    textBarlowSemiBoldwhite(),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      )
                                     ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          );
+                                  ),
+                                );
                         },
                       )
                     : Center(

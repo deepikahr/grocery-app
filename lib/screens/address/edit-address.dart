@@ -186,11 +186,10 @@ class _EditAddressState extends State<EditAddress> {
         ),
         title: Text(
           'Edit Address',
-          style: TextStyle(
-            color: Colors.black,
-          ),
+          style: textbarlowSemiBoldBlack()
         ),
         centerTitle: true,
+        elevation: 0,
         backgroundColor: primary,
       ),
       body: Form(
@@ -203,7 +202,7 @@ class _EditAddressState extends State<EditAddress> {
                   height: 25,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
+                  padding: const EdgeInsets.only(left: 12.0, bottom: 5.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
@@ -225,10 +224,20 @@ class _EditAddressState extends State<EditAddress> {
                   ),
                 ),
                 Container(
+                  height: 45,
+                  margin: EdgeInsets.only(left:12, right:12, top:15, bottom: 15),
+                  decoration:BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.33),
+                        blurRadius: 6
+                      )
+                    ]
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.only(
-                      left: 20.0,
-                      right: 20.0,
+                      left: 0.0,
+                      right: 0.0,
                     ),
                     child: GFButton(
                       color: primary,
@@ -538,8 +547,18 @@ class _EditAddressState extends State<EditAddress> {
                   height: 30,
                 ),
                 Container(
+                  margin: EdgeInsets.only(bottom: 20),
+                  height:45,
+                  decoration:BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black.withOpacity(0.33),
+                            blurRadius: 6
+                        )
+                      ]
+                  ),
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                    padding: const EdgeInsets.only(left: 0.0, right: 0.0),
                     child: GFButton(
                       onPressed: updateAddress,
                       color: primary,

@@ -84,6 +84,9 @@ class _EditProfileState extends State<EditProfile> {
         }
         if (onValue['response_code'] == 200) {
           showSnackbar(onValue['response_data']);
+          if (key == null) {
+            getUserInfo();
+          }
         } else {
           showSnackbar(onValue['response_data']);
         }
@@ -136,7 +139,10 @@ class _EditProfileState extends State<EditProfile> {
     }
   }
 
+  var image;
   selectGallary() async {
+    Navigator.pop(context);
+
     image = await ImagePicker.pickImage(source: ImageSource.gallery);
     if (mounted) {
       setState(() {
@@ -146,8 +152,8 @@ class _EditProfileState extends State<EditProfile> {
     imageUpload(image);
   }
 
-  var image;
   selectCamera() async {
+    Navigator.pop(context);
     image = await ImagePicker.pickImage(source: ImageSource.camera);
     if (mounted) {
       setState(() {
@@ -191,7 +197,75 @@ class _EditProfileState extends State<EditProfile> {
     });
   }
 
-  void removeProfilePic() async {}
+  void selectImage() async {
+    showDialog<Null>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return new AlertDialog(
+          content: new SingleChildScrollView(
+            child: new ListBody(
+              children: <Widget>[
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                    child: new Text("Select"),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                  child: InkWell(
+                    onTap: selectCamera,
+                    child: new Text("Camera"),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                  child: InkWell(
+                    onTap: selectGallary,
+                    child: new Text("Gallery"),
+                  ),
+                ),
+                userInfo['profilePic'] != null
+                    ? InkWell(
+                        onTap: removeImage,
+                        child: new Text("Remove Image"),
+                      )
+                    : Container(),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  removeImage() {
+    if (mounted) {
+      setState(() {
+        isPicUploading = true;
+      });
+    }
+    print(userInfo['profilePicId']);
+    LoginService.imagedelete(userInfo['profilePicId'].toString()).then((value) {
+      print(value);
+      if (value['response_code'] == 200) {
+        if (mounted) {
+          setState(() {
+            isPicUploading = false;
+            // // getUserInfo();
+            // userInfo['profilePic'] = null;
+            // image = null;
+            Navigator.pop(context);
+
+            updateUserInfo(null, null);
+          });
+        }
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -230,7 +304,7 @@ class _EditProfileState extends State<EditProfile> {
                                         image: new DecorationImage(
                                           fit: BoxFit.fill,
                                           image: new AssetImage(
-                                              'lib/assets/images/no-orders.png'),
+                                              'lib/assets/images/profile.png'),
                                         ),
                                       ),
                                     ),
@@ -278,7 +352,7 @@ class _EditProfileState extends State<EditProfile> {
                                 color: primary,
                                 borderRadius: BorderRadius.circular(30.0)),
                             child: IconButton(
-                              onPressed: selectCamera,
+                              onPressed: selectImage,
                               icon: Icon(Icons.camera_alt),
                             ),
                           ),
@@ -444,8 +518,13 @@ class _EditProfileState extends State<EditProfile> {
               ),
             ),
       bottomNavigationBar: Container(
+        height: 55,
+        margin: EdgeInsets.only(bottom: 20, left: 15, right: 15),
+        decoration: BoxDecoration(boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 5)
+        ]),
         child: Padding(
-          padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+          padding: const EdgeInsets.only(left: 0.0, right: 0.0),
           child: GFButton(
             onPressed: updateUserInformation,
             color: primary,

@@ -29,7 +29,7 @@ class _ResetPasswordState extends State<ResetPassword> {
 
   String password1;
   String password2;
-  bool success = false, passwordVisible = true;
+  bool success = false, passwordVisible = true, passwordVisible1 = true;
 
   bool isResetPasswordLoading = false;
 
@@ -74,10 +74,12 @@ class _ResetPasswordState extends State<ResetPassword> {
                         style: textbarlowRegularaPrimary(),
                       ),
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Login()),
-                        );
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => Login(),
+                            ),
+                            (Route<dynamic> route) => false);
                       },
                     ),
                   ],
@@ -166,7 +168,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                         onTap: () {
                           if (mounted) {
                             setState(() {
-                              passwordVisible = !passwordVisible;
+                              passwordVisible1 = !passwordVisible1;
                             });
                           }
                         },
@@ -189,7 +191,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                     onSaved: (String value) {
                       password1 = value;
                     },
-                    obscureText: passwordVisible,
+                    obscureText: passwordVisible1,
                   ),
                 ),
               ),
@@ -257,32 +259,42 @@ class _ResetPasswordState extends State<ResetPassword> {
                   ),
                 ),
               ),
-              Padding(
-                padding:
-                    const EdgeInsets.only(left: 20.0, right: 20.0, top: 30.0),
-                child: GFButton(
-                  color: primary,
-                  size: GFSize.LARGE,
-                  blockButton: true,
-                  onPressed: resetPassword,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        "Submit",
-                        style: textbarlowMediumBlack(),
-                      ),
-                      isResetPasswordLoading
-                          ? Image.asset(
-                              'lib/assets/images/spinner.gif',
-                              width: 15.0,
-                              height: 15.0,
-                              color: Colors.black,
-                            )
-                          : Text("")
-                    ],
+              Container(
+                height: 55,
+                margin:
+                    EdgeInsets.only(top: 30, bottom: 20, right: 20, left: 20),
+                decoration: BoxDecoration(boxShadow: [
+                  BoxShadow(
+                      color: Colors.black.withOpacity(0.29), blurRadius: 5)
+                ]),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: 0.0,
+                    right: 0.0,
                   ),
-                  textStyle: TextStyle(fontSize: 17.0, color: Colors.black),
+                  child: GFButton(
+                    color: primary,
+                    blockButton: true,
+                    onPressed: resetPassword,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          "Submit ",
+                          style: textbarlowMediumBlack(),
+                        ),
+                        isResetPasswordLoading
+                            ? Image.asset(
+                                'lib/assets/images/spinner.gif',
+                                width: 15.0,
+                                height: 15.0,
+                                color: Colors.black,
+                              )
+                            : Text("")
+                      ],
+                    ),
+                    textStyle: textBarlowRegularrBlack(),
+                  ),
                 ),
               ),
             ],

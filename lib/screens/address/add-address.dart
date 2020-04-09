@@ -499,11 +499,21 @@ class _AddAddressState extends State<AddAddress> {
                   height: 30,
                 ),
                 Container(
+                  height: 55,
+                  margin: EdgeInsets.only(bottom: 20, right: 20, left: 20),
+                  decoration: BoxDecoration(boxShadow: [
+                    BoxShadow(
+                        color: Colors.black.withOpacity(0.29), blurRadius: 5)
+                  ]),
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                    padding: const EdgeInsets.only(
+                      left: 0.0,
+                      right: 0.0,
+                    ),
                     child: GFButton(
-                      onPressed: addAddress,
                       color: primary,
+                      blockButton: true,
+                      onPressed: addAddress,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -521,8 +531,7 @@ class _AddAddressState extends State<AddAddress> {
                               : Text("")
                         ],
                       ),
-                      textColor: Colors.black,
-                      blockButton: true,
+                      textStyle: textBarlowRegularrBlack(),
                     ),
                   ),
                 ),

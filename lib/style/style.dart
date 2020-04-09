@@ -19,6 +19,10 @@ final border = const Color(0xFFD4D4E0);
 
 final bg = const Color(0xFFF4F7FA);
 
+final bg2 = const Color(0xFFFDFDFD);
+final green = const Color(0xFF20C978);
+final greyb = const Color(0xFF707070);
+
 double screenHeight(context) {
   return MediaQuery.of(context).size.height;
 }
@@ -801,6 +805,49 @@ TextStyle textSemibold() {
       letterSpacing: 0.7);
 }
 
+//////barlowmedium///////////
+
+TextStyle textbarlowmedium() {
+  return TextStyle(
+    fontSize: 14.0,
+    fontWeight: FontWeight.w500,
+    fontFamily: 'BarlowMedium',
+    color: Colors.black.withOpacity(0.60),
+  );
+}
+TextStyle textbarlowmediumwhite() {
+  return TextStyle(
+    fontSize: 10.0,
+    fontWeight: FontWeight.w500,
+    fontFamily: 'BarlowMedium',
+    color: Colors.white
+  );
+}
+TextStyle textbarlowmediumwhitedull() {
+  return TextStyle(
+      fontSize: 10.0,
+      fontWeight: FontWeight.w500,
+      fontFamily: 'BarlowMedium',
+      color: Colors.white.withOpacity(0.60)
+  );
+}
+
+TextStyle textbarlowmediumwred() {
+  return TextStyle(
+      fontSize: 30.0,
+      fontWeight: FontWeight.w500,
+      fontFamily: 'BarlowMedium',
+      color: Color(0xFFF44242)
+  );
+}
+TextStyle textbarlowmediumwblack() {
+  return TextStyle(
+      fontSize: 16.0,
+      fontWeight: FontWeight.w500,
+      fontFamily: 'BarlowMedium',
+      color: Colors.black
+  );
+}
 //////barlowBold//////
 
 TextStyle textbarlowBoldBlack() {
@@ -809,7 +856,7 @@ TextStyle textbarlowBoldBlack() {
       fontWeight: FontWeight.bold,
       fontFamily: 'BarlowBold',
       color: Colors.black,
-      letterSpacing: 0.1);
+      );
 }
 
 TextStyle textbarlowBoldGreen() {
@@ -818,7 +865,7 @@ TextStyle textbarlowBoldGreen() {
       fontWeight: FontWeight.bold,
       fontFamily: 'BarlowBold',
       color: Color(0xFF00BFA5),
-      letterSpacing: 0.1);
+      );
 }
 
 TextStyle textbarlowBoldWhite() {
@@ -827,7 +874,7 @@ TextStyle textbarlowBoldWhite() {
       fontWeight: FontWeight.bold,
       fontFamily: 'BarlowBold',
       color: Colors.white,
-      letterSpacing: 0.1);
+      );
 }
 
 TextStyle textBarlowBoldBlack() {
@@ -836,7 +883,7 @@ TextStyle textBarlowBoldBlack() {
       fontWeight: FontWeight.bold,
       fontFamily: 'BarlowBold',
       color: Colors.black,
-      letterSpacing: 0.1);
+      );
 }
 
 TextStyle textBarlowBoldPrimary() {
@@ -845,7 +892,7 @@ TextStyle textBarlowBoldPrimary() {
       fontWeight: FontWeight.bold,
       fontFamily: 'BarlowBold',
       color: primary,
-      letterSpacing: 0.1);
+      );
 }
 
 TextStyle textbarlowBoldsmBlack() {
@@ -854,18 +901,18 @@ TextStyle textbarlowBoldsmBlack() {
       fontWeight: FontWeight.bold,
       fontFamily: 'BarlowBold',
       color: Colors.black,
-      letterSpacing: 0.1);
+      );
 }
 
 ////barlow semibold/////
 
 TextStyle textbarlowSemiBoldBlack() {
   return TextStyle(
-      fontSize: 18.0,
-      fontWeight: FontWeight.bold,
+      fontSize: 17.0,
       fontFamily: 'BarlowSemiBold',
       color: Colors.black,
-      letterSpacing: 0.1);
+      fontWeight: FontWeight.w700,
+      );
 }
 
 TextStyle textBarlowSemiBoldBlack() {
@@ -874,9 +921,26 @@ TextStyle textBarlowSemiBoldBlack() {
       fontWeight: FontWeight.bold,
       fontFamily: 'BarlowSemiBold',
       color: Colors.black,
-      letterSpacing: 0.1);
+      );
 }
 
+TextStyle textBarlowSemiBoldwhite() {
+  return TextStyle(
+    fontSize: 22.0,
+    fontWeight: FontWeight.w600,
+    fontFamily: 'BarlowSemiBold',
+    color: Colors.white,
+  );
+}
+
+TextStyle textBarlowSemiBoldBlackbig() {
+  return TextStyle(
+    fontSize: 22.0,
+    fontWeight: FontWeight.bold,
+    fontFamily: 'BarlowSemiBold',
+    color: Colors.black,
+  );
+}
 ///barlow medium///
 
 TextStyle textbarlowMediumBlack() {
@@ -885,7 +949,7 @@ TextStyle textbarlowMediumBlack() {
       fontWeight: FontWeight.w400,
       fontFamily: 'BarlowMedium',
       color: Colors.black,
-      letterSpacing: 0.1);
+      );
 }
 
 TextStyle textbarlowMediumlgBlack() {
@@ -894,16 +958,16 @@ TextStyle textbarlowMediumlgBlack() {
       fontWeight: FontWeight.w400,
       fontFamily: 'BarlowMedium',
       color: Colors.black,
-      letterSpacing: 0.1);
+      );
 }
 
 TextStyle textBarlowMediumBlack() {
   return TextStyle(
       fontSize: 17.0,
-      fontWeight: FontWeight.w400,
+      fontWeight: FontWeight.w500,
       fontFamily: 'BarlowMedium',
       color: Colors.black,
-      letterSpacing: 0.1);
+      );
 }
 
 TextStyle textBarlowMediumPrimary() {
@@ -912,7 +976,7 @@ TextStyle textBarlowMediumPrimary() {
       fontWeight: FontWeight.w400,
       fontFamily: 'BarlowMedium',
       color: primary,
-      letterSpacing: 0.1);
+      );
 }
 
 TextStyle textBarlowMediumGreen() {
@@ -921,7 +985,7 @@ TextStyle textBarlowMediumGreen() {
       fontWeight: FontWeight.w400,
       fontFamily: 'BarlowMedium',
       color: Color(0xFF20C978),
-      letterSpacing: 0.1);
+      );
 }
 
 TextStyle textBarlowMediumsmBlack() {
@@ -930,7 +994,7 @@ TextStyle textBarlowMediumsmBlack() {
       fontWeight: FontWeight.w400,
       fontFamily: 'BarlowMedium',
       color: Colors.black,
-      letterSpacing: 0.1);
+      );
 }
 
 TextStyle textBarlowMediumsmWhite() {
@@ -939,7 +1003,7 @@ TextStyle textBarlowMediumsmWhite() {
       fontWeight: FontWeight.w400,
       fontFamily: 'BarlowMedium',
       color: Color(0xFF8E8E93),
-      letterSpacing: 0.1);
+      );
 }
 
 TextStyle textBarlowMediumsmallWhite() {
@@ -948,7 +1012,7 @@ TextStyle textBarlowMediumsmallWhite() {
       fontWeight: FontWeight.w400,
       fontFamily: 'BarlowMedium',
       color: Colors.white,
-      letterSpacing: 0.1);
+      );
 }
 
 ///barlow regular /////
@@ -957,7 +1021,30 @@ TextStyle textbarlowRegularBlack() {
       fontSize: 15.0,
       fontFamily: 'BarlowRegular',
       color: Colors.black,
-      letterSpacing: 0.1);
+      );
+}
+
+TextStyle textbarlowRegularBlackd() {
+  return TextStyle(
+      fontSize: 16.0,
+      fontFamily: 'BarlowRegular',
+      color: Colors.black.withOpacity(0.60),
+      );
+}
+
+TextStyle textbarlowRegulardull() {
+  return TextStyle(
+    fontSize: 13.0,
+    fontFamily: 'BarlowRegular',
+    color: Color(0xFFBBBBBB)
+  );
+}
+TextStyle textbarlowRegularBlackdull() {
+  return TextStyle(
+      fontSize: 15.0,
+      fontFamily: 'BarlowRegular',
+      color: Colors.black.withOpacity(0.60),
+      );
 }
 
 TextStyle textbarlowRegularaPrimary() {
@@ -966,7 +1053,7 @@ TextStyle textbarlowRegularaPrimary() {
       fontFamily: 'BarlowRegular',
       fontWeight: FontWeight.w600,
       color: primary,
-      letterSpacing: 0.1);
+      );
 }
 
 TextStyle textbarlowRegularaPrimar() {
@@ -974,7 +1061,15 @@ TextStyle textbarlowRegularaPrimar() {
       fontSize: 16.0,
       fontFamily: 'BarlowRegular',
       color: primary,
-      letterSpacing: 0.1);
+      );
+}
+
+TextStyle textbarlowRegularad() {
+  return TextStyle(
+    fontSize: 16.0,
+    fontFamily: 'BarlowRegular',
+    color: Colors.black.withOpacity(0.50),
+  );
 }
 
 TextStyle textBarlowRegularBlack() {
@@ -982,7 +1077,17 @@ TextStyle textBarlowRegularBlack() {
       fontSize: 16.0,
       fontFamily: 'BarlowRegular',
       color: Colors.black,
-      letterSpacing: 0.1);
+    fontWeight: FontWeight.w500
+     );
+}
+
+TextStyle textBarlowRegularBlacklight() {
+  return TextStyle(
+      fontSize: 16.0,
+      fontFamily: 'BarlowRegular',
+      color: Colors.black.withOpacity(0.20),
+      fontWeight: FontWeight.w500
+  );
 }
 
 TextStyle textBarlowRegularBlackwithOpacity() {
@@ -990,7 +1095,7 @@ TextStyle textBarlowRegularBlackwithOpacity() {
       fontSize: 16.0,
       fontFamily: 'BarlowRegular',
       color: Colors.black.withOpacity(0.30),
-      letterSpacing: 0.1);
+      );
 }
 
 TextStyle textBarlowRegularBlackwithOpa() {
@@ -998,7 +1103,7 @@ TextStyle textBarlowRegularBlackwithOpa() {
       fontSize: 16.0,
       fontFamily: 'BarlowRegular',
       color: Colors.black.withOpacity(0.50),
-      letterSpacing: 0.1);
+      );
 }
 
 TextStyle textBarlowRegularWhite() {
@@ -1006,7 +1111,7 @@ TextStyle textBarlowRegularWhite() {
       fontSize: 16.0,
       fontFamily: 'BarlowRegular',
       color: Colors.white,
-      letterSpacing: 0.1);
+      );
 }
 
 TextStyle textBarlowRegularWhit() {
@@ -1014,7 +1119,64 @@ TextStyle textBarlowRegularWhit() {
       fontSize: 15.0,
       fontFamily: 'BarlowRegular',
       color: Colors.white,
+      );
+}
+
+//TextStyle textBarlowRegularrBlacksm() {
+//  return TextStyle(
+//      fontSize: 12.0,
+//      fontFamily: 'BarlowRegular',
+//      fontWeight: FontWeight.w400,
+//      color: Colors.black.withOpacity(0.6),
+//      letterSpacing: 0.1);
+//}
+TextStyle textSMBarlowRegularrBlack() {
+  return TextStyle(
+      fontSize: 13.0,
+      fontFamily: 'BarlowRegular',
+      fontWeight: FontWeight.w400,
+      color: Colors.black.withOpacity(0.6),
       letterSpacing: 0.1);
+}
+TextStyle textSMBarlowRegularrGreyb() {
+  return TextStyle(
+      fontSize: 13.0,
+      fontFamily: 'BarlowRegular',
+      fontWeight: FontWeight.w400,
+      color: greyb,
+      letterSpacing: 0.1);
+}
+TextStyle titleLargeSegoeBlack() {
+  return TextStyle(
+      fontSize: 20.0,
+      fontWeight: FontWeight.bold,
+      fontFamily: 'BarlowBold',
+      color: Colors.black.withOpacity(0.6),
+      letterSpacing: 0.1);
+}
+TextStyle titleSegoeGreen() {
+  return TextStyle(
+      fontSize: 16.0,
+      fontFamily: 'BarlowRegular',
+      fontWeight: FontWeight.w500,
+      color: green,
+      letterSpacing: 0.1);
+}
+TextStyle titleSegoeGrey() {
+  return TextStyle(
+      fontSize: 16.0,
+      fontFamily: 'BarlowRegular',
+      fontWeight: FontWeight.w500,
+      color: greyb.withOpacity(0.5),
+      letterSpacing: 0.1);
+}
+TextStyle appbarTitle() {
+  return TextStyle(
+    fontSize: 17.0,
+    fontFamily: 'BarlowSemiBold',
+    fontWeight: FontWeight.w500,
+    color: Colors.black,
+  );
 }
 
 TextStyle textBarlowRegularrBlack() {
@@ -1023,7 +1185,7 @@ TextStyle textBarlowRegularrBlack() {
       fontFamily: 'BarlowRegular',
       fontWeight: FontWeight.w400,
       color: Colors.black,
-      letterSpacing: 0.1);
+      );
 }
 
 TextStyle textBarlowRegularrWhite() {
@@ -1032,15 +1194,23 @@ TextStyle textBarlowRegularrWhite() {
       fontFamily: 'BarlowRegular',
       fontWeight: FontWeight.w300,
       color: Colors.white,
-      letterSpacing: 0.1);
+      );
 }
 
+TextStyle textBarlowRegularrdark() {
+  return TextStyle(
+    fontSize: 18.0,
+    fontFamily: 'BarlowRegular',
+    fontWeight: FontWeight.w300,
+    color: Colors.black,
+  );
+}
 TextStyle textBarlowRegularGreen() {
   return TextStyle(
       fontSize: 16.0,
       fontFamily: 'BarlowRegular',
       color: Color(0xFF20C978),
-      letterSpacing: 0.1);
+      );
 }
 
 TextStyle textBarlowRegularrBlacksm() {
@@ -1049,5 +1219,5 @@ TextStyle textBarlowRegularrBlacksm() {
       fontFamily: 'BarlowRegular',
       fontWeight: FontWeight.w400,
       color: Colors.black.withOpacity(0.6),
-      letterSpacing: 0.1);
+      );
 }

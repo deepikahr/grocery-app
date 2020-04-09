@@ -3,6 +3,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/authe/login.dart';
 import 'package:grocery_pro/screens/home/home.dart';
+import 'package:grocery_pro/screens/tab/mycart.dart';
 import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/style/style.dart';
@@ -233,7 +234,13 @@ class _ProductDetailsState extends State<ProductDetails>
             });
           }
           if (onValue['response_code'] == 200) {
-            showSnackbar("Product ADD To Card Successfully");
+            // showSnackbar("Product Added To Cart Successfully");
+            Navigator.push(
+              context,
+              new MaterialPageRoute(
+                builder: (BuildContext context) => new MyCart(),
+              ),
+            );
           }
         } catch (error, stackTrace) {
           sentryError.reportError(error, stackTrace);
@@ -553,8 +560,8 @@ class _ProductDetailsState extends State<ProductDetails>
                             decoration: BoxDecoration(
                                 boxShadow: [
                                   new BoxShadow(
-                                    color: Colors.black,
-                                    blurRadius: 1.0,
+                                    color: Colors.black.withOpacity(0.29),
+                                    blurRadius: 6.0,
                                   ),
                                 ],
                                 color: Colors.white,
@@ -703,7 +710,7 @@ class _ProductDetailsState extends State<ProductDetails>
                           height: 2.0,
                         ),
                         new Text(
-                          '${variantUnit == null ? widget.productDetail['variant'][0]['unit'] : variantUnit}',
+                          quantity.toString(),
                           style: textBarlowRegularWhite(),
                         ),
                         SizedBox(

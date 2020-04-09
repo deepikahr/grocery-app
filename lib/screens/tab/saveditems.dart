@@ -216,7 +216,9 @@ class _SavedItemsState extends State<SavedItems> {
                                               ),
                                             ],
                                           )
-                                        : Row(
+                                        :
+
+                                    Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: <Widget>[

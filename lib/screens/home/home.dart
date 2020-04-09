@@ -6,9 +6,11 @@ import 'package:grocery_pro/screens/tab/saveditems.dart';
 import 'package:grocery_pro/screens/tab/store.dart';
 import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/service/constants.dart';
+import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/settings/globalSettings.dart';
 import 'package:grocery_pro/style/style.dart';
+import 'package:location/location.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,8 +19,13 @@ SentryError sentryError = new SentryError();
 class Home extends StatefulWidget {
   final int currentIndex;
   final Map<String, Map<String, String>> localizedValues;
-  final String locale;
-  Home({Key key, this.currentIndex, this.locale, this.localizedValues})
+  final String locale, addressData;
+  Home(
+      {Key key,
+      this.currentIndex,
+      this.locale,
+      this.localizedValues,
+      this.addressData})
       : super(key: key);
 
   @override
@@ -27,11 +34,17 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> with TickerProviderStateMixin {
   TabController tabController;
-  bool isGetTokenLoading = true, currencyLoading = false;
+  bool isGetTokenLoading = true,
+      currencyLoading = false,
+      isCurrentLoactionLoading = false,
+      isLocationLoading = false;
   int currentIndex = 0;
-
+  LocationData currentLocation;
+  Location _location = new Location();
+  var addressData;
   @override
   void initState() {
+    getResult();
     getGlobalSettingsData();
     getToken();
     configLocalNotification();
@@ -73,6 +86,38 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         if (mounted) {
           setState(() {
             currencyLoading = false;
+          });
+        }
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
+  }
+
+  getResult() async {
+    currentLocation = await _location.getLocation();
+    if (currentLocation != null) {
+      getGeoLocation();
+    }
+  }
+
+  getGeoLocation() async {
+    if (mounted) {
+      setState(() {
+        isLocationLoading = true;
+      });
+    }
+    await ProductService.geoApi(
+            currentLocation.latitude, currentLocation.longitude)
+        .then((onValue) {
+      print(onValue);
+      try {
+        if (mounted) {
+          setState(() {
+            addressData = onValue['results'][0]['formatted_address'];
+            isLocationLoading = false;
           });
         }
       } catch (error, stackTrace) {
@@ -154,29 +199,37 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : GFTabBarView(
-              controller: tabController,
-              children: <Widget>[
-                Container(
-                  color: Colors.white,
-                  child: Store(),
+          : isLocationLoading
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : GFTabBarView(
+                  controller: tabController,
+                  children: <Widget>[
+                    Container(
+                      color: Colors.white,
+                      child: Store(
+                        currentLocation: addressData,
+                      ),
+                    ),
+                    Container(
+                      color: Colors.white,
+                      child: SavedItems(),
+                    ),
+                    Container(
+                      color: Colors.white,
+                      child: MyCart(),
+                    ),
+                    Container(
+                      color: Colors.white,
+                      child: Profile(),
+                    ),
+                  ],
                 ),
-                Container(
-                  color: Colors.white,
-                  child: SavedItems(),
-                ),
-                Container(
-                  color: Colors.white,
-                  child: MyCart(),
-                ),
-                Container(
-                  color: Colors.white,
-                  child: Profile(),
-                ),
-              ],
-            ),
       bottomNavigationBar: Container(
-        decoration: BoxDecoration(),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(20))),
         child: GFTabBar(
           initialIndex: currentIndex,
           length: 4,

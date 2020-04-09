@@ -165,10 +165,20 @@ class _AddressState extends State<Address> {
               ],
             ),
       bottomNavigationBar: Container(
+        height:55,
+        margin: EdgeInsets.only(top:30, bottom: 20, right: 20, left: 20),
+        decoration:BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black.withOpacity(0.29),
+                  blurRadius: 5
+              )
+            ]
+        ),
         child: Padding(
           padding: const EdgeInsets.only(
-            left: 20.0,
-            right: 20.0,
+            left: 0.0,
+            right: 0.0,
           ),
           child: GFButton(
             color: primary,

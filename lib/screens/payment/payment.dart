@@ -13,7 +13,7 @@ SentryError sentryError = new SentryError();
 class Payment extends StatefulWidget {
   final int quantity;
   final String type;
-  final int grandTotal;
+  final double grandTotal, deliveryCharges;
   final int currentIndex;
   final Map<String, dynamic> data;
 
@@ -23,6 +23,7 @@ class Payment extends StatefulWidget {
       this.quantity,
       this.currentIndex,
       this.type,
+      this.deliveryCharges,
       this.grandTotal})
       : super(key: key);
   @override
@@ -431,6 +432,45 @@ class _PaymentState extends State<Payment> {
                         Column(
                           children: <Widget>[
                             Text(
+                              'Delivery Charges',
+                              style: textbarlowMediumBlack(),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 0.0),
+                                  child: Text(
+                                    currency,
+                                    style: textbarlowBoldBlack(),
+                                  ),
+                                ),
+                                Text(
+                                  '${widget.deliveryCharges.toString()}',
+                                  style: textbarlowBoldBlack(),
+                                ),
+                              ],
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  color: Colors.grey[100],
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 8.0, bottom: 8.0, left: 20, right: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Column(
+                          children: <Widget>[
+                            Text(
                               'Total',
                               style: textbarlowMediumBlack(),
                             ),
@@ -528,10 +568,15 @@ class _PaymentState extends State<Payment> {
               ],
             ),
       bottomNavigationBar: Container(
+        margin: EdgeInsets.only(left: 15, right: 15, bottom: 20),
+        height: 55,
+        decoration: BoxDecoration(boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.33), blurRadius: 6)
+        ]),
         child: Padding(
           padding: const EdgeInsets.only(
-            left: 20.0,
-            right: 20.0,
+            left: 0.0,
+            right: 0.0,
           ),
           child: GFButton(
             color: primary,
