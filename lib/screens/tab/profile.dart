@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
+import 'package:grocery_pro/main.dart';
 import 'package:grocery_pro/screens/authe/login.dart';
 import 'package:grocery_pro/screens/chat/chatpage.dart';
-import 'package:grocery_pro/screens/home/home.dart';
 import 'package:grocery_pro/screens/orders/orders.dart';
 import 'package:grocery_pro/screens/address/address.dart';
 import 'package:grocery_pro/screens/payment/addCard.dart';
@@ -114,7 +114,6 @@ class _ProfileState extends State<Profile> {
       });
     }
     await LoginService.getUserInfo().then((onValue) {
-      print(onValue);
       try {
         if (mounted) {
           setState(() {
@@ -145,12 +144,12 @@ class _ProfileState extends State<Profile> {
             logoutLoading = false;
           });
         }
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) => Home(),
-          ),
-        );
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => MyApp(),
+            ),
+            (Route<dynamic> route) => false);
       }
     });
   }

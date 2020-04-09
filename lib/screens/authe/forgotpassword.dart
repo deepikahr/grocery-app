@@ -35,7 +35,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       }
       Map<String, dynamic> body = {"email": email.toLowerCase()};
       await LoginService.verifyEmail(body).then((onValue) {
-        print(onValue);
         try {
           if (mounted) {
             setState(() {
@@ -164,9 +163,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       email = value;
                     },
                     validator: (String value) {
-                      if (value.isEmpty ||
-                          !RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
-                              .hasMatch(value)) {
+                      if (value.isEmpty) {
+                        return "Please Enter a Email";
+                      } else if (!RegExp(
+                              r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+                          .hasMatch(value)) {
                         return "Please Enter a Valid Email";
                       } else
                         return null;

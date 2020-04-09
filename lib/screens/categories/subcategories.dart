@@ -45,7 +45,6 @@ class _SubCategoriesState extends State<SubCategories> {
         if (mounted)
           setState(() {
             subProductsList = onValue['response_data'];
-            print(subProductsList);
             isLoadingSubProductsList = false;
           });
       } catch (error, stackTrace) {

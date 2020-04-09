@@ -9,6 +9,7 @@ import 'package:grocery_pro/service/fav-service.dart';
 import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
+import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
@@ -22,8 +23,6 @@ class Store extends StatefulWidget {
 }
 
 class _StoreState extends State<Store> with TickerProviderStateMixin {
-  final _scaffoldkey = new GlobalKey<ScaffoldState>();
-
   final GlobalKey<ScaffoldState> _scaffoldKeydrawer =
       new GlobalKey<ScaffoldState>();
 
@@ -34,15 +33,19 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       isLoadingSubProductsList = false,
       isLoadingProductsList = false,
       getTokenValue = true,
-      isCurrentLoactionLoading = false;
+      isCurrentLoactionLoading = false,
+      isLocationLoading = false;
   List categoryList, productsList, dealList, favList, favProductList;
   String currency;
 
   TabController tabController;
-
+  LocationData currentLocation;
+  Location _location = new Location();
+  var addressData;
   @override
   void initState() {
     getToken();
+    getResult();
     getCategoryList();
     getProductsList();
     super.initState();
@@ -155,6 +158,37 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
     });
   }
 
+  getResult() async {
+    currentLocation = await _location.getLocation();
+    if (currentLocation != null) {
+      getGeoLocation();
+    }
+  }
+
+  getGeoLocation() async {
+    if (mounted) {
+      setState(() {
+        isLocationLoading = true;
+      });
+    }
+    await ProductService.geoApi(
+            currentLocation.latitude, currentLocation.longitude)
+        .then((onValue) {
+      try {
+        if (mounted) {
+          setState(() {
+            addressData = onValue['results'][0];
+            isLocationLoading = false;
+          });
+        }
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -163,22 +197,24 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         automaticallyImplyLeading: false,
-        title: Container(
-          margin: EdgeInsets.only(left: 7, top: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                'Delivery Address',
-                style: textBarlowRegularrBlacksm(),
+        title: isLocationLoading || addressData == null
+            ? Container()
+            : Container(
+                margin: EdgeInsets.only(left: 7, top: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'Delivery Address',
+                      style: textBarlowRegularrBlacksm(),
+                    ),
+                    Text(
+                      addressData['formatted_address'].substring(0, 15) + '...',
+                      style: textBarlowSemiBoldBlackbig(),
+                    )
+                  ],
+                ),
               ),
-              Text(
-                widget.currentLocation.substring(0, 15) + '...',
-                style: textBarlowSemiBoldBlackbig(),
-              )
-            ],
-          ),
-        ),
         // actions: <Widget>[
         //   InkWell(
         //     onTap: () => _scaffoldKeydrawer.currentState.openEndDrawer(),
@@ -315,9 +351,9 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                           Text(
                                             categoryList[index]['title']
                                                         .length >
-                                                    7
+                                                    6
                                                 ? categoryList[index]['title']
-                                                        .substring(0, 7) +
+                                                        .substring(0, 6) +
                                                     ".."
                                                 : categoryList[index]['title'],
                                             style: textbarlowRegularBlack(),

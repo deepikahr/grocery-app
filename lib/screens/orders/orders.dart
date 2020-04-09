@@ -99,11 +99,8 @@ class _OrdersState extends State<Orders> {
 
   orderRating(orderId, rating) async {
     var body = {"rating": rating};
-    print(body);
-    print(orderId);
 
     await ProductService.orderRating(body, orderId).then((onValue) {
-      print(onValue);
       try {
         if (onValue['response_code'] == 200) {
           Navigator.pop(context);
@@ -164,7 +161,6 @@ class _OrdersState extends State<Orders> {
                         onRatingUpdate: (rate) {
                           setState(() {
                             rating = rate;
-                            print(rate);
                           });
                         },
                       ),
@@ -317,7 +313,6 @@ class _OrdersState extends State<Orders> {
   }
 
   product(orderDetails) {
-    print(orderDetails['updatedAt']);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 24),
       child: Row(
@@ -366,7 +361,6 @@ class _OrdersState extends State<Orders> {
   }
 
   orderTrack(orderDetails) {
-    print(orderDetails['orderStatus']);
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

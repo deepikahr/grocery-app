@@ -10,8 +10,6 @@ class LoginService {
   static Future<Map<String, dynamic>> signUp(body) async {
     final response = await client.post(Constants.baseURL + "users/register",
         body: json.encode(body), headers: {'Content-Type': 'application/json'});
-    var repo = jsonDecode(response.body);
-    print('response at register $repo');
     return json.decode(response.body);
   }
 
@@ -19,8 +17,7 @@ class LoginService {
   static Future<Map<String, dynamic>> signIn(body) async {
     final response = await client.post(Constants.baseURL + "users/login",
         body: json.encode(body), headers: {'Content-Type': 'application/json'});
-    var repo = jsonDecode(response.body);
-    print('response at register $repo');
+
     return json.decode(response.body);
   }
 
@@ -73,7 +70,6 @@ class LoginService {
     await Common.getToken().then((onValue) {
       token = onValue;
     });
-    // print(token);
     final response = await client.get(Constants.baseURL + "users/me", headers: {
       'Content-Type': 'application/json',
       'Authorization': 'bearer $token'

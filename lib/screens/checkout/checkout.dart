@@ -69,7 +69,6 @@ class _CheckoutState extends State<Checkout> {
       });
     }
     await CouponService.getCoupons().then((onValue) {
-      print("wwwwww $onValue");
       try {
         if (mounted) {
           setState(() {
@@ -134,7 +133,6 @@ class _CheckoutState extends State<Checkout> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     currency = prefs.getString('currency');
     await LoginService.getUserInfo().then((onValue) {
-      print(onValue);
       try {
         if (mounted) {
           setState(() {
@@ -157,7 +155,6 @@ class _CheckoutState extends State<Checkout> {
       });
     }
     await AddressService.deliverySlot().then((onValue) {
-      print(onValue);
       try {
         if (mounted) {
           setState(() {
@@ -168,7 +165,6 @@ class _CheckoutState extends State<Checkout> {
             //     deliverySlotList.add(onValue['response_data'][i]);
             //   }
             // }
-            print(deliverySlotList);
             deliverySlotsLoading = false;
           });
         }
@@ -264,7 +260,6 @@ class _CheckoutState extends State<Checkout> {
         "deliveryType": "Home_Delivery",
         "paymentType": 'COD',
       };
-      print(selectedAddress);
 
       data['deliveryAddress'] = selectedAddress['_id'].toString();
 
@@ -287,9 +282,7 @@ class _CheckoutState extends State<Checkout> {
         });
       }
       PaymentService.getDeliveryCharges(body).then((value) {
-        print(value);
         try {
-          print(value);
           if (value['response_code'] == 200) {
             if (mounted) {
               setState(() {
@@ -315,20 +308,6 @@ class _CheckoutState extends State<Checkout> {
       }).catchError((error) {
         sentryError.reportError(error, null);
       });
-
-      // if (mounted) {
-      //   setState(() {
-      //     isPlaceOrderLoading = true;
-      //   });
-      // }
-      // if (mounted) {
-      //   setState(
-      //     () {
-      //       isPlaceOrderLoading = false;
-      //
-      //     },
-      //   );
-      // }
     }
   }
 
@@ -336,7 +315,6 @@ class _CheckoutState extends State<Checkout> {
     if (!_formKey.currentState.validate()) {
       return;
     } else {
-      print("bbb");
       _formKey.currentState.save();
       for (int i = 0; i < couponList.length; i++) {
         if (couponCode.toLowerCase() ==
@@ -352,14 +330,12 @@ class _CheckoutState extends State<Checkout> {
   }
 
   updateCoupons(data) async {
-    print("nn");
     if (mounted) {
       setState(() {
         isCouponLoading = true;
       });
     }
     await CouponService.applyCoupons(data).then((onValue) {
-      print(onValue);
       try {
         if (onValue['response_code'] == 200) {
           if (mounted) {
@@ -609,7 +585,6 @@ class _CheckoutState extends State<Checkout> {
                                         style: textbarlowRegularBlack(),
                                       ))
                                   : Row(
-//                              mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
                                         Container(
                                           width: 193,
@@ -646,7 +621,6 @@ class _CheckoutState extends State<Checkout> {
                                         ),
                                         InkWell(
                                           onTap: () {
-                                            print("vb");
                                             couponCodeApply();
                                           },
                                           child: Padding(
@@ -973,12 +947,12 @@ class _CheckoutState extends State<Checkout> {
                                                 myLocationButtonEnabled: true,
                                                 layersButtonEnabled: true,
                                               );
-                                              print("result = $result");
                                               if (result != null) {
-                                                setState(() {
+                                                setState(() async {
                                                   _pickedLocation = result;
 
-                                                  Navigator.push(
+                                                  Map address =
+                                                      await Navigator.push(
                                                     context,
                                                     new MaterialPageRoute(
                                                       builder: (BuildContext
@@ -990,7 +964,12 @@ class _CheckoutState extends State<Checkout> {
                                                       ),
                                                     ),
                                                   );
-                                                  getAddress();
+
+                                                  if (address != null) {
+                                                    getAddress();
+                                                  } else {
+                                                    getAddress();
+                                                  }
                                                 });
                                               }
 

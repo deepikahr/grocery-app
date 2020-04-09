@@ -5,10 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:grocery_pro/screens/home/home.dart';
 import 'package:grocery_pro/service/auth-service.dart';
 import 'package:grocery_pro/service/common.dart';
-import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/translator/initialize_i18n.dart';
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -64,7 +61,6 @@ class _MyAppState extends State<MyApp> {
 
   var selectedLanguage;
   LocationData currentLocation;
-  Location _location = new Location();
   var addressData;
   getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -96,11 +92,9 @@ class _MyAppState extends State<MyApp> {
 
   checkToken(token) async {
     await LoginService.checkToken().then((onValue) {
-      print(onValue);
       try {
         if (onValue['response_data']['tokenVerify'] == false) {
           Common.setToken(null).then((onValue) {
-            print(onValue);
             if (mounted)
               setState(() {
                 isGetTokenLoading = false;

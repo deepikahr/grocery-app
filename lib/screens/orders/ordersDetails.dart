@@ -38,14 +38,12 @@ class _OrderDetailsState extends State<OrderDetails> {
     }
     SharedPreferences prefs = await SharedPreferences.getInstance();
     currency = prefs.getString('currency');
-    print(widget.orderId);
     await LoginService.getOrderHistory(widget.orderId).then((onValue) {
       try {
         if (onValue['response_code'] == 200) {
           if (mounted) {
             setState(() {
               orderHistory = onValue['response_data'];
-              print(orderHistory["ratings"]);
 
               isLoading = false;
             });
@@ -111,7 +109,6 @@ class _OrderDetailsState extends State<OrderDetails> {
                         onRatingUpdate: (rate) {
                           setState(() {
                             rating = rate;
-                            print(rate);
                           });
                         },
                       ),
@@ -142,11 +139,8 @@ class _OrderDetailsState extends State<OrderDetails> {
 
   orderRating(orderId, rating, productID) async {
     var body = {"rate": rating, "order": orderId, "productId": productID};
-    print(body);
-    print(orderId);
 
     await ProductService.productRate(body).then((onValue) {
-      print(onValue);
       try {
         if (onValue['response_code'] == 201) {
           Navigator.pop(context);
@@ -292,7 +286,6 @@ class _OrderDetailsState extends State<OrderDetails> {
                       ? 0
                       : orderHistory['cart']['cart'].length,
                   itemBuilder: (BuildContext context, int i) {
-                    print(orderHistory);
                     return Column(
                       children: <Widget>[
                         Container(
@@ -388,12 +381,6 @@ class _OrderDetailsState extends State<OrderDetails> {
                                               ? GFButton(
                                                   shape: GFButtonShape.pills,
                                                   onPressed: () {
-                                                    print(orderHistory['_id']);
-                                                    print(orderHistory['user']
-                                                        ['_id']);
-                                                    print(orderHistory['cart']
-                                                            ['cart'][i]
-                                                        ['productId']);
                                                     ratingAlert(
                                                         orderHistory['_id'],
                                                         orderHistory['user']
@@ -404,7 +391,6 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                   },
                                                   color: primary,
                                                   text: 'Rate Now',
-                                                  // textStyle: ,
                                                 )
                                               : GFButton(
                                                   onPressed: null,

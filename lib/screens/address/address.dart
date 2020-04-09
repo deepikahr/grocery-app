@@ -37,7 +37,6 @@ class _AddressState extends State<Address> {
     }
 
     await AddressService.getAddress().then((onValue) {
-      print(onValue);
       try {
         if (mounted) {
           setState(() {
@@ -165,16 +164,11 @@ class _AddressState extends State<Address> {
               ],
             ),
       bottomNavigationBar: Container(
-        height:55,
-        margin: EdgeInsets.only(top:30, bottom: 20, right: 20, left: 20),
-        decoration:BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.black.withOpacity(0.29),
-                  blurRadius: 5
-              )
-            ]
-        ),
+        height: 55,
+        margin: EdgeInsets.only(top: 30, bottom: 20, right: 20, left: 20),
+        decoration: BoxDecoration(boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 5)
+        ]),
         child: Padding(
           padding: const EdgeInsets.only(
             left: 0.0,
@@ -222,7 +216,6 @@ class _AddressState extends State<Address> {
         children: <Widget>[
           GFButton(
             onPressed: () async {
-              print("adrewsss $addressList");
               await Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -230,7 +223,6 @@ class _AddressState extends State<Address> {
                       updateAddressID: addressList, isProfile: true),
                 ),
               );
-
               getAddress();
             },
             child: Padding(

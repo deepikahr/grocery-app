@@ -4,9 +4,9 @@ import 'package:getflutter/components/button/gf_button.dart';
 import 'package:getflutter/components/typography/gf_typography.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:getflutter/size/gf_size.dart';
+import 'package:grocery_pro/main.dart';
 import 'package:grocery_pro/screens/authe/forgotpassword.dart';
 import 'package:grocery_pro/screens/authe/signup.dart';
-import 'package:grocery_pro/screens/home/home.dart';
 import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
@@ -73,7 +73,6 @@ class _LoginState extends State<Login> {
         "password": password,
         "playerId": prefs.getString("playerId")
       };
-      print(body);
       await LoginService.signIn(body).then((onValue) {
         try {
           if (mounted) {
@@ -108,9 +107,7 @@ class _LoginState extends State<Login> {
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (BuildContext context) => Home(
-                    currentIndex: 2,
-                  ),
+                  builder: (BuildContext context) => MyApp(),
                 ),
                 (Route<dynamic> route) => false);
             //           },
@@ -237,9 +234,11 @@ class _LoginState extends State<Login> {
             email = value;
           },
           validator: (String value) {
-            if (value.isEmpty ||
-                !RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
-                    .hasMatch(value)) {
+            if (value.isEmpty) {
+              return "Please Enter a Email";
+            } else if (!RegExp(
+                    r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+                .hasMatch(value)) {
               return "Please Enter a Valid Email";
             } else
               return null;
@@ -291,8 +290,10 @@ class _LoginState extends State<Login> {
           password = value;
         },
         validator: (String value) {
-          if (value.isEmpty || value.length < 6) {
-            return "please Enter Valid Password";
+          if (value.isEmpty) {
+            return "please Enter a Password";
+          } else if (value.length < 6) {
+            return "please Enter Min 6 Digit Password";
           } else
             return null;
         },

@@ -46,7 +46,7 @@ class _PaymentState extends State<Payment> {
       isCardListLoading = false;
   var paymentMethodValue;
   List cardList;
-
+  var cardDetails;
   List<Map<String, dynamic>> paymentTypes = [
     {
       'type': 'COD',
@@ -118,11 +118,27 @@ class _PaymentState extends State<Payment> {
 
     if (widget.data['paymentType'] == "CARD") {
       if (cardID == null) {
-        cardID = cardList[0]['_id'];
+        var body = {
+          "cardHolderName": cardList[0]['cardHolderName'],
+          "cardNumber": cardList[0]['cardNumber'],
+          "expiryMonth": cardList[0]['expiryMonth'],
+          "expiryYear": cardList[0]['expiryYear'],
+          "cvv": cardList[0]['cvv'],
+        };
+        widget.data['card'] = body;
+      } else {
+        var body = {
+          "cardHolderName": cardDetails['cardHolderName'],
+          "cardNumber": cardDetails['cardNumber'],
+          "expiryMonth": cardDetails['expiryMonth'],
+          "expiryYear": cardDetails['expiryYear'],
+          "cvv": cardDetails['cvv'],
+        };
+        widget.data['card'] = body;
       }
-      widget.data['cardId'] = cardID.toString();
+
+      print(widget.data['card']);
       await ProductService.placeOrderCardType(widget.data).then((onValue) {
-        print(onValue);
         print(onValue);
         try {
           if (onValue['response_code'] == 201) {
@@ -146,18 +162,13 @@ class _PaymentState extends State<Payment> {
             }
           }
         } catch (error, stackTrace) {
-          print(error);
           sentryError.reportError(error, stackTrace);
         }
       }).catchError((error) {
-        print(error);
-
         sentryError.reportError(error, null);
       });
     } else {
-      print(widget.data);
       await ProductService.placeOrder(widget.data).then((onValue) {
-        print(onValue);
         try {
           if (onValue['response_code'] == 201) {
             if (mounted) {
@@ -180,11 +191,9 @@ class _PaymentState extends State<Payment> {
             }
           }
         } catch (error, stackTrace) {
-          print(error);
           sentryError.reportError(error, stackTrace);
         }
       }).catchError((error) {
-        print(error);
         sentryError.reportError(error, null);
       });
     }
@@ -340,6 +349,7 @@ class _PaymentState extends State<Payment> {
                       setState(() {
                         cardValue = selected;
                         cardID = cardList[index]['_id'];
+                        cardDetails = cardList[index];
                       });
                     }
                   },
