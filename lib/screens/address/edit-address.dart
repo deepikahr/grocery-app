@@ -248,7 +248,7 @@ class _EditAddressState extends State<EditAddress> {
                         });
                       },
                       text: 'Update Address',
-                      textStyle: TextStyle(fontSize: 17.0, color: Colors.black),
+                      textStyle: textBarlowRegularBlack()
                     ),
                   ),
                 ),
@@ -553,6 +553,7 @@ class _EditAddressState extends State<EditAddress> {
                     padding: const EdgeInsets.only(left: 0.0, right: 0.0),
                     child: GFButton(
                       onPressed: updateAddress,
+                      textStyle: textBarlowRegularBlack(),
                       color: primary,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,

@@ -868,6 +868,15 @@ TextStyle textbarlowBoldGreen() {
       );
 }
 
+TextStyle textbarlowBoldgreen() {
+  return TextStyle(
+    fontSize: 16.0,
+    fontWeight: FontWeight.bold,
+    fontFamily: 'BarlowBold',
+    color: Color(0xFF20C978),
+  );
+}
+
 TextStyle textbarlowBoldWhite() {
   return TextStyle(
       fontSize: 16.0,
@@ -1023,7 +1032,13 @@ TextStyle textbarlowRegularBlack() {
       color: Colors.black,
       );
 }
-
+TextStyle textbarlowRegularBlackb() {
+  return TextStyle(
+    fontSize: 13.0,
+    fontFamily: 'BarlowRegular',
+    color: Colors.black,
+  );
+}
 TextStyle textbarlowRegularBlackd() {
   return TextStyle(
       fontSize: 16.0,
@@ -1203,6 +1218,15 @@ TextStyle textBarlowRegularrdark() {
     fontFamily: 'BarlowRegular',
     fontWeight: FontWeight.w300,
     color: Colors.black,
+  );
+}
+
+TextStyle textBarlowRegularrdarkdull() {
+  return TextStyle(
+    fontSize: 15.0,
+    fontFamily: 'BarlowRegular',
+    fontWeight: FontWeight.w400,
+    color: Colors.black.withOpacity(0.40),
   );
 }
 TextStyle textBarlowRegularGreen() {

@@ -585,6 +585,7 @@ class _CheckoutState extends State<Checkout> {
                                         style: textbarlowRegularBlack(),
                                       ))
                                   : Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
                                         Container(
                                           width: 193,
@@ -619,33 +620,38 @@ class _CheckoutState extends State<Checkout> {
                                             },
                                           ),
                                         ),
-                                        InkWell(
-                                          onTap: () {
-                                            couponCodeApply();
-                                          },
-                                          child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 8.0),
-                                              child: Container(
-                                                height: 44,
-                                                width: 119,
-                                                child: GFButton(
-                                                  onPressed: null,
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 8.0,
-                                                            right: 8.0),
-                                                    child: Text(
-                                                      "Apply ",
-                                                      style:
-                                                          textBarlowRegularBlack(),
-                                                    ),
-                                                  ),
-                                                  color: primary,
+                                    Flexible(
+                                        flex: 3,
+                                        fit: FlexFit.tight,
+                                        child:
+                                    InkWell(
+                                      onTap: () {
+                                        couponCodeApply();
+                                      },
+                                      child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 8.0),
+                                          child: Container(
+//                                                alignment: Alignment.topRight,
+                                            height: 44,
+                                            width: 119,
+                                            child: GFButton(
+                                              onPressed: null,
+                                              child: Padding(
+                                                padding:
+                                                const EdgeInsets.only(
+                                                    left: 8.0,
+                                                    right: 8.0),
+                                                child: Text(
+                                                  "Apply ",
+                                                  style:
+                                                  textBarlowRegularBlack(),
                                                 ),
-                                              )),
-                                        )
+                                              ),
+                                              color: primary,
+                                            ),
+                                          )),
+                                    ))
                                       ],
                                     ),
                             ),
@@ -663,7 +669,7 @@ class _CheckoutState extends State<Checkout> {
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.only(
-                                    left: 20.0, right: 20.0),
+                                    left: 0.0, right: 20.0),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -1245,7 +1251,7 @@ class _CheckoutState extends State<Checkout> {
                             children: <Widget>[
                               Text(
                                 "Proceed",
-                                style: textBarlowRegularrBlack(),
+                                style: textBarlowRegularBlack(),
                               ),
                               isPlaceOrderLoading
                                   ? Image.asset(

@@ -201,7 +201,7 @@ class _AddressState extends State<Address> {
               }
             },
             text: 'Add New Address',
-            textStyle: textBarlowRegularrBlack(),
+            textStyle: textBarlowRegularBlack(),
           ),
         ),
       ),
