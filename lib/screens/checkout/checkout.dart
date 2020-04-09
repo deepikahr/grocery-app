@@ -5,6 +5,7 @@ import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:grocery_pro/screens/payment/payment.dart';
 import 'package:grocery_pro/service/coupon-service.dart';
+import 'package:grocery_pro/service/payment-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/product-service.dart';
@@ -263,6 +264,7 @@ class _CheckoutState extends State<Checkout> {
         "deliveryType": "Home_Delivery",
         "paymentType": 'COD',
       };
+      print(selectedAddress);
 
       data['deliveryAddress'] = selectedAddress['_id'].toString();
 
@@ -274,28 +276,59 @@ class _CheckoutState extends State<Checkout> {
 
       data['cart'] = cartItem['_id'].toString();
       data['cart'] = widget.id;
+      var body = {
+        "latitude": selectedAddress['location']['lat'],
+        "longitude": selectedAddress['location']['long'],
+        "cartId": data['cart']
+      };
       if (mounted) {
         setState(() {
           isPlaceOrderLoading = true;
         });
       }
-      if (mounted) {
-        setState(
-          () {
-            isPlaceOrderLoading = false;
+      PaymentService.getDeliveryCharges(body).then((value) {
+        print(value);
+        try {
+          print(value);
+          if (value['response_code'] == 200) {
+            if (mounted) {
+              setState(() {
+                isPlaceOrderLoading = false;
+              });
+            }
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => Payment(
                   data: data,
                   type: widget.buy,
-                  grandTotal: cartItem['grandTotal'],
+                  grandTotal: value['response_data']['cartData']['grandTotal'],
+                  deliveryCharges: value['response_data']['deliveryDetails']
+                      ['deliveryCharges'],
                 ),
               ),
             );
-          },
-        );
-      }
+          }
+        } catch (error, stackTrace) {
+          sentryError.reportError(error, stackTrace);
+        }
+      }).catchError((error) {
+        sentryError.reportError(error, null);
+      });
+
+      // if (mounted) {
+      //   setState(() {
+      //     isPlaceOrderLoading = true;
+      //   });
+      // }
+      // if (mounted) {
+      //   setState(
+      //     () {
+      //       isPlaceOrderLoading = false;
+      //
+      //     },
+      //   );
+      // }
     }
   }
 
@@ -438,573 +471,565 @@ class _CheckoutState extends State<Checkout> {
               ? Center(child: CircularProgressIndicator())
               : ListView(
                   children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.only(top:10, bottom: 10),
-                    margin: EdgeInsets.only(top:10),
-                    decoration: BoxDecoration(
+                    Container(
+                      padding: EdgeInsets.only(top: 10, bottom: 10),
+                      margin: EdgeInsets.only(top: 10),
+                      decoration: BoxDecoration(
 //                      color: Colors.red,
-                      color: Color(0xFFFDFDFD),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0xFF0000000A).withOpacity(0.10),
-                          blurRadius: 5
-                        )
-                      ]
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20.0),
-                          child: Text('Cart summary',
-                              style: textBarlowSemiBoldBlack()),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 20.0, top: 10.0, bottom: 10.0, right: 20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Column(
-                                children: <Widget>[
-                                  Text(
-                                    'Sub total ( ${widget.quantity} items )',
-                                    style: textBarlowRegularBlack(),
-                                  )
-                                ],
-                              ),
-                              Column(
-                                children: <Widget>[
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: <Widget>[
-                                      Text(
-                                        currency,
-                                        style: textbarlowBoldsmBlack(),
-                                      ),
-                                      Text(
-                                        '${cartItem['subTotal']}',
-                                        style: textbarlowBoldsmBlack(),
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
+                          color: Color(0xFFFDFDFD),
+                          boxShadow: [
+                            BoxShadow(
+                                color: Color(0xFF0000000A).withOpacity(0.10),
+                                blurRadius: 5)
+                          ]),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20.0),
+                            child: Text('Cart summary',
+                                style: textBarlowSemiBoldBlack()),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 20.0, bottom: 10.0, right: 20.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  Image.asset('lib/assets/icons/sale.png'),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text(
-                                    'Discount',
-                                    style: textBarlowRegularBlack(),
-                                  ),
-                                ],
-                              ),
-
-                              Column(
-                                children: <Widget>[
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: <Widget>[
-                                      Text(
-                                        currency,
-                                        style: textbarlowBoldsmBlack(),
-                                      ),
-                                      Text(
-                                        '${cartItem['tax']}',
-                                        style: textbarlowBoldsmBlack(),
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 20.0, bottom: 10.0, right: 20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Column(
-                                children: <Widget>[
-                                  Text(
-                                    'Delivery charges',
-                                    style: textBarlowRegularBlack(),
-                                  )
-                                ],
-                              ),
-                              Column(
-                                children: <Widget>[
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: <Widget>[
-                                      Text(
-                                        currency,
-                                        style: textbarlowBoldsmBlack(),
-                                      ),
-                                      Text(
-                                        '${cartItem['deliveryCharges']}',
-                                        style: textbarlowBoldsmBlack(),
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        Form(
-
-                          key: _formKey,
-                          child: Container(
-                            margin: const EdgeInsets.only(left: 20.0, right: 20),
-                            child: couponApplied
-                                ? Padding(
-                                padding: EdgeInsets.only(left: 5.0),
-                                child: Text(
-                                  "Coupon Applied",
-                                  style: textbarlowRegularBlack(),
-                                ))
-                                : Row(
-//                              mainAxisAlignment: MainAxisAlignment.center,
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 20.0, top: 10.0, bottom: 10.0, right: 20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                Container(
-                                  width: 193,
-                                  height: 44,
-                                  alignment: Alignment.center,
-                                  padding: EdgeInsets.only(left: 0.0, bottom: 3),
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: Color(0xFFD4D4E0)),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(4))),
-                                  child: TextFormField(
-                                    textAlign: TextAlign.center,
-                                    decoration: InputDecoration(
-                                      hintText: 'Enter Coupon Code',
-                                        hintStyle: textBarlowRegularBlacklight(),
-                                        border: InputBorder.none),
-                                    cursorColor: primary,
-                                    validator: (String value) {
-                                      if (value.isEmpty) {
-                                        return null;
-                                      } else {
-                                        return null;
-                                      }
-                                    },
-                                    style: textBarlowRegularBlacklight(),
-                                    onSaved: (String value) {
-                                      couponCode = value;
-                                    },
-                                  ),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    print("vb");
-                                    couponCodeApply();
-                                  },
-                                  child: Padding(
-                                    padding:
-                                    const EdgeInsets.only(left: 8.0),
-                                    child: Container(
-                                      height: 44,
-                                      width:119,
-                                      child: GFButton(
-                                        onPressed: null,
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 8.0, right: 8.0),
-                                          child: Text(
-                                            "Apply ",
-                                            style: textBarlowRegularBlack(),
-                                          ),
-                                        ),
-                                        color: primary,
-                                      ),
+                                Column(
+                                  children: <Widget>[
+                                    Text(
+                                      'Sub total ( ${widget.quantity} items )',
+                                      style: textBarlowRegularBlack(),
                                     )
-                                  ),
-                                )
+                                  ],
+                                ),
+                                Column(
+                                  children: <Widget>[
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: <Widget>[
+                                        Text(
+                                          currency,
+                                          style: textbarlowBoldsmBlack(),
+                                        ),
+                                        Text(
+                                          '${cartItem['subTotal']}',
+                                          style: textbarlowBoldsmBlack(),
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          height:20
-                        ),
-                        Divider(color: Color(0xFF707070).withOpacity(0.20), thickness: 1,),
-                        Padding(
-                          padding: const EdgeInsets.only( bottom: 10.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-
-                            ),
-                            child: Padding(
-                              padding:
-                              const EdgeInsets.only(left: 20.0, right: 20.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Column(
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 22.0, top: 10.0, bottom: 10.0),
-                                        child: Text(
-                                          'Total',
-                                          style: textbarlowMediumBlack(),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 20.0, bottom: 10.0, right: 20.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    Image.asset('lib/assets/icons/sale.png'),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      'Discount',
+                                      style: textBarlowRegularBlack(),
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  children: <Widget>[
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: <Widget>[
+                                        Text(
+                                          currency,
+                                          style: textbarlowBoldsmBlack(),
                                         ),
-                                      )
-                                    ],
-                                  ),
-                                  Column(
-                                    children: <Widget>[
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        children: <Widget>[
-                                          Padding(
-                                            padding:
-                                            const EdgeInsets.only(top: 2.0),
-                                            child: Text(
-                                              currency,
-                                              style: textBarlowBoldBlack(),
-                                            ),
+                                        Text(
+                                          '${cartItem['tax']}',
+                                          style: textbarlowBoldsmBlack(),
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 20.0, bottom: 10.0, right: 20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Column(
+                                  children: <Widget>[
+                                    Text(
+                                      'Delivery charges',
+                                      style: textBarlowRegularBlack(),
+                                    )
+                                  ],
+                                ),
+                                Column(
+                                  children: <Widget>[
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: <Widget>[
+                                        Text(
+                                          currency,
+                                          style: textbarlowBoldsmBlack(),
+                                        ),
+                                        Text(
+                                          '${cartItem['deliveryCharges']}',
+                                          style: textbarlowBoldsmBlack(),
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          Form(
+                            key: _formKey,
+                            child: Container(
+                              margin:
+                                  const EdgeInsets.only(left: 20.0, right: 20),
+                              child: couponApplied
+                                  ? Padding(
+                                      padding: EdgeInsets.only(left: 5.0),
+                                      child: Text(
+                                        "Coupon Applied",
+                                        style: textbarlowRegularBlack(),
+                                      ))
+                                  : Row(
+//                              mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Container(
+                                          width: 193,
+                                          height: 44,
+                                          alignment: Alignment.center,
+                                          padding: EdgeInsets.only(
+                                              left: 0.0, bottom: 3),
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Color(0xFFD4D4E0)),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(4))),
+                                          child: TextFormField(
+                                            textAlign: TextAlign.center,
+                                            decoration: InputDecoration(
+                                                hintText: 'Enter Coupon Code',
+                                                hintStyle:
+                                                    textBarlowRegularBlacklight(),
+                                                border: InputBorder.none),
+                                            cursorColor: primary,
+                                            validator: (String value) {
+                                              if (value.isEmpty) {
+                                                return null;
+                                              } else {
+                                                return null;
+                                              }
+                                            },
+                                            style:
+                                                textBarlowRegularBlacklight(),
+                                            onSaved: (String value) {
+                                              couponCode = value;
+                                            },
                                           ),
-                                          Text(
-                                            '${cartItem['grandTotal']}',
-                                            style: textBarlowBoldBlack(),
-                                          )
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                        ),
+                                        InkWell(
+                                          onTap: () {
+                                            print("vb");
+                                            couponCodeApply();
+                                          },
+                                          child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 8.0),
+                                              child: Container(
+                                                height: 44,
+                                                width: 119,
+                                                child: GFButton(
+                                                  onPressed: null,
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 8.0,
+                                                            right: 8.0),
+                                                    child: Text(
+                                                      "Apply ",
+                                                      style:
+                                                          textBarlowRegularBlack(),
+                                                    ),
+                                                  ),
+                                                  color: primary,
+                                                ),
+                                              )),
+                                        )
+                                      ],
+                                    ),
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          Divider(
+                            color: Color(0xFF707070).withOpacity(0.20),
+                            thickness: 1,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 10.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 20.0, right: 20.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Column(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 22.0,
+                                              top: 10.0,
+                                              bottom: 10.0),
+                                          child: Text(
+                                            'Total',
+                                            style: textbarlowMediumBlack(),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    Column(
+                                      children: <Widget>[
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: <Widget>[
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 2.0),
+                                              child: Text(
+                                                currency,
+                                                style: textBarlowBoldBlack(),
+                                              ),
+                                            ),
+                                            Text(
+                                              '${cartItem['grandTotal']}',
+                                              style: textBarlowBoldBlack(),
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-
-
-
                     SizedBox(height: 20),
-
-
-                  Container(
-                    padding: EdgeInsets.only(top:20),
-                    decoration: BoxDecoration(
+                    Container(
+                      padding: EdgeInsets.only(top: 20),
+                      decoration: BoxDecoration(
 //                      color: Colors.red,
-                        color: Color(0xFFFDFDFD),
-                        boxShadow: [
+                          color: Color(0xFFFDFDFD),
+                          boxShadow: [
 //                          BoxShadow(
 //                              color: Colors.black.withOpacity(0.29),
 //                              blurRadius: 20
 //                          )
-                          BoxShadow(
-                              color: Color(0xFF0000000A).withOpacity(0.10),
-                              blurRadius: 5
-                          )
-                        ]
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20.0),
-                          child: Text('Delivery type',
-                              style: textBarlowSemiBoldBlack()),
-                        ),
-                        Row(children: <Widget>[
+                            BoxShadow(
+                                color: Color(0xFF0000000A).withOpacity(0.10),
+                                blurRadius: 5)
+                          ]),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
                           Padding(
-                            padding: const EdgeInsets.only(left: 22.0, top: 10),
-                            child: Column(
-                              children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Text(
-                                      'Home Delivery',
-                                      style: textBarlowRegularBlack(),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
+                            padding: const EdgeInsets.only(left: 20.0),
+                            child: Text('Delivery type',
+                                style: textBarlowSemiBoldBlack()),
                           ),
-                        ]),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                            child: GFAccordion(
-                              collapsedTitlebackgroundColor: Colors.grey[300],
-                              textStyle: textBarlowRegularBlack(),
-                              contentChild: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    new BoxShadow(
-                                        color: Colors.black38,
-                                        offset: Offset(0.0, 0.50)),
-                                  ],
-                                ),
-                                child: Column(
-                                  children: <Widget>[
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        border: Border(
-                                          bottom: BorderSide(
-                                              width: 0.0, color: Colors.grey),
-                                        ),
+                          Row(children: <Widget>[
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 22.0, top: 10),
+                              child: Column(
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Text(
+                                        'Home Delivery',
+                                        style: textBarlowRegularBlack(),
                                       ),
-                                      child: Column(
-                                        children: <Widget>[
-                                          Padding(
-                                            padding:
-                                            const EdgeInsets.only(left: 0.0),
-                                            child: Container(
-                                              child: Column(
-                                                children: <Widget>[
-                                                  Container(
-                                                    width: MediaQuery.of(context)
-                                                        .size
-                                                        .width,
-                                                    child: Padding(
-                                                      padding:
-                                                      const EdgeInsets.only(
-                                                          left: 0),
-                                                      child: ListView.builder(
-                                                        physics: ScrollPhysics(),
-                                                        shrinkWrap: true,
-                                                        itemCount: addressList
-                                                            .length ==
-                                                            null
-                                                            ? 0
-                                                            : addressList.length,
-                                                        itemBuilder:
-                                                            (BuildContext context,
-                                                            int i) {
-                                                          return Column(
-                                                            mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
-                                                            children: <Widget>[
-                                                              RadioListTile(
-                                                                groupValue:
-                                                                groupValue1,
-                                                                activeColor:
-                                                                primary,
-                                                                value: i,
-                                                                title: Column(
-                                                                    crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                    mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .start,
-                                                                    children: [
-                                                                      Text(
-                                                                          '${addressList[i]['flatNo']}, ${addressList[i]['apartmentName']},${addressList[i]['address']},',
-                                                                        style: textbarlowRegularBlackd(),
-                                                                      ),
-                                                                      Text(
-                                                                          " ${addressList[i]['landmark']} ,"
-                                                                              '${addressList[i]['postalCode']}, ${addressList[i]['contactNumber']}',  style: textbarlowRegularBlackd(),),
-                                                                    ]),
-                                                                onChanged:
-                                                                addressRadioValueChanged,
-                                                              ),
-                                                              Row(
-                                                                mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                                children: <Widget>[
-                                                                  Padding(
-                                                                    padding:
-                                                                    const EdgeInsets
-                                                                        .only(
-                                                                        left:
-                                                                        0.0),
-                                                                    child: Row(
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          ]),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(left: 8.0, right: 8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                              child: GFAccordion(
+                                collapsedTitlebackgroundColor: Colors.grey[300],
+                                textStyle: textBarlowRegularBlack(),
+                                contentChild: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      new BoxShadow(
+                                          color: Colors.black38,
+                                          offset: Offset(0.0, 0.50)),
+                                    ],
+                                  ),
+                                  child: Column(
+                                    children: <Widget>[
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          border: Border(
+                                            bottom: BorderSide(
+                                                width: 0.0, color: Colors.grey),
+                                          ),
+                                        ),
+                                        child: Column(
+                                          children: <Widget>[
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 0.0),
+                                              child: Container(
+                                                child: Column(
+                                                  children: <Widget>[
+                                                    Container(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(left: 0),
+                                                        child: ListView.builder(
+                                                          physics:
+                                                              ScrollPhysics(),
+                                                          shrinkWrap: true,
+                                                          itemCount: addressList
+                                                                      .length ==
+                                                                  null
+                                                              ? 0
+                                                              : addressList
+                                                                  .length,
+                                                          itemBuilder:
+                                                              (BuildContext
+                                                                      context,
+                                                                  int i) {
+                                                            return Column(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              children: <
+                                                                  Widget>[
+                                                                RadioListTile(
+                                                                  groupValue:
+                                                                      groupValue1,
+                                                                  activeColor:
+                                                                      primary,
+                                                                  value: i,
+                                                                  title: Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
                                                                       mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .start,
-                                                                      children: <
-                                                                          Widget>[
-                                                                        GFButton(
-                                                                          onPressed:
-                                                                              () async {
-                                                                            await Navigator
-                                                                                .push(
-                                                                              context,
-                                                                              MaterialPageRoute(
-                                                                                builder: (context) =>
-                                                                                    EditAddress(
-                                                                                      isCheckout: true,
-                                                                                      updateAddressID: addressList[i],
-                                                                                    ),
-                                                                              ),
-                                                                            );
-                                                                            getAddress();
-                                                                          },
-                                                                          child:
-                                                                          Padding(
-                                                                            padding: const EdgeInsets.only(
-                                                                                left:
-                                                                                18.0,
-                                                                                right:
-                                                                                18.0),
-                                                                            child:
-                                                                            Text(
-                                                                              "Edit",
-                                                                              style:
-                                                                              textbarlowRegularaPrimar(),
-                                                                            ),
-                                                                          ),
-                                                                          type: GFButtonType
-                                                                              .outline,
-                                                                          color: GFColors
-                                                                              .WARNING,
-                                                                          size: GFSize
-                                                                              .MEDIUM,
+                                                                          MainAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Text(
+                                                                          '${addressList[i]['flatNo']}, ${addressList[i]['apartmentName']},${addressList[i]['address']},',
+                                                                          style:
+                                                                              textbarlowRegularBlackd(),
                                                                         ),
-                                                                        Padding(
-                                                                          padding: const EdgeInsets
+                                                                        Text(
+                                                                          " ${addressList[i]['landmark']} ,"
+                                                                          '${addressList[i]['postalCode']}, ${addressList[i]['contactNumber']}',
+                                                                          style:
+                                                                              textbarlowRegularBlackd(),
+                                                                        ),
+                                                                      ]),
+                                                                  onChanged:
+                                                                      addressRadioValueChanged,
+                                                                ),
+                                                                Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  children: <
+                                                                      Widget>[
+                                                                    Padding(
+                                                                      padding: const EdgeInsets
                                                                               .only(
-                                                                              left:
-                                                                              20.0),
-                                                                          child:
+                                                                          left:
+                                                                              0.0),
+                                                                      child:
+                                                                          Row(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.start,
+                                                                        children: <
+                                                                            Widget>[
                                                                           GFButton(
                                                                             onPressed:
-                                                                                () {
-                                                                              deleteAddress(addressList[i]
-                                                                              [
-                                                                              '_id']);
+                                                                                () async {
+                                                                              await Navigator.push(
+                                                                                context,
+                                                                                MaterialPageRoute(
+                                                                                  builder: (context) => EditAddress(
+                                                                                    isCheckout: true,
+                                                                                    updateAddressID: addressList[i],
+                                                                                  ),
+                                                                                ),
+                                                                              );
+                                                                              getAddress();
                                                                             },
                                                                             child:
-                                                                            Padding(
-                                                                              padding: const EdgeInsets.only(
-                                                                                  left: 8.0,
-                                                                                  right: 8.0),
-                                                                              child:
-                                                                              Text(
-                                                                                "Delete",
-                                                                                style:
-                                                                                textbarlowRegularaPrimar(),
+                                                                                Padding(
+                                                                              padding: const EdgeInsets.only(left: 18.0, right: 18.0),
+                                                                              child: Text(
+                                                                                "Edit",
+                                                                                style: textbarlowRegularaPrimar(),
                                                                               ),
                                                                             ),
-                                                                            color: GFColors
-                                                                                .WARNING,
-                                                                            type: GFButtonType
-                                                                                .outline,
+                                                                            type:
+                                                                                GFButtonType.outline,
+                                                                            color:
+                                                                                GFColors.WARNING,
+                                                                            size:
+                                                                                GFSize.MEDIUM,
                                                                           ),
-                                                                        )
-                                                                      ],
+                                                                          Padding(
+                                                                            padding:
+                                                                                const EdgeInsets.only(left: 20.0),
+                                                                            child:
+                                                                                GFButton(
+                                                                              onPressed: () {
+                                                                                deleteAddress(addressList[i]['_id']);
+                                                                              },
+                                                                              child: Padding(
+                                                                                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                                                                                child: Text(
+                                                                                  "Delete",
+                                                                                  style: textbarlowRegularaPrimar(),
+                                                                                ),
+                                                                              ),
+                                                                              color: GFColors.WARNING,
+                                                                              type: GFButtonType.outline,
+                                                                            ),
+                                                                          )
+                                                                        ],
+                                                                      ),
                                                                     ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ],
-                                                          );
-                                                        },
+                                                                  ],
+                                                                ),
+                                                              ],
+                                                            );
+                                                          },
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(top:20, bottom: 20),
-
-                           child: Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 3.0, bottom: 0.0),
-                                        child: GFButton(
-                                          onPressed: () async {
-                                            LocationResult result =
-                                            await showLocationPicker(
-                                              context,
-                                              "AIzaSyD6Q4UgAYOL203nuwNeBr4j_-yAd1U1gko",
-                                              initialCenter:
-                                              LatLng(31.1975844, 29.9598339),
-                                              myLocationButtonEnabled: true,
-                                              layersButtonEnabled: true,
-                                            );
-                                            print("result = $result");
-                                            if (result != null) {
-                                              setState(() {
-                                                _pickedLocation = result;
-
-                                                Navigator.push(
-                                                  context,
-                                                  new MaterialPageRoute(
-                                                    builder:
-                                                        (BuildContext context) =>
-                                                    new AddAddress(
-                                                      isCheckout: true,
-                                                      pickedLocation:
-                                                      _pickedLocation,
-                                                    ),
-                                                  ),
-                                                );
-                                                getAddress();
-                                              });
-                                            }
-
-                                            // Map<String, dynamic> address =
-                                            //     await Navigator.push(
-                                            //   context,
-                                            //   MaterialPageRoute(
-                                            //       builder: (context) => AddAddress(
-                                            //             isCheckout: true,
-                                            //           )),
-                                            // );
-                                            // if (address != null) {
-                                            //   addressList.add(address);
-                                            //   getAddress();
-                                            // }
-                                          },
-
-                                          child: Container(
-                                            height:140,
-
-//                                            width:130,
-
-                                            child: DottedBorder(
-                                              color: Color(0xFFBBBBBB),
-
-                                              borderType: BorderType.Rect,
-                                              radius: Radius.circular(3),
-                                              padding: EdgeInsets.all(6),
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.all(Radius.circular(12)),
-                                                child: Text(
-                                                  "Add new address",
-                                                  style: textbarlowRegulardull(),
+                                                  ],
                                                 ),
                                               ),
                                             ),
-                                          ),
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.only(
+                                            top: 20, bottom: 20),
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 3.0, bottom: 0.0),
+                                          child: GFButton(
+                                            onPressed: () async {
+                                              LocationResult result =
+                                                  await showLocationPicker(
+                                                context,
+                                                "AIzaSyD6Q4UgAYOL203nuwNeBr4j_-yAd1U1gko",
+                                                initialCenter: LatLng(
+                                                    31.1975844, 29.9598339),
+                                                myLocationButtonEnabled: true,
+                                                layersButtonEnabled: true,
+                                              );
+                                              print("result = $result");
+                                              if (result != null) {
+                                                setState(() {
+                                                  _pickedLocation = result;
+
+                                                  Navigator.push(
+                                                    context,
+                                                    new MaterialPageRoute(
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          new AddAddress(
+                                                        isCheckout: true,
+                                                        pickedLocation:
+                                                            _pickedLocation,
+                                                      ),
+                                                    ),
+                                                  );
+                                                  getAddress();
+                                                });
+                                              }
+
+                                              // Map<String, dynamic> address =
+                                              //     await Navigator.push(
+                                              //   context,
+                                              //   MaterialPageRoute(
+                                              //       builder: (context) => AddAddress(
+                                              //             isCheckout: true,
+                                              //           )),
+                                              // );
+                                              // if (address != null) {
+                                              //   addressList.add(address);
+                                              //   getAddress();
+                                              // }
+                                            },
+
+                                            child: Container(
+                                              height: 140,
+
+//                                            width:130,
+
+                                              child: DottedBorder(
+                                                color: Color(0xFFBBBBBB),
+                                                borderType: BorderType.Rect,
+                                                radius: Radius.circular(3),
+                                                padding: EdgeInsets.all(6),
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(12)),
+                                                  child: Text(
+                                                    "Add new address",
+                                                    style:
+                                                        textbarlowRegulardull(),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
 //                                          child: Padding(
 //                                            padding: const EdgeInsets.only(
 //                                                left: 8.0, right: 8.0),
@@ -1013,233 +1038,253 @@ class _CheckoutState extends State<Checkout> {
 //                                              style: textBarlowRegularBlack(),
 //                                            ),
 //                                          ),
-                                          color: GFColors.TRANSPARENT,
-
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              title: addressList.length == 0
-                                  ? " You have not added any address yet."
-                                  : addressList[0]['flatNo'] +
-                                  " ," +
-                                  addressList[0]['apartmentName'] +
-                                  '....',
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 20.0, bottom: 4.0),
-                                  child: Text(
-                                    'Choose Delivery Date and Time Slot',
-                                    style: textBarlowSemiBoldBlack(),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 10),
-                            Row(
-                              children: <Widget>[
-                                Container(
-                                  height: 50,
-                                  width: MediaQuery.of(context).size.width,
-                                  child: ListView.builder(
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: deliverySlotList.length == null
-                                        ? 0
-                                        : deliverySlotList.length,
-                                    itemBuilder: (BuildContext context, int index) {
-                                      return deliverySlotList[index]['isClosed'] ==
-                                          false
-                                          ? Container(
-                                        color: Colors.grey[200],
-                                        width: 70,
-                                        child: Row(
-                                          children: <Widget>[
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 3, bottom: 3),
-                                              child: Container(
-                                                width: 60,
-                                                margin: EdgeInsets.only(
-                                                  left: 10,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                    color: _selectedIndex !=
-                                                        null &&
-                                                        _selectedIndex ==
-                                                            index
-                                                        ? primary
-                                                        : Colors.transparent,
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                        10)),
-                                                child: InkWell(
-                                                  onTap: () =>
-                                                      _onSelected(index),
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .center,
-                                                    children: <Widget>[
-                                                      Text(
-                                                        '${deliverySlotList[index]['day'].substring(0, 3)}',
-                                                        style:
-                                                        textBarlowMediumBlack(),
-                                                      ),
-                                                      Text(
-                                                        '${deliverySlotList[index]['date'][1] == "-" ? "0" + deliverySlotList[index]['date'].substring(0, 1) : deliverySlotList[index]['date'].substring(0, 2)}',
-                                                        style:
-                                                        textbarlowRegularBlack(),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
+                                            color: GFColors.TRANSPARENT,
+                                          ),
                                         ),
                                       )
-                                          : Container();
-                                    },
+                                    ],
                                   ),
                                 ),
-                              ],
+                                title: addressList.length == 0
+                                    ? " You have not added any address yet."
+                                    : addressList[0]['flatNo'] +
+                                        " ," +
+                                        addressList[0]['apartmentName'] +
+                                        '....',
+                              ),
                             ),
-                            Column(
-                              children: <Widget>[
-                                Container(
-                                  color: Colors.white54,
-                                  child: ListView.builder(
-                                    physics: ScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemCount: deliverySlotList[_selectedIndex]
-                                    ['timeSchedule']
-                                        .length ==
-                                        null
-                                        ? 0
-                                        : deliverySlotList[_selectedIndex]
-                                    ['timeSchedule']
-                                        .length,
-                                    itemBuilder: (BuildContext context, int i) {
-                                      if (deliverySlotList[_selectedIndex]
-                                      ['timeSchedule'][0]['isClosed'] ==
-                                          true &&
+                          ),
+                          SizedBox(height: 10),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 20.0, bottom: 4.0),
+                                    child: Text(
+                                      'Choose Delivery Date and Time Slot',
+                                      style: textBarlowSemiBoldBlack(),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 10),
+                              Row(
+                                children: <Widget>[
+                                  Container(
+                                    height: 50,
+                                    width: MediaQuery.of(context).size.width,
+                                    child: ListView.builder(
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: deliverySlotList.length == null
+                                          ? 0
+                                          : deliverySlotList.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return deliverySlotList[index]
+                                                    ['isClosed'] ==
+                                                false
+                                            ? Container(
+                                                color: Colors.grey[200],
+                                                width: 70,
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 3,
+                                                              bottom: 3),
+                                                      child: Container(
+                                                        width: 60,
+                                                        margin: EdgeInsets.only(
+                                                          left: 10,
+                                                        ),
+                                                        decoration: BoxDecoration(
+                                                            color: _selectedIndex !=
+                                                                        null &&
+                                                                    _selectedIndex ==
+                                                                        index
+                                                                ? primary
+                                                                : Colors
+                                                                    .transparent,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10)),
+                                                        child: InkWell(
+                                                          onTap: () =>
+                                                              _onSelected(
+                                                                  index),
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: <Widget>[
+                                                              Text(
+                                                                '${deliverySlotList[index]['day'].substring(0, 3)}',
+                                                                style:
+                                                                    textBarlowMediumBlack(),
+                                                              ),
+                                                              Text(
+                                                                '${deliverySlotList[index]['date'][1] == "-" ? "0" + deliverySlotList[index]['date'].substring(0, 1) : deliverySlotList[index]['date'].substring(0, 2)}',
+                                                                style:
+                                                                    textbarlowRegularBlack(),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            : Container();
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                children: <Widget>[
+                                  Container(
+                                    color: Colors.white54,
+                                    child: ListView.builder(
+                                      physics: ScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemCount:
                                           deliverySlotList[_selectedIndex]
-                                          ['timeSchedule'][1]['isClosed'] ==
-                                              true &&
-                                          deliverySlotList[_selectedIndex]
-                                          ['timeSchedule'][2]['isClosed'] ==
-                                              true &&
-                                          deliverySlotList[_selectedIndex]
-                                          ['timeSchedule'][3]['isClosed'] ==
-                                              true) {
-                                        return Center(
-                                          child: Image.asset(
-                                              'lib/assets/images/no-orders.png'),
-                                        );
-                                      } else {
-                                        return deliverySlotList[_selectedIndex]
-                                        ['timeSchedule'][i]
-                                        ['isClosed'] ==
-                                            false
-                                            ? Row(
+                                                          ['timeSchedule']
+                                                      .length ==
+                                                  null
+                                              ? 0
+                                              : deliverySlotList[_selectedIndex]
+                                                      ['timeSchedule']
+                                                  .length,
+                                      itemBuilder:
+                                          (BuildContext context, int i) {
+                                        if (deliverySlotList[_selectedIndex]
+                                                        ['timeSchedule'][0]
+                                                    ['isClosed'] ==
+                                                true &&
+                                            deliverySlotList[_selectedIndex]
+                                                        ['timeSchedule'][1]
+                                                    ['isClosed'] ==
+                                                true &&
+                                            deliverySlotList[_selectedIndex]
+                                                        ['timeSchedule'][2]
+                                                    ['isClosed'] ==
+                                                true &&
+                                            deliverySlotList[_selectedIndex]
+                                                        ['timeSchedule'][3]
+                                                    ['isClosed'] ==
+                                                true) {
+                                          return Center(
+                                            child: Image.asset(
+                                                'lib/assets/images/no-orders.png'),
+                                          );
+                                        } else {
+                                          return deliverySlotList[
+                                                              _selectedIndex]
+                                                          ['timeSchedule'][i]
+                                                      ['isClosed'] ==
+                                                  false
+                                              ? Row(
 //                                          mainAxisAlignment:
 //                                          MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                          children: <Widget>[
-                                            SizedBox(
-                                              width:15
-                                            ),
-                                            Expanded(child: deliverySlotList.length == 0
-                                                ? Text(
-                                                'Sorry ! No Slots Available Today !!!')
-                                                : Text(
-                                              '${deliverySlotList[_selectedIndex]['timeSchedule'][i]['slot']}',
-                                              style:
-                                              textBarlowRegularBlack(),
-                                            ),),
-                                          Expanded(child: Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                            children: <Widget>[
-
-                                            Radio(
-                                              value: i,
-                                              groupValue: selectedRadio,
-                                              activeColor: Colors.green,
-                                              onChanged: (value) {
-                                                setSelectedRadio(value);
-                                              },
-                                            ),
-                                          ],))
-                                          ],
-                                        )
-                                            : Container();
-                                      }
-                                    },
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: <Widget>[
+                                                    SizedBox(width: 15),
+                                                    Expanded(
+                                                      child: deliverySlotList
+                                                                  .length ==
+                                                              0
+                                                          ? Text(
+                                                              'Sorry ! No Slots Available Today !!!')
+                                                          : Text(
+                                                              '${deliverySlotList[_selectedIndex]['timeSchedule'][i]['slot']}',
+                                                              style:
+                                                                  textBarlowRegularBlack(),
+                                                            ),
+                                                    ),
+                                                    Expanded(
+                                                        child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.end,
+                                                      children: <Widget>[
+                                                        Radio(
+                                                          value: i,
+                                                          groupValue:
+                                                              selectedRadio,
+                                                          activeColor:
+                                                              Colors.green,
+                                                          onChanged: (value) {
+                                                            setSelectedRadio(
+                                                                value);
+                                                          },
+                                                        ),
+                                                      ],
+                                                    ))
+                                                  ],
+                                                )
+                                              : Container();
+                                        }
+                                      },
+                                    ),
                                   ),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-
-                      ],
-
+                                ],
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
                     SizedBox(height: 20.0),
                     Container(
-                      height:55,
-                      margin: EdgeInsets.only(left:20, right:20, bottom: 40, top:20),
-                      decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.29),
-                            blurRadius: 7
-                          )
-                        ]
-                      ),
-                      child:  GFButton(
-                        color: primary,
-                        blockButton: true,
-                        onPressed: proceed,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              "Proceed",
-                              style: textBarlowRegularrBlack(),
-                            ),
-                            isPlaceOrderLoading
-                                ? Image.asset(
-                              'lib/assets/images/spinner.gif',
-                              width: 15.0,
-                              height: 15.0,
-                              color: Colors.black,
-                            )
-                                : Text("")
-                          ],
+                      margin: EdgeInsets.only(left: 15, right: 15, bottom: 20),
+                      height: 55,
+                      decoration: BoxDecoration(boxShadow: [
+                        BoxShadow(
+                            color: Colors.black.withOpacity(0.33),
+                            blurRadius: 6)
+                      ]),
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          left: 0.0,
+                          right: 0.0,
                         ),
-                        textStyle: TextStyle(fontSize: 17.0, color: Colors.black),
+                        child: GFButton(
+                          color: primary,
+                          blockButton: true,
+                          onPressed: proceed,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                "Proceed",
+                                style: textBarlowRegularrBlack(),
+                              ),
+                              isPlaceOrderLoading
+                                  ? Image.asset(
+                                      'lib/assets/images/spinner.gif',
+                                      width: 15.0,
+                                      height: 15.0,
+                                      color: Colors.black,
+                                    )
+                                  : Text("")
+                            ],
+                          ),
+                          textStyle:
+                              TextStyle(fontSize: 17.0, color: Colors.black),
+                        ),
                       ),
-                    )
+                    ),
                   ],
                 ),
-
     );
   }
 

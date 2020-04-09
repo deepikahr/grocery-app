@@ -49,4 +49,19 @@ class PaymentService {
         });
     return json.decode(response.body);
   }
+
+  static Future<Map<String, dynamic>> getDeliveryCharges(body) async {
+    String token;
+    await Common.getToken().then((onValue) {
+      token = onValue;
+    });
+    final response = await client.post(
+        Constants.baseURL + "delivery/tax/settings/get/charges",
+        body: json.encode(body),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'bearer $token'
+        });
+    return json.decode(response.body);
+  }
 }

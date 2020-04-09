@@ -214,6 +214,8 @@ class _SignupState extends State<Signup> {
               buildUserFirstNameField(),
               buildEmailText(),
               buildEmailTextField(),
+              buildMobileNumberText(),
+              buildMobileNumberTextField(),
               buildPasswordText(),
               buildPasswordTextField(),
               buildsignuplink(),
@@ -463,77 +465,68 @@ class _SignupState extends State<Signup> {
     );
   }
 
-  // Widget buildMobileNumberText() {
-  //   return GFTypography(
-  //     showDivider: false,
-  //     child: RichText(
-  //       text: TextSpan(
-  //         children: <TextSpan>[
-  //           TextSpan(text: "Mobile Number", style: textbarlowRegularBlack()),
-  //           TextSpan(
-  //             text: ' *',
-  //             style: TextStyle(color: Color(0xFFF44242)),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
+  Widget buildMobileNumberText() {
+    return GFTypography(
+      showDivider: false,
+      child: RichText(
+        text: TextSpan(
+          children: <TextSpan>[
+            TextSpan(text: "Mobile Number", style: textbarlowRegularBlack()),
+            TextSpan(
+              text: ' *',
+              style: TextStyle(color: Color(0xFFF44242)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-  // Widget buildMobileNumberTextField() {
-  //   return Container(
-  //     margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
-  //     child: TextFormField(
-  //       style: textBarlowRegularBlack(),
-  //       keyboardType: TextInputType.number,
-  //       validator: (String value) {
-  //         if (value.isEmpty || value.length != 10) {
-  //           return "please Enter Valid Mobile Number";
-  //         } else
-  //           return null;
-  //       },
-  //       onSaved: (String value) {
-  //         mobileNumber = value;
-  //       },
-  //       decoration: InputDecoration(
-  //         errorBorder: OutlineInputBorder(
-  //             borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
-  //         errorStyle: TextStyle(color: Color(0xFFF44242)),
-  //         fillColor: Colors.black,
-  //         focusColor: Colors.black,
-  //         contentPadding: EdgeInsets.only(
-  //           left: 15.0,
-  //           right: 15.0,
-  //           top: 10.0,
-  //           bottom: 10.0,
-  //         ),
-  //         suffixIcon: Icon(
-  //           Icons.remove_red_eye,
-  //           color: Colors.grey,
-  //         ),
-  //         enabledBorder: const OutlineInputBorder(
-  //           borderSide: const BorderSide(color: Colors.grey, width: 0.0),
-  //         ),
-  //         focusedBorder: OutlineInputBorder(
-  //           borderSide: BorderSide(color: primary),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
+  Widget buildMobileNumberTextField() {
+    return Container(
+      margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
+      child: TextFormField(
+        style: textBarlowRegularBlack(),
+        keyboardType: TextInputType.number,
+        validator: (String value) {
+          if (value.isEmpty || value.length != 10) {
+            return "please Enter Valid Mobile Number";
+          } else
+            return null;
+        },
+        onSaved: (String value) {
+          mobileNumber = value;
+        },
+        decoration: InputDecoration(
+          errorBorder: OutlineInputBorder(
+              borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
+          errorStyle: TextStyle(color: Color(0xFFF44242)),
+          fillColor: Colors.black,
+          focusColor: Colors.black,
+          contentPadding: EdgeInsets.only(
+            left: 15.0,
+            right: 15.0,
+            top: 10.0,
+            bottom: 10.0,
+          ),
+          enabledBorder: const OutlineInputBorder(
+            borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: primary),
+          ),
+        ),
+      ),
+    );
+  }
 
   Widget buildsignuplink() {
     return Container(
-      height:55,
-      margin: EdgeInsets.only(top:30, bottom: 20),
-      decoration:BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black.withOpacity(0.29),
-                blurRadius: 5
-            )
-          ]
-      ),
+      height: 55,
+      margin: EdgeInsets.only(top: 30, bottom: 20),
+      decoration: BoxDecoration(boxShadow: [
+        BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 5)
+      ]),
       child: GFButton(
         size: GFSize.LARGE,
         color: primary,
@@ -548,11 +541,11 @@ class _SignupState extends State<Signup> {
             ),
             registerationLoading
                 ? Image.asset(
-              'lib/assets/images/spinner.gif',
-              width: 15.0,
-              height: 15.0,
-              color: Colors.black,
-            )
+                    'lib/assets/images/spinner.gif',
+                    width: 15.0,
+                    height: 15.0,
+                    color: Colors.black,
+                  )
                 : Text("")
           ],
         ),

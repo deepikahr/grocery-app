@@ -235,29 +235,40 @@ class _OtpState extends State<Otp> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 30.0),
-            child: GFButton(
-              color: primary,
-              onPressed: verifyOTP,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    "Submit OTP",
-                    style: textbarlowMediumBlack(),
-                  ),
-                  isOtpVerifyLoading
-                      ? Image.asset(
-                          'lib/assets/images/spinner.gif',
-                          width: 15.0,
-                          height: 15.0,
-                          color: Colors.black,
-                        )
-                      : Text("")
-                ],
+          Container(
+            height: 55,
+            margin: EdgeInsets.only(top: 30, bottom: 20, right: 20, left: 20),
+            decoration: BoxDecoration(boxShadow: [
+              BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 5)
+            ]),
+            child: Padding(
+              padding: const EdgeInsets.only(
+                left: 0.0,
+                right: 0.0,
               ),
-              textStyle: TextStyle(fontSize: 20.0, color: Colors.black),
+              child: GFButton(
+                color: primary,
+                blockButton: true,
+                onPressed: verifyOTP,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      "Submit OTP",
+                      style: textbarlowMediumBlack(),
+                    ),
+                    isOtpVerifyLoading
+                        ? Image.asset(
+                            'lib/assets/images/spinner.gif',
+                            width: 15.0,
+                            height: 15.0,
+                            color: Colors.black,
+                          )
+                        : Text("")
+                  ],
+                ),
+                textStyle: textBarlowRegularrBlack(),
+              ),
             ),
           ),
         ],

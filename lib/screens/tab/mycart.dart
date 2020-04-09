@@ -278,18 +278,11 @@ class _MyCartState extends State<MyCart> {
                     'My Cart',
                     style: textbarlowSemiBoldBlack(),
                   ),
+                  automaticallyImplyLeading: false,
                   centerTitle: true,
                   backgroundColor: Colors.transparent,
                   elevation: 0,
                   iconTheme: IconThemeData(color: Colors.black),
-                  leading: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Home()),
-                        );
-                      },
-                      child: Icon(Icons.arrow_back)),
                 ),
       body: isGetTokenLoading
           ? Center(
@@ -331,223 +324,222 @@ class _MyCartState extends State<MyCart> {
                                     ],
                                   ),
                                 ),
-
-                               ListView.builder(
-                                    physics: ScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemCount: cartItem == null
-                                        ? 0
-                                        : cartItem['cart'].length,
-                                    itemBuilder: (BuildContext context, int i) {
-                                      return Container(
-                                        margin: EdgeInsets.only(bottom: 20),
-                                        padding: EdgeInsets.all(10) ,
-                                         decoration: BoxDecoration(
-                                           color: Color(0XFFFDFDFD),
-                                           boxShadow: [
-                                             BoxShadow(
-                                               color: Colors.black.withOpacity(0.33),
-                                               blurRadius: 6
-                                             )
-                                           ]
-                                         ),
+                                ListView.builder(
+                                  physics: ScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: cartItem == null
+                                      ? 0
+                                      : cartItem['cart'].length,
+                                  itemBuilder: (BuildContext context, int i) {
+                                    return Container(
+                                      margin: EdgeInsets.only(bottom: 20),
+                                      padding: EdgeInsets.all(10),
+                                      decoration: BoxDecoration(
+                                          color: Color(0XFFFDFDFD),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black
+                                                    .withOpacity(0.33),
+                                                blurRadius: 6)
+                                          ]),
 //                                        color: Colors.white60,
 
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Row(
-                                              children: <Widget>[
-                                                Container(
-                                                  margin:EdgeInsets.only(right:5),
-                                                  decoration: BoxDecoration(
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Row(
+                                            children: <Widget>[
+                                              Container(
+                                                margin:
+                                                    EdgeInsets.only(right: 5),
+                                                decoration: BoxDecoration(
 //                                                      color: Color(0xFFFDFDFD),
-                                                      borderRadius: BorderRadius.all(Radius.circular(6)),
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                            color: Color(0xFF0000000D).withOpacity(0.20),
-                                                            blurRadius: 30
-                                                        )
-                                                      ]
-                                                  ),
-                                                  height: 100,
-                                                  width: 100,
-                                                  child: cartItem['cart'][i]
-                                                              ['imageUrl'] ==
-                                                          null
-                                                      ? Image.asset(
-                                                          'lib/assets/images/no-orders.png')
-                                                      : Image.network(
-                                                          cartItem['cart'][i]
-                                                              ['imageUrl'],
-                                                          fit: BoxFit.cover,
-                                                        ),
-                                                ),
-                                                Column(
-                                                  children: <Widget>[
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              left: 8.0,
-                                                              bottom: 0),
-                                                      child: Text(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(6)),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                          color: Color(
+                                                                  0xFF0000000D)
+                                                              .withOpacity(
+                                                                  0.20),
+                                                          blurRadius: 30)
+                                                    ]),
+                                                height: 100,
+                                                width: 100,
+                                                child: cartItem['cart'][i]
+                                                            ['imageUrl'] ==
+                                                        null
+                                                    ? Image.asset(
+                                                        'lib/assets/images/no-orders.png')
+                                                    : Image.network(
                                                         cartItem['cart'][i]
-                                                                    ['title'] ==
-                                                                null
-                                                            ? " "
-                                                            : cartItem['cart']
-                                                                [i]['title'],
-                                                        style:
-                                                            textBarlowRegularBlack(),
+                                                            ['imageUrl'],
+                                                        fit: BoxFit.cover,
                                                       ),
+                                              ),
+                                              Column(
+                                                children: <Widget>[
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 8.0,
+                                                            bottom: 0),
+                                                    child: Text(
+                                                      cartItem['cart'][i]
+                                                                  ['title'] ==
+                                                              null
+                                                          ? " "
+                                                          : cartItem['cart'][i]
+                                                              ['title'],
+                                                      style:
+                                                          textBarlowRegularBlack(),
                                                     ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              left: 8.0,
-                                                              bottom: 0.0),
-                                                      child: Text(
-                                                        cartItem['cart'][i][
-                                                                    'discription'] ==
-                                                                null
-                                                            ? " "
-                                                            : cartItem['cart']
-                                                                    [i]
-                                                                ['discription'],
-                                                        style:
-                                                            textbarlowRegularBlack(),
-                                                      ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 8.0,
+                                                            bottom: 0.0),
+                                                    child: Text(
+                                                      cartItem['cart'][i][
+                                                                  'discription'] ==
+                                                              null
+                                                          ? " "
+                                                          : cartItem['cart'][i]
+                                                              ['discription'],
+                                                      style:
+                                                          textbarlowRegularBlack(),
                                                     ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              left: 0,
-                                                              bottom: 50.0),
-                                                      child: Row(
-                                                        children: <Widget>[
-                                                          Text(
-                                                            currency,
-                                                            style: TextStyle(
-                                                                color: const Color(
-                                                                    0xFF00BFA5),
-                                                                fontSize: 17.0),
-                                                          ),
-                                                          Text(
-                                                            cartItem['cart'][i][
-                                                                        'price'] ==
-                                                                    null
-                                                                ? " "
-                                                                : cartItem['cart'][i]
-                                                                            [
-                                                                            'price']
-                                                                        .toString() +
-                                                                    " / " +
-                                                                    cartItem['cart'][i]
-                                                                            [
-                                                                            'unit']
-                                                                        .toString(),
-                                                            style:
-                                                                textbarlowBoldGreen(),
-                                                          )
-                                                        ],
-                                                      ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 0,
+                                                            bottom: 50.0),
+                                                    child: Row(
+                                                      children: <Widget>[
+                                                        Text(
+                                                          currency,
+                                                          style: TextStyle(
+                                                              color: const Color(
+                                                                  0xFF00BFA5),
+                                                              fontSize: 17.0),
+                                                        ),
+                                                        Text(
+                                                          cartItem['cart'][i][
+                                                                      'price'] ==
+                                                                  null
+                                                              ? " "
+                                                              : cartItem['cart']
+                                                                              [
+                                                                              i]
+                                                                          [
+                                                                          'price']
+                                                                      .toString() +
+                                                                  " / " +
+                                                                  cartItem['cart']
+                                                                              [
+                                                                              i]
+                                                                          [
+                                                                          'unit']
+                                                                      .toString(),
+                                                          style:
+                                                              textbarlowBoldGreen(),
+                                                        )
+                                                      ],
                                                     ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                            Column(
-                                              children: <Widget>[
-                                                Container(
-
-                                                  decoration: BoxDecoration(
-                                                      color: Colors.grey[200],
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20.0)),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                          Column(
+                                            children: <Widget>[
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                    color: Colors.grey[200],
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20.0)),
 //                                                  height: 132,
-                                                  width: 37,
-                                                  child: Column(
-                                                    children: <Widget>[
-                                                      InkWell(
-                                                        onTap: () {
-                                                          _incrementCount(i);
-                                                        },
+                                                width: 37,
+                                                child: Column(
+                                                  children: <Widget>[
+                                                    InkWell(
+                                                      onTap: () {
+                                                        _incrementCount(i);
+                                                      },
+                                                      child: Container(
+                                                        width: 37,
+                                                        height: 37,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: primary,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      20.0),
+                                                        ),
+                                                        child: Icon(Icons.add),
+                                                      ),
+                                                    ),
+                                                    Text(''),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 11.0),
+                                                      child: Container(
+                                                          child: cartItem['cart']
+                                                                          [i][
+                                                                      'quantity'] ==
+                                                                  null
+                                                              ? Text('0')
+                                                              : Text(
+                                                                  '${cartItem['cart'][i]['quantity']}',
+                                                                  style:
+                                                                      textBarlowRegularBlack(),
+                                                                )),
+                                                    ),
+                                                    Text(''),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        _decrementCount(i);
+                                                      },
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                top: 10.0),
                                                         child: Container(
                                                           width: 37,
                                                           height: 37,
                                                           decoration:
                                                               BoxDecoration(
-                                                            color: primary,
+                                                            color: Colors.black,
                                                             borderRadius:
                                                                 BorderRadius
                                                                     .circular(
                                                                         20.0),
                                                           ),
-                                                          child:
-                                                              Icon(Icons.add),
-                                                        ),
-                                                      ),
-                                                      Text(''),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                top: 11.0),
-                                                        child: Container(
-                                                            child: cartItem['cart']
-                                                                            [i][
-                                                                        'quantity'] ==
-                                                                    null
-                                                                ? Text('0')
-                                                                : Text(
-                                                                    '${cartItem['cart'][i]['quantity']}',
-                                                                    style:
-                                                                        textBarlowRegularBlack(),
-                                                                  )),
-                                                      ),
-                                                      Text(''),
-                                                      InkWell(
-                                                        onTap: () {
-                                                          _decrementCount(i);
-                                                        },
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  top: 10.0),
-                                                          child: Container(
-                                                            width: 37,
-                                                            height: 37,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color:
-                                                                  Colors.black,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          20.0),
-                                                            ),
-                                                            child: Icon(
-                                                              Icons.remove,
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
+                                                          child: Icon(
+                                                            Icons.remove,
+                                                            color: Colors.white,
                                                           ),
                                                         ),
                                                       ),
-                                                    ],
-                                                  ),
+                                                    ),
+                                                  ],
                                                 ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  ),
-
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
                               ],
                             ),
                           ),
@@ -572,7 +564,7 @@ class _MyCartState extends State<MyCart> {
                           height: 120.0,
                         )
                       : Container(
-                          height: 150.0,
+                          height: 120.0,
                           child: Column(
                             children: <Widget>[
                               Padding(
@@ -603,16 +595,17 @@ class _MyCartState extends State<MyCart> {
                                       MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>[
-                                   Row(
-                                     children: <Widget>[
-                                       Image.asset('lib/assets/icons/sale.png'),
-                                       SizedBox(width:5),
-                                       new Text(
-                                         "Tax",
-                                         style: textBarlowRegularBlack(),
-                                       ),
-                                     ],
-                                   ),
+                                    Row(
+                                      children: <Widget>[
+                                        Image.asset(
+                                            'lib/assets/icons/sale.png'),
+                                        SizedBox(width: 5),
+                                        new Text(
+                                          "Tax",
+                                          style: textBarlowRegularBlack(),
+                                        ),
+                                      ],
+                                    ),
                                     new Text(
                                       '$currency ${cartItem['tax']}',
                                       style: textbarlowBoldsmBlack(),
@@ -622,29 +615,28 @@ class _MyCartState extends State<MyCart> {
                                 ),
                               ),
                               SizedBox(height: 6),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 20.0, right: 20.0, bottom: 6.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    new Text(
-                                      "Delivery Charges",
-                                      style: textBarlowRegularBlack(),
-                                    ),
-                                    new Text(
-                                      '$currency ${cartItem['deliveryCharges']}',
-                                      style: textbarlowBoldsmBlack(),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: 12),
+                              // Padding(
+                              //   padding: const EdgeInsets.only(
+                              //       left: 20.0, right: 20.0, bottom: 6.0),
+                              //   child: Row(
+                              //     mainAxisAlignment:
+                              //         MainAxisAlignment.spaceBetween,
+                              //     crossAxisAlignment: CrossAxisAlignment.center,
+                              //     children: <Widget>[
+                              //       new Text(
+                              //         "Delivery Charges",
+                              //         style: textBarlowRegularBlack(),
+                              //       ),
+                              //       new Text(
+                              //         '$currency ${cartItem['deliveryCharges']}',
+                              //         style: textbarlowBoldsmBlack(),
+                              //       ),
+                              //     ],
+                              //   ),
+                              // ),
+                              // SizedBox(height: 12),
                               Container(
                                 height: 55.0,
-
                                 child: Padding(
                                   padding: const EdgeInsetsDirectional.only(
                                       start: 20.0, end: 20.0, bottom: 5.0),
@@ -665,24 +657,23 @@ class _MyCartState extends State<MyCart> {
                                           CrossAxisAlignment.center,
                                       children: <Widget>[
                                         Container(
-                                         height: 55,
+                                          height: 55,
                                           width: 120,
                                           decoration: BoxDecoration(
-                                              color: Colors.black,
-
+                                            color: Colors.black,
                                             boxShadow: [
                                               BoxShadow(
-                                                color: Colors.black.withOpacity(0.29),
-                                                blurRadius: 6
-                                              )
-                                            ]
+                                                  color: Colors.black
+                                                      .withOpacity(0.29),
+                                                  blurRadius: 6)
+                                            ],
                                           ),
                                           margin: EdgeInsets.only(right: 90),
                                           child: Column(
                                             children: <Widget>[
                                               SizedBox(height: 3),
                                               new Text(
-                                                "Grand Totaly",
+                                                "Grand Total",
                                                 style: textBarlowRegularWhite(),
                                               ),
                                               SizedBox(height: 1),

@@ -3,6 +3,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/authe/login.dart';
 import 'package:grocery_pro/screens/home/home.dart';
+import 'package:grocery_pro/screens/tab/mycart.dart';
 import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/style/style.dart';
@@ -225,6 +226,7 @@ class _ProductDetailsState extends State<ProductDetails>
             : variantUnit.toString()
       };
       await CartService.addProductToCart(buyNowProduct).then((onValue) {
+        print(onValue);
         try {
           if (mounted) {
             setState(() {
@@ -232,7 +234,13 @@ class _ProductDetailsState extends State<ProductDetails>
             });
           }
           if (onValue['response_code'] == 200) {
-            showSnackbar("Product ADD To Card Successfully");
+            // showSnackbar("Product Added To Cart Successfully");
+            Navigator.push(
+              context,
+              new MaterialPageRoute(
+                builder: (BuildContext context) => new MyCart(),
+              ),
+            );
           }
         } catch (error, stackTrace) {
           sentryError.reportError(error, stackTrace);
@@ -455,23 +463,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                                   BorderRadius.circular(20.0)),
                                           child: InkWell(
                                             onTap: () {
-                                              if ((variantProductstock == null
-                                                      ? widget.productDetail[
-                                                                      'variant'][0]
-                                                                  [
-                                                                  'productstock'] ==
-                                                              null
-                                                          ? 1
-                                                          : widget.productDetail[
-                                                                  'variant'][0]
-                                                              ['productstock']
-                                                      : variantProductstock) ==
-                                                  quantity) {
-                                                showSnackbar(
-                                                    "Product only few stock");
-                                              } else {
-                                                _changeProductQuantity(true);
-                                              }
+                                              _changeProductQuantity(true);
                                             },
                                             child: Icon(Icons.add),
                                           ),
@@ -718,7 +710,7 @@ class _ProductDetailsState extends State<ProductDetails>
                           height: 2.0,
                         ),
                         new Text(
-                          '${variantUnit == null ? widget.productDetail['variant'][0]['unit'] : variantUnit}',
+                          quantity.toString(),
                           style: textBarlowRegularWhite(),
                         ),
                         SizedBox(

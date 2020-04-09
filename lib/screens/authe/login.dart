@@ -83,42 +83,42 @@ class _LoginState extends State<Login> {
           }
           if (onValue['response_code'] == 200) {
             Common.setToken(onValue['response_data']['token']);
-            showDialog<Null>(
-              context: context,
-              barrierDismissible: false, // user must tap button!
-              builder: (BuildContext context) {
-                return new AlertDialog(
-                  content: new SingleChildScrollView(
-                    child: new ListBody(
-                      children: <Widget>[
-                        new Text(
-                          'Login successfully',
-                          style: textBarlowRegularBlack(),
-                        ),
-                      ],
-                    ),
+            // showDialog<Null>(
+            //   context: context,
+            //   barrierDismissible: false, // user must tap button!
+            //   builder: (BuildContext context) {
+            //     return new AlertDialog(
+            //       content: new SingleChildScrollView(
+            //         child: new ListBody(
+            //           children: <Widget>[
+            //             new Text(
+            //               'Login successfully',
+            //               style: textBarlowRegularBlack(),
+            //             ),
+            //           ],
+            //         ),
+            //       ),
+            //       actions: <Widget>[
+            //         new FlatButton(
+            //           child: new Text(
+            //             'OK',
+            //             style: textbarlowRegularaPrimary(),
+            //           ),
+            //           onPressed: () {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => Home(
+                    currentIndex: 2,
                   ),
-                  actions: <Widget>[
-                    new FlatButton(
-                      child: new Text(
-                        'OK',
-                        style: textbarlowRegularaPrimary(),
-                      ),
-                      onPressed: () {
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) => Home(
-                                currentIndex: 2,
-                              ),
-                            ),
-                            (Route<dynamic> route) => false);
-                      },
-                    ),
-                  ],
-                );
-              },
-            );
+                ),
+                (Route<dynamic> route) => false);
+            //           },
+            //         ),
+            //       ],
+            //     );
+            //   },
+            // );
           } else if (onValue['response_code'] == 401) {
             showSnackbar(onValue['response_data']);
           } else {
@@ -328,16 +328,11 @@ class _LoginState extends State<Login> {
 
   Widget buildLoginButton() {
     return Container(
-      height:55,
-      margin: EdgeInsets.only(top:30, bottom: 20),
-      decoration:BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.29),
-            blurRadius: 5
-          )
-        ]
-      ),
+      height: 55,
+      margin: EdgeInsets.only(top: 30, bottom: 20),
+      decoration: BoxDecoration(boxShadow: [
+        BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 5)
+      ]),
       child: GFButton(
         size: GFSize.LARGE,
         color: primary,
@@ -352,11 +347,11 @@ class _LoginState extends State<Login> {
             ),
             isUserLoaginLoading
                 ? Image.asset(
-              'lib/assets/images/spinner.gif',
-              width: 15.0,
-              height: 15.0,
-              color: Colors.black,
-            )
+                    'lib/assets/images/spinner.gif',
+                    width: 15.0,
+                    height: 15.0,
+                    color: Colors.black,
+                  )
                 : Text("")
           ],
         ),
