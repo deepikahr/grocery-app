@@ -69,7 +69,7 @@ class _OrderDetailsState extends State<OrderDetails> {
         return Center(
           child: Container(
             margin: const EdgeInsets.only(
-                top: 250.0, bottom: 170.0, left: 20.0, right: 20.0),
+                top: 250.0, bottom: 150.0, left: 20.0, right: 20.0),
             decoration: new BoxDecoration(
               color: Colors.white,
               borderRadius: new BorderRadius.all(
@@ -99,7 +99,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                         minRating: 1,
                         direction: Axis.horizontal,
                         allowHalfRating: true,
-                        itemSize: 30.0,
+                        itemSize: 40.0,
                         itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
                         itemBuilder: (context, _) => Icon(
                           Icons.star,
@@ -115,19 +115,26 @@ class _OrderDetailsState extends State<OrderDetails> {
                     )
                   ],
                 ),
-                SizedBox(height: 50),
+                SizedBox(height: 30),
                 Center(
-                  child: GFButton(
-                    onPressed: () {
-                      if (rating == null) {
-                        rating = 3.0;
-                      }
-                      orderRating(orderId, rating, productID);
-                    },
-                    text: 'Submit',
-                    textColor: Colors.black,
-                    color: primary,
-                  ),
+                  child: Container(
+                    margin: EdgeInsets.only(bottom: 20),
+                    height:45,
+                    width:134,
+                    child: GFButton(
+                      onPressed: () {
+                        if (rating == null) {
+                          rating = 3.0;
+                        }
+                        orderRating(orderId, rating, productID);
+                      },
+                      text: 'Submit',
+
+                      color: primary,
+                      textStyle: textBarlowRegularBlack(),
+
+                    ),
+                  )
                 )
               ],
             ),
@@ -157,6 +164,7 @@ class _OrderDetailsState extends State<OrderDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFFDFDFD),
       appBar: GFAppBar(
         title: Text(
           'Order Details',
@@ -174,106 +182,114 @@ class _OrderDetailsState extends State<OrderDetails> {
             )
           : ListView(
               children: <Widget>[
-                Padding(
-                    padding:
-                        const EdgeInsets.only(left: 20.0, right: 20, top: 20),
-                    child: Row(
-                      children: <Widget>[
-                        Flexible(
-                          flex: 6,
-                          fit: FlexFit.tight,
-                          child: Column(
-                            children: <Widget>[
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Text('Order ID:',
-                                      style: textBarlowMediumBlack()),
-                                  SizedBox(width: 5),
-                                  Expanded(
-                                    child: Text(orderHistory['_id'],
-                                        style: textBarlowMediumBlack()),
-                                  )
-                                ],
-                              ),
-                              SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Text('Date:', style: textBarlowMediumBlack()),
-                                  SizedBox(width: 5),
-                                  Expanded(
-                                    child: Text(orderHistory['deliveryDate'],
-                                        style: textBarlowMediumBlack()),
-                                  )
-                                ],
-                              ),
-                              SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Text('Time:', style: textBarlowMediumBlack()),
-                                  SizedBox(width: 3),
-                                  Expanded(
-                                    child: Text(orderHistory['deliveryTime'],
-                                        style: textBarlowMediumBlack()),
-                                  )
-                                ],
-                              ),
-                              SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Text('Payment Type:',
-                                      style: textBarlowMediumBlack()),
-                                  SizedBox(width: 5),
-                                  Expanded(
-                                    child: Text(orderHistory['paymentType'],
-                                        style: textBarlowMediumBlack()),
-                                  )
-                                ],
-                              ),
-                              SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Text('Order Status:',
-                                      style: textBarlowMediumBlack()),
-                                  SizedBox(width: 5),
-                                  Expanded(
-                                    child: Text(orderHistory['orderStatus'],
-                                        style: textBarlowMediumGreen()),
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(width: 5),
-                        Flexible(
-                            fit: FlexFit.tight,
-                            flex: 3,
-                            child: Container(
-                              height: 141,
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5)),
-                                boxShadow: [
-                                  BoxShadow(
-                                      color: Colors.black.withOpacity(0.33),
-                                      blurRadius: 6)
-                                ],
-                                image: DecorationImage(
-                                    image: NetworkImage(orderHistory['cart']
-                                        ['cart'][0]['imageUrl']),
-                                    fit: BoxFit.fill),
-                              ),
-                            ))
-                      ],
-                    )),
+               Container(
+                 color: Color(0xFFF7F7F7),
+                 padding: EdgeInsets.only(left:15, right: 15, top:15, bottom: 15),
+                 child: Column(
+                   crossAxisAlignment: CrossAxisAlignment.start,
+                   children: <Widget>[
+                     Row(
+                       children: <Widget>[
+                         Flexible(
+                           flex: 5,
+                           fit: FlexFit.tight,
+                           child: Column(
+                             children: <Widget>[
+                               Row(
+                                 mainAxisAlignment: MainAxisAlignment.start,
+                                 children: <Widget>[
+                                   Text('Order ID:',
+                                       style: textBarlowMediumBlack()),
+                                   SizedBox(width: 5),
+                                   Expanded(
+                                     child: Text(orderHistory['orderID'].toString(),
+                                         style: textBarlowMediumBlack()),
+                                   )
+                                 ],
+                               ),
+                               SizedBox(height: 10),
+                               Row(
+                                 mainAxisAlignment: MainAxisAlignment.start,
+                                 children: <Widget>[
+                                   Text('Date:', style: textBarlowMediumBlack()),
+                                   SizedBox(width: 5),
+                                   Expanded(
+                                     child: Text(orderHistory['deliveryDate'],
+                                         style: textBarlowMediumBlack()),
+                                   )
+                                 ],
+                               ),
+                               SizedBox(height: 10),
+                               Row(
+                                 mainAxisAlignment: MainAxisAlignment.start,
+                                 children: <Widget>[
+                                   Text('Time:', style: textBarlowMediumBlack()),
+                                   SizedBox(width: 3),
+                                   Expanded(
+                                     child: Text(orderHistory['deliveryTime'],
+                                         style: textBarlowMediumBlack()),
+                                   )
+                                 ],
+                               ),
+                               SizedBox(height: 10),
+                               Row(
+                                 mainAxisAlignment: MainAxisAlignment.start,
+                                 children: <Widget>[
+                                   Text('Payment Type:',
+                                       style: textBarlowMediumBlack()),
+                                   SizedBox(width: 5),
+                                   Expanded(
+                                     child: Text(orderHistory['paymentType'],
+                                         style: textBarlowMediumBlack()),
+                                   )
+                                 ],
+                               ),
+                               SizedBox(height: 10),
+                               Row(
+                                 mainAxisAlignment: MainAxisAlignment.start,
+                                 children: <Widget>[
+                                   Text('Order Status:',
+                                       style: textBarlowMediumBlack()),
+                                   SizedBox(width: 5),
+                                   Expanded(
+                                     child: Text(orderHistory['orderStatus'],
+                                         style: textBarlowMediumGreen()),
+                                   )
+                                 ],
+                               ),
+                             ],
+                           ),
+                         ),
+                         SizedBox(width: 10),
+                         Flexible(
+                             fit: FlexFit.tight,
+                             flex: 3,
+                             child: Container(
+                               height: 125,
+                               width:141,
+                               decoration: BoxDecoration(
+                                 borderRadius:
+                                 BorderRadius.all(Radius.circular(5)),
+                                 boxShadow: [
+                                   BoxShadow(
+                                       color: Color(0xFF0000000A),
+                                       blurRadius: 0.40
+                                   )
+                                 ],
+                                 image: DecorationImage(
+                                     image: NetworkImage(orderHistory['cart']
+                                     ['cart'][0]['imageUrl']),
+                                     fit: BoxFit.fill),
+                               ),
+                             ))
+                       ],
+                     )
+                   ],
+                 ),
+               ),
                 SizedBox(height: 20),
                 Padding(
-                  padding: const EdgeInsets.all(18.0),
+                  padding: const EdgeInsets.all(15.0),
                   child: Text(
                     'Items List',
                     style: textBarlowBoldBlack(),
@@ -286,140 +302,235 @@ class _OrderDetailsState extends State<OrderDetails> {
                       ? 0
                       : orderHistory['cart']['cart'].length,
                   itemBuilder: (BuildContext context, int i) {
-                    return Column(
+                    return
+                      Column(
                       children: <Widget>[
-                        Container(
-                          color: Colors.white38,
-                          child: GFListTile(
-                            title: Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: 0.0, right: 5.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 6.0),
-                                        child: Text(
-                                          orderHistory['cart']['cart'][i]
-                                              ['title'],
-                                          style: textBarlowMediumBlack(),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 4.0),
-                                        child: Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.5,
-                                          child: Text(
-                                            orderHistory['cart']['cart'][i]
-                                                            ['description']
-                                                        .length >
-                                                    25
-                                                ? orderHistory['cart']['cart']
-                                                            [i]['description']
-                                                        .substring(0, 25) +
-                                                    ".."
-                                                : orderHistory['cart']['cart']
-                                                    [i]['description'],
-                                            style: textBarlowRegularBlack(),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      top: 3.0,
-                                      bottom: 2.0,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          currency,
-                                          style: textBarlowBoldBlack(),
-                                        ),
-                                        Text(
-                                          orderHistory['cart']['cart'][i]
-                                                  ['price']
-                                              .toString(),
-                                          style: textBarlowBoldBlack(),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Text(
-                                        orderHistory['cart']['cart'][i]
-                                                ['unit'] +
-                                            " * " +
-                                            orderHistory['cart']['cart'][i]
-                                                    ['quantity']
-                                                .toString(),
-                                        style: textBarlowMediumBlack(),
-                                      ),
-                                      orderHistory['orderStatus'] == "DELIVERED"
-                                          ? orderHistory['cart']['cart'][i]
-                                                      ['rating'] ==
-                                                  null
-                                              ? GFButton(
-                                                  shape: GFButtonShape.pills,
-                                                  onPressed: () {
-                                                    ratingAlert(
-                                                        orderHistory['_id'],
-                                                        orderHistory['user']
-                                                            ['_id'],
-                                                        orderHistory['cart']
-                                                                ['cart'][i]
-                                                            ['productId']);
-                                                  },
-                                                  color: primary,
-                                                  text: 'Rate Now',
-                                                )
-                                              : GFButton(
-                                                  onPressed: null,
-                                                  shape: GFButtonShape.pills,
-                                                  color: primary,
-                                                  text: orderHistory['cart']
-                                                                  ['cart'][i]
-                                                              ['rating']
-                                                          .toString() +
-                                                      " Star",
-                                                )
-                                          : Container()
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
+                       Container(
+                         padding: EdgeInsets.only(left:15, right: 15, bottom: 10),
+                         child:  Row(
+                           children: <Widget>[
+                             Flexible(child: Column(
+                               crossAxisAlignment:CrossAxisAlignment.start,
+                               children: <Widget>[
+                                 Text(
+                                   orderHistory['cart']['cart'][i]
+                                   ['title'],
+                                   style: textBarlowMediumBlack(),
+                                 ),
+                                 SizedBox(
+                                   height:15
+                                 ),
+                                 Text(
+                                   orderHistory['cart']['cart'][i]
+                                   ['description']
+                                       .length >
+                                       25
+                                       ? orderHistory['cart']['cart']
+                                   [i]['description']
+                                       .substring(0, 25) +
+                                       ".."
+                                       : orderHistory['cart']['cart']
+                                   [i]['description'],
+                                   style: textBarlowRegularBlack(),
+                                 ),
+                                 SizedBox(
+                                     height:15
+                                 ),
+                                 Row(
+                                   mainAxisAlignment:
+                                   MainAxisAlignment.start,
+                                   children: <Widget>[
+                                     Text(
+                                       currency,
+                                       style: textBarlowBoldBlack(),
+                                     ),
+                                     Text(
+                                       orderHistory['cart']['cart'][i]
+                                       ['price']
+                                           .toString(),
+                                       style: textBarlowBoldBlack(),
+                                     ),
+                                   ],
+                                 ),
+                                 Row(
+                                   mainAxisAlignment:
+                                   MainAxisAlignment.spaceBetween,
+                                   children: <Widget>[
+                                     Text(
+                                       orderHistory['cart']['cart'][i]
+                                       ['unit'] +
+                                           " * " +
+                                           orderHistory['cart']['cart'][i]
+                                           ['quantity']
+                                               .toString(),
+                                       style: textBarlowMediumBlack(),
+                                     ),
+                                     orderHistory['orderStatus'] == "DELIVERED"
+                                         ? orderHistory['cart']['cart'][i]
+                                     ['rating'] ==
+                                         null
+                                         ? GFButton(
+                                       shape: GFButtonShape.pills,
+                                       onPressed: () {
+                                         ratingAlert(
+                                             orderHistory['_id'],
+                                             orderHistory['user']
+                                             ['_id'],
+                                             orderHistory['cart']
+                                             ['cart'][i]
+                                             ['productId']);
+                                       },
+                                       color: primary,
+                                       text: 'Rate Now',
+                                     )
+                                         : GFButton(
+                                       onPressed: null,
+                                       shape: GFButtonShape.pills,
+                                       color: primary,
+                                       text: orderHistory['cart']
+                                       ['cart'][i]
+                                       ['rating']
+                                           .toString() +
+                                           " Star",
+                                     )
+                                         : Container()
+                                   ],
+                                 ),
+                               ],
+                             ))
+                           ],
+                         ),
+                       ),
+//                        Container(
+//                          color: Colors.white38,
+//                          child: GFListTile(
+//                            title: Padding(
+//                              padding: const EdgeInsets.only(
+//                                  bottom: 0.0, right: 5.0),
+//                              child: Column(
+//                                mainAxisAlignment: MainAxisAlignment.start,
+//                                children: <Widget>[
+//                                  Row(
+//                                    mainAxisAlignment: MainAxisAlignment.start,
+//                                    children: <Widget>[
+//                                      Padding(
+//                                        padding:
+//                                            const EdgeInsets.only(bottom: 6.0),
+//                                        child: Text(
+//                                          orderHistory['cart']['cart'][i]
+//                                              ['title'],
+//                                          style: textBarlowMediumBlack(),
+//                                        ),
+//                                      ),
+//                                    ],
+//                                  ),
+//                                  Row(
+//                                    mainAxisAlignment: MainAxisAlignment.start,
+//                                    children: <Widget>[
+//                                      Padding(
+//                                        padding:
+//                                            const EdgeInsets.only(bottom: 4.0),
+//                                        child: Container(
+//                                          width: MediaQuery.of(context)
+//                                                  .size
+//                                                  .width *
+//                                              0.5,
+//                                          child: Text(
+//                                            orderHistory['cart']['cart'][i]
+//                                                            ['description']
+//                                                        .length >
+//                                                    25
+//                                                ? orderHistory['cart']['cart']
+//                                                            [i]['description']
+//                                                        .substring(0, 25) +
+//                                                    ".."
+//                                                : orderHistory['cart']['cart']
+//                                                    [i]['description'],
+//                                            style: textBarlowRegularBlack(),
+//                                          ),
+//                                        ),
+//                                      ),
+//                                    ],
+//                                  ),
+//                                  Padding(
+//                                    padding: const EdgeInsets.only(
+//                                      top: 3.0,
+//                                      bottom: 2.0,
+//                                    ),
+//                                    child: Row(
+//                                      mainAxisAlignment:
+//                                          MainAxisAlignment.start,
+//                                      children: <Widget>[
+//                                        Text(
+//                                          currency,
+//                                          style: textBarlowBoldBlack(),
+//                                        ),
+//                                        Text(
+//                                          orderHistory['cart']['cart'][i]
+//                                                  ['price']
+//                                              .toString(),
+//                                          style: textBarlowBoldBlack(),
+//                                        ),
+//                                      ],
+//                                    ),
+//                                  ),
+//                                  Row(
+//                                    mainAxisAlignment:
+//                                        MainAxisAlignment.spaceBetween,
+//                                    children: <Widget>[
+//                                      Text(
+//                                        orderHistory['cart']['cart'][i]
+//                                                ['unit'] +
+//                                            " * " +
+//                                            orderHistory['cart']['cart'][i]
+//                                                    ['quantity']
+//                                                .toString(),
+//                                        style: textBarlowMediumBlack(),
+//                                      ),
+//                                      orderHistory['orderStatus'] == "DELIVERED"
+//                                          ? orderHistory['cart']['cart'][i]
+//                                                      ['rating'] ==
+//                                                  null
+//                                              ? GFButton(
+//                                                  shape: GFButtonShape.pills,
+//                                                  onPressed: () {
+//                                                    ratingAlert(
+//                                                        orderHistory['_id'],
+//                                                        orderHistory['user']
+//                                                            ['_id'],
+//                                                        orderHistory['cart']
+//                                                                ['cart'][i]
+//                                                            ['productId']);
+//                                                  },
+//                                                  color: primary,
+//                                                  text: 'Rate Now',
+//                                                )
+//                                              : GFButton(
+//                                                  onPressed: null,
+//                                                  shape: GFButtonShape.pills,
+//                                                  color: primary,
+//                                                  text: orderHistory['cart']
+//                                                                  ['cart'][i]
+//                                                              ['rating']
+//                                                          .toString() +
+//                                                      " Star",
+//                                                )
+//                                          : Container()
+//                                    ],
+//                                  ),
+//                                ],
+//                              ),
+//                            ),
+//                          ),
+//                        ),
                       ],
                     );
                   },
                 ),
-                Container(
-                  margin: EdgeInsets.only(left: 20, right: 20),
-                  width: MediaQuery.of(context).size.width,
-                  height: 1,
-                  color: Colors.grey[300],
-                ),
+              Padding(padding: EdgeInsets.only(left:16, right:16), child:  Divider(thickness: 1,),),
+               SizedBox(
+                 height: 10,
+               ),
                 Column(
                   children: <Widget>[
                     Padding(
