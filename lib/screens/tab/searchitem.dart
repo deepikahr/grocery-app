@@ -26,6 +26,7 @@ class _SearchItemState extends State<SearchItem> {
   void initState() {
     super.initState();
     _isSearching = false;
+    print('de $searchresult');
   }
 
   @override
@@ -51,7 +52,8 @@ class _SearchItemState extends State<SearchItem> {
                     child: new Icon(Icons.arrow_back, color: Colors.black),
                   ),
                   hintText: "What are you buying today?",
-                  fillColor: Colors.black,
+                  fillColor: Color(0xFFF0F0F0),
+                  filled: true,
                   focusColor: Colors.black,
                   contentPadding: EdgeInsets.only(
                     left: 15.0,
@@ -255,6 +257,7 @@ class _SearchItemState extends State<SearchItem> {
           setState(() {
             searchresult.add(widget.productsList[i]);
           });
+          print('ssssss ${searchresult}');
         }
       }
     } else if (searchText.length == 0 || searchText.length < 3) {

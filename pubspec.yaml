@@ -86,6 +86,7 @@ flutter:
     - lib/assets/images/visa.png
     - lib/assets/images/thank-you.png
     - lib/assets/images/spinner.gif
+    - lib/assets/images/badge.png
 
     - lib/assets/images/no-orders.png
     - lib/assets/icons/addbtn.png

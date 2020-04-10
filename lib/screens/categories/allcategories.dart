@@ -6,6 +6,7 @@ import 'package:grocery_pro/screens/categories/subcategories.dart';
 import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
+import 'package:grocery_pro/widgets/categoryBlock.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -99,12 +100,16 @@ class _AllCategoriesState extends State<AllCategories>
           ? Center(child: CircularProgressIndicator())
           : Container(
               child: GridView.builder(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 physics: ScrollPhysics(),
                 shrinkWrap: true,
                 itemCount:
                     categoryList.length == null ? 0 : categoryList.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3),
+                    crossAxisCount: 3,
+                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 12
+                ),
                 itemBuilder: (BuildContext context, int index) {
                   return InkWell(
                     onTap: () {
@@ -118,47 +123,76 @@ class _AllCategoriesState extends State<AllCategories>
                         ),
                       );
                     },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Column(
-                          children: <Widget>[
-                            Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey[300]),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Column(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(9.0),
-                                    child: Container(
-                                      width: 80,
-                                      height: 80,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        image: new DecorationImage(
-                                          fit: BoxFit.fill,
-                                          image: new NetworkImage(
-                                              categoryList[index]['imageUrl']),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                    child: Container(
+                      width: 96,
+                      padding: EdgeInsets.only(right: 16),
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            width: 85,
+                            height: 85,
+                            padding: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(8)),
+                              border: Border.all(
+                                  color: Colors.black.withOpacity(0.20)),
                             ),
-                            SizedBox(height: 2),
-                            Text(
+                            child: Image.network(
+                              categoryList[index]['imageUrl'],
+                              scale: 5,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
                               categoryList[index]['title'],
-                              style: textbarlowRegularBlack(),
-                              maxLines: 2,
-                            )
-                          ],
-                        ),
-                      ],
+                              style: textBarlowRegularrdarkdull(),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
+//                    Row(
+//                      mainAxisAlignment: MainAxisAlignment.center,
+//                      crossAxisAlignment: CrossAxisAlignment.center,
+//                      children: <Widget>[
+//                        Column(
+//                          children: <Widget>[
+//                            Container(
+//                              decoration: BoxDecoration(
+//                                border: Border.all(color: Colors.grey[300]),
+//                                borderRadius: BorderRadius.circular(10),
+//                              ),
+//                              child: Column(
+//                                children: <Widget>[
+//                                  Padding(
+//                                    padding: const EdgeInsets.all(9.0),
+//                                    child: Container(
+//                                      width: 80,
+//                                      height: 80,
+//                                      decoration: BoxDecoration(
+//                                        borderRadius: BorderRadius.circular(10),
+//                                        image: new DecorationImage(
+//                                          fit: BoxFit.fill,
+//                                          image: new NetworkImage(
+//                                              categoryList[index]['imageUrl']),
+//                                        ),
+//                                      ),
+//                                    ),
+//                                  ),
+//                                ],
+//                              ),
+//                            ),
+//                            SizedBox(height: 2),
+//                            Text(
+//                              categoryList[index]['title'],
+//                              style: textbarlowRegularBlack(),
+//                              maxLines: 2,
+//                            )
+//                          ],
+//                        ),
+//                      ],
+//                    ),
                   );
                 },
               ),

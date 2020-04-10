@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:grocery_pro/screens/home/home.dart';
@@ -20,10 +19,6 @@ bool get isInDebugMode {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent, //top bar color
-    statusBarIconBrightness: Brightness.light, //top bar icons
-  ));
   FlutterError.onError = (FlutterErrorDetails details) async {
     if (isInDebugMode) {
       FlutterError.dumpErrorToConsole(details);
@@ -113,6 +108,13 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarBrightness: Brightness.dark,
+      statusBarIconBrightness: Brightness.dark
+//      statusBarColor: Colors.pink, // status bar color
+    ));
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Readymade Grocery App',

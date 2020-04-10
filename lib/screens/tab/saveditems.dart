@@ -7,6 +7,7 @@ import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/fav-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:grocery_pro/widgets/productCard.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -138,6 +139,7 @@ class _SavedItemsState extends State<SavedItems> {
                     )
                   : favProductList.length != 0
                       ? GridView.builder(
+        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                           physics: ScrollPhysics(),
                           shrinkWrap: true,
                           itemCount: favProductList.length == null
@@ -145,7 +147,10 @@ class _SavedItemsState extends State<SavedItems> {
                               : favProductList.length,
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2),
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 16,
+                                  mainAxisSpacing: 16
+                              ),
                           itemBuilder: (BuildContext context, int i) {
                             return InkWell(
                               onTap: () {
@@ -160,138 +165,157 @@ class _SavedItemsState extends State<SavedItems> {
                                   ),
                                 );
                               },
-                              child: GFCard(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20.0)),
-                                boxFit: BoxFit.fill,
-                                colorFilter: new ColorFilter.mode(
-                                    Colors.black.withOpacity(0.67),
-                                    BlendMode.darken),
-                                content: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              bottom: 8.0),
-                                          child: favProductList[i]['product']
-                                                      ['discount'] ==
-                                                  null
-                                              ? Container(
-                                                  height: 15,
-                                                  width: 65,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                      topLeft:
-                                                          Radius.circular(20),
-                                                      bottomRight:
-                                                          Radius.circular(20),
-                                                    ),
-                                                  ),
-                                                  child: GFButtonBadge(
-                                                    onPressed: null,
-                                                    text: '',
-                                                    color: Colors.white,
-                                                  ),
-                                                )
-                                              : Container(
-                                                  height: 15,
-                                                  width: 65,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                      topLeft:
-                                                          Radius.circular(20),
-                                                      bottomRight:
-                                                          Radius.circular(20),
-                                                    ),
-                                                  ),
-                                                  child: GFButtonBadge(
-                                                    onPressed: null,
-                                                    text: favProductList[i]
-                                                        ['product']['discount'],
-                                                    color:
-                                                        Colors.deepOrange[300],
-                                                  ),
-                                                ),
-                                        ),
-                                      ],
-                                    ),
-                                    favProductList[i]['product']['imageUrl'] ==
-                                            null
-                                        ? Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.only(),
-                                                child: Image.asset(
-                                                  "lib/assets/images/no-orders.png",
-                                                  fit: BoxFit.fill,
-                                                  width: 124,
-                                                  height: 60,
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        : Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.only(),
-                                                child: Image.network(
-                                                  favProductList[i]['product']
-                                                      ['imageUrl'],
-                                                  fit: BoxFit.cover,
-                                                  width: 124,
-                                                  height: 63,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 5.0),
-                                              child: Text(
-                                                favProductList[i]['product']
-                                                    ['title'],
-                                                style: textBarlowRegularBlack(),
-                                              ),
-                                            ),
-                                            Row(
-                                              children: <Widget>[
-                                                Text(
-                                                  currency,
-                                                  style: textbarlowBoldGreen(),
-                                                ),
-                                                Text(
-                                                  '${favProductList[i]['product']['variant'][0]['price']}',
-                                                  style: textbarlowBoldGreen(),
-                                                )
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
+                              child: Stack(
+                                children: <Widget>[
+                                  ProductCard(
+                                    image: favProductList[i]['product']['imageUrl'],
+                                    title: favProductList[i]['product']['title'],
+                                    currency: currency,
+                                    price: favProductList[i]['product']['variant'][0]['price'],
+                                    rating: '4.5',
+                                  ),
+                                  Positioned(
+                                      child: Stack(
+                                        children: <Widget>[
+                                          Image.asset('lib/assets/images/badge.png'),
+                                          Text('  Organic', style: hintSfboldwhitemed(), textAlign: TextAlign.center,)
+                                        ],
+                                      )
+                                  )
+                                ],
                               ),
+//                              GFCard(
+//                                shape: RoundedRectangleBorder(
+//                                    borderRadius: BorderRadius.circular(20.0)),
+//                                boxFit: BoxFit.fill,
+//                                colorFilter: new ColorFilter.mode(
+//                                    Colors.black.withOpacity(0.67),
+//                                    BlendMode.darken),
+//                                content: Column(
+//                                  crossAxisAlignment: CrossAxisAlignment.start,
+//                                  children: <Widget>[
+//                                    Row(
+//                                      mainAxisAlignment:
+//                                          MainAxisAlignment.spaceBetween,
+//                                      children: <Widget>[
+//                                        Padding(
+//                                          padding: const EdgeInsets.only(
+//                                              bottom: 8.0),
+//                                          child: favProductList[i]['product']
+//                                                      ['discount'] ==
+//                                                  null
+//                                              ? Container(
+//                                                  height: 15,
+//                                                  width: 65,
+//                                                  decoration: BoxDecoration(
+//                                                    borderRadius:
+//                                                        BorderRadius.only(
+//                                                      topLeft:
+//                                                          Radius.circular(20),
+//                                                      bottomRight:
+//                                                          Radius.circular(20),
+//                                                    ),
+//                                                  ),
+//                                                  child: GFButtonBadge(
+//                                                    onPressed: null,
+//                                                    text: '',
+//                                                    color: Colors.white,
+//                                                  ),
+//                                                )
+//                                              : Container(
+//                                                  height: 15,
+//                                                  width: 65,
+//                                                  decoration: BoxDecoration(
+//                                                    borderRadius:
+//                                                        BorderRadius.only(
+//                                                      topLeft:
+//                                                          Radius.circular(20),
+//                                                      bottomRight:
+//                                                          Radius.circular(20),
+//                                                    ),
+//                                                  ),
+//                                                  child: GFButtonBadge(
+//                                                    onPressed: null,
+//                                                    text: favProductList[i]
+//                                                        ['product']['discount'],
+//                                                    color:
+//                                                        Colors.deepOrange[300],
+//                                                  ),
+//                                                ),
+//                                        ),
+//                                      ],
+//                                    ),
+//                                    favProductList[i]['product']['imageUrl'] ==
+//                                            null
+//                                        ? Row(
+//                                            mainAxisAlignment:
+//                                                MainAxisAlignment.center,
+//                                            children: <Widget>[
+//                                              Padding(
+//                                                padding:
+//                                                    const EdgeInsets.only(),
+//                                                child: Image.asset(
+//                                                  "lib/assets/images/no-orders.png",
+//                                                  fit: BoxFit.fill,
+//                                                  width: 124,
+//                                                  height: 60,
+//                                                ),
+//                                              ),
+//                                            ],
+//                                          )
+//                                        : Row(
+//                                            mainAxisAlignment:
+//                                                MainAxisAlignment.center,
+//                                            children: <Widget>[
+//                                              Padding(
+//                                                padding:
+//                                                    const EdgeInsets.only(),
+//                                                child: Image.network(
+//                                                  favProductList[i]['product']
+//                                                      ['imageUrl'],
+//                                                  fit: BoxFit.cover,
+//                                                  width: 124,
+//                                                  height: 63,
+//                                                ),
+//                                              ),
+//                                            ],
+//                                          ),
+//                                    Row(
+//                                      crossAxisAlignment:
+//                                          CrossAxisAlignment.start,
+//                                      children: <Widget>[
+//                                        Column(
+//                                          crossAxisAlignment:
+//                                              CrossAxisAlignment.start,
+//                                          children: <Widget>[
+//                                            Padding(
+//                                              padding: const EdgeInsets.only(
+//                                                  top: 5.0),
+//                                              child: Text(
+//                                                favProductList[i]['product']
+//                                                    ['title'],
+//                                                style: textBarlowRegularBlack(),
+//                                              ),
+//                                            ),
+//                                            Row(
+//                                              children: <Widget>[
+//                                                Text(
+//                                                  currency,
+//                                                  style: textbarlowBoldGreen(),
+//                                                ),
+//                                                Text(
+//                                                  '${favProductList[i]['product']['variant'][0]['price']}',
+//                                                  style: textbarlowBoldGreen(),
+//                                                )
+//                                              ],
+//                                            ),
+//                                          ],
+//                                        ),
+//                                      ],
+//                                    )
+//                                  ],
+//                                ),
+//                              ),
                             );
                           },
                         )

@@ -308,10 +308,12 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                               child: Padding(
                                 padding: EdgeInsets.only(left: 10.0),
                                 child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>[
                                     new Flexible(
                                       child: new TextField(
-                                        maxLines: 2,
+                                        maxLines: 1,
                                         controller: _textController,
                                         onChanged: (String txt) {
                                           if (mounted) {

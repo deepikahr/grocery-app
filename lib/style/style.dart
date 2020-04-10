@@ -23,6 +23,9 @@ final bg2 = const Color(0xFFFDFDFD);
 final green = const Color(0xFF20C978);
 final greyb = const Color(0xFF707070);
 
+final greyc = const Color(0xFF8E8E93);
+
+
 double screenHeight(context) {
   return MediaQuery.of(context).size.height;
 }
