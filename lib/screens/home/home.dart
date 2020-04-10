@@ -101,42 +101,25 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   }
 
   Future<void> configLocalNotification() async {
-    OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
-
-    OneSignal.shared.setNotificationReceivedHandler((notification) {
-      this.setState(() {});
-    });
-
-    OneSignal.shared
-        .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
-      this.setState(() {});
-    });
-
-    OneSignal.shared
-        .setSubscriptionObserver((OSSubscriptionStateChanges changes) {});
-
-    OneSignal.shared
-        .setPermissionObserver((OSPermissionStateChanges changes) {});
-
-    OneSignal.shared.setEmailSubscriptionObserver(
-        (OSEmailSubscriptionStateChanges changes) {});
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    OneSignal.shared.init(Constants.ONE_SIGNAL_KEY, iOSSettings: {
-      OSiOSSettings.autoPrompt: false,
-      OSiOSSettings.inAppLaunchUrl: true
-    });
-    OneSignal.shared.setInFocusDisplayType(
-      OSNotificationDisplayType.notification,
-    );
-    OneSignal.shared.getPermissionSubscriptionState().then((onValue) async {
-      var playerId = onValue.subscriptionStatus.userId;
-      if (playerId == null) {
-        configLocalNotification();
-      } else {
-        prefs.setString("playerId", playerId);
-      }
-    });
+
+    var settings = {
+      OSiOSSettings.autoPrompt: true,
+      OSiOSSettings.promptBeforeOpeningPushUrl: true
+    };
+    OneSignal.shared
+        .setNotificationReceivedHandler((OSNotification notification) {});
+    OneSignal.shared
+        .setNotificationOpenedHandler((OSNotificationOpenedResult result) {});
+    await OneSignal.shared
+        .init(Constants.ONE_SIGNAL_KEY, iOSSettings: settings);
+    OneSignal.shared
+        .promptUserForPushNotificationPermission(fallbackToSettings: true);
+    OneSignal.shared
+        .setInFocusDisplayType(OSNotificationDisplayType.notification);
+    var status = await OneSignal.shared.getPermissionSubscriptionState();
+    String playerId = status.subscriptionStatus.userId;
+    prefs.setString("playerId", playerId);
   }
 
   loader() {
@@ -145,7 +128,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     );
   }
 
-  tabIcon(icon, title){
+  tabIcon(icon, title) {
     return Padding(
       padding: const EdgeInsets.only(top: 8),
       child: Column(
@@ -156,7 +139,9 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               fontFamily: 'icomoon',
             ),
           ),
-          SizedBox(height: 5,),
+          SizedBox(
+            height: 5,
+          ),
           Text(title)
         ],
       ),
@@ -187,15 +172,11 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           tabIcon(0xe912, 'Profile')
         ],
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(15.0),
-                topRight: Radius.circular(15.0)
-            ),
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
         ),
         tabBarHeight: 60,
-        indicator: BoxDecoration(
-          color: Colors.black
-        ),
+        indicator: BoxDecoration(color: Colors.black),
         labelColor: primary,
         tabBarColor: Colors.black,
         unselectedLabelColor: greyc,

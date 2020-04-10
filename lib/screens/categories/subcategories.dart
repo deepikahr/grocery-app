@@ -119,7 +119,8 @@ class _SubCategoriesState extends State<SubCategories> {
                         child: Image.asset('lib/assets/images/no-orders.png'),
                       )
                     : GridView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                         physics: ScrollPhysics(),
                         shrinkWrap: true,
                         itemCount: subProductsList.length == null
@@ -128,9 +129,12 @@ class _SubCategoriesState extends State<SubCategories> {
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
                             crossAxisSpacing: 16,
-                            mainAxisSpacing: 16
-                        ),
+                            mainAxisSpacing: 16),
                         itemBuilder: (BuildContext context, int i) {
+                          if (subProductsList[i]['averageRating'] == null) {
+                            subProductsList[i]['averageRating'] = 0;
+                          }
+
                           return InkWell(
                             onTap: () {
                               Navigator.push(
@@ -144,24 +148,45 @@ class _SubCategoriesState extends State<SubCategories> {
                                 ),
                               );
                             },
-                            child:Stack(
+                            child: Stack(
                               children: <Widget>[
                                 ProductCard(
-                                  image:  subProductsList[i]['imageUrl'],
+                                  image: subProductsList[i]['imageUrl'],
                                   title: subProductsList[i]['title'],
                                   currency: currency,
                                   category: subProductsList[i]['category'],
-                                  price: subProductsList[i]['variant'][0]['price'],
-                                  rating: '4.5',
+                                  price: subProductsList[i]['variant'][0]
+                                      ['price'],
+                                  rating: subProductsList[i]['averageRating']
+                                      .toString(),
                                 ),
-                                Positioned(
-                                    child: Stack(
-                                      children: <Widget>[
-                                        Image.asset('lib/assets/images/badge.png'),
-                                        Text('  Organic', style: hintSfboldwhitemed(), textAlign: TextAlign.center,)
-                                      ],
-                                    )
-                                )
+                                subProductsList[i]['discount'] == null
+                                    ? Positioned(
+                                        child: Stack(
+                                        children: <Widget>[
+                                          Image.asset(
+                                              'lib/assets/images/badge.png'),
+                                          Text(
+                                            '  Organic',
+                                            style: hintSfboldwhitemed(),
+                                            textAlign: TextAlign.center,
+                                          )
+                                        ],
+                                      ))
+                                    : Positioned(
+                                        child: Stack(
+                                        children: <Widget>[
+                                          Image.asset(
+                                              'lib/assets/images/badge.png'),
+                                          Text(
+                                            " " +
+                                                subProductsList[i]['discount']
+                                                    .toString(),
+                                            style: hintSfboldwhitemed(),
+                                            textAlign: TextAlign.center,
+                                          )
+                                        ],
+                                      ))
                               ],
                             ),
                           );

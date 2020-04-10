@@ -110,11 +110,26 @@ class Common {
     return prefs.setString('userInfo', json.encode(cartInfo));
   }
 
+  static Future<bool> setSearchList(List cartInfo) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setString('searchList', json.encode(cartInfo));
+  }
+
   static Future<Map<String, dynamic>> getAddressList() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String cartStorage = prefs.getString('addressList');
     try {
       return json.decode(cartStorage) as Map<String, dynamic>;
+    } catch (err) {
+      return Future(() => null);
+    }
+  }
+
+  static Future<List> getSearchList() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String cartStorage = prefs.getString('searchList');
+    try {
+      return json.decode(cartStorage) as List;
     } catch (err) {
       return Future(() => null);
     }
