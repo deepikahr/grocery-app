@@ -13,7 +13,10 @@ SentryError sentryError = new SentryError();
 class Payment extends StatefulWidget {
   final int quantity;
   final String type;
-  final double grandTotal, deliveryCharges;
+  final double grandTotals;
+  final int grandTotal;
+  final double deliveryCharges;
+  final int deliveryCharge;
   final int currentIndex;
   final Map<String, dynamic> data;
 
@@ -24,6 +27,8 @@ class Payment extends StatefulWidget {
       this.currentIndex,
       this.type,
       this.deliveryCharges,
+      this.deliveryCharge,
+      this.grandTotals,
       this.grandTotal})
       : super(key: key);
   @override
@@ -39,6 +44,7 @@ class _PaymentState extends State<Payment> {
       groupValue = 0,
       cardValue = 0;
   String paymentType, cvv, selectedPaymentType, cardID, currency;
+  var grandTotal, deliveryCharges;
   bool isPlaceOrderLoading = false,
       ispaymentMethodLoading = false,
       isFirstTime = true,
@@ -65,6 +71,14 @@ class _PaymentState extends State<Payment> {
   @override
   void initState() {
     fetchCardInfo();
+
+    if (widget.grandTotal == null && widget.deliveryCharge == null) {
+      deliveryCharges = widget.deliveryCharges;
+      grandTotal = widget.grandTotals;
+    } else {
+      deliveryCharges = widget.deliveryCharge;
+      grandTotal = widget.grandTotal;
+    }
     super.initState();
   }
 
@@ -169,6 +183,7 @@ class _PaymentState extends State<Payment> {
       });
     } else {
       await ProductService.placeOrder(widget.data).then((onValue) {
+        print(onValue);
         try {
           if (onValue['response_code'] == 201) {
             if (mounted) {
@@ -459,7 +474,7 @@ class _PaymentState extends State<Payment> {
                                   ),
                                 ),
                                 Text(
-                                  '${widget.deliveryCharges.toString()}',
+                                  deliveryCharges.toString(),
                                   style: textbarlowBoldBlack(),
                                 ),
                               ],
@@ -498,7 +513,7 @@ class _PaymentState extends State<Payment> {
                                   ),
                                 ),
                                 Text(
-                                  '${widget.grandTotal.toString()}',
+                                  grandTotal.toString(),
                                   style: textbarlowBoldBlack(),
                                 ),
                               ],
@@ -518,7 +533,7 @@ class _PaymentState extends State<Payment> {
                       padding: EdgeInsets.only(right: 0.0),
                       itemCount: paymentTypes.length,
                       itemBuilder: (BuildContext context, int index) {
-                        if (widget.grandTotal >= 50) {
+                        if (grandTotal >= 50) {
                           paymentTypes[0]['isSelected'] = true;
                           paymentTypes[1]['isSelected'] = true;
                         } else {

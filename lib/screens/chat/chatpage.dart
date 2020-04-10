@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:grocery_pro/screens/home/home.dart';
 import 'package:grocery_pro/service/auth-service.dart';
+import 'package:grocery_pro/service/constants.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
@@ -23,7 +23,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   var chatInfo;
   String name, id, image, chatID;
   Timer chatTimer;
-  var socket = io.io("http://162.243.171.81:3000/", <String, dynamic>{
+  var socket = io.io(Constants.baseURL, <String, dynamic>{
     'transports': ['websocket']
   });
   @override
@@ -72,10 +72,12 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
           setState(() {
             isChatLoading = false;
             if (data['response_data'] != null) {
-              setState(() {
-                chatList = data['response_data']['messages'];
-                chatID = data['response_data']['_id'];
-              });
+              if (mounted) {
+                setState(() {
+                  chatList = data['response_data']['messages'];
+                  chatID = data['response_data']['_id'];
+                });
+              }
             } else {
               if (mounted) {
                 setState(() {
@@ -98,18 +100,22 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
       };
       socket.emit('initialize-chat', chatInfo);
       socket.on('chat-list$id', (data) {
-        setState(() {
-          isChatLoading = false;
-          chatList = data['response_data']['messages'];
+        if (mounted) {
+          setState(() {
+            isChatLoading = false;
+            chatList = data['response_data']['messages'];
 
-          if (data['response_data']['_id'] == null) {
-            chatID = "";
-          } else {
-            setState(() {
-              chatID = data['response_data']['_id'];
-            });
-          }
-        });
+            if (data['response_data']['_id'] == null) {
+              chatID = "";
+            } else {
+              if (mounted) {
+                setState(() {
+                  chatID = data['response_data']['_id'];
+                });
+              }
+            }
+          });
+        }
       });
     }
     socket.on("listen-new-messages$id", (data) {
@@ -128,6 +134,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
 //fetchres info
   fetchRestaurantInfo() async {
     LoginService.restoInfo().then((response) {
+      print(response);
       try {
         resInfo = response['response_data'];
         socketInt();
@@ -175,12 +182,8 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                 socket.emit(
                     "close-chat", {"chatId": chatID, "store": resInfo['_id']});
 
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => Home(),
-                    ),
-                    (Route<dynamic> route) => false);
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -207,12 +210,8 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                   socket.emit("close-chat",
                       {"chatId": chatID, "store": resInfo['_id']});
 
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => Home(),
-                      ),
-                      (Route<dynamic> route) => false);
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
                 },
                 child: new Text(
                   "Yes",
@@ -502,10 +501,12 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
     socket.emit('send-message', chatInfo);
     socket.on('chat-list$id', (data) {
       chatList.add(chatInfo);
-      setState(() {
-        isChatLoading = false;
-        chatList = chatList;
-      });
+      if (mounted) {
+        setState(() {
+          isChatLoading = false;
+          chatList = chatList;
+        });
+      }
     });
 
     msg.animationController.forward();

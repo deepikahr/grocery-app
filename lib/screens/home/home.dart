@@ -101,22 +101,15 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   }
 
   Future<void> configLocalNotification() async {
-    var _debugLabelString = "";
     OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
 
     OneSignal.shared.setNotificationReceivedHandler((notification) {
-      this.setState(() {
-        _debugLabelString =
-            "Received notification: \n${notification.jsonRepresentation().replaceAll("\\n", "\n")}";
-      });
+      this.setState(() {});
     });
 
     OneSignal.shared
         .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
-      this.setState(() {
-        _debugLabelString =
-            "Opened notification: \n${result.notification.jsonRepresentation().replaceAll("\\n", "\n")}";
-      });
+      this.setState(() {});
     });
 
     OneSignal.shared

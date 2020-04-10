@@ -15,6 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:grocery_pro/widgets/categoryBlock.dart';
 import 'package:grocery_pro/widgets/productCard.dart';
 import 'package:grocery_pro/widgets/cardOverlay.dart';
+import 'package:geocoder/geocoder.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -49,7 +50,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   @override
   void initState() {
     getToken();
-    getCurrentLocation();
+    getResult();
     getCategoryList();
     getProductsList();
     super.initState();
@@ -112,7 +113,6 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
         if (mounted) {
           setState(() {
             categoryListMethod();
-            print("Lllllll 1");
           });
         }
       } else {
@@ -121,7 +121,6 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
             isLoadingcategoryList = false;
 
             categoryList = value['response_data'];
-            print("Lllllll 2");
 
             categoryListMethod();
           });
@@ -213,52 +212,25 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
         isLocationLoading = true;
       });
     }
-
-    Common.getCurrentLocation().then((value) {
-      if (value == null) {
-        if (mounted) {
-          setState(() {
-            getGeoLocation();
-          });
-        }
-      } else {
+    Common.getCurrentLocation().then((value) async {
+      print(value);
+      if (value != null) {
         if (mounted) {
           setState(() {
             isLocationLoading = false;
-            addressData = value['results'][0];
-            print("Lllllll 2");
-            getGeoLocation();
+            addressData = value;
           });
         }
       }
-    });
-  }
-
-  getCurrentLocation() async {
-    currentLocation = await _location.getLocation();
-
-    if (currentLocation != null) {
-      getResult();
-      print("Lllllll 1");
-    }
-  }
-
-  getGeoLocation() async {
-    await ProductService.geoApi(
-            currentLocation.latitude, currentLocation.longitude)
-        .then((onValue) {
-      try {
-        if (mounted) {
-          setState(() {
-            addressData = onValue['results'][0];
-            isLocationLoading = false;
-          });
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      sentryError.reportError(error, null);
+      currentLocation = await _location.getLocation();
+      final coordinates =
+          new Coordinates(currentLocation.latitude, currentLocation.longitude);
+      var addresses =
+          await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      var first = addresses.first;
+      addressData = first.addressLine;
+      Common.setCurrentLocation(addressData);
+      return first;
     });
   }
 
@@ -276,7 +248,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
               style: textBarlowRegularrBlacksm(),
             ),
             Text(
-                      addressData['formatted_address'].substring(0, 15) + '...',
+                      addressData.substring(0, 15) + '...',
               style: textBarlowSemiBoldBlackbig(),
             )
           ],
