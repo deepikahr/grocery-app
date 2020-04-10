@@ -246,6 +246,7 @@ class _CheckoutState extends State<Checkout> {
       setState(() => _selectedIndex = index);
     }
     selectedDate = deliverySlotList[index]['date'];
+    print(selectedDate);
   }
 
   placeOrder() async {
@@ -264,6 +265,7 @@ class _CheckoutState extends State<Checkout> {
       data['deliveryAddress'] = selectedAddress['_id'].toString();
 
       data['deliveryDate'] = selectedDate.toString();
+      print(selectedDate);
 
       data['deliveryTime'] = selectedTime.toString();
 
@@ -282,6 +284,7 @@ class _CheckoutState extends State<Checkout> {
         });
       }
       PaymentService.getDeliveryCharges(body).then((value) {
+        print(value);
         try {
           if (value['response_code'] == 200) {
             if (mounted) {
@@ -289,18 +292,41 @@ class _CheckoutState extends State<Checkout> {
                 isPlaceOrderLoading = false;
               });
             }
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Payment(
-                  data: data,
-                  type: widget.buy,
-                  grandTotal: value['response_data']['cartData']['grandTotal'],
-                  deliveryCharges: value['response_data']['deliveryDetails']
-                      ['deliveryCharges'],
+            if (value['response_data']['deliveryDetails']['deliveryCharges']
+                is int) {
+              print("kk");
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Payment(
+                    data: data,
+                    type: widget.buy,
+                    grandTotals: null,
+                    grandTotal: value['response_data']['cartData']
+                        ['grandTotal'],
+                    deliveryCharges: null,
+                    deliveryCharge: value['response_data']['deliveryDetails']
+                        ['deliveryCharges'],
+                  ),
                 ),
-              ),
-            );
+              );
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Payment(
+                    data: data,
+                    type: widget.buy,
+                    grandTotal: null,
+                    grandTotals: value['response_data']['cartData']
+                        ['grandTotal'],
+                    deliveryCharges: value['response_data']['deliveryDetails']
+                        ['deliveryCharges'],
+                    deliveryCharge: null,
+                  ),
+                ),
+              );
+            }
           }
         } catch (error, stackTrace) {
           sentryError.reportError(error, stackTrace);
@@ -525,37 +551,9 @@ class _CheckoutState extends State<Checkout> {
                                   ),
                                 ],
                               ),
-                              SizedBox(
-                                  height:10
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Column(
-                                    children: <Widget>[
-                                      Text(
-                                        'Delivery charges',
-                                        style: textBarlowRegularBlack(),
-                                      )
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: <Widget>[
-                                      Text(
-                                        currency,
-                                        style: textbarlowBoldsmBlack(),
-                                      ),
-                                      Text(
-                                        '${cartItem['deliveryCharges']}',
-                                        style: textbarlowBoldsmBlack(),
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                  height:30
+
+                                                            SizedBox(
+                                  height:20
                               ),
                               Form(
                                 key: _formKey,

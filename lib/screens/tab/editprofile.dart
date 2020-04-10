@@ -168,7 +168,7 @@ class _EditProfileState extends State<EditProfile> {
         new http.ByteStream(DelegatingStream.typed(_imageFile.openRead()));
 
     int length = await _imageFile.length();
-    String uri = Constants.baseURL + 'utils/upload/profile';
+    String uri = Constants.baseURL + 'utils/upload/file/imagekit';
 
     dynamic request = new http.MultipartRequest("POST", Uri.parse(uri));
 

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/authe/login.dart';
-import 'package:grocery_pro/screens/home/home.dart';
 import 'package:grocery_pro/screens/tab/mycart.dart';
 import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/service/product-service.dart';
@@ -343,7 +342,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                   initialRating:
                                       widget.productDetail['averageRating'] ==
                                               null
-                                          ? 3
+                                          ? 0
                                           : double.parse(widget
                                               .productDetail['averageRating']
                                               .toString()),
@@ -595,16 +594,15 @@ class _ProductDetailsState extends State<ProductDetails>
                           ),
                   ),
                   Positioned(
-                      top: 45,
-                      left: 20,
-                      child: InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => Home()),
-                            );
-                          },
-                          child: Icon(Icons.arrow_back)))
+                    top: 45,
+                    left: 20,
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Icon(Icons.arrow_back),
+                    ),
+                  )
                 ],
               ),
             ],

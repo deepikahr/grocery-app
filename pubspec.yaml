@@ -27,6 +27,8 @@ dependencies:
   dotted_border: ^1.0.5
   flutter_svg: ^0.17.4
 
+  geocoder: ^0.2.1
+  image: ^2.1.4
 dev_dependencies:
   flutter_test:
     sdk: flutter

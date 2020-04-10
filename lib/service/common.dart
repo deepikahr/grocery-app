@@ -85,14 +85,19 @@ class Common {
     return prefs.setString('cartInfo', json.encode(cartInfo));
   }
 
-  static Future<bool> setCurrentLocation(Map<String, dynamic> cartInfo) async {
+  static Future<bool> setCurrentLocation(String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setString('currenLocation', json.encode(cartInfo));
+    return prefs.setString('currentLocation', token);
   }
 
   static Future<bool> setFavList(Map<String, dynamic> cartInfo) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.setString('favList', json.encode(cartInfo));
+  }
+
+  static Future<bool> setAddressList(Map<String, dynamic> cartInfo) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setString('addressList', json.encode(cartInfo));
   }
 
   static Future<bool> setCardInfo(Map<String, dynamic> cartInfo) async {
@@ -103,6 +108,16 @@ class Common {
   static Future<bool> setUserInfo(Map<String, dynamic> cartInfo) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.setString('userInfo', json.encode(cartInfo));
+  }
+
+  static Future<Map<String, dynamic>> getAddressList() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String cartStorage = prefs.getString('addressList');
+    try {
+      return json.decode(cartStorage) as Map<String, dynamic>;
+    } catch (err) {
+      return Future(() => null);
+    }
   }
 
   static Future<Map<String, dynamic>> getCardInfo() async {
@@ -135,14 +150,9 @@ class Common {
     }
   }
 
-  static Future<Map<String, dynamic>> getCurrentLocation() async {
+  static Future<String> getCurrentLocation() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String cartStorage = prefs.getString('currenLocation');
-    try {
-      return json.decode(cartStorage) as Map<String, dynamic>;
-    } catch (err) {
-      return Future(() => null);
-    }
+    return Future(() => prefs.getString('currentLocation'));
   }
 
   // get cart info from storage
