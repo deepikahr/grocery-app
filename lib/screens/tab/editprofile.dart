@@ -189,8 +189,9 @@ class _EditProfileState extends State<EditProfile> {
       await response.stream.transform(utf8.decoder).listen((value) async {
         Map<String, dynamic> data;
         data = json.decode(value);
-        updateUserInfo(
-            data['response_data']['url'], data['response_data']['key']);
+        print(data);
+        updateUserInfo(data['response_data']['thumbnailUrl'],
+            data['response_data']['fileId']);
       });
     }).catchError((error) {
       sentryError.reportError(error, null);
