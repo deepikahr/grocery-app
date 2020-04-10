@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/authe/login.dart';
-import 'package:grocery_pro/screens/home/home.dart';
 import 'package:grocery_pro/screens/tab/mycart.dart';
 import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/service/product-service.dart';

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/main.dart';
 import 'package:grocery_pro/screens/authe/login.dart';
@@ -225,7 +226,7 @@ class _ProfileState extends State<Profile> {
               }
             },
             child: Container(
-              padding: const EdgeInsets.only(left: 15.0),
+//              padding: const EdgeInsets.only(left: 15.0),
               height: 141,
               width: 232,
               decoration: BoxDecoration(
@@ -257,141 +258,156 @@ class _ProfileState extends State<Profile> {
                 itemCount: cardList.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.only(top:8.0, bottom: 8, right: 8, left: 6),
                     child: Container(
                       height: 141,
                       width: 232,
                       padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
                       decoration: BoxDecoration(
-                          color: Color(0xFF5FB8E5),
+                        gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            stops: [0.0, 0.4, 0.6, 1.0],
+                            colors: [
+                          Color(0xFF5FE5CF),
+                          Color(0xFF5FB8E5),
+                              Color(0xFF5FB8E5),
+                              Color(0xFF5FB8E5),
+                        ]),
+
+//                          color: Color(0xFF5FB8E5),
                           borderRadius: BorderRadius.circular(5.0)),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 8.0, top: 20.0),
-                                child: cardList[index]['cardImage'] == null
-                                    ? Image.asset(
-                                        'lib/assets/icons/mastercard-logo.png')
-                                    : Image.network(
-                                        '${cardList[index]['cardImage']}',
-                                      ),
+                         Padding(
+                           padding: EdgeInsets.only(left:20, right:20, top:18),
+                           child:  Row(
+                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                             children: <Widget>[
+                               cardList[index]['cardImage'] == null
+                                   ? Image.asset(
+                                   'lib/assets/icons/mastercard-logo.png')
+                                   : Image.network(
+                                 '${cardList[index]['cardImage']}',
+                               ),
+                              SizedBox(
+                                width:5
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 0.0),
-                                child: Text(
+                              Expanded(
+
+                                child:  Text(
                                   '${cardList[index]['bank']}',
                                   style: textBarlowRegularWhite(),
+                                  textAlign: TextAlign.center,
                                 ),
                               ),
-                              InkWell(
-                                onTap: () {
-                                  showDialog<Null>(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (BuildContext context) {
-                                      return Container(
-                                        width: 270.0,
-                                        child: new AlertDialog(
-                                          title: new Text(
-                                            'Are You Sure?',
-                                            style: textBarlowRegularBlack(),
-                                          ),
-                                          content: new SingleChildScrollView(
-                                            child: new ListBody(
-                                              children: <Widget>[
-                                                new Text(
-                                                  'Delete Card',
-                                                  style:
-                                                      textBarlowRegularBlack(),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          actions: <Widget>[
-                                            new FlatButton(
-                                              child: new Text('Cancel'),
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                            ),
-                                            new FlatButton(
-                                              child: isCardDelete
-                                                  ? Image.asset(
-                                                      'lib/assets/images/spinner.gif',
-                                                      width: 10.0,
-                                                      height: 10.0,
-                                                      color: Colors.black,
-                                                    )
-                                                  : Text(
-                                                      'Ok',
-                                                      style:
-                                                          textBarlowRegularBlack(),
-                                                    ),
-                                              onPressed: () {
-                                                deleteCard(
-                                                    cardList[index]['_id']);
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                                child: Icon(
-                                  Icons.delete,
-                                  color: Colors.black45,
-                                ),
-                              ),
-                            ],
-                          ),
+                               InkWell(
+                                 onTap: () {
+                                   showDialog<Null>(
+                                     context: context,
+                                     barrierDismissible: false,
+                                     builder: (BuildContext context) {
+                                       return Container(
+                                         width: 270.0,
+                                         child: new AlertDialog(
+                                           title: new Text(
+                                             'Are You Sure?',
+                                             style: textBarlowRegularBlack(),
+                                           ),
+                                           content: new SingleChildScrollView(
+                                             child: new ListBody(
+                                               children: <Widget>[
+                                                 new Text(
+                                                   'Delete Card',
+                                                   style:
+                                                   textBarlowRegularBlack(),
+                                                 ),
+                                               ],
+                                             ),
+                                           ),
+                                           actions: <Widget>[
+                                             new FlatButton(
+                                               child: new Text('Cancel'),
+                                               onPressed: () {
+                                                 Navigator.pop(context);
+                                               },
+                                             ),
+                                             new FlatButton(
+                                               child: isCardDelete
+                                                   ? Image.asset(
+                                                 'lib/assets/images/spinner.gif',
+                                                 width: 10.0,
+                                                 height: 10.0,
+                                                 color: Colors.black,
+                                               )
+                                                   : Text(
+                                                 'Ok',
+                                                 style:
+                                                 textBarlowRegularBlack(),
+                                               ),
+                                               onPressed: () {
+                                                 deleteCard(
+                                                     cardList[index]['_id']);
+                                               },
+                                             ),
+                                           ],
+                                         ),
+                                       );
+                                     },
+                                   );
+                                 },
+                                 child: Icon(
+                                   Icons.delete,
+                                   color: Colors.black45,
+                                 ),
+                               ),
+                             ],
+                           ),
+                         ),
                           SizedBox(height: 20),
-                          Center(
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 15.0),
+                           Padding(
+                              padding: const EdgeInsets.only(left: 20.0, right:20),
                               child: Text(
                                 '************${cardList[index]['lastFourDigits']}',
                                 style: textBarlowRegularWhite(),
                               ),
                             ),
-                          ),
+
                           SizedBox(height: 15),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    'Card holder',
-                                    style: textbarlowmediumwhitedull(),
-                                  ),
-                                  Text(
-                                    '${cardList[index]['cardHolderName']}',
-                                    style: textbarlowmediumwhite(),
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: <Widget>[
-                                  Text(
-                                    'Expires',
-                                    style: textbarlowmediumwhitedull(),
-                                  ),
-                                  Text(
-                                    '${cardList[index]['expiryMonth']}/${cardList[index]['expiryYear']}',
-                                    style: textbarlowmediumwhite(),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                        
+                        Padding(padding: EdgeInsets.only(left:20, right:20), child:   Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  'Card holder',
+                                  style: textbarlowmediumwhitedull(),
+                                ),
+                                Text(
+                                  '${cardList[index]['cardHolderName']}',
+                                  style: textbarlowmediumwhite(),
+                                ),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: <Widget>[
+                                Text(
+                                  'Expires',
+                                  style: textbarlowmediumwhitedull(),
+                                ),
+                                Text(
+                                  '${cardList[index]['expiryMonth']}/${cardList[index]['expiryYear']}',
+                                  style: textbarlowmediumwhite(),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),)
                         ],
                       ),
                     ),
@@ -423,7 +439,8 @@ class _ProfileState extends State<Profile> {
                   height: 141,
                   width: 232,
                   decoration: BoxDecoration(
-                      color: Colors.grey[400],
+                      color: Color(0xFFF0F0F0),
+                      border: Border.all(color: Color(0xFFD3D3D3), width: 1),
                       borderRadius: BorderRadius.circular(5.0)),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -446,6 +463,7 @@ class _ProfileState extends State<Profile> {
           );
 
     return Scaffold(
+      backgroundColor: Color(0xFFFDFDFD),
       appBar: isGetTokenLoading
           ? null
           : token == null
@@ -499,6 +517,15 @@ class _ProfileState extends State<Profile> {
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.all(Radius.circular(27)),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black.withOpacity(0.29),
+                                                blurRadius: 6
+                                              )
+                                            ]
+                                          ),
                                           height: 90.0,
                                           width: 91.0,
                                           child: userInfo == null ||
@@ -554,7 +581,7 @@ class _ProfileState extends State<Profile> {
                                         children: <Widget>[
                                           Padding(
                                             padding: const EdgeInsets.only(
-                                                right: .0, bottom: 4.0),
+                                                right: .0, bottom: 6.0),
                                             child: userInfo == null &&
                                                     userInfo['firstName'] ==
                                                         null &&
@@ -569,6 +596,9 @@ class _ProfileState extends State<Profile> {
                                                     style:
                                                         textBarlowMediumBlack(),
                                                   ),
+                                          ),
+                                          SizedBox(
+                                            height:6
                                           ),
                                           userInfo == null &&
                                                   userInfo['email'] == null
@@ -586,6 +616,9 @@ class _ProfileState extends State<Profile> {
                                                     ),
                                                   ],
                                                 ),
+                                          SizedBox(
+                                              height:6
+                                          ),
                                           Padding(
                                             padding: const EdgeInsets.only(
                                                 top: 5.0, right: .0),
@@ -615,9 +648,9 @@ class _ProfileState extends State<Profile> {
                                             children: <Widget>[
                                               Padding(
                                                 padding:
-                                                    EdgeInsets.only(top: 40),
-                                                child: Image.asset(
-                                                    'lib/assets/icons/edit.png'),
+                                                    EdgeInsets.only(top: 45),
+//                                                child:SvgPicture.asset('lib/assets/icons/editt.svg')
+                                              child: SvgPicture.asset('lib/assets/icons/editt.svg'),
                                               )
                                             ],
                                           )
@@ -627,6 +660,9 @@ class _ProfileState extends State<Profile> {
                                   ],
                                 ),
                               ),
+                            ),
+                            SizedBox(
+                              height:15
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -689,12 +725,9 @@ class _ProfileState extends State<Profile> {
                               child: Container(
                                 height: 55,
                                 decoration: BoxDecoration(
-                                    color: Color(0xFFFDFDFD),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.black.withOpacity(0.10),
-                                          blurRadius: 3)
-                                    ]),
+                                    color: Color(0xFFF7F7F7),
+
+                                ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: <Widget>[
@@ -727,12 +760,7 @@ class _ProfileState extends State<Profile> {
                               child: Container(
                                 height: 55,
                                 decoration: BoxDecoration(
-                                    color: Color(0xFFFDFDFD),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.black.withOpacity(0.10),
-                                          blurRadius: 3)
-                                    ]),
+                                  color: Color(0xFFF7F7F7),),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: <Widget>[
@@ -763,12 +791,7 @@ class _ProfileState extends State<Profile> {
                               child: Container(
                                 height: 55,
                                 decoration: BoxDecoration(
-                                    color: Color(0xFFFDFDFD),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.black.withOpacity(0.10),
-                                          blurRadius: 3)
-                                    ]),
+                                  color: Color(0xFFF7F7F7),),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: <Widget>[
@@ -795,12 +818,7 @@ class _ProfileState extends State<Profile> {
                                 height: 55,
                                 padding: EdgeInsets.only(right: 20),
                                 decoration: BoxDecoration(
-                                    color: Color(0xFFFDFDFD),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.black.withOpacity(0.10),
-                                          blurRadius: 3)
-                                    ]),
+                                  color: Color(0xFFF7F7F7),),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -814,7 +832,7 @@ class _ProfileState extends State<Profile> {
                                         child: Row(
                                           children: <Widget>[
                                             Text(
-                                              'Logout',
+                                              'Log out',
                                               style: textBarlowMediumBlack(),
                                             ),
                                           ],
@@ -828,8 +846,7 @@ class _ProfileState extends State<Profile> {
                                                 height: 10.0,
                                                 color: Colors.black,
                                               )
-                                            : Image.asset(
-                                                'lib/assets/icons/logout.png')
+                                            : SvgPicture.asset('lib/assets/icons/lgout.svg')
                                       ],
                                     ),
                                   ],

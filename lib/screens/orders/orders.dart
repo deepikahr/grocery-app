@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/orders/ordersDetails.dart';
@@ -192,6 +193,7 @@ class _OrdersState extends State<Orders> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFFDFDFD),
       appBar: GFAppBar(
         title: Text(
           'Orders',
@@ -261,12 +263,9 @@ class _OrdersState extends State<Orders> {
                       Container(
                         margin: EdgeInsets.only(top: 20, bottom: 10),
                         decoration: BoxDecoration(
-                            color: Color(0xFFFDFDFD),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black.withOpacity(0.10),
-                                  blurRadius: 6)
-                            ]),
+//                          color: Color(0xFFF7F7F7)
+//                            color: Color(0xFFFDFDFD),
+                           ),
                         child: ListView.builder(
                           physics: ScrollPhysics(),
                           shrinkWrap: true,
@@ -299,12 +298,18 @@ class _OrdersState extends State<Orders> {
                                                 "DELIVERED"
                                             ? reorder(orderList[i])
                                             : Container(),
-                                        Divider()
+//                                        Divider(),
+                                      SizedBox(
+                                        height: 20,
+                                      )
                                       ],
                                     ),
                                   );
                           },
                         ),
+                      ),
+                      SizedBox(
+                        height:30
                       )
                     ],
                   ),
@@ -314,12 +319,27 @@ class _OrdersState extends State<Orders> {
 
   product(orderDetails) {
     return Container(
+      color: Color(0xFFF7F7F7),
       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 24),
       child: Row(
         children: <Widget>[
-          Image.network(
-            orderDetails['cart']['cart'][0]['imageUrl'],
-            height: 70.0,
+          Container(
+            height: 103.0,
+            width: 100,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(5)),
+                boxShadow: [
+                  BoxShadow(
+                      color: Color(0xFF0000000A),
+                      blurRadius: 0.40
+                  )
+                ],
+              image: DecorationImage(image: NetworkImage(orderDetails['cart']['cart'][0]['imageUrl'],), fit: BoxFit.cover)
+            ),
+//            child:   Image.network(
+//              orderDetails['cart']['cart'][0]['imageUrl'],
+//
+//            ),
           ),
           SizedBox(width: 17),
           Column(
@@ -362,6 +382,7 @@ class _OrdersState extends State<Orders> {
 
   orderTrack(orderDetails) {
     return Container(
+      color: Color(0xFFF7F7F7),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -388,12 +409,15 @@ class _OrdersState extends State<Orders> {
                   ? titleSegoeGreen()
                   : titleSegoeGrey(),
             ),
+            icon:Padding(padding: EdgeInsets.only(bottom: 20),child: SvgPicture.asset('lib/assets/icons/tick.svg'),),
+
             subTitle: Text(
               '',
               style: textSMBarlowRegularrGreyb(),
             ),
           ),
           GFListTile(
+//            icon:Padding(padding: EdgeInsets.only(bottom: 20),child: Image.asset('lib/assets/icons/confirm.png'),),
             avatar: Column(
               children: <Widget>[
                 GFAvatar(
@@ -448,12 +472,13 @@ class _OrdersState extends State<Orders> {
 
   reorder(orderDetails) {
     return Container(
-      color: Colors.white38,
+      color: Color(0xFFF7F7F7),
+      padding: EdgeInsets.only(bottom: 20),
       child: Row(
         children: <Widget>[
           Expanded(
               child: Container(
-            height: 45,
+            height: 48,
             margin: EdgeInsets.only(left: 20, right: 15),
             child: GFButton(
               onPressed: () {
@@ -464,11 +489,12 @@ class _OrdersState extends State<Orders> {
               },
               text: 'Reorder',
               color: primary,
+              textStyle: textbarlowmediumwblack(),
             ),
           )),
           Expanded(
               child: Container(
-            height: 45,
+            height: 48,
             margin: EdgeInsets.only(right: 20),
             child: GFButton(
               onPressed: () {
@@ -484,6 +510,7 @@ class _OrdersState extends State<Orders> {
               text: 'View',
               type: GFButtonType.outline,
               color: primary,
+              textStyle: textbarlowmediumwprimary(),
             ),
           )),
           SizedBox(
