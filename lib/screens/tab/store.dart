@@ -45,7 +45,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   @override
   void initState() {
     getToken();
-    getResult();
+    getCurrentLocation();
     getCategoryList();
     getProductsList();
     super.initState();
@@ -103,6 +103,30 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
         isLoadingcategoryList = true;
       });
     }
+    Common.getCatagrysList().then((value) {
+      if (value == null) {
+        if (mounted) {
+          setState(() {
+            categoryListMethod();
+            print("Lllllll 1");
+          });
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            isLoadingcategoryList = false;
+
+            categoryList = value['response_data'];
+            print("Lllllll 2");
+
+            categoryListMethod();
+          });
+        }
+      }
+    });
+  }
+
+  categoryListMethod() async {
     await ProductService.getCategoryList().then((onValue) {
       try {
         if (onValue['response_code'] == 200) {
@@ -134,6 +158,27 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
         isLoadingProductsList = true;
       });
     }
+    Common.getProductList().then((value) {
+      if (value == null) {
+        if (mounted) {
+          setState(() {
+            getProductListMethod();
+          });
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            isLoadingProductsList = false;
+
+            productsList = value['response_data'];
+            getProductListMethod();
+          });
+        }
+      }
+    });
+  }
+
+  getProductListMethod() async {
     await ProductService.getProductsList().then((onValue) {
       try {
         if (onValue['response_code'] == 200) {
@@ -159,18 +204,42 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   }
 
   getResult() async {
-    currentLocation = await _location.getLocation();
-    if (currentLocation != null) {
-      getGeoLocation();
-    }
-  }
-
-  getGeoLocation() async {
     if (mounted) {
       setState(() {
         isLocationLoading = true;
       });
     }
+
+    Common.getCurrentLocation().then((value) {
+      if (value == null) {
+        if (mounted) {
+          setState(() {
+            getGeoLocation();
+          });
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            isLocationLoading = false;
+            addressData = value['results'][0];
+            print("Lllllll 2");
+            getGeoLocation();
+          });
+        }
+      }
+    });
+  }
+
+  getCurrentLocation() async {
+    currentLocation = await _location.getLocation();
+
+    if (currentLocation != null) {
+      getResult();
+      print("Lllllll 1");
+    }
+  }
+
+  getGeoLocation() async {
     await ProductService.geoApi(
             currentLocation.latitude, currentLocation.longitude)
         .then((onValue) {
@@ -380,7 +449,6 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                             ? 0
                             : productsList.length,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-
                             crossAxisCount: 2),
                         itemBuilder: (BuildContext context, int i) {
                           return productsList[i]['outOfStock'] != null ||
@@ -398,124 +466,114 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                       ),
                                     );
                                   },
-                                  child:
-                                      GFCard(
-
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20.0)),
-                                        boxFit: BoxFit.fill,
-                                        colorFilter: new ColorFilter.mode(
-                                            Colors.black.withOpacity(0.67),
-                                            BlendMode.darken),
-                                        content: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                  child: GFCard(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(20.0)),
+                                    boxFit: BoxFit.fill,
+                                    colorFilter: new ColorFilter.mode(
+                                        Colors.black.withOpacity(0.67),
+                                        BlendMode.darken),
+                                    content: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: <Widget>[
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: <Widget>[
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          bottom: 8.0),
-                                                  child: productsList[i]
-                                                              ['discount'] ==
-                                                          null
-                                                      ? Container(
-                                                          height: 15,
-                                                          width: 65,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .only(
-                                                              topLeft: Radius
-                                                                  .circular(20),
-                                                              bottomRight:
-                                                                  Radius
-                                                                      .circular(
-                                                                          20),
-                                                            ),
-                                                          ),
-                                                          child: GFButtonBadge(
-                                                            onPressed: null,
-                                                            text: '',
-                                                            color: Colors.white,
-                                                          ),
-                                                        )
-                                                      : Container(
-                                                          height: 15,
-                                                          width: 65,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .only(
-                                                              topLeft: Radius
-                                                                  .circular(20),
-                                                              bottomRight:
-                                                                  Radius
-                                                                      .circular(
-                                                                          20),
-                                                            ),
-                                                          ),
-                                                          child: GFButtonBadge(
-                                                            onPressed: null,
-                                                            text: productsList[
-                                                                i]['discount'],
-                                                            textStyle:
-                                                                textbarlowRegularBlack(),
-                                                            color: Colors
-                                                                    .deepOrange[
-                                                                300],
-                                                          ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 8.0),
+                                              child: productsList[i]
+                                                          ['discount'] ==
+                                                      null
+                                                  ? Container(
+                                                      height: 15,
+                                                      width: 65,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius.only(
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  20),
+                                                          bottomRight:
+                                                              Radius.circular(
+                                                                  20),
                                                         ),
-                                                ),
-                                              ],
+                                                      ),
+                                                      child: GFButtonBadge(
+                                                        onPressed: null,
+                                                        text: '',
+                                                        color: Colors.white,
+                                                      ),
+                                                    )
+                                                  : Container(
+                                                      height: 15,
+                                                      width: 65,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius.only(
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  20),
+                                                          bottomRight:
+                                                              Radius.circular(
+                                                                  20),
+                                                        ),
+                                                      ),
+                                                      child: GFButtonBadge(
+                                                        onPressed: null,
+                                                        text: productsList[i]
+                                                            ['discount'],
+                                                        textStyle:
+                                                            textbarlowRegularBlack(),
+                                                        color: Colors
+                                                            .deepOrange[300],
+                                                      ),
+                                                    ),
                                             ),
-                                            Column(
+                                          ],
+                                        ),
+                                        Column(
+                                          children: <Widget>[
+                                            Image.network(
+                                              productsList[i]['imageUrl'],
+                                              fit: BoxFit.cover,
+                                              width: 117,
+                                              height: 63,
+                                            ),
+                                            SizedBox(
+                                              height: 5,
+                                            ),
+                                            Row(
                                               children: <Widget>[
-                                                Image.network(
-                                                  productsList[i]['imageUrl'],
-                                                  fit: BoxFit.cover,
-                                                  width: 117,
-                                                  height: 63,
-                                                ),
-                                                SizedBox(
-                                                  height: 5,
-                                                ),
-                                                Row(
-                                                  children: <Widget>[
-                                                  Expanded(child:   Text(
+                                                Expanded(
+                                                  child: Text(
                                                     productsList[i]['title'],
                                                     style:
-                                                    textbarlowRegularBlackb(),
-                                                  ),)
-                                                  ],
+                                                        textbarlowRegularBlackb(),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                            Row(
+                                              children: <Widget>[
+                                                Text(
+                                                  currency,
+                                                  style: textbarlowBoldgreen(),
                                                 ),
-                                                Row(
-                                                  children: <Widget>[
-                                                    Text(
-                                                      currency,
-                                                      style:
-                                                      textbarlowBoldgreen(),
-                                                    ),
-                                                    Text(
-                                                      '${productsList[i]['variant'][0]['price']}',
-                                                      style:
-                                                          textbarlowBoldGreen(),
-                                                    )
-                                                  ],
-                                                ),
+                                                Text(
+                                                  '${productsList[i]['variant'][0]['price']}',
+                                                  style: textbarlowBoldGreen(),
+                                                )
                                               ],
                                             ),
                                           ],
                                         ),
-                                      ),
-
+                                      ],
+                                    ),
+                                  ),
                                 )
                               : Expanded(
                                   child: Stack(

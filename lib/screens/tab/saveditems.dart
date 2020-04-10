@@ -31,12 +31,35 @@ class _SavedItemsState extends State<SavedItems> {
     super.dispose();
   }
 
-  getFavListApi() async {
+  getFavListMethod() {
     if (mounted) {
       setState(() {
         isFavListLoading = true;
       });
     }
+    Common.getFavList().then((value) {
+      print(value);
+      if (value == null) {
+        if (mounted) {
+          setState(() {
+            getFavListApi();
+            print("Lllllll 1");
+          });
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            print("Lllllll 2");
+            isFavListLoading = false;
+            favProductList = value['response_data'];
+            getFavListApi();
+          });
+        }
+      }
+    });
+  }
+
+  getFavListApi() async {
     await FavouriteService.getFavList().then((onValue) {
       try {
         if (mounted) {
@@ -68,7 +91,7 @@ class _SavedItemsState extends State<SavedItems> {
             setState(() {
               isGetTokenLoading = false;
               token = onValue;
-              getFavListApi();
+              getFavListMethod();
             });
           }
         } else {
@@ -216,9 +239,7 @@ class _SavedItemsState extends State<SavedItems> {
                                               ),
                                             ],
                                           )
-                                        :
-
-                                    Row(
+                                        : Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: <Widget>[
