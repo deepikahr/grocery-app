@@ -246,6 +246,7 @@ class _CheckoutState extends State<Checkout> {
       setState(() => _selectedIndex = index);
     }
     selectedDate = deliverySlotList[index]['date'];
+    print(selectedDate);
   }
 
   placeOrder() async {
@@ -264,6 +265,7 @@ class _CheckoutState extends State<Checkout> {
       data['deliveryAddress'] = selectedAddress['_id'].toString();
 
       data['deliveryDate'] = selectedDate.toString();
+      print(selectedDate);
 
       data['deliveryTime'] = selectedTime.toString();
 
@@ -282,6 +284,7 @@ class _CheckoutState extends State<Checkout> {
         });
       }
       PaymentService.getDeliveryCharges(body).then((value) {
+        print(value);
         try {
           if (value['response_code'] == 200) {
             if (mounted) {
@@ -289,18 +292,41 @@ class _CheckoutState extends State<Checkout> {
                 isPlaceOrderLoading = false;
               });
             }
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Payment(
-                  data: data,
-                  type: widget.buy,
-                  grandTotal: value['response_data']['cartData']['grandTotal'],
-                  deliveryCharges: value['response_data']['deliveryDetails']
-                      ['deliveryCharges'],
+            if (value['response_data']['deliveryDetails']['deliveryCharges']
+                is int) {
+              print("kk");
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Payment(
+                    data: data,
+                    type: widget.buy,
+                    grandTotals: null,
+                    grandTotal: value['response_data']['cartData']
+                        ['grandTotal'],
+                    deliveryCharges: null,
+                    deliveryCharge: value['response_data']['deliveryDetails']
+                        ['deliveryCharges'],
+                  ),
                 ),
-              ),
-            );
+              );
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Payment(
+                    data: data,
+                    type: widget.buy,
+                    grandTotal: null,
+                    grandTotals: value['response_data']['cartData']
+                        ['grandTotal'],
+                    deliveryCharges: value['response_data']['deliveryDetails']
+                        ['deliveryCharges'],
+                    deliveryCharge: null,
+                  ),
+                ),
+              );
+            }
           }
         } catch (error, stackTrace) {
           sentryError.reportError(error, stackTrace);
@@ -538,40 +564,40 @@ class _CheckoutState extends State<Checkout> {
                               ],
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: 20.0, bottom: 10.0, right: 20),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Column(
-                                  children: <Widget>[
-                                    Text(
-                                      'Delivery charges',
-                                      style: textBarlowRegularBlack(),
-                                    )
-                                  ],
-                                ),
-                                Column(
-                                  children: <Widget>[
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: <Widget>[
-                                        Text(
-                                          currency,
-                                          style: textbarlowBoldsmBlack(),
-                                        ),
-                                        Text(
-                                          '${cartItem['deliveryCharges']}',
-                                          style: textbarlowBoldsmBlack(),
-                                        )
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
+                          // Padding(
+                          //   padding: const EdgeInsets.only(
+                          //       left: 20.0, bottom: 10.0, right: 20),
+                          //   child: Row(
+                          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //     children: <Widget>[
+                          //       Column(
+                          //         children: <Widget>[
+                          //           Text(
+                          //             'Delivery charges',
+                          //             style: textBarlowRegularBlack(),
+                          //           )
+                          //         ],
+                          //       ),
+                          //       Column(
+                          //         children: <Widget>[
+                          //           Row(
+                          //             mainAxisAlignment: MainAxisAlignment.end,
+                          //             children: <Widget>[
+                          //               Text(
+                          //                 currency,
+                          //                 style: textbarlowBoldsmBlack(),
+                          //               ),
+                          //               Text(
+                          //                 '${cartItem['deliveryCharges']}',
+                          //                 style: textbarlowBoldsmBlack(),
+                          //               )
+                          //             ],
+                          //           ),
+                          //         ],
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
                           Form(
                             key: _formKey,
                             child: Container(
@@ -585,7 +611,8 @@ class _CheckoutState extends State<Checkout> {
                                         style: textbarlowRegularBlack(),
                                       ))
                                   : Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
                                         Container(
                                           width: 193,
@@ -620,38 +647,39 @@ class _CheckoutState extends State<Checkout> {
                                             },
                                           ),
                                         ),
-                                    Flexible(
-                                        flex: 3,
-                                        fit: FlexFit.tight,
-                                        child:
-                                    InkWell(
-                                      onTap: () {
-                                        couponCodeApply();
-                                      },
-                                      child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 8.0),
-                                          child: Container(
-//                                                alignment: Alignment.topRight,
-                                            height: 44,
-                                            width: 119,
-                                            child: GFButton(
-                                              onPressed: null,
+                                        Flexible(
+                                            flex: 3,
+                                            fit: FlexFit.tight,
+                                            child: InkWell(
+                                              onTap: () {
+                                                couponCodeApply();
+                                              },
                                               child: Padding(
-                                                padding:
-                                                const EdgeInsets.only(
-                                                    left: 8.0,
-                                                    right: 8.0),
-                                                child: Text(
-                                                  "Apply ",
-                                                  style:
-                                                  textBarlowRegularBlack(),
-                                                ),
-                                              ),
-                                              color: primary,
-                                            ),
-                                          )),
-                                    ))
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 8.0),
+                                                  child: Container(
+//                                                alignment: Alignment.topRight,
+                                                    height: 44,
+                                                    width: 119,
+                                                    child: GFButton(
+                                                      onPressed: null,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                left: 8.0,
+                                                                right: 8.0),
+                                                        child: Text(
+                                                          "Apply ",
+                                                          style:
+                                                              textBarlowRegularBlack(),
+                                                        ),
+                                                      ),
+                                                      color: primary,
+                                                    ),
+                                                  )),
+                                            ))
                                       ],
                                     ),
                             ),

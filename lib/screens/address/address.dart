@@ -6,6 +6,7 @@ import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:grocery_pro/screens/address/add-address.dart';
 import 'package:grocery_pro/screens/address/edit-address.dart';
+import 'package:grocery_pro/service/constants.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/address-service.dart';
@@ -180,11 +181,12 @@ class _AddressState extends State<Address> {
             onPressed: () async {
               LocationResult result = await showLocationPicker(
                 context,
-                "AIzaSyD6Q4UgAYOL203nuwNeBr4j_-yAd1U1gko",
+                Constants.GOOGLE_API_KEY,
                 initialCenter: LatLng(31.1975844, 29.9598339),
                 myLocationButtonEnabled: true,
                 layersButtonEnabled: true,
               );
+              print(result);
               if (result != null) {
                 setState(() {
                   _pickedLocation = result;
