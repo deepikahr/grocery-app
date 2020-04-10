@@ -49,6 +49,10 @@ class _ProductDetailsState extends State<ProductDetails>
   List<Variants> variantList;
   List favProductList;
 
+  int value;
+  int groupValue;
+  bool sizeSelect = false;
+
   bool getTokenValue = false,
       isFavProduct = false,
       isFavListLoading = false,
@@ -469,80 +473,42 @@ class _ProductDetailsState extends State<ProductDetails>
                                 ),
                               ],
                             ),
-                          )
+                          ),
+                          ListView.builder(
+                              physics: ScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: variantList.length == null ? 0 : variantList.length,
+                              itemBuilder: (BuildContext context, int i) {
+                                print('v $variantList');
+                                return RadioListTile(
+                                  controlAffinity: ListTileControlAffinity.trailing,
+                                  activeColor: primary,
+                                  dense: true,
+                                  value: i,
+                                  groupValue: groupValue,
+                                  onChanged: (int value) {
+                                    setState(() {
+                                      groupValue = value;
+                                      if (sizeSelect == true) {
+                                        variantPrice = variantList[value].price;
+                                        variantUnit = variantList[value].unit;
+                                        variantId = variantList[value].id;
+                                        variantProductstock =
+                                            variantList[value].productstock;
+
+                                      }
+                                      print('size ${variantList[value].unit}');
+                                    });
+                                  },
+                                  selected: sizeSelect,
+                                  secondary: Text('${variantList[i].unit}'),
+                                  title: Text('$currency  ${variantList[i].price.toString()}'),
+                                );
+                              }
+                          ),
                         ],
                       ),
                     ],
-                  ),
-                  Positioned(
-                    top: 310.0,
-                    left: 135.0,
-                    child: Row(
-                      children: <Widget>[
-                        Container(
-                          width: 130.0,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50.0)),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: primary),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                DropdownButton<Variants>(
-                                  hint: Text(
-                                    '${widget.productDetail['variant'][0]["unit"].toString()}',
-                                    style: textBarlowRegularBlack(),
-                                  ),
-                                  value: dropdownValue,
-                                  icon: Padding(
-                                    padding: const EdgeInsets.only(left: 10.0),
-                                    child: Icon(Icons.arrow_drop_down),
-                                  ),
-                                  iconSize: 24,
-                                  itemHeight: 49.0,
-                                  elevation: 16,
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                  ),
-                                  underline: Container(
-                                    color: Colors.white,
-                                  ),
-                                  onChanged: (Variants newValue) {
-                                    if (mounted) {
-                                      setState(() {
-                                        dropdownValue = newValue;
-                                        variantPrice = newValue.price;
-                                        variantUnit = newValue.unit;
-                                        variantId = newValue.id;
-                                        variantProductstock =
-                                            newValue.productstock;
-                                      });
-                                    }
-                                  },
-                                  items: variantList.map((Variants user) {
-                                    return DropdownMenuItem<Variants>(
-                                      value: user,
-                                      child: Row(
-                                        children: <Widget>[
-                                          Text(
-                                            user.unit,
-                                            style: textBarlowRegularBlack(),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  }).toList(),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
                   ),
                   Positioned(
                     top: 310.0,
@@ -604,7 +570,9 @@ class _ProductDetailsState extends State<ProductDetails>
                               MaterialPageRoute(builder: (context) => Home()),
                             );
                           },
-                          child: Icon(Icons.arrow_back)))
+                          child: Icon(Icons.arrow_back)
+                      ),
+                  ),
                 ],
               ),
             ],
@@ -704,9 +672,16 @@ class _ProductDetailsState extends State<ProductDetails>
                         SizedBox(
                           height: 2.0,
                         ),
-                        new Text(
-                          quantity.toString(),
-                          style: textBarlowRegularWhite(),
+                        RichText(
+                          text: TextSpan(
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text: '${quantity.toString()}' ,
+                                  style: textBarlowRegularWhite(),
+                              ),
+                              TextSpan(text: ' Item', style: textBarlowRegularWhite()),
+                            ],
+                          ),
                         ),
                         SizedBox(
                           height: 1.0,
@@ -754,3 +729,67 @@ class _ProductDetailsState extends State<ProductDetails>
     _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 }
+
+
+//Container(
+//width: 130.0,
+//decoration: BoxDecoration(
+//borderRadius: BorderRadius.circular(50.0)),
+//child: Container(
+//decoration: BoxDecoration(
+//color: Colors.white,
+//borderRadius: BorderRadius.circular(20),
+//border: Border.all(color: primary),
+//),
+//child: Row(
+//mainAxisAlignment: MainAxisAlignment.center,
+//children: <Widget>[
+//DropdownButton<Variants>(
+//hint: Text(
+//'${widget.productDetail['variant'][0]["unit"].toString()}',
+//style: textBarlowRegularBlack(),
+//),
+//value: dropdownValue,
+//icon: Padding(
+//padding: const EdgeInsets.only(left: 10.0),
+//child: Icon(Icons.arrow_drop_down),
+//),
+//iconSize: 24,
+//itemHeight: 49.0,
+//elevation: 16,
+//style: TextStyle(
+//color: Colors.black,
+//),
+//underline: Container(
+//color: Colors.white,
+//),
+//onChanged: (Variants newValue) {
+//if (mounted) {
+//setState(() {
+//dropdownValue = newValue;
+//variantPrice = newValue.price;
+//variantUnit = newValue.unit;
+//variantId = newValue.id;
+//variantProductstock =
+//newValue.productstock;
+//});
+//}
+//},
+//items: variantList.map((Variants user) {
+//return DropdownMenuItem<Variants>(
+//value: user,
+//child: Row(
+//children: <Widget>[
+//Text(
+//user.unit,
+//style: textBarlowRegularBlack(),
+//),
+//],
+//),
+//);
+//}).toList(),
+//),
+//],
+//),
+//),
+//),

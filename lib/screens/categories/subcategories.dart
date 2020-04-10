@@ -7,6 +7,8 @@ import 'package:grocery_pro/service/fav-service.dart';
 import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:grocery_pro/widgets/productCard.dart';
+import 'package:grocery_pro/style/style.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -117,13 +119,17 @@ class _SubCategoriesState extends State<SubCategories> {
                         child: Image.asset('lib/assets/images/no-orders.png'),
                       )
                     : GridView.builder(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                         physics: ScrollPhysics(),
                         shrinkWrap: true,
                         itemCount: subProductsList.length == null
                             ? 0
                             : subProductsList.length,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2),
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16
+                        ),
                         itemBuilder: (BuildContext context, int i) {
                           return InkWell(
                             onTap: () {
@@ -138,113 +144,25 @@ class _SubCategoriesState extends State<SubCategories> {
                                 ),
                               );
                             },
-                            child: GFCard(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.0)),
-                              boxFit: BoxFit.fill,
-                              colorFilter: new ColorFilter.mode(
-                                  Colors.black.withOpacity(0.67),
-                                  BlendMode.darken),
-                              content: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Stack(
-                                    fit: StackFit.loose,
-                                    children: <Widget>[
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 20, top: 15.0),
-                                            child: Image.network(
-                                              subProductsList[i]['imageUrl'],
-                                              fit: BoxFit.fill,
-                                              width: 80,
-                                              height: 70,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      subProductsList[i]['discount'] == null
-                                          ? Positioned(
-                                              height: 15.0,
-                                              width: 60.0,
-                                              child: GFButtonBadge(
-                                                onPressed: () {},
-                                                text: '',
-                                                color: Colors.white,
-                                              ),
-                                            )
-                                          : Positioned(
-                                              height: 15.0,
-                                              width: 60.0,
-                                              child: GFButtonBadge(
-                                                onPressed: () {},
-                                                text: subProductsList[i]
-                                                    ['discount'],
-                                                color: Colors.deepOrange[300],
-                                              ),
-                                            ),
-                                      Positioned(
-                                        height: 15.0,
-                                        width: 60.0,
-                                        // top: 4.0,
-                                        bottom: 78.0,
-                                        left: 80.0,
-                                        child: GFIconButton(
-                                          onPressed: null,
-                                          icon: GestureDetector(
-                                            onTap: () {},
-                                          ),
-                                          type: GFButtonType.transparent,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 10.0),
-                                            child: Text(
-                                                subProductsList[i]['title']),
-                                          ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 2.0),
-                                            child: Row(
-                                              children: <Widget>[
-                                                Text(
-                                                  currency,
-                                                  style: TextStyle(
-                                                      color: const Color(
-                                                          0xFF00BFA5)),
-                                                ),
-                                                Text(
-                                                  subProductsList[i]['variant']
-                                                          [0]['price']
-                                                      .toString(),
-                                                  style: TextStyle(
-                                                      color: const Color(
-                                                          0xFF00BFA5)),
-                                                )
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
+                            child:Stack(
+                              children: <Widget>[
+                                ProductCard(
+                                  image:  subProductsList[i]['imageUrl'],
+                                  title: subProductsList[i]['title'],
+                                  currency: currency,
+                                  category: subProductsList[i]['category'],
+                                  price: subProductsList[i]['variant'][0]['price'],
+                                  rating: '4.5',
+                                ),
+                                Positioned(
+                                    child: Stack(
+                                      children: <Widget>[
+                                        Image.asset('lib/assets/images/badge.png'),
+                                        Text('  Organic', style: hintSfboldwhitemed(), textAlign: TextAlign.center,)
+                                      ],
+                                    )
+                                )
+                              ],
                             ),
                           );
                         },

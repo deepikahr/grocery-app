@@ -146,92 +146,68 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     });
   }
 
+  loader() {
+    return Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+
+  tabIcon(icon, title){
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Column(
+        children: <Widget>[
+          Icon(
+            IconData(
+              icon,
+              fontFamily: 'icomoon',
+            ),
+          ),
+          SizedBox(height: 5,),
+          Text(title)
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: currencyLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : isLocationLoading
-              ? Center(
-                  child: CircularProgressIndicator(),
-                )
-              : GFTabBarView(
-                  controller: tabController,
-                  children: <Widget>[
-                    Container(
-                      color: Colors.white,
-                      child: Store(),
-                    ),
-                    Container(
-                      color: Colors.white,
-                      child: SavedItems(),
-                    ),
-                    Container(
-                      color: Colors.white,
-                      child: MyCart(),
-                    ),
-                    Container(
-                      color: Colors.white,
-                      child: Profile(),
-                    ),
-                  ],
-                ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(20))),
-        child: GFTabBar(
-          initialIndex: currentIndex,
-          length: 4,
-          controller: tabController,
-          tabs: [
-            Tab(
-              icon: Icon(
-                IconData(
-                  0xe90f,
-                  fontFamily: 'icomoon',
-                ),
-              ),
-              text: "Store",
+      backgroundColor: Colors.white,
+      body: GFTabBarView(
+        controller: tabController,
+        children: <Widget>[
+          Store(),
+          SavedItems(),
+          MyCart(),
+          Profile(),
+        ],
+      ),
+      bottomNavigationBar: GFTabBar(
+        initialIndex: currentIndex,
+        length: 4,
+        controller: tabController,
+        tabs: [
+          tabIcon(0xe90f, 'Store'),
+          tabIcon(0xe90d, 'Saved Items'),
+          tabIcon(0xe911, 'My Cart'),
+          tabIcon(0xe912, 'Profile')
+        ],
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15.0),
+                topRight: Radius.circular(15.0)
             ),
-            Tab(
-              icon: Icon(
-                IconData(
-                  0xe90d,
-                  fontFamily: 'icomoon',
-                ),
-              ),
-              text: "Saved Items",
-            ),
-            Tab(
-              icon: Icon(
-                IconData(
-                  0xe911,
-                  fontFamily: 'icomoon',
-                ),
-              ),
-              text: "My Cart",
-            ),
-            Tab(
-              icon: Icon(
-                IconData(
-                  0xe912,
-                  fontFamily: 'icomoon',
-                ),
-              ),
-              text: "Profile",
-            ),
-          ],
-          indicatorColor: primary,
-          labelColor: primary,
-          labelPadding: EdgeInsets.all(0),
-          tabBarColor: Colors.black,
-          unselectedLabelColor: Colors.white,
-          labelStyle: textBarlowMediumsmBlack(),
-          unselectedLabelStyle: textBarlowMediumsmWhite(),
         ),
+        tabBarHeight: 60,
+        indicator: BoxDecoration(
+          color: Colors.black
+        ),
+        labelColor: primary,
+        tabBarColor: Colors.black,
+        unselectedLabelColor: greyc,
+        labelStyle: textBarlowMediumsmBlack(),
+        unselectedLabelStyle: textBarlowMediumsmWhite(),
       ),
     );
   }
