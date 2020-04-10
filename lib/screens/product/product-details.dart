@@ -343,7 +343,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                   initialRating:
                                       widget.productDetail['averageRating'] ==
                                               null
-                                          ? 3
+                                          ? 0
                                           : double.parse(widget
                                               .productDetail['averageRating']
                                               .toString()),
@@ -595,16 +595,15 @@ class _ProductDetailsState extends State<ProductDetails>
                           ),
                   ),
                   Positioned(
-                      top: 45,
-                      left: 20,
-                      child: InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => Home()),
-                            );
-                          },
-                          child: Icon(Icons.arrow_back)))
+                    top: 45,
+                    left: 20,
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Icon(Icons.arrow_back),
+                    ),
+                  )
                 ],
               ),
             ],

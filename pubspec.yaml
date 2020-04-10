@@ -25,7 +25,8 @@ dependencies:
   onesignal_flutter: ^2.3.4
   flutter_rating_bar: ^3.0.1+1
   dotted_border: ^1.0.5
-
+  geocoder: ^0.2.1
+  image: ^2.1.4
 dev_dependencies:
   flutter_test:
     sdk: flutter

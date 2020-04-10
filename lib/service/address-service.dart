@@ -32,6 +32,7 @@ class AddressService {
           'Content-Type': 'application/json',
           'Authorization': 'bearer $token'
         });
+    Common.setAddressList(json.decode(response.body));
     return json.decode(response.body);
   }
 
@@ -41,11 +42,13 @@ class AddressService {
     await Common.getToken().then((onValue) {
       token = onValue;
     });
+    print(token);
     final response = await client
         .get(Constants.baseURL + "setting/working/time/user", headers: {
       'Content-Type': 'application/json',
       'Authorization': 'bearer $token'
     });
+    print(json.decode(response.body));
     return json.decode(response.body);
   }
 
