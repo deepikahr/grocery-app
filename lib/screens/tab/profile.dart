@@ -56,6 +56,7 @@ class _ProfileState extends State<Profile> {
               isGetTokenLoading = false;
               token = onValue;
               fetchCardInfo();
+              getUserInfoApi();
             });
           }
         } else {
@@ -79,12 +80,34 @@ class _ProfileState extends State<Profile> {
         isCardListLoading = true;
       });
     }
+    Common.getCardInfo().then((value) {
+      print(value);
+      if (value == null) {
+        if (mounted) {
+          setState(() {
+            fetchCardInfoMethod();
+            print("Lllllll hhhh");
+          });
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            isCardListLoading = false;
+            cardList = value['response_data'];
+            print("Lllllll 2");
+            fetchCardInfoMethod();
+          });
+        }
+      }
+    });
+  }
+
+  fetchCardInfoMethod() async {
     await PaymentService.getCardList().then((onValue) {
       if (mounted) {
         setState(() {
           cardList = onValue['response_data'];
           isCardListLoading = false;
-          getUserInfo();
         });
       }
     });
@@ -107,12 +130,36 @@ class _ProfileState extends State<Profile> {
     });
   }
 
-  getUserInfo() async {
+  getUserInfoApi() async {
     if (mounted) {
       setState(() {
         isLoading = true;
       });
     }
+    Common.getUserInfo().then((value) {
+      print(value);
+      if (value == null) {
+        if (mounted) {
+          setState(() {
+            userInfoMethod();
+            print("Lllllll ff");
+          });
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            userInfo = value['response_data']['userInfo'];
+            userID = userInfo['_id'];
+            isLoading = false;
+            print("Lllllll 2");
+            userInfoMethod();
+          });
+        }
+      }
+    });
+  }
+
+  userInfoMethod() async {
     await LoginService.getUserInfo().then((onValue) {
       try {
         if (mounted) {
@@ -160,10 +207,11 @@ class _ProfileState extends State<Profile> {
         ? InkWell(
             onTap: () {
               var result = Navigator.push(
-                  context,
-                  new MaterialPageRoute(
-                    builder: (BuildContext context) => new AddCard(),
-                  ));
+                context,
+                new MaterialPageRoute(
+                  builder: (BuildContext context) => new AddCard(),
+                ),
+              );
 
               if (result != null) {
                 result.then((onValue) {

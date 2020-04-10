@@ -74,6 +74,7 @@ class LoginService {
       'Content-Type': 'application/json',
       'Authorization': 'bearer $token'
     });
+    Common.setUserInfo(json.decode(response.body));
     return json.decode(response.body);
   }
 

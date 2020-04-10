@@ -11,6 +11,7 @@ class ProductService {
         await client.get(Constants.baseURL + "categories", headers: {
       'Content-Type': 'application/json',
     });
+    Common.setCatagrytList(json.decode(response.body));
     return json.decode(response.body);
   }
   // static Future<Map<String, dynamic>> getCategoryList() async {
@@ -31,6 +32,8 @@ class ProductService {
       'Content-Type': 'application/json',
       'Authorization': 'bearer $token'
     });
+    Common.setProductList(json.decode(response.body));
+
     return json.decode(response.body);
   }
 
@@ -218,6 +221,7 @@ class ProductService {
         headers: {
           'Content-Type': 'application/json',
         });
+    Common.setCurrentLocation(json.decode(response.body));
     return json.decode(response.body);
   }
 

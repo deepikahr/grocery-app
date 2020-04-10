@@ -16,6 +16,7 @@ class PaymentService {
       'Content-Type': 'application/json',
       'Authorization': 'bearer $token'
     });
+    Common.setCardInfo(json.decode(response.body));
     return json.decode(response.body);
   }
 
