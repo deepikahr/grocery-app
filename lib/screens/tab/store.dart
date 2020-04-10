@@ -235,30 +235,30 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   }
 
   deliveryAddress() {
-    return
-      isLocationLoading || addressData == null ? Container() :
-        Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              'Delivery Address',
-              style: textBarlowRegularrBlacksm(),
-            ),
-            Text(
-                      addressData.substring(0, 15) + '...',
-              style: textBarlowSemiBoldBlackbig(),
-            )
-          ],
-        ),
-        InkWell(
-          onTap: () => _scaffoldKeydrawer.currentState.openEndDrawer(),
-          child: Image.asset('lib/assets/icons/menu.png'),
-        ),
-      ],
-    );
+    return isLocationLoading || addressData == null
+        ? Container()
+        : Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    'Delivery Address',
+                    style: textBarlowRegularrBlacksm(),
+                  ),
+                  Text(
+                    addressData.substring(0, 15) + '...',
+                    style: textBarlowSemiBoldBlackbig(),
+                  )
+                ],
+              ),
+              InkWell(
+                onTap: () => _scaffoldKeydrawer.currentState.openEndDrawer(),
+                child: Image.asset('lib/assets/icons/menu.png'),
+              ),
+            ],
+          );
   }
 
   searchBox() {
@@ -303,7 +303,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   categoryRow() {
     return categoryList.length > 0
         ? SizedBox(
-            height: 120,
+            height: 100,
             child: ListView.builder(
               physics: ScrollPhysics(),
               shrinkWrap: true,
@@ -376,7 +376,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                         ),
                       ],
                     ),
-                    SizedBox(height: 20),
+                    // SizedBox(height: 20),
                     categoryRow(),
                     productsList.length > 0
                         ? GridView.builder(
@@ -389,60 +389,97 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                 SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2,
                                     crossAxisSpacing: 16,
-                                    mainAxisSpacing: 16
-                                ),
+                                    mainAxisSpacing: 16),
                             itemBuilder: (BuildContext context, int i) {
-                              return
-                                productsList[i]['outOfStock'] != null ||
-                                    productsList[i]['outOfStock'] != false
-                                ? InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ProductDetails(
-                                        productDetail: productsList[i],
-                                        favProductList: getTokenValue
-                                            ? favProductList
-                                            : null),
-                                  ),
-                                );
-                              },
-                              child: Stack(
-                                children: <Widget>[
-                                  ProductCard(
-                                    image: productsList[i]['imageUrl'],
-                                    title: productsList[i]['title'],
-                                    currency: currency,
-                                    category: productsList[i]['category'],
-                                    price: productsList[i]['variant'][0]['price'],
-                                    rating: '4.5',
-                                  ),
-                                  Positioned(
-                                    child: Stack(
-                                      children: <Widget>[
-                                        Image.asset('lib/assets/images/badge.png'),
-                                        Text('  Organic', style: hintSfboldwhitemed(), textAlign: TextAlign.center,)
-                                      ],
+                              if (productsList[i]['averageRating'] == null) {
+                                productsList[i]['averageRating'] = 0;
+                              }
+
+                              return productsList[i]['outOfStock'] != null ||
+                                      productsList[i]['outOfStock'] != false
+                                  ? InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                ProductDetails(
+                                                    productDetail:
+                                                        productsList[i],
+                                                    favProductList:
+                                                        getTokenValue
+                                                            ? favProductList
+                                                            : null),
+                                          ),
+                                        );
+                                      },
+                                      child: Stack(
+                                        children: <Widget>[
+                                          ProductCard(
+                                            image: productsList[i]['imageUrl'],
+                                            title: productsList[i]['title'],
+                                            currency: currency,
+                                            category: productsList[i]
+                                                ['category'],
+                                            price: productsList[i]['variant'][0]
+                                                ['price'],
+                                            rating: productsList[i]
+                                                    ['averageRating']
+                                                .toString(),
+                                          ),
+                                          productsList[i]['discount'] == null
+                                              ? Positioned(
+                                                  child: Stack(
+                                                    children: <Widget>[
+                                                      Image.asset(
+                                                          'lib/assets/images/badge.png'),
+                                                      Text(
+                                                        " Organic",
+                                                        style:
+                                                            hintSfboldwhitemed(),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                      )
+                                                    ],
+                                                  ),
+                                                )
+                                              : Positioned(
+                                                  child: Stack(
+                                                    children: <Widget>[
+                                                      Image.asset(
+                                                          'lib/assets/images/badge.png'),
+                                                      Text(
+                                                        "" +
+                                                            productsList[i]
+                                                                    ['discount']
+                                                                .toString(),
+                                                        style:
+                                                            hintSfboldwhitemed(),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                      )
+                                                    ],
+                                                  ),
+                                                )
+                                        ],
+                                      ),
                                     )
-                                  )
-                                ],
-                              )
-                            ) :
-                              Stack(
-                                children: <Widget>[
-                                  ProductCard(
-                                    image: productsList[i]['imageUrl'],
-                                    title: productsList[i]['title'],
-                                    currency: currency,
-                                    category: productsList[i]['category'],
-                                    price: productsList[i]['variant'][0]
-                                        ['price'],
-                                    rating: '4.5',
-                                  ),
-                                  CardOverlay()
-                                ],
-                              );
+                                  : Stack(
+                                      children: <Widget>[
+                                        ProductCard(
+                                          image: productsList[i]['imageUrl'],
+                                          title: productsList[i]['title'],
+                                          currency: currency,
+                                          category: productsList[i]['category'],
+                                          price: productsList[i]['variant'][0]
+                                              ['price'],
+                                          rating: productsList[i]
+                                                  ['averageRating']
+                                              .toString(),
+                                        ),
+                                        CardOverlay()
+                                      ],
+                                    );
                             },
                           )
                         : Center(

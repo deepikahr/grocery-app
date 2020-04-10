@@ -49,7 +49,7 @@ class _ProductDetailsState extends State<ProductDetails>
   List favProductList;
 
   int value;
-  int groupValue;
+  int groupValue = 0;
   bool sizeSelect = false;
 
   bool getTokenValue = false,
@@ -476,11 +476,14 @@ class _ProductDetailsState extends State<ProductDetails>
                           ListView.builder(
                               physics: ScrollPhysics(),
                               shrinkWrap: true,
-                              itemCount: variantList.length == null ? 0 : variantList.length,
+                              itemCount: variantList.length == null
+                                  ? 0
+                                  : variantList.length,
                               itemBuilder: (BuildContext context, int i) {
                                 print('v $variantList');
                                 return RadioListTile(
-                                  controlAffinity: ListTileControlAffinity.trailing,
+                                  controlAffinity:
+                                      ListTileControlAffinity.trailing,
                                   activeColor: primary,
                                   dense: true,
                                   value: i,
@@ -488,23 +491,21 @@ class _ProductDetailsState extends State<ProductDetails>
                                   onChanged: (int value) {
                                     setState(() {
                                       groupValue = value;
-                                      if (sizeSelect == true) {
-                                        variantPrice = variantList[value].price;
-                                        variantUnit = variantList[value].unit;
-                                        variantId = variantList[value].id;
-                                        variantProductstock =
-                                            variantList[value].productstock;
-
-                                      }
-                                      print('size ${variantList[value].unit}');
+                                      print(groupValue);
+                                      // if (sizeSelect == true) {
+                                      variantPrice = variantList[value].price;
+                                      variantUnit = variantList[value].unit;
+                                      variantId = variantList[value].id;
+                                      // }
+                                      print('size ${variantList[value]}');
                                     });
                                   },
                                   selected: sizeSelect,
                                   secondary: Text('${variantList[i].unit}'),
-                                  title: Text('$currency  ${variantList[i].price.toString()}'),
+                                  title: Text(
+                                      '$currency  ${variantList[i].price.toString()}'),
                                 );
-                              }
-                          ),
+                              }),
                         ],
                       ),
                     ],
@@ -560,14 +561,13 @@ class _ProductDetailsState extends State<ProductDetails>
                           ),
                   ),
                   Positioned(
-                      top: 45,
-                      left: 20,
-                      child: InkWell(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: Icon(Icons.arrow_back)
-                      ),
+                    top: 45,
+                    left: 20,
+                    child: InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Icon(Icons.arrow_back)),
                   ),
                 ],
               ),
@@ -672,10 +672,12 @@ class _ProductDetailsState extends State<ProductDetails>
                           text: TextSpan(
                             children: <TextSpan>[
                               TextSpan(
-                                  text: '${quantity.toString()}' ,
-                                  style: textBarlowRegularWhite(),
+                                text: '${quantity.toString()}',
+                                style: textBarlowRegularWhite(),
                               ),
-                              TextSpan(text: ' Item', style: textBarlowRegularWhite()),
+                              TextSpan(
+                                  text: ' Item',
+                                  style: textBarlowRegularWhite()),
                             ],
                           ),
                         ),
@@ -725,7 +727,6 @@ class _ProductDetailsState extends State<ProductDetails>
     _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 }
-
 
 //Container(
 //width: 130.0,

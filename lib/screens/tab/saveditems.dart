@@ -139,7 +139,8 @@ class _SavedItemsState extends State<SavedItems> {
                     )
                   : favProductList.length != 0
                       ? GridView.builder(
-        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 16, horizontal: 16),
                           physics: ScrollPhysics(),
                           shrinkWrap: true,
                           itemCount: favProductList.length == null
@@ -149,9 +150,11 @@ class _SavedItemsState extends State<SavedItems> {
                               SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2,
                                   crossAxisSpacing: 16,
-                                  mainAxisSpacing: 16
-                              ),
+                                  mainAxisSpacing: 16),
                           itemBuilder: (BuildContext context, int i) {
+                            if (favProductList[i]['averageRating'] == null) {
+                              favProductList[i]['averageRating'] = 0;
+                            }
                             return InkWell(
                               onTap: () {
                                 Navigator.push(
@@ -168,20 +171,46 @@ class _SavedItemsState extends State<SavedItems> {
                               child: Stack(
                                 children: <Widget>[
                                   ProductCard(
-                                    image: favProductList[i]['product']['imageUrl'],
-                                    title: favProductList[i]['product']['title'],
+                                    image: favProductList[i]['product']
+                                        ['imageUrl'],
+                                    title: favProductList[i]['product']
+                                        ['title'],
                                     currency: currency,
-                                    price: favProductList[i]['product']['variant'][0]['price'],
-                                    rating: '4.5',
+                                    price: favProductList[i]['product']
+                                        ['variant'][0]['price'],
+                                    rating: favProductList[i]['averageRating']
+                                        .toString(),
                                   ),
-                                  Positioned(
-                                      child: Stack(
-                                        children: <Widget>[
-                                          Image.asset('lib/assets/images/badge.png'),
-                                          Text('  Organic', style: hintSfboldwhitemed(), textAlign: TextAlign.center,)
-                                        ],
-                                      )
-                                  )
+                                  favProductList[i]['discount'] != null
+                                      ? Positioned(
+                                          child: Stack(
+                                            children: <Widget>[
+                                              Image.asset(
+                                                  'lib/assets/images/badge.png'),
+                                              Text(
+                                                " " +
+                                                    favProductList[i]
+                                                            ['discount']
+                                                        .toString(),
+                                                style: hintSfboldwhitemed(),
+                                                textAlign: TextAlign.center,
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      : Positioned(
+                                          child: Stack(
+                                            children: <Widget>[
+                                              Image.asset(
+                                                  'lib/assets/images/badge.png'),
+                                              Text(
+                                                " Organic",
+                                                style: hintSfboldwhitemed(),
+                                                textAlign: TextAlign.center,
+                                              )
+                                            ],
+                                          ),
+                                        )
                                 ],
                               ),
 //                              GFCard(
