@@ -149,8 +149,9 @@ class _SubCategoriesState extends State<SubCategories> {
                                 ),
                               );
                             },
-                            child: Stack(
-                              children: <Widget>[
+                            child:
+//                            Stack(
+//                              children: <Widget>[
                                 ProductCard(
                                   image: subProductsList[i]['imageUrl'],
                                   title: subProductsList[i]['title'],
@@ -161,35 +162,35 @@ class _SubCategoriesState extends State<SubCategories> {
                                   rating: subProductsList[i]['averageRating']
                                       .toString(),
                                 ),
-                                subProductsList[i]['discount'] == null
-                                    ? Positioned(
-                                        child: Stack(
-                                        children: <Widget>[
-                                          Image.asset(
-                                              'lib/assets/images/badge.png'),
-                                          Text(
-                                            '  Organic',
-                                            style: hintSfboldwhitemed(),
-                                            textAlign: TextAlign.center,
-                                          )
-                                        ],
-                                      ))
-                                    : Positioned(
-                                        child: Stack(
-                                        children: <Widget>[
-                                          Image.asset(
-                                              'lib/assets/images/badge.png'),
-                                          Text(
-                                            " " +
-                                                subProductsList[i]['discount']
-                                                    .toString(),
-                                            style: hintSfboldwhitemed(),
-                                            textAlign: TextAlign.center,
-                                          )
-                                        ],
-                                      ))
-                              ],
-                            ),
+//                                subProductsList[i]['discount'] == null
+//                                    ? Positioned(
+//                                        child: Stack(
+//                                        children: <Widget>[
+//                                          Image.asset(
+//                                              'lib/assets/images/badge.png'),
+//                                          Text(
+//                                            '  Organic',
+//                                            style: hintSfboldwhitemed(),
+//                                            textAlign: TextAlign.center,
+//                                          )
+//                                        ],
+//                                      ))
+//                                    : Positioned(
+//                                        child: Stack(
+//                                        children: <Widget>[
+//                                          Image.asset(
+//                                              'lib/assets/images/badge.png'),
+//                                          Text(
+//                                            " " +
+//                                                subProductsList[i]['discount']
+//                                                    .toString(),
+//                                            style: hintSfboldwhitemed(),
+//                                            textAlign: TextAlign.center,
+//                                          )
+//                                        ],
+//                                      ))
+//                              ],
+//                            ),
                           );
                         },
                       ),
