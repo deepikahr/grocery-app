@@ -190,9 +190,9 @@ class _EditProfileState extends State<EditProfile> {
       await response.stream.transform(utf8.decoder).listen((value) async {
         Map<String, dynamic> data;
         data = json.decode(value);
-        print(data);
-        updateUserInfo(data['response_data']['thumbnailUrl'],
-            data['response_data']['fileId']);
+
+        updateUserInfo(data['response_data'][1]['thumbImage']['url'],
+            data['response_data'][1]['thumbImage']['key']);
       });
     }).catchError((error) {
       sentryError.reportError(error, null);
@@ -256,7 +256,7 @@ class _EditProfileState extends State<EditProfile> {
                 ),
                 userInfo['profilePic'] != null
                     ? GFButton(
-                        onPressed: selectCamera,
+                        onPressed: removeImage,
                         type: GFButtonType.transparent,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

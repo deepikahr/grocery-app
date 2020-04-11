@@ -214,7 +214,6 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       });
     }
     Common.getCurrentLocation().then((value) async {
-      print(value);
       if (value != null) {
         if (mounted) {
           setState(() {
@@ -378,7 +377,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                         ),
                       ],
                     ),
-                     SizedBox(height: 20),
+                    SizedBox(height: 20),
                     categoryRow(),
                     productsList.length > 0
                         ? GridView.builder(
@@ -391,8 +390,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                 SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2,
                                     crossAxisSpacing: 16,
-                                    mainAxisSpacing: 16
-                                ),
+                                    mainAxisSpacing: 16),
                             itemBuilder: (BuildContext context, int i) {
                               if (productsList[i]['averageRating'] == null) {
                                 productsList[i]['averageRating'] = 0;
@@ -416,56 +414,55 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                           ),
                                         );
                                       },
-                                      child: Stack(
-                                        children: <Widget>[
+                                      child:
+//                                      Stack(
+//                                        children: <Widget>[
                                           ProductCard(
-                                            image: productsList[i]['imageUrl'],
-                                            title: productsList[i]['title'],
-                                            currency: currency,
-                                            category: productsList[i]
-                                                ['category'],
-                                            price: productsList[i]['variant'][0]
-                                                ['price'],
-                                            rating: productsList[i]
-                                                    ['averageRating']
-                                                .toString(),
-                                          ),
-                                          productsList[i]['discount'] == null
-                                              ? Positioned(
-                                                  child: Stack(
-                                                    children: <Widget>[
-                                                      Image.asset(
-                                                          'lib/assets/images/badge.png'),
-                                                      Text(
-                                                        " Organic",
-                                                        style:
-                                                            hintSfboldwhitemed(),
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                      )
-                                                    ],
-                                                  ),
-                                                )
-                                              : Positioned(
-                                                  child: Stack(
-                                                    children: <Widget>[
-                                                      Image.asset(
-                                                          'lib/assets/images/badge.png'),
-                                                      Text(
-                                                        "" +
-                                                            productsList[i]
-                                                                    ['discount']
-                                                                .toString(),
-                                                        style:
-                                                            hintSfboldwhitemed(),
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                      )
-                                                    ],
-                                                  ),
-                                                )
-                                        ],
+                                        image: productsList[i]['imageUrl'],
+                                        title: productsList[i]['title'],
+                                        currency: currency,
+                                        category: productsList[i]['category'],
+                                        price: productsList[i]['variant'][0]
+                                            ['price'],
+                                        rating: productsList[i]['averageRating']
+                                            .toString(),
                                       ),
+//                                          productsList[i]['discount'] == null
+//                                              ? Positioned(
+//                                                  child: Stack(
+//                                                    children: <Widget>[
+//                                                      Image.asset(
+//                                                          'lib/assets/images/badge.png'),
+//                                                      Text(
+//                                                        " Organic",
+//                                                        style:
+//                                                            hintSfboldwhitemed(),
+//                                                        textAlign:
+//                                                            TextAlign.center,
+//                                                      )
+//                                                    ],
+//                                                  ),
+//                                                )
+//                                              : Positioned(
+//                                                  child: Stack(
+//                                                    children: <Widget>[
+//                                                      Image.asset(
+//                                                          'lib/assets/images/badge.png'),
+//                                                      Text(
+//                                                        "" +
+//                                                            productsList[i]
+//                                                                    ['discount']
+//                                                                .toString(),
+//                                                        style:
+//                                                            hintSfboldwhitemed(),
+//                                                        textAlign:
+//                                                            TextAlign.center,
+//                                                      )
+//                                                    ],
+//                                                  ),
+//                                                )
+//                                        ],
+//                                      ),
                                     )
                                   : Stack(
                                       children: <Widget>[

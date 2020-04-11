@@ -93,20 +93,6 @@ class ProductService {
     return json.decode(response.body);
   }
 
-  static Future<Map<String, dynamic>> placeOrderCardType(body) async {
-    String token;
-    await Common.getToken().then((onValue) {
-      token = onValue;
-    });
-    final response = await client.post(Constants.baseURL + "orders/place/order",
-        body: json.encode(body),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'bearer $token'
-        });
-    return json.decode(response.body);
-  }
-
   // buy now order
   static Future<Map<String, dynamic>> getBuyNowInfor(body) async {
     String token;

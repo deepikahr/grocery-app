@@ -40,18 +40,15 @@ class _SavedItemsState extends State<SavedItems> {
       });
     }
     Common.getFavList().then((value) {
-      print(value);
       if (value == null) {
         if (mounted) {
           setState(() {
             getFavListApi();
-            print("Lllllll 1");
           });
         }
       } else {
         if (mounted) {
           setState(() {
-            print("Lllllll 2");
             isFavListLoading = false;
             favProductList = value['response_data'];
             getFavListApi();
@@ -165,51 +162,50 @@ class _SavedItemsState extends State<SavedItems> {
                                   ),
                                 );
                               },
-                              child: Stack(
-                                children: <Widget>[
+                              child:
+//                              Stack(
+//                                children: <Widget>[
                                   ProductCard(
-                                    image: favProductList[i]['product']
-                                        ['imageUrl'],
-                                    title: favProductList[i]['product']
-                                        ['title'],
-                                    currency: currency,
-                                    price: favProductList[i]['product']
-                                        ['variant'][0]['price'],
-                                    rating: favProductList[i]['averageRating']
-                                        .toString(),
-                                  ),
-                                  favProductList[i]['discount'] != null
-                                      ? Positioned(
-                                          child: Stack(
-                                            children: <Widget>[
-                                              Image.asset(
-                                                  'lib/assets/images/badge.png'),
-                                              Text(
-                                                " " +
-                                                    favProductList[i]
-                                                            ['discount']
-                                                        .toString(),
-                                                style: hintSfboldwhitemed(),
-                                                textAlign: TextAlign.center,
-                                              )
-                                            ],
-                                          ),
-                                        )
-                                      : Positioned(
-                                          child: Stack(
-                                            children: <Widget>[
-                                              Image.asset(
-                                                  'lib/assets/images/badge.png'),
-                                              Text(
-                                                " Organic",
-                                                style: hintSfboldwhitemed(),
-                                                textAlign: TextAlign.center,
-                                              )
-                                            ],
-                                          ),
-                                        )
-                                ],
+                                image: favProductList[i]['product']['imageUrl'],
+                                title: favProductList[i]['product']['title'],
+                                currency: currency,
+                                price: favProductList[i]['product']['variant']
+                                    [0]['price'],
+                                rating: favProductList[i]['averageRating']
+                                    .toString(),
                               ),
+//                                  favProductList[i]['discount'] != null
+//                                      ? Positioned(
+//                                          child: Stack(
+//                                            children: <Widget>[
+//                                              Image.asset(
+//                                                  'lib/assets/images/badge.png'),
+//                                              Text(
+//                                                " " +
+//                                                    favProductList[i]
+//                                                            ['discount']
+//                                                        .toString(),
+//                                                style: hintSfboldwhitemed(),
+//                                                textAlign: TextAlign.center,
+//                                              )
+//                                            ],
+//                                          ),
+//                                        )
+//                                      : Positioned(
+//                                          child: Stack(
+//                                            children: <Widget>[
+//                                              Image.asset(
+//                                                  'lib/assets/images/badge.png'),
+//                                              Text(
+//                                                " Organic",
+//                                                style: hintSfboldwhitemed(),
+//                                                textAlign: TextAlign.center,
+//                                              )
+//                                            ],
+//                                          ),
+//                                        )
+//                                ],
+//                              ),
 //                              GFCard(
 //                                shape: RoundedRectangleBorder(
 //                                    borderRadius: BorderRadius.circular(20.0)),

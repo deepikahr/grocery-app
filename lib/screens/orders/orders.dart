@@ -11,6 +11,7 @@ import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/widgets/loader.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../style/style.dart';
@@ -80,6 +81,7 @@ class _OrdersState extends State<Orders> {
     };
 
     await CartService.addProductToCart(buyNowProduct).then((onValue) {
+      print(onValue['createdAt']);
       try {
         if (onValue['response_code'] == 200) {
           if (length - 1 == loopIndex) {
@@ -264,7 +266,7 @@ class _OrdersState extends State<Orders> {
                         decoration: BoxDecoration(
 //                          color: Color(0xFFF7F7F7)
 //                            color: Color(0xFFFDFDFD),
-                           ),
+                            ),
                         child: ListView.builder(
                           physics: ScrollPhysics(),
                           shrinkWrap: true,
@@ -298,18 +300,16 @@ class _OrdersState extends State<Orders> {
                                             ? reorder(orderList[i])
                                             : Container(),
 //                                        Divider(),
-                                      SizedBox(
-                                        height: 20,
-                                      )
+                                        SizedBox(
+                                          height: 20,
+                                        )
                                       ],
                                     ),
                                   );
                           },
                         ),
                       ),
-                      SizedBox(
-                        height:30
-                      )
+                      SizedBox(height: 30)
                     ],
                   ),
       ),
@@ -326,15 +326,15 @@ class _OrdersState extends State<Orders> {
             height: 103.0,
             width: 100,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(5)),
+                borderRadius: BorderRadius.all(Radius.circular(5)),
                 boxShadow: [
-                  BoxShadow(
-                      color: Color(0xFF0000000A),
-                      blurRadius: 0.40
-                  )
+                  BoxShadow(color: Color(0xFF0000000A), blurRadius: 0.40)
                 ],
-              image: DecorationImage(image: NetworkImage(orderDetails['cart']['cart'][0]['imageUrl'],), fit: BoxFit.cover)
-            ),
+                image: DecorationImage(
+                    image: NetworkImage(
+                      orderDetails['cart']['cart'][0]['imageUrl'],
+                    ),
+                    fit: BoxFit.cover)),
 //            child:   Image.network(
 //              orderDetails['cart']['cart'][0]['imageUrl'],
 //
@@ -364,14 +364,23 @@ class _OrdersState extends State<Orders> {
                 style: titleLargeSegoeBlack(),
               ),
               SizedBox(height: 10),
-              Text(
-                'Ordered : ' +
-                        orderDetails['createdAt'].substring(0, 10) +
-                        ", " +
-                        orderDetails['createdAt'].substring(11, 16) ??
-                    "",
-                style: textSMBarlowRegularrBlack(),
-              )
+              orderDetails['appTimestamp'] == null
+                  ? Text(
+                      'Ordered : ' +
+                              orderDetails['createdAt'].substring(0, 10) +
+                              ", " +
+                              orderDetails['createdAt'].substring(11, 16) ??
+                          "",
+                      style: textSMBarlowRegularrBlack(),
+                    )
+                  : Text(
+                      'Ordered : ' +
+                              DateFormat("dd-MM-yyyy HH:MM a").format(
+                                  DateTime.fromMillisecondsSinceEpoch(
+                                      orderDetails['appTimestamp'])) ??
+                          "",
+                      style: textSMBarlowRegularrBlack(),
+                    )
             ],
           )
         ],
@@ -408,8 +417,10 @@ class _OrdersState extends State<Orders> {
                   ? titleSegoeGreen()
                   : titleSegoeGrey(),
             ),
-            icon:Padding(padding: EdgeInsets.only(bottom: 20),child: SvgPicture.asset('lib/assets/icons/tick.svg'),),
-
+            icon: Padding(
+              padding: EdgeInsets.only(bottom: 20),
+              child: SvgPicture.asset('lib/assets/icons/tick.svg'),
+            ),
             subTitle: Text(
               '',
               style: textSMBarlowRegularrGreyb(),
