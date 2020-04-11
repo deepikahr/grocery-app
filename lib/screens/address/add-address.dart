@@ -359,7 +359,7 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'Postel Code :',
+                        'Postal Code :',
                         style: textbarlowRegularBlack(),
                       ),
                     ],

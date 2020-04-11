@@ -11,6 +11,7 @@ import 'package:grocery_pro/service/settings/globalSettings.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:grocery_pro/widgets/loader.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -146,7 +147,9 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: GFTabBarView(
+      body: currencyLoading
+          ? SquareLoader()
+          : GFTabBarView(
         controller: tabController,
         children: <Widget>[
           Store(),

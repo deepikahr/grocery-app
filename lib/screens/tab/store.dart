@@ -416,8 +416,9 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                           ),
                                         );
                                       },
-                                      child: Stack(
-                                        children: <Widget>[
+                                      child:
+//                                      Stack(
+//                                        children: <Widget>[
                                           ProductCard(
                                             image: productsList[i]['imageUrl'],
                                             title: productsList[i]['title'],
@@ -430,42 +431,42 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                                     ['averageRating']
                                                 .toString(),
                                           ),
-                                          productsList[i]['discount'] == null
-                                              ? Positioned(
-                                                  child: Stack(
-                                                    children: <Widget>[
-                                                      Image.asset(
-                                                          'lib/assets/images/badge.png'),
-                                                      Text(
-                                                        " Organic",
-                                                        style:
-                                                            hintSfboldwhitemed(),
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                      )
-                                                    ],
-                                                  ),
-                                                )
-                                              : Positioned(
-                                                  child: Stack(
-                                                    children: <Widget>[
-                                                      Image.asset(
-                                                          'lib/assets/images/badge.png'),
-                                                      Text(
-                                                        "" +
-                                                            productsList[i]
-                                                                    ['discount']
-                                                                .toString(),
-                                                        style:
-                                                            hintSfboldwhitemed(),
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                      )
-                                                    ],
-                                                  ),
-                                                )
-                                        ],
-                                      ),
+//                                          productsList[i]['discount'] == null
+//                                              ? Positioned(
+//                                                  child: Stack(
+//                                                    children: <Widget>[
+//                                                      Image.asset(
+//                                                          'lib/assets/images/badge.png'),
+//                                                      Text(
+//                                                        " Organic",
+//                                                        style:
+//                                                            hintSfboldwhitemed(),
+//                                                        textAlign:
+//                                                            TextAlign.center,
+//                                                      )
+//                                                    ],
+//                                                  ),
+//                                                )
+//                                              : Positioned(
+//                                                  child: Stack(
+//                                                    children: <Widget>[
+//                                                      Image.asset(
+//                                                          'lib/assets/images/badge.png'),
+//                                                      Text(
+//                                                        "" +
+//                                                            productsList[i]
+//                                                                    ['discount']
+//                                                                .toString(),
+//                                                        style:
+//                                                            hintSfboldwhitemed(),
+//                                                        textAlign:
+//                                                            TextAlign.center,
+//                                                      )
+//                                                    ],
+//                                                  ),
+//                                                )
+//                                        ],
+//                                      ),
                                     )
                                   : Stack(
                                       children: <Widget>[

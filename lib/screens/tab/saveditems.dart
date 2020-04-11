@@ -165,8 +165,9 @@ class _SavedItemsState extends State<SavedItems> {
                                   ),
                                 );
                               },
-                              child: Stack(
-                                children: <Widget>[
+                              child:
+//                              Stack(
+//                                children: <Widget>[
                                   ProductCard(
                                     image: favProductList[i]['product']
                                         ['imageUrl'],
@@ -178,38 +179,38 @@ class _SavedItemsState extends State<SavedItems> {
                                     rating: favProductList[i]['averageRating']
                                         .toString(),
                                   ),
-                                  favProductList[i]['discount'] != null
-                                      ? Positioned(
-                                          child: Stack(
-                                            children: <Widget>[
-                                              Image.asset(
-                                                  'lib/assets/images/badge.png'),
-                                              Text(
-                                                " " +
-                                                    favProductList[i]
-                                                            ['discount']
-                                                        .toString(),
-                                                style: hintSfboldwhitemed(),
-                                                textAlign: TextAlign.center,
-                                              )
-                                            ],
-                                          ),
-                                        )
-                                      : Positioned(
-                                          child: Stack(
-                                            children: <Widget>[
-                                              Image.asset(
-                                                  'lib/assets/images/badge.png'),
-                                              Text(
-                                                " Organic",
-                                                style: hintSfboldwhitemed(),
-                                                textAlign: TextAlign.center,
-                                              )
-                                            ],
-                                          ),
-                                        )
-                                ],
-                              ),
+//                                  favProductList[i]['discount'] != null
+//                                      ? Positioned(
+//                                          child: Stack(
+//                                            children: <Widget>[
+//                                              Image.asset(
+//                                                  'lib/assets/images/badge.png'),
+//                                              Text(
+//                                                " " +
+//                                                    favProductList[i]
+//                                                            ['discount']
+//                                                        .toString(),
+//                                                style: hintSfboldwhitemed(),
+//                                                textAlign: TextAlign.center,
+//                                              )
+//                                            ],
+//                                          ),
+//                                        )
+//                                      : Positioned(
+//                                          child: Stack(
+//                                            children: <Widget>[
+//                                              Image.asset(
+//                                                  'lib/assets/images/badge.png'),
+//                                              Text(
+//                                                " Organic",
+//                                                style: hintSfboldwhitemed(),
+//                                                textAlign: TextAlign.center,
+//                                              )
+//                                            ],
+//                                          ),
+//                                        )
+//                                ],
+//                              ),
 //                              GFCard(
 //                                shape: RoundedRectangleBorder(
 //                                    borderRadius: BorderRadius.circular(20.0)),
