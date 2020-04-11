@@ -26,7 +26,6 @@ class _SearchItemState extends State<SearchItem> {
   void initState() {
     super.initState();
     _isSearching = false;
-    print('de $searchresult');
   }
 
   @override
@@ -257,7 +256,6 @@ class _SearchItemState extends State<SearchItem> {
           setState(() {
             searchresult.add(widget.productsList[i]);
           });
-          print('ssssss ${searchresult}');
         }
       }
     } else if (searchText.length == 0 || searchText.length < 3) {

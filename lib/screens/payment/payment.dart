@@ -152,9 +152,7 @@ class _PaymentState extends State<Payment> {
         widget.data['card'] = body;
       }
 
-      print(widget.data['card']);
-      await ProductService.placeOrderCardType(widget.data).then((onValue) {
-        print(onValue);
+      await ProductService.placeOrder(widget.data).then((onValue) {
         try {
           if (onValue['response_code'] == 201) {
             if (mounted) {
@@ -184,7 +182,6 @@ class _PaymentState extends State<Payment> {
       });
     } else {
       await ProductService.placeOrder(widget.data).then((onValue) {
-        print(onValue);
         try {
           if (onValue['response_code'] == 201) {
             if (mounted) {
@@ -271,8 +268,7 @@ class _PaymentState extends State<Payment> {
 
     Widget buildSaveCardInfo() {
       return cardList.length == 0
-          ?
-      Container(
+          ? Container(
               alignment: AlignmentDirectional.center,
               padding: EdgeInsets.only(top: 20),
               child: Text(
@@ -381,10 +377,8 @@ class _PaymentState extends State<Payment> {
                           return Container(
                             width: 270.0,
                             child: new AlertDialog(
-                              title: new Text(
-                                'Are You Sure?',
-                                style:  hintSfsemiboldred()
-                              ),
+                              title: new Text('Are You Sure?',
+                                  style: hintSfsemiboldred()),
                               content: new SingleChildScrollView(
                                 child: new ListBody(
                                   children: <Widget>[

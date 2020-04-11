@@ -187,7 +187,6 @@ class _AddressState extends State<Address> {
                 myLocationButtonEnabled: true,
                 layersButtonEnabled: true,
               );
-              print(result);
               if (result != null) {
                 setState(() {
                   _pickedLocation = result;

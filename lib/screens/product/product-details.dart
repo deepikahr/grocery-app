@@ -255,7 +255,10 @@ class _ProductDetailsState extends State<ProductDetails>
             content: new SingleChildScrollView(
               child: new ListBody(
                 children: <Widget>[
-                  new Text('First Login!!', style: hintSfboldBig(),),
+                  new Text(
+                    'First Login!!',
+                    style: hintSfboldBig(),
+                  ),
                 ],
               ),
             ),
@@ -284,10 +287,9 @@ class _ProductDetailsState extends State<ProductDetails>
     }
   }
 
-  sizeSelectOnChanged(value){
+  sizeSelectOnChanged(value) {
     return setState(() {
       groupValue = value;
-      print(groupValue);
       // if (sizeSelect == true) {
       variantPrice = variantList[value].price;
       variantUnit = variantList[value].unit;
@@ -487,31 +489,36 @@ class _ProductDetailsState extends State<ProductDetails>
                               ],
                             ),
                           ),
-                          variantList.length > 1 ? ListView.builder(
-                              physics: ScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: variantList.length == null
-                                  ? 0
-                                  : variantList.length,
-                              itemBuilder: (BuildContext context, int i) {
-                                print('v $variantList');
-                                return
-                                RadioListTile(
-                                  controlAffinity:
-                                      ListTileControlAffinity.trailing,
-                                  activeColor: primary,
-                                  dense: true,
-                                  value: i,
-                                  groupValue: groupValue,
-                                  onChanged: (int value) {
-                                    sizeSelectOnChanged(value);
-                                  },
-                                  selected: sizeSelect,
-                                  secondary: Text('${variantList[i].unit}', style: hintSfMediumgreyersmall() ,),
-                                  title: Text(
-                                      '$currency${variantList[i].price.toString()}', style: textbarlowBoldGreen(),),
-                                );
-                              }) : Container(),
+                          variantList.length > 1
+                              ? ListView.builder(
+                                  physics: ScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: variantList.length == null
+                                      ? 0
+                                      : variantList.length,
+                                  itemBuilder: (BuildContext context, int i) {
+                                    return RadioListTile(
+                                      controlAffinity:
+                                          ListTileControlAffinity.trailing,
+                                      activeColor: primary,
+                                      dense: true,
+                                      value: i,
+                                      groupValue: groupValue,
+                                      onChanged: (int value) {
+                                        sizeSelectOnChanged(value);
+                                      },
+                                      selected: sizeSelect,
+                                      secondary: Text(
+                                        '${variantList[i].unit}',
+                                        style: hintSfMediumgreyersmall(),
+                                      ),
+                                      title: Text(
+                                        '$currency${variantList[i].price.toString()}',
+                                        style: textbarlowBoldGreen(),
+                                      ),
+                                    );
+                                  })
+                              : Container(),
                         ],
                       ),
                     ],

@@ -40,18 +40,15 @@ class _SavedItemsState extends State<SavedItems> {
       });
     }
     Common.getFavList().then((value) {
-      print(value);
       if (value == null) {
         if (mounted) {
           setState(() {
             getFavListApi();
-            print("Lllllll 1");
           });
         }
       } else {
         if (mounted) {
           setState(() {
-            print("Lllllll 2");
             isFavListLoading = false;
             favProductList = value['response_data'];
             getFavListApi();
@@ -169,16 +166,14 @@ class _SavedItemsState extends State<SavedItems> {
 //                              Stack(
 //                                children: <Widget>[
                                   ProductCard(
-                                    image: favProductList[i]['product']
-                                        ['imageUrl'],
-                                    title: favProductList[i]['product']
-                                        ['title'],
-                                    currency: currency,
-                                    price: favProductList[i]['product']
-                                        ['variant'][0]['price'],
-                                    rating: favProductList[i]['averageRating']
-                                        .toString(),
-                                  ),
+                                image: favProductList[i]['product']['imageUrl'],
+                                title: favProductList[i]['product']['title'],
+                                currency: currency,
+                                price: favProductList[i]['product']['variant']
+                                    [0]['price'],
+                                rating: favProductList[i]['averageRating']
+                                    .toString(),
+                              ),
 //                                  favProductList[i]['discount'] != null
 //                                      ? Positioned(
 //                                          child: Stack(

@@ -166,7 +166,7 @@ class _EditProfileState extends State<EditProfile> {
 
   imageUpload(_imageFile) async {
     var stream =
-    new http.ByteStream(DelegatingStream.typed(_imageFile.openRead()));
+        new http.ByteStream(DelegatingStream.typed(_imageFile.openRead()));
 
     int length = await _imageFile.length();
     String uri = Constants.baseURL + 'utils/upload/file/imagekit';
@@ -205,74 +205,74 @@ class _EditProfileState extends State<EditProfile> {
         builder: (context) {
           return Center(
               child: Container(
-                height: 220,
-                width: MediaQuery.of(context).size.width * 0.8,
-                decoration: new BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: new BorderRadius.all(
-                    new Radius.circular(24.0),
+            height: 220,
+            width: MediaQuery.of(context).size.width * 0.8,
+            decoration: new BoxDecoration(
+              color: Colors.white,
+              borderRadius: new BorderRadius.all(
+                new Radius.circular(24.0),
+              ),
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(
+                    'Select',
+                    style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 20,
+                        decoration: TextDecoration.none),
                   ),
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Text(
-                        'Select',
-                        style: TextStyle(
-                            color: Colors.red,
-                            fontSize: 20,
-                            decoration: TextDecoration.none),
+                GFButton(
+                  onPressed: selectCamera,
+                  type: GFButtonType.transparent,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        'Take photo',
+                        style: hintSfboldBig(),
                       ),
-                    ),
-                    GFButton(
-                      onPressed: selectCamera,
-                      type: GFButtonType.transparent,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            'Take photo',
-                            style: hintSfboldBig(),
-                          ),
-                          Icon(Icons.camera_alt),
-                        ],
-                      ),
-                    ),
-                    GFButton(
-                      onPressed: selectGallary,
-                      type: GFButtonType.transparent,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            'Select from gallery',
-                            style: hintSfboldBig(),
-                          ),
-                          Icon(Icons.image),
-                        ],
-                      ),
-                    ),
-                    userInfo['profilePic'] != null
-                        ? GFButton(
-                      onPressed: removeImage,
-                      type: GFButtonType.transparent,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            'Remove photo',
-                            style: hintSfboldBig(),
-                          ),
-                          Icon(Icons.delete_forever),
-                        ],
-                      ),
-                    )
-                        : Container(),
-                  ],
+                      Icon(Icons.camera_alt),
+                    ],
+                  ),
                 ),
-              ));
+                GFButton(
+                  onPressed: selectGallary,
+                  type: GFButtonType.transparent,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        'Select from gallery',
+                        style: hintSfboldBig(),
+                      ),
+                      Icon(Icons.image),
+                    ],
+                  ),
+                ),
+                userInfo['profilePic'] != null
+                    ? GFButton(
+                        onPressed: removeImage,
+                        type: GFButtonType.transparent,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              'Remove photo',
+                              style: hintSfboldBig(),
+                            ),
+                            Icon(Icons.delete_forever),
+                          ],
+                        ),
+                      )
+                    : Container(),
+              ],
+            ),
+          ));
         });
   }
 
@@ -315,238 +315,238 @@ class _EditProfileState extends State<EditProfile> {
       body: isLoading
           ? SquareLoader()
           : Form(
-        key: _formKey,
-        child: ListView(
-          children: <Widget>[
-            Container(
-              height: 250,
-              child: Stack(
+              key: _formKey,
+              child: ListView(
                 children: <Widget>[
-                  image == null
-                      ? userInfo['profilePic'] == null
-                      ? Center(
-                    child: new Container(
-                      width: 200.0,
-                      height: 200.0,
-                      decoration: new BoxDecoration(
-                        borderRadius:
-                        BorderRadius.circular(20.0),
-                        image: new DecorationImage(
-                          fit: BoxFit.fill,
-                          image: new AssetImage(
-                              'lib/assets/images/profile.png'),
-                        ),
-                      ),
-                    ),
-                  )
-                      : Center(
-                    child: new Container(
-                      width: 200.0,
-                      height: 200.0,
-                      decoration: new BoxDecoration(
-                        borderRadius:
-                        BorderRadius.circular(20.0),
-                        image: new DecorationImage(
-                          fit: BoxFit.fill,
-                          image: new NetworkImage(
-                              userInfo['profilePic']),
-                        ),
-                      ),
-                    ),
-                  )
-                      : isPicUploading
-                      ? SquareLoader()
-                      : Center(
-                    child: new Container(
-                      width: 200.0,
-                      height: 200.0,
-                      decoration: new BoxDecoration(
-                        borderRadius:
-                        BorderRadius.circular(20.0),
-                        image: new DecorationImage(
-                          fit: BoxFit.fill,
-                          image: new FileImage(image),
-                        ),
-                      ),
+                  Container(
+                    height: 250,
+                    child: Stack(
+                      children: <Widget>[
+                        image == null
+                            ? userInfo['profilePic'] == null
+                                ? Center(
+                                    child: new Container(
+                                      width: 200.0,
+                                      height: 200.0,
+                                      decoration: new BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(20.0),
+                                        image: new DecorationImage(
+                                          fit: BoxFit.fill,
+                                          image: new AssetImage(
+                                              'lib/assets/images/profile.png'),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                : Center(
+                                    child: new Container(
+                                      width: 200.0,
+                                      height: 200.0,
+                                      decoration: new BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(20.0),
+                                        image: new DecorationImage(
+                                          fit: BoxFit.fill,
+                                          image: new NetworkImage(
+                                              userInfo['profilePic']),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                            : isPicUploading
+                                ? SquareLoader()
+                                : Center(
+                                    child: new Container(
+                                      width: 200.0,
+                                      height: 200.0,
+                                      decoration: new BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(20.0),
+                                        image: new DecorationImage(
+                                          fit: BoxFit.fill,
+                                          image: new FileImage(image),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                        Positioned(
+                          left: 250,
+                          top: 190,
+                          child: Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                                color: primary,
+                                borderRadius: BorderRadius.circular(30.0)),
+                            child: IconButton(
+                              onPressed: () {
+                                selectImage();
+                              },
+                              icon: Icon(Icons.camera_alt),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
                   ),
-                  Positioned(
-                    left: 250,
-                    top: 190,
-                    child: Container(
-                      height: 40,
-                      width: 40,
-                      decoration: BoxDecoration(
-                          color: primary,
-                          borderRadius: BorderRadius.circular(30.0)),
-                      child: IconButton(
-                        onPressed: () {
-                          selectImage();
-                        },
-                        icon: Icon(Icons.camera_alt),
-                      ),
+                  Center(
+                      child: Text(
+                    userInfo['email'],
+                    style: textBarlowRegularBlack(),
+                  )),
+                  SizedBox(
+                    height: 25,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
+                    child: Text(
+                      'User Name :',
+                      style: textbarlowRegularBlack(),
                     ),
-                  )
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                    child: TextFormField(
+                      initialValue: userInfo['firstName'] ?? "",
+                      style: textBarlowRegularBlack(),
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
+                        errorBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 0, color: Color(0xFFF44242))),
+                        errorStyle: TextStyle(color: Color(0xFFF44242)),
+                        fillColor: Colors.black,
+                        focusColor: Colors.black,
+                        contentPadding: EdgeInsets.only(
+                          left: 15.0,
+                          right: 15.0,
+                          top: 10.0,
+                          bottom: 10.0,
+                        ),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.grey, width: 0.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: primary),
+                        ),
+                      ),
+                      onSaved: (String value) {
+                        firstName = value;
+                      },
+                      validator: (String value) {
+                        if (value.isEmpty ||
+                            !RegExp(r'^[A-Za-z ]+$').hasMatch(value)) {
+                          return "Please Enter Valid First Name";
+                        } else
+                          return null;
+                      },
+                    ),
+                  ),
+                  // SizedBox(
+                  //   height: 25,
+                  // ),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
+                  //   child: Text(
+                  //     'Last Name :',
+                  //     style: textbarlowRegularBlack(),
+                  //   ),
+                  // ),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                  //   child: TextFormField(
+                  //     initialValue: userInfo['lastName'] ?? "",
+                  //     style: textBarlowRegularBlack(),
+                  //     keyboardType: TextInputType.text,
+                  //     decoration: InputDecoration(
+                  //       errorBorder: OutlineInputBorder(
+                  //           borderSide:
+                  //               BorderSide(width: 0, color: Color(0xFFF44242))),
+                  //       errorStyle: TextStyle(color: Color(0xFFF44242)),
+                  //       fillColor: Colors.black,
+                  //       focusColor: Colors.black,
+                  //       contentPadding: EdgeInsets.only(
+                  //         left: 15.0,
+                  //         right: 15.0,
+                  //         top: 10.0,
+                  //         bottom: 10.0,
+                  //       ),
+                  //       enabledBorder: const OutlineInputBorder(
+                  //         borderSide:
+                  //             const BorderSide(color: Colors.grey, width: 0.0),
+                  //       ),
+                  //       focusedBorder: OutlineInputBorder(
+                  //         borderSide: BorderSide(color: primary),
+                  //       ),
+                  //     ),
+                  //     onSaved: (String value) {
+                  //       lastName = value;
+                  //     },
+                  //     validator: (String value) {
+                  //       if (value.isEmpty ||
+                  //           !RegExp(r'^[A-Za-z ]+$').hasMatch(value)) {
+                  //         return "Please Enter Valid Last Name";
+                  //       } else
+                  //         return null;
+                  //     },
+                  //   ),
+                  // ),
+                  SizedBox(
+                    height: 25,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
+                    child: Text(
+                      'Phone Number :',
+                      style: textbarlowRegularBlack(),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                    child: TextFormField(
+                      initialValue: userInfo['mobileNumber'] ?? "",
+                      style: textBarlowRegularBlack(),
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        errorBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 0, color: Color(0xFFF44242))),
+                        errorStyle: TextStyle(color: Color(0xFFF44242)),
+                        fillColor: Colors.black,
+                        focusColor: Colors.black,
+                        contentPadding: EdgeInsets.only(
+                          left: 15.0,
+                          right: 15.0,
+                          top: 10.0,
+                          bottom: 10.0,
+                        ),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.grey, width: 0.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: primary),
+                        ),
+                      ),
+                      onSaved: (String value) {
+                        mobileNumber = value;
+                      },
+                      validator: (String value) {
+                        if (value.isEmpty || value.length != 10) {
+                          return "please Enter Valid Mobile Number";
+                        } else
+                          return null;
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 25,
+                  ),
                 ],
               ),
             ),
-            Center(
-                child: Text(
-                  userInfo['email'],
-                  style: textBarlowRegularBlack(),
-                )),
-            SizedBox(
-              height: 25,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
-              child: Text(
-                'User Name :',
-                style: textbarlowRegularBlack(),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-              child: TextFormField(
-                initialValue: userInfo['firstName'] ?? "",
-                style: textBarlowRegularBlack(),
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(
-                  errorBorder: OutlineInputBorder(
-                      borderSide:
-                      BorderSide(width: 0, color: Color(0xFFF44242))),
-                  errorStyle: TextStyle(color: Color(0xFFF44242)),
-                  fillColor: Colors.black,
-                  focusColor: Colors.black,
-                  contentPadding: EdgeInsets.only(
-                    left: 15.0,
-                    right: 15.0,
-                    top: 10.0,
-                    bottom: 10.0,
-                  ),
-                  enabledBorder: const OutlineInputBorder(
-                    borderSide:
-                    const BorderSide(color: Colors.grey, width: 0.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: primary),
-                  ),
-                ),
-                onSaved: (String value) {
-                  firstName = value;
-                },
-                validator: (String value) {
-                  if (value.isEmpty ||
-                      !RegExp(r'^[A-Za-z ]+$').hasMatch(value)) {
-                    return "Please Enter Valid First Name";
-                  } else
-                    return null;
-                },
-              ),
-            ),
-            // SizedBox(
-            //   height: 25,
-            // ),
-            // Padding(
-            //   padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
-            //   child: Text(
-            //     'Last Name :',
-            //     style: textbarlowRegularBlack(),
-            //   ),
-            // ),
-            // Padding(
-            //   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-            //   child: TextFormField(
-            //     initialValue: userInfo['lastName'] ?? "",
-            //     style: textBarlowRegularBlack(),
-            //     keyboardType: TextInputType.text,
-            //     decoration: InputDecoration(
-            //       errorBorder: OutlineInputBorder(
-            //           borderSide:
-            //               BorderSide(width: 0, color: Color(0xFFF44242))),
-            //       errorStyle: TextStyle(color: Color(0xFFF44242)),
-            //       fillColor: Colors.black,
-            //       focusColor: Colors.black,
-            //       contentPadding: EdgeInsets.only(
-            //         left: 15.0,
-            //         right: 15.0,
-            //         top: 10.0,
-            //         bottom: 10.0,
-            //       ),
-            //       enabledBorder: const OutlineInputBorder(
-            //         borderSide:
-            //             const BorderSide(color: Colors.grey, width: 0.0),
-            //       ),
-            //       focusedBorder: OutlineInputBorder(
-            //         borderSide: BorderSide(color: primary),
-            //       ),
-            //     ),
-            //     onSaved: (String value) {
-            //       lastName = value;
-            //     },
-            //     validator: (String value) {
-            //       if (value.isEmpty ||
-            //           !RegExp(r'^[A-Za-z ]+$').hasMatch(value)) {
-            //         return "Please Enter Valid Last Name";
-            //       } else
-            //         return null;
-            //     },
-            //   ),
-            // ),
-            SizedBox(
-              height: 25,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
-              child: Text(
-                'Phone Number :',
-                style: textbarlowRegularBlack(),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-              child: TextFormField(
-                initialValue: userInfo['mobileNumber'] ?? "",
-                style: textBarlowRegularBlack(),
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  errorBorder: OutlineInputBorder(
-                      borderSide:
-                      BorderSide(width: 0, color: Color(0xFFF44242))),
-                  errorStyle: TextStyle(color: Color(0xFFF44242)),
-                  fillColor: Colors.black,
-                  focusColor: Colors.black,
-                  contentPadding: EdgeInsets.only(
-                    left: 15.0,
-                    right: 15.0,
-                    top: 10.0,
-                    bottom: 10.0,
-                  ),
-                  enabledBorder: const OutlineInputBorder(
-                    borderSide:
-                    const BorderSide(color: Colors.grey, width: 0.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: primary),
-                  ),
-                ),
-                onSaved: (String value) {
-                  mobileNumber = value;
-                },
-                validator: (String value) {
-                  if (value.isEmpty || value.length != 10) {
-                    return "please Enter Valid Mobile Number";
-                  } else
-                    return null;
-                },
-              ),
-            ),
-            SizedBox(
-              height: 25,
-            ),
-          ],
-        ),
-      ),
       bottomNavigationBar: Container(
         height: 55,
         margin: EdgeInsets.only(bottom: 20, left: 15, right: 15),
@@ -567,11 +567,11 @@ class _EditProfileState extends State<EditProfile> {
                 ),
                 profileEdit
                     ? Image.asset(
-                  'lib/assets/images/spinner.gif',
-                  width: 15.0,
-                  height: 15.0,
-                  color: Colors.black,
-                )
+                        'lib/assets/images/spinner.gif',
+                        width: 15.0,
+                        height: 15.0,
+                        color: Colors.black,
+                      )
                     : Text("")
               ],
             ),

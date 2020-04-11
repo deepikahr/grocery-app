@@ -120,6 +120,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         .setInFocusDisplayType(OSNotificationDisplayType.notification);
     var status = await OneSignal.shared.getPermissionSubscriptionState();
     String playerId = status.subscriptionStatus.userId;
+
     prefs.setString("playerId", playerId);
   }
 
@@ -174,9 +175,11 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         ),
         tabBarHeight: 60,
         indicator: BoxDecoration(
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0),),
-            color: Colors.black
-        ),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(15.0),
+              topRight: Radius.circular(15.0),
+            ),
+            color: Colors.black),
         labelColor: primary,
         tabBarColor: Colors.black,
         unselectedLabelColor: greyc,
