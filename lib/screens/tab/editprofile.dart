@@ -232,7 +232,10 @@ class _EditProfileState extends State<EditProfile> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text('Take photo', style: hintSfboldBig(),),
+                      Text(
+                        'Take photo',
+                        style: hintSfboldBig(),
+                      ),
                       Icon(Icons.camera_alt),
                     ],
                   ),
@@ -243,23 +246,29 @@ class _EditProfileState extends State<EditProfile> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text('Select from gallery', style: hintSfboldBig(),),
+                      Text(
+                        'Select from gallery',
+                        style: hintSfboldBig(),
+                      ),
                       Icon(Icons.image),
                     ],
                   ),
                 ),
                 userInfo['profilePic'] != null
                     ? GFButton(
-                  onPressed: selectCamera,
-                  type: GFButtonType.transparent,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text('Remove photo', style: hintSfboldBig(),),
-                      Icon(Icons.delete_forever),
-                    ],
-                  ),
-                )
+                        onPressed: selectCamera,
+                        type: GFButtonType.transparent,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              'Remove photo',
+                              style: hintSfboldBig(),
+                            ),
+                            Icon(Icons.delete_forever),
+                          ],
+                        ),
+                      )
                     : Container(),
               ],
             ),
@@ -371,7 +380,7 @@ class _EditProfileState extends State<EditProfile> {
                                 color: primary,
                                 borderRadius: BorderRadius.circular(30.0)),
                             child: IconButton(
-                              onPressed: (){
+                              onPressed: () {
                                 selectImage();
                               },
                               icon: Icon(Icons.camera_alt),
