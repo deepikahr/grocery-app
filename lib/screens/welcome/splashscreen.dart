@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grocery_pro/widgets/loader.dart';
 import '../../style/style.dart';
 
 class SpalshScreen extends StatefulWidget {
@@ -28,9 +29,7 @@ class _SpalshScreenState extends State<SpalshScreen> {
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: CircularProgressIndicator(
-                  backgroundColor: Colors.white,
-                ),
+                child: SquareLoader()
               )
             ],
           ),

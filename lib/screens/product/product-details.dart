@@ -255,7 +255,7 @@ class _ProductDetailsState extends State<ProductDetails>
             content: new SingleChildScrollView(
               child: new ListBody(
                 children: <Widget>[
-                  new Text('First Login!!'),
+                  new Text('First Login!!', style: hintSfboldBig(),),
                 ],
               ),
             ),
@@ -284,6 +284,18 @@ class _ProductDetailsState extends State<ProductDetails>
     }
   }
 
+  sizeSelectOnChanged(value){
+    return setState(() {
+      groupValue = value;
+      print(groupValue);
+      // if (sizeSelect == true) {
+      variantPrice = variantList[value].price;
+      variantUnit = variantList[value].unit;
+      variantId = variantList[value].id;
+      // }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -299,6 +311,8 @@ class _ProductDetailsState extends State<ProductDetails>
                   Column(
                     children: <Widget>[
                       Container(
+                        padding: EdgeInsets.zero,
+                        margin: EdgeInsets.zero,
                         height: 340,
                         width: MediaQuery.of(context).size.width,
                         decoration: new BoxDecoration(
@@ -308,15 +322,15 @@ class _ProductDetailsState extends State<ProductDetails>
                           boxShadow: [
                             BoxShadow(
                               color: Colors.grey,
-                              blurRadius: 10.0, // soften the shadow
+                              blurRadius: 10.0,
                               offset: Offset(
-                                2.0, // Move to right 10  horizontally
-                                2.0, // Move to bottom 10 Vertically
+                                2.0,
+                                2.0,
                               ),
                             )
                           ],
                           image: new DecorationImage(
-                            fit: BoxFit.fill,
+                            fit: BoxFit.cover,
                             image: new NetworkImage(
                               widget.productDetail['imageUrl'],
                             ),
@@ -394,7 +408,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                       padding: const EdgeInsets.only(
                                           left: 10.0, top: 5.0),
                                       child: Text(
-                                        '$currency ${variantPrice == null ? widget.productDetail['variant'][0]['price'] : variantPrice}',
+                                        '$currency${variantPrice == null ? widget.productDetail['variant'][0]['price'] : variantPrice}',
                                         style: textbarlowBoldGreen(),
                                       ),
                                     ),
@@ -473,7 +487,7 @@ class _ProductDetailsState extends State<ProductDetails>
                               ],
                             ),
                           ),
-                          ListView.builder(
+                          variantList.length > 1 ? ListView.builder(
                               physics: ScrollPhysics(),
                               shrinkWrap: true,
                               itemCount: variantList.length == null
@@ -481,7 +495,8 @@ class _ProductDetailsState extends State<ProductDetails>
                                   : variantList.length,
                               itemBuilder: (BuildContext context, int i) {
                                 print('v $variantList');
-                                return RadioListTile(
+                                return
+                                RadioListTile(
                                   controlAffinity:
                                       ListTileControlAffinity.trailing,
                                   activeColor: primary,
@@ -489,23 +504,14 @@ class _ProductDetailsState extends State<ProductDetails>
                                   value: i,
                                   groupValue: groupValue,
                                   onChanged: (int value) {
-                                    setState(() {
-                                      groupValue = value;
-                                      print(groupValue);
-                                      // if (sizeSelect == true) {
-                                      variantPrice = variantList[value].price;
-                                      variantUnit = variantList[value].unit;
-                                      variantId = variantList[value].id;
-                                      // }
-                                      print('size ${variantList[value]}');
-                                    });
+                                    sizeSelectOnChanged(value);
                                   },
                                   selected: sizeSelect,
-                                  secondary: Text('${variantList[i].unit}'),
+                                  secondary: Text('${variantList[i].unit}', style: hintSfMediumgreyersmall() ,),
                                   title: Text(
-                                      '$currency  ${variantList[i].price.toString()}'),
+                                      '$currency${variantList[i].price.toString()}', style: textbarlowBoldGreen(),),
                                 );
-                              }),
+                              }) : Container(),
                         ],
                       ),
                     ],
@@ -685,7 +691,7 @@ class _ProductDetailsState extends State<ProductDetails>
                           height: 1.0,
                         ),
                         new Text(
-                          '$currency ${variantPrice == null ? (widget.productDetail['variant'][0]['price'] * quantity) : (variantPrice * quantity)}',
+                          '$currency${variantPrice == null ? (widget.productDetail['variant'][0]['price'] * quantity) : (variantPrice * quantity)}',
                           style: textbarlowBoldWhite(),
                         ),
                       ],
@@ -700,6 +706,7 @@ class _ProductDetailsState extends State<ProductDetails>
                         color: Colors.black,
                       )
                     : Text(""),
+//                SizedBox(height: 10,),
                 Padding(
                   padding: const EdgeInsets.only(left: 0.0),
                   child: new Text(

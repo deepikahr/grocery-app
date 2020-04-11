@@ -14,6 +14,7 @@ import 'package:http/http.dart' as http;
 import 'package:async/async.dart';
 import 'dart:io';
 import 'dart:ui';
+import 'package:grocery_pro/widgets/loader.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -198,47 +199,72 @@ class _EditProfileState extends State<EditProfile> {
     });
   }
 
-  void selectImage() async {
-    showDialog<Null>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return new AlertDialog(
-          content: new SingleChildScrollView(
-            child: new ListBody(
+  selectImage() async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return Center(
+              child: Container(
+            height: 220,
+            width: MediaQuery.of(context).size.width * 0.8,
+            decoration: new BoxDecoration(
+              color: Colors.white,
+              borderRadius: new BorderRadius.all(
+                new Radius.circular(24.0),
+              ),
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            child: Column(
               children: <Widget>[
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                    child: new Text("Select"),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(
+                    'Select',
+                    style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 20,
+                        decoration: TextDecoration.none),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                  child: InkWell(
-                    onTap: selectCamera,
-                    child: new Text("Camera"),
+                GFButton(
+                  onPressed: selectCamera,
+                  type: GFButtonType.transparent,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text('Take photo', style: hintSfboldBig(),),
+                      Icon(Icons.camera_alt),
+                    ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                  child: InkWell(
-                    onTap: selectGallary,
-                    child: new Text("Gallery"),
+                GFButton(
+                  onPressed: selectGallary,
+                  type: GFButtonType.transparent,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text('Select from gallery', style: hintSfboldBig(),),
+                      Icon(Icons.image),
+                    ],
                   ),
                 ),
                 userInfo['profilePic'] != null
-                    ? InkWell(
-                        onTap: removeImage,
-                        child: new Text("Remove Image"),
-                      )
+                    ? GFButton(
+                  onPressed: selectCamera,
+                  type: GFButtonType.transparent,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text('Remove photo', style: hintSfboldBig(),),
+                      Icon(Icons.delete_forever),
+                    ],
+                  ),
+                )
                     : Container(),
               ],
             ),
-          ),
-        );
-      },
-    );
+          ));
+        });
   }
 
   removeImage() {
@@ -278,9 +304,7 @@ class _EditProfileState extends State<EditProfile> {
         iconTheme: IconThemeData(color: Colors.black),
       ),
       body: isLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
+          ? SquareLoader()
           : Form(
               key: _formKey,
               child: ListView(
@@ -322,9 +346,7 @@ class _EditProfileState extends State<EditProfile> {
                                     ),
                                   )
                             : isPicUploading
-                                ? Center(
-                                    child: CircularProgressIndicator(),
-                                  )
+                                ? SquareLoader()
                                 : Center(
                                     child: new Container(
                                       width: 200.0,
@@ -349,7 +371,9 @@ class _EditProfileState extends State<EditProfile> {
                                 color: primary,
                                 borderRadius: BorderRadius.circular(30.0)),
                             child: IconButton(
-                              onPressed: selectImage,
+                              onPressed: (){
+                                selectImage();
+                              },
                               icon: Icon(Icons.camera_alt),
                             ),
                           ),

@@ -123,13 +123,13 @@ class _EditAddressState extends State<EditAddress> {
           content: new SingleChildScrollView(
             child: new ListBody(
               children: <Widget>[
-                new Text(message),
+                new Text(message, style: hintSfMediumblackbig(),),
               ],
             ),
           ),
           actions: <Widget>[
             new FlatButton(
-              child: new Text('OK'),
+              child: new Text('OK', style: TextStyle(color: green),),
               onPressed: () {
                 if (widget.isProfile == true) {
                   Navigator.of(context).pop();
@@ -559,6 +559,7 @@ class _EditAddressState extends State<EditAddress> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Text("Update"),
+                          SizedBox(height: 10,),
                           isUpdateAddress
                               ? Image.asset(
                                   'lib/assets/images/spinner.gif',

@@ -346,6 +346,7 @@ class _LoginState extends State<Login> {
               "Log in",
               style: textBarlowRegularrBlack(),
             ),
+            SizedBox(height: 10,),
             isUserLoaginLoading
                 ? Image.asset(
                     'lib/assets/images/spinner.gif',

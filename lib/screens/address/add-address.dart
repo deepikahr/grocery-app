@@ -109,7 +109,7 @@ class _AddAddressState extends State<AddAddress> {
               children: <Widget>[
                 new Text(
                   message,
-                  style: textBarlowRegularrBlack(),
+                  style: hintSfMediumblackbig(),
                 ),
               ],
             ),
@@ -239,7 +239,7 @@ class _AddAddressState extends State<AddAddress> {
                         )),
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return "please Enter House/Flat/Block number";
+                        return "Please enter house/flat/block number";
                       } else
                         return null;
                     },
@@ -291,7 +291,7 @@ class _AddAddressState extends State<AddAddress> {
                       ),
                       validator: (String value) {
                         if (value.isEmpty) {
-                          return "please Enter Apartment Name";
+                          return "Please enter apartment name";
                         } else
                           return null;
                       },
@@ -342,7 +342,7 @@ class _AddAddressState extends State<AddAddress> {
                       ),
                       validator: (String value) {
                         if (value.isEmpty) {
-                          return "please Enter Land Mark";
+                          return "Please enter land mark";
                         } else
                           return null;
                       },
@@ -395,9 +395,9 @@ class _AddAddressState extends State<AddAddress> {
                       ),
                       validator: (String value) {
                         if (value.isEmpty) {
-                          return "please Enter Postel Code";
+                          return "Please enter postal code";
                         } else if (value.length != 6) {
-                          return "please Enter 6 digit Postel Code ";
+                          return "Please enter 6 digit postal code ";
                         } else
                           return null;
                       },
@@ -445,9 +445,9 @@ class _AddAddressState extends State<AddAddress> {
                         )),
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return "please Enter Contact Number";
+                        return "Please enter contact number";
                       } else if (value.length != 10) {
-                        return "please Enter 10 Digit Contact Number";
+                        return "Please enter 10 digit contact number";
                       } else
                         return null;
                     },
@@ -525,6 +525,7 @@ class _AddAddressState extends State<AddAddress> {
                             "Save",
                             style: textBarlowRegularrBlack(),
                           ),
+                          SizedBox(height: 10,),
                           isLoading
                               ? Image.asset(
                                   'lib/assets/images/spinner.gif',

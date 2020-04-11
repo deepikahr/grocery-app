@@ -7,7 +7,9 @@ import 'package:grocery_pro/service/auth-service.dart';
 import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
+import 'package:grocery_pro/widgets/loader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:getflutter/getflutter.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -68,8 +70,8 @@ class _OrderDetailsState extends State<OrderDetails> {
       builder: (context) {
         return Center(
           child: Container(
-            margin: const EdgeInsets.only(
-                top: 250.0, bottom: 150.0, left: 20.0, right: 20.0),
+            height: 220,
+            width: MediaQuery.of(context).size.width * 0.8,
             decoration: new BoxDecoration(
               color: Colors.white,
               borderRadius: new BorderRadius.all(
@@ -99,11 +101,11 @@ class _OrderDetailsState extends State<OrderDetails> {
                         minRating: 1,
                         direction: Axis.horizontal,
                         allowHalfRating: true,
-                        itemSize: 40.0,
+                        itemSize: 44.0,
                         itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
                         itemBuilder: (context, _) => Icon(
                           Icons.star,
-                          color: Colors.red,
+                          color: primary,
                           size: 15.0,
                         ),
                         onRatingUpdate: (rate) {
@@ -177,9 +179,7 @@ class _OrderDetailsState extends State<OrderDetails> {
         ),
       ),
       body: isLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
+          ? SquareLoader()
           : ListView(
               children: <Widget>[
                Container(

@@ -10,6 +10,7 @@ import 'package:grocery_pro/service/cart-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/screens/checkout/checkout.dart';
 import 'package:getflutter/getflutter.dart';
+import 'package:grocery_pro/widgets/loader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
@@ -178,14 +179,14 @@ class _MyCartState extends State<MyCart> {
               content: new SingleChildScrollView(
                 child: new ListBody(
                   children: <Widget>[
-                    new Text('Your Cart Is Empty.'),
-                    new Text('Add Some Items To Proceed To Checkout.'),
+                    new Text('Your Cart Is Empty.', style:  hintSfsemiboldred(),),
+                    new Text('Add Some Items To Proceed To Checkout.', style: textBarlowRegularBlack(),),
                   ],
                 ),
               ),
               actions: <Widget>[
                 new FlatButton(
-                  child: new Text('ok'),
+                  child: new Text('ok', style: textbarlowRegularaPrimary(),),
                   onPressed: () {
                     Navigator.pop(context);
                   },
@@ -293,9 +294,7 @@ class _MyCartState extends State<MyCart> {
 //                  iconTheme: IconThemeData(color: Colors.black),
                 ),
       body: isGetTokenLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
+          ? SquareLoader()
           : token == null
               ? Login()
               : cartItem == null
@@ -712,15 +711,13 @@ class _MyCartState extends State<MyCart> {
                       ),
                     ),
       bottomNavigationBar: isGetTokenLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
+          ? SquareLoader()
           : token == null
               ? Container(
                   height: 120,
                 )
               : isLoadingCart
-                  ? Center(child: CircularProgressIndicator())
+                  ? SquareLoader()
                   : cartItem == null
                       ? Container(
                           height: 120.0,

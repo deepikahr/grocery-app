@@ -122,12 +122,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     prefs.setString("playerId", playerId);
   }
 
-  loader() {
-    return Center(
-      child: CircularProgressIndicator(),
-    );
-  }
-
   tabIcon(icon, title) {
     return Padding(
       padding: const EdgeInsets.only(top: 8),
@@ -176,7 +170,10 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
         ),
         tabBarHeight: 60,
-        indicator: BoxDecoration(color: Colors.black),
+        indicator: BoxDecoration(
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0),),
+            color: Colors.black
+        ),
         labelColor: primary,
         tabBarColor: Colors.black,
         unselectedLabelColor: greyc,

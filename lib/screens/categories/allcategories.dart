@@ -7,6 +7,7 @@ import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/widgets/categoryBlock.dart';
+import 'package:grocery_pro/widgets/loader.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -97,7 +98,7 @@ class _AllCategoriesState extends State<AllCategories>
         iconTheme: IconThemeData(color: Colors.black, size: 15.0),
       ),
       body: isLoadingProductsList && isLoadingcategoryList
-          ? Center(child: CircularProgressIndicator())
+          ? SquareLoader()
           : Container(
               child: GridView.builder(
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),

@@ -287,6 +287,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                           "Submit ",
                           style: textbarlowMediumBlack(),
                         ),
+                        SizedBox(height: 10,),
                         isResetPasswordLoading
                             ? Image.asset(
                                 'lib/assets/images/spinner.gif',

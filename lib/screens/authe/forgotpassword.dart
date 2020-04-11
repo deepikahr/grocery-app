@@ -52,7 +52,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       children: <Widget>[
                         new Text(
                           '${onValue['response_data']['message']}',
-                          style: textBarlowRegularBlack(),
+                          style: textBarlowMediumBlack(),
                         ),
                       ],
                     ),
@@ -210,6 +210,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         "Submit",
                         style: textBarlowRegularrBlack(),
                       ),
+                      SizedBox(height: 10,),
                       isVerfyEmailLoading
                           ? Image.asset(
                               'lib/assets/images/spinner.gif',

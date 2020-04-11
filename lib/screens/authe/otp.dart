@@ -88,13 +88,13 @@ class _OtpState extends State<Otp> {
                     content: new SingleChildScrollView(
                       child: new ListBody(
                         children: <Widget>[
-                          new Text('${onValue['response_data']['message']}'),
+                          new Text('${onValue['response_data']['message']}', style: textBarlowMediumBlack(),),
                         ],
                       ),
                     ),
                     actions: <Widget>[
                       new FlatButton(
-                        child: new Text('OK'),
+                        child: new Text('OK', style: TextStyle(color: green),),
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -137,7 +137,7 @@ class _OtpState extends State<Otp> {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return new AlertDialog(
-          title: new Text("error"),
+          title: new Text("Error", style: hintSfMediumredsmall(),),
           content: new SingleChildScrollView(
             child: new ListBody(
               children: <Widget>[
@@ -260,6 +260,7 @@ class _OtpState extends State<Otp> {
                       "Submit OTP",
                       style: textbarlowMediumBlack(),
                     ),
+                    SizedBox(height: 10,),
                     isOtpVerifyLoading
                         ? Image.asset(
                             'lib/assets/images/spinner.gif',

@@ -10,6 +10,7 @@ import 'package:grocery_pro/service/fav-service.dart';
 import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
+import 'package:grocery_pro/widgets/loader.dart';
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:grocery_pro/widgets/categoryBlock.dart';
@@ -248,15 +249,15 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                     style: textBarlowRegularrBlacksm(),
                   ),
                   Text(
-                    addressData.substring(0, 15) + '...',
+                    addressData.substring(0, 22) + '...',
                     style: textBarlowSemiBoldBlackbig(),
                   )
                 ],
               ),
-              InkWell(
-                onTap: () => _scaffoldKeydrawer.currentState.openEndDrawer(),
-                child: Image.asset('lib/assets/icons/menu.png'),
-              ),
+//              InkWell(
+//                onTap: () => _scaffoldKeydrawer.currentState.openEndDrawer(),
+//                child: Image.asset('lib/assets/icons/menu.png'),
+//              ),
             ],
           );
   }
@@ -341,9 +342,10 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bg,
       key: _scaffoldKeydrawer,
       body: (isLoadingcategoryList || isLoadingProductsList)
-          ? Center(child: CircularProgressIndicator())
+          ? SquareLoader()
           : SingleChildScrollView(
               physics: ScrollPhysics(),
               child: Padding(
@@ -376,7 +378,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                         ),
                       ],
                     ),
-                    // SizedBox(height: 20),
+                     SizedBox(height: 20),
                     categoryRow(),
                     productsList.length > 0
                         ? GridView.builder(
@@ -389,7 +391,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                 SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2,
                                     crossAxisSpacing: 16,
-                                    mainAxisSpacing: 16),
+                                    mainAxisSpacing: 16
+                                ),
                             itemBuilder: (BuildContext context, int i) {
                               if (productsList[i]['averageRating'] == null) {
                                 productsList[i]['averageRating'] = 0;
