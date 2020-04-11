@@ -14,6 +14,7 @@ import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/service/auth-service.dart';
+import 'package:grocery_pro/widgets/loader.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -314,7 +315,7 @@ class _ProfileState extends State<Profile> {
                                          child: new AlertDialog(
                                            title: new Text(
                                              'Are You Sure?',
-                                             style: textBarlowRegularBlack(),
+                                             style:  hintSfsemiboldred(),
                                            ),
                                            content: new SingleChildScrollView(
                                              child: new ListBody(
@@ -322,14 +323,14 @@ class _ProfileState extends State<Profile> {
                                                  new Text(
                                                    'Delete Card',
                                                    style:
-                                                   textBarlowRegularBlack(),
+                                                   hintSfsemiboldblacktext(),
                                                  ),
                                                ],
                                              ),
                                            ),
                                            actions: <Widget>[
                                              new FlatButton(
-                                               child: new Text('Cancel'),
+                                               child: new Text('Cancel', style: TextStyle(color: red),),
                                                onPressed: () {
                                                  Navigator.pop(context);
                                                },
@@ -479,15 +480,13 @@ class _ProfileState extends State<Profile> {
                   automaticallyImplyLeading: false,
                 ),
       body: isGetTokenLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
+          ? SquareLoader()
           : token == null
               ? Login()
               : isCardListLoading
-                  ? Center(child: CircularProgressIndicator())
+                  ? SquareLoader()
                   : isLoading
-                      ? Center(child: CircularProgressIndicator())
+                      ? SquareLoader()
                       : ListView(
                           children: <Widget>[
                             InkWell(

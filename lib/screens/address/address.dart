@@ -10,6 +10,7 @@ import 'package:grocery_pro/service/constants.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/address-service.dart';
+import 'package:grocery_pro/widgets/loader.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -85,7 +86,7 @@ class _AddressState extends State<Address> {
         backgroundColor: primary,
       ),
       body: addressLoading
-          ? Center(child: CircularProgressIndicator())
+          ? SquareLoader()
           : ListView(
               children: <Widget>[
                 Row(

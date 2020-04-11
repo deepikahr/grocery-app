@@ -6,6 +6,7 @@ import 'package:grocery_pro/service/payment-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/product-service.dart';
+import 'package:grocery_pro/widgets/loader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
@@ -222,7 +223,7 @@ class _PaymentState extends State<Payment> {
     }
     Widget paymentMethod() {
       return isCardListLoading
-          ? Center(child: CircularProgressIndicator())
+          ? SquareLoader()
           : Container(
               margin: EdgeInsetsDirectional.only(top: 10.0),
               decoration: BoxDecoration(color: Colors.white, boxShadow: [
@@ -270,9 +271,12 @@ class _PaymentState extends State<Payment> {
 
     Widget buildSaveCardInfo() {
       return cardList.length == 0
-          ? Center(
+          ?
+      Container(
+              alignment: AlignmentDirectional.center,
+              padding: EdgeInsets.only(top: 20),
               child: Text(
-                'No Saved Cards. Please add one!',
+                'No saved cards. Please add one!',
                 style: textBarlowRegularBlack(),
               ),
             )
@@ -379,7 +383,7 @@ class _PaymentState extends State<Payment> {
                             child: new AlertDialog(
                               title: new Text(
                                 'Are You Sure?',
-                                style: textBarlowRegularBlack(),
+                                style:  hintSfsemiboldred()
                               ),
                               content: new SingleChildScrollView(
                                 child: new ListBody(
@@ -443,7 +447,7 @@ class _PaymentState extends State<Payment> {
         iconTheme: IconThemeData(color: Colors.black, size: 15.0),
       ),
       body: isCardListLoading
-          ? Center(child: CircularProgressIndicator())
+          ? SquareLoader()
           : ListView(
               children: <Widget>[
                 Container(

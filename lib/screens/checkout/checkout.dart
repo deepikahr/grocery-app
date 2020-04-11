@@ -13,6 +13,7 @@ import 'package:grocery_pro/service/auth-service.dart';
 import 'package:grocery_pro/screens/address/add-address.dart';
 import 'package:grocery_pro/service/address-service.dart';
 import 'package:grocery_pro/screens/address/edit-address.dart';
+import 'package:grocery_pro/widgets/loader.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -403,6 +404,7 @@ class _CheckoutState extends State<Checkout> {
           title: new Text(
             "$error",
             style: hintSfsemiboldb(),
+
             textAlign: TextAlign.center,
           ),
           content: Container(
@@ -469,9 +471,9 @@ class _CheckoutState extends State<Checkout> {
         iconTheme: IconThemeData(color: Colors.black, size: 1.0),
       ),
       body: addressLoading
-          ? Center(child: CircularProgressIndicator())
+          ? SquareLoader()
           : deliverySlotsLoading
-              ? Center(child: CircularProgressIndicator())
+              ? SquareLoader()
               : ListView(
                   children: <Widget>[
                     Container(

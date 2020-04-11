@@ -6,6 +6,7 @@ import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/fav-service.dart';
 import 'package:grocery_pro/style/style.dart';
+import 'package:grocery_pro/widgets/loader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:grocery_pro/widgets/productCard.dart';
 
@@ -128,15 +129,11 @@ class _SavedItemsState extends State<SavedItems> {
                   automaticallyImplyLeading: false,
                 ),
       body: isGetTokenLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
+          ? SquareLoader()
           : token == null
               ? Login()
               : isFavListLoading
-                  ? Center(
-                      child: CircularProgressIndicator(),
-                    )
+                  ? SquareLoader()
                   : favProductList.length != 0
                       ? GridView.builder(
                           padding: EdgeInsets.symmetric(

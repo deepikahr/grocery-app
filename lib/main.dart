@@ -5,6 +5,7 @@ import 'package:grocery_pro/screens/home/home.dart';
 import 'package:grocery_pro/service/auth-service.dart';
 import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
+import 'package:grocery_pro/style/style.dart';
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -119,7 +120,8 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'Readymade Grocery App',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: primary,
+        accentColor: primary
       ),
       home: Home(),
     );

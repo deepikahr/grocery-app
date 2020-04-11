@@ -6,6 +6,7 @@ import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/service/fav-service.dart';
 import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
+import 'package:grocery_pro/widgets/loader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:grocery_pro/widgets/productCard.dart';
 import 'package:grocery_pro/style/style.dart';
@@ -111,7 +112,7 @@ class _SubCategoriesState extends State<SubCategories> {
         iconTheme: IconThemeData(color: Colors.black, size: 1.0),
       ),
       body: isLoadingSubProductsList
-          ? Center(child: CircularProgressIndicator())
+          ? SquareLoader()
           : Stack(
               children: <Widget>[
                 subProductsList.length == 0

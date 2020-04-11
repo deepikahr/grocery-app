@@ -78,13 +78,13 @@ class _SignupState extends State<Signup> {
                   content: new SingleChildScrollView(
                     child: new ListBody(
                       children: <Widget>[
-                        new Text(onValue['response_data']),
+                        new Text(onValue['response_data'], style: textBarlowRegularBlack(),),
                       ],
                     ),
                   ),
                   actions: <Widget>[
                     new FlatButton(
-                      child: new Text('OK'),
+                      child: new Text('OK', style: textbarlowRegularaPrimary(),),
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -548,6 +548,7 @@ class _SignupState extends State<Signup> {
               "Sign Up",
               style: textBarlowRegularrBlack(),
             ),
+            SizedBox(height: 10,),
             registerationLoading
                 ? Image.asset(
                     'lib/assets/images/spinner.gif',

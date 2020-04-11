@@ -57,7 +57,7 @@ class _AddCardState extends State<AddCard> {
                   return new AlertDialog(
                     title: new Text(
                       'Success',
-                      style: textBarlowRegularBlack(),
+                      style:  hintSfsemiboldred()
                     ),
                     content: new SingleChildScrollView(
                       child: new ListBody(
@@ -112,7 +112,7 @@ class _AddCardState extends State<AddCard> {
             isCardListLoading = false;
           });
         }
-        showSnackbar("Please Enter Correct Expiry Month and Year");
+        showSnackbar("Please enter correct expiry month and year");
       }
     } else {
       return;
@@ -156,7 +156,7 @@ class _AddCardState extends State<AddCard> {
                   },
                   validator: (String value) {
                     if (value.isEmpty || value.length != 16) {
-                      return "Please Enter a Card Number";
+                      return "Please enter a card number";
                     } else
                       return null;
                   },
@@ -204,7 +204,7 @@ class _AddCardState extends State<AddCard> {
                   },
                   validator: (String value) {
                     if (value.isEmpty) {
-                      return "Please Enter a Card holder name";
+                      return "Please enter a card holder name";
                     } else
                       return null;
                   },
@@ -248,7 +248,7 @@ class _AddCardState extends State<AddCard> {
                   },
                   validator: (String value) {
                     if (value.isEmpty) {
-                      return "Please Enter  Bank name";
+                      return "Please enter  bank name";
                     } else
                       return null;
                   },
@@ -304,7 +304,7 @@ class _AddCardState extends State<AddCard> {
                               },
                               validator: (String value) {
                                 if (value.isEmpty || value.length != 2) {
-                                  return "Please Enter a Card Correct Card Expired Month";
+                                  return "Please enter a card correct card expired month";
                                 } else
                                   return null;
                               },
@@ -355,7 +355,7 @@ class _AddCardState extends State<AddCard> {
                             },
                             validator: (String value) {
                               if (value.isEmpty || value.length != 4) {
-                                return "Please Enter a Card Correct Card Expired Year";
+                                return "Please enter a card correct card expired year";
                               } else
                                 return null;
                             },
@@ -406,7 +406,7 @@ class _AddCardState extends State<AddCard> {
                             },
                             validator: (String value) {
                               if (value.isEmpty || value.length != 3) {
-                                return "Please Enter a Card Correct Card CVV";
+                                return "Please enter a card correct card CVV";
                               } else
                                 return null;
                             },

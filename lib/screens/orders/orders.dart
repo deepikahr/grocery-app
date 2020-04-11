@@ -10,6 +10,7 @@ import 'package:grocery_pro/service/cart-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/product-service.dart';
+import 'package:grocery_pro/widgets/loader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../style/style.dart';
@@ -251,9 +252,7 @@ class _OrdersState extends State<Orders> {
                 ))
             : Container(),
         body: isLoading
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
+            ? SquareLoader()
             : orderList.length == 0
                 ? Center(
                     child: Image.asset('lib/assets/images/no-orders.png'),

@@ -5,6 +5,7 @@ import 'package:grocery_pro/service/auth-service.dart';
 import 'package:grocery_pro/service/constants.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
+import 'package:grocery_pro/widgets/loader.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
 SentryError sentryError = new SentryError();
@@ -165,19 +166,19 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
           content: new SingleChildScrollView(
             child: new ListBody(
               children: <Widget>[
-                new Text(message),
+                new Text(message, style: textBarlowRegularBlack(),),
               ],
             ),
           ),
           actions: <Widget>[
             new FlatButton(
-              child: new Text('No'),
+              child: new Text('No', style: TextStyle(color: red),),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             new FlatButton(
-              child: new Text('Yes'),
+              child: new Text('Yes', style: textbarlowRegularaPrimary(),),
               onPressed: () {
                 socket.emit(
                     "close-chat", {"chatId": chatID, "store": resInfo['_id']});
@@ -250,9 +251,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
           backgroundColor: primary,
         ),
         body: isChatLoading
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
+            ? SquareLoader()
             : Stack(
                 fit: StackFit.expand,
                 children: <Widget>[
