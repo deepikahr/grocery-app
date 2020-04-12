@@ -375,7 +375,7 @@ class _OrdersState extends State<Orders> {
                     )
                   : Text(
                       'Ordered : ' +
-                              DateFormat("dd-MM-yyyy HH:MM a").format(
+                              DateFormat('dd-MMM-yy hh:mm a').format(
                                   DateTime.fromMillisecondsSinceEpoch(
                                       orderDetails['appTimestamp'])) ??
                           "",

@@ -136,6 +136,7 @@ class _ProfileState extends State<Profile> {
       });
     }
     Common.getUserInfo().then((value) {
+      print(value);
       if (value == null) {
         if (mounted) {
           setState(() {
