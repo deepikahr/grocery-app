@@ -167,7 +167,14 @@ class _SavedItemsState extends State<SavedItems> {
 //                                children: <Widget>[
                                   ProductCard(
                                 image: favProductList[i]['product']['imageUrl'],
-                                title: favProductList[i]['product']['title'],
+                                title: favProductList[i]['product']
+                                                ['title']
+                                            .length >
+                                        10
+                                    ? favProductList[i]['product']['title']
+                                            .substring(0, 10) +
+                                        ".."
+                                    : favProductList[i]['product']['title'],
                                 currency: currency,
                                 price: favProductList[i]['product']['variant']
                                     [0]['price'],

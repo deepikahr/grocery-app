@@ -133,7 +133,12 @@ class _SearchItemState extends State<SearchItem> {
                                           searchresult[index]['imageUrl']),
                                     ),
                                     title: new Text(
-                                      searchresult[index]['title'].toString(),
+                                      searchresult[index]['title'].length > 20
+                                          ? searchresult[index]['title']
+                                                  .substring(0, 20) +
+                                              ".."
+                                          : searchresult[index]['title']
+                                              .toString(),
                                       style: textbarlowRegularBlack(),
                                     ),
                                     subtitle: Column(

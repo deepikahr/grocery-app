@@ -153,15 +153,18 @@ class _SubCategoriesState extends State<SubCategories> {
 //                            Stack(
 //                              children: <Widget>[
                                 ProductCard(
-                                  image: subProductsList[i]['imageUrl'],
-                                  title: subProductsList[i]['title'],
-                                  currency: currency,
-                                  category: subProductsList[i]['category'],
-                                  price: subProductsList[i]['variant'][0]
-                                      ['price'],
-                                  rating: subProductsList[i]['averageRating']
-                                      .toString(),
-                                ),
+                              image: subProductsList[i]['imageUrl'],
+                              title: subProductsList[i]['title'].length > 10
+                                  ? subProductsList[i]['title']
+                                          .substring(0, 10) +
+                                      ".."
+                                  : subProductsList[i]['title'],
+                              currency: currency,
+                              category: subProductsList[i]['category'],
+                              price: subProductsList[i]['variant'][0]['price'],
+                              rating: subProductsList[i]['averageRating']
+                                  .toString(),
+                            ),
 //                                subProductsList[i]['discount'] == null
 //                                    ? Positioned(
 //                                        child: Stack(
