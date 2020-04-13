@@ -88,6 +88,7 @@ class _MyAppState extends State<MyApp> {
 
   checkToken(token) async {
     await LoginService.checkToken().then((onValue) {
+      print(onValue);
       try {
         if (onValue['response_data']['tokenVerify'] == false) {
           Common.setToken(null).then((onValue) {
@@ -109,20 +110,16 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarBrightness: Brightness.dark,
-      statusBarIconBrightness: Brightness.dark
+        statusBarBrightness: Brightness.dark,
+        statusBarIconBrightness: Brightness.dark
 //      statusBarColor: Colors.pink, // status bar color
-    ));
+        ));
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Readymade Grocery App',
-      theme: ThemeData(
-        primaryColor: primary,
-        accentColor: primary
-      ),
+      theme: ThemeData(primaryColor: primary, accentColor: primary),
       home: Home(),
     );
   }

@@ -120,8 +120,11 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         .setInFocusDisplayType(OSNotificationDisplayType.notification);
     var status = await OneSignal.shared.getPermissionSubscriptionState();
     String playerId = status.subscriptionStatus.userId;
-
-    prefs.setString("playerId", playerId);
+    if (playerId == null) {
+      configLocalNotification();
+    } else {
+      prefs.setString("playerId", playerId);
+    }
   }
 
   tabIcon(icon, title) {
@@ -151,14 +154,14 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       body: currencyLoading
           ? SquareLoader()
           : GFTabBarView(
-        controller: tabController,
-        children: <Widget>[
-          Store(),
-          SavedItems(),
-          MyCart(),
-          Profile(),
-        ],
-      ),
+              controller: tabController,
+              children: <Widget>[
+                Store(),
+                SavedItems(),
+                MyCart(),
+                Profile(),
+              ],
+            ),
       bottomNavigationBar: GFTabBar(
         initialIndex: currentIndex,
         length: 4,
