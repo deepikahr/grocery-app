@@ -169,7 +169,9 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         ],
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
+            topLeft: Radius.circular(15.0),
+            topRight: Radius.circular(15.0),
+          ),
         ),
         tabBarHeight: 60,
         indicator: BoxDecoration(
