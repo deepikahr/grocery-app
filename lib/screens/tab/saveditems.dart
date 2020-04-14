@@ -16,8 +16,8 @@ SentryError sentryError = new SentryError();
 class SavedItems extends StatefulWidget {
   final Map<String, Map<String, String>> localizedValues;
   final String locale;
-  SavedItems({Key key, this.locale, this.localizedValues});
 
+  SavedItems({Key key, this.locale, this.localizedValues}) : super(key: key);
   @override
   _SavedItemsState createState() => _SavedItemsState();
 }

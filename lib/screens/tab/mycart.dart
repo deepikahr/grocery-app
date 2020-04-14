@@ -17,17 +17,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 SentryError sentryError = new SentryError();
 
 class MyCart extends StatefulWidget {
-  final int quantity;
-  final int currentIndex;
   final Map<String, Map<String, String>> localizedValues;
   final String locale;
-  MyCart(
-      {Key key,
-      this.quantity,
-      this.currentIndex,
-      this.locale,
-      this.localizedValues})
-      : super(key: key);
+  MyCart({Key key, this.locale, this.localizedValues}) : super(key: key);
   @override
   _MyCartState createState() => _MyCartState();
 }
@@ -451,23 +443,23 @@ class _MyCartState extends State<MyCart> {
                                                       style:
                                                           textbarlowBoldGreen(),
                                                     ),
-                                                    cartItem['cart'][i][
-                                                                'productTotal'] ==
-                                                            null
-                                                        ? Text("")
-                                                        : Text(
-                                                            " (" +
-                                                                currency +
-                                                                (cartItem['cart']
-                                                                            [i][
-                                                                        'productTotal'])
-                                                                    .toString() +
-                                                                ")",
-                                                            style:
-                                                                textbarlowBoldGreen(),
-                                                          )
                                                   ],
-                                                )
+                                                ),
+                                                cartItem['cart'][i]
+                                                            ['productTotal'] ==
+                                                        null
+                                                    ? Text("")
+                                                    : Text(
+                                                        " (" +
+                                                            currency +
+                                                            (cartItem['cart'][i]
+                                                                    [
+                                                                    'productTotal'])
+                                                                .toString() +
+                                                            ")",
+                                                        style:
+                                                            textbarlowBoldGreen(),
+                                                      )
                                               ],
                                             ),
                                           ),
