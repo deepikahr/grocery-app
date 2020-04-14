@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/product/product-details.dart';
+import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/style/style.dart';
 
 class SearchItem extends StatefulWidget {
   final List productsList, favProductList;
   final String currency;
-  SearchItem({
-    Key key,
-    this.productsList,
-    this.favProductList,
-    this.currency,
-  }) : super(key: key);
+  final Map<String, Map<String, String>> localizedValues;
+  final String locale;
+  SearchItem(
+      {Key key,
+      this.productsList,
+      this.favProductList,
+      this.currency,
+      this.locale,
+      this.localizedValues})
+      : super(key: key);
   @override
   _SearchItemState createState() => _SearchItemState();
 }
@@ -50,7 +55,8 @@ class _SearchItemState extends State<SearchItem> {
                     },
                     child: new Icon(Icons.arrow_back, color: Colors.black),
                   ),
-                  hintText: "What are you buying today?",
+                  hintText:
+                      MyLocalizations.of(context).whatareyoubuyingtoday + "?",
                   fillColor: Color(0xFFF0F0F0),
                   filled: true,
                   focusColor: Colors.black,
@@ -83,23 +89,13 @@ class _SearchItemState extends State<SearchItem> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text(searchresult.length.toString() + " Items Founds",
+                          Text(
+                              searchresult.length.toString() +
+                                  MyLocalizations.of(context).iteamsFounds,
                               style: textBarlowMediumBlack()),
-                          // InkWell(
-                          //     onTap: () {
-                          //       Navigator.push(
-                          //         context,
-                          //         MaterialPageRoute(
-                          //           builder: (context) => Home(),
-                          //         ),
-                          //       );
-                          //     },
-                          //     child: Text('Show More',
-                          //         style: textBarlowMediumPrimary()))
                         ],
                       ),
                     ),
-                    // Divider(),
                     new ListView.builder(
                       shrinkWrap: true,
                       itemCount: searchresult.length,
@@ -113,6 +109,8 @@ class _SearchItemState extends State<SearchItem> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => ProductDetails(
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues,
                                       productDetail: searchresult[index],
                                       favProductList:
                                           widget.favProductList == null
@@ -172,10 +170,10 @@ class _SearchItemState extends State<SearchItem> {
                                                       .toString(),
                                               style: textBarlowMediumGreen(),
                                             ),
-                                            searchresult[index]['discount'] ==
-                                                    null
-                                                ? Container()
-                                                : Container(
+                                            searchresult[index]
+                                                        ['isDealAvailable'] ==
+                                                    true
+                                                ? Container(
                                                     height: 20,
                                                     decoration: BoxDecoration(
                                                       borderRadius:
@@ -188,12 +186,13 @@ class _SearchItemState extends State<SearchItem> {
                                                     ),
                                                     child: GFButtonBadge(
                                                       text:
-                                                          "${searchresult[index]['discount']}% off",
+                                                          "${searchresult[index]['delaPercent']}% off",
                                                       onPressed: null,
                                                       color: Colors
                                                           .deepOrange[300],
                                                     ),
                                                   )
+                                                : Container()
                                           ],
                                         ),
                                       ],

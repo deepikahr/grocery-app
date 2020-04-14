@@ -9,6 +9,7 @@ import 'package:grocery_pro/screens/orders/orders.dart';
 import 'package:grocery_pro/screens/address/address.dart';
 import 'package:grocery_pro/screens/payment/addCard.dart';
 import 'package:grocery_pro/screens/tab/editprofile.dart';
+import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/payment-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
@@ -19,6 +20,10 @@ import 'package:grocery_pro/widgets/loader.dart';
 SentryError sentryError = new SentryError();
 
 class Profile extends StatefulWidget {
+  final Map<String, Map<String, String>> localizedValues;
+  final String locale;
+  Profile({Key key, this.locale, this.localizedValues});
+
   @override
   _ProfileState createState() => _ProfileState();
 }
@@ -191,7 +196,10 @@ class _ProfileState extends State<Profile> {
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-              builder: (BuildContext context) => MyApp(),
+              builder: (BuildContext context) => MyApp(
+                widget.locale,
+                widget.localizedValues,
+              ),
             ),
             (Route<dynamic> route) => false);
       }
@@ -206,7 +214,10 @@ class _ProfileState extends State<Profile> {
               var result = Navigator.push(
                 context,
                 new MaterialPageRoute(
-                  builder: (BuildContext context) => new AddCard(),
+                  builder: (BuildContext context) => new AddCard(
+                    locale: widget.locale,
+                    localizedValues: widget.localizedValues,
+                  ),
                 ),
               );
 
@@ -222,7 +233,6 @@ class _ProfileState extends State<Profile> {
               }
             },
             child: Container(
-//              padding: const EdgeInsets.only(left: 15.0),
               height: 141,
               width: 232,
               decoration: BoxDecoration(
@@ -238,7 +248,7 @@ class _ProfileState extends State<Profile> {
                   ),
                   SizedBox(height: 5),
                   Text(
-                    'Add new card',
+                    MyLocalizations.of(context).addCard,
                     style: textBarlowRegularBlack(),
                   )
                 ],
@@ -276,8 +286,6 @@ class _ProfileState extends State<Profile> {
                                 Color(0xFF5FB8E5),
                                 Color(0xFF5FB8E5),
                               ]),
-
-//                          color: Color(0xFF5FB8E5),
                           borderRadius: BorderRadius.circular(5.0)),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -313,14 +321,17 @@ class _ProfileState extends State<Profile> {
                                           width: 270.0,
                                           child: new AlertDialog(
                                             title: new Text(
-                                              'Are You Sure?',
+                                              MyLocalizations.of(context)
+                                                      .areYouSure +
+                                                  "?",
                                               style: hintSfsemiboldred(),
                                             ),
                                             content: new SingleChildScrollView(
                                               child: new ListBody(
                                                 children: <Widget>[
                                                   new Text(
-                                                    'Delete Card',
+                                                    MyLocalizations.of(context)
+                                                        .deleteCard,
                                                     style:
                                                         hintSfsemiboldblacktext(),
                                                   ),
@@ -330,7 +341,8 @@ class _ProfileState extends State<Profile> {
                                             actions: <Widget>[
                                               new FlatButton(
                                                 child: new Text(
-                                                  'Cancel',
+                                                  MyLocalizations.of(context)
+                                                      .cancel,
                                                   style: TextStyle(color: red),
                                                 ),
                                                 onPressed: () {
@@ -346,7 +358,9 @@ class _ProfileState extends State<Profile> {
                                                         color: Colors.black,
                                                       )
                                                     : Text(
-                                                        'Ok',
+                                                        MyLocalizations.of(
+                                                                context)
+                                                            .ok,
                                                         style:
                                                             textBarlowRegularBlack(),
                                                       ),
@@ -388,7 +402,8 @@ class _ProfileState extends State<Profile> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Text(
-                                      'Card holder',
+                                      MyLocalizations.of(context)
+                                          .cardHolderName,
                                       style: textbarlowmediumwhitedull(),
                                     ),
                                     Text(
@@ -401,7 +416,7 @@ class _ProfileState extends State<Profile> {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: <Widget>[
                                     Text(
-                                      'Expires',
+                                      MyLocalizations.of(context).expired,
                                       style: textbarlowmediumwhitedull(),
                                     ),
                                     Text(
@@ -424,7 +439,10 @@ class _ProfileState extends State<Profile> {
                   var result = Navigator.push(
                     context,
                     new MaterialPageRoute(
-                      builder: (BuildContext context) => new AddCard(),
+                      builder: (BuildContext context) => new AddCard(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                      ),
                     ),
                   );
 
@@ -457,7 +475,7 @@ class _ProfileState extends State<Profile> {
                       ),
                       SizedBox(height: 5),
                       Text(
-                        'Add new card',
+                        MyLocalizations.of(context).addCard,
                         style: textBarlowRegularBlack(),
                       )
                     ],
@@ -476,7 +494,7 @@ class _ProfileState extends State<Profile> {
               : GFAppBar(
                   elevation: 0,
                   title: Text(
-                    'Profile',
+                    MyLocalizations.of(context).profile,
                     style: textbarlowSemiBoldBlack(),
                   ),
                   centerTitle: true,
@@ -486,7 +504,10 @@ class _ProfileState extends State<Profile> {
       body: isGetTokenLoading
           ? SquareLoader()
           : token == null
-              ? Login()
+              ? Login(
+                  locale: widget.locale,
+                  localizedValues: widget.localizedValues,
+                )
               : isCardListLoading
                   ? SquareLoader()
                   : isLoading
@@ -498,8 +519,10 @@ class _ProfileState extends State<Profile> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        EditProfile(userInfo: userInfo),
+                                    builder: (context) => EditProfile(
+                                        locale: widget.locale,
+                                        localizedValues: widget.localizedValues,
+                                        userInfo: userInfo),
                                   ),
                                 );
                               },
@@ -637,8 +660,6 @@ class _ProfileState extends State<Profile> {
                                       ),
                                     ),
                                     Flexible(
-//                                      fit: FlexFit.tight,
-//                                      flex: 1,
                                       child: Row(
                                         children: <Widget>[
                                           Row(
@@ -648,7 +669,6 @@ class _ProfileState extends State<Profile> {
                                               Padding(
                                                 padding:
                                                     EdgeInsets.only(top: 45),
-//                                                child:SvgPicture.asset('lib/assets/icons/editt.svg')
                                                 child: SvgPicture.asset(
                                                     'lib/assets/icons/editt.svg'),
                                               )
@@ -669,7 +689,7 @@ class _ProfileState extends State<Profile> {
                                   padding: const EdgeInsets.only(
                                       top: 10.0, bottom: 10.0, left: 20.0),
                                   child: Text(
-                                    'Saved cards',
+                                    MyLocalizations.of(context).savedCards,
                                     style: textBarlowMediumBlack(),
                                   ),
                                 ),
@@ -717,7 +737,11 @@ class _ProfileState extends State<Profile> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => Address()),
+                                    builder: (context) => Address(
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues,
+                                    ),
+                                  ),
                                 );
                               },
                               child: Container(
@@ -732,7 +756,7 @@ class _ProfileState extends State<Profile> {
                                       padding: const EdgeInsets.only(
                                           top: 10.0, bottom: 10.0, left: 20.0),
                                       child: Text(
-                                        'Address',
+                                        MyLocalizations.of(context).address,
                                         style: textBarlowMediumBlack(),
                                       ),
                                     ),
@@ -749,6 +773,8 @@ class _ProfileState extends State<Profile> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => Orders(
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues,
                                       userID: userID,
                                     ),
                                   ),
@@ -766,7 +792,8 @@ class _ProfileState extends State<Profile> {
                                       padding: const EdgeInsets.only(
                                           top: 10.0, bottom: 10.0, left: 20.0),
                                       child: Text(
-                                        'Order History',
+                                        MyLocalizations.of(context)
+                                            .orderHistory,
                                         style: textBarlowMediumBlack(),
                                       ),
                                     ),
@@ -782,7 +809,10 @@ class _ProfileState extends State<Profile> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => Chat(),
+                                    builder: (context) => Chat(
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues,
+                                    ),
                                   ),
                                 );
                               },
@@ -798,7 +828,7 @@ class _ProfileState extends State<Profile> {
                                       padding: const EdgeInsets.only(
                                           top: 10.0, bottom: 10.0, left: 20.0),
                                       child: Text(
-                                        'Chat',
+                                        MyLocalizations.of(context).chat,
                                         style: textBarlowMediumBlack(),
                                       ),
                                     ),
@@ -832,7 +862,8 @@ class _ProfileState extends State<Profile> {
                                         child: Row(
                                           children: <Widget>[
                                             Text(
-                                              'Log out',
+                                              MyLocalizations.of(context)
+                                                  .logout,
                                               style: textBarlowMediumBlack(),
                                             ),
                                           ],

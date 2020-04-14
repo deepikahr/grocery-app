@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_pro/service/auth-service.dart';
 import 'package:getflutter/getflutter.dart';
+import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/style/style.dart';
@@ -20,7 +21,10 @@ SentryError sentryError = new SentryError();
 
 class EditProfile extends StatefulWidget {
   final Map<String, dynamic> userInfo;
-  EditProfile({Key key, this.userInfo}) : super(key: key);
+  final Map<String, Map<String, String>> localizedValues;
+  final String locale;
+  EditProfile({Key key, this.userInfo, this.locale, this.localizedValues})
+      : super(key: key);
 
   @override
   _EditProfileState createState() => _EditProfileState();
@@ -219,7 +223,7 @@ class _EditProfileState extends State<EditProfile> {
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Text(
-                    'Select',
+                    MyLocalizations.of(context).select,
                     style: TextStyle(
                         color: Colors.red,
                         fontSize: 20,
@@ -233,7 +237,7 @@ class _EditProfileState extends State<EditProfile> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(
-                        'Take photo',
+                        MyLocalizations.of(context).takePhoto,
                         style: hintSfboldBig(),
                       ),
                       Icon(Icons.camera_alt),
@@ -247,7 +251,7 @@ class _EditProfileState extends State<EditProfile> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(
-                        'Select from gallery',
+                        MyLocalizations.of(context).chooseFromPhotos,
                         style: hintSfboldBig(),
                       ),
                       Icon(Icons.image),
@@ -262,7 +266,7 @@ class _EditProfileState extends State<EditProfile> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Text(
-                              'Remove photo',
+                              MyLocalizations.of(context).removePhoto,
                               style: hintSfboldBig(),
                             ),
                             Icon(Icons.delete_forever),
@@ -305,7 +309,7 @@ class _EditProfileState extends State<EditProfile> {
       key: _scaffoldKey,
       appBar: GFAppBar(
         title: Text(
-          'Edit Profile',
+          MyLocalizations.of(context).editProfile,
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -401,7 +405,7 @@ class _EditProfileState extends State<EditProfile> {
                   Padding(
                     padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
                     child: Text(
-                      'User Name :',
+                      MyLocalizations.of(context).fullName + ':',
                       style: textbarlowRegularBlack(),
                     ),
                   ),
@@ -436,70 +440,23 @@ class _EditProfileState extends State<EditProfile> {
                         firstName = value;
                       },
                       validator: (String value) {
-                        if (value.isEmpty ||
-                            !RegExp(r'^[A-Za-z ]+$').hasMatch(value)) {
-                          return "Please Enter Valid First Name";
+                        if (value.isEmpty) {
+                          return MyLocalizations.of(context).enterFullName;
+                        } else if (!RegExp(r'^[A-Za-z ]+$').hasMatch(value)) {
+                          return MyLocalizations.of(context)
+                              .pleaseEnterValidFullName;
                         } else
                           return null;
                       },
                     ),
                   ),
-                  // SizedBox(
-                  //   height: 25,
-                  // ),
-                  // Padding(
-                  //   padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
-                  //   child: Text(
-                  //     'Last Name :',
-                  //     style: textbarlowRegularBlack(),
-                  //   ),
-                  // ),
-                  // Padding(
-                  //   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                  //   child: TextFormField(
-                  //     initialValue: userInfo['lastName'] ?? "",
-                  //     style: textBarlowRegularBlack(),
-                  //     keyboardType: TextInputType.text,
-                  //     decoration: InputDecoration(
-                  //       errorBorder: OutlineInputBorder(
-                  //           borderSide:
-                  //               BorderSide(width: 0, color: Color(0xFFF44242))),
-                  //       errorStyle: TextStyle(color: Color(0xFFF44242)),
-                  //       fillColor: Colors.black,
-                  //       focusColor: Colors.black,
-                  //       contentPadding: EdgeInsets.only(
-                  //         left: 15.0,
-                  //         right: 15.0,
-                  //         top: 10.0,
-                  //         bottom: 10.0,
-                  //       ),
-                  //       enabledBorder: const OutlineInputBorder(
-                  //         borderSide:
-                  //             const BorderSide(color: Colors.grey, width: 0.0),
-                  //       ),
-                  //       focusedBorder: OutlineInputBorder(
-                  //         borderSide: BorderSide(color: primary),
-                  //       ),
-                  //     ),
-                  //     onSaved: (String value) {
-                  //       lastName = value;
-                  //     },
-                  //     validator: (String value) {
-                  //       if (value.isEmpty ||
-                  //           !RegExp(r'^[A-Za-z ]+$').hasMatch(value)) {
-                  //         return "Please Enter Valid Last Name";
-                  //       } else
-                  //         return null;
-                  //     },
-                  //   ),
-                  // ),
                   SizedBox(
                     height: 25,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
                     child: Text(
-                      'Phone Number :',
+                      MyLocalizations.of(context).contactNumber + ' :',
                       style: textbarlowRegularBlack(),
                     ),
                   ),
@@ -534,8 +491,12 @@ class _EditProfileState extends State<EditProfile> {
                         mobileNumber = value;
                       },
                       validator: (String value) {
-                        if (value.isEmpty || value.length != 10) {
-                          return "please Enter Valid Mobile Number";
+                        if (value.isEmpty) {
+                          return MyLocalizations.of(context)
+                              .enterYourContactNumber;
+                        } else if (value.length != 10) {
+                          return MyLocalizations.of(context)
+                              .pleaseenter10digitcontactnumber;
                         } else
                           return null;
                       },
@@ -562,7 +523,7 @@ class _EditProfileState extends State<EditProfile> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  "Save",
+                  MyLocalizations.of(context).save,
                   style: textBarlowRegularrBlack(),
                 ),
                 profileEdit

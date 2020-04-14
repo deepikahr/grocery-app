@@ -16,8 +16,11 @@ SentryError sentryError = new SentryError();
 class SubCategories extends StatefulWidget {
   final String catTitle;
   final String catId;
-
-  SubCategories({Key key, this.catId, this.catTitle}) : super(key: key);
+  final Map<String, Map<String, String>> localizedValues;
+  final String locale;
+  SubCategories(
+      {Key key, this.catId, this.catTitle, this.locale, this.localizedValues})
+      : super(key: key);
   @override
   _SubCategoriesState createState() => _SubCategoriesState();
 }
@@ -101,11 +104,11 @@ class _SubCategoriesState extends State<SubCategories> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: GFAppBar(
-        title: Text('${widget.catTitle}',
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 17.0,
-                fontWeight: FontWeight.w600)),
+        title: Text(
+          '${widget.catTitle}',
+          style: TextStyle(
+              color: Colors.black, fontSize: 17.0, fontWeight: FontWeight.w600),
+        ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -142,6 +145,8 @@ class _SubCategoriesState extends State<SubCategories> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => ProductDetails(
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues,
                                       productDetail: subProductsList[i],
                                       favProductList: getTokenValue
                                           ? favProductList
@@ -149,51 +154,43 @@ class _SubCategoriesState extends State<SubCategories> {
                                 ),
                               );
                             },
-                            child:
-//                            Stack(
-//                              children: <Widget>[
+                            child: Stack(
+                              children: <Widget>[
                                 ProductCard(
-                              image: subProductsList[i]['imageUrl'],
-                              title: subProductsList[i]['title'].length > 10
-                                  ? subProductsList[i]['title']
-                                          .substring(0, 10) +
-                                      ".."
-                                  : subProductsList[i]['title'],
-                              currency: currency,
-                              category: subProductsList[i]['category'],
-                              price: subProductsList[i]['variant'][0]['price'],
-                              rating: subProductsList[i]['averageRating']
-                                  .toString(),
+                                  image: subProductsList[i]['imageUrl'],
+                                  title: subProductsList[i]['title'].length > 10
+                                      ? subProductsList[i]['title']
+                                              .substring(0, 10) +
+                                          ".."
+                                      : subProductsList[i]['title'],
+                                  currency: currency,
+                                  category: subProductsList[i]['category'],
+                                  price: subProductsList[i]['variant'][0]
+                                      ['price'],
+                                  rating: subProductsList[i]['averageRating']
+                                      .toString(),
+                                ),
+                                subProductsList[i]['isDealAvailable'] == true
+                                    ? Positioned(
+                                        child: Stack(
+                                          children: <Widget>[
+                                            Image.asset(
+                                                'lib/assets/images/badge.png'),
+                                            Text(
+                                              " " +
+                                                  subProductsList[i]
+                                                          ['delaPercent']
+                                                      .toString() +
+                                                  "% Off",
+                                              style: hintSfboldwhitemed(),
+                                              textAlign: TextAlign.center,
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                    : Container()
+                              ],
                             ),
-//                                subProductsList[i]['discount'] == null
-//                                    ? Positioned(
-//                                        child: Stack(
-//                                        children: <Widget>[
-//                                          Image.asset(
-//                                              'lib/assets/images/badge.png'),
-//                                          Text(
-//                                            '  Organic',
-//                                            style: hintSfboldwhitemed(),
-//                                            textAlign: TextAlign.center,
-//                                          )
-//                                        ],
-//                                      ))
-//                                    : Positioned(
-//                                        child: Stack(
-//                                        children: <Widget>[
-//                                          Image.asset(
-//                                              'lib/assets/images/badge.png'),
-//                                          Text(
-//                                            " " +
-//                                                subProductsList[i]['discount']
-//                                                    .toString(),
-//                                            style: hintSfboldwhitemed(),
-//                                            textAlign: TextAlign.center,
-//                                          )
-//                                        ],
-//                                      ))
-//                              ],
-//                            ),
                           );
                         },
                       ),

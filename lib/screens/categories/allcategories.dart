@@ -2,16 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/categories/subcategories.dart';
+import 'package:grocery_pro/service/localizations.dart';
 
 import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/widgets/categoryBlock.dart';
 import 'package:grocery_pro/widgets/loader.dart';
 
 SentryError sentryError = new SentryError();
 
 class AllCategories extends StatefulWidget {
+  final Map<String, Map<String, String>> localizedValues;
+  final String locale;
+  AllCategories({Key key, this.locale, this.localizedValues});
+
   @override
   _AllCategoriesState createState() => _AllCategoriesState();
 }
@@ -19,10 +23,8 @@ class AllCategories extends StatefulWidget {
 class _AllCategoriesState extends State<AllCategories>
     with TickerProviderStateMixin {
   TabController tabController;
-  bool isLoadingProductsList = false;
-  bool isLoadingcategoryList = false;
-  List categoryList = List();
-  List productsList = List();
+  bool isLoadingProductsList = false, isLoadingcategoryList = false;
+  List categoryList, productsList;
 
   @override
   void initState() {
@@ -91,7 +93,8 @@ class _AllCategoriesState extends State<AllCategories>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: GFAppBar(
-        title: Text('Categories', style: textbarlowSemiBoldBlack()),
+        title: Text(MyLocalizations.of(context).allCategories,
+            style: textbarlowSemiBoldBlack()),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -108,9 +111,8 @@ class _AllCategoriesState extends State<AllCategories>
                     categoryList.length == null ? 0 : categoryList.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
-                  mainAxisSpacing: 12,
-                  crossAxisSpacing: 12
-                ),
+                    mainAxisSpacing: 12,
+                    crossAxisSpacing: 12),
                 itemBuilder: (BuildContext context, int index) {
                   return InkWell(
                     onTap: () {
@@ -118,6 +120,8 @@ class _AllCategoriesState extends State<AllCategories>
                         context,
                         MaterialPageRoute(
                           builder: (BuildContext context) => SubCategories(
+                              locale: widget.locale,
+                              localizedValues: widget.localizedValues,
                               catId: categoryList[index]['_id'],
                               catTitle:
                                   '${categoryList[index]['title'][0].toUpperCase()}${categoryList[index]['title'].substring(1)}'),
@@ -134,7 +138,8 @@ class _AllCategoriesState extends State<AllCategories>
                             height: 85,
                             padding: EdgeInsets.all(5),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(8)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8)),
                               border: Border.all(
                                   color: Colors.black.withOpacity(0.20)),
                             ),
@@ -153,47 +158,6 @@ class _AllCategoriesState extends State<AllCategories>
                         ],
                       ),
                     ),
-//                    Row(
-//                      mainAxisAlignment: MainAxisAlignment.center,
-//                      crossAxisAlignment: CrossAxisAlignment.center,
-//                      children: <Widget>[
-//                        Column(
-//                          children: <Widget>[
-//                            Container(
-//                              decoration: BoxDecoration(
-//                                border: Border.all(color: Colors.grey[300]),
-//                                borderRadius: BorderRadius.circular(10),
-//                              ),
-//                              child: Column(
-//                                children: <Widget>[
-//                                  Padding(
-//                                    padding: const EdgeInsets.all(9.0),
-//                                    child: Container(
-//                                      width: 80,
-//                                      height: 80,
-//                                      decoration: BoxDecoration(
-//                                        borderRadius: BorderRadius.circular(10),
-//                                        image: new DecorationImage(
-//                                          fit: BoxFit.fill,
-//                                          image: new NetworkImage(
-//                                              categoryList[index]['imageUrl']),
-//                                        ),
-//                                      ),
-//                                    ),
-//                                  ),
-//                                ],
-//                              ),
-//                            ),
-//                            SizedBox(height: 2),
-//                            Text(
-//                              categoryList[index]['title'],
-//                              style: textbarlowRegularBlack(),
-//                              maxLines: 2,
-//                            )
-//                          ],
-//                        ),
-//                      ],
-//                    ),
                   );
                 },
               ),

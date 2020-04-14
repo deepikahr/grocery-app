@@ -4,12 +4,15 @@ import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/components/button/gf_button.dart';
 import 'package:getflutter/components/typography/gf_typography.dart';
 import 'package:grocery_pro/screens/authe/otp.dart';
+import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/style/style.dart';
 
 class Verification extends StatefulWidget {
-  Verification({Key key, this.title}) : super(key: key);
+  Verification({Key key, this.title, this.locale, this.localizedValues})
+      : super(key: key);
   final String title;
-
+  final Map<String, Map<String, String>> localizedValues;
+  final String locale;
   @override
   _VerificationState createState() => _VerificationState();
 }
@@ -20,11 +23,13 @@ class _VerificationState extends State<Verification> {
     return Scaffold(
       appBar: GFAppBar(
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20))),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20),
+            bottomRight: Radius.circular(20),
+          ),
+        ),
         title: Text(
-          'Welcome',
+          MyLocalizations.of(context).welcome,
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -38,7 +43,7 @@ class _VerificationState extends State<Verification> {
               padding:
                   const EdgeInsets.only(top: 40.0, left: 15.0, bottom: 30.0),
               child: Text(
-                "Let's Get Started!",
+                MyLocalizations.of(context).letsgetstarted + "!",
                 style: boldHeading(),
               ),
             ),
@@ -47,7 +52,7 @@ class _VerificationState extends State<Verification> {
               child: GFTypography(
                 showDivider: false,
                 child: Text(
-                  'Enter Mobile Number',
+                  MyLocalizations.of(context).enterYourContactNumber,
                 ),
               ),
             ),
@@ -57,17 +62,18 @@ class _VerificationState extends State<Verification> {
                 child: TextFormField(
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                      labelText: "+91",
-                      labelStyle: labelStyle(),
-                      prefixText: '+91',
-                      contentPadding: EdgeInsets.all(10),
-                      enabledBorder: const OutlineInputBorder(
-                        borderSide:
-                            const BorderSide(color: Colors.grey, width: 0.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: primary),
-                      )),
+                    labelText: "+91",
+                    labelStyle: labelStyle(),
+                    prefixText: '+91',
+                    contentPadding: EdgeInsets.all(10),
+                    enabledBorder: const OutlineInputBorder(
+                      borderSide:
+                          const BorderSide(color: Colors.grey, width: 0.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: primary),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -79,7 +85,12 @@ class _VerificationState extends State<Verification> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Otp()),
+                    MaterialPageRoute(
+                      builder: (context) => Otp(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                      ),
+                    ),
                   );
                 },
                 text: 'Continue',

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/payment/addCard.dart';
 import 'package:grocery_pro/screens/thank-you/thankyou.dart';
+import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/payment-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
@@ -20,6 +21,8 @@ class Payment extends StatefulWidget {
   final int deliveryCharge;
   final int currentIndex;
   final Map<String, dynamic> data;
+  final Map<String, Map<String, String>> localizedValues;
+  final String locale;
 
   Payment(
       {Key key,
@@ -30,7 +33,9 @@ class Payment extends StatefulWidget {
       this.deliveryCharges,
       this.deliveryCharge,
       this.grandTotals,
-      this.grandTotal})
+      this.grandTotal,
+      this.locale,
+      this.localizedValues})
       : super(key: key);
   @override
   _PaymentState createState() => _PaymentState();
@@ -164,7 +169,10 @@ class _PaymentState extends State<Payment> {
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (BuildContext context) => Thankyou(),
+                  builder: (BuildContext context) => Thankyou(
+                    locale: widget.locale,
+                    localizedValues: widget.localizedValues,
+                  ),
                 ),
                 (Route<dynamic> route) => false);
           } else {
@@ -193,7 +201,10 @@ class _PaymentState extends State<Payment> {
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (BuildContext context) => Thankyou(),
+                  builder: (BuildContext context) => Thankyou(
+                    locale: widget.locale,
+                    localizedValues: widget.localizedValues,
+                  ),
                 ),
                 (Route<dynamic> route) => false);
           } else {
@@ -233,7 +244,7 @@ class _PaymentState extends State<Payment> {
                   Padding(
                     padding: EdgeInsets.only(left: 15.0),
                     child: new Text(
-                      'Select Card',
+                      MyLocalizations.of(context).selectCard,
                       style: textBarlowRegularBlack(),
                     ),
                   ),
@@ -242,7 +253,10 @@ class _PaymentState extends State<Payment> {
                       var result = Navigator.push(
                           context,
                           new MaterialPageRoute(
-                            builder: (BuildContext context) => new AddCard(),
+                            builder: (BuildContext context) => new AddCard(
+                              locale: widget.locale,
+                              localizedValues: widget.localizedValues,
+                            ),
                           ));
 
                       if (result != null) {
@@ -257,7 +271,7 @@ class _PaymentState extends State<Payment> {
                       }
                     },
                     child: new Text(
-                      'Add Card',
+                      MyLocalizations.of(context).addCard,
                       style: textBarlowRegularBlack(),
                     ),
                   ),
@@ -272,7 +286,7 @@ class _PaymentState extends State<Payment> {
               alignment: AlignmentDirectional.center,
               padding: EdgeInsets.only(top: 20),
               child: Text(
-                'No saved cards. Please add one!',
+                MyLocalizations.of(context).noSavedCardsPleaseaddone + '!',
                 style: textBarlowRegularBlack(),
               ),
             )
@@ -332,7 +346,7 @@ class _PaymentState extends State<Payment> {
                               Column(
                                 children: <Widget>[
                                   Text(
-                                    'Card holder',
+                                    MyLocalizations.of(context).cardHolderName,
                                     style: textBarlowRegularWhit(),
                                   ),
                                   Text(
@@ -344,7 +358,7 @@ class _PaymentState extends State<Payment> {
                               Column(
                                 children: <Widget>[
                                   Text(
-                                    'Expires',
+                                    MyLocalizations.of(context).expired,
                                     style: textBarlowRegularWhit(),
                                   ),
                                   Text(
@@ -377,13 +391,14 @@ class _PaymentState extends State<Payment> {
                           return Container(
                             width: 270.0,
                             child: new AlertDialog(
-                              title: new Text('Are You Sure?',
+                              title: new Text(
+                                  MyLocalizations.of(context).areYouSure + "?",
                                   style: hintSfsemiboldred()),
                               content: new SingleChildScrollView(
                                 child: new ListBody(
                                   children: <Widget>[
                                     new Text(
-                                      'Delete Card',
+                                      MyLocalizations.of(context).deleteCard,
                                       style: textBarlowRegularBlack(),
                                     ),
                                   ],
@@ -392,7 +407,7 @@ class _PaymentState extends State<Payment> {
                               actions: <Widget>[
                                 new FlatButton(
                                   child: new Text(
-                                    'Cancel',
+                                    MyLocalizations.of(context).cancel,
                                     style: textbarlowRegularaPrimar(),
                                   ),
                                   onPressed: () {
@@ -408,7 +423,7 @@ class _PaymentState extends State<Payment> {
                                           color: Colors.black,
                                         )
                                       : Text(
-                                          'Ok',
+                                          MyLocalizations.of(context).ok,
                                           style: textbarlowRegularaPrimar(),
                                         ),
                                   onPressed: () {
@@ -434,7 +449,10 @@ class _PaymentState extends State<Payment> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: GFAppBar(
-        title: Text('Payment', style: textbarlowSemiBoldBlack()),
+        title: Text(
+          MyLocalizations.of(context).payment,
+          style: textbarlowSemiBoldBlack(),
+        ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -455,7 +473,7 @@ class _PaymentState extends State<Payment> {
                         Column(
                           children: <Widget>[
                             Text(
-                              'Delivery Charges',
+                              MyLocalizations.of(context).deliveryCharges,
                               style: textbarlowMediumBlack(),
                             ),
                           ],
@@ -494,7 +512,7 @@ class _PaymentState extends State<Payment> {
                         Column(
                           children: <Widget>[
                             Text(
-                              'Total',
+                              MyLocalizations.of(context).total,
                               style: textbarlowMediumBlack(),
                             ),
                           ],
@@ -609,7 +627,7 @@ class _PaymentState extends State<Payment> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  "Pay Now",
+                  MyLocalizations.of(context).payNow,
                   style: textBarlowRegularBlack(),
                 ),
                 isPlaceOrderLoading

@@ -5,6 +5,7 @@ import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:grocery_pro/screens/address/address.dart';
+import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/address-service.dart';
@@ -19,13 +20,17 @@ class AddAddress extends StatefulWidget {
       this.isCheckout,
       this.isProfile,
       this.pickedLocation,
-      this.updateAddressID})
+      this.updateAddressID,
+      this.locale,
+      this.localizedValues})
       : super(key: key);
   final bool isCheckout;
   final bool isProfile;
   final LocationResult pickedLocation;
   final Map<String, dynamic> updateAddressID;
   final LocationData currentLocation;
+  final Map<String, Map<String, String>> localizedValues;
+  final String locale;
 
   @override
   _AddAddressState createState() => _AddAddressState();
@@ -38,8 +43,7 @@ class _AddAddressState extends State<AddAddress> {
   LocationData currentLocation;
   bool chooseAddress = false, isLoading = false;
   StreamSubscription<LocationData> locationSubscription;
-  int selectedRadio = 0;
-  int selectedRadioFirst;
+  int selectedRadio = 0, selectedRadioFirst;
   @override
   void initState() {
     super.initState();
@@ -117,7 +121,7 @@ class _AddAddressState extends State<AddAddress> {
           actions: <Widget>[
             new FlatButton(
               child: new Text(
-                'OK',
+                MyLocalizations.of(context).ok,
                 style: textbarlowRegularaPrimar(),
               ),
               onPressed: () {
@@ -128,7 +132,10 @@ class _AddAddressState extends State<AddAddress> {
                   Navigator.push(
                     context,
                     new MaterialPageRoute(
-                      builder: (BuildContext context) => new Address(),
+                      builder: (BuildContext context) => new Address(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                      ),
                     ),
                   );
                 } else if (widget.isCheckout == true) {
@@ -166,7 +173,7 @@ class _AddAddressState extends State<AddAddress> {
           color: Colors.black,
         ),
         title: Text(
-          'Add Address',
+          MyLocalizations.of(context).addAddress,
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -187,7 +194,7 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'Location :',
+                        MyLocalizations.of(context).location + ' :',
                         style: textbarlowRegularBlack(),
                       ),
                     ],
@@ -206,7 +213,7 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'House/Flat/Block number :',
+                        MyLocalizations.of(context).houseFlatBlocknumber + ' :',
                         style: textbarlowRegularBlack(),
                       ),
                     ],
@@ -219,8 +226,11 @@ class _AddAddressState extends State<AddAddress> {
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
                         errorBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(width: 0, color: Color(0xFFF44242))),
+                          borderSide: BorderSide(
+                            width: 0,
+                            color: Color(0xFFF44242),
+                          ),
+                        ),
                         errorStyle: TextStyle(color: Color(0xFFF44242)),
                         fillColor: Colors.black,
                         focusColor: Colors.black,
@@ -239,7 +249,8 @@ class _AddAddressState extends State<AddAddress> {
                         )),
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return "Please enter house/flat/block number";
+                        return MyLocalizations.of(context)
+                            .pleaseenterhouseflatblocknumber;
                       } else
                         return null;
                     },
@@ -257,7 +268,7 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'Apartment Name :',
+                        MyLocalizations.of(context).apartmentName + ' :',
                         style: textbarlowRegularBlack(),
                       ),
                     ],
@@ -270,9 +281,14 @@ class _AddAddressState extends State<AddAddress> {
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                         errorBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(width: 0, color: Color(0xFFF44242))),
-                        errorStyle: TextStyle(color: Color(0xFFF44242)),
+                          borderSide: BorderSide(
+                            width: 0,
+                            color: Color(0xFFF44242),
+                          ),
+                        ),
+                        errorStyle: TextStyle(
+                          color: Color(0xFFF44242),
+                        ),
                         fillColor: Colors.black,
                         focusColor: Colors.black,
                         contentPadding: EdgeInsets.only(
@@ -291,7 +307,8 @@ class _AddAddressState extends State<AddAddress> {
                       ),
                       validator: (String value) {
                         if (value.isEmpty) {
-                          return "Please enter apartment name";
+                          return MyLocalizations.of(context)
+                              .pleaseenterapartmentname;
                         } else
                           return null;
                       },
@@ -308,7 +325,7 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'Land Mark :',
+                        MyLocalizations.of(context).landMark + ' :',
                         style: textbarlowRegularBlack(),
                       ),
                     ],
@@ -321,9 +338,14 @@ class _AddAddressState extends State<AddAddress> {
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                         errorBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(width: 0, color: Color(0xFFF44242))),
-                        errorStyle: TextStyle(color: Color(0xFFF44242)),
+                          borderSide: BorderSide(
+                            width: 0,
+                            color: Color(0xFFF44242),
+                          ),
+                        ),
+                        errorStyle: TextStyle(
+                          color: Color(0xFFF44242),
+                        ),
                         fillColor: Colors.black,
                         focusColor: Colors.black,
                         contentPadding: EdgeInsets.only(
@@ -342,7 +364,8 @@ class _AddAddressState extends State<AddAddress> {
                       ),
                       validator: (String value) {
                         if (value.isEmpty) {
-                          return "Please enter land mark";
+                          return MyLocalizations.of(context)
+                              .pleaseenterlandmark;
                         } else
                           return null;
                       },
@@ -359,7 +382,7 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'Postal Code :',
+                        MyLocalizations.of(context).postalCode + ' :',
                         style: textbarlowRegularBlack(),
                       ),
                     ],
@@ -374,9 +397,14 @@ class _AddAddressState extends State<AddAddress> {
                       decoration: InputDecoration(
                         counterText: "",
                         errorBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(width: 0, color: Color(0xFFF44242))),
-                        errorStyle: TextStyle(color: Color(0xFFF44242)),
+                          borderSide: BorderSide(
+                            width: 0,
+                            color: Color(0xFFF44242),
+                          ),
+                        ),
+                        errorStyle: TextStyle(
+                          color: Color(0xFFF44242),
+                        ),
                         fillColor: Colors.black,
                         focusColor: Colors.black,
                         contentPadding: EdgeInsets.only(
@@ -395,9 +423,11 @@ class _AddAddressState extends State<AddAddress> {
                       ),
                       validator: (String value) {
                         if (value.isEmpty) {
-                          return "Please enter postal code";
+                          return MyLocalizations.of(context)
+                              .pleaseenterpostalcode;
                         } else if (value.length != 6) {
-                          return "Please enter 6 digit postal code ";
+                          return MyLocalizations.of(context)
+                              .pleaseenter6digitpostalcode;
                         } else
                           return null;
                       },
@@ -414,7 +444,7 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'Contact Number :',
+                        MyLocalizations.of(context).contactNumber + ' :',
                         style: textbarlowRegularBlack(),
                       ),
                     ],
@@ -445,9 +475,11 @@ class _AddAddressState extends State<AddAddress> {
                         )),
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return "Please enter contact number";
+                        return MyLocalizations.of(context)
+                            .pleaseentercontactnumber;
                       } else if (value.length != 10) {
-                        return "Please enter 10 digit contact number";
+                        return MyLocalizations.of(context)
+                            .pleaseenter10digitcontactnumber;
                       } else
                         return null;
                     },
@@ -465,7 +497,9 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'Address Type (Home, Work, Others etc.):',
+                        MyLocalizations.of(context)
+                                .addressTypeHomeWorkOthersetc +
+                            ' :',
                         style: textbarlowRegularBlack(),
                       ),
                     ],
@@ -522,10 +556,12 @@ class _AddAddressState extends State<AddAddress> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Text(
-                            "Save",
+                            MyLocalizations.of(context).save,
                             style: textBarlowRegularrBlack(),
                           ),
-                          SizedBox(height: 10,),
+                          SizedBox(
+                            height: 10,
+                          ),
                           isLoading
                               ? Image.asset(
                                   'lib/assets/images/spinner.gif',

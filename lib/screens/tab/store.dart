@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/categories/allcategories.dart';
 import 'package:grocery_pro/screens/categories/subcategories.dart';
 import 'package:grocery_pro/screens/product/product-details.dart';
 import 'package:grocery_pro/screens/tab/searchitem.dart';
 import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/service/fav-service.dart';
+import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
@@ -21,9 +21,11 @@ import 'package:geocoder/geocoder.dart';
 SentryError sentryError = new SentryError();
 
 class Store extends StatefulWidget {
-  const Store({Key key, this.currentLocation}) : super(key: key);
-
+  final Map<String, Map<String, String>> localizedValues;
+  final String locale;
   final String currentLocation;
+  Store({Key key, this.currentLocation, this.locale, this.localizedValues})
+      : super(key: key);
   @override
   _StoreState createState() => _StoreState();
 }
@@ -244,7 +246,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    'Delivery Address',
+                    MyLocalizations.of(context).deliveryAddress,
                     style: textBarlowRegularrBlacksm(),
                   ),
                   Text(
@@ -253,10 +255,6 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                   )
                 ],
               ),
-//              InkWell(
-//                onTap: () => _scaffoldKeydrawer.currentState.openEndDrawer(),
-//                child: Image.asset('lib/assets/icons/menu.png'),
-//              ),
             ],
           );
   }
@@ -268,6 +266,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
           context,
           MaterialPageRoute(
             builder: (context) => SearchItem(
+                locale: widget.locale,
+                localizedValues: widget.localizedValues,
                 productsList: productsList,
                 currency: currency,
                 favProductList: getTokenValue ? favProductList : null),
@@ -291,7 +291,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
             ),
             Padding(
               padding: const EdgeInsets.only(left: 4.0, bottom: 4),
-              child: Text('What are you buying today?',
+              child: Text(
+                  MyLocalizations.of(context).whatareyoubuyingtoday + '?',
                   style: textbarlowRegularad()),
             )
           ],
@@ -316,6 +317,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       context,
                       MaterialPageRoute(
                         builder: (context) => SubCategories(
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
                           catId: categoryList[index]['_id'],
                           catTitle:
                               '${categoryList[index]['title'][0].toUpperCase()}${categoryList[index]['title'].substring(1)}',
@@ -359,7 +362,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text(
-                          'Explore by Categories',
+                          MyLocalizations.of(context).explorebyCategories,
                           style: textBarlowMediumBlack(),
                         ),
                         InkWell(
@@ -367,11 +370,15 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => AllCategories()),
+                                builder: (context) => AllCategories(
+                                  locale: widget.locale,
+                                  localizedValues: widget.localizedValues,
+                                ),
+                              ),
                             );
                           },
                           child: Text(
-                            'View all',
+                            MyLocalizations.of(context).viewAll,
                             style: textBarlowMediumPrimary(),
                           ),
                         ),
@@ -405,6 +412,9 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                           MaterialPageRoute(
                                             builder: (context) =>
                                                 ProductDetails(
+                                                    locale: widget.locale,
+                                                    localizedValues:
+                                                        widget.localizedValues,
                                                     productDetail:
                                                         productsList[i],
                                                     favProductList:
@@ -414,60 +424,55 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                           ),
                                         );
                                       },
-                                      child:
-//                                      Stack(
-//                                        children: <Widget>[
+                                      child: Stack(
+                                        children: <Widget>[
                                           ProductCard(
-                                        image: productsList[i]['imageUrl'],
-                                        title:
-                                            productsList[i]['title'].length > 10
+                                            image: productsList[i]['imageUrl'],
+                                            title: productsList[i]['title']
+                                                        .length >
+                                                    10
                                                 ? productsList[i]['title']
                                                         .substring(0, 10) +
                                                     ".."
                                                 : productsList[i]['title'],
-                                        currency: currency,
-                                        category: productsList[i]['category'],
-                                        price: productsList[i]['variant'][0]
-                                            ['price'],
-                                        rating: productsList[i]['averageRating']
-                                            .toString(),
+                                            currency: currency,
+                                            category: productsList[i]
+                                                ['category'],
+                                            price: productsList[i]['variant'][0]
+                                                ['price'],
+                                            rating: productsList[i]
+                                                    ['averageRating']
+                                                .toString(),
+                                          ),
+                                          productsList[i]['isDealAvailable'] ==
+                                                  true
+                                              ? Positioned(
+                                                  child: Stack(
+                                                    children: <Widget>[
+                                                      Image.asset(
+                                                          'lib/assets/images/badge.png'),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(2.0),
+                                                        child: Text(
+                                                          " " +
+                                                              productsList[i][
+                                                                      'delaPercent']
+                                                                  .toString() +
+                                                              "% Off",
+                                                          style:
+                                                              hintSfboldwhitemed(),
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                )
+                                              : Container()
+                                        ],
                                       ),
-//                                          productsList[i]['discount'] == null
-//                                              ? Positioned(
-//                                                  child: Stack(
-//                                                    children: <Widget>[
-//                                                      Image.asset(
-//                                                          'lib/assets/images/badge.png'),
-//                                                      Text(
-//                                                        " Organic",
-//                                                        style:
-//                                                            hintSfboldwhitemed(),
-//                                                        textAlign:
-//                                                            TextAlign.center,
-//                                                      )
-//                                                    ],
-//                                                  ),
-//                                                )
-//                                              : Positioned(
-//                                                  child: Stack(
-//                                                    children: <Widget>[
-//                                                      Image.asset(
-//                                                          'lib/assets/images/badge.png'),
-//                                                      Text(
-//                                                        "" +
-//                                                            productsList[i]
-//                                                                    ['discount']
-//                                                                .toString(),
-//                                                        style:
-//                                                            hintSfboldwhitemed(),
-//                                                        textAlign:
-//                                                            TextAlign.center,
-//                                                      )
-//                                                    ],
-//                                                  ),
-//                                                )
-//                                        ],
-//                                      ),
                                     )
                                   : Stack(
                                       children: <Widget>[

@@ -6,14 +6,18 @@ import 'package:getflutter/components/typography/gf_typography.dart';
 import 'package:getflutter/size/gf_size.dart';
 import 'package:grocery_pro/screens/authe/otp.dart';
 import 'package:grocery_pro/service/auth-service.dart';
+import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
 
 SentryError sentryError = new SentryError();
 
 class ForgotPassword extends StatefulWidget {
-  ForgotPassword({Key key, this.title}) : super(key: key);
+  ForgotPassword({Key key, this.title, this.locale, this.localizedValues})
+      : super(key: key);
   final String title;
+  final Map<String, Map<String, String>> localizedValues;
+  final String locale;
 
   @override
   _ForgotPasswordState createState() => _ForgotPasswordState();
@@ -60,7 +64,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   actions: <Widget>[
                     new FlatButton(
                       child: new Text(
-                        'OK',
+                        MyLocalizations.of(context).ok,
                         style: textbarlowRegularaPrimary(),
                       ),
                       onPressed: () {
@@ -70,8 +74,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             builder: (context) => Otp(
                               email: email.toLowerCase(),
                               token: onValue['response_data']['token'],
-                              // locale: widget.locale,
-                              // localizedValues: widget.localizedValues,
+                              locale: widget.locale,
+                              localizedValues: widget.localizedValues,
                             ),
                           ),
                         );
@@ -104,11 +108,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       appBar: GFAppBar(
         // automaticallyImplyLeading: false,
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20))),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20),
+            bottomRight: Radius.circular(20),
+          ),
+        ),
         title: Text(
-          'Forgot Password',
+          MyLocalizations.of(context).forgotPassword,
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -124,7 +130,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 padding:
                     const EdgeInsets.only(top: 40.0, left: 18.0, bottom: 8.0),
                 child: Text(
-                  "Password reset",
+                  MyLocalizations.of(context).passwordreset,
                   style: textbarlowMediumBlack(),
                 ),
               ),
@@ -132,7 +138,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 padding:
                     const EdgeInsets.only(left: 18.0, bottom: 25.0, right: 10),
                 child: Text(
-                  "Please enter your registered Email to send the reset code.",
+                  MyLocalizations.of(context)
+                      .pleaseenteryourregisteredEmailtosendtheresetcode,
                   style: textbarlowRegularBlack(),
                 ),
               ),
@@ -144,7 +151,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     text: TextSpan(
                       children: <TextSpan>[
                         TextSpan(
-                            text: "Email", style: textbarlowRegularBlack()),
+                            text: MyLocalizations.of(context).email,
+                            style: textbarlowRegularBlack()),
                         TextSpan(
                           text: ' *',
                           style: TextStyle(color: Colors.red),
@@ -164,11 +172,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     },
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return "Please Enter a Email";
+                        return MyLocalizations.of(context).enterYourEmail;
                       } else if (!RegExp(
                               r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
                           .hasMatch(value)) {
-                        return "Please Enter a Valid Email";
+                        return MyLocalizations.of(context)
+                            .pleaseEnterValidEmail;
                       } else
                         return null;
                     },
@@ -207,10 +216,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        "Submit",
+                        MyLocalizations.of(context).submit,
                         style: textBarlowRegularrBlack(),
                       ),
-                      SizedBox(height: 10,),
+                      SizedBox(
+                        height: 10,
+                      ),
                       isVerfyEmailLoading
                           ? Image.asset(
                               'lib/assets/images/spinner.gif',

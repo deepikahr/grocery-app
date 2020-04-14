@@ -4,6 +4,7 @@ import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/authe/login.dart';
 import 'package:grocery_pro/screens/tab/mycart.dart';
 import 'package:grocery_pro/service/common.dart';
+import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/cart-service.dart';
@@ -26,12 +27,14 @@ class ProductDetails extends StatefulWidget {
 
   final Map<String, dynamic> productDetail;
 
+  final String locale;
   ProductDetails(
       {Key key,
       this.productDetail,
       this.currentIndex,
       this.localizedValues,
-      this.favProductList})
+      this.favProductList,
+      this.locale})
       : super(key: key);
   @override
   _ProductDetailsState createState() => _ProductDetailsState();
@@ -236,7 +239,10 @@ class _ProductDetailsState extends State<ProductDetails>
             Navigator.push(
               context,
               new MaterialPageRoute(
-                builder: (BuildContext context) => new MyCart(),
+                builder: (BuildContext context) => new MyCart(
+                  locale: widget.locale,
+                  localizedValues: widget.localizedValues,
+                ),
               ),
             );
           }
@@ -247,42 +253,14 @@ class _ProductDetailsState extends State<ProductDetails>
         sentryError.reportError(error, null);
       });
     } else {
-      showDialog<Null>(
-        context: context,
-        barrierDismissible: false, // user must tap button!
-        builder: (BuildContext context) {
-          return new AlertDialog(
-            content: new SingleChildScrollView(
-              child: new ListBody(
-                children: <Widget>[
-                  new Text(
-                    'First Login!!',
-                    style: hintSfboldBig(),
-                  ),
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              new FlatButton(
-                child: new Text('OK'),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Login(),
-                    ),
-                  );
-                },
-              ),
-              new FlatButton(
-                child: new Text('Cancel'),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          );
-        },
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Login(
+            locale: widget.locale,
+            localizedValues: widget.localizedValues,
+          ),
+        ),
       );
     }
   }
@@ -384,7 +362,6 @@ class _ProductDetailsState extends State<ProductDetails>
                             ],
                           ),
                           Container(
-                            // margin: EdgeInsets.only(left:20,right:20),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: <Widget>[
@@ -426,7 +403,7 @@ class _ProductDetailsState extends State<ProductDetails>
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Text(
-                                  'Quantity:',
+                                  MyLocalizations.of(context).quantity + ':',
                                   style: textBarlowMediumBlack(),
                                 ),
                                 Container(
@@ -437,7 +414,6 @@ class _ProductDetailsState extends State<ProductDetails>
                                   height: 34,
                                   width: 150,
                                   child: Row(
-                                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: <Widget>[
                                       Container(
                                         width: 32,
@@ -588,73 +564,7 @@ class _ProductDetailsState extends State<ProductDetails>
           ),
         ),
       ),
-      bottomNavigationBar:
-          // Padding(
-          //   padding: const EdgeInsets.only(bottom: 10.0, left: 10, right: 10),
-          //   child: Container(
-          //     decoration: BoxDecoration(
-          //         color: Colors.grey[300],
-          //         borderRadius: BorderRadius.circular(30.0)),
-          //     height: 47,
-          //     width: 150,
-          //     child: Row(
-          //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          //       children: <Widget>[
-          //         Container(
-          //           width: 40,
-          //           height: 40,
-          //           decoration: BoxDecoration(
-          //               color: Colors.black,
-          //               borderRadius: BorderRadius.circular(20.0)),
-          //           child: InkWell(
-          //             onTap: () {
-          //               _changeProductQuantity(false);
-          //             },
-          //             child: Icon(
-          //               Icons.remove,
-          //               color: Colors.white,
-          //             ),
-          //           ),
-          //         ),
-          //         Text(''),
-          //         Padding(
-          //           padding: const EdgeInsets.only(left: 14.0),
-          //           child: Container(child: Text(quantity.toString())),
-          //         ),
-          //         Text(''),
-          //         Padding(
-          //           padding: const EdgeInsets.only(left: 17.0),
-          //           child: Container(
-          //             width: 40,
-          //             height: 40,
-          //             decoration: BoxDecoration(
-          //                 color: primary,
-          //                 borderRadius: BorderRadius.circular(20.0)),
-          //             child: InkWell(
-          //               onTap: () {
-          //                 if ((variantProductstock == null
-          //                         ? widget.productDetail['variant'][0]
-          //                                     ['productstock'] ==
-          //                                 null
-          //                             ? 1
-          //                             : widget.productDetail['variant'][0]
-          //                                 ['productstock']
-          //                         : variantProductstock) ==
-          //                     quantity) {
-          //                   showSnackbar("Product only few stock");
-          //                 } else {
-          //                   _changeProductQuantity(true);
-          //                 }
-          //               },
-          //               child: Icon(Icons.add),
-          //             ),
-          //           ),
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
-          Container(
+      bottomNavigationBar: Container(
         height: 50.0,
         child: Padding(
           padding: const EdgeInsetsDirectional.only(
@@ -689,7 +599,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                 style: textBarlowRegularWhite(),
                               ),
                               TextSpan(
-                                  text: ' Item',
+                                  text: MyLocalizations.of(context).item,
                                   style: textBarlowRegularWhite()),
                             ],
                           ),
@@ -713,11 +623,10 @@ class _ProductDetailsState extends State<ProductDetails>
                         color: Colors.black,
                       )
                     : Text(""),
-//                SizedBox(height: 10,),
                 Padding(
                   padding: const EdgeInsets.only(left: 0.0),
                   child: new Text(
-                    "ADD TO CART",
+                    MyLocalizations.of(context).addToCart,
                     style: textBarlowRegularBlack(),
                   ),
                 ),
@@ -741,66 +650,3 @@ class _ProductDetailsState extends State<ProductDetails>
     _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 }
-
-//Container(
-//width: 130.0,
-//decoration: BoxDecoration(
-//borderRadius: BorderRadius.circular(50.0)),
-//child: Container(
-//decoration: BoxDecoration(
-//color: Colors.white,
-//borderRadius: BorderRadius.circular(20),
-//border: Border.all(color: primary),
-//),
-//child: Row(
-//mainAxisAlignment: MainAxisAlignment.center,
-//children: <Widget>[
-//DropdownButton<Variants>(
-//hint: Text(
-//'${widget.productDetail['variant'][0]["unit"].toString()}',
-//style: textBarlowRegularBlack(),
-//),
-//value: dropdownValue,
-//icon: Padding(
-//padding: const EdgeInsets.only(left: 10.0),
-//child: Icon(Icons.arrow_drop_down),
-//),
-//iconSize: 24,
-//itemHeight: 49.0,
-//elevation: 16,
-//style: TextStyle(
-//color: Colors.black,
-//),
-//underline: Container(
-//color: Colors.white,
-//),
-//onChanged: (Variants newValue) {
-//if (mounted) {
-//setState(() {
-//dropdownValue = newValue;
-//variantPrice = newValue.price;
-//variantUnit = newValue.unit;
-//variantId = newValue.id;
-//variantProductstock =
-//newValue.productstock;
-//});
-//}
-//},
-//items: variantList.map((Variants user) {
-//return DropdownMenuItem<Variants>(
-//value: user,
-//child: Row(
-//children: <Widget>[
-//Text(
-//user.unit,
-//style: textBarlowRegularBlack(),
-//),
-//],
-//),
-//);
-//}).toList(),
-//),
-//],
-//),
-//),
-//),

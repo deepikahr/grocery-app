@@ -94,32 +94,35 @@ class PinCodeTextField extends StatefulWidget {
   final Duration pinTextAnimatedSwitcherDuration;
   final WrapAlignment wrapAlignment;
   final PinCodeTextFieldLayoutType pinCodeTextFieldLayoutType;
-
-  const PinCodeTextField({
-    Key key,
-    this.isCupertino: false,
-    this.maxLength: 4,
-    this.controller,
-    this.hideCharacter: false,
-    this.highlight: false,
-    this.highlightColor: Colors.transparent,
-    this.pinBoxDecoration,
-    this.maskCharacter: " ",
-    this.pinBoxWidth: 78.5,
-    this.pinBoxHeight: 48.8,
-    this.pinTextStyle,
-    this.onDone,
-    this.defaultBorderColor: Colors.transparent,
-    this.hasTextBorderColor: Colors.transparent,
-    this.pinTextAnimatedSwitcherTransition,
-    this.pinTextAnimatedSwitcherDuration: const Duration(),
-    this.hasError: false,
-    this.errorBorderColor: Colors.red,
-    this.onTextChanged,
-    this.autofocus: false,
-    this.wrapAlignment: WrapAlignment.start,
-    this.pinCodeTextFieldLayoutType: PinCodeTextFieldLayoutType.NORMAL,
-  }) : super(key: key);
+  final Map<String, Map<String, String>> localizedValues;
+  final String locale;
+  const PinCodeTextField(
+      {Key key,
+      this.isCupertino: false,
+      this.maxLength: 4,
+      this.controller,
+      this.hideCharacter: false,
+      this.highlight: false,
+      this.highlightColor: Colors.transparent,
+      this.pinBoxDecoration,
+      this.maskCharacter: " ",
+      this.pinBoxWidth: 78.5,
+      this.pinBoxHeight: 48.8,
+      this.pinTextStyle,
+      this.onDone,
+      this.defaultBorderColor: Colors.transparent,
+      this.hasTextBorderColor: Colors.transparent,
+      this.pinTextAnimatedSwitcherTransition,
+      this.pinTextAnimatedSwitcherDuration: const Duration(),
+      this.hasError: false,
+      this.errorBorderColor: Colors.red,
+      this.onTextChanged,
+      this.autofocus: false,
+      this.wrapAlignment: WrapAlignment.start,
+      this.pinCodeTextFieldLayoutType: PinCodeTextFieldLayoutType.NORMAL,
+      this.locale,
+      this.localizedValues})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
