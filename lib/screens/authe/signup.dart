@@ -6,12 +6,17 @@ import 'package:getflutter/getflutter.dart';
 import 'package:getflutter/size/gf_size.dart';
 import 'package:grocery_pro/screens/authe/login.dart';
 import 'package:grocery_pro/service/auth-service.dart';
+import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 
 SentryError sentryError = new SentryError();
 
 class Signup extends StatefulWidget {
+  final Map<String, Map<String, String>> localizedValues;
+  final String locale;
+  Signup({Key key, this.locale, this.localizedValues});
+
   @override
   _SignupState createState() => _SignupState();
 }
@@ -78,18 +83,27 @@ class _SignupState extends State<Signup> {
                   content: new SingleChildScrollView(
                     child: new ListBody(
                       children: <Widget>[
-                        new Text(onValue['response_data'], style: textBarlowRegularBlack(),),
+                        new Text(
+                          onValue['response_data'],
+                          style: textBarlowRegularBlack(),
+                        ),
                       ],
                     ),
                   ),
                   actions: <Widget>[
                     new FlatButton(
-                      child: new Text('OK', style: textbarlowRegularaPrimary(),),
+                      child: new Text(
+                        MyLocalizations.of(context).ok,
+                        style: textbarlowRegularaPrimary(),
+                      ),
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (BuildContext context) => Login(),
+                            builder: (BuildContext context) => Login(
+                              locale: widget.locale,
+                              localizedValues: widget.localizedValues,
+                            ),
                           ),
                         );
                       },
@@ -123,7 +137,7 @@ class _SignupState extends State<Signup> {
             top: 10.0,
           ),
           title: new Text(
-            'Error at showalert',
+            MyLocalizations.of(context).error,
             style: textBarlowRegularBlack(),
             textAlign: TextAlign.center,
           ),
@@ -139,26 +153,28 @@ class _SignupState extends State<Signup> {
                 Padding(padding: EdgeInsets.only(top: 20.0)),
                 Divider(),
                 IntrinsicHeight(
-                    child: new Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    VerticalDivider(),
-                    Expanded(
+                  child: new Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      VerticalDivider(),
+                      Expanded(
                         child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Container(
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(),
-                        child: Text(
-                          'OK',
-                          style: textbarlowRegularaPrimary(),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Container(
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(),
+                            child: Text(
+                              MyLocalizations.of(context).ok,
+                              style: textbarlowRegularaPrimary(),
+                            ),
+                          ),
                         ),
-                      ),
-                    ))
-                  ],
-                ))
+                      )
+                    ],
+                  ),
+                )
               ],
             ),
           ),
@@ -178,7 +194,7 @@ class _SignupState extends State<Signup> {
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20))),
         title: Text(
-          'Sign up',
+          MyLocalizations.of(context).signUp,
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -234,7 +250,7 @@ class _SignupState extends State<Signup> {
       child: GFTypography(
         showDivider: false,
         child: Text(
-          "Let's get started !",
+          MyLocalizations.of(context).letsgetstarted + " !",
           style: textbarlowMediumBlack(),
         ),
       ),
@@ -249,7 +265,9 @@ class _SignupState extends State<Signup> {
         child: RichText(
           text: TextSpan(
             children: <TextSpan>[
-              TextSpan(text: "User Name", style: textbarlowRegularBlackdull()),
+              TextSpan(
+                  text: MyLocalizations.of(context).fullName,
+                  style: textbarlowRegularBlackdull()),
               TextSpan(
                 text: ' *',
                 style: TextStyle(color: Colors.red),
@@ -270,9 +288,9 @@ class _SignupState extends State<Signup> {
           keyboardType: TextInputType.emailAddress,
           validator: (String value) {
             if (value.isEmpty) {
-              return "Please Enter Full Name";
+              return MyLocalizations.of(context).enterFullName;
             } else if (!RegExp(r'^[A-Za-z ]+$').hasMatch(value)) {
-              return "Please Enter Valid Full Name";
+              return MyLocalizations.of(context).pleaseEnterValidFullName;
             } else
               return null;
           },
@@ -357,7 +375,9 @@ class _SignupState extends State<Signup> {
         child: RichText(
           text: TextSpan(
             children: <TextSpan>[
-              TextSpan(text: "Email", style: textbarlowRegularBlackdull()),
+              TextSpan(
+                  text: MyLocalizations.of(context).email,
+                  style: textbarlowRegularBlackdull()),
               TextSpan(
                 text: ' *',
                 style: TextStyle(color: Color(0xFFF44242)),
@@ -378,11 +398,11 @@ class _SignupState extends State<Signup> {
           keyboardType: TextInputType.emailAddress,
           validator: (String value) {
             if (value.isEmpty) {
-              return "Please Enter a Email";
+              return MyLocalizations.of(context).enterYourEmail;
             } else if (!RegExp(
                     r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
                 .hasMatch(value)) {
-              return "Please Enter Valid Email";
+              return MyLocalizations.of(context).pleaseEnterValidEmail;
             } else
               return null;
           },
@@ -412,7 +432,9 @@ class _SignupState extends State<Signup> {
       child: RichText(
         text: TextSpan(
           children: <TextSpan>[
-            TextSpan(text: "Password", style: textbarlowRegularBlackdull()),
+            TextSpan(
+                text: MyLocalizations.of(context).password,
+                style: textbarlowRegularBlackdull()),
             TextSpan(
               text: ' *',
               style: TextStyle(color: Color(0xFFF44242)),
@@ -431,9 +453,9 @@ class _SignupState extends State<Signup> {
         keyboardType: TextInputType.text,
         validator: (String value) {
           if (value.isEmpty) {
-            return "please Enter a Password";
+            return MyLocalizations.of(context).enterPassword;
           } else if (value.length < 6) {
-            return "please Enter a Min 6 digit Password";
+            return MyLocalizations.of(context).pleaseEnterMin6DigitPassword;
           } else
             return null;
         },
@@ -442,7 +464,11 @@ class _SignupState extends State<Signup> {
         },
         decoration: InputDecoration(
           errorBorder: OutlineInputBorder(
-              borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
+            borderSide: BorderSide(
+              width: 0,
+              color: Color(0xFFF44242),
+            ),
+          ),
           errorStyle: TextStyle(color: Color(0xFFF44242)),
           fillColor: Colors.black,
           focusColor: Colors.black,
@@ -476,7 +502,9 @@ class _SignupState extends State<Signup> {
       child: RichText(
         text: TextSpan(
           children: <TextSpan>[
-            TextSpan(text: "Mobile Number", style: textbarlowRegularBlack()),
+            TextSpan(
+                text: MyLocalizations.of(context).contactNumber,
+                style: textbarlowRegularBlack()),
             TextSpan(
               text: ' *',
               style: TextStyle(color: Color(0xFFF44242)),
@@ -496,9 +524,9 @@ class _SignupState extends State<Signup> {
         keyboardType: TextInputType.number,
         validator: (String value) {
           if (value.isEmpty) {
-            return "please Enter a Mobile Number";
+            return MyLocalizations.of(context).enterYourContactNumber;
           } else if (value.length != 10) {
-            return "please Enter Valid Mobile Number";
+            return MyLocalizations.of(context).pleaseenter10digitcontactnumber;
           } else
             return null;
         },
@@ -545,10 +573,12 @@ class _SignupState extends State<Signup> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              "Sign Up",
+              MyLocalizations.of(context).signUp,
               style: textBarlowRegularrBlack(),
             ),
-            SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             registerationLoading
                 ? Image.asset(
                     'lib/assets/images/spinner.gif',
@@ -569,7 +599,12 @@ class _SignupState extends State<Signup> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => Login()),
+            MaterialPageRoute(
+              builder: (context) => Login(
+                locale: widget.locale,
+                localizedValues: widget.localizedValues,
+              ),
+            ),
           );
         },
         child: Padding(
@@ -578,10 +613,10 @@ class _SignupState extends State<Signup> {
             text: TextSpan(
               children: <TextSpan>[
                 TextSpan(
-                    text: "Have got an account?",
+                    text: MyLocalizations.of(context).havegotanaccount + " ?",
                     style: textbarlowRegularBlack()),
                 TextSpan(
-                  text: '  Login!',
+                  text: MyLocalizations.of(context).login + '!',
                   style: textbarlowRegularaPrimary(),
                 ),
               ],
@@ -592,7 +627,7 @@ class _SignupState extends State<Signup> {
 
   Widget buildcontinuetext() {
     return Text(
-      'OR',
+      MyLocalizations.of(context).or,
       textAlign: TextAlign.center,
       style: textBarlowRegularBlack(),
     );

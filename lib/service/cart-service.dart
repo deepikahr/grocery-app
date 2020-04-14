@@ -12,6 +12,7 @@ class CartService {
     await Common.getToken().then((onValue) {
       token = onValue;
     });
+
     final response = await client.post(Constants.baseURL + "cart/add/product",
         body: json.encode(body),
         headers: {

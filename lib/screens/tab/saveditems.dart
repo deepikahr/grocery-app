@@ -3,6 +3,7 @@ import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/authe/login.dart';
 import 'package:grocery_pro/screens/product/product-details.dart';
 import 'package:grocery_pro/service/common.dart';
+import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/fav-service.dart';
 import 'package:grocery_pro/style/style.dart';
@@ -13,6 +14,10 @@ import 'package:grocery_pro/widgets/productCard.dart';
 SentryError sentryError = new SentryError();
 
 class SavedItems extends StatefulWidget {
+  final Map<String, Map<String, String>> localizedValues;
+  final String locale;
+  SavedItems({Key key, this.locale, this.localizedValues});
+
   @override
   _SavedItemsState createState() => _SavedItemsState();
 }
@@ -117,7 +122,7 @@ class _SavedItemsState extends State<SavedItems> {
               ? null
               : GFAppBar(
                   title: Text(
-                    'Saved Items',
+                    MyLocalizations.of(context).savedItems,
                     style: textbarlowSemiBoldBlack(),
                   ),
                   centerTitle: true,
@@ -128,7 +133,10 @@ class _SavedItemsState extends State<SavedItems> {
       body: isGetTokenLoading
           ? SquareLoader()
           : token == null
-              ? Login()
+              ? Login(
+                  locale: widget.locale,
+                  localizedValues: widget.localizedValues,
+                )
               : isFavListLoading
                   ? SquareLoader()
                   : favProductList.length != 0
@@ -155,6 +163,8 @@ class _SavedItemsState extends State<SavedItems> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => ProductDetails(
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues,
                                       productDetail: favProductList[i]
                                           ['product'],
                                       favProductList: favProductList,
@@ -162,189 +172,45 @@ class _SavedItemsState extends State<SavedItems> {
                                   ),
                                 );
                               },
-                              child:
-//                              Stack(
-//                                children: <Widget>[
+                              child: Stack(
+                                children: <Widget>[
                                   ProductCard(
-                                image: favProductList[i]['product']['imageUrl'],
-                                title: favProductList[i]['product']
-                                                ['title']
-                                            .length >
-                                        10
-                                    ? favProductList[i]['product']['title']
-                                            .substring(0, 10) +
-                                        ".."
-                                    : favProductList[i]['product']['title'],
-                                currency: currency,
-                                price: favProductList[i]['product']['variant']
-                                    [0]['price'],
-                                rating: favProductList[i]['averageRating']
-                                    .toString(),
+                                    image: favProductList[i]['product']
+                                        ['imageUrl'],
+                                    title: favProductList[i]['product']['title']
+                                                .length >
+                                            10
+                                        ? favProductList[i]['product']['title']
+                                                .substring(0, 10) +
+                                            ".."
+                                        : favProductList[i]['product']['title'],
+                                    currency: currency,
+                                    price: favProductList[i]['product']
+                                        ['variant'][0]['price'],
+                                    rating: favProductList[i]['averageRating']
+                                        .toString(),
+                                  ),
+                                  favProductList[i]['isDealAvailable'] == true
+                                      ? Positioned(
+                                          child: Stack(
+                                            children: <Widget>[
+                                              Image.asset(
+                                                  'lib/assets/images/badge.png'),
+                                              Text(
+                                                " " +
+                                                    favProductList[i]
+                                                            ['delaPercent']
+                                                        .toString() +
+                                                    "% Off",
+                                                style: hintSfboldwhitemed(),
+                                                textAlign: TextAlign.center,
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      : Container()
+                                ],
                               ),
-//                                  favProductList[i]['discount'] != null
-//                                      ? Positioned(
-//                                          child: Stack(
-//                                            children: <Widget>[
-//                                              Image.asset(
-//                                                  'lib/assets/images/badge.png'),
-//                                              Text(
-//                                                " " +
-//                                                    favProductList[i]
-//                                                            ['discount']
-//                                                        .toString(),
-//                                                style: hintSfboldwhitemed(),
-//                                                textAlign: TextAlign.center,
-//                                              )
-//                                            ],
-//                                          ),
-//                                        )
-//                                      : Positioned(
-//                                          child: Stack(
-//                                            children: <Widget>[
-//                                              Image.asset(
-//                                                  'lib/assets/images/badge.png'),
-//                                              Text(
-//                                                " Organic",
-//                                                style: hintSfboldwhitemed(),
-//                                                textAlign: TextAlign.center,
-//                                              )
-//                                            ],
-//                                          ),
-//                                        )
-//                                ],
-//                              ),
-//                              GFCard(
-//                                shape: RoundedRectangleBorder(
-//                                    borderRadius: BorderRadius.circular(20.0)),
-//                                boxFit: BoxFit.fill,
-//                                colorFilter: new ColorFilter.mode(
-//                                    Colors.black.withOpacity(0.67),
-//                                    BlendMode.darken),
-//                                content: Column(
-//                                  crossAxisAlignment: CrossAxisAlignment.start,
-//                                  children: <Widget>[
-//                                    Row(
-//                                      mainAxisAlignment:
-//                                          MainAxisAlignment.spaceBetween,
-//                                      children: <Widget>[
-//                                        Padding(
-//                                          padding: const EdgeInsets.only(
-//                                              bottom: 8.0),
-//                                          child: favProductList[i]['product']
-//                                                      ['discount'] ==
-//                                                  null
-//                                              ? Container(
-//                                                  height: 15,
-//                                                  width: 65,
-//                                                  decoration: BoxDecoration(
-//                                                    borderRadius:
-//                                                        BorderRadius.only(
-//                                                      topLeft:
-//                                                          Radius.circular(20),
-//                                                      bottomRight:
-//                                                          Radius.circular(20),
-//                                                    ),
-//                                                  ),
-//                                                  child: GFButtonBadge(
-//                                                    onPressed: null,
-//                                                    text: '',
-//                                                    color: Colors.white,
-//                                                  ),
-//                                                )
-//                                              : Container(
-//                                                  height: 15,
-//                                                  width: 65,
-//                                                  decoration: BoxDecoration(
-//                                                    borderRadius:
-//                                                        BorderRadius.only(
-//                                                      topLeft:
-//                                                          Radius.circular(20),
-//                                                      bottomRight:
-//                                                          Radius.circular(20),
-//                                                    ),
-//                                                  ),
-//                                                  child: GFButtonBadge(
-//                                                    onPressed: null,
-//                                                    text: favProductList[i]
-//                                                        ['product']['discount'],
-//                                                    color:
-//                                                        Colors.deepOrange[300],
-//                                                  ),
-//                                                ),
-//                                        ),
-//                                      ],
-//                                    ),
-//                                    favProductList[i]['product']['imageUrl'] ==
-//                                            null
-//                                        ? Row(
-//                                            mainAxisAlignment:
-//                                                MainAxisAlignment.center,
-//                                            children: <Widget>[
-//                                              Padding(
-//                                                padding:
-//                                                    const EdgeInsets.only(),
-//                                                child: Image.asset(
-//                                                  "lib/assets/images/no-orders.png",
-//                                                  fit: BoxFit.fill,
-//                                                  width: 124,
-//                                                  height: 60,
-//                                                ),
-//                                              ),
-//                                            ],
-//                                          )
-//                                        : Row(
-//                                            mainAxisAlignment:
-//                                                MainAxisAlignment.center,
-//                                            children: <Widget>[
-//                                              Padding(
-//                                                padding:
-//                                                    const EdgeInsets.only(),
-//                                                child: Image.network(
-//                                                  favProductList[i]['product']
-//                                                      ['imageUrl'],
-//                                                  fit: BoxFit.cover,
-//                                                  width: 124,
-//                                                  height: 63,
-//                                                ),
-//                                              ),
-//                                            ],
-//                                          ),
-//                                    Row(
-//                                      crossAxisAlignment:
-//                                          CrossAxisAlignment.start,
-//                                      children: <Widget>[
-//                                        Column(
-//                                          crossAxisAlignment:
-//                                              CrossAxisAlignment.start,
-//                                          children: <Widget>[
-//                                            Padding(
-//                                              padding: const EdgeInsets.only(
-//                                                  top: 5.0),
-//                                              child: Text(
-//                                                favProductList[i]['product']
-//                                                    ['title'],
-//                                                style: textBarlowRegularBlack(),
-//                                              ),
-//                                            ),
-//                                            Row(
-//                                              children: <Widget>[
-//                                                Text(
-//                                                  currency,
-//                                                  style: textbarlowBoldGreen(),
-//                                                ),
-//                                                Text(
-//                                                  '${favProductList[i]['product']['variant'][0]['price']}',
-//                                                  style: textbarlowBoldGreen(),
-//                                                )
-//                                              ],
-//                                            ),
-//                                          ],
-//                                        ),
-//                                      ],
-//                                    )
-//                                  ],
-//                                ),
-//                              ),
                             );
                           },
                         )

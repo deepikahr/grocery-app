@@ -5,6 +5,7 @@ import 'package:getflutter/components/button/gf_button.dart';
 import 'package:getflutter/components/typography/gf_typography.dart';
 import 'package:grocery_pro/screens/authe/resetPas.dart';
 import 'package:grocery_pro/service/auth-service.dart';
+import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:pin_entry_text_field/pin_entry_text_field.dart';
@@ -88,13 +89,19 @@ class _OtpState extends State<Otp> {
                     content: new SingleChildScrollView(
                       child: new ListBody(
                         children: <Widget>[
-                          new Text('${onValue['response_data']['message']}', style: textBarlowMediumBlack(),),
+                          new Text(
+                            '${onValue['response_data']['message']}',
+                            style: textBarlowMediumBlack(),
+                          ),
                         ],
                       ),
                     ),
                     actions: <Widget>[
                       new FlatButton(
-                        child: new Text('OK', style: TextStyle(color: green),),
+                        child: new Text(
+                          'OK',
+                          style: TextStyle(color: green),
+                        ),
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -127,7 +134,7 @@ class _OtpState extends State<Otp> {
         return;
       }
     } else {
-      showSnackbar('Please Enter 4 Digit OTP');
+      showSnackbar(MyLocalizations.of(context).pleaseEnter4DigitOTP);
     }
   }
 
@@ -137,7 +144,10 @@ class _OtpState extends State<Otp> {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return new AlertDialog(
-          title: new Text("Error", style: hintSfMediumredsmall(),),
+          title: new Text(
+            MyLocalizations.of(context).error,
+            style: hintSfMediumredsmall(),
+          ),
           content: new SingleChildScrollView(
             child: new ListBody(
               children: <Widget>[
@@ -151,7 +161,7 @@ class _OtpState extends State<Otp> {
           actions: <Widget>[
             new FlatButton(
               child: new Text(
-                'OK',
+                MyLocalizations.of(context).ok,
                 style: textbarlowRegularaPrimary(),
               ),
               onPressed: () {
@@ -176,7 +186,7 @@ class _OtpState extends State<Otp> {
           ),
         ),
         title: Text(
-          'Welcome',
+          MyLocalizations.of(context).welcome,
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -191,7 +201,7 @@ class _OtpState extends State<Otp> {
               left: 15.0,
             ),
             child: Text(
-              "Verify OTP",
+              MyLocalizations.of(context).verifyOtp,
               style: textbarlowMediumBlack(),
             ),
           ),
@@ -201,7 +211,7 @@ class _OtpState extends State<Otp> {
               text: TextSpan(
                 children: <TextSpan>[
                   TextSpan(
-                      text: "We have sent a 4 digit code to",
+                      text: MyLocalizations.of(context).wehavesenta4digitcodeto,
                       style: textBarlowRegularBlack()),
                   TextSpan(
                     text: ' ${widget.email}',
@@ -216,7 +226,7 @@ class _OtpState extends State<Otp> {
             child: GFTypography(
               showDivider: false,
               child: Text(
-                'Enter Verification code',
+                MyLocalizations.of(context).enterVerificationcode,
                 style: textBarlowRegularBlack(),
               ),
             ),
@@ -257,10 +267,12 @@ class _OtpState extends State<Otp> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      "Submit OTP",
+                      MyLocalizations.of(context).submitOTP,
                       style: textbarlowMediumBlack(),
                     ),
-                    SizedBox(height: 10,),
+                    SizedBox(
+                      height: 10,
+                    ),
                     isOtpVerifyLoading
                         ? Image.asset(
                             'lib/assets/images/spinner.gif',

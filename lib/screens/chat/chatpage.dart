@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_pro/service/auth-service.dart';
 import 'package:grocery_pro/service/constants.dart';
+import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/widgets/loader.dart';
@@ -11,6 +12,10 @@ import 'package:socket_io_client/socket_io_client.dart' as io;
 SentryError sentryError = new SentryError();
 
 class Chat extends StatefulWidget {
+  final Map<String, Map<String, String>> localizedValues;
+  final String locale;
+  Chat({Key key, this.locale, this.localizedValues});
+
   @override
   _ChatState createState() => _ChatState();
 }
@@ -141,7 +146,8 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
         socketInt();
         if (resInfo == null) {
           Navigator.pop(context);
-          throw new Exception("Error while fetching data");
+          throw new Exception(MyLocalizations.of(context)
+              .somethingwentwrongpleaserestarttheapp);
         }
       } catch (error, stackTrace) {
         sentryError.reportError(error, stackTrace);
@@ -166,19 +172,28 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
           content: new SingleChildScrollView(
             child: new ListBody(
               children: <Widget>[
-                new Text(message, style: textBarlowRegularBlack(),),
+                new Text(
+                  message,
+                  style: textBarlowRegularBlack(),
+                ),
               ],
             ),
           ),
           actions: <Widget>[
             new FlatButton(
-              child: new Text('No', style: TextStyle(color: red),),
+              child: new Text(
+                MyLocalizations.of(context).no,
+                style: TextStyle(color: red),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             new FlatButton(
-              child: new Text('Yes', style: textbarlowRegularaPrimary(),),
+              child: new Text(
+                MyLocalizations.of(context).yes,
+                style: textbarlowRegularaPrimary(),
+              ),
               onPressed: () {
                 socket.emit(
                     "close-chat", {"chatId": chatID, "store": resInfo['_id']});
@@ -197,13 +212,12 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
     return showDialog(
           context: context,
           builder: (context) => new AlertDialog(
-            // title: new Text(MyLocalizations.of(context).areYouSure),
-            content: new Text("Are you sure? close chat"),
+            content: new Text(MyLocalizations.of(context).areyousureclosechat),
             actions: <Widget>[
               new FlatButton(
                 onPressed: () => Navigator.of(context).pop(),
                 child: new Text(
-                  "No",
+                  MyLocalizations.of(context).no,
                 ),
               ),
               new FlatButton(
@@ -215,7 +229,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                   Navigator.of(context).pop();
                 },
                 child: new Text(
-                  "Yes",
+                  MyLocalizations.of(context).yes,
                 ),
               ),
             ],
@@ -232,7 +246,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
         appBar: new AppBar(
           leading: InkWell(
             onTap: () {
-              showAlert("Are you sure? close chat");
+              showAlert(MyLocalizations.of(context).areyousureclosechat);
             },
             child: Icon(
               Icons.arrow_back,
@@ -244,7 +258,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                   bottomLeft: Radius.circular(20),
                   bottomRight: Radius.circular(20))),
           title: new Text(
-            "Chat",
+            MyLocalizations.of(context).chat,
             style: textbarlowSemiBoldBlack(),
           ),
           centerTitle: true,
@@ -255,13 +269,6 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
             : Stack(
                 fit: StackFit.expand,
                 children: <Widget>[
-                  // new Container(),
-                  // new Image(
-                  //   image: new AssetImage("assets/5.jpeg"),
-                  //   fit: BoxFit.cover,
-                  //   color: Colors.black54,
-                  //   colorBlendMode: BlendMode.darken,
-                  // ),
                   Column(
                     children: <Widget>[
                       Expanded(
@@ -325,7 +332,9 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                                         decoration:
                                             new InputDecoration.collapsed(
                                                 hintText:
-                                                    "Enter Text Here" + "..."),
+                                                    MyLocalizations.of(context)
+                                                            .enterTextHere +
+                                                        "..."),
                                       ),
                                     ),
                                     new Container(
@@ -333,8 +342,9 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                                               TargetPlatform.iOS
                                           ? new BoxDecoration(
                                               border: new Border(
-                                                  top: new BorderSide(
-                                                      color: Colors.grey[70])),
+                                                top: new BorderSide(
+                                                    color: Colors.grey[70]),
+                                              ),
                                               color: Colors.grey,
                                             )
                                           : BoxDecoration(
@@ -453,12 +463,14 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                       maxWidth: MediaQuery.of(context).size.width * 0.6,
                     ),
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(0),
-                            topRight: Radius.circular(40),
-                            bottomRight: Radius.circular(40),
-                            bottomLeft: Radius.circular(40)),
-                        color: Color(0xFFF0F0F0)),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(0),
+                        topRight: Radius.circular(40),
+                        bottomRight: Radius.circular(40),
+                        bottomLeft: Radius.circular(40),
+                      ),
+                      color: Color(0xFFF0F0F0),
+                    ),
                     child: Text(
                       message,
                       textAlign: TextAlign.left,

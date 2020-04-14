@@ -4,8 +4,8 @@ import 'package:grocery_pro/screens/tab/mycart.dart';
 import 'package:grocery_pro/screens/tab/profile.dart';
 import 'package:grocery_pro/screens/tab/saveditems.dart';
 import 'package:grocery_pro/screens/tab/store.dart';
-import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/service/constants.dart';
+import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/settings/globalSettings.dart';
 import 'package:grocery_pro/style/style.dart';
@@ -42,28 +42,11 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   @override
   void initState() {
     getGlobalSettingsData();
-    getToken();
+
     configLocalNotification();
-    if (widget.currentIndex != null) {
-      if (mounted) {
-        setState(() {
-          currentIndex = widget.currentIndex;
-        });
-      }
-    }
-    super.initState();
 
     tabController = TabController(length: 4, vsync: this);
-  }
-
-  getToken() async {
-    await Common.getToken().then((onValue) {
-      if (onValue != null) {
-        // firebaseToken();
-      } else {}
-    }).catchError((error) {
-      sentryError.reportError(error, null);
-    });
+    super.initState();
   }
 
   @override
@@ -156,10 +139,22 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           : GFTabBarView(
               controller: tabController,
               children: <Widget>[
-                Store(),
-                SavedItems(),
-                MyCart(),
-                Profile(),
+                Store(
+                  locale: widget.locale,
+                  localizedValues: widget.localizedValues,
+                ),
+                SavedItems(
+                  locale: widget.locale,
+                  localizedValues: widget.localizedValues,
+                ),
+                MyCart(
+                  locale: widget.locale,
+                  localizedValues: widget.localizedValues,
+                ),
+                Profile(
+                  locale: widget.locale,
+                  localizedValues: widget.localizedValues,
+                ),
               ],
             ),
       bottomNavigationBar: GFTabBar(
@@ -167,10 +162,10 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         length: 4,
         controller: tabController,
         tabs: [
-          tabIcon(0xe90f, 'Store'),
-          tabIcon(0xe90d, 'Saved Items'),
-          tabIcon(0xe911, 'My Cart'),
-          tabIcon(0xe912, 'Profile')
+          tabIcon(0xe90f, MyLocalizations.of(context).store),
+          tabIcon(0xe90d, MyLocalizations.of(context).savedItems),
+          tabIcon(0xe911, MyLocalizations.of(context).myCart),
+          tabIcon(0xe912, MyLocalizations.of(context).profile)
         ],
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(

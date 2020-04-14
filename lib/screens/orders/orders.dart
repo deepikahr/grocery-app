@@ -7,6 +7,7 @@ import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/orders/ordersDetails.dart';
 import 'package:grocery_pro/screens/tab/mycart.dart';
 import 'package:grocery_pro/service/cart-service.dart';
+import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/product-service.dart';
@@ -20,7 +21,10 @@ SentryError sentryError = new SentryError();
 
 class Orders extends StatefulWidget {
   final String userID;
-  Orders({Key key, this.userID}) : super(key: key);
+  final Map<String, Map<String, String>> localizedValues;
+  final String locale;
+  Orders({Key key, this.userID, this.locale, this.localizedValues})
+      : super(key: key);
 
   @override
   _OrdersState createState() => _OrdersState();
@@ -88,7 +92,10 @@ class _OrdersState extends State<Orders> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (BuildContext context) => MyCart(),
+                builder: (BuildContext context) => MyCart(
+                  locale: widget.locale,
+                  localizedValues: widget.localizedValues,
+                ),
               ),
             );
           }
@@ -138,7 +145,7 @@ class _OrdersState extends State<Orders> {
                 Padding(
                   padding: const EdgeInsets.only(top: 25.0),
                   child: Text(
-                    'Rate Product',
+                    MyLocalizations.of(context).rateProduct,
                     style: TextStyle(
                         color: Colors.red,
                         fontSize: 20,
@@ -180,7 +187,7 @@ class _OrdersState extends State<Orders> {
                       }
                       orderRating(orderId, rating);
                     },
-                    text: 'Submit',
+                    text: MyLocalizations.of(context).submit,
                     textColor: Colors.black,
                     color: primary,
                   ),
@@ -199,7 +206,7 @@ class _OrdersState extends State<Orders> {
       backgroundColor: Color(0xFFFDFDFD),
       appBar: GFAppBar(
         title: Text(
-          'Orders',
+          MyLocalizations.of(context).orders,
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -219,7 +226,7 @@ class _OrdersState extends State<Orders> {
                 alignment: Alignment.center,
                 backgroundColor: Colors.white,
                 child: Text(
-                  'Rate Product',
+                  MyLocalizations.of(context).rateProduct,
                   style: textbarlowmediumwred(),
                 ),
                 contentChild: Column(
@@ -248,10 +255,11 @@ class _OrdersState extends State<Orders> {
                     },
                     fullWidthButton: false,
                     color: primary,
-                    text: 'Submit',
+                    text: MyLocalizations.of(context).submit,
                     textStyle: textbarlowmediumwblack(),
                   ),
-                ))
+                ),
+              )
             : Container(),
         body: isLoading
             ? SquareLoader()
@@ -263,10 +271,6 @@ class _OrdersState extends State<Orders> {
                     children: <Widget>[
                       Container(
                         margin: EdgeInsets.only(top: 20, bottom: 10),
-                        decoration: BoxDecoration(
-//                          color: Color(0xFFF7F7F7)
-//                            color: Color(0xFFFDFDFD),
-                            ),
                         child: ListView.builder(
                           physics: ScrollPhysics(),
                           shrinkWrap: true,
@@ -281,6 +285,9 @@ class _OrdersState extends State<Orders> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => OrderDetails(
+                                            locale: widget.locale,
+                                            localizedValues:
+                                                widget.localizedValues,
                                             orderId: orderList[i]["_id"],
                                           ),
                                         ),
@@ -299,7 +306,6 @@ class _OrdersState extends State<Orders> {
                                                 "DELIVERED"
                                             ? reorder(orderList[i])
                                             : Container(),
-//                                        Divider(),
                                         SizedBox(
                                           height: 20,
                                         )
@@ -326,19 +332,16 @@ class _OrdersState extends State<Orders> {
             height: 103.0,
             width: 100,
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(5)),
-                boxShadow: [
-                  BoxShadow(color: Color(0xFF0000000A), blurRadius: 0.40)
-                ],
-                image: DecorationImage(
-                    image: NetworkImage(
-                      orderDetails['cart']['cart'][0]['imageUrl'],
-                    ),
-                    fit: BoxFit.cover)),
-//            child:   Image.network(
-//              orderDetails['cart']['cart'][0]['imageUrl'],
-//
-//            ),
+              borderRadius: BorderRadius.all(Radius.circular(5)),
+              boxShadow: [
+                BoxShadow(color: Color(0xFF0000000A), blurRadius: 0.40)
+              ],
+              image: DecorationImage(
+                  image: NetworkImage(
+                    orderDetails['cart']['cart'][0]['imageUrl'],
+                  ),
+                  fit: BoxFit.cover),
+            ),
           ),
           SizedBox(width: 17),
           Column(
@@ -366,7 +369,8 @@ class _OrdersState extends State<Orders> {
               SizedBox(height: 10),
               orderDetails['appTimestamp'] == null
                   ? Text(
-                      'Ordered : ' +
+                      MyLocalizations.of(context).ordered +
+                              ' : ' +
                               orderDetails['createdAt'].substring(0, 10) +
                               ", " +
                               orderDetails['createdAt'].substring(11, 16) ??
@@ -374,10 +378,12 @@ class _OrdersState extends State<Orders> {
                       style: textSMBarlowRegularrBlack(),
                     )
                   : Text(
-                      'Ordered : ' +
+                      MyLocalizations.of(context).ordered +
+                              ' : ' +
                               DateFormat('dd/MM/yyyy, hh:mm a').format(
-                                  DateTime.fromMillisecondsSinceEpoch(
-                                      orderDetails['appTimestamp'])) ??
+                                DateTime.fromMillisecondsSinceEpoch(
+                                    orderDetails['appTimestamp']),
+                              ) ??
                           "",
                       style: textSMBarlowRegularrBlack(),
                     )
@@ -411,7 +417,7 @@ class _OrdersState extends State<Orders> {
               ],
             ),
             title: Text(
-              'Order Confirmed',
+              MyLocalizations.of(context).orderConfirmed,
               style: orderDetails['orderStatus'] == "Confirmed" ||
                       orderDetails['orderStatus'] == "Out for delivery"
                   ? titleSegoeGreen()
@@ -444,7 +450,7 @@ class _OrdersState extends State<Orders> {
               ],
             ),
             title: Text(
-              'Out for delivery',
+              MyLocalizations.of(context).outfordelivery,
               style: orderDetails['orderStatus'] == "Out for delivery"
                   ? titleSegoeGreen()
                   : titleSegoeGrey(),
@@ -467,7 +473,7 @@ class _OrdersState extends State<Orders> {
               ],
             ),
             title: Text(
-              'Order delivered',
+              MyLocalizations.of(context).orderdelivered,
               style: titleSegoeGrey(),
             ),
             subTitle: Text(
@@ -497,7 +503,7 @@ class _OrdersState extends State<Orders> {
                       orderDetails['cart']['cart'].length, j);
                 }
               },
-              text: 'Reorder',
+              text: MyLocalizations.of(context).reorder,
               color: primary,
               textStyle: textbarlowmediumwblack(),
             ),
@@ -512,12 +518,14 @@ class _OrdersState extends State<Orders> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => OrderDetails(
+                      locale: widget.locale,
+                      localizedValues: widget.localizedValues,
                       orderId: orderDetails["_id"],
                     ),
                   ),
                 );
               },
-              text: 'View',
+              text: MyLocalizations.of(context).view,
               type: GFButtonType.outline,
               color: primary,
               textStyle: textbarlowmediumwprimary(),

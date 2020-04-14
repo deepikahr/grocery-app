@@ -29,6 +29,10 @@ dependencies:
 
   geocoder: ^0.2.1
   image: ^2.1.4
+
+  flutter_localizations:
+    sdk: flutter
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -106,3 +110,7 @@ flutter:
     - lib/assets/icons/lgout.svg
 
     - lib/assets/splash.png
+
+    - lib/assets/i18n/en.json
+    - lib/assets/i18n/fr.json
+    - lib/assets/i18n/ar.json

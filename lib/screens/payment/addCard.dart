@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
+import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/payment-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
@@ -10,6 +11,10 @@ import 'package:intl/intl.dart';
 SentryError sentryError = new SentryError();
 
 class AddCard extends StatefulWidget {
+  final Map<String, Map<String, String>> localizedValues;
+  final String locale;
+  AddCard({Key key, this.locale, this.localizedValues});
+
   @override
   _AddCardState createState() => _AddCardState();
 }
@@ -55,10 +60,8 @@ class _AddCardState extends State<AddCard> {
                 barrierDismissible: false,
                 builder: (BuildContext context) {
                   return new AlertDialog(
-                    title: new Text(
-                      'Success',
-                      style:  hintSfsemiboldred()
-                    ),
+                    title: new Text(MyLocalizations.of(context).success,
+                        style: hintSfsemiboldred()),
                     content: new SingleChildScrollView(
                       child: new ListBody(
                         children: <Widget>[
@@ -72,7 +75,7 @@ class _AddCardState extends State<AddCard> {
                     actions: <Widget>[
                       new FlatButton(
                         child: new Text(
-                          'OK',
+                          MyLocalizations.of(context).ok,
                           style: textbarlowRegularaPrimar(),
                         ),
                         onPressed: () {
@@ -112,7 +115,8 @@ class _AddCardState extends State<AddCard> {
             isCardListLoading = false;
           });
         }
-        showSnackbar("Please enter correct expiry month and year");
+        showSnackbar(
+            MyLocalizations.of(context).pleaseentercorrectexpirymonthandyear);
       }
     } else {
       return;
@@ -124,7 +128,8 @@ class _AddCardState extends State<AddCard> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: GFAppBar(
-        title: Text('Add Card', style: textbarlowSemiBoldBlack()),
+        title: Text(MyLocalizations.of(context).addCard,
+            style: textbarlowSemiBoldBlack()),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -139,7 +144,7 @@ class _AddCardState extends State<AddCard> {
               child: Row(
                 children: <Widget>[
                   Text(
-                    'Account Number:',
+                    MyLocalizations.of(context).cardNumber,
                     style: textBarlowRegularBlack(),
                   ),
                 ],
@@ -155,8 +160,11 @@ class _AddCardState extends State<AddCard> {
                     cardNumber = value;
                   },
                   validator: (String value) {
-                    if (value.isEmpty || value.length != 16) {
-                      return "Please enter a card number";
+                    if (value.isEmpty) {
+                      return MyLocalizations.of(context).enteracardnumber;
+                    } else if (value.length != 16) {
+                      return MyLocalizations.of(context)
+                          .pleaseenter16digitcardnumber;
                     } else
                       return null;
                   },
@@ -180,15 +188,13 @@ class _AddCardState extends State<AddCard> {
                 ),
               ),
             ),
-
             SizedBox(height: 10),
-
             Padding(
               padding: const EdgeInsets.only(left: 20.0),
               child: Row(
                 children: <Widget>[
                   Text(
-                    'Account Name',
+                    MyLocalizations.of(context).cardHolderName,
                     style: textBarlowRegularBlack(),
                   ),
                 ],
@@ -204,7 +210,7 @@ class _AddCardState extends State<AddCard> {
                   },
                   validator: (String value) {
                     if (value.isEmpty) {
-                      return "Please enter a card holder name";
+                      return MyLocalizations.of(context).entercardHolderName;
                     } else
                       return null;
                   },
@@ -227,14 +233,15 @@ class _AddCardState extends State<AddCard> {
                 ),
               ),
             ),
-
             SizedBox(height: 10),
-
             Padding(
               padding: const EdgeInsets.only(left: 20.0),
               child: Row(
                 children: <Widget>[
-                  Text(' Bank Name', style: textBarlowRegularBlack()),
+                  Text(
+                    MyLocalizations.of(context).bankName,
+                    style: textBarlowRegularBlack(),
+                  ),
                 ],
               ),
             ),
@@ -248,7 +255,7 @@ class _AddCardState extends State<AddCard> {
                   },
                   validator: (String value) {
                     if (value.isEmpty) {
-                      return "Please enter  bank name";
+                      return MyLocalizations.of(context).enterbankname;
                     } else
                       return null;
                   },
@@ -271,9 +278,7 @@ class _AddCardState extends State<AddCard> {
                 ),
               ),
             ),
-
             SizedBox(height: 10),
-
             Row(
               children: <Widget>[
                 Flexible(
@@ -285,7 +290,7 @@ class _AddCardState extends State<AddCard> {
                           padding: const EdgeInsets.only(left: 20.0),
                           child: Row(
                             children: <Widget>[
-                              Text('Expiry Month',
+                              Text(MyLocalizations.of(context).expiryMonth,
                                   style: textBarlowRegularBlack()),
                             ],
                           ),
@@ -303,8 +308,12 @@ class _AddCardState extends State<AddCard> {
                                 expiryMonth = int.parse(value);
                               },
                               validator: (String value) {
-                                if (value.isEmpty || value.length != 2) {
-                                  return "Please enter a card correct card expired month";
+                                if (value.isEmpty) {
+                                  return MyLocalizations.of(context)
+                                      .entercardexpiredmonth;
+                                } else if (value.length != 2) {
+                                  return MyLocalizations.of(context)
+                                      .pleaseentera2digitcardexpiredmonth;
                                 } else
                                   return null;
                               },
@@ -339,7 +348,7 @@ class _AddCardState extends State<AddCard> {
                         padding: const EdgeInsets.only(left: 10.0, right: 10),
                         child: Row(
                           children: <Widget>[
-                            Text('Expiry Year',
+                            Text(MyLocalizations.of(context).expiryYear,
                                 style: textBarlowRegularBlack()),
                           ],
                         ),
@@ -354,8 +363,12 @@ class _AddCardState extends State<AddCard> {
                               expiryYear = int.parse(value);
                             },
                             validator: (String value) {
-                              if (value.isEmpty || value.length != 4) {
-                                return "Please enter a card correct card expired year";
+                              if (value.isEmpty) {
+                                return MyLocalizations.of(context)
+                                    .enteracardexpiredyear;
+                              } else if (value.length != 4) {
+                                return MyLocalizations.of(context)
+                                    .pleaseentera4digitcardexpiredyear;
                               } else
                                 return null;
                             },
@@ -391,7 +404,8 @@ class _AddCardState extends State<AddCard> {
                         padding: const EdgeInsets.only(left: 0.0),
                         child: Row(
                           children: <Widget>[
-                            Text(' CVV', style: textBarlowRegularBlack()),
+                            Text(MyLocalizations.of(context).cvv,
+                                style: textBarlowRegularBlack()),
                           ],
                         ),
                       ),
@@ -406,7 +420,11 @@ class _AddCardState extends State<AddCard> {
                             },
                             validator: (String value) {
                               if (value.isEmpty || value.length != 3) {
-                                return "Please enter a card correct card CVV";
+                                return MyLocalizations.of(context)
+                                    .enteracardCVV;
+                              } else if (value.isEmpty || value.length != 3) {
+                                return MyLocalizations.of(context)
+                                    .pleaseenter3digitcardCVV;
                               } else
                                 return null;
                             },
@@ -435,15 +453,7 @@ class _AddCardState extends State<AddCard> {
                 )
               ],
             ),
-
-            // Column(
-            // children: <Widget>[
-            //   Text('hhhh')
-            // ],
-            // )
-
             SizedBox(height: 10),
-
             SizedBox(height: 10),
           ],
         ),
@@ -462,7 +472,7 @@ class _AddCardState extends State<AddCard> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(
-                "Save",
+                MyLocalizations.of(context).save,
                 style: textBarlowRegularrBlack(),
               ),
               isCardListLoading

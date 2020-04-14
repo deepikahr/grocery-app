@@ -8,6 +8,7 @@ import 'package:grocery_pro/main.dart';
 import 'package:grocery_pro/screens/authe/forgotpassword.dart';
 import 'package:grocery_pro/screens/authe/signup.dart';
 import 'package:grocery_pro/service/common.dart';
+import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/auth-service.dart';
@@ -21,12 +22,16 @@ class Login extends StatefulWidget {
       this.isProfile,
       this.isCart,
       this.isStore,
-      this.isProductDetails})
+      this.isProductDetails,
+      this.locale,
+      this.localizedValues})
       : super(key: key);
   final bool isProfile;
   final bool isCart;
   final bool isStore;
   final bool isProductDetails;
+  final Map<String, Map<String, String>> localizedValues;
+  final String locale;
   @override
   _LoginState createState() => _LoginState();
 }
@@ -82,40 +87,14 @@ class _LoginState extends State<Login> {
           }
           if (onValue['response_code'] == 200) {
             Common.setToken(onValue['response_data']['token']);
-            // showDialog<Null>(
-            //   context: context,
-            //   barrierDismissible: false, // user must tap button!
-            //   builder: (BuildContext context) {
-            //     return new AlertDialog(
-            //       content: new SingleChildScrollView(
-            //         child: new ListBody(
-            //           children: <Widget>[
-            //             new Text(
-            //               'Login successfully',
-            //               style: textBarlowRegularBlack(),
-            //             ),
-            //           ],
-            //         ),
-            //       ),
-            //       actions: <Widget>[
-            //         new FlatButton(
-            //           child: new Text(
-            //             'OK',
-            //             style: textbarlowRegularaPrimary(),
-            //           ),
-            //           onPressed: () {
+
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (BuildContext context) => MyApp(),
+                  builder: (BuildContext context) =>
+                      MyApp(widget.locale, widget.localizedValues),
                 ),
                 (Route<dynamic> route) => false);
-            //           },
-            //         ),
-            //       ],
-            //     );
-            //   },
-            // );
           } else if (onValue['response_code'] == 401) {
             showSnackbar(onValue['response_data']);
           } else {
@@ -142,7 +121,7 @@ class _LoginState extends State<Login> {
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20))),
         title: Text(
-          'Log in',
+          MyLocalizations.of(context).login,
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -197,7 +176,7 @@ class _LoginState extends State<Login> {
       child: GFTypography(
         showDivider: false,
         child: Text(
-          "Welcome back!",
+          MyLocalizations.of(context).welcomeBack,
           style: textbarlowMediumBlack(),
         ),
       ),
@@ -212,7 +191,10 @@ class _LoginState extends State<Login> {
         child: RichText(
           text: TextSpan(
             children: <TextSpan>[
-              TextSpan(text: "Email", style: textbarlowRegularBlackdull()),
+              TextSpan(
+                text: MyLocalizations.of(context).email,
+                style: textbarlowRegularBlackdull(),
+              ),
               TextSpan(
                 text: ' *',
                 style: TextStyle(color: Color(0xFFF44242)),
@@ -235,11 +217,11 @@ class _LoginState extends State<Login> {
           },
           validator: (String value) {
             if (value.isEmpty) {
-              return "Please Enter a Email";
+              return MyLocalizations.of(context).enterYourEmail;
             } else if (!RegExp(
                     r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
                 .hasMatch(value)) {
-              return "Please Enter a Valid Email";
+              return MyLocalizations.of(context).pleaseEnterValidEmail;
             } else
               return null;
           },
@@ -268,7 +250,9 @@ class _LoginState extends State<Login> {
       child: RichText(
         text: TextSpan(
           children: <TextSpan>[
-            TextSpan(text: "Password", style: textbarlowRegularBlackdull()),
+            TextSpan(
+                text: MyLocalizations.of(context).password,
+                style: textbarlowRegularBlackdull()),
             TextSpan(
               text: ' *',
               style: TextStyle(color: Color(0xFFF44242)),
@@ -291,15 +275,19 @@ class _LoginState extends State<Login> {
         },
         validator: (String value) {
           if (value.isEmpty) {
-            return "please Enter a Password";
+            return MyLocalizations.of(context).enterPassword;
           } else if (value.length < 6) {
-            return "please Enter Min 6 Digit Password";
+            return MyLocalizations.of(context).pleaseEnterMin6DigitPassword;
           } else
             return null;
         },
         decoration: InputDecoration(
           errorBorder: OutlineInputBorder(
-              borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
+            borderSide: BorderSide(
+              width: 0,
+              color: Color(0xFFF44242),
+            ),
+          ),
           errorStyle: TextStyle(color: Color(0xFFF44242)),
           fillColor: Colors.black,
           focusColor: Colors.black,
@@ -343,10 +331,12 @@ class _LoginState extends State<Login> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              "Log in",
+              MyLocalizations.of(context).login,
               style: textBarlowRegularrBlack(),
             ),
-            SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             isUserLoaginLoading
                 ? Image.asset(
                     'lib/assets/images/spinner.gif',
@@ -366,7 +356,12 @@ class _LoginState extends State<Login> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ForgotPassword()),
+          MaterialPageRoute(
+            builder: (context) => ForgotPassword(
+              locale: widget.locale,
+              localizedValues: widget.localizedValues,
+            ),
+          ),
         );
       },
       child: Padding(
@@ -375,7 +370,8 @@ class _LoginState extends State<Login> {
           text: TextSpan(
             children: <TextSpan>[
               TextSpan(
-                  text: "Forgot Password?", style: textbarlowRegularBlackd()),
+                  text: MyLocalizations.of(context).forgotPassword + "?",
+                  style: textbarlowRegularBlackd()),
               TextSpan(
                 text: '',
                 style: TextStyle(color: primary),
@@ -389,7 +385,7 @@ class _LoginState extends State<Login> {
 
   Widget buildcontinuetext() {
     return Text(
-      'OR',
+      MyLocalizations.of(context).or,
       textAlign: TextAlign.center,
       style: textBarlowRegularBlack(),
     );
@@ -400,7 +396,11 @@ class _LoginState extends State<Login> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Signup()),
+          MaterialPageRoute(
+              builder: (context) => Signup(
+                    locale: widget.locale,
+                    localizedValues: widget.localizedValues,
+                  )),
         );
       },
       child: Padding(
@@ -408,7 +408,10 @@ class _LoginState extends State<Login> {
         child: RichText(
           text: TextSpan(
             children: <TextSpan>[
-              TextSpan(text: "Register?", style: textbarlowRegularaPrimary()),
+              TextSpan(
+                text: MyLocalizations.of(context).register + "?",
+                style: textbarlowRegularaPrimary(),
+              ),
               TextSpan(
                 text: '',
                 style: TextStyle(color: primary),

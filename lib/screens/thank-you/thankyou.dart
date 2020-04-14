@@ -1,24 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_pro/screens/home/home.dart';
+import 'package:grocery_pro/service/localizations.dart';
 
 import 'package:grocery_pro/style/style.dart';
 
 class Thankyou extends StatefulWidget {
+  final Map<String, Map<String, String>> localizedValues;
+  final String locale;
+  Thankyou({Key key, this.locale, this.localizedValues});
   @override
   _ThankyouState createState() => _ThankyouState();
 }
 
 class _ThankyouState extends State<Thankyou> {
-  int selectedRadio;
-
-  setSelectedRadio(int val) async {
-    if (mounted) {
-      setState(() {
-        selectedRadio = val;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,12 +26,12 @@ class _ThankyouState extends State<Thankyou> {
             Image.asset('lib/assets/images/thank-you.png'),
             SizedBox(height: 10.0),
             Text(
-              'Order Placed',
+              MyLocalizations.of(context).orderPlaced,
               style: textbarlowMediumBlack(),
             ),
             SizedBox(height: 13.0),
             Text(
-              'THANK YOU!',
+              MyLocalizations.of(context).thankYou + '!',
               style: textbarlowMediumlgBlack(),
             ),
             SizedBox(height: 30.0),
@@ -47,13 +41,15 @@ class _ThankyouState extends State<Thankyou> {
                     context,
                     MaterialPageRoute(
                       builder: (BuildContext context) => Home(
-                        currentIndex: 2,
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                        currentIndex: 0,
                       ),
                     ),
                     (Route<dynamic> route) => false);
               },
               child: Text(
-                'Back To Home',
+                MyLocalizations.of(context).backToHome,
                 style: textbarlowMediumBlack(),
               ),
             )

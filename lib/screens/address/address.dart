@@ -7,6 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:grocery_pro/screens/address/add-address.dart';
 import 'package:grocery_pro/screens/address/edit-address.dart';
 import 'package:grocery_pro/service/constants.dart';
+import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/address-service.dart';
@@ -15,6 +16,10 @@ import 'package:grocery_pro/widgets/loader.dart';
 SentryError sentryError = new SentryError();
 
 class Address extends StatefulWidget {
+  final Map<String, Map<String, String>> localizedValues;
+  final String locale;
+  Address({Key key, this.locale, this.localizedValues});
+
   @override
   _AddressState createState() => _AddressState();
 }
@@ -79,7 +84,7 @@ class _AddressState extends State<Address> {
           color: Colors.black,
         ),
         title: Text(
-          'Address',
+          MyLocalizations.of(context).address,
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -96,7 +101,7 @@ class _AddressState extends State<Address> {
                       padding: const EdgeInsets.only(
                           top: 10.0, bottom: 10.0, left: 20.0),
                       child: Text(
-                        'Saved Address',
+                        MyLocalizations.of(context).savedAddress,
                         style: textbarlowSemiBoldBlack(),
                       ),
                     ),
@@ -123,9 +128,12 @@ class _AddressState extends State<Address> {
                               child: Row(
                                 children: <Widget>[
                                   Container(
-                                      margin:
-                                          EdgeInsets.only(bottom: 100, left: 7),
-                                      child: Text('1')),
+                                    margin:
+                                        EdgeInsets.only(bottom: 100, left: 7),
+                                    child: Text(
+                                      (index + 1).toString(),
+                                    ),
+                                  ),
                                   Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -196,13 +204,15 @@ class _AddressState extends State<Address> {
                       builder: (BuildContext context) => new AddAddress(
                         isProfile: true,
                         pickedLocation: _pickedLocation,
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
                       ),
                     ),
                   );
                 });
               }
             },
-            text: 'Add New Address',
+            text: MyLocalizations.of(context).addNewAddress,
             textStyle: textBarlowRegularBlack(),
           ),
         ),
@@ -222,7 +232,11 @@ class _AddressState extends State<Address> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => EditAddress(
-                      updateAddressID: addressList, isProfile: true),
+                    updateAddressID: addressList,
+                    isProfile: true,
+                    locale: widget.locale,
+                    localizedValues: widget.localizedValues,
+                  ),
                 ),
               );
               getAddress();
@@ -230,7 +244,7 @@ class _AddressState extends State<Address> {
             child: Padding(
               padding: const EdgeInsets.only(left: 18.0, right: 18.0),
               child: Text(
-                "Edit",
+                MyLocalizations.of(context).edit,
                 style: textbarlowRegularaPrimar(),
               ),
             ),
@@ -247,7 +261,7 @@ class _AddressState extends State<Address> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                 child: Text(
-                  "Delete",
+                  MyLocalizations.of(context).delete,
                   style: textbarlowRegularaPrimar(),
                 ),
               ),

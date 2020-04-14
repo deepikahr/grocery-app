@@ -7,6 +7,7 @@ import 'package:getflutter/getflutter.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:grocery_pro/service/constants.dart';
+import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/address-service.dart';
@@ -21,12 +22,16 @@ class EditAddress extends StatefulWidget {
       this.currentLocation,
       this.isCheckout,
       this.isProfile,
-      this.updateAddressID})
+      this.updateAddressID,
+      this.locale,
+      this.localizedValues})
       : super(key: key);
   final bool isCheckout;
   final bool isProfile;
   final Map<String, dynamic> updateAddressID;
   final LocationData currentLocation;
+  final Map<String, Map<String, String>> localizedValues;
+  final String locale;
 
   @override
   _EditAddressState createState() => _EditAddressState();
@@ -123,13 +128,19 @@ class _EditAddressState extends State<EditAddress> {
           content: new SingleChildScrollView(
             child: new ListBody(
               children: <Widget>[
-                new Text(message, style: hintSfMediumblackbig(),),
+                new Text(
+                  message,
+                  style: hintSfMediumblackbig(),
+                ),
               ],
             ),
           ),
           actions: <Widget>[
             new FlatButton(
-              child: new Text('OK', style: TextStyle(color: green),),
+              child: new Text(
+                MyLocalizations.of(context).ok,
+                style: TextStyle(color: green),
+              ),
               onPressed: () {
                 if (widget.isProfile == true) {
                   Navigator.of(context).pop();
@@ -183,7 +194,10 @@ class _EditAddressState extends State<EditAddress> {
         iconTheme: IconThemeData(
           color: Colors.black,
         ),
-        title: Text('Edit Address', style: textbarlowSemiBoldBlack()),
+        title: Text(
+          MyLocalizations.of(context).editAddress,
+          style: textbarlowSemiBoldBlack(),
+        ),
         centerTitle: true,
         elevation: 0,
         backgroundColor: primary,
@@ -203,7 +217,7 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'Loaction :',
+                        MyLocalizations.of(context).location + ' :',
                         style: regular(),
                       ),
                     ],
@@ -248,7 +262,7 @@ class _EditAddressState extends State<EditAddress> {
                             fullAddress = result.address.toString();
                           });
                         },
-                        text: 'Update Address',
+                        text: MyLocalizations.of(context).updateAddress,
                         textStyle: textBarlowRegularBlack()),
                   ),
                 ),
@@ -258,7 +272,7 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'House/Flat/Block number :',
+                        MyLocalizations.of(context).houseFlatBlocknumber + ' :',
                         style: regular(),
                       ),
                     ],
@@ -288,7 +302,8 @@ class _EditAddressState extends State<EditAddress> {
                         )),
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return "please Enter House/Flat/Block number ";
+                        return MyLocalizations.of(context)
+                            .pleaseenterhouseflatblocknumber;
                       } else
                         return null;
                     },
@@ -306,7 +321,7 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'Apartment Name :',
+                        MyLocalizations.of(context).apartmentName + ' :',
                         style: regular(),
                       ),
                     ],
@@ -337,7 +352,8 @@ class _EditAddressState extends State<EditAddress> {
                       ),
                       validator: (String value) {
                         if (value.isEmpty) {
-                          return "please Enter Apartment Name";
+                          return MyLocalizations.of(context)
+                              .pleaseenterapartmentname;
                         } else
                           return null;
                       },
@@ -354,7 +370,7 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'Land Mark :',
+                        MyLocalizations.of(context).landMark + ' :',
                         style: regular(),
                       ),
                     ],
@@ -385,7 +401,8 @@ class _EditAddressState extends State<EditAddress> {
                       ),
                       validator: (String value) {
                         if (value.isEmpty) {
-                          return "please Enter Land Mark";
+                          return MyLocalizations.of(context)
+                              .pleaseenterlandmark;
                         } else
                           return null;
                       },
@@ -402,7 +419,7 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'Postel Code :',
+                        MyLocalizations.of(context).postalCode + ' :',
                         style: regular(),
                       ),
                     ],
@@ -434,9 +451,11 @@ class _EditAddressState extends State<EditAddress> {
                       ),
                       validator: (String value) {
                         if (value.isEmpty) {
-                          return "please Enter Postel Code";
+                          return MyLocalizations.of(context)
+                              .pleaseenterpostalcode;
                         } else if (value.length != 6) {
-                          return "please Enter 6 digit Postel Code ";
+                          return MyLocalizations.of(context)
+                              .pleaseenter6digitpostalcode;
                         } else
                           return null;
                       },
@@ -453,7 +472,7 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'Contact Number :',
+                        MyLocalizations.of(context).contactNumber + ' :',
                         style: regular(),
                       ),
                     ],
@@ -485,9 +504,11 @@ class _EditAddressState extends State<EditAddress> {
                         )),
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return "please Enter Contact Number";
+                        return MyLocalizations.of(context)
+                            .pleaseentercontactnumber;
                       } else if (value.length != 10) {
-                        return "please Enter 10 Digit Contact Number";
+                        return MyLocalizations.of(context)
+                            .pleaseenter10digitcontactnumber;
                       } else
                         return null;
                     },
@@ -505,7 +526,9 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'Address Type (Home, Work, Others etc.):',
+                        MyLocalizations.of(context)
+                                .addressTypeHomeWorkOthersetc +
+                            ' :',
                         style: regular(),
                       ),
                     ],
@@ -558,8 +581,10 @@ class _EditAddressState extends State<EditAddress> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text("Update"),
-                          SizedBox(height: 10,),
+                          Text(MyLocalizations.of(context).update),
+                          SizedBox(
+                            height: 10,
+                          ),
                           isUpdateAddress
                               ? Image.asset(
                                   'lib/assets/images/spinner.gif',

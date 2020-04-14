@@ -5,6 +5,7 @@ import 'package:getflutter/components/button/gf_button.dart';
 import 'package:getflutter/components/typography/gf_typography.dart';
 import 'package:grocery_pro/screens/authe/login.dart';
 import 'package:grocery_pro/service/auth-service.dart';
+import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
 
@@ -68,14 +69,17 @@ class _ResetPasswordState extends State<ResetPassword> {
                   actions: <Widget>[
                     new FlatButton(
                       child: new Text(
-                        'OK',
+                        MyLocalizations.of(context).ok,
                         style: textbarlowRegularaPrimary(),
                       ),
                       onPressed: () {
                         Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                              builder: (BuildContext context) => Login(),
+                              builder: (BuildContext context) => Login(
+                                locale: widget.locale,
+                                localizedValues: widget.localizedValues,
+                              ),
                             ),
                             (Route<dynamic> route) => false);
                       },
@@ -112,7 +116,7 @@ class _ResetPasswordState extends State<ResetPassword> {
           ),
         ),
         title: Text(
-          'Password reset',
+          MyLocalizations.of(context).passwordreset,
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -134,7 +138,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                       text: TextSpan(
                         children: <TextSpan>[
                           TextSpan(
-                              text: "Enter new password",
+                              text:
+                                  MyLocalizations.of(context).enternewpassword,
                               style: textBarlowRegularBlack()),
                           TextSpan(
                             text: ' ',
@@ -181,9 +186,10 @@ class _ResetPasswordState extends State<ResetPassword> {
                     ),
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return "Please Enter a Password";
+                        return MyLocalizations.of(context).enterPassword;
                       } else if (value.length < 6) {
-                        return "Please Enter Min 6 Digit Password";
+                        return MyLocalizations.of(context)
+                            .pleaseEnterMin6DigitPassword;
                       } else
                         return null;
                     },
@@ -203,7 +209,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                     text: TextSpan(
                       children: <TextSpan>[
                         TextSpan(
-                            text: "Re enter new password",
+                            text:
+                                MyLocalizations.of(context).reenternewpassword,
                             style: textBarlowRegularBlack()),
                         TextSpan(
                           text: ' ',
@@ -221,8 +228,11 @@ class _ResetPasswordState extends State<ResetPassword> {
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       errorBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(width: 0, color: Color(0xFFF44242))),
+                        borderSide: BorderSide(
+                          width: 0,
+                          color: Color(0xFFF44242),
+                        ),
+                      ),
                       errorStyle: TextStyle(color: Color(0xFFF44242)),
                       contentPadding: EdgeInsets.all(10),
                       enabledBorder: const OutlineInputBorder(
@@ -248,11 +258,13 @@ class _ResetPasswordState extends State<ResetPassword> {
                     ),
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return "Please Enter a Password";
+                        return MyLocalizations.of(context).enterPassword;
                       } else if (value.length < 6) {
-                        return "Please Enter Min 6 Digit Password";
+                        return MyLocalizations.of(context)
+                            .pleaseEnterMin6DigitPassword;
                       } else if (_passwordTextController.text != value) {
-                        return "passwords do not match" + '.';
+                        return MyLocalizations.of(context).passwordsdonotmatch +
+                            '..';
                       } else
                         return null;
                     },
@@ -284,10 +296,12 @@ class _ResetPasswordState extends State<ResetPassword> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          "Submit ",
+                          MyLocalizations.of(context).submit,
                           style: textbarlowMediumBlack(),
                         ),
-                        SizedBox(height: 10,),
+                        SizedBox(
+                          height: 10,
+                        ),
                         isResetPasswordLoading
                             ? Image.asset(
                                 'lib/assets/images/spinner.gif',
