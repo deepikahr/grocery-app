@@ -32,15 +32,16 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   Map<String, dynamic> userInfo;
-  bool isLoading = false, logoutLoading = false;
-  bool isGetTokenLoading = false;
-  List orderList = List();
-  List cardList = List();
-  String token, selectedLanguages;
+  bool isLoading = false,
+      logoutLoading = false,
+      isProfile = true,
+      isCardListLoading = false,
+      isCardDelete = false,
+      isGetTokenLoading = false;
+  List orderList = List(), cardList = List();
+  String token, selectedLanguages, userID;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  String userID;
-  bool isProfile = true, isCardListLoading = false, isCardDelete = false;
   List<String> languages = ['English', 'French', 'Arbic'];
   var userData, selectedLanguage, selectedLocale;
 
@@ -544,7 +545,7 @@ class _ProfileState extends State<Profile> {
                 ? Login(
                     locale: widget.locale,
                     localizedValues: widget.localizedValues,
-                  )
+                    isProfile: true)
                 : isCardListLoading
                     ? SquareLoader()
                     : isLoading

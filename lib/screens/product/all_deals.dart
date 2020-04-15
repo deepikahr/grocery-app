@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:grocery_pro/screens/categories/subcategories.dart';
 import 'package:grocery_pro/screens/product/product-details.dart';
-import 'package:grocery_pro/screens/tab/searchitem.dart';
-import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
@@ -15,10 +13,9 @@ SentryError sentryError = new SentryError();
 
 class AllDealsList extends StatefulWidget {
   final Map<String, Map<String, String>> localizedValues;
-  final String locale, currency;
   final bool token;
   final List productsList, favProductList;
-  final String dealType, title;
+  final String dealType, title, locale, currency;
 
   AllDealsList(
       {Key key,

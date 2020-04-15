@@ -12,9 +12,8 @@ import 'package:grocery_pro/style/style.dart';
 SentryError sentryError = new SentryError();
 
 class ResetPassword extends StatefulWidget {
-  final String token;
+  final String token, locale;
   final Map<String, Map<String, String>> localizedValues;
-  final String locale;
   ResetPassword({Key key, this.token, this.localizedValues, this.locale})
       : super(key: key);
 

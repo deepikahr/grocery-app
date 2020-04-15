@@ -20,9 +20,9 @@ import '../../style/style.dart';
 SentryError sentryError = new SentryError();
 
 class Orders extends StatefulWidget {
-  final String userID;
+  final String userID, locale;
   final Map<String, Map<String, String>> localizedValues;
-  final String locale;
+
   Orders({Key key, this.userID, this.locale, this.localizedValues})
       : super(key: key);
 
@@ -31,14 +31,14 @@ class Orders extends StatefulWidget {
 }
 
 class _OrdersState extends State<Orders> {
-  bool isLoading = false, isLoadingSubProductsList = false;
+  bool isLoading = false,
+      isLoadingSubProductsList = false,
+      showRating = false,
+      showblur = false;
   List subProductsList = List();
   List<dynamic> orderList;
-  bool showRating = false;
-  bool showblur = false;
-  double _rating = 3;
+  double _rating = 3, rating;
   var orderedTime;
-  double rating;
   String currency;
   @override
   void initState() {

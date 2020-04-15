@@ -23,8 +23,7 @@ class SavedItems extends StatefulWidget {
 }
 
 class _SavedItemsState extends State<SavedItems> {
-  bool isGetTokenLoading = false;
-  bool isFavListLoading = false;
+  bool isGetTokenLoading = false, isFavListLoading = false;
   String token, currency;
   List<dynamic> favProductList;
   @override
@@ -136,6 +135,7 @@ class _SavedItemsState extends State<SavedItems> {
               ? Login(
                   locale: widget.locale,
                   localizedValues: widget.localizedValues,
+                  isSaveItem: true,
                 )
               : isFavListLoading
                   ? SquareLoader()

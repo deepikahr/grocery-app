@@ -23,11 +23,9 @@ SentryError sentryError = new SentryError();
 
 class Checkout extends StatefulWidget {
   final Map<String, dynamic> cartItem;
-  final String buy;
-  final String quantity;
-  final String id;
+  final String buy, quantity, locale, id;
   final Map<String, Map<String, String>> localizedValues;
-  final String locale;
+
   Checkout(
       {Key key,
       this.id,
@@ -49,7 +47,7 @@ class _CheckoutState extends State<Checkout> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Map<String, dynamic> userInfo, address, cartItem;
 
-  List locationList, addressList, deliverySlotList;
+  List addressList, deliverySlotList;
   int selectedRadio, groupValue, groupValue1, _selectedIndex = 0;
   String selectedDeliveryType, locationNotFound, name, currency, couponCode;
 
@@ -67,7 +65,7 @@ class _CheckoutState extends State<Checkout> {
   void initState() {
     cartItem = widget.cartItem;
     super.initState();
-    getLocations();
+
     getUserInfo();
     getAddress();
 
@@ -193,30 +191,6 @@ class _CheckoutState extends State<Checkout> {
           setState(() {
             addressList = addressList;
           });
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      sentryError.reportError(error, null);
-    });
-  }
-
-  getLocations() async {
-    await ProductService.getLocationList().then((onValue) {
-      try {
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              locationList = onValue['response_data'];
-            });
-          }
-        } else if (onValue['response_code'] == 400) {
-          if (mounted) {
-            setState(() {
-              locationNotFound = onValue['response_data']['message'];
-            });
-          }
         }
       } catch (error, stackTrace) {
         sentryError.reportError(error, stackTrace);

@@ -13,16 +13,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 SentryError sentryError = new SentryError();
 
 class Payment extends StatefulWidget {
-  final int quantity;
-  final String type;
-  final double grandTotals;
-  final int grandTotal;
-  final double deliveryCharges;
-  final int deliveryCharge;
-  final int currentIndex;
+  final int quantity, grandTotal, deliveryCharge, currentIndex;
+  final String type, locale;
+  final double grandTotals, deliveryCharges;
+
   final Map<String, dynamic> data;
   final Map<String, Map<String, String>> localizedValues;
-  final String locale;
 
   Payment(
       {Key key,
@@ -77,7 +73,6 @@ class _PaymentState extends State<Payment> {
   @override
   void initState() {
     fetchCardInfo();
-
     if (widget.grandTotal == null && widget.deliveryCharge == null) {
       deliveryCharges = widget.deliveryCharges;
       grandTotal = widget.grandTotals;

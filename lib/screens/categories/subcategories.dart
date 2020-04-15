@@ -15,10 +15,9 @@ import 'package:grocery_pro/style/style.dart';
 SentryError sentryError = new SentryError();
 
 class SubCategories extends StatefulWidget {
-  final String catTitle;
-  final String catId;
+  final String catTitle, locale, catId;
   final Map<String, Map<String, String>> localizedValues;
-  final String locale;
+
   SubCategories(
       {Key key, this.catId, this.catTitle, this.locale, this.localizedValues})
       : super(key: key);

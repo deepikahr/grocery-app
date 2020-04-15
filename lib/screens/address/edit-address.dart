@@ -26,8 +26,7 @@ class EditAddress extends StatefulWidget {
       this.locale,
       this.localizedValues})
       : super(key: key);
-  final bool isCheckout;
-  final bool isProfile;
+  final bool isCheckout, isProfile;
   final Map<String, dynamic> updateAddressID;
   final LocationData currentLocation;
   final Map<String, Map<String, String>> localizedValues;
@@ -45,8 +44,7 @@ class _EditAddressState extends State<EditAddress> {
   Location _location = new Location();
   bool chooseAddress = false, isUpdateAddress = false;
   StreamSubscription<LocationData> locationSubscription;
-  int selectedRadio = 0;
-  int selectedRadioFirst;
+  int selectedRadio = 0, selectedRadioFirst;
   LocationResult _pickedLocation;
   String fullAddress;
   @override
@@ -157,34 +155,11 @@ class _EditAddressState extends State<EditAddress> {
     );
   }
 
-  getGeoLocation() async {
-    await ProductService.geoApi(
-            currentLocation.latitude, currentLocation.longitude)
-        .then((onValue) {
-      try {
-        if (mounted) {
-          setState(() {
-            addressData = onValue['results'][0];
-          });
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      sentryError.reportError(error, null);
-    });
-  }
-
   @override
   void dispose() {
     if (locationSubscription != null && locationSubscription is Stream)
       locationSubscription.cancel();
     super.dispose();
-  }
-
-  getResult() async {
-    currentLocation = await _location.getLocation();
-    getGeoLocation();
   }
 
   @override

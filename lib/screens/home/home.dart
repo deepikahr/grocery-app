@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/tab/mycart.dart';
@@ -144,6 +142,14 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.currentIndex != null) {
+      if (mounted) {
+        setState(() {
+          currentIndex = widget.currentIndex;
+          print(currentIndex);
+        });
+      }
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       body: currencyLoading
