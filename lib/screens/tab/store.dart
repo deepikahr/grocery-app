@@ -47,6 +47,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       isLoadingAllData = false;
   List categoryList,
       productsList,
+      searchProductList,
       dealList,
       topDealList,
       favProductList,
@@ -63,12 +64,39 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   String locale;
   @override
   void initState() {
+    getProductListMethod();
     getToken();
     getResult();
     getBanner();
     getAllData();
+
     super.initState();
     tabController = TabController(length: 4, vsync: this);
+  }
+
+  getProductListMethod() async {
+    await ProductService.getProductListAll().then((onValue) {
+      try {
+        _refreshController.refreshCompleted();
+        if (onValue['response_code'] == 200) {
+          if (mounted) {
+            setState(() {
+              searchProductList = onValue['response_data'];
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              searchProductList = [];
+            });
+          }
+        }
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
   }
 
   @override
@@ -279,7 +307,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
             builder: (context) => SearchItem(
                 locale: widget.locale,
                 localizedValues: widget.localizedValues,
-                productsList: productsList,
+                productsList: searchProductList,
                 currency: currency,
                 favProductList: getTokenValue ? favProductList : null),
           ),
@@ -764,7 +792,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                         builder: (context) => SearchItem(
                             locale: widget.locale,
                             localizedValues: widget.localizedValues,
-                            productsList: productsList,
+                            productsList: searchProductList,
                             currency: currency,
                             favProductList:
                                 getTokenValue ? favProductList : null),
