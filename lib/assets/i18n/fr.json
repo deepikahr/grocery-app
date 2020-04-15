@@ -434,5 +434,9 @@
   "addSomeItemsToProceedToCheckout": "Ajouter Quelques Éléments Pour Passer À La Caisse",
   "whatareyoubuyingtoday": "De quoi êtes-vous d'acheter aujourd'hui",
   "iteamsFounds": "Iteams Fonde",
-  "explorebyCategories": "Explorer par Catégories"
+  "explorebyCategories": "Explorer par Catégories",
+  "products": "Des produits",
+  "deal": "Offres",
+  "topDeals": "Meilleures offres",
+  "dealsoftheday": "Offres du jour"
 }

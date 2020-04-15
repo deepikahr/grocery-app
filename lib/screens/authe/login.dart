@@ -92,7 +92,7 @@ class _LoginState extends State<Login> {
                 context,
                 MaterialPageRoute(
                   builder: (BuildContext context) =>
-                      MyApp(widget.locale, widget.localizedValues),
+                      MyApp(widget.locale, widget.localizedValues, true),
                 ),
                 (Route<dynamic> route) => false);
           } else if (onValue['response_code'] == 401) {

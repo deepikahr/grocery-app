@@ -160,6 +160,13 @@ class LoginService {
     return json.decode(response.body);
   }
 
+  static Future<Map<String, dynamic>> getBanner() async {
+    final response = await client.get(Constants.baseURL + "banner",
+        headers: {'Content-Type': 'application/json'});
+    Common.setBanner(json.decode(response.body));
+    return json.decode(response.body);
+  }
+
   // notification list
   static Future<Map<String, dynamic>> notificationList() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

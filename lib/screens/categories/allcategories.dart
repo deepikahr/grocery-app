@@ -8,6 +8,7 @@ import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/widgets/loader.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -25,7 +26,8 @@ class _AllCategoriesState extends State<AllCategories>
   TabController tabController;
   bool isLoadingProductsList = false, isLoadingcategoryList = false;
   List categoryList, productsList;
-
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
   @override
   void initState() {
     super.initState();
@@ -52,6 +54,7 @@ class _AllCategoriesState extends State<AllCategories>
             setState(() {
               categoryList = onValue['response_data'];
               isLoadingcategoryList = false;
+              _refreshController.refreshCompleted();
             });
           }
         } else {
@@ -100,68 +103,77 @@ class _AllCategoriesState extends State<AllCategories>
         elevation: 0,
         iconTheme: IconThemeData(color: Colors.black, size: 15.0),
       ),
-      body: isLoadingProductsList && isLoadingcategoryList
-          ? SquareLoader()
-          : Container(
-              child: GridView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                physics: ScrollPhysics(),
-                shrinkWrap: true,
-                itemCount:
-                    categoryList.length == null ? 0 : categoryList.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    mainAxisSpacing: 12,
-                    crossAxisSpacing: 12),
-                itemBuilder: (BuildContext context, int index) {
-                  return InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => SubCategories(
-                              locale: widget.locale,
-                              localizedValues: widget.localizedValues,
-                              catId: categoryList[index]['_id'],
-                              catTitle:
-                                  '${categoryList[index]['title'][0].toUpperCase()}${categoryList[index]['title'].substring(1)}'),
+      body: SmartRefresher(
+        enablePullDown: true,
+        enablePullUp: false,
+        header: WaterDropHeader(),
+        controller: _refreshController,
+        onRefresh: () {
+          getCategoryList();
+        },
+        child: isLoadingcategoryList
+            ? SquareLoader()
+            : Container(
+                child: GridView.builder(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  physics: ScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount:
+                      categoryList.length == null ? 0 : categoryList.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      mainAxisSpacing: 12,
+                      crossAxisSpacing: 12),
+                  itemBuilder: (BuildContext context, int index) {
+                    return InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => SubCategories(
+                                locale: widget.locale,
+                                localizedValues: widget.localizedValues,
+                                catId: categoryList[index]['_id'],
+                                catTitle:
+                                    '${categoryList[index]['title'][0].toUpperCase()}${categoryList[index]['title'].substring(1)}'),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        width: 96,
+                        padding: EdgeInsets.only(right: 16),
+                        child: Column(
+                          children: <Widget>[
+                            Container(
+                              width: 85,
+                              height: 85,
+                              padding: EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8)),
+                                border: Border.all(
+                                    color: Colors.black.withOpacity(0.20)),
+                              ),
+                              child: Image.network(
+                                categoryList[index]['imageUrl'],
+                                scale: 5,
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                categoryList[index]['title'],
+                                style: textBarlowRegularrdarkdull(),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
                         ),
-                      );
-                    },
-                    child: Container(
-                      width: 96,
-                      padding: EdgeInsets.only(right: 16),
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            width: 85,
-                            height: 85,
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8)),
-                              border: Border.all(
-                                  color: Colors.black.withOpacity(0.20)),
-                            ),
-                            child: Image.network(
-                              categoryList[index]['imageUrl'],
-                              scale: 5,
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              categoryList[index]['title'],
-                              style: textBarlowRegularrdarkdull(),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
-            ),
+      ),
     );
   }
 }
