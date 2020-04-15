@@ -108,6 +108,8 @@ flutter:
     - lib/assets/icons/tick.svg
     - lib/assets/icons/editt.svg
     - lib/assets/icons/lgout.svg
+    - lib/assets/images/banner.png
+    - lib/assets/icons/filter.png
 
     - lib/assets/splash.png
 

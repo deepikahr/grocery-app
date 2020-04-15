@@ -924,6 +924,15 @@ TextStyle textbarlowBoldsmBlack() {
       );
 }
 
+TextStyle textbarlowBoldwhite() {
+  return TextStyle(
+    fontSize: 30.0,
+    fontWeight: FontWeight.bold,
+    fontFamily: 'BarlowBold',
+    color: Colors.white,
+  );
+}
+
 ////barlow semibold/////
 
 TextStyle textbarlowSemiBoldBlack() {
@@ -1190,7 +1199,13 @@ TextStyle textBarlowregbkck() {
     color: Colors.black,
   );
 }
-
+TextStyle textBarlowregwhite() {
+  return TextStyle(
+    fontSize: 11.0,
+    fontFamily: 'BarlowRegular',
+    color: Colors.white,
+  );
+}
 //TextStyle textBarlowRegularrBlacksm() {
 //  return TextStyle(
 //      fontSize: 12.0,

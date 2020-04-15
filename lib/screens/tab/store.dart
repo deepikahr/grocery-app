@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:getflutter/components/appbar/gf_appbar.dart';
+import 'package:getflutter/components/carousel/gf_carousel.dart';
 import 'package:grocery_pro/screens/categories/allcategories.dart';
 import 'package:grocery_pro/screens/categories/subcategories.dart';
+import 'package:grocery_pro/screens/product/all_products.dart';
 import 'package:grocery_pro/screens/product/product-details.dart';
 import 'package:grocery_pro/screens/tab/searchitem.dart';
 import 'package:grocery_pro/service/common.dart';
@@ -45,6 +48,10 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       isLocationLoading = false;
   List categoryList, productsList, dealList, favList, favProductList;
   String currency;
+
+  final List<String> assetImg = [
+    'lib/assets/images/product.png',
+  ];
 
   TabController tabController;
   LocationData currentLocation;
@@ -269,7 +276,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                 locale: widget.locale,
                 localizedValues: widget.localizedValues,
                 productsList: productsList,
-                currency: currency,
+                currency:currency,
                 favProductList: getTokenValue ? favProductList : null),
           ),
         );
@@ -344,6 +351,17 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+    appBar: GFAppBar(
+      backgroundColor: bg,
+      elevation: 0,
+      title:    deliveryAddress(),
+      actions: <Widget>[
+       Padding(padding: EdgeInsets.only(right:15), child:  Icon(
+         Icons.search,
+       ),)
+      ],
+    ),
+//      drawer: Drawer(),
       backgroundColor: bg,
       key: _scaffoldKeydrawer,
       body: (isLoadingcategoryList || isLoadingProductsList)
@@ -354,10 +372,74 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
                   children: <Widget>[
-                    SizedBox(height: 45),
-                    deliveryAddress(),
-                    searchBox(),
-                    SizedBox(height: 10),
+                    SizedBox(height: 15),
+
+
+                    GFCarousel(
+                      autoPlay: true,
+                      pagination: true,
+                      viewportFraction: 1.0,
+                      activeIndicator: Colors.transparent,
+                      height: 140,
+                      aspectRatio: 2,
+                      items: assetImg
+                          .map(
+                            (url) =>   Stack(
+                              children: <Widget>[
+                                Container(
+                                  height: 130,
+                                  color: bg,
+                                ),
+                                Container(
+                                  height: 106,
+                                  margin: EdgeInsets.only(top:10),
+                                  padding: EdgeInsets.only(top:5,  left: 20, right: 20),
+                                  width: MediaQuery.of(context).size.width,
+                                  decoration: BoxDecoration(
+                                      color: primary,
+                                      borderRadius: BorderRadius.all(Radius.circular(5))
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text('Fruit \nSplash', style: textbarlowBoldwhite(),),
+                                      InkWell(
+                                        onTap: (){},
+                                        child: Row(
+                                          children: <Widget>[
+                                            Text('Order Fruits now'),
+                                            Icon(Icons.arrow_right)
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Positioned(
+                                    right: 0,
+                                    child: Container(
+                                        height:122,
+                                        width: 124,
+                                        decoration:BoxDecoration(
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  color: Colors.black.withOpacity(0.33),
+                                                  blurRadius: 6
+                                              )
+                                            ],
+                                            shape: BoxShape.circle,
+                                            image:DecorationImage(image:AssetImage('lib/assets/images/product.png'), fit: BoxFit.fill)
+                                        )
+                                    ))
+                              ],
+                            ),
+                      )
+                          .toList(),
+                    ),
+
+//                    deliveryAddress(),
+//                    searchBox(),
+//                    SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
@@ -386,6 +468,31 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                     ),
                     SizedBox(height: 20),
                     categoryRow(),
+                    SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                         'Products',
+                          style: textBarlowMediumBlack(),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (BuildContext context) => AllProducts()),
+                            );
+                          },
+                          child: Text(
+                            'View All',
+                            style: textBarlowMediumPrimary(),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
                     productsList.length > 0
                         ? GridView.builder(
                             physics: ScrollPhysics(),
@@ -396,8 +503,9 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2,
-                                    crossAxisSpacing: 16,
-                                    mainAxisSpacing: 16),
+
+                                    crossAxisSpacing: 23,
+                                    mainAxisSpacing: 23),
                             itemBuilder: (BuildContext context, int i) {
                               if (productsList[i]['averageRating'] == null) {
                                 productsList[i]['averageRating'] = 0;
@@ -435,7 +543,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                                         .substring(0, 10) +
                                                     ".."
                                                 : productsList[i]['title'],
-                                            currency: currency,
+                                            currency:currency,
                                             category: productsList[i]
                                                 ['category'],
                                             price: productsList[i]['variant'][0]
@@ -476,17 +584,18 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                     )
                                   : Stack(
                                       children: <Widget>[
-                                        ProductCard(
-                                          image: productsList[i]['imageUrl'],
-                                          title: productsList[i]['title'],
-                                          currency: currency,
-                                          category: productsList[i]['category'],
-                                          price: productsList[i]['variant'][0]
-                                              ['price'],
-                                          rating: productsList[i]
-                                                  ['averageRating']
-                                              .toString(),
-                                        ),
+                                       ProductCard(
+                                            image: productsList[i]['imageUrl'],
+                                            title: productsList[i]['title'],
+                                            currency:currency,
+                                            category: productsList[i]['category'],
+                                            price: productsList[i]['variant'][0]
+                                            ['price'],
+                                            rating: productsList[i]
+                                            ['averageRating']
+                                                .toString(),
+                                          ),
+
                                         CardOverlay()
                                       ],
                                     );
