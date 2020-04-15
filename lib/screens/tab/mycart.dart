@@ -142,7 +142,6 @@ class _MyCartState extends State<MyCart> {
       });
     }
     await CartService.getProductToCart().then((onValue) {
-      print(onValue);
       try {
         if (onValue['response_data'] == 'You have not added items to cart') {
           if (mounted) {
@@ -471,7 +470,10 @@ class _MyCartState extends State<MyCart> {
                                                             'isDealAvailable'] ==
                                                         true
                                                     ? Text(
-                                                        "Deal " +
+                                                        MyLocalizations.of(
+                                                                    context)
+                                                                .deal +
+                                                            " " +
                                                             (cartItem['cart'][i]
                                                                     [
                                                                     'delaPercent'])

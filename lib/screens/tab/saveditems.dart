@@ -165,8 +165,8 @@ class _SavedItemsState extends State<SavedItems> {
                                     builder: (context) => ProductDetails(
                                       locale: widget.locale,
                                       localizedValues: widget.localizedValues,
-                                      productDetail: favProductList[i]
-                                          ['product'],
+                                      productID: favProductList[i]['product']
+                                          ['_id'],
                                       favProductList: favProductList,
                                     ),
                                   ),

@@ -37,7 +37,7 @@ void main() async {
   };
   getToken();
   runZoned<Future<Null>>(() async {
-    runApp(new MyApp(locale, localizedValues));
+    runApp(new MyApp(locale, localizedValues, false));
   }, onError: (error, stackTrace) async {
     await sentryError.reportError(error, stackTrace);
   });
@@ -70,7 +70,8 @@ checkToken(token) async {
 class MyApp extends StatefulWidget {
   final Map<String, Map<String, String>> localizedValues;
   final String locale;
-  MyApp(this.locale, this.localizedValues);
+  final bool languagesSelection;
+  MyApp(this.locale, this.localizedValues, this.languagesSelection);
   @override
   _MyAppState createState() => new _MyAppState();
 }
@@ -93,6 +94,7 @@ class _MyAppState extends State<MyApp> {
       home: Home(
         locale: widget.locale,
         localizedValues: widget.localizedValues,
+        languagesSelection: widget.languagesSelection,
       ),
     );
   }

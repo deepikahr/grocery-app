@@ -69,7 +69,6 @@ class _SubCategoriesState extends State<SubCategories> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     currency = prefs.getString('currency');
     await Common.getToken().then((onValue) {
-      print(onValue);
       if (onValue != null) {
         if (mounted) {
           setState(() {
@@ -161,7 +160,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                     builder: (context) => ProductDetails(
                                         locale: widget.locale,
                                         localizedValues: widget.localizedValues,
-                                        productDetail: subProductsList[i],
+                                        productID: subProductsList[i]['_id'],
                                         favProductList: getTokenValue
                                             ? favProductList
                                             : null),

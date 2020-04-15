@@ -85,7 +85,6 @@ class _OrdersState extends State<Orders> {
     };
 
     await CartService.addProductToCart(buyNowProduct).then((onValue) {
-      print(onValue['createdAt']);
       try {
         if (onValue['response_code'] == 200) {
           if (length - 1 == loopIndex) {

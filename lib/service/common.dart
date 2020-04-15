@@ -110,6 +110,16 @@ class Common {
     return prefs.setString('userInfo', json.encode(cartInfo));
   }
 
+  static Future<bool> setBanner(Map<String, dynamic> cartInfo) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setString('bannerInfo', json.encode(cartInfo));
+  }
+
+  static Future<bool> setAllData(Map<String, dynamic> cartInfo) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setString('allData', json.encode(cartInfo));
+  }
+
   static Future<bool> setSearchList(List cartInfo) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.setString('searchList', json.encode(cartInfo));
@@ -130,6 +140,26 @@ class Common {
     String cartStorage = prefs.getString('searchList');
     try {
       return json.decode(cartStorage) as List;
+    } catch (err) {
+      return Future(() => null);
+    }
+  }
+
+  static Future<Map<String, dynamic>> getBanner() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String cartStorage = prefs.getString('bannerInfo');
+    try {
+      return json.decode(cartStorage) as Map<String, dynamic>;
+    } catch (err) {
+      return Future(() => null);
+    }
+  }
+
+  static Future<Map<String, dynamic>> getAllData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String cartStorage = prefs.getString('allData');
+    try {
+      return json.decode(cartStorage) as Map<String, dynamic>;
     } catch (err) {
       return Future(() => null);
     }

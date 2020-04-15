@@ -111,7 +111,7 @@ class _SearchItemState extends State<SearchItem> {
                                   builder: (context) => ProductDetails(
                                       locale: widget.locale,
                                       localizedValues: widget.localizedValues,
-                                      productDetail: searchresult[index],
+                                      productID: searchresult[index]['_id'],
                                       favProductList:
                                           widget.favProductList == null
                                               ? null

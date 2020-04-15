@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/tab/mycart.dart';
@@ -19,12 +21,14 @@ class Home extends StatefulWidget {
   final int currentIndex;
   final Map<String, Map<String, String>> localizedValues;
   final String locale, addressData;
+  final bool languagesSelection;
   Home(
       {Key key,
       this.currentIndex,
       this.locale,
       this.localizedValues,
-      this.addressData})
+      this.addressData,
+      this.languagesSelection})
       : super(key: key);
 
   @override
@@ -36,7 +40,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   bool isGetTokenLoading = true,
       currencyLoading = false,
       isCurrentLoactionLoading = false,
-      isLocationLoading = false;
+      isLocationLoading = false,
+      languagesSelection = false;
   int currentIndex = 0;
 
   @override
@@ -64,12 +69,19 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     }
     getGlobalSettings().then((onValue) {
       try {
-        if (onValue['response_data']['currency'] == null &&
-            onValue['response_data']['currency'][0]['currencySign'] == null) {
+        if (onValue['response_data']['currencyCode'] == null) {
           prefs.setString('currency', 'Rs');
         } else {
-          prefs.setString('currency',
-              '${onValue['response_data']['currency'][0]['currencySign']}');
+          prefs.setString(
+              'currency', '${onValue['response_data']['currencyCode']}');
+        }
+        if (widget.languagesSelection == false) {
+          if (onValue['response_data']['languageCode'] == null) {
+            prefs.setString('selectedLanguage', 'en');
+          } else {
+            prefs.setString('selectedLanguage',
+                '${onValue['response_data']['languageCode']}');
+          }
         }
         if (mounted) {
           setState(() {

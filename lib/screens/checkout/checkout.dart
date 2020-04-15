@@ -325,23 +325,23 @@ class _CheckoutState extends State<Checkout> {
     }
   }
 
-  couponCodeApply(couponName, carId) {
+  couponCodeApply(couponName, cartId) {
     if (!_formKey.currentState.validate()) {
       return;
     } else {
       _formKey.currentState.save();
 
-      updateCoupons(couponCode);
+      updateCoupons(couponCode, cartId);
     }
   }
 
-  updateCoupons(data) async {
+  updateCoupons(data, cartId) async {
     if (mounted) {
       setState(() {
         isCouponLoading = true;
       });
     }
-    await CouponService.applyCoupons(data).then((onValue) {
+    await CouponService.applyCouponsCode(cartId, data).then((onValue) {
       try {
         if (onValue['response_code'] == 200) {
           if (mounted) {
@@ -351,8 +351,41 @@ class _CheckoutState extends State<Checkout> {
               couponApplied = true;
             });
           }
+        } else if (onValue['response_code'] == 400) {
+          showSnackbar('${onValue['response_data']}');
+        } else {
+          showSnackbar('${onValue['response_data']}');
+        }
+        if (mounted) {
+          setState(() {
+            isCouponLoading = false;
+          });
+        }
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
+  }
 
-          showError('', 'Coupon is applied');
+  removeCoupons(cartId) async {
+    if (mounted) {
+      setState(() {
+        isCouponLoading = true;
+      });
+    }
+    await CouponService.removeCoupon(cartId).then((onValue) {
+      try {
+        if (onValue['response_code'] == 200) {
+          if (mounted) {
+            setState(() {
+              cartItem = onValue['response_data'];
+              couponApplied = false;
+            });
+          }
+
+          // showError('', 'Coupon is applied');
         } else if (onValue['response_code'] == 400) {
           showSnackbar('${onValue['response_data']}');
         } else {
@@ -512,7 +545,7 @@ class _CheckoutState extends State<Checkout> {
                                           width: 5,
                                         ),
                                         Text(
-                                          MyLocalizations.of(context).discount,
+                                          MyLocalizations.of(context).tax,
                                           style: textBarlowRegularBlack(),
                                         ),
                                       ],
@@ -532,18 +565,77 @@ class _CheckoutState extends State<Checkout> {
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 20),
+                                SizedBox(height: 10),
                                 Form(
                                   key: _formKey,
                                   child: Container(
                                     child: couponApplied
-                                        ? Padding(
-                                            padding: EdgeInsets.only(left: 5.0),
-                                            child: Text(
-                                              MyLocalizations.of(context)
-                                                  .couponApplied,
-                                              style: textbarlowRegularBlack(),
-                                            ),
+                                        ? Column(
+                                            children: <Widget>[
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: <Widget>[
+                                                  Text(
+                                                    MyLocalizations.of(context)
+                                                            .couponApplied +
+                                                        " (" +
+                                                        "${cartItem['couponInfo']['couponCode']}"
+                                                            ")",
+                                                    style:
+                                                        textBarlowRegularBlack(),
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
+                                                    children: <Widget>[
+                                                      isCouponLoading
+                                                          ? SquareLoader()
+                                                          : InkWell(
+                                                              onTap: () {
+                                                                removeCoupons(
+                                                                    cartItem[
+                                                                        '_id']);
+                                                              },
+                                                              child: Icon(
+                                                                  Icons.delete),
+                                                            ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(height: 10),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: <Widget>[
+                                                  Text(
+                                                    MyLocalizations.of(context)
+                                                        .discount,
+                                                    style:
+                                                        textBarlowRegularBlack(),
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
+                                                    children: <Widget>[
+                                                      Text(
+                                                        currency,
+                                                        style:
+                                                            textbarlowBoldsmBlack(),
+                                                      ),
+                                                      Text(
+                                                        '${cartItem['couponInfo']['couponDiscountAmount']}',
+                                                        style:
+                                                            textbarlowBoldsmBlack(),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
                                           )
                                         : Row(
                                             mainAxisAlignment:
@@ -566,6 +658,8 @@ class _CheckoutState extends State<Checkout> {
                                                 ),
                                                 child: TextFormField(
                                                   textAlign: TextAlign.center,
+                                                  textCapitalization:
+                                                      TextCapitalization.words,
                                                   decoration: InputDecoration(
                                                       hintText:
                                                           MyLocalizations.of(
@@ -573,6 +667,8 @@ class _CheckoutState extends State<Checkout> {
                                                               .enterCouponCode,
                                                       hintStyle:
                                                           textBarlowRegularBlacklight(),
+                                                      labelStyle: TextStyle(
+                                                          color: Colors.black),
                                                       border: InputBorder.none),
                                                   cursorColor: primary,
                                                   validator: (String value) {
@@ -614,14 +710,16 @@ class _CheckoutState extends State<Checkout> {
                                                                       .only(
                                                                   left: 8.0,
                                                                   right: 8.0),
-                                                          child: Text(
-                                                            MyLocalizations.of(
-                                                                        context)
-                                                                    .apply +
-                                                                " ",
-                                                            style:
-                                                                textBarlowRegularBlack(),
-                                                          ),
+                                                          child: isCouponLoading
+                                                              ? SquareLoader()
+                                                              : Text(
+                                                                  MyLocalizations.of(
+                                                                              context)
+                                                                          .apply +
+                                                                      " ",
+                                                                  style:
+                                                                      textBarlowRegularBlack(),
+                                                                ),
                                                         ),
                                                         color: primary,
                                                       ),

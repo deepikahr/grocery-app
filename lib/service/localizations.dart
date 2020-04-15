@@ -1796,6 +1796,22 @@ class MyLocalizations {
     return localizedValues[locale.languageCode]['explorebyCategories'];
   }
 
+  String get products {
+    return localizedValues[locale.languageCode]['products'];
+  }
+
+  String get deal {
+    return localizedValues[locale.languageCode]['deal'];
+  }
+
+  String get topDeals {
+    return localizedValues[locale.languageCode]['topDeals'];
+  }
+
+  String get dealsoftheday {
+    return localizedValues[locale.languageCode]['dealsoftheday'];
+  }
+
   greetTo(name) {
     return localizedValues[locale.languageCode]['greetTo']
         .replaceAll('{{name}}', name);

@@ -37,6 +37,30 @@ class ProductService {
     return json.decode(response.body);
   }
 
+  static Future<Map<String, dynamic>> getProductListAll() async {
+    final response =
+        await client.get(Constants.baseURL + "products/home/all", headers: {
+      'Content-Type': 'application/json',
+    });
+    return json.decode(response.body);
+  }
+
+  static Future<Map<String, dynamic>> getTopDealsListAll() async {
+    final response = await client
+        .get(Constants.baseURL + "products/home/top/deal", headers: {
+      'Content-Type': 'application/json',
+    });
+    return json.decode(response.body);
+  }
+
+  static Future<Map<String, dynamic>> getTodayDealsListAll() async {
+    final response = await client
+        .get(Constants.baseURL + "products/home/deal/of/day", headers: {
+      'Content-Type': 'application/json',
+    });
+    return json.decode(response.body);
+  }
+
   // get product to category
   static Future<Map<String, dynamic>> getProductToCategoryList(id) async {
     String token;
@@ -232,6 +256,23 @@ class ProductService {
         .get(Constants.baseURL + "rating/get/product/$productId", headers: {
       'Content-Type': 'application/json',
     });
+    return json.decode(response.body);
+  }
+
+  static Future<Map<String, dynamic>> productDetails(productId) async {
+    final response = await client
+        .get(Constants.baseURL + "products/info/$productId", headers: {
+      'Content-Type': 'application/json',
+    });
+    return json.decode(response.body);
+  }
+
+  static Future<Map<String, dynamic>> getProdCatDealTopDeal() async {
+    final response =
+        await client.get(Constants.baseURL + "products/home/page", headers: {
+      'Content-Type': 'application/json',
+    });
+    Common.setAllData(json.decode(response.body));
     return json.decode(response.body);
   }
 
