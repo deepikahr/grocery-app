@@ -140,7 +140,7 @@ class _AddCardState extends State<AddCard> {
         child: ListView(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.only(left: 20.0),
+              padding: const EdgeInsets.only(left: 20.0, right: 20.0),
               child: Row(
                 children: <Widget>[
                   Text(
@@ -190,7 +190,7 @@ class _AddCardState extends State<AddCard> {
             ),
             SizedBox(height: 10),
             Padding(
-              padding: const EdgeInsets.only(left: 20.0),
+              padding: const EdgeInsets.only(left: 20.0, right: 20.0),
               child: Row(
                 children: <Widget>[
                   Text(
@@ -235,7 +235,7 @@ class _AddCardState extends State<AddCard> {
             ),
             SizedBox(height: 10),
             Padding(
-              padding: const EdgeInsets.only(left: 20.0),
+              padding: const EdgeInsets.only(left: 20.0, right: 20.0),
               child: Row(
                 children: <Widget>[
                   Text(
@@ -279,15 +279,18 @@ class _AddCardState extends State<AddCard> {
               ),
             ),
             SizedBox(height: 10),
-            Row(
-              children: <Widget>[
-                Flexible(
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+              child: Row(
+                children: <Widget>[
+                  Flexible(
                     flex: 3,
                     fit: FlexFit.tight,
                     child: Column(
                       children: <Widget>[
                         Padding(
-                          padding: const EdgeInsets.only(left: 20.0),
+                          padding:
+                              const EdgeInsets.only(left: 20.0, right: 20.0),
                           child: Row(
                             children: <Widget>[
                               Text(MyLocalizations.of(context).expiryMonth,
@@ -338,120 +341,126 @@ class _AddCardState extends State<AddCard> {
                           ),
                         ),
                       ],
-                    )),
-                Flexible(
-                  flex: 3,
-                  fit: FlexFit.tight,
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0, right: 10),
-                        child: Row(
-                          children: <Widget>[
-                            Text(MyLocalizations.of(context).expiryYear,
-                                style: textBarlowRegularBlack()),
-                          ],
+                    ),
+                  ),
+                  Flexible(
+                    flex: 3,
+                    fit: FlexFit.tight,
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 10.0,
+                            right: 10,
+                          ),
+                          child: Row(
+                            children: <Widget>[
+                              Text(MyLocalizations.of(context).expiryYear,
+                                  style: textBarlowRegularBlack()),
+                            ],
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            top: 5.0, bottom: 10.0, left: 10, right: 10),
-                        child: Container(
-                          child: TextFormField(
-                            maxLength: 4,
-                            onSaved: (String value) {
-                              expiryYear = int.parse(value);
-                            },
-                            validator: (String value) {
-                              if (value.isEmpty) {
-                                return MyLocalizations.of(context)
-                                    .enteracardexpiredyear;
-                              } else if (value.length != 4) {
-                                return MyLocalizations.of(context)
-                                    .pleaseentera4digitcardexpiredyear;
-                              } else
-                                return null;
-                            },
-                            style: textBarlowRegularBlack(),
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              errorBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      width: 0, color: Color(0xFFF44242))),
-                              errorStyle: TextStyle(color: Color(0xFFF44242)),
-                              counterText: "",
-                              contentPadding: EdgeInsets.all(10),
-                              enabledBorder: const OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    color: Colors.grey, width: 0.0),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: primary),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 5.0, bottom: 10.0, left: 10, right: 10),
+                          child: Container(
+                            child: TextFormField(
+                              maxLength: 4,
+                              onSaved: (String value) {
+                                expiryYear = int.parse(value);
+                              },
+                              validator: (String value) {
+                                if (value.isEmpty) {
+                                  return MyLocalizations.of(context)
+                                      .enteracardexpiredyear;
+                                } else if (value.length != 4) {
+                                  return MyLocalizations.of(context)
+                                      .pleaseentera4digitcardexpiredyear;
+                                } else
+                                  return null;
+                              },
+                              style: textBarlowRegularBlack(),
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                errorBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 0, color: Color(0xFFF44242))),
+                                errorStyle: TextStyle(color: Color(0xFFF44242)),
+                                counterText: "",
+                                contentPadding: EdgeInsets.all(10),
+                                enabledBorder: const OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Colors.grey, width: 0.0),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: primary),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                Flexible(
-                  flex: 2,
-                  fit: FlexFit.tight,
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 0.0),
-                        child: Row(
-                          children: <Widget>[
-                            Text(MyLocalizations.of(context).cvv,
-                                style: textBarlowRegularBlack()),
-                          ],
+                  Flexible(
+                    flex: 2,
+                    fit: FlexFit.tight,
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: 0.0, right: 20.0),
+                          child: Row(
+                            children: <Widget>[
+                              Text(MyLocalizations.of(context).cvv,
+                                  style: textBarlowRegularBlack()),
+                            ],
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            top: 5.0, bottom: 10.0, right: 20),
-                        child: Container(
-                          child: TextFormField(
-                            maxLength: 3,
-                            onSaved: (String value) {
-                              cvv = value;
-                            },
-                            validator: (String value) {
-                              if (value.isEmpty || value.length != 3) {
-                                return MyLocalizations.of(context)
-                                    .enteracardCVV;
-                              } else if (value.isEmpty || value.length != 3) {
-                                return MyLocalizations.of(context)
-                                    .pleaseenter3digitcardCVV;
-                              } else
-                                return null;
-                            },
-                            style: textBarlowRegularBlack(),
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              errorBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      width: 0, color: Color(0xFFF44242))),
-                              errorStyle: TextStyle(color: Color(0xFFF44242)),
-                              counterText: "",
-                              contentPadding: EdgeInsets.all(10),
-                              enabledBorder: const OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    color: Colors.grey, width: 0.0),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: primary),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 5.0, bottom: 10.0, right: 20),
+                          child: Container(
+                            child: TextFormField(
+                              maxLength: 3,
+                              onSaved: (String value) {
+                                cvv = value;
+                              },
+                              validator: (String value) {
+                                if (value.isEmpty || value.length != 3) {
+                                  return MyLocalizations.of(context)
+                                      .enteracardCVV;
+                                } else if (value.isEmpty || value.length != 3) {
+                                  return MyLocalizations.of(context)
+                                      .pleaseenter3digitcardCVV;
+                                } else
+                                  return null;
+                              },
+                              style: textBarlowRegularBlack(),
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                errorBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 0, color: Color(0xFFF44242))),
+                                errorStyle: TextStyle(color: Color(0xFFF44242)),
+                                counterText: "",
+                                contentPadding: EdgeInsets.all(10),
+                                enabledBorder: const OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Colors.grey, width: 0.0),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: primary),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
             SizedBox(height: 10),
             SizedBox(height: 10),

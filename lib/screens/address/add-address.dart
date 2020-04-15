@@ -188,7 +188,8 @@ class _AddAddressState extends State<AddAddress> {
                   height: 25,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
+                  padding: const EdgeInsets.only(
+                      left: 20.0, bottom: 5.0, right: 20.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
@@ -207,7 +208,8 @@ class _AddAddressState extends State<AddAddress> {
                       style: textBarlowRegularBlack(),
                     )),
                 Padding(
-                  padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
+                  padding: const EdgeInsets.only(
+                      left: 20.0, bottom: 5.0, right: 20.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
@@ -262,7 +264,8 @@ class _AddAddressState extends State<AddAddress> {
                   height: 25,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
+                  padding: const EdgeInsets.only(
+                      left: 20.0, bottom: 5.0, right: 20.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
@@ -319,7 +322,8 @@ class _AddAddressState extends State<AddAddress> {
                   height: 25,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
+                  padding: const EdgeInsets.only(
+                      left: 20.0, bottom: 5.0, right: 20.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
@@ -376,7 +380,8 @@ class _AddAddressState extends State<AddAddress> {
                   height: 25,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
+                  padding: const EdgeInsets.only(
+                      left: 20.0, bottom: 5.0, right: 20.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
@@ -438,7 +443,8 @@ class _AddAddressState extends State<AddAddress> {
                   height: 25,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
+                  padding: const EdgeInsets.only(
+                      left: 20.0, bottom: 5.0, right: 20.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
@@ -491,7 +497,8 @@ class _AddAddressState extends State<AddAddress> {
                   height: 25,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
+                  padding: const EdgeInsets.only(
+                      left: 20.0, bottom: 5.0, right: 20.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[

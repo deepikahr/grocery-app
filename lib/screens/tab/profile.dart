@@ -63,6 +63,7 @@ class _ProfileState extends State<Profile> {
       setState(() {
         selectedLanguage = prefs.getString('selectedLanguage');
       });
+
       if (selectedLanguage == 'en') {
         selectedLocale = 'English';
       } else if (selectedLanguage == 'fr') {
@@ -806,7 +807,7 @@ class _ProfileState extends State<Profile> {
                                       child: DropdownButton(
                                         hint: Text(
                                           selectedLocale == null
-                                              ? 'English'
+                                              ? ''
                                               : selectedLocale,
                                           style: textBarlowMediumBlack(),
                                         ),

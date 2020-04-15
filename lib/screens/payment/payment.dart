@@ -237,7 +237,7 @@ class _PaymentState extends State<Payment> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(left: 15.0),
+                    padding: EdgeInsets.only(left: 15.0, right: 18.0),
                     child: new Text(
                       MyLocalizations.of(context).selectCard,
                       style: textBarlowRegularBlack(),

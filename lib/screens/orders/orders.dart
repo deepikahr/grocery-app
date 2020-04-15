@@ -205,7 +205,7 @@ class _OrdersState extends State<Orders> {
       backgroundColor: Color(0xFFFDFDFD),
       appBar: GFAppBar(
         title: Text(
-          MyLocalizations.of(context).orders,
+          MyLocalizations.of(context).myOrders,
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -510,7 +510,7 @@ class _OrdersState extends State<Orders> {
           Expanded(
               child: Container(
             height: 48,
-            margin: EdgeInsets.only(right: 20),
+            margin: EdgeInsets.only(right: 20, left: 20.0),
             child: GFButton(
               onPressed: () {
                 Navigator.push(
