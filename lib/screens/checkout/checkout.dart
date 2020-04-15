@@ -49,7 +49,7 @@ class _CheckoutState extends State<Checkout> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Map<String, dynamic> userInfo, address, cartItem;
 
-  List locationList, addressList, deliverySlotList, couponList;
+  List locationList, addressList, deliverySlotList;
   int selectedRadio, groupValue, groupValue1, _selectedIndex = 0;
   String selectedDeliveryType, locationNotFound, name, currency, couponCode;
 
@@ -70,30 +70,8 @@ class _CheckoutState extends State<Checkout> {
     getLocations();
     getUserInfo();
     getAddress();
-    getCoupons();
-    getDeliverySlot();
-  }
 
-  getCoupons() async {
-    if (mounted) {
-      setState(() {
-        isCouponLoading = true;
-      });
-    }
-    await CouponService.getCoupons().then((onValue) {
-      try {
-        if (mounted) {
-          setState(() {
-            couponList = onValue['response_data'];
-            isCouponLoading = false;
-          });
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      sentryError.reportError(error, null);
-    });
+    getDeliverySlot();
   }
 
   proceed() {
@@ -347,21 +325,13 @@ class _CheckoutState extends State<Checkout> {
     }
   }
 
-  couponCodeApply() {
+  couponCodeApply(couponName, carId) {
     if (!_formKey.currentState.validate()) {
       return;
     } else {
       _formKey.currentState.save();
-      for (int i = 0; i < couponList.length; i++) {
-        if (couponCode.toLowerCase() ==
-            couponList[i]['couponCode'].toString().toLowerCase()) {
-          if (mounted) {
-            setState(() {
-              updateCoupons(couponCode);
-            });
-          }
-        } else {}
-      }
+
+      updateCoupons(couponCode);
     }
   }
 
@@ -622,42 +592,43 @@ class _CheckoutState extends State<Checkout> {
                                                 ),
                                               ),
                                               Flexible(
-                                                  flex: 3,
-                                                  fit: FlexFit.tight,
-                                                  child: InkWell(
-                                                    onTap: () {
-                                                      couponCodeApply();
-                                                    },
-                                                    child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                left: 8.0),
-                                                        child: Container(
-                                                          height: 44,
-                                                          width: 119,
-                                                          child: GFButton(
-                                                            onPressed: null,
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .only(
-                                                                      left: 8.0,
-                                                                      right:
-                                                                          8.0),
-                                                              child: Text(
-                                                                MyLocalizations.of(
-                                                                            context)
-                                                                        .apply +
-                                                                    " ",
-                                                                style:
-                                                                    textBarlowRegularBlack(),
-                                                              ),
-                                                            ),
-                                                            color: primary,
+                                                flex: 3,
+                                                fit: FlexFit.tight,
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    couponCodeApply(couponCode,
+                                                        cartItem['_id']);
+                                                  },
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 8.0),
+                                                    child: Container(
+                                                      height: 44,
+                                                      width: 119,
+                                                      child: GFButton(
+                                                        onPressed: null,
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 8.0,
+                                                                  right: 8.0),
+                                                          child: Text(
+                                                            MyLocalizations.of(
+                                                                        context)
+                                                                    .apply +
+                                                                " ",
+                                                            style:
+                                                                textBarlowRegularBlack(),
                                                           ),
-                                                        )),
-                                                  ))
+                                                        ),
+                                                        color: primary,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
                                             ],
                                           ),
                                   ),

@@ -316,26 +316,33 @@ class _MyCartState extends State<MyCart> {
                             child: Column(
                               children: <Widget>[
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 10.0),
+                                  padding: const EdgeInsets.only(
+                                      left: 20.0, bottom: 20.0, right: 20.0),
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            bottom: 20.0, left: 10.0),
-                                        child: cartItem == null
-                                            ? Text(
-                                                '0 ' +
-                                                    MyLocalizations.of(context)
-                                                        .item,
-                                                style: textBarlowMediumBlack(),
-                                              )
-                                            : Text(
-                                                '${cartItem['cart'].length}' +
-                                                    MyLocalizations.of(context)
-                                                        .items,
-                                                style: textBarlowMediumBlack(),
-                                              ),
+                                      cartItem == null
+                                          ? Text(
+                                              '0 ' +
+                                                  MyLocalizations.of(context)
+                                                      .item,
+                                              style: textBarlowMediumBlack(),
+                                            )
+                                          : Text(
+                                              '(${cartItem['cart'].length}) ' +
+                                                  MyLocalizations.of(context)
+                                                      .items,
+                                              style: textBarlowMediumBlack(),
+                                            ),
+                                      InkWell(
+                                        onTap: () {
+                                          deleteAllCart(cartItem['_id']);
+                                        },
+                                        child: Text(
+                                          MyLocalizations.of(context).clearCart,
+                                          style: textBarlowMediumBlack(),
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -459,7 +466,21 @@ class _MyCartState extends State<MyCart> {
                                                             ")",
                                                         style:
                                                             textbarlowBoldGreen(),
+                                                      ),
+                                                cartItem['cart'][i][
+                                                            'isDealAvailable'] ==
+                                                        true
+                                                    ? Text(
+                                                        "Deal " +
+                                                            (cartItem['cart'][i]
+                                                                    [
+                                                                    'delaPercent'])
+                                                                .toString() +
+                                                            "% off",
+                                                        style:
+                                                            textBarlowRegularBlack(),
                                                       )
+                                                    : Text("")
                                               ],
                                             ),
                                           ),
