@@ -6,9 +6,8 @@ import 'package:grocery_pro/style/style.dart';
 
 class SearchItem extends StatefulWidget {
   final List productsList, favProductList;
-  final String currency;
+  final String currency, locale;
   final Map<String, Map<String, String>> localizedValues;
-  final String locale;
   SearchItem(
       {Key key,
       this.productsList,

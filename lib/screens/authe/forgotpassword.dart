@@ -15,9 +15,8 @@ SentryError sentryError = new SentryError();
 class ForgotPassword extends StatefulWidget {
   ForgotPassword({Key key, this.title, this.locale, this.localizedValues})
       : super(key: key);
-  final String title;
+  final String title, locale;
   final Map<String, Map<String, String>> localizedValues;
-  final String locale;
 
   @override
   _ForgotPasswordState createState() => _ForgotPasswordState();

@@ -15,9 +15,8 @@ SentryError sentryError = new SentryError();
 class Otp extends StatefulWidget {
   Otp({Key key, this.email, this.token, this.locale, this.localizedValues})
       : super(key: key);
-  final String email, token;
+  final String email, token, locale;
   final Map<String, Map<String, String>> localizedValues;
-  final String locale;
 
   @override
   _OtpState createState() => _OtpState();

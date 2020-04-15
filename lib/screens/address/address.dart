@@ -25,8 +25,7 @@ class Address extends StatefulWidget {
 }
 
 class _AddressState extends State<Address> {
-  bool isProfile = false;
-  bool addressLoading = false;
+  bool isProfile = false, addressLoading = false;
   List addressList = List();
   LocationResult _pickedLocation;
 

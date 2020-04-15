@@ -33,15 +33,13 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Map<String, dynamic> userInfo;
-  Map<String, dynamic> userData;
-  bool isLoading = false;
-  bool isPicUploading = false;
-  bool profileEdit = false;
-  bool isGetTokenLoading = false;
-  String firstName, lastName, mobileNumber;
-  String profilePic;
-  var filePath = new List<File>();
-  var recentSize = 0;
+
+  bool isLoading = false,
+      isPicUploading = false,
+      profileEdit = false,
+      isGetTokenLoading = false;
+  String firstName, lastName, mobileNumber, profilePic;
+  var filePath = new List<File>(), recentSize = 0;
   File imageFile;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 

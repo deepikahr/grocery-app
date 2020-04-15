@@ -24,10 +24,8 @@ class Variants {
 class ProductDetails extends StatefulWidget {
   final int currentIndex;
   final List favProductList;
-  final productID;
   final Map<String, Map<String, String>> localizedValues;
-
-  final String locale;
+  final String locale, productID;
   ProductDetails(
       {Key key,
       this.productID,
@@ -53,9 +51,8 @@ class _ProductDetailsState extends State<ProductDetails>
 
   int value;
   int groupValue = 0;
-  bool sizeSelect = false;
-
-  bool getTokenValue = false,
+  bool sizeSelect = false,
+      getTokenValue = false,
       isFavProduct = false,
       isFavListLoading = false,
       addProductTocart = false,
@@ -82,12 +79,34 @@ class _ProductDetailsState extends State<ProductDetails>
 
   @override
   void initState() {
-    getToken();
+    getTokenValueMethod();
     getProductDetails();
     if (widget.favProductList != null) {
       _checkFavourite();
     }
     super.initState();
+  }
+
+  getTokenValueMethod() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    currency = prefs.getString('currency');
+    await Common.getToken().then((onValue) {
+      if (onValue != null) {
+        if (mounted) {
+          setState(() {
+            getTokenValue = true;
+          });
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            getTokenValue = false;
+          });
+        }
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
   }
 
   getProductRating() {
@@ -169,20 +188,26 @@ class _ProductDetailsState extends State<ProductDetails>
     });
   }
 
-  getToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    currency = prefs.getString('currency');
+  getToken(productDetail) async {
     await Common.getToken().then((onValue) {
       if (onValue != null) {
         if (mounted) {
           setState(() {
-            getTokenValue = true;
+            addToCart(productDetail);
           });
         }
       } else {
         if (mounted) {
           setState(() {
-            getTokenValue = false;
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Login(
+                  locale: widget.locale,
+                  localizedValues: widget.localizedValues,
+                ),
+              ),
+            );
           });
         }
       }
@@ -217,58 +242,46 @@ class _ProductDetailsState extends State<ProductDetails>
     }
   }
 
-  addToCart(data, buy) async {
-    if (getTokenValue) {
-      if (mounted) {
-        setState(() {
-          addProductTocart = true;
-        });
-      }
-      Map<String, dynamic> buyNowProduct = {
-        'productId': data['_id'].toString(),
-        'quantity': quantity,
-        "price": double.parse(variantPrice == null
-            ? productDetail['variant'][0]['price'].toString()
-            : variantPrice.toString()),
-        "unit": variantUnit == null
-            ? productDetail['variant'][0]['unit'].toString()
-            : variantUnit.toString()
-      };
-      await CartService.addProductToCart(buyNowProduct).then((onValue) {
-        try {
-          if (mounted) {
-            setState(() {
-              addProductTocart = false;
-            });
-          }
-          if (onValue['response_code'] == 200) {
-            Navigator.push(
-              context,
-              new MaterialPageRoute(
-                builder: (BuildContext context) => new MyCart(
-                  locale: widget.locale,
-                  localizedValues: widget.localizedValues,
-                ),
-              ),
-            );
-          }
-        } catch (error, stackTrace) {
-          sentryError.reportError(error, stackTrace);
-        }
-      }).catchError((error) {
-        sentryError.reportError(error, null);
+  addToCart(data) async {
+    if (mounted) {
+      setState(() {
+        addProductTocart = true;
       });
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Login(
-            locale: widget.locale,
-            localizedValues: widget.localizedValues,
-          ),
-        ),
-      );
     }
+    Map<String, dynamic> buyNowProduct = {
+      'productId': data['_id'].toString(),
+      'quantity': quantity,
+      "price": double.parse(variantPrice == null
+          ? productDetail['variant'][0]['price'].toString()
+          : variantPrice.toString()),
+      "unit": variantUnit == null
+          ? productDetail['variant'][0]['unit'].toString()
+          : variantUnit.toString()
+    };
+    await CartService.addProductToCart(buyNowProduct).then((onValue) {
+      try {
+        if (mounted) {
+          setState(() {
+            addProductTocart = false;
+          });
+        }
+        if (onValue['response_code'] == 200) {
+          Navigator.push(
+            context,
+            new MaterialPageRoute(
+              builder: (BuildContext context) => new MyCart(
+                locale: widget.locale,
+                localizedValues: widget.localizedValues,
+              ),
+            ),
+          );
+        }
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
   }
 
   @override
@@ -665,7 +678,7 @@ class _ProductDetailsState extends State<ProductDetails>
                     ],
                   ),
                   onPressed: () {
-                    addToCart(productDetail, 'cart');
+                    getToken(productDetail);
                   },
                 ),
               ),

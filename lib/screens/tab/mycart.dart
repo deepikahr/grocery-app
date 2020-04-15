@@ -302,6 +302,7 @@ class _MyCartState extends State<MyCart> {
               ? Login(
                   locale: widget.locale,
                   localizedValues: widget.localizedValues,
+                  isCart: true,
                 )
               : cartItem == null
                   ? Center(

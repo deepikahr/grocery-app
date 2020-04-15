@@ -29,8 +29,7 @@ SentryError sentryError = new SentryError();
 
 class Store extends StatefulWidget {
   final Map<String, Map<String, String>> localizedValues;
-  final String locale;
-  final String currentLocation;
+  final String locale, currentLocation;
   Store({Key key, this.currentLocation, this.locale, this.localizedValues})
       : super(key: key);
   @override

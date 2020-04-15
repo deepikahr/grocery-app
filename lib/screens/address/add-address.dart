@@ -24,8 +24,7 @@ class AddAddress extends StatefulWidget {
       this.locale,
       this.localizedValues})
       : super(key: key);
-  final bool isCheckout;
-  final bool isProfile;
+  final bool isCheckout, isProfile;
   final LocationResult pickedLocation;
   final Map<String, dynamic> updateAddressID;
   final LocationData currentLocation;
