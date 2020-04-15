@@ -401,7 +401,8 @@ class _EditProfileState extends State<EditProfile> {
                     height: 25,
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
+                    padding: const EdgeInsets.only(
+                        left: 18.0, bottom: 5.0, right: 18.0),
                     child: Text(
                       MyLocalizations.of(context).fullName + ':',
                       style: textbarlowRegularBlack(),
@@ -452,7 +453,8 @@ class _EditProfileState extends State<EditProfile> {
                     height: 25,
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 18.0, bottom: 5.0),
+                    padding: const EdgeInsets.only(
+                        left: 18.0, bottom: 5.0, right: 18.0),
                     child: Text(
                       MyLocalizations.of(context).contactNumber + ' :',
                       style: textbarlowRegularBlack(),

@@ -558,7 +558,7 @@ class _MyCartState extends State<MyCart> {
                           height: 120.0,
                         )
                       : Container(
-                          height: 120.0,
+                          height: 130.0,
                           child: Column(
                             children: <Widget>[
                               Padding(

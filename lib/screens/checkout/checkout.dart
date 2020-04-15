@@ -864,6 +864,7 @@ class _CheckoutState extends State<Checkout> {
                                                     Padding(
                                                       padding:
                                                           const EdgeInsets.only(
+                                                              right: 18.0,
                                                               left: 20.0),
                                                       child: GFButton(
                                                         onPressed: () {

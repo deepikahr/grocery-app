@@ -98,7 +98,7 @@ class _AddressState extends State<Address> {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(
-                          top: 10.0, bottom: 10.0, left: 20.0),
+                          top: 10.0, bottom: 10.0, left: 20.0, right: 20.0),
                       child: Text(
                         MyLocalizations.of(context).savedAddress,
                         style: textbarlowSemiBoldBlack(),
@@ -252,7 +252,7 @@ class _AddressState extends State<Address> {
             size: GFSize.MEDIUM,
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 20.0),
+            padding: const EdgeInsets.only(left: 20.0, right: 18.0),
             child: GFButton(
               onPressed: () {
                 deleteAddress(addressList['_id']);

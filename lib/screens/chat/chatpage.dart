@@ -311,71 +311,66 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: new Container(
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 10.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    new Flexible(
-                                      child: new TextField(
-                                        maxLines: 1,
-                                        controller: _textController,
-                                        onChanged: (String txt) {
-                                          if (mounted) {
-                                            setState(() {
-                                              _isWriting = txt.length > 0;
-                                            });
-                                          }
-                                        },
-                                        onSubmitted: _submitMsg,
-                                        decoration:
-                                            new InputDecoration.collapsed(
-                                                hintText:
-                                                    MyLocalizations.of(context)
-                                                            .enterTextHere +
-                                                        "..."),
-                                      ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  new Flexible(
+                                    child: new TextField(
+                                      maxLines: 1,
+                                      controller: _textController,
+                                      onChanged: (String txt) {
+                                        if (mounted) {
+                                          setState(() {
+                                            _isWriting = txt.length > 0;
+                                          });
+                                        }
+                                      },
+                                      onSubmitted: _submitMsg,
+                                      decoration: new InputDecoration.collapsed(
+                                          hintText: MyLocalizations.of(context)
+                                                  .enterTextHere +
+                                              "..."),
                                     ),
-                                    new Container(
-                                      decoration: Theme.of(context).platform ==
-                                              TargetPlatform.iOS
-                                          ? new BoxDecoration(
-                                              border: new Border(
-                                                top: new BorderSide(
-                                                    color: Colors.grey[70]),
-                                              ),
-                                              color: Colors.grey,
-                                            )
-                                          : BoxDecoration(
-                                              color: Colors.grey,
+                                  ),
+                                  new Container(
+                                    decoration: Theme.of(context).platform ==
+                                            TargetPlatform.iOS
+                                        ? new BoxDecoration(
+                                            border: new Border(
+                                              top: new BorderSide(
+                                                  color: Colors.grey[70]),
                                             ),
-                                      child: Theme.of(context).platform ==
-                                              TargetPlatform.iOS
-                                          ? new IconButton(
-                                              icon: new Icon(
-                                                Icons.send,
-                                                color: primary,
-                                                size: 30,
-                                              ),
-                                              onPressed: _isWriting
-                                                  ? () => _submitMsg(
-                                                      _textController.text)
-                                                  : null)
-                                          : new IconButton(
-                                              icon: new Icon(
-                                                Icons.send,
-                                                color: primary,
-                                                size: 30,
-                                              ),
-                                              onPressed: _isWriting
-                                                  ? () => _submitMsg(
-                                                      _textController.text)
-                                                  : null,
+                                            color: Colors.grey,
+                                          )
+                                        : BoxDecoration(
+                                            color: Colors.grey,
+                                          ),
+                                    child: Theme.of(context).platform ==
+                                            TargetPlatform.iOS
+                                        ? new IconButton(
+                                            icon: new Icon(
+                                              Icons.send,
+                                              color: primary,
+                                              size: 30,
                                             ),
-                                    ),
-                                  ],
-                                ),
+                                            onPressed: _isWriting
+                                                ? () => _submitMsg(
+                                                    _textController.text)
+                                                : null)
+                                        : new IconButton(
+                                            icon: new Icon(
+                                              Icons.send,
+                                              color: primary,
+                                              size: 30,
+                                            ),
+                                            onPressed: _isWriting
+                                                ? () => _submitMsg(
+                                                    _textController.text)
+                                                : null,
+                                          ),
+                                  ),
+                                ],
                               ),
                               decoration: Theme.of(context).platform ==
                                       TargetPlatform.iOS
