@@ -348,7 +348,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.only(
-                                          top: 0.0, right: 20.0),
+                                          top: 0.0, right: 5.0, left: 5.0),
                                       child: RatingBar(
                                         initialRating: productDetail[
                                                     'averageRating'] ==
@@ -357,17 +357,17 @@ class _ProductDetailsState extends State<ProductDetails>
                                             : double.parse(
                                                 productDetail['averageRating']
                                                     .toString()),
-                                        minRating: 1,
+                                        minRating: 0,
                                         direction: Axis.horizontal,
                                         allowHalfRating: true,
                                         itemCount: 5,
-                                        itemSize: 20.0,
+                                        itemSize: 15.0,
                                         itemPadding: EdgeInsets.symmetric(
-                                            horizontal: 4.0),
+                                            horizontal: 1.0),
                                         itemBuilder: (context, _) => Icon(
                                           Icons.star,
                                           color: Colors.red,
-                                          size: 15.0,
+                                          size: 10.0,
                                         ),
                                         onRatingUpdate: null,
                                       ),

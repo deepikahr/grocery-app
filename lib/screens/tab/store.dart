@@ -572,82 +572,92 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       itemCount: list.length != null ? list.length : 0,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          crossAxisSpacing: 23,
-                          mainAxisSpacing: 23),
+                          crossAxisSpacing: 20,
+                          mainAxisSpacing: 20),
                       itemBuilder: (BuildContext context, int i) {
                         if (list[i]['averageRating'] == null) {
                           list[i]['averageRating'] = 0;
                         }
                         return list[i]['outOfStock'] != null ||
                                 list[i]['outOfStock'] != false
-                            ? InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ProductDetails(
-                                          locale: widget.locale,
-                                          localizedValues:
-                                              widget.localizedValues,
-                                          productID: list[i]['_id'],
-                                          favProductList: getTokenValue
-                                              ? favProductList
-                                              : null),
-                                    ),
-                                  );
-                                },
-                                child: Stack(
-                                  children: <Widget>[
-                                    ProductCard(
-                                      image: list[i]['imageUrl'],
-                                      title: list[i]['title'].length > 10
-                                          ? list[i]['title'].substring(0, 10) +
-                                              ".."
-                                          : list[i]['title'],
-                                      currency: currency,
-                                      category: list[i]['category'],
-                                      price: list[i]['variant'][0]['price']
-                                          .toString(),
-                                      rating:
-                                          list[i]['averageRating'].toString(),
-                                    ),
-                                    list[i]['isDealAvailable'] == true
-                                        ? Positioned(
-                                            child: Stack(
-                                              children: <Widget>[
-                                                Image.asset(
-                                                    'lib/assets/images/badge.png'),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(2.0),
-                                                  child: Text(
-                                                    " " +
-                                                        list[i]['delaPercent']
-                                                            .toString() +
-                                                        "% Off",
-                                                    style: hintSfboldwhitemed(),
-                                                    textAlign: TextAlign.center,
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          )
-                                        : Positioned(
-                                            child: Stack(
-                                              children: <Widget>[
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(2.0),
-                                                  child: Text(
-                                                    " ",
-                                                    style: hintSfboldwhitemed(),
-                                                    textAlign: TextAlign.center,
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          )
-                                  ],
+                            ? Padding(
+                                padding: const EdgeInsets.all(1.0),
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ProductDetails(
+                                            locale: widget.locale,
+                                            localizedValues:
+                                                widget.localizedValues,
+                                            productID: list[i]['_id'],
+                                            favProductList: getTokenValue
+                                                ? favProductList
+                                                : null),
+                                      ),
+                                    );
+                                  },
+                                  child: Stack(
+                                    children: <Widget>[
+                                      ProductCard(
+                                        image: list[i]['imageUrl'],
+                                        title: list[i]['title'].length > 10
+                                            ? list[i]['title']
+                                                    .substring(0, 10) +
+                                                ".."
+                                            : list[i]['title'],
+                                        currency: currency,
+                                        category: list[i]['category'],
+                                        price: list[i]['variant'][0]['price']
+                                            .toString(),
+                                        rating:
+                                            list[i]['averageRating'].toString(),
+                                      ),
+                                      list[i]['isDealAvailable'] == true
+                                          ? Positioned(
+                                              child: Stack(
+                                                children: <Widget>[
+                                                  Image.asset(
+                                                      'lib/assets/images/badge.png'),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            2.0),
+                                                    child: Text(
+                                                      " " +
+                                                          list[i]['delaPercent']
+                                                              .toString() +
+                                                          "% Off",
+                                                      style:
+                                                          hintSfboldwhitemed(),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            )
+                                          : Positioned(
+                                              child: Stack(
+                                                children: <Widget>[
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            2.0),
+                                                    child: Text(
+                                                      " ",
+                                                      style:
+                                                          hintSfboldwhitemed(),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            )
+                                    ],
+                                  ),
                                 ),
                               )
                             : Stack(
@@ -673,7 +683,129 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
         : Container();
   }
 
-  dealsRow(titleTranslate, list, dealsType) {
+  topDealsRow(titleTranslate, list, dealsType) {
+    return list.length > 0
+        ? Column(
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    titleTranslate,
+                    style: textBarlowMediumBlack(),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => AllDealsList(
+                              locale: widget.locale,
+                              localizedValues: widget.localizedValues,
+                              productsList: list,
+                              favProductList: favProductList,
+                              currency: currency,
+                              token: getTokenValue,
+                              dealType: dealsType,
+                              title: titleTranslate),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      MyLocalizations.of(context).viewAll,
+                      style: textBarlowMediumPrimary(),
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                height: 200,
+                child: list.length > 0
+                    ? ListView.builder(
+                        shrinkWrap: true,
+                        physics: ScrollPhysics(),
+                        scrollDirection: Axis.horizontal,
+                        itemCount: list.length != null ? list.length : 0,
+                        itemBuilder: (BuildContext context, int i) {
+                          print(list[i]);
+                          return InkWell(
+                            onTap: () {
+                              if (list[i]['delalType'] == 'Category') {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SubCategories(
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues,
+                                      catId: list[i]['category'],
+                                      catTitle:
+                                          '${list[i]['name'][0].toUpperCase()}${list[i]['name'].substring(1)}',
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ProductDetails(
+                                        locale: widget.locale,
+                                        localizedValues: widget.localizedValues,
+                                        productID: list[i]['product'],
+                                        favProductList: getTokenValue
+                                            ? favProductList
+                                            : null),
+                                  ),
+                                );
+                              }
+                            },
+                            child: Container(
+                              width: 150,
+                              margin: EdgeInsets.only(right: 15),
+                              child: GFImageOverlay(
+                                image: NetworkImage(list[i]['imageUrl']),
+                                color: Colors.black,
+                                colorFilter: ColorFilter.mode(
+                                    Colors.black.withOpacity(0.40),
+                                    BlendMode.darken),
+                                height: 150,
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(4)),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      bottom: 10, left: 10),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: <Widget>[
+                                      Text(list[i]['name'],
+                                          style: textBarlowSemiBoldwbig()),
+                                      Text(
+                                        list[i]['delaPercent'].toString() +
+                                            "% OFF",
+                                        style: textBarlowRegularrwhsm(),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      )
+                    : Center(
+                        child: Image.asset('lib/assets/images/no-orders.png'),
+                      ),
+              ),
+            ],
+          )
+        : Container();
+  }
+
+  todayDealsRow(titleTranslate, list, dealsType) {
     return list.length > 0
         ? Column(
             children: <Widget>[
@@ -751,17 +883,36 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                               );
                             }
                           },
-                          child: Stack(
-                            children: <Widget>[
-                              DealCard(
-                                image: list[i]['imageUrl'],
-                                title: list[i]['name'].length > 10
-                                    ? list[i]['name'].substring(0, 10) + ".."
-                                    : list[i]['name'],
-                                price:
-                                    list[i]['delaPercent'].toString() + "% off",
+                          child: GFImageOverlay(
+                            image: NetworkImage(list[i]['imageUrl']),
+                            color: Colors.black,
+                            colorFilter: ColorFilter.mode(
+                                Colors.black.withOpacity(0.40),
+                                BlendMode.darken),
+                            height: 80,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(4)),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(bottom: 10, left: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  Text(
+                                      list[i]['delaPercent'].toString() +
+                                          "% OFF",
+                                      style: textoswaldboldwhite()),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    list[i]['name'],
+                                    style: textBarlowmediumsmallWhite(),
+                                  )
+                                ],
                               ),
-                            ],
+                            ),
                           ),
                         );
                       },
@@ -843,258 +994,12 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       SizedBox(height: 10),
                       Divider(),
                       SizedBox(height: 10),
-                      dealsRow(MyLocalizations.of(context).topDeals,
+                      topDealsRow(MyLocalizations.of(context).topDeals,
                           topDealList, "TopDeals"),
                       SizedBox(height: 10),
                       Divider(),
                       SizedBox(height: 10),
-//                      GFCarousel(
-//                        autoPlay: true,
-//                        pagination: true,
-//                        viewportFraction: 1/2,
-//                        activeIndicator: GFColors.SUCCESS,
-//                        passiveIndicator: GFColors.WHITE,
-//                        aspectRatio: 1,
-//                        items: assetImg
-//                            .map(
-//                              (url) => GFImageOverlay(
-//                                height: 400,
-//                                width: 300,
-//                                margin:
-//                                const EdgeInsets.only(left: 15, right: 5),
-//                                borderRadius: const BorderRadius.all(
-//                                    Radius.circular(4)),
-//                                child: Padding(
-//                                    padding: const EdgeInsets.only(left: 10),
-//                                    child: Column(
-//                                      crossAxisAlignment:
-//                                      CrossAxisAlignment.start,
-//                                      mainAxisAlignment:
-//                                      MainAxisAlignment.spaceAround,
-//                                      children: const <Widget>[
-//                                        Text(
-//                                          'Title',
-//                                          style: TextStyle(
-//                                              color: GFColors.WHITE),
-//                                        ),
-//                                        Padding(
-//                                            padding: EdgeInsets.only(
-//                                              right: 5,
-//                                            ),
-//                                            child: Text(
-//                                              'Open source UI library ',
-//                                              style: TextStyle(
-//                                                  fontSize: 10,
-//                                                  color: GFColors.LIGHT),
-//                                            ))
-//                                      ],
-//                                    )),
-//                                image: AssetImage(url),
-//                              ),
-//                        )
-//                            .toList(),
-//                      ),
-
-
-                      SizedBox(
-                        height: 20,
-                      ),
-
-                      Container(
-                        height: 190,
-                        child: ListView(
-                          shrinkWrap: true,
-                          physics: ScrollPhysics(),
-                          scrollDirection: Axis.horizontal,
-                          children: <Widget>[
-                            Container(
-                              width: 140,
-                              margin: EdgeInsets.only(right:10),
-                              child: GFImageOverlay(
-                                image: AssetImage('lib/assets/images/product.png'),
-
-                                color: Colors.black,
-                                colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.40), BlendMode.darken),
-                                height: 125,
-//                            margin: const EdgeInsets.only(
-//                                left: 10, right:10),
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(4)),
-                                child: Padding(
-                                  padding:
-                                  const EdgeInsets.only(bottom: 10, left: 10),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: <Widget>[
-                                      Text(
-                                          "Bengaluru's \nFinest",
-                                          style: textBarlowSemiBoldwbig()
-
-                                      ),
-                                      Text('Subtitle', style: textBarlowRegularrwhsm(),)
-
-
-
-                                    ],
-                                  ),
-                                ),
-
-                              ),
-                            ),
-                            Container(
-                              width: 140,
-                              margin: EdgeInsets.only(right:10),
-                              child: GFImageOverlay(
-                                image: AssetImage('lib/assets/images/product.png'),
-
-                                color: Colors.black,
-                                colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.40), BlendMode.darken),
-                                height: 125,
-//                            margin: const EdgeInsets.only(
-//                                left: 10, right:10),
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(4)),
-                                child: Padding(
-                                  padding:
-                                  const EdgeInsets.only(bottom: 10, left: 10),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: <Widget>[
-                                      Text(
-                                          "Bengaluru's \nFinest",
-                                          style: textBarlowSemiBoldwbig()
-
-                                      ),
-                                      Text('Subtitle', style: textBarlowRegularrwhsm(),)
-
-
-                                    ],
-                                  ),
-                                ),
-
-                              ),
-                            ),
-                            Container(
-                              width: 144,
-                              child: GFImageOverlay(
-                                image: AssetImage('lib/assets/images/product.png'),
-
-                                color: Colors.black,
-                                colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.40), BlendMode.darken),
-                                height: 125,
-//                            margin: const EdgeInsets.only(
-//                                left: 10, right:10),
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(4)),
-                                child: Padding(
-                                  padding:
-                                  const EdgeInsets.only(bottom: 10, left: 10),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: <Widget>[
-                                      Text(
-                                          "Bengaluru's \nFinest",
-                                          style: textBarlowSemiBoldwbig()
-
-                                      ),
-                                      Text('Subtitle', style: textBarlowRegularrwhsm(),)
-
-
-                                    ],
-                                  ),
-                                ),
-
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-
-                      SizedBox(
-                        height: 20,
-                      ),
-
-
-                      Row(
-                        children: <Widget>[
-                        Expanded(child:   GFImageOverlay(
-                          image: AssetImage('lib/assets/images/product.png'),
-                          color: Colors.black,
-                          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.40), BlendMode.darken),
-                          height: 125,
-//                          margin: const EdgeInsets.only(
-//                              left: 10, right:10),
-                          borderRadius: const BorderRadius.all(
-                              Radius.circular(4)),
-                          child: Padding(
-                            padding:
-                            const EdgeInsets.only(bottom: 10, left: 10),
-                            child: Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                Text(
-                                    "Flat 50% Off",
-                                    style: textoswaldboldwhite()
-
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Text('On all Veggies', style: textBarlowmediumsmallWhite(),)
-
-                              ],
-                            ),
-                          ),
-
-                        ),),
-                          SizedBox(
-                            width:20
-                          ),
-                          Expanded(child:   GFImageOverlay(
-                            image: AssetImage('lib/assets/images/product.png'),
-
-                            color: Colors.black,
-                            colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.40), BlendMode.darken),
-                            height: 125,
-//                            margin: const EdgeInsets.only(
-//                                left: 10, right:10),
-                            borderRadius: const BorderRadius.all(
-                                Radius.circular(4)),
-                            child: Padding(
-                              padding:
-                              const EdgeInsets.only(bottom: 10, left: 10),
-                              child: Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: <Widget>[
-                                  Text(
-                                      "10%-30% Off",
-                                      style: textoswaldboldwhite()
-
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text('OnCerials', style: textBarlowmediumsmallWhite(),)
-
-                                ],
-                              ),
-                            ),
-
-                          ),)
-                        ],
-                      ),
-
-                      dealsRow(MyLocalizations.of(context).dealsoftheday,
+                      todayDealsRow(MyLocalizations.of(context).dealsoftheday,
                           dealList, "TodayDeals"),
                       SizedBox(height: 10),
                       Divider(),
