@@ -19,12 +19,14 @@ class Home extends StatefulWidget {
   final int currentIndex;
   final Map<String, Map<String, String>> localizedValues;
   final String locale, addressData;
+  final bool languagesSelection;
   Home(
       {Key key,
       this.currentIndex,
       this.locale,
       this.localizedValues,
-      this.addressData})
+      this.addressData,
+      this.languagesSelection})
       : super(key: key);
 
   @override
@@ -36,12 +38,13 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   bool isGetTokenLoading = true,
       currencyLoading = false,
       isCurrentLoactionLoading = false,
-      isLocationLoading = false;
+      isLocationLoading = false,
+      languagesSelection = false;
   int currentIndex = 0;
 
   @override
   void initState() {
-    getGlobalSettingsData();
+    // getGlobalSettingsData();
 
     configLocalNotification();
 
@@ -53,35 +56,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   void dispose() {
     tabController.dispose();
     super.dispose();
-  }
-
-  getGlobalSettingsData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (mounted) {
-      setState(() {
-        currencyLoading = true;
-      });
-    }
-    getGlobalSettings().then((onValue) {
-      try {
-        if (onValue['response_data']['currency'] == null &&
-            onValue['response_data']['currency'][0]['currencySign'] == null) {
-          prefs.setString('currency', 'Rs');
-        } else {
-          prefs.setString('currency',
-              '${onValue['response_data']['currency'][0]['currencySign']}');
-        }
-        if (mounted) {
-          setState(() {
-            currencyLoading = false;
-          });
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      sentryError.reportError(error, null);
-    });
   }
 
   Future<void> configLocalNotification() async {
@@ -132,6 +106,13 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.currentIndex != null) {
+      if (mounted) {
+        setState(() {
+          currentIndex = widget.currentIndex;
+        });
+      }
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       body: currencyLoading

@@ -10,9 +10,9 @@ import 'package:grocery_pro/style/style.dart';
 class Verification extends StatefulWidget {
   Verification({Key key, this.title, this.locale, this.localizedValues})
       : super(key: key);
-  final String title;
+  final String title, locale;
   final Map<String, Map<String, String>> localizedValues;
-  final String locale;
+
   @override
   _VerificationState createState() => _VerificationState();
 }

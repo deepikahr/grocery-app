@@ -6,12 +6,17 @@ import 'common.dart';
 class CouponService {
   static final Client client = Client();
   // get coupons
-  static Future<Map<String, dynamic>> getCoupons() async {
+
+  static Future<Map<String, dynamic>> applyCouponsCode(
+      cartId, couponCode) async {
     String token;
     await Common.getToken().then((onValue) {
       token = onValue;
     });
-    final response = await client.get(Constants.baseURL + "coupons/all",
+    var body = {"couponCode": couponCode.toString()};
+    final response = await client.post(
+        Constants.baseURL + "cart/apply/coupon/$cartId",
+        body: json.encode(body),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'bearer $token'
@@ -19,13 +24,13 @@ class CouponService {
     return json.decode(response.body);
   }
 
-  static Future<Map<String, dynamic>> applyCoupons(couponId) async {
+  static Future<Map<String, dynamic>> removeCoupon(cartId) async {
     String token;
     await Common.getToken().then((onValue) {
       token = onValue;
     });
     final response = await client
-        .get(Constants.baseURL + "cart/apply/coupon/$couponId", headers: {
+        .get(Constants.baseURL + "cart/remove/coupon/$cartId", headers: {
       'Content-Type': 'application/json',
       'Authorization': 'bearer $token'
     });

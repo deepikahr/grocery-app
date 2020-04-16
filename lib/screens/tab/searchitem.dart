@@ -6,9 +6,8 @@ import 'package:grocery_pro/style/style.dart';
 
 class SearchItem extends StatefulWidget {
   final List productsList, favProductList;
-  final String currency;
+  final String currency, locale;
   final Map<String, Map<String, String>> localizedValues;
-  final String locale;
   SearchItem(
       {Key key,
       this.productsList,
@@ -85,12 +84,13 @@ class _SearchItemState extends State<SearchItem> {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(
-                          top: 18.0, bottom: 10.0, left: 20.0, right: 20),
+                          top: 18.0, bottom: 18.0, left: 20.0, right: 20),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Text(
                               searchresult.length.toString() +
+                                  " " +
                                   MyLocalizations.of(context).iteamsFounds,
                               style: textBarlowMediumBlack()),
                         ],
@@ -102,7 +102,7 @@ class _SearchItemState extends State<SearchItem> {
                       itemBuilder: (BuildContext context, int index) {
                         return Container(
                           margin: EdgeInsets.only(bottom: 20),
-                          color: Colors.white,
+                          color: Colors.grey[100],
                           child: InkWell(
                             onTap: () {
                               Navigator.push(
@@ -111,7 +111,7 @@ class _SearchItemState extends State<SearchItem> {
                                   builder: (context) => ProductDetails(
                                       locale: widget.locale,
                                       localizedValues: widget.localizedValues,
-                                      productDetail: searchresult[index],
+                                      productID: searchresult[index]['_id'],
                                       favProductList:
                                           widget.favProductList == null
                                               ? null
@@ -143,17 +143,7 @@ class _SearchItemState extends State<SearchItem> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: <Widget>[
-                                        new Text(
-                                            searchresult[index]['description']
-                                                        .length >
-                                                    25
-                                                ? searchresult[index]
-                                                            ['description']
-                                                        .substring(0, 25) +
-                                                    ".."
-                                                : searchresult[index]
-                                                        ['description']
-                                                    .toString(),
+                                        new Text("",
                                             style: textBarlowRegularrBlacksm()),
                                         Row(
                                           mainAxisAlignment:

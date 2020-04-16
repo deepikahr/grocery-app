@@ -14,9 +14,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 SentryError sentryError = new SentryError();
 
 class OrderDetails extends StatefulWidget {
-  final String orderId;
+  final String orderId, locale;
   final Map<String, Map<String, String>> localizedValues;
-  final String locale;
   OrderDetails({Key key, this.orderId, this.locale, this.localizedValues})
       : super(key: key);
   @override

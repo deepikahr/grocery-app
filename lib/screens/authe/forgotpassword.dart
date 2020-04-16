@@ -15,9 +15,8 @@ SentryError sentryError = new SentryError();
 class ForgotPassword extends StatefulWidget {
   ForgotPassword({Key key, this.title, this.locale, this.localizedValues})
       : super(key: key);
-  final String title;
+  final String title, locale;
   final Map<String, Map<String, String>> localizedValues;
-  final String locale;
 
   @override
   _ForgotPasswordState createState() => _ForgotPasswordState();
@@ -127,16 +126,16 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           child: ListView(
             children: <Widget>[
               Padding(
-                padding:
-                    const EdgeInsets.only(top: 40.0, left: 18.0, bottom: 8.0),
+                padding: const EdgeInsets.only(
+                    top: 40.0, left: 18.0, bottom: 8.0, right: 20.0),
                 child: Text(
                   MyLocalizations.of(context).passwordreset,
                   style: textbarlowMediumBlack(),
                 ),
               ),
               Padding(
-                padding:
-                    const EdgeInsets.only(left: 18.0, bottom: 25.0, right: 10),
+                padding: const EdgeInsets.only(
+                    left: 18.0, bottom: 25.0, right: 20.0),
                 child: Text(
                   MyLocalizations.of(context)
                       .pleaseenteryourregisteredEmailtosendtheresetcode,
@@ -144,7 +143,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 20.0, bottom: 5.0),
+                padding:
+                    const EdgeInsets.only(left: 20.0, bottom: 5.0, right: 20.0),
                 child: GFTypography(
                   showDivider: false,
                   child: RichText(

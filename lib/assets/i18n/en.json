@@ -433,6 +433,10 @@
   "yourCartIsEmpty": "Your Cart Is Empty",
   "addSomeItemsToProceedToCheckout": "Add Some Items To Proceed To Checkout",
   "whatareyoubuyingtoday": "What are you buying today",
-  "iteamsFounds": "Iteams Founds",
-  "explorebyCategories": "Explore by Categories"
+  "iteamsFounds": "Items Founds",
+  "explorebyCategories": "Explore by Categories",
+  "products": "Products",
+  "deal": "Deal",
+  "topDeals": "Top Deals",
+  "dealsoftheday": "Deals of the day"
 }

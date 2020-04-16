@@ -1,20 +1,28 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:getflutter/colors/gf_color.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
+import 'package:getflutter/components/card/gf_card.dart';
 import 'package:getflutter/components/carousel/gf_carousel.dart';
+import 'package:getflutter/components/carousel/gf_items_carousel.dart';
+import 'package:getflutter/components/image/gf_image_overlay.dart';
 import 'package:grocery_pro/screens/categories/allcategories.dart';
 import 'package:grocery_pro/screens/categories/subcategories.dart';
+import 'package:grocery_pro/screens/product/all_deals.dart';
 import 'package:grocery_pro/screens/product/all_products.dart';
 import 'package:grocery_pro/screens/product/product-details.dart';
 import 'package:grocery_pro/screens/tab/searchitem.dart';
+import 'package:grocery_pro/service/auth-service.dart';
 import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/service/fav-service.dart';
 import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
+import 'package:grocery_pro/widgets/dealsCard.dart';
 import 'package:grocery_pro/widgets/loader.dart';
 import 'package:location/location.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:grocery_pro/widgets/categoryBlock.dart';
 import 'package:grocery_pro/widgets/productCard.dart';
@@ -25,8 +33,7 @@ SentryError sentryError = new SentryError();
 
 class Store extends StatefulWidget {
   final Map<String, Map<String, String>> localizedValues;
-  final String locale;
-  final String currentLocation;
+  final String locale, currentLocation;
   Store({Key key, this.currentLocation, this.locale, this.localizedValues})
       : super(key: key);
   @override
@@ -37,18 +44,26 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKeydrawer =
       new GlobalKey<ScaffoldState>();
 
-  bool isLoadingcategory = false,
-      isFavListLoading = false,
-      isLoadingProducts = false,
-      isLoadingcategoryList = false,
-      isLoadingSubProductsList = false,
-      isLoadingProductsList = false,
-      getTokenValue = true,
-      isCurrentLoactionLoading = false,
-      isLocationLoading = false;
-  List categoryList, productsList, dealList, favList, favProductList;
-  String currency;
-
+  final List<String> imageList = [
+    'lib/assets/images/cherry.png',
+    'lib/assets/images/product.png',
+    'lib/assets/images/apple.png',
+    'lib/assets/images/orange.png',
+  ];
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+  bool getTokenValue = true,
+      isLocationLoading = false,
+      isBannerLoading = false,
+      isLoadingAllData = false;
+  List categoryList,
+      productsList,
+      searchProductList,
+      dealList,
+      topDealList,
+      favProductList,
+      bannerList;
+  String currency, itemCount = '4';
   final List<String> assetImg = [
     'lib/assets/images/product.png',
   ];
@@ -57,14 +72,42 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   LocationData currentLocation;
   Location _location = new Location();
   var addressData;
+  String locale;
   @override
   void initState() {
+    getProductListMethod();
     getToken();
     getResult();
-    getCategoryList();
-    getProductsList();
+    getBanner();
+    getAllData();
+
     super.initState();
     tabController = TabController(length: 4, vsync: this);
+  }
+
+  getProductListMethod() async {
+    await ProductService.getProductListAll().then((onValue) {
+      try {
+        _refreshController.refreshCompleted();
+        if (onValue['response_code'] == 200) {
+          if (mounted) {
+            setState(() {
+              searchProductList = onValue['response_data'];
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              searchProductList = [];
+            });
+          }
+        }
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
   }
 
   @override
@@ -76,6 +119,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     currency = prefs.getString('currency');
+    locale = prefs.getString('selectedLanguage') ?? 'en';
     await Common.getToken().then((onValue) {
       if (onValue != null) {
         if (mounted) {
@@ -112,50 +156,40 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
     });
   }
 
-  getCategoryList() async {
+  getBanner() async {
     if (mounted) {
       setState(() {
-        isLoadingcategoryList = true;
+        isBannerLoading = true;
       });
     }
-    Common.getCatagrysList().then((value) {
-      if (value == null) {
+    Common.getBanner().then((value) {
+      if (value == null || value['response_data'] == null) {
         if (mounted) {
           setState(() {
-            categoryListMethod();
+            getBannerData();
           });
         }
       } else {
         if (mounted) {
           setState(() {
-            isLoadingcategoryList = false;
-
-            categoryList = value['response_data'];
-
-            categoryListMethod();
+            isBannerLoading = false;
+            bannerList = value['response_data']['banners'];
+            getBannerData();
           });
         }
       }
     });
   }
 
-  categoryListMethod() async {
-    await ProductService.getCategoryList().then((onValue) {
+  getBannerData() async {
+    await LoginService.getBanner().then((onValue) {
       try {
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              categoryList = onValue['response_data'];
-              isLoadingcategoryList = false;
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              categoryList = [];
-              isLoadingcategoryList = false;
-            });
-          }
+        _refreshController.refreshCompleted();
+        if (mounted) {
+          setState(() {
+            bannerList = onValue['response_data']['banners'];
+            isBannerLoading = false;
+          });
         }
       } catch (error, stackTrace) {
         sentryError.reportError(error, stackTrace);
@@ -165,46 +199,57 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
     });
   }
 
-  getProductsList() async {
+  getAllData() async {
     if (mounted) {
       setState(() {
-        isLoadingProductsList = true;
+        isLoadingAllData = true;
       });
     }
-    Common.getProductList().then((value) {
-      if (value == null) {
+    Common.getAllData().then((value) {
+      if (value == null || value['response_data'] == null) {
         if (mounted) {
           setState(() {
-            getProductListMethod();
+            getAllDataMethod();
           });
         }
       } else {
         if (mounted) {
           setState(() {
-            isLoadingProductsList = false;
+            isLoadingAllData = false;
+            categoryList = value['response_data']['categories'];
+            productsList = value['response_data']['products'];
+            topDealList = value['response_data']['topDeals'];
+            dealList = value['response_data']['dealsOfDay'];
 
-            productsList = value['response_data'];
-            getProductListMethod();
+            getAllDataMethod();
           });
         }
       }
     });
   }
 
-  getProductListMethod() async {
-    await ProductService.getProductsList().then((onValue) {
+  getAllDataMethod() async {
+    await ProductService.getProdCatDealTopDeal().then((onValue) {
       try {
+        _refreshController.refreshCompleted();
         if (onValue['response_code'] == 200) {
           if (mounted) {
             setState(() {
-              productsList = onValue['response_data'];
-              isLoadingProductsList = false;
+              categoryList = onValue['response_data']['categories'];
+              productsList = onValue['response_data']['products'];
+              topDealList = onValue['response_data']['topDeals'];
+              dealList = onValue['response_data']['dealsOfDay'];
+              isLoadingAllData = false;
             });
           }
         } else {
           if (mounted) {
             setState(() {
+              categoryList = [];
               productsList = [];
+              dealList = [];
+              topDealList = [];
+              isLoadingAllData = false;
             });
           }
         }
@@ -244,371 +289,821 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   }
 
   deliveryAddress() {
-    return isLocationLoading || addressData == null
-        ? Container()
-        : Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    MyLocalizations.of(context).deliveryAddress,
-                    style: textBarlowRegularrBlacksm(),
-                  ),
-                  Text(
-                    addressData.substring(0, 22) + '...',
-                    style: textBarlowSemiBoldBlackbig(),
-                  )
-                ],
-              ),
-            ],
-          );
-  }
-
-  searchBox() {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SearchItem(
-                locale: widget.locale,
-                localizedValues: widget.localizedValues,
-                productsList: productsList,
-                currency:currency,
-                favProductList: getTokenValue ? favProductList : null),
-          ),
-        );
-      },
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 10),
-        width: MediaQuery.of(context).size.width,
-        height: 50,
-        decoration: BoxDecoration(
-            color: Color(0xFFF0F0F0), borderRadius: BorderRadius.circular(10)),
-        child: Row(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            SizedBox(
-              width: 24,
+            Text(
+              MyLocalizations.of(context).deliveryAddress,
+              style: textBarlowRegularrBlacksm(),
             ),
-            Icon(
-              Icons.search,
-              color: Colors.black.withOpacity(0.5),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 4.0, bottom: 4),
-              child: Text(
-                  MyLocalizations.of(context).whatareyoubuyingtoday + '?',
-                  style: textbarlowRegularad()),
+            Text(
+              addressData.substring(0, 22) + '...',
+              style: textBarlowSemiBoldBlackbig(),
             )
           ],
         ),
-      ),
+      ],
     );
   }
 
   categoryRow() {
     return categoryList.length > 0
-        ? SizedBox(
-            height: 100,
-            child: ListView.builder(
-              physics: ScrollPhysics(),
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              itemCount: categoryList.length == null ? 0 : categoryList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SubCategories(
-                          locale: widget.locale,
-                          localizedValues: widget.localizedValues,
-                          catId: categoryList[index]['_id'],
-                          catTitle:
-                              '${categoryList[index]['title'][0].toUpperCase()}${categoryList[index]['title'].substring(1)}',
+        ? Column(
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    MyLocalizations.of(context).explorebyCategories,
+                    style: textBarlowMediumBlack(),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AllCategories(
+                            locale: widget.locale,
+                            localizedValues: widget.localizedValues,
+                          ),
                         ),
+                      );
+                    },
+                    child: Text(
+                      MyLocalizations.of(context).viewAll,
+                      style: textBarlowMediumPrimary(),
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(height: 20),
+              SizedBox(
+                height: 100,
+                child: ListView.builder(
+                  physics: ScrollPhysics(),
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: categoryList.length < int.parse(itemCount)
+                      ? categoryList.length
+                      : int.parse(itemCount),
+                  itemBuilder: (BuildContext context, int index) {
+                    return InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SubCategories(
+                              locale: widget.locale,
+                              localizedValues: widget.localizedValues,
+                              catId: categoryList[index]['_id'],
+                              catTitle:
+                                  '${categoryList[index]['title'][0].toUpperCase()}${categoryList[index]['title'].substring(1)}',
+                            ),
+                          ),
+                        );
+                      },
+                      child: CategoryBlock(
+                        image: categoryList[index]['imageUrl'],
+                        title: categoryList[index]['title'].length > 7
+                            ? categoryList[index]['title'].substring(0, 7) +
+                                ".."
+                            : categoryList[index]['title'],
                       ),
                     );
                   },
-                  child: CategoryBlock(
-                    image: categoryList[index]['imageUrl'],
-                    title: categoryList[index]['title'].length > 7
-                        ? categoryList[index]['title'].substring(0, 7) + ".."
-                        : categoryList[index]['title'],
-                  ),
-                );
-              },
-            ),
+                ),
+              ),
+            ],
           )
         : Center(
             child: Image.asset('lib/assets/images/no-orders.png'),
           );
   }
 
+  banner() {
+    return GFCarousel(
+      autoPlay: true,
+      pagination: true,
+      viewportFraction: 1.0,
+      activeIndicator: Colors.transparent,
+      height: 140,
+      aspectRatio: 2,
+      items: bannerList
+          .map(
+            (url) => InkWell(
+              onTap: () {
+                if (url['bannerType'] == "Product") {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProductDetails(
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                          productID: url['product'],
+                          favProductList:
+                              getTokenValue ? favProductList : null),
+                    ),
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SubCategories(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                        catId: url['category'],
+                        catTitle:
+                            '${url['title'][0].toUpperCase()}${url['title'].substring(1)}',
+                      ),
+                    ),
+                  );
+                }
+              },
+              child: Stack(
+                children: <Widget>[
+                  Container(
+                    height: 130,
+                    color: bg,
+                  ),
+                  Container(
+                    height: 106,
+                    margin: EdgeInsets.only(top: 10),
+                    padding: EdgeInsets.only(top: 5, left: 20, right: 20),
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                        color: primary,
+                        borderRadius: BorderRadius.all(Radius.circular(5))),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          url['title'],
+                          style: textbarlowBoldwhite(),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            if (url['bannerType'] == "Product") {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProductDetails(
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues,
+                                      productID: url['product'],
+                                      favProductList: getTokenValue
+                                          ? favProductList
+                                          : null),
+                                ),
+                              );
+                            } else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SubCategories(
+                                    locale: widget.locale,
+                                    localizedValues: widget.localizedValues,
+                                    catId: url['category'],
+                                    catTitle:
+                                        '${url['title'][0].toUpperCase()}${url['title'].substring(1)}',
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          child: Row(
+                            children: <Widget>[
+                              Text('Order  now'),
+                              Icon(Icons.arrow_right)
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  locale == "ar"
+                      ? Positioned(
+                          left: 0,
+                          child: Container(
+                            height: 122,
+                            width: 124,
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black.withOpacity(0.33),
+                                    blurRadius: 6)
+                              ],
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                  image: NetworkImage(url['imageURL']),
+                                  fit: BoxFit.fill),
+                            ),
+                          ),
+                        )
+                      : Positioned(
+                          right: 0,
+                          child: Container(
+                            height: 122,
+                            width: 124,
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black.withOpacity(0.33),
+                                    blurRadius: 6)
+                              ],
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                  image: NetworkImage(url['imageURL']),
+                                  fit: BoxFit.fill),
+                            ),
+                          ),
+                        ),
+                ],
+              ),
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  productRow(titleTranslate, list) {
+    return list.length > 0
+        ? Column(
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    titleTranslate,
+                    style: textBarlowMediumBlack(),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => AllProducts(
+                            locale: widget.locale,
+                            localizedValues: widget.localizedValues,
+                            productsList: list,
+                            favProductList: favProductList,
+                            currency: currency,
+                            token: getTokenValue,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      MyLocalizations.of(context).viewAll,
+                      style: textBarlowMediumPrimary(),
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              list.length > 0
+                  ? GridView.builder(
+                      physics: ScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: list.length != null ? list.length : 0,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 23,
+                          mainAxisSpacing: 23),
+                      itemBuilder: (BuildContext context, int i) {
+                        if (list[i]['averageRating'] == null) {
+                          list[i]['averageRating'] = 0;
+                        }
+                        return list[i]['outOfStock'] != null ||
+                                list[i]['outOfStock'] != false
+                            ? InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ProductDetails(
+                                          locale: widget.locale,
+                                          localizedValues:
+                                              widget.localizedValues,
+                                          productID: list[i]['_id'],
+                                          favProductList: getTokenValue
+                                              ? favProductList
+                                              : null),
+                                    ),
+                                  );
+                                },
+                                child: Stack(
+                                  children: <Widget>[
+                                    ProductCard(
+                                      image: list[i]['imageUrl'],
+                                      title: list[i]['title'].length > 10
+                                          ? list[i]['title'].substring(0, 10) +
+                                              ".."
+                                          : list[i]['title'],
+                                      currency: currency,
+                                      category: list[i]['category'],
+                                      price: list[i]['variant'][0]['price']
+                                          .toString(),
+                                      rating:
+                                          list[i]['averageRating'].toString(),
+                                    ),
+                                    list[i]['isDealAvailable'] == true
+                                        ? Positioned(
+                                            child: Stack(
+                                              children: <Widget>[
+                                                Image.asset(
+                                                    'lib/assets/images/badge.png'),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(2.0),
+                                                  child: Text(
+                                                    " " +
+                                                        list[i]['delaPercent']
+                                                            .toString() +
+                                                        "% Off",
+                                                    style: hintSfboldwhitemed(),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          )
+                                        : Positioned(
+                                            child: Stack(
+                                              children: <Widget>[
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(2.0),
+                                                  child: Text(
+                                                    " ",
+                                                    style: hintSfboldwhitemed(),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          )
+                                  ],
+                                ),
+                              )
+                            : Stack(
+                                children: <Widget>[
+                                  ProductCard(
+                                    image: list[i]['imageUrl'],
+                                    title: list[i]['title'],
+                                    currency: currency,
+                                    category: list[i]['category'],
+                                    price: list[i]['variant'][0]['price'],
+                                    rating: list[i]['averageRating'].toString(),
+                                  ),
+                                  CardOverlay()
+                                ],
+                              );
+                      },
+                    )
+                  : Center(
+                      child: Image.asset('lib/assets/images/no-orders.png'),
+                    ),
+            ],
+          )
+        : Container();
+  }
+
+  dealsRow(titleTranslate, list, dealsType) {
+    return list.length > 0
+        ? Column(
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    titleTranslate,
+                    style: textBarlowMediumBlack(),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => AllDealsList(
+                              locale: widget.locale,
+                              localizedValues: widget.localizedValues,
+                              productsList: list,
+                              favProductList: favProductList,
+                              currency: currency,
+                              token: getTokenValue,
+                              dealType: dealsType,
+                              title: titleTranslate),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      MyLocalizations.of(context).viewAll,
+                      style: textBarlowMediumPrimary(),
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              list.length > 0
+                  ? GridView.builder(
+                      physics: ScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: list.length != null ? list.length : 0,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 23,
+                          mainAxisSpacing: 23),
+                      itemBuilder: (BuildContext context, int i) {
+                        return InkWell(
+                          onTap: () {
+                            if (list[i]['delalType'] == 'Category') {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SubCategories(
+                                    locale: widget.locale,
+                                    localizedValues: widget.localizedValues,
+                                    catId: list[i]['category'],
+                                    catTitle:
+                                        '${list[i]['name'][0].toUpperCase()}${list[i]['name'].substring(1)}',
+                                  ),
+                                ),
+                              );
+                            } else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProductDetails(
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues,
+                                      productID: list[i]['product'],
+                                      favProductList: getTokenValue
+                                          ? favProductList
+                                          : null),
+                                ),
+                              );
+                            }
+                          },
+                          child: Stack(
+                            children: <Widget>[
+                              DealCard(
+                                image: list[i]['imageUrl'],
+                                title: list[i]['name'].length > 10
+                                    ? list[i]['name'].substring(0, 10) + ".."
+                                    : list[i]['name'],
+                                price:
+                                    list[i]['delaPercent'].toString() + "% off",
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    )
+                  : Center(
+                      child: Image.asset('lib/assets/images/no-orders.png'),
+                    ),
+            ],
+          )
+        : Container();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    appBar: GFAppBar(
-      backgroundColor: bg,
-      elevation: 0,
-      title:    deliveryAddress(),
-      actions: <Widget>[
-       Padding(padding: EdgeInsets.only(right:15), child:  Icon(
-         Icons.search,
-       ),)
-      ],
-    ),
+      appBar: isLocationLoading || addressData == null
+          ? null
+          : GFAppBar(
+              backgroundColor: bg,
+              elevation: 0,
+              title: deliveryAddress(),
+              actions: <Widget>[
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SearchItem(
+                            locale: widget.locale,
+                            localizedValues: widget.localizedValues,
+                            productsList: searchProductList,
+                            currency: currency,
+                            favProductList:
+                                getTokenValue ? favProductList : null),
+                      ),
+                    );
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.only(right: 15, left: 15),
+                    child: Icon(
+                      Icons.search,
+                    ),
+                  ),
+                ),
+              ],
+            ),
 //      drawer: Drawer(),
       backgroundColor: bg,
       key: _scaffoldKeydrawer,
-      body: (isLoadingcategoryList || isLoadingProductsList)
-          ? SquareLoader()
-          : SingleChildScrollView(
-              physics: ScrollPhysics(),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  children: <Widget>[
-                    SizedBox(height: 15),
+      body: SmartRefresher(
+        enablePullDown: true,
+        enablePullUp: false,
+        header: WaterDropHeader(),
+        controller: _refreshController,
+        onRefresh: () {
+          setState(() {
+            isLoadingAllData = true;
+            isBannerLoading = true;
+            getProductListMethod();
+            getBannerData();
+            getAllDataMethod();
+          });
+        },
+        child: isLoadingAllData
+            ? SquareLoader()
+            : SingleChildScrollView(
+                physics: ScrollPhysics(),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    children: <Widget>[
+                      SizedBox(height: 20),
+                      banner(),
+                      SizedBox(height: 15),
+                      categoryRow(),
+                      SizedBox(height: 10),
+                      productRow(
+                          MyLocalizations.of(context).products, productsList),
+                      SizedBox(height: 10),
+                      Divider(),
+                      SizedBox(height: 10),
+                      dealsRow(MyLocalizations.of(context).topDeals,
+                          topDealList, "TopDeals"),
+                      SizedBox(height: 10),
+                      Divider(),
+                      SizedBox(height: 10),
+//                      GFCarousel(
+//                        autoPlay: true,
+//                        pagination: true,
+//                        viewportFraction: 1/2,
+//                        activeIndicator: GFColors.SUCCESS,
+//                        passiveIndicator: GFColors.WHITE,
+//                        aspectRatio: 1,
+//                        items: assetImg
+//                            .map(
+//                              (url) => GFImageOverlay(
+//                                height: 400,
+//                                width: 300,
+//                                margin:
+//                                const EdgeInsets.only(left: 15, right: 5),
+//                                borderRadius: const BorderRadius.all(
+//                                    Radius.circular(4)),
+//                                child: Padding(
+//                                    padding: const EdgeInsets.only(left: 10),
+//                                    child: Column(
+//                                      crossAxisAlignment:
+//                                      CrossAxisAlignment.start,
+//                                      mainAxisAlignment:
+//                                      MainAxisAlignment.spaceAround,
+//                                      children: const <Widget>[
+//                                        Text(
+//                                          'Title',
+//                                          style: TextStyle(
+//                                              color: GFColors.WHITE),
+//                                        ),
+//                                        Padding(
+//                                            padding: EdgeInsets.only(
+//                                              right: 5,
+//                                            ),
+//                                            child: Text(
+//                                              'Open source UI library ',
+//                                              style: TextStyle(
+//                                                  fontSize: 10,
+//                                                  color: GFColors.LIGHT),
+//                                            ))
+//                                      ],
+//                                    )),
+//                                image: AssetImage(url),
+//                              ),
+//                        )
+//                            .toList(),
+//                      ),
 
 
-                    GFCarousel(
-                      autoPlay: true,
-                      pagination: true,
-                      viewportFraction: 1.0,
-                      activeIndicator: Colors.transparent,
-                      height: 140,
-                      aspectRatio: 2,
-                      items: assetImg
-                          .map(
-                            (url) =>   Stack(
-                              children: <Widget>[
-                                Container(
-                                  height: 130,
-                                  color: bg,
-                                ),
-                                Container(
-                                  height: 106,
-                                  margin: EdgeInsets.only(top:10),
-                                  padding: EdgeInsets.only(top:5,  left: 20, right: 20),
-                                  width: MediaQuery.of(context).size.width,
-                                  decoration: BoxDecoration(
-                                      color: primary,
-                                      borderRadius: BorderRadius.all(Radius.circular(5))
-                                  ),
+                      SizedBox(
+                        height: 20,
+                      ),
+
+                      Container(
+                        height: 190,
+                        child: ListView(
+                          shrinkWrap: true,
+                          physics: ScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
+                          children: <Widget>[
+                            Container(
+                              width: 140,
+                              margin: EdgeInsets.only(right:10),
+                              child: GFImageOverlay(
+                                image: AssetImage('lib/assets/images/product.png'),
+
+                                color: Colors.black,
+                                colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.40), BlendMode.darken),
+                                height: 125,
+//                            margin: const EdgeInsets.only(
+//                                left: 10, right:10),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(4)),
+                                child: Padding(
+                                  padding:
+                                  const EdgeInsets.only(bottom: 10, left: 10),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.end,
                                     children: <Widget>[
-                                      Text('Fruit \nSplash', style: textbarlowBoldwhite(),),
-                                      InkWell(
-                                        onTap: (){},
-                                        child: Row(
-                                          children: <Widget>[
-                                            Text('Order Fruits now'),
-                                            Icon(Icons.arrow_right)
-                                          ],
-                                        ),
-                                      )
+                                      Text(
+                                          "Bengaluru's \nFinest",
+                                          style: textBarlowSemiBoldwbig()
+
+                                      ),
+                                      Text('Subtitle', style: textBarlowRegularrwhsm(),)
+
+
+
                                     ],
                                   ),
                                 ),
-                                Positioned(
-                                    right: 0,
-                                    child: Container(
-                                        height:122,
-                                        width: 124,
-                                        decoration:BoxDecoration(
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: Colors.black.withOpacity(0.33),
-                                                  blurRadius: 6
-                                              )
-                                            ],
-                                            shape: BoxShape.circle,
-                                            image:DecorationImage(image:AssetImage('lib/assets/images/product.png'), fit: BoxFit.fill)
-                                        )
-                                    ))
+
+                              ),
+                            ),
+                            Container(
+                              width: 140,
+                              margin: EdgeInsets.only(right:10),
+                              child: GFImageOverlay(
+                                image: AssetImage('lib/assets/images/product.png'),
+
+                                color: Colors.black,
+                                colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.40), BlendMode.darken),
+                                height: 125,
+//                            margin: const EdgeInsets.only(
+//                                left: 10, right:10),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(4)),
+                                child: Padding(
+                                  padding:
+                                  const EdgeInsets.only(bottom: 10, left: 10),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: <Widget>[
+                                      Text(
+                                          "Bengaluru's \nFinest",
+                                          style: textBarlowSemiBoldwbig()
+
+                                      ),
+                                      Text('Subtitle', style: textBarlowRegularrwhsm(),)
+
+
+                                    ],
+                                  ),
+                                ),
+
+                              ),
+                            ),
+                            Container(
+                              width: 144,
+                              child: GFImageOverlay(
+                                image: AssetImage('lib/assets/images/product.png'),
+
+                                color: Colors.black,
+                                colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.40), BlendMode.darken),
+                                height: 125,
+//                            margin: const EdgeInsets.only(
+//                                left: 10, right:10),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(4)),
+                                child: Padding(
+                                  padding:
+                                  const EdgeInsets.only(bottom: 10, left: 10),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: <Widget>[
+                                      Text(
+                                          "Bengaluru's \nFinest",
+                                          style: textBarlowSemiBoldwbig()
+
+                                      ),
+                                      Text('Subtitle', style: textBarlowRegularrwhsm(),)
+
+
+                                    ],
+                                  ),
+                                ),
+
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+
+                      SizedBox(
+                        height: 20,
+                      ),
+
+
+                      Row(
+                        children: <Widget>[
+                        Expanded(child:   GFImageOverlay(
+                          image: AssetImage('lib/assets/images/product.png'),
+                          color: Colors.black,
+                          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.40), BlendMode.darken),
+                          height: 125,
+//                          margin: const EdgeInsets.only(
+//                              left: 10, right:10),
+                          borderRadius: const BorderRadius.all(
+                              Radius.circular(4)),
+                          child: Padding(
+                            padding:
+                            const EdgeInsets.only(bottom: 10, left: 10),
+                            child: Column(
+                              crossAxisAlignment:
+                              CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                Text(
+                                    "Flat 50% Off",
+                                    style: textoswaldboldwhite()
+
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Text('On all Veggies', style: textBarlowmediumsmallWhite(),)
+
                               ],
                             ),
-                      )
-                          .toList(),
-                    ),
+                          ),
 
-//                    deliveryAddress(),
-//                    searchBox(),
-//                    SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          MyLocalizations.of(context).explorebyCategories,
-                          style: textBarlowMediumBlack(),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AllCategories(
-                                  locale: widget.locale,
-                                  localizedValues: widget.localizedValues,
-                                ),
+                        ),),
+                          SizedBox(
+                            width:20
+                          ),
+                          Expanded(child:   GFImageOverlay(
+                            image: AssetImage('lib/assets/images/product.png'),
+
+                            color: Colors.black,
+                            colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.40), BlendMode.darken),
+                            height: 125,
+//                            margin: const EdgeInsets.only(
+//                                left: 10, right:10),
+                            borderRadius: const BorderRadius.all(
+                                Radius.circular(4)),
+                            child: Padding(
+                              padding:
+                              const EdgeInsets.only(bottom: 10, left: 10),
+                              child: Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  Text(
+                                      "10%-30% Off",
+                                      style: textoswaldboldwhite()
+
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text('OnCerials', style: textBarlowmediumsmallWhite(),)
+
+                                ],
                               ),
-                            );
-                          },
-                          child: Text(
-                            MyLocalizations.of(context).viewAll,
-                            style: textBarlowMediumPrimary(),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 20),
-                    categoryRow(),
-                    SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                         'Products',
-                          style: textBarlowMediumBlack(),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (BuildContext context) => AllProducts()),
-                            );
-                          },
-                          child: Text(
-                            'View All',
-                            style: textBarlowMediumPrimary(),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    productsList.length > 0
-                        ? GridView.builder(
-                            physics: ScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: productsList.length == null
-                                ? 0
-                                : productsList.length,
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
+                            ),
 
-                                    crossAxisSpacing: 23,
-                                    mainAxisSpacing: 23),
-                            itemBuilder: (BuildContext context, int i) {
-                              if (productsList[i]['averageRating'] == null) {
-                                productsList[i]['averageRating'] = 0;
-                              }
+                          ),)
+                        ],
+                      ),
 
-                              return productsList[i]['outOfStock'] != null ||
-                                      productsList[i]['outOfStock'] != false
-                                  ? InkWell(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                ProductDetails(
-                                                    locale: widget.locale,
-                                                    localizedValues:
-                                                        widget.localizedValues,
-                                                    productDetail:
-                                                        productsList[i],
-                                                    favProductList:
-                                                        getTokenValue
-                                                            ? favProductList
-                                                            : null),
-                                          ),
-                                        );
-                                      },
-                                      child: Stack(
-                                        children: <Widget>[
-                                          ProductCard(
-                                            image: productsList[i]['imageUrl'],
-                                            title: productsList[i]['title']
-                                                        .length >
-                                                    10
-                                                ? productsList[i]['title']
-                                                        .substring(0, 10) +
-                                                    ".."
-                                                : productsList[i]['title'],
-                                            currency:currency,
-                                            category: productsList[i]
-                                                ['category'],
-                                            price: productsList[i]['variant'][0]
-                                                ['price'],
-                                            rating: productsList[i]
-                                                    ['averageRating']
-                                                .toString(),
-                                          ),
-                                          productsList[i]['isDealAvailable'] ==
-                                                  true
-                                              ? Positioned(
-                                                  child: Stack(
-                                                    children: <Widget>[
-                                                      Image.asset(
-                                                          'lib/assets/images/badge.png'),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(2.0),
-                                                        child: Text(
-                                                          " " +
-                                                              productsList[i][
-                                                                      'delaPercent']
-                                                                  .toString() +
-                                                              "% Off",
-                                                          style:
-                                                              hintSfboldwhitemed(),
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                )
-                                              : Container()
-                                        ],
-                                      ),
-                                    )
-                                  : Stack(
-                                      children: <Widget>[
-                                       ProductCard(
-                                            image: productsList[i]['imageUrl'],
-                                            title: productsList[i]['title'],
-                                            currency:currency,
-                                            category: productsList[i]['category'],
-                                            price: productsList[i]['variant'][0]
-                                            ['price'],
-                                            rating: productsList[i]
-                                            ['averageRating']
-                                                .toString(),
-                                          ),
-
-                                        CardOverlay()
-                                      ],
-                                    );
-                            },
-                          )
-                        : Center(
-                            child:
-                                Image.asset('lib/assets/images/no-orders.png'),
-                          ),
-                  ],
+                      dealsRow(MyLocalizations.of(context).dealsoftheday,
+                          dealList, "TodayDeals"),
+                      SizedBox(height: 10),
+                      Divider(),
+                      SizedBox(height: 10),
+                    ],
+                  ),
                 ),
               ),
-            ),
+      ),
     );
   }
 }

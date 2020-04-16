@@ -44,6 +44,7 @@ class _ThankyouState extends State<Thankyou> {
                         locale: widget.locale,
                         localizedValues: widget.localizedValues,
                         currentIndex: 0,
+                        languagesSelection: true,
                       ),
                     ),
                     (Route<dynamic> route) => false);

@@ -78,22 +78,6 @@ class LoginService {
     return json.decode(response.body);
   }
 
-  // get info about delivery
-  static Future<Map<String, dynamic>> getshopDistance(body) async {
-    String token;
-    await Common.getToken().then((onValue) {
-      token = onValue;
-    });
-    final response = await client.post(
-        Constants.baseURL + "users/get/shop/distance",
-        body: json.encode(body),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'bearer $token'
-        });
-    return json.decode(response.body);
-  }
-
   // image upload
   static Future<Map<String, dynamic>> imageUpload(body) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -137,19 +121,6 @@ class LoginService {
   }
 
   // set token
-  static Future<Map<String, dynamic>> setDeviceToken(fcmToken) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token = prefs.getString('token');
-    Map<String, dynamic> body = {'fcmToken': fcmToken};
-    final response = await client.post(
-        Constants.baseURL + "users/set/device/token",
-        body: json.encode(body),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'bearer $token'
-        });
-    return json.decode(response.body);
-  }
 
   // check token
   static Future<Map<String, dynamic>> checkToken() async {
@@ -160,17 +131,15 @@ class LoginService {
     return json.decode(response.body);
   }
 
-  // notification list
-  static Future<Map<String, dynamic>> notificationList() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token = prefs.getString('token');
-    final response = await client
-        .get(Constants.baseURL + "notifications/user/list", headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'bearer $token'
-    });
+  static Future<Map<String, dynamic>> getBanner() async {
+    final response = await client.get(Constants.baseURL + "banner",
+        headers: {'Content-Type': 'application/json'});
+    Common.setBanner(json.decode(response.body));
+
     return json.decode(response.body);
   }
+
+  // notification list
 
   static Future<Map<String, dynamic>> getOrderHistory(orderId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

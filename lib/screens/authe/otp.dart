@@ -15,9 +15,8 @@ SentryError sentryError = new SentryError();
 class Otp extends StatefulWidget {
   Otp({Key key, this.email, this.token, this.locale, this.localizedValues})
       : super(key: key);
-  final String email, token;
+  final String email, token, locale;
   final Map<String, Map<String, String>> localizedValues;
-  final String locale;
 
   @override
   _OtpState createState() => _OtpState();
@@ -196,17 +195,14 @@ class _OtpState extends State<Otp> {
       body: ListView(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(
-              top: 40.0,
-              left: 15.0,
-            ),
+            padding: const EdgeInsets.only(top: 40.0, left: 15.0, right: 20.0),
             child: Text(
               MyLocalizations.of(context).verifyOtp,
               style: textbarlowMediumBlack(),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 20.0, top: 10.0),
+            padding: const EdgeInsets.only(left: 20.0, top: 10.0, right: 20.0),
             child: RichText(
               text: TextSpan(
                 children: <TextSpan>[
@@ -222,7 +218,8 @@ class _OtpState extends State<Otp> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 20.0, bottom: 5.0, left: 20.0),
+            padding: const EdgeInsets.only(
+                top: 20.0, bottom: 5.0, left: 20.0, right: 20.0),
             child: GFTypography(
               showDivider: false,
               child: Text(

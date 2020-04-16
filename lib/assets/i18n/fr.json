@@ -397,7 +397,7 @@
   "sorryNoSlotsAvailableToday": "Désolé, Pas De Machines À Sous Disponibles Aujourd'Hui",
   "proceed": "Procéder",
   "store": "Magasin",
-  "savedItems": "Les Éléments Enregistrés",
+  "savedItems": "LesÉléments",
   "myCart": "Mon Panier",
   "ordered": "Commandé",
   "orderConfirmed": "L'Ordre Confirmé",
@@ -433,6 +433,10 @@
   "yourCartIsEmpty": "Votre Panier Est Vide",
   "addSomeItemsToProceedToCheckout": "Ajouter Quelques Éléments Pour Passer À La Caisse",
   "whatareyoubuyingtoday": "De quoi êtes-vous d'acheter aujourd'hui",
-  "iteamsFounds": "Iteams Fonde",
-  "explorebyCategories": "Explorer par Catégories"
+  "iteamsFounds": "Objets trouvés",
+  "explorebyCategories": "Explorer par Catégories",
+  "products": "Des produits",
+  "deal": "Offres",
+  "topDeals": "Meilleures offres",
+  "dealsoftheday": "Offres du jour"
 }

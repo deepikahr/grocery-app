@@ -4,9 +4,9 @@ import 'package:getflutter/components/button/gf_button.dart';
 import 'package:getflutter/components/typography/gf_typography.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:getflutter/size/gf_size.dart';
-import 'package:grocery_pro/main.dart';
 import 'package:grocery_pro/screens/authe/forgotpassword.dart';
 import 'package:grocery_pro/screens/authe/signup.dart';
+import 'package:grocery_pro/screens/home/home.dart';
 import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/style/style.dart';
@@ -21,17 +21,15 @@ class Login extends StatefulWidget {
       {Key key,
       this.isProfile,
       this.isCart,
-      this.isStore,
+      this.isSaveItem,
       this.isProductDetails,
       this.locale,
       this.localizedValues})
       : super(key: key);
-  final bool isProfile;
-  final bool isCart;
-  final bool isStore;
-  final bool isProductDetails;
+  final bool isProfile, isCart, isSaveItem, isProductDetails;
   final Map<String, Map<String, String>> localizedValues;
   final String locale;
+
   @override
   _LoginState createState() => _LoginState();
 }
@@ -47,7 +45,6 @@ class _LoginState extends State<Login> {
       value = false,
       passwordVisible = true;
   String email, password;
-
   bool _obscureText = true;
 
   // Toggles the password
@@ -87,14 +84,59 @@ class _LoginState extends State<Login> {
           }
           if (onValue['response_code'] == 200) {
             Common.setToken(onValue['response_data']['token']);
-
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) =>
-                      MyApp(widget.locale, widget.localizedValues),
-                ),
-                (Route<dynamic> route) => false);
+            // Navigator.pop(context);
+            if (widget.isCart == true) {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => Home(
+                      locale: widget.locale,
+                      localizedValues: widget.localizedValues,
+                      languagesSelection: true,
+                      currentIndex: 2,
+                    ),
+                  ),
+                  (Route<dynamic> route) => false);
+            } else if (widget.isProfile == true) {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => Home(
+                      locale: widget.locale,
+                      localizedValues: widget.localizedValues,
+                      languagesSelection: true,
+                      currentIndex: 3,
+                    ),
+                  ),
+                  (Route<dynamic> route) => false);
+            } else if (widget.isSaveItem == true) {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => Home(
+                      locale: widget.locale,
+                      localizedValues: widget.localizedValues,
+                      languagesSelection: true,
+                      currentIndex: 1,
+                    ),
+                  ),
+                  (Route<dynamic> route) => false);
+            } else if (widget.isProductDetails == true) {
+              print("jj");
+              Navigator.pop(context);
+            } else {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => Home(
+                      locale: widget.locale,
+                      localizedValues: widget.localizedValues,
+                      languagesSelection: true,
+                      currentIndex: 2,
+                    ),
+                  ),
+                  (Route<dynamic> route) => false);
+            }
           } else if (onValue['response_code'] == 401) {
             showSnackbar(onValue['response_data']);
           } else {
