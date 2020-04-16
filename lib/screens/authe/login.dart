@@ -121,8 +121,21 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                   (Route<dynamic> route) => false);
+            } else if (widget.isProductDetails == true) {
+              print("jj");
+              Navigator.pop(context);
             } else {
-              Navigator.of(context);
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => Home(
+                      locale: widget.locale,
+                      localizedValues: widget.localizedValues,
+                      languagesSelection: true,
+                      currentIndex: 2,
+                    ),
+                  ),
+                  (Route<dynamic> route) => false);
             }
           } else if (onValue['response_code'] == 401) {
             showSnackbar(onValue['response_data']);

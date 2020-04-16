@@ -43,37 +43,17 @@ class _ProfileState extends State<Profile> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   List<String> languages = ['English', 'French', 'Arbic'];
-  var userData, selectedLanguage, selectedLocale;
+  var userData;
 
   @override
   void initState() {
     getToken();
-    getData();
     super.initState();
   }
 
   @override
   void dispose() {
     super.dispose();
-  }
-
-  getData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (mounted) {
-      setState(() {
-        selectedLanguage = prefs.getString('selectedLanguage');
-      });
-
-      if (selectedLanguage == 'en') {
-        selectedLocale = 'English';
-      } else if (selectedLanguage == 'fr') {
-        selectedLocale = 'French';
-      } else if (selectedLanguage == 'ar') {
-        selectedLocale = 'Arbic';
-      } else if (selectedLanguage == 'zh') {
-        selectedLocale = 'Chinese';
-      }
-    }
   }
 
   getToken() async {
@@ -230,6 +210,102 @@ class _ProfileState extends State<Profile> {
             (Route<dynamic> route) => false);
       }
     });
+  }
+
+  selectLanguagesMethod() async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return Center(
+            child: Container(
+              height: 200,
+              width: MediaQuery.of(context).size.width * 0.6,
+              decoration: new BoxDecoration(
+                color: Colors.white,
+                borderRadius: new BorderRadius.all(
+                  new Radius.circular(24.0),
+                ),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              child: Column(
+                children: <Widget>[
+                  GFButton(
+                    onPressed: () async {
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      prefs.setString('selectedLanguage', 'en');
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                MyApp("en", widget.localizedValues, true),
+                          ),
+                          (Route<dynamic> route) => false);
+                    },
+                    type: GFButtonType.transparent,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          "English",
+                          style: hintSfboldBig(),
+                        ),
+                      ],
+                    ),
+                  ),
+                  GFButton(
+                    onPressed: () async {
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      prefs.setString('selectedLanguage', 'ar');
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                MyApp("ar", widget.localizedValues, true),
+                          ),
+                          (Route<dynamic> route) => false);
+                    },
+                    type: GFButtonType.transparent,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          "Arbic",
+                          style: hintSfboldBig(),
+                        ),
+                      ],
+                    ),
+                  ),
+                  GFButton(
+                    onPressed: () async {
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      prefs.setString('selectedLanguage', 'fr');
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                MyApp("fr", widget.localizedValues, true),
+                          ),
+                          (Route<dynamic> route) => false);
+                    },
+                    type: GFButtonType.transparent,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          "French",
+                          style: hintSfboldBig(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
   }
 
   @override
@@ -782,15 +858,7 @@ class _ProfileState extends State<Profile> {
                               SizedBox(height: 20.0),
                               InkWell(
                                 onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Address(
-                                        locale: widget.locale,
-                                        localizedValues: widget.localizedValues,
-                                      ),
-                                    ),
-                                  );
+                                  selectLanguagesMethod();
                                 },
                                 child: Container(
                                   height: 55,
@@ -802,94 +870,6 @@ class _ProfileState extends State<Profile> {
                                       MyLocalizations.of(context)
                                           .selectLanguages,
                                       style: textBarlowMediumBlack(),
-                                    ),
-                                    trailing: DropdownButtonHideUnderline(
-                                      child: DropdownButton(
-                                        hint: Text(
-                                          selectedLocale == null
-                                              ? ''
-                                              : selectedLocale,
-                                          style: textBarlowMediumBlack(),
-                                        ),
-                                        value: selectedLanguages,
-                                        onChanged: (newValue) async {
-                                          if (newValue == 'English') {
-                                            SharedPreferences prefs =
-                                                await SharedPreferences
-                                                    .getInstance();
-                                            prefs.setString(
-                                                'selectedLanguage', 'en');
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (BuildContext
-                                                        context) =>
-                                                    MyApp(
-                                                        "en",
-                                                        widget.localizedValues,
-                                                        true),
-                                              ),
-                                            );
-                                          } else if (newValue == 'Arbic') {
-                                            SharedPreferences prefs =
-                                                await SharedPreferences
-                                                    .getInstance();
-                                            prefs.setString(
-                                                'selectedLanguage', 'ar');
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (BuildContext
-                                                        context) =>
-                                                    MyApp(
-                                                        "ar",
-                                                        widget.localizedValues,
-                                                        true),
-                                              ),
-                                            );
-                                          } else if (newValue == 'Chinese') {
-                                            SharedPreferences prefs =
-                                                await SharedPreferences
-                                                    .getInstance();
-                                            prefs.setString(
-                                                'selectedLanguage', 'zh');
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (BuildContext
-                                                        context) =>
-                                                    MyApp(
-                                                        'zh',
-                                                        widget.localizedValues,
-                                                        true),
-                                              ),
-                                            );
-                                          } else {
-                                            SharedPreferences prefs =
-                                                await SharedPreferences
-                                                    .getInstance();
-                                            prefs.setString(
-                                                'selectedLanguage', 'fr');
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (BuildContext
-                                                        context) =>
-                                                    MyApp(
-                                                        'fr',
-                                                        widget.localizedValues,
-                                                        true),
-                                              ),
-                                            );
-                                          }
-                                        },
-                                        items: languages.map((lang) {
-                                          return DropdownMenuItem(
-                                            child: new Text(lang),
-                                            value: lang,
-                                          );
-                                        }).toList(),
-                                      ),
                                     ),
                                   ),
                                 ),

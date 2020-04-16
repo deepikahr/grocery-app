@@ -135,6 +135,7 @@ class LoginService {
     final response = await client.get(Constants.baseURL + "banner",
         headers: {'Content-Type': 'application/json'});
     Common.setBanner(json.decode(response.body));
+
     return json.decode(response.body);
   }
 

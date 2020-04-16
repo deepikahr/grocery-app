@@ -9,6 +9,7 @@ import 'package:grocery_pro/service/constants.dart';
 import 'package:grocery_pro/service/initialize_i18n.dart';
 import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
+import 'package:grocery_pro/service/settings/globalSettings.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -24,7 +25,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Map<String, Map<String, String>> localizedValues = await initializeI18n();
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  String locale = prefs.getString('selectedLanguage') ?? 'en';
+  String locale = prefs.getString('selectedLanguage') ?? "en";
+
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarBrightness: Brightness.dark,
       statusBarIconBrightness: Brightness.dark));
@@ -77,6 +79,43 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  var language, currency;
+  void initState() {
+    if (widget.languagesSelection == false) {
+      getGlobalSettingsData();
+    }
+    super.initState();
+  }
+
+  getGlobalSettingsData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    getGlobalSettings().then((onValue) {
+      try {
+        if (onValue['response_data']['currencyCode'] == null) {
+          prefs.setString('currency', 'Rs');
+          currency = prefs.getString("currency");
+        } else {
+          prefs.setString(
+              'currency', '${onValue['response_data']['currencyCode']}');
+          currency = prefs.getString("currency");
+        }
+
+        if (onValue['response_data']['languageCode'] == null) {
+          prefs.setString('selectedLanguage', 'en');
+          language = prefs.getString("selectedLanguage");
+        } else {
+          prefs.setString('selectedLanguage',
+              '${onValue['response_data']['languageCode']}');
+          language = prefs.getString("selectedLanguage");
+        }
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
