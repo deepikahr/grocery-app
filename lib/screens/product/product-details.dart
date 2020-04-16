@@ -205,6 +205,7 @@ class _ProductDetailsState extends State<ProductDetails>
                 builder: (context) => Login(
                   locale: widget.locale,
                   localizedValues: widget.localizedValues,
+                  isProductDetails: true,
                 ),
               ),
             );
@@ -338,7 +339,8 @@ class _ProductDetailsState extends State<ProductDetails>
                                       MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
                                     Padding(
-                                      padding: const EdgeInsets.only(left: 20),
+                                      padding: const EdgeInsets.only(
+                                          left: 20, right: 20),
                                       child: Text(
                                         '${productDetail['title'][0].toUpperCase()}${productDetail['title'].substring(1)}',
                                         style: textBarlowSemiBoldBlack(),
@@ -385,10 +387,13 @@ class _ProductDetailsState extends State<ProductDetails>
                                         children: <Widget>[
                                           Padding(
                                               padding: const EdgeInsets.only(
-                                                  right: 0.0, top: 3.0),
+                                                right: 0.0,
+                                                top: 3.0,
+                                              ),
                                               child: Container(
-                                                margin:
-                                                    EdgeInsets.only(left: 10),
+                                                margin: EdgeInsets.only(
+                                                  left: 10,
+                                                ),
                                                 width: MediaQuery.of(context)
                                                         .size
                                                         .width -
@@ -401,7 +406,9 @@ class _ProductDetailsState extends State<ProductDetails>
                                               )),
                                           Padding(
                                             padding: const EdgeInsets.only(
-                                                left: 10.0, top: 5.0),
+                                                left: 10.0,
+                                                top: 5.0,
+                                                right: 10),
                                             child: Text(
                                               '$currency${variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice}',
                                               style: textbarlowBoldGreen(),
@@ -430,17 +437,16 @@ class _ProductDetailsState extends State<ProductDetails>
                                             borderRadius:
                                                 BorderRadius.circular(30.0)),
                                         height: 34,
-                                        width: 150,
                                         child: Row(
                                           children: <Widget>[
                                             Container(
                                               width: 32,
                                               height: 32,
                                               decoration: BoxDecoration(
-                                                  color: Colors.black,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          20.0)),
+                                                color: Colors.black,
+                                                borderRadius:
+                                                    BorderRadius.circular(20.0),
+                                              ),
                                               child: InkWell(
                                                 onTap: () {
                                                   _changeProductQuantity(false);
@@ -451,11 +457,9 @@ class _ProductDetailsState extends State<ProductDetails>
                                                 ),
                                               ),
                                             ),
-                                            Text(''),
-                                            Text(''),
                                             Padding(
                                               padding: const EdgeInsets.only(
-                                                  left: 40.0),
+                                                  left: 20.0, right: 20),
                                               child: Container(
                                                   child: Text(
                                                       quantity.toString())),
@@ -463,15 +467,16 @@ class _ProductDetailsState extends State<ProductDetails>
                                             Text(''),
                                             Padding(
                                               padding: const EdgeInsets.only(
-                                                  left: 37.0),
+                                                  left: 0.0),
                                               child: Container(
                                                 width: 32,
                                                 height: 32,
                                                 decoration: BoxDecoration(
-                                                    color: primary,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20.0)),
+                                                  color: primary,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20.0),
+                                                ),
                                                 child: InkWell(
                                                   onTap: () {
                                                     _changeProductQuantity(
@@ -607,9 +612,9 @@ class _ProductDetailsState extends State<ProductDetails>
               ),
             ),
       bottomNavigationBar: isProductDetails
-          ? Container(height: 50.0)
+          ? Container(height: 65.0)
           : Container(
-              height: 50.0,
+              height: 65.0,
               child: Padding(
                 padding: const EdgeInsetsDirectional.only(
                     start: 20.0, end: 20.0, bottom: 5.0),
@@ -624,10 +629,10 @@ class _ProductDetailsState extends State<ProductDetails>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Padding(
-                        padding: const EdgeInsets.only(right: .0),
+                        padding: const EdgeInsets.only(right: 0.0),
                         child: Container(
                           color: Colors.black,
-                          margin: EdgeInsets.only(right: 50),
+                          margin: EdgeInsets.only(right: 0),
                           width: 120,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -678,7 +683,11 @@ class _ProductDetailsState extends State<ProductDetails>
                     ],
                   ),
                   onPressed: () {
-                    getToken(productDetail);
+                    if (getTokenValue == true) {
+                      addToCart(productDetail);
+                    } else {
+                      getToken(productDetail);
+                    }
                   },
                 ),
               ),

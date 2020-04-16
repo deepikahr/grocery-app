@@ -152,7 +152,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       });
     }
     Common.getBanner().then((value) {
-      if (value['response_data'] == null) {
+      if (value == null || value['response_data'] == null) {
         if (mounted) {
           setState(() {
             getBannerData();
@@ -195,7 +195,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       });
     }
     Common.getAllData().then((value) {
-      if (value == null) {
+      if (value == null || value['response_data'] == null) {
         if (mounted) {
           setState(() {
             getAllDataMethod();
@@ -298,48 +298,6 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
     );
   }
 
-  searchBox() {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SearchItem(
-                locale: widget.locale,
-                localizedValues: widget.localizedValues,
-                productsList: searchProductList,
-                currency: currency,
-                favProductList: getTokenValue ? favProductList : null),
-          ),
-        );
-      },
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 10),
-        width: MediaQuery.of(context).size.width,
-        height: 50,
-        decoration: BoxDecoration(
-            color: Color(0xFFF0F0F0), borderRadius: BorderRadius.circular(10)),
-        child: Row(
-          children: <Widget>[
-            SizedBox(
-              width: 24,
-            ),
-            Icon(
-              Icons.search,
-              color: Colors.black.withOpacity(0.5),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 4.0, bottom: 4),
-              child: Text(
-                  MyLocalizations.of(context).whatareyoubuyingtoday + '?',
-                  style: textbarlowRegularad()),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
   categoryRow() {
     return categoryList.length > 0
         ? Column(
@@ -424,104 +382,135 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       aspectRatio: 2,
       items: bannerList
           .map(
-            (url) => Stack(
-              children: <Widget>[
-                Container(
-                  height: 130,
-                  color: bg,
-                ),
-                Container(
-                  height: 106,
-                  margin: EdgeInsets.only(top: 10),
-                  padding: EdgeInsets.only(top: 5, left: 20, right: 20),
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                      color: primary,
-                      borderRadius: BorderRadius.all(Radius.circular(5))),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        url['title'],
-                        style: textbarlowBoldwhite(),
+            (url) => InkWell(
+              onTap: () {
+                if (url['bannerType'] == "Product") {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProductDetails(
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                          productID: url['product'],
+                          favProductList:
+                              getTokenValue ? favProductList : null),
+                    ),
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SubCategories(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                        catId: url['category'],
+                        catTitle:
+                            '${url['title'][0].toUpperCase()}${url['title'].substring(1)}',
                       ),
-                      InkWell(
-                        onTap: () {
-                          if (url['bannerType'] == "Product") {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ProductDetails(
+                    ),
+                  );
+                }
+              },
+              child: Stack(
+                children: <Widget>[
+                  Container(
+                    height: 130,
+                    color: bg,
+                  ),
+                  Container(
+                    height: 106,
+                    margin: EdgeInsets.only(top: 10),
+                    padding: EdgeInsets.only(top: 5, left: 20, right: 20),
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                        color: primary,
+                        borderRadius: BorderRadius.all(Radius.circular(5))),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          url['title'],
+                          style: textbarlowBoldwhite(),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            if (url['bannerType'] == "Product") {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProductDetails(
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues,
+                                      productID: url['product'],
+                                      favProductList: getTokenValue
+                                          ? favProductList
+                                          : null),
+                                ),
+                              );
+                            } else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SubCategories(
                                     locale: widget.locale,
                                     localizedValues: widget.localizedValues,
-                                    productID: url['product'],
-                                    favProductList:
-                                        getTokenValue ? favProductList : null),
-                              ),
-                            );
-                          } else {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => SubCategories(
-                                  locale: widget.locale,
-                                  localizedValues: widget.localizedValues,
-                                  catId: url['category'],
-                                  catTitle:
-                                      '${url['title'][0].toUpperCase()}${url['title'].substring(1)}',
+                                    catId: url['category'],
+                                    catTitle:
+                                        '${url['title'][0].toUpperCase()}${url['title'].substring(1)}',
+                                  ),
                                 ),
-                              ),
-                            );
-                          }
-                        },
-                        child: Row(
-                          children: <Widget>[
-                            Text('Order  now'),
-                            Icon(Icons.arrow_right)
-                          ],
-                        ),
-                      )
-                    ],
+                              );
+                            }
+                          },
+                          child: Row(
+                            children: <Widget>[
+                              Text('Order  now'),
+                              Icon(Icons.arrow_right)
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-                locale == "ar"
-                    ? Positioned(
-                        left: 0,
-                        child: Container(
-                          height: 122,
-                          width: 124,
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black.withOpacity(0.33),
-                                  blurRadius: 6)
-                            ],
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                                image: NetworkImage(url['imageURL']),
-                                fit: BoxFit.fill),
+                  locale == "ar"
+                      ? Positioned(
+                          left: 0,
+                          child: Container(
+                            height: 122,
+                            width: 124,
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black.withOpacity(0.33),
+                                    blurRadius: 6)
+                              ],
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                  image: NetworkImage(url['imageURL']),
+                                  fit: BoxFit.fill),
+                            ),
+                          ),
+                        )
+                      : Positioned(
+                          right: 0,
+                          child: Container(
+                            height: 122,
+                            width: 124,
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black.withOpacity(0.33),
+                                    blurRadius: 6)
+                              ],
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                  image: NetworkImage(url['imageURL']),
+                                  fit: BoxFit.fill),
+                            ),
                           ),
                         ),
-                      )
-                    : Positioned(
-                        right: 0,
-                        child: Container(
-                          height: 122,
-                          width: 124,
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black.withOpacity(0.33),
-                                  blurRadius: 6)
-                            ],
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                                image: NetworkImage(url['imageURL']),
-                                fit: BoxFit.fill),
-                          ),
-                        ),
-                      ),
-              ],
+                ],
+              ),
             ),
           )
           .toList(),
@@ -820,6 +809,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
           setState(() {
             isLoadingAllData = true;
             isBannerLoading = true;
+            getProductListMethod();
             getBannerData();
             getAllDataMethod();
           });
