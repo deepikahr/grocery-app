@@ -159,13 +159,12 @@ class _PaymentState extends State<Payment> {
       await ProductService.placeOrder(widget.data).then((onValue) {
         print(onValue);
         try {
+          if (mounted) {
+            setState(() {
+              isPlaceOrderLoading = false;
+            });
+          }
           if (onValue['response_code'] == 201) {
-            if (mounted) {
-              setState(() {
-                isPlaceOrderLoading = false;
-              });
-            }
-
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
@@ -175,12 +174,10 @@ class _PaymentState extends State<Payment> {
                   ),
                 ),
                 (Route<dynamic> route) => false);
+          } else if (onValue['response_code'] == 400) {
+            showSnackbar("${onValue['response_data']}");
           } else {
-            if (mounted) {
-              setState(() {
-                isPlaceOrderLoading = false;
-              });
-            }
+            showSnackbar("${onValue['response_data']}");
           }
         } catch (error, stackTrace) {
           sentryError.reportError(error, stackTrace);
@@ -191,13 +188,12 @@ class _PaymentState extends State<Payment> {
     } else {
       await ProductService.placeOrder(widget.data).then((onValue) {
         try {
+          if (mounted) {
+            setState(() {
+              isPlaceOrderLoading = false;
+            });
+          }
           if (onValue['response_code'] == 201) {
-            if (mounted) {
-              setState(() {
-                isPlaceOrderLoading = false;
-              });
-            }
-
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
@@ -207,12 +203,10 @@ class _PaymentState extends State<Payment> {
                   ),
                 ),
                 (Route<dynamic> route) => false);
+          } else if (onValue['response_code'] == 400) {
+            showSnackbar("${onValue['response_data']}");
           } else {
-            if (mounted) {
-              setState(() {
-                isPlaceOrderLoading = false;
-              });
-            }
+            showSnackbar("${onValue['response_data']}");
           }
         } catch (error, stackTrace) {
           sentryError.reportError(error, stackTrace);
