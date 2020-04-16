@@ -11,6 +11,7 @@ import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/settings/globalSettings.dart';
 import 'package:grocery_pro/style/style.dart';
+import 'package:grocery_pro/widgets/loader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
@@ -79,8 +80,10 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  var language, currency;
+  var language;
+  bool isloading = false;
   void initState() {
+    print(widget.locale);
     if (widget.languagesSelection == false) {
       getGlobalSettingsData();
     }
@@ -88,18 +91,14 @@ class _MyAppState extends State<MyApp> {
   }
 
   getGlobalSettingsData() async {
+    if (mounted) {
+      setState(() {
+        isloading = true;
+      });
+    }
     SharedPreferences prefs = await SharedPreferences.getInstance();
     getGlobalSettings().then((onValue) {
       try {
-        if (onValue['response_data']['currencyCode'] == null) {
-          prefs.setString('currency', 'Rs');
-          currency = prefs.getString("currency");
-        } else {
-          prefs.setString(
-              'currency', '${onValue['response_data']['currencyCode']}');
-          currency = prefs.getString("currency");
-        }
-
         if (onValue['response_data']['languageCode'] == null) {
           prefs.setString('selectedLanguage', 'en');
           language = prefs.getString("selectedLanguage");
@@ -107,6 +106,13 @@ class _MyAppState extends State<MyApp> {
           prefs.setString('selectedLanguage',
               '${onValue['response_data']['languageCode']}');
           language = prefs.getString("selectedLanguage");
+        }
+        if (language != null) {
+          if (mounted) {
+            setState(() {
+              isloading = false;
+            });
+          }
         }
       } catch (error, stackTrace) {
         sentryError.reportError(error, stackTrace);
@@ -119,7 +125,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      locale: Locale(widget.locale),
+      locale: Locale(language != null ? language : widget.locale),
       localizationsDelegates: [
         MyLocalizationsDelegate(widget.localizedValues),
         GlobalMaterialLocalizations.delegate,
@@ -130,11 +136,13 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: Constants.APP_NAME,
       theme: ThemeData(primaryColor: primary, accentColor: primary),
-      home: Home(
-        locale: widget.locale,
-        localizedValues: widget.localizedValues,
-        languagesSelection: widget.languagesSelection,
-      ),
+      home: isloading
+          ? SquareLoader()
+          : Home(
+              locale: language != null ? language : widget.locale,
+              localizedValues: widget.localizedValues,
+              languagesSelection: widget.languagesSelection,
+            ),
     );
   }
 }
