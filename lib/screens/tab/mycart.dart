@@ -300,268 +300,255 @@ class _MyCartState extends State<MyCart> {
                   backgroundColor: Colors.white,
                   elevation: 0,
                 ),
-      body: SmartRefresher(
-        enablePullDown: true,
-        enablePullUp: false,
-        header: WaterDropHeader(),
-        controller: _refreshController,
-        onRefresh: () {
-          getCartItems();
-        },
-        child: isGetTokenLoading
-            ? SquareLoader()
-            : token == null
-                ? Login(
-                    locale: widget.locale,
-                    localizedValues: widget.localizedValues,
-                    isCart: true,
-                  )
-                : cartItem == null
-                    ? Center(
-                        child: Image.asset('lib/assets/images/no-orders.png'),
-                      )
-                    : Container(
-                        child: ListView(
-                          children: <Widget>[
-                            SizedBox(height: 20),
-                            Container(
-                              child: Column(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 20.0, bottom: 20.0, right: 20.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        cartItem == null
-                                            ? Text(
-                                                '0 ' +
-                                                    MyLocalizations.of(context)
-                                                        .item,
-                                                style: textBarlowMediumBlack(),
-                                              )
-                                            : Text(
-                                                '(${cartItem['cart'].length}) ' +
-                                                    MyLocalizations.of(context)
-                                                        .items,
-                                                style: textBarlowMediumBlack(),
-                                              ),
-                                        InkWell(
-                                          onTap: () {
-                                            deleteAllCart(cartItem['_id']);
-                                          },
-                                          child: Text(
-                                            MyLocalizations.of(context)
-                                                .clearCart,
-                                            style: textBarlowMediumBlack(),
-                                          ),
+      body: isGetTokenLoading
+          ? SquareLoader()
+          : token == null
+              ? Login(
+                  locale: widget.locale,
+                  localizedValues: widget.localizedValues,
+                  isCart: true,
+                )
+              : cartItem == null
+                  ? Center(
+                      child: Image.asset('lib/assets/images/no-orders.png'),
+                    )
+                  : Container(
+                      child: ListView(
+                        children: <Widget>[
+                          SizedBox(height: 20),
+                          Container(
+                            child: Column(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 20.0, bottom: 20.0, right: 20.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      cartItem == null
+                                          ? Text(
+                                              '0 ' +
+                                                  MyLocalizations.of(context)
+                                                      .item,
+                                              style: textBarlowMediumBlack(),
+                                            )
+                                          : Text(
+                                              '(${cartItem['cart'].length}) ' +
+                                                  MyLocalizations.of(context)
+                                                      .items,
+                                              style: textBarlowMediumBlack(),
+                                            ),
+                                      InkWell(
+                                        onTap: () {
+                                          deleteAllCart(cartItem['_id']);
+                                        },
+                                        child: Text(
+                                          MyLocalizations.of(context).clearCart,
+                                          style: textBarlowMediumBlack(),
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
-                                  ListView.builder(
-                                    physics: ScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemCount: cartItem == null
-                                        ? 0
-                                        : cartItem['cart'].length,
-                                    itemBuilder: (BuildContext context, int i) {
-                                      return Container(
-                                        margin: EdgeInsets.only(bottom: 20),
-                                        padding: EdgeInsets.all(10),
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFFF7F7F7),
-                                        ),
-                                        child: Row(
-                                          children: <Widget>[
-                                            Flexible(
-                                              flex: 3,
-                                              fit: FlexFit.tight,
-                                              child: Container(
-                                                height: 103,
-                                                width: 117,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(6)),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.black
-                                                          .withOpacity(0.10),
-                                                      blurRadius: 5,
-                                                    )
-                                                  ],
-                                                  image: DecorationImage(
-                                                    image: cartItem['cart'][i]
-                                                                ['imageUrl'] ==
-                                                            null
-                                                        ? AssetImage(
-                                                            'lib/assets/images/no-orders.png')
-                                                        : NetworkImage(
-                                                            cartItem['cart'][i]
-                                                                ['imageUrl'],
-                                                          ),
-                                                  ),
+                                ),
+                                ListView.builder(
+                                  physics: ScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: cartItem == null
+                                      ? 0
+                                      : cartItem['cart'].length,
+                                  itemBuilder: (BuildContext context, int i) {
+                                    return Container(
+                                      margin: EdgeInsets.only(bottom: 20),
+                                      padding: EdgeInsets.all(10),
+                                      decoration: BoxDecoration(
+                                        color: Color(0xFFF7F7F7),
+                                      ),
+                                      child: Row(
+                                        children: <Widget>[
+                                          Flexible(
+                                            flex: 3,
+                                            fit: FlexFit.tight,
+                                            child: Container(
+                                              height: 103,
+                                              width: 117,
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(6)),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black
+                                                        .withOpacity(0.10),
+                                                    blurRadius: 5,
+                                                  )
+                                                ],
+                                                image: DecorationImage(
+                                                  image: cartItem['cart'][i]
+                                                              ['imageUrl'] ==
+                                                          null
+                                                      ? AssetImage(
+                                                          'lib/assets/images/no-orders.png')
+                                                      : NetworkImage(
+                                                          cartItem['cart'][i]
+                                                              ['imageUrl'],
+                                                        ),
                                                 ),
                                               ),
                                             ),
-                                            SizedBox(
-                                              width: 10,
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Flexible(
+                                            flex: 6,
+                                            fit: FlexFit.tight,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: <Widget>[
+                                                Text(
+                                                  cartItem['cart'][i]
+                                                              ['title'] ==
+                                                          null
+                                                      ? " "
+                                                      : cartItem['cart'][i]
+                                                          ['title'],
+                                                  style:
+                                                      textBarlowRegularBlack(),
+                                                ),
+                                                // SizedBox(height: 40),
+                                                Text(
+                                                  cartItem['cart'][i]
+                                                              ['description'] ==
+                                                          null
+                                                      ? " "
+                                                      : cartItem['cart'][i]
+                                                          ['description'],
+                                                  style:
+                                                      textbarlowRegularBlack(),
+                                                ),
+                                                Row(
+                                                  children: <Widget>[
+                                                    Text(
+                                                      currency,
+                                                      style:
+                                                          textbarlowBoldGreen(),
+                                                    ),
+                                                    Text(
+                                                      cartItem['cart'][i]
+                                                                  ['price'] ==
+                                                              null
+                                                          ? " "
+                                                          : cartItem['cart'][i]
+                                                                      ['price']
+                                                                  .toString() +
+                                                              "/" +
+                                                              cartItem['cart']
+                                                                          [i]
+                                                                      ['unit']
+                                                                  .toString(),
+                                                      style:
+                                                          textbarlowBoldGreen(),
+                                                    ),
+                                                  ],
+                                                ),
+                                                cartItem['cart'][i]
+                                                            ['productTotal'] ==
+                                                        null
+                                                    ? Text("")
+                                                    : Text(
+                                                        " (" +
+                                                            currency +
+                                                            (cartItem['cart'][i]
+                                                                    [
+                                                                    'productTotal'])
+                                                                .toString() +
+                                                            ")",
+                                                        style:
+                                                            textbarlowBoldGreen(),
+                                                      ),
+                                                cartItem['cart'][i][
+                                                            'isDealAvailable'] ==
+                                                        true
+                                                    ? Text(
+                                                        MyLocalizations.of(
+                                                                    context)
+                                                                .deal +
+                                                            " " +
+                                                            (cartItem['cart'][i]
+                                                                    [
+                                                                    'delaPercent'])
+                                                                .toString() +
+                                                            "% off",
+                                                        style:
+                                                            textBarlowRegularBlack(),
+                                                      )
+                                                    : Text("")
+                                              ],
                                             ),
-                                            Flexible(
-                                              flex: 6,
-                                              fit: FlexFit.tight,
+                                          ),
+                                          Flexible(
+                                            flex: 1,
+                                            fit: FlexFit.tight,
+                                            child: Container(
+                                              height: 133,
+                                              width: 43,
+                                              decoration: BoxDecoration(
+                                                color: Color(0xFFF0F0F0),
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(22),
+                                                ),
+                                              ),
                                               child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
                                                 mainAxisAlignment:
                                                     MainAxisAlignment
                                                         .spaceBetween,
                                                 children: <Widget>[
-                                                  Text(
-                                                    cartItem['cart'][i]
-                                                                ['title'] ==
-                                                            null
-                                                        ? " "
-                                                        : cartItem['cart'][i]
-                                                            ['title'],
-                                                    style:
-                                                        textBarlowRegularBlack(),
+                                                  InkWell(
+                                                    onTap: () {
+                                                      _incrementCount(i);
+                                                    },
+                                                    child: SvgPicture.asset(
+                                                        'lib/assets/icons/plus.svg'),
                                                   ),
-                                                  // SizedBox(height: 40),
-                                                  Text(
-                                                    cartItem['cart'][i][
-                                                                'description'] ==
-                                                            null
-                                                        ? " "
-                                                        : cartItem['cart'][i]
-                                                            ['description'],
-                                                    style:
-                                                        textbarlowRegularBlack(),
-                                                  ),
-                                                  Row(
-                                                    children: <Widget>[
-                                                      Text(
-                                                        currency,
-                                                        style:
-                                                            textbarlowBoldGreen(),
-                                                      ),
-                                                      Text(
-                                                        cartItem['cart'][i]
-                                                                    ['price'] ==
-                                                                null
-                                                            ? " "
-                                                            : cartItem['cart']
-                                                                            [i][
-                                                                        'price']
-                                                                    .toString() +
-                                                                "/" +
-                                                                cartItem['cart']
-                                                                            [i]
-                                                                        ['unit']
-                                                                    .toString(),
-                                                        style:
-                                                            textbarlowBoldGreen(),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  cartItem['cart'][i][
-                                                              'productTotal'] ==
+                                                  cartItem['cart'][i]
+                                                              ['quantity'] ==
                                                           null
-                                                      ? Text("")
+                                                      ? Text('0')
                                                       : Text(
-                                                          " (" +
-                                                              currency +
-                                                              (cartItem['cart']
-                                                                          [i][
-                                                                      'productTotal'])
-                                                                  .toString() +
-                                                              ")",
-                                                          style:
-                                                              textbarlowBoldGreen(),
-                                                        ),
-                                                  cartItem['cart'][i][
-                                                              'isDealAvailable'] ==
-                                                          true
-                                                      ? Text(
-                                                          MyLocalizations.of(
-                                                                      context)
-                                                                  .deal +
-                                                              " " +
-                                                              (cartItem['cart']
-                                                                          [i][
-                                                                      'delaPercent'])
-                                                                  .toString() +
-                                                              "% off",
+                                                          '${cartItem['cart'][i]['quantity']}',
                                                           style:
                                                               textBarlowRegularBlack(),
-                                                        )
-                                                      : Text("")
+                                                        ),
+                                                  InkWell(
+                                                    onTap: () {
+                                                      _decrementCount(i);
+                                                    },
+                                                    child: SvgPicture.asset(
+                                                        'lib/assets/icons/minus.svg'),
+                                                  ),
                                                 ],
                                               ),
                                             ),
-                                            Flexible(
-                                              flex: 1,
-                                              fit: FlexFit.tight,
-                                              child: Container(
-                                                height: 133,
-                                                width: 43,
-                                                decoration: BoxDecoration(
-                                                  color: Color(0xFFF0F0F0),
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                    Radius.circular(22),
-                                                  ),
-                                                ),
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: <Widget>[
-                                                    InkWell(
-                                                      onTap: () {
-                                                        _incrementCount(i);
-                                                      },
-                                                      child: SvgPicture.asset(
-                                                          'lib/assets/icons/plus.svg'),
-                                                    ),
-                                                    cartItem['cart'][i]
-                                                                ['quantity'] ==
-                                                            null
-                                                        ? Text('0')
-                                                        : Text(
-                                                            '${cartItem['cart'][i]['quantity']}',
-                                                            style:
-                                                                textBarlowRegularBlack(),
-                                                          ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        _decrementCount(i);
-                                                      },
-                                                      child: SvgPicture.asset(
-                                                          'lib/assets/icons/minus.svg'),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
-                            SizedBox(
-                              height: 20.0,
-                            ),
-                          ],
-                        ),
+                          ),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                        ],
                       ),
-      ),
+                    ),
       bottomNavigationBar: isGetTokenLoading
           ? SquareLoader()
           : token == null
