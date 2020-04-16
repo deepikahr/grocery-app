@@ -979,6 +979,14 @@ TextStyle textBarlowSemiBoldBlackbig() {
     color: Colors.black,
   );
 }
+TextStyle textBarlowSemiBoldwbig() {
+  return TextStyle(
+    fontSize: 14.0,
+    fontWeight: FontWeight.bold,
+    fontFamily: 'BarlowSemiBold',
+    color: Colors.white,
+  );
+}
 ///barlow medium///
 
 TextStyle textbarlowMediumBlack() {
@@ -1052,7 +1060,14 @@ TextStyle textBarlowMediumsmallWhite() {
       color: Colors.white,
       );
 }
-
+TextStyle textBarlowmediumsmallWhite() {
+  return TextStyle(
+    fontSize: 12.0,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'BarlowMedium',
+    color: Colors.white,
+  );
+}
 ///barlow regular /////
 TextStyle textbarlowRegularBlack() {
   return TextStyle(
@@ -1313,4 +1328,22 @@ TextStyle textBarlowRegularrBlacksm() {
       fontWeight: FontWeight.w400,
       color: Colors.black.withOpacity(0.6),
       );
+}
+TextStyle textBarlowRegularrwhsm() {
+  return TextStyle(
+    fontSize: 10.0,
+    fontFamily: 'BarlowRegular',
+    fontWeight: FontWeight.w400,
+    color: Colors.white.withOpacity(0.87),
+  );
+}
+
+////////////////////////oswald bold//////////////////
+TextStyle textoswaldboldwhite() {
+  return TextStyle(
+    fontSize: 20.0,
+    fontFamily: 'OswaldBold',
+    fontWeight: FontWeight.w600,
+    color: Colors.white,
+  );
 }

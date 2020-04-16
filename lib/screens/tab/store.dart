@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:getflutter/colors/gf_color.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
+import 'package:getflutter/components/card/gf_card.dart';
 import 'package:getflutter/components/carousel/gf_carousel.dart';
+import 'package:getflutter/components/carousel/gf_items_carousel.dart';
+import 'package:getflutter/components/image/gf_image_overlay.dart';
 import 'package:grocery_pro/screens/categories/allcategories.dart';
 import 'package:grocery_pro/screens/categories/subcategories.dart';
 import 'package:grocery_pro/screens/product/all_deals.dart';
@@ -39,6 +43,13 @@ class Store extends StatefulWidget {
 class _StoreState extends State<Store> with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKeydrawer =
       new GlobalKey<ScaffoldState>();
+
+  final List<String> imageList = [
+    'lib/assets/images/cherry.png',
+    'lib/assets/images/product.png',
+    'lib/assets/images/apple.png',
+    'lib/assets/images/orange.png',
+  ];
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   bool getTokenValue = true,
@@ -822,6 +833,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
                     children: <Widget>[
+                      SizedBox(height: 20),
                       banner(),
                       SizedBox(height: 15),
                       categoryRow(),
@@ -836,6 +848,252 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       SizedBox(height: 10),
                       Divider(),
                       SizedBox(height: 10),
+//                      GFCarousel(
+//                        autoPlay: true,
+//                        pagination: true,
+//                        viewportFraction: 1/2,
+//                        activeIndicator: GFColors.SUCCESS,
+//                        passiveIndicator: GFColors.WHITE,
+//                        aspectRatio: 1,
+//                        items: assetImg
+//                            .map(
+//                              (url) => GFImageOverlay(
+//                                height: 400,
+//                                width: 300,
+//                                margin:
+//                                const EdgeInsets.only(left: 15, right: 5),
+//                                borderRadius: const BorderRadius.all(
+//                                    Radius.circular(4)),
+//                                child: Padding(
+//                                    padding: const EdgeInsets.only(left: 10),
+//                                    child: Column(
+//                                      crossAxisAlignment:
+//                                      CrossAxisAlignment.start,
+//                                      mainAxisAlignment:
+//                                      MainAxisAlignment.spaceAround,
+//                                      children: const <Widget>[
+//                                        Text(
+//                                          'Title',
+//                                          style: TextStyle(
+//                                              color: GFColors.WHITE),
+//                                        ),
+//                                        Padding(
+//                                            padding: EdgeInsets.only(
+//                                              right: 5,
+//                                            ),
+//                                            child: Text(
+//                                              'Open source UI library ',
+//                                              style: TextStyle(
+//                                                  fontSize: 10,
+//                                                  color: GFColors.LIGHT),
+//                                            ))
+//                                      ],
+//                                    )),
+//                                image: AssetImage(url),
+//                              ),
+//                        )
+//                            .toList(),
+//                      ),
+
+
+                      SizedBox(
+                        height: 20,
+                      ),
+
+                      Container(
+                        height: 190,
+                        child: ListView(
+                          shrinkWrap: true,
+                          physics: ScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
+                          children: <Widget>[
+                            Container(
+                              width: 140,
+                              margin: EdgeInsets.only(right:10),
+                              child: GFImageOverlay(
+                                image: AssetImage('lib/assets/images/product.png'),
+
+                                color: Colors.black,
+                                colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.40), BlendMode.darken),
+                                height: 125,
+//                            margin: const EdgeInsets.only(
+//                                left: 10, right:10),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(4)),
+                                child: Padding(
+                                  padding:
+                                  const EdgeInsets.only(bottom: 10, left: 10),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: <Widget>[
+                                      Text(
+                                          "Bengaluru's \nFinest",
+                                          style: textBarlowSemiBoldwbig()
+
+                                      ),
+                                      Text('Subtitle', style: textBarlowRegularrwhsm(),)
+
+
+
+                                    ],
+                                  ),
+                                ),
+
+                              ),
+                            ),
+                            Container(
+                              width: 140,
+                              margin: EdgeInsets.only(right:10),
+                              child: GFImageOverlay(
+                                image: AssetImage('lib/assets/images/product.png'),
+
+                                color: Colors.black,
+                                colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.40), BlendMode.darken),
+                                height: 125,
+//                            margin: const EdgeInsets.only(
+//                                left: 10, right:10),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(4)),
+                                child: Padding(
+                                  padding:
+                                  const EdgeInsets.only(bottom: 10, left: 10),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: <Widget>[
+                                      Text(
+                                          "Bengaluru's \nFinest",
+                                          style: textBarlowSemiBoldwbig()
+
+                                      ),
+                                      Text('Subtitle', style: textBarlowRegularrwhsm(),)
+
+
+                                    ],
+                                  ),
+                                ),
+
+                              ),
+                            ),
+                            Container(
+                              width: 144,
+                              child: GFImageOverlay(
+                                image: AssetImage('lib/assets/images/product.png'),
+
+                                color: Colors.black,
+                                colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.40), BlendMode.darken),
+                                height: 125,
+//                            margin: const EdgeInsets.only(
+//                                left: 10, right:10),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(4)),
+                                child: Padding(
+                                  padding:
+                                  const EdgeInsets.only(bottom: 10, left: 10),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: <Widget>[
+                                      Text(
+                                          "Bengaluru's \nFinest",
+                                          style: textBarlowSemiBoldwbig()
+
+                                      ),
+                                      Text('Subtitle', style: textBarlowRegularrwhsm(),)
+
+
+                                    ],
+                                  ),
+                                ),
+
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+
+                      SizedBox(
+                        height: 20,
+                      ),
+
+
+                      Row(
+                        children: <Widget>[
+                        Expanded(child:   GFImageOverlay(
+                          image: AssetImage('lib/assets/images/product.png'),
+                          color: Colors.black,
+                          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.40), BlendMode.darken),
+                          height: 125,
+//                          margin: const EdgeInsets.only(
+//                              left: 10, right:10),
+                          borderRadius: const BorderRadius.all(
+                              Radius.circular(4)),
+                          child: Padding(
+                            padding:
+                            const EdgeInsets.only(bottom: 10, left: 10),
+                            child: Column(
+                              crossAxisAlignment:
+                              CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                Text(
+                                    "Flat 50% Off",
+                                    style: textoswaldboldwhite()
+
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Text('On all Veggies', style: textBarlowmediumsmallWhite(),)
+
+                              ],
+                            ),
+                          ),
+
+                        ),),
+                          SizedBox(
+                            width:20
+                          ),
+                          Expanded(child:   GFImageOverlay(
+                            image: AssetImage('lib/assets/images/product.png'),
+
+                            color: Colors.black,
+                            colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.40), BlendMode.darken),
+                            height: 125,
+//                            margin: const EdgeInsets.only(
+//                                left: 10, right:10),
+                            borderRadius: const BorderRadius.all(
+                                Radius.circular(4)),
+                            child: Padding(
+                              padding:
+                              const EdgeInsets.only(bottom: 10, left: 10),
+                              child: Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  Text(
+                                      "10%-30% Off",
+                                      style: textoswaldboldwhite()
+
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text('OnCerials', style: textBarlowmediumsmallWhite(),)
+
+                                ],
+                              ),
+                            ),
+
+                          ),)
+                        ],
+                      ),
+
                       dealsRow(MyLocalizations.of(context).dealsoftheday,
                           dealList, "TodayDeals"),
                       SizedBox(height: 10),
