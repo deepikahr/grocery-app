@@ -41,15 +41,50 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       isLocationLoading = false,
       languagesSelection = false;
   int currentIndex = 0;
+  var language, currency;
 
-  @override
   void initState() {
     // getGlobalSettingsData();
+
+    getGlobalSettingsData();
 
     configLocalNotification();
 
     tabController = TabController(length: 4, vsync: this);
     super.initState();
+  }
+
+  getGlobalSettingsData() async {
+    if (mounted) {
+      setState(() {
+        currencyLoading = true;
+      });
+    }
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    getGlobalSettings().then((onValue) {
+      try {
+        if (onValue['response_data']['currencyCode'] == null) {
+          prefs.setString('currency', 'Rs');
+          if (mounted) {
+            setState(() {
+              currencyLoading = false;
+            });
+          }
+        } else {
+          prefs.setString(
+              'currency', '${onValue['response_data']['currencyCode']}');
+          if (mounted) {
+            setState(() {
+              currencyLoading = false;
+            });
+          }
+        }
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
   }
 
   @override

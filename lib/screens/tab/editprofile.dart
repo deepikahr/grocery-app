@@ -39,10 +39,10 @@ class _EditProfileState extends State<EditProfile> {
       profileEdit = false,
       isGetTokenLoading = false;
   String firstName, lastName, mobileNumber, profilePic;
-  var filePath = new List<File>(), recentSize = 0;
-  File imageFile;
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  var recentSize = 0;
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  var image;
   @override
   void initState() {
     getUserInfo();
@@ -142,7 +142,6 @@ class _EditProfileState extends State<EditProfile> {
     }
   }
 
-  var image;
   selectGallary() async {
     Navigator.pop(context);
 
@@ -192,7 +191,6 @@ class _EditProfileState extends State<EditProfile> {
       await response.stream.transform(utf8.decoder).listen((value) async {
         Map<String, dynamic> data;
         data = json.decode(value);
-
         updateUserInfo(data['response_data'][1]['thumbImage']['url'],
             data['response_data'][1]['thumbImage']['key']);
       });
