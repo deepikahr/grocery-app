@@ -42,7 +42,8 @@ class _AllProductsState extends State<AllProducts> {
 
               ],
             ),
-            Divider(color: Colors.black.withOpacity(0.20), thickness: 1,)
+            Divider(color: Colors.black.withOpacity(0.20), thickness: 1,),
+
           ],
         ),
       ),
