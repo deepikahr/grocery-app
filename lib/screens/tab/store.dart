@@ -843,83 +843,88 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
               SizedBox(
                 height: 20,
               ),
-              list.length > 0
-                  ? GridView.builder(
-                      physics: ScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: list.length != null ? list.length : 0,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 23,
-                          mainAxisSpacing: 23),
-                      itemBuilder: (BuildContext context, int i) {
-                        return InkWell(
-                          onTap: () {
-                            if (list[i]['delalType'] == 'Category') {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => SubCategories(
-                                    locale: widget.locale,
-                                    localizedValues: widget.localizedValues,
-                                    catId: list[i]['category'],
-                                    catTitle:
-                                        '${list[i]['name'][0].toUpperCase()}${list[i]['name'].substring(1)}',
-                                  ),
-                                ),
-                              );
-                            } else {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ProductDetails(
+              Container(
+                height: 150,
+                child: list.length > 0
+                    ? ListView.builder(
+                        physics: ScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: list.length != null ? list.length : 0,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (BuildContext context, int i) {
+                          return InkWell(
+                            onTap: () {
+                              if (list[i]['delalType'] == 'Category') {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SubCategories(
                                       locale: widget.locale,
                                       localizedValues: widget.localizedValues,
-                                      productID: list[i]['product'],
-                                      favProductList: getTokenValue
-                                          ? favProductList
-                                          : null),
-                                ),
-                              );
-                            }
-                          },
-                          child: GFImageOverlay(
-                            image: NetworkImage(list[i]['imageUrl']),
-                            color: Colors.black,
-                            colorFilter: ColorFilter.mode(
-                                Colors.black.withOpacity(0.40),
-                                BlendMode.darken),
-                            height: 80,
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(4)),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.only(bottom: 10, left: 10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: <Widget>[
-                                  Text(
-                                      list[i]['delaPercent'].toString() +
-                                          "% OFF",
-                                      style: textoswaldboldwhite()),
-                                  SizedBox(
-                                    height: 5,
+                                      catId: list[i]['category'],
+                                      catTitle:
+                                          '${list[i]['name'][0].toUpperCase()}${list[i]['name'].substring(1)}',
+                                    ),
                                   ),
-                                  Text(
-                                    list[i]['name'],
-                                    style: textBarlowmediumsmallWhite(),
-                                  )
-                                ],
+                                );
+                              } else {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ProductDetails(
+                                        locale: widget.locale,
+                                        localizedValues: widget.localizedValues,
+                                        productID: list[i]['product'],
+                                        favProductList: getTokenValue
+                                            ? favProductList
+                                            : null),
+                                  ),
+                                );
+                              }
+                            },
+                            child: Container(
+                              width: 180,
+                              margin: EdgeInsets.only(right: 15),
+                              child: GFImageOverlay(
+                                image: NetworkImage(list[i]['imageUrl']),
+                                color: Colors.black,
+                                colorFilter: ColorFilter.mode(
+                                    Colors.black.withOpacity(0.40),
+                                    BlendMode.darken),
+                                height: 60,
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(4)),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      bottom: 10, left: 10),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: <Widget>[
+                                      Text(
+                                          list[i]['delaPercent'].toString() +
+                                              "% OFF",
+                                          style: textoswaldboldwhite()),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        list[i]['name'],
+                                        style: textBarlowmediumsmallWhite(),
+                                      )
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      },
-                    )
-                  : Center(
-                      child: Image.asset('lib/assets/images/no-orders.png'),
-                    ),
+                          );
+                        },
+                      )
+                    : Center(
+                        child: Image.asset('lib/assets/images/no-orders.png'),
+                      ),
+              ),
             ],
           )
         : Container();
