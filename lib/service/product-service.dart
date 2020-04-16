@@ -7,8 +7,8 @@ class ProductService {
   static final Client client = Client();
   // get category list
   static Future<Map<String, dynamic>> getCategoryList() async {
-    final response =
-        await client.get(Constants.baseURL + "categories", headers: {
+    final response = await client
+        .get(Constants.baseURL + "products/home/category", headers: {
       'Content-Type': 'application/json',
     });
 
@@ -17,7 +17,7 @@ class ProductService {
 
   static Future<Map<String, dynamic>> getProductListAll() async {
     final response =
-        await client.get(Constants.baseURL + "products/home/all", headers: {
+        await client.get(Constants.baseURL + "products/home/product", headers: {
       'Content-Type': 'application/json',
     });
     return json.decode(response.body);

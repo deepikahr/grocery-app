@@ -44,7 +44,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    getGlobalSettingsData();
+    // getGlobalSettingsData();
 
     configLocalNotification();
 
@@ -56,42 +56,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   void dispose() {
     tabController.dispose();
     super.dispose();
-  }
-
-  getGlobalSettingsData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (mounted) {
-      setState(() {
-        currencyLoading = true;
-      });
-    }
-    getGlobalSettings().then((onValue) {
-      try {
-        if (onValue['response_data']['currencyCode'] == null) {
-          prefs.setString('currency', 'Rs');
-        } else {
-          prefs.setString(
-              'currency', '${onValue['response_data']['currencyCode']}');
-        }
-        if (widget.languagesSelection == false) {
-          if (onValue['response_data']['languageCode'] == null) {
-            prefs.setString('selectedLanguage', 'en');
-          } else {
-            prefs.setString('selectedLanguage',
-                '${onValue['response_data']['languageCode']}');
-          }
-        }
-        if (mounted) {
-          setState(() {
-            currencyLoading = false;
-          });
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      sentryError.reportError(error, null);
-    });
   }
 
   Future<void> configLocalNotification() async {
@@ -146,7 +110,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       if (mounted) {
         setState(() {
           currentIndex = widget.currentIndex;
-          print(currentIndex);
         });
       }
     }

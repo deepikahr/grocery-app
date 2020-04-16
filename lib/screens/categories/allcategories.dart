@@ -49,12 +49,12 @@ class _AllCategoriesState extends State<AllCategories>
     }
     await ProductService.getCategoryList().then((onValue) {
       try {
+        _refreshController.refreshCompleted();
         if (onValue['response_code'] == 200) {
           if (mounted) {
             setState(() {
               categoryList = onValue['response_data'];
               isLoadingcategoryList = false;
-              _refreshController.refreshCompleted();
             });
           }
         } else {
@@ -64,26 +64,6 @@ class _AllCategoriesState extends State<AllCategories>
             });
           }
         }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      sentryError.reportError(error, null);
-    });
-  }
-
-  getProductToCategory(id, title) async {
-    if (mounted)
-      setState(() {
-        isLoadingProductsList = true;
-      });
-    await ProductService.getProductToCategoryList(id).then((onValue) {
-      try {
-        if (mounted)
-          setState(() {
-            productsList = onValue['response_data'];
-            isLoadingProductsList = false;
-          });
       } catch (error, stackTrace) {
         sentryError.reportError(error, stackTrace);
       }

@@ -8,6 +8,7 @@ import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/widgets/loader.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
@@ -39,7 +40,8 @@ class Payment extends StatefulWidget {
 
 class _PaymentState extends State<Payment> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
   int selectedRadio,
       cashOnDelivery = 0,
       payByCard = 1,
@@ -92,6 +94,8 @@ class _PaymentState extends State<Payment> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     currency = prefs.getString('currency');
     await PaymentService.getCardList().then((onValue) {
+      _refreshController.refreshCompleted();
+
       if (mounted) {
         setState(() {
           cardList = onValue['response_data'];
@@ -151,8 +155,9 @@ class _PaymentState extends State<Payment> {
         };
         widget.data['card'] = body;
       }
-
+      print(widget.data['card']);
       await ProductService.placeOrder(widget.data).then((onValue) {
+        print(onValue);
         try {
           if (onValue['response_code'] == 201) {
             if (mounted) {
@@ -453,156 +458,175 @@ class _PaymentState extends State<Payment> {
         elevation: 0,
         iconTheme: IconThemeData(color: Colors.black, size: 15.0),
       ),
-      body: isCardListLoading
-          ? SquareLoader()
-          : ListView(
-              children: <Widget>[
-                Container(
-                  color: Colors.grey[100],
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        top: 8.0, bottom: 8.0, left: 20, right: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Column(
-                          children: <Widget>[
-                            Text(
-                              MyLocalizations.of(context).deliveryCharges,
-                              style: textbarlowMediumBlack(),
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: <Widget>[
-                            Row(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 0.0),
-                                  child: Text(
-                                    currency,
+      body: SmartRefresher(
+        enablePullDown: true,
+        enablePullUp: false,
+        header: WaterDropHeader(),
+        controller: _refreshController,
+        onRefresh: () {
+          fetchCardInfo();
+          if (widget.grandTotal == null && widget.deliveryCharge == null) {
+            deliveryCharges = widget.deliveryCharges;
+            grandTotal = widget.grandTotals;
+          } else {
+            deliveryCharges = widget.deliveryCharge;
+            grandTotal = widget.grandTotal;
+          }
+        },
+        child: isCardListLoading
+            ? SquareLoader()
+            : ListView(
+                children: <Widget>[
+                  Container(
+                    color: Colors.grey[100],
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          top: 8.0, bottom: 8.0, left: 20, right: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Column(
+                            children: <Widget>[
+                              Text(
+                                MyLocalizations.of(context).deliveryCharges,
+                                style: textbarlowMediumBlack(),
+                              ),
+                            ],
+                          ),
+                          Column(
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 0.0),
+                                    child: Text(
+                                      currency,
+                                      style: textbarlowBoldBlack(),
+                                    ),
+                                  ),
+                                  Text(
+                                    deliveryCharges.toString(),
                                     style: textbarlowBoldBlack(),
                                   ),
-                                ),
-                                Text(
-                                  deliveryCharges.toString(),
-                                  style: textbarlowBoldBlack(),
-                                ),
-                              ],
-                            )
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  color: Colors.grey[100],
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        top: 8.0, bottom: 8.0, left: 20, right: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Column(
-                          children: <Widget>[
-                            Text(
-                              MyLocalizations.of(context).total,
-                              style: textbarlowMediumBlack(),
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: <Widget>[
-                            Row(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 0.0),
-                                  child: Text(
-                                    currency,
-                                    style: textbarlowBoldBlack(),
-                                  ),
-                                ),
-                                Text(
-                                  grandTotal.toString(),
-                                  style: textbarlowBoldBlack(),
-                                ),
-                              ],
-                            )
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                Column(
-                  children: [
-                    ListView.builder(
-                      physics: ScrollPhysics(),
-                      shrinkWrap: true,
-                      padding: EdgeInsets.only(right: 0.0),
-                      itemCount: paymentTypes.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        if (grandTotal >= 50) {
-                          paymentTypes[0]['isSelected'] = true;
-                          paymentTypes[1]['isSelected'] = true;
-                        } else {
-                          paymentTypes[0]['isSelected'] = true;
-                          paymentTypes[1]['isSelected'] = false;
-                        }
-                        return paymentTypes[index]['isSelected'] == true
-                            ? Container(
-                                margin: EdgeInsets.all(8.0),
-                                color: Colors.white,
-                                child: RadioListTile(
-                                  value: index,
-                                  groupValue: groupValue,
-                                  selected: paymentTypes[index]['isSelected'],
-                                  activeColor: primary,
-                                  title: Text(
-                                    paymentTypes[index]['type'],
-                                    style: TextStyle(color: primary),
-                                  ),
-                                  onChanged: (int selected) {
-                                    if (mounted) {
-                                      setState(() {
-                                        groupValue = selected;
-                                        paymentTypes[index]['isSelected'] =
-                                            !paymentTypes[index]['isSelected'];
-
-                                        paymentMethodValue =
-                                            paymentTypes[index]['type'];
-                                        if (paymentTypes[index]['type'] ==
-                                            "COD") {
-                                          ispaymentMethodLoading = false;
-                                        }
-                                      });
-                                    }
-                                  },
-                                  secondary:
-                                      paymentTypes[index]['type'] == "COD"
-                                          ? Icon(
-                                              Icons.attach_money,
-                                              color: primary,
-                                              size: 16.0,
-                                            )
-                                          : Icon(
-                                              Icons.credit_card,
-                                              color: primary,
-                                              size: 16.0,
-                                            ),
-                                ),
+                                ],
                               )
-                            : Container();
-                      },
+                            ],
+                          )
+                        ],
+                      ),
                     ),
-                  ],
-                ),
-                paymentMethodValue != 'COD' ? paymentMethod() : Container(),
-                paymentMethodValue != 'COD' ? buildSaveCardInfo() : Container(),
-              ],
-            ),
+                  ),
+                  Container(
+                    color: Colors.grey[100],
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          top: 8.0, bottom: 8.0, left: 20, right: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Column(
+                            children: <Widget>[
+                              Text(
+                                MyLocalizations.of(context).total,
+                                style: textbarlowMediumBlack(),
+                              ),
+                            ],
+                          ),
+                          Column(
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 0.0),
+                                    child: Text(
+                                      currency,
+                                      style: textbarlowBoldBlack(),
+                                    ),
+                                  ),
+                                  Text(
+                                    grandTotal.toString(),
+                                    style: textbarlowBoldBlack(),
+                                  ),
+                                ],
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Column(
+                    children: [
+                      ListView.builder(
+                        physics: ScrollPhysics(),
+                        shrinkWrap: true,
+                        padding: EdgeInsets.only(right: 0.0),
+                        itemCount: paymentTypes.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          if (grandTotal >= 50) {
+                            paymentTypes[0]['isSelected'] = true;
+                            paymentTypes[1]['isSelected'] = true;
+                          } else {
+                            paymentTypes[0]['isSelected'] = true;
+                            paymentTypes[1]['isSelected'] = false;
+                          }
+                          return paymentTypes[index]['isSelected'] == true
+                              ? Container(
+                                  margin: EdgeInsets.all(8.0),
+                                  color: Colors.white,
+                                  child: RadioListTile(
+                                    value: index,
+                                    groupValue: groupValue,
+                                    selected: paymentTypes[index]['isSelected'],
+                                    activeColor: primary,
+                                    title: Text(
+                                      paymentTypes[index]['type'],
+                                      style: TextStyle(color: primary),
+                                    ),
+                                    onChanged: (int selected) {
+                                      if (mounted) {
+                                        setState(() {
+                                          groupValue = selected;
+                                          paymentTypes[index]['isSelected'] =
+                                              !paymentTypes[index]
+                                                  ['isSelected'];
+
+                                          paymentMethodValue =
+                                              paymentTypes[index]['type'];
+                                          if (paymentTypes[index]['type'] ==
+                                              "COD") {
+                                            ispaymentMethodLoading = false;
+                                          }
+                                        });
+                                      }
+                                    },
+                                    secondary:
+                                        paymentTypes[index]['type'] == "COD"
+                                            ? Icon(
+                                                Icons.attach_money,
+                                                color: primary,
+                                                size: 16.0,
+                                              )
+                                            : Icon(
+                                                Icons.credit_card,
+                                                color: primary,
+                                                size: 16.0,
+                                              ),
+                                  ),
+                                )
+                              : Container();
+                        },
+                      ),
+                    ],
+                  ),
+                  paymentMethodValue != 'COD' ? paymentMethod() : Container(),
+                  paymentMethodValue != 'COD'
+                      ? buildSaveCardInfo()
+                      : Container(),
+                ],
+              ),
+      ),
       bottomNavigationBar: Container(
         margin: EdgeInsets.only(left: 15, right: 15, bottom: 20),
         height: 55,

@@ -13,6 +13,7 @@ import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/widgets/loader.dart';
 import 'package:intl/intl.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../style/style.dart';
@@ -37,9 +38,11 @@ class _OrdersState extends State<Orders> {
       showblur = false;
   List subProductsList = List();
   List<dynamic> orderList;
-  double _rating = 3, rating;
+  double rating;
   var orderedTime;
   String currency;
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
   @override
   void initState() {
     getOrderByUserID();
@@ -56,6 +59,8 @@ class _OrdersState extends State<Orders> {
     currency = prefs.getString('currency');
     await ProductService.getOrderByUserID(widget.userID).then((onValue) {
       try {
+        _refreshController.refreshCompleted();
+
         if (onValue['response_code'] == 200) {
           if (mounted) {
             setState(() {
@@ -215,52 +220,15 @@ class _OrdersState extends State<Orders> {
           color: Colors.black,
         ),
       ),
-      body: GFFloatingWidget(
-        verticalPosition: MediaQuery.of(context).size.height * 0.3,
-        blurnessColor: Colors.black.withOpacity(0.33),
-        showblurness: showblur,
-        child: showRating
-            ? GFAlert(
-                type: GFAlertType.rounded,
-                alignment: Alignment.center,
-                backgroundColor: Colors.white,
-                child: Text(
-                  MyLocalizations.of(context).rateProduct,
-                  style: textbarlowmediumwred(),
-                ),
-                contentChild: Column(
-                  children: <Widget>[
-                    GFRating(
-                      color: GFColors.SUCCESS,
-                      borderColor: GFColors.SUCCESS,
-                      value: _rating,
-                      onChanged: (value) {
-                        setState(() {
-                          _rating = value;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-                bottombar: Container(
-                  alignment: Alignment.center,
-                  child: GFButton(
-                    padding: EdgeInsets.only(left: 20, right: 20),
-                    onPressed: () {
-                      setState(() {
-                        showRating = false;
-                        showblur = false;
-                      });
-                    },
-                    fullWidthButton: false,
-                    color: primary,
-                    text: MyLocalizations.of(context).submit,
-                    textStyle: textbarlowmediumwblack(),
-                  ),
-                ),
-              )
-            : Container(),
-        body: isLoading
+      body: SmartRefresher(
+        enablePullDown: true,
+        enablePullUp: false,
+        header: WaterDropHeader(),
+        controller: _refreshController,
+        onRefresh: () {
+          getOrderByUserID();
+        },
+        child: isLoading
             ? SquareLoader()
             : orderList.length == 0
                 ? Center(

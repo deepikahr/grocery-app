@@ -106,7 +106,7 @@ class _AllProductsState extends State<AllProducts> {
               );
             },
             child: Padding(
-              padding: EdgeInsets.only(right: 15),
+              padding: EdgeInsets.only(right: 15, left: 15),
               child: Icon(
                 Icons.search,
               ),
