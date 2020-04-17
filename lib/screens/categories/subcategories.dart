@@ -144,8 +144,10 @@ class _SubCategoriesState extends State<SubCategories> {
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2,
+                                  childAspectRatio: MediaQuery.of(context).size.width / 400,
                                   crossAxisSpacing: 16,
-                                  mainAxisSpacing: 16),
+                                  mainAxisSpacing: 16
+                              ),
                           itemBuilder: (BuildContext context, int i) {
                             if (subProductsList[i]['averageRating'] == null) {
                               subProductsList[i]['averageRating'] = 0;
