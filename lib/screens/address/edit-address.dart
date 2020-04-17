@@ -11,7 +11,6 @@ import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/address-service.dart';
-import 'package:grocery_pro/service/product-service.dart';
 import 'package:location/location.dart';
 
 SentryError sentryError = new SentryError();
@@ -41,7 +40,6 @@ class _EditAddressState extends State<EditAddress> {
 
   var addressData;
   LocationData currentLocation;
-  Location _location = new Location();
   bool chooseAddress = false, isUpdateAddress = false;
   StreamSubscription<LocationData> locationSubscription;
   int selectedRadio = 0, selectedRadioFirst;

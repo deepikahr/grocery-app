@@ -384,6 +384,7 @@ class _MyCartState extends State<MyCart> {
                                                   )
                                                 ],
                                                 image: DecorationImage(
+                                                  fit: BoxFit.fill,
                                                   image: cartItem['cart'][i]
                                                               ['imageUrl'] ==
                                                           null
@@ -421,16 +422,16 @@ class _MyCartState extends State<MyCart> {
                                                       textBarlowRegularBlack(),
                                                 ),
                                                 // SizedBox(height: 40),
-                                                Text(
-                                                  cartItem['cart'][i]
-                                                              ['description'] ==
-                                                          null
-                                                      ? " "
-                                                      : cartItem['cart'][i]
-                                                          ['description'],
-                                                  style:
-                                                      textbarlowRegularBlack(),
-                                                ),
+//                                                Text(
+//                                                  cartItem['cart'][i]
+//                                                              ['description'] ==
+//                                                          null
+//                                                      ? " "
+//                                                      : cartItem['cart'][i]
+//                                                          ['description'],
+//                                                  style:
+//                                                      textbarlowRegularBlack(),
+//                                                ),
                                                 Row(
                                                   children: <Widget>[
                                                     Text(
@@ -659,7 +660,6 @@ class _MyCartState extends State<MyCart> {
                                     Container(
                                       child: RawMaterialButton(
                                         onPressed: () {
-                                          print("d");
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(

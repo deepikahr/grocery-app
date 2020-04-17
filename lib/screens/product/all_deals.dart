@@ -7,6 +7,7 @@ import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/widgets/dealsCard.dart';
 import 'package:grocery_pro/widgets/loader.dart';
+import 'package:grocery_pro/widgets/productCard.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 SentryError sentryError = new SentryError();
@@ -141,18 +142,21 @@ class _AllDealsListState extends State<AllDealsList> {
         child: isAllDealsLoadingList
             ? SquareLoader()
             : Container(
-                margin: EdgeInsets.only(left: 15, right: 15, top: 15),
+                margin: EdgeInsets.only(left: 15, right: 15, top: 15, bottom: 16),
                 child: ListView(
                   children: <Widget>[
                     GridView.builder(
+                      padding: EdgeInsets.only(bottom: 25),
                       physics: ScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount:
-                          dealsList.length == null ? 0 : dealsList.length,
+                      itemCount: dealsList.length == null ? 0 : dealsList.length,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          crossAxisSpacing: 23,
-                          mainAxisSpacing: 23),
+                          childAspectRatio: MediaQuery.of(context).size.width / 400,
+                          crossAxisSpacing: 16,
+                          mainAxisSpacing: 16
+
+                      ),
                       itemBuilder: (BuildContext context, int i) {
                         return InkWell(
                           onTap: () {
@@ -184,22 +188,19 @@ class _AllDealsListState extends State<AllDealsList> {
                               );
                             }
                           },
-                          child: Stack(
-                            children: <Widget>[
-                              DealCard(
-                                image: dealsList[i]['imageUrl'],
-                                title: dealsList[i]['name'].length > 10
-                                    ? dealsList[i]['name'].substring(0, 10) +
-                                        ".."
-                                    : dealsList[i]['name'],
-                                price: dealsList[i]['delaPercent'].toString() +
-                                    "% off",
-                              ),
-                            ],
+                          child: DealsCard(
+                            image: dealsList[i]['imageUrl'],
+                            title: dealsList[i]['name'].length > 10
+                                ? dealsList[i]['name'].substring(0, 10) +
+                                ".."
+                                : dealsList[i]['name'],
+                            price: dealsList[i]['delaPercent'].toString() +
+                                "% off",
                           ),
                         );
                       },
-                    )
+                    ),
+                    SizedBox(height: 20,),
                   ],
                 ),
               ),

@@ -140,4 +140,13 @@ class ProductService {
     Common.setAllData(json.decode(response.body));
     return json.decode(response.body);
   }
+
+  //search product
+  static Future<dynamic> getSearchList(status) async {
+    final response = await client
+        .get(Constants.baseURL + 'products/search/$status', headers: {
+      'Content-Type': 'application/json',
+    });
+    return json.decode(response.body);
+  }
 }

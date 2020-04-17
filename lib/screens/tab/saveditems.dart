@@ -151,8 +151,10 @@ class _SavedItemsState extends State<SavedItems> {
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2,
+                                  childAspectRatio: MediaQuery.of(context).size.width / 400,
                                   crossAxisSpacing: 16,
-                                  mainAxisSpacing: 16),
+                                  mainAxisSpacing: 16
+                              ),
                           itemBuilder: (BuildContext context, int i) {
                             if (favProductList[i]['averageRating'] == null) {
                               favProductList[i]['averageRating'] = 0;

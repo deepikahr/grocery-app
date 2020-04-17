@@ -1,10 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:getflutter/colors/gf_color.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
-import 'package:getflutter/components/card/gf_card.dart';
 import 'package:getflutter/components/carousel/gf_carousel.dart';
-import 'package:getflutter/components/carousel/gf_items_carousel.dart';
 import 'package:getflutter/components/image/gf_image_overlay.dart';
 import 'package:grocery_pro/screens/categories/allcategories.dart';
 import 'package:grocery_pro/screens/categories/subcategories.dart';
@@ -19,7 +16,6 @@ import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/widgets/dealsCard.dart';
 import 'package:grocery_pro/widgets/loader.dart';
 import 'package:location/location.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -346,9 +342,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                   physics: ScrollPhysics(),
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
-                  itemCount: categoryList.length < int.parse(itemCount)
-                      ? categoryList.length
-                      : int.parse(itemCount),
+                  itemCount: categoryList.length != null ? categoryList.length : 0,
                   itemBuilder: (BuildContext context, int index) {
                     return InkWell(
                       onTap: () {
@@ -572,8 +566,10 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       itemCount: list.length != null ? list.length : 0,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          crossAxisSpacing: 20,
-                          mainAxisSpacing: 20),
+                          childAspectRatio: MediaQuery.of(context).size.width / 400,
+                          crossAxisSpacing: 16,
+                          mainAxisSpacing: 16
+                      ),
                       itemBuilder: (BuildContext context, int i) {
                         if (list[i]['averageRating'] == null) {
                           list[i]['averageRating'] = 0;
@@ -730,7 +726,6 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                         scrollDirection: Axis.horizontal,
                         itemCount: list.length != null ? list.length : 0,
                         itemBuilder: (BuildContext context, int i) {
-                          print(list[i]);
                           return InkWell(
                             onTap: () {
                               if (list[i]['delalType'] == 'Category') {
@@ -844,7 +839,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                 height: 20,
               ),
               Container(
-                height: 150,
+                height: 200,
                 child: list.length > 0
                     ? ListView.builder(
                         physics: ScrollPhysics(),
@@ -883,7 +878,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                               }
                             },
                             child: Container(
-                              width: 180,
+                              width: 150,
                               margin: EdgeInsets.only(right: 15),
                               child: GFImageOverlay(
                                 image: NetworkImage(list[i]['imageUrl']),
@@ -891,7 +886,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                 colorFilter: ColorFilter.mode(
                                     Colors.black.withOpacity(0.40),
                                     BlendMode.darken),
-                                height: 60,
+                                height: 150,
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(4)),
                                 child: Padding(
@@ -933,37 +928,36 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: isLocationLoading || addressData == null
-          ? null
-          : GFAppBar(
-              backgroundColor: bg,
-              elevation: 0,
-              title: deliveryAddress(),
-              actions: <Widget>[
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SearchItem(
-                            locale: widget.locale,
-                            localizedValues: widget.localizedValues,
-                            productsList: searchProductList,
-                            currency: currency,
-                            favProductList:
-                                getTokenValue ? favProductList : null),
-                      ),
-                    );
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 15, left: 15),
-                    child: Icon(
-                      Icons.search,
-                    ),
-                  ),
+      appBar: GFAppBar(
+        backgroundColor: bg,
+        elevation: 0,
+        title: isLocationLoading || addressData == null
+            ? Container()
+            : deliveryAddress(),
+        actions: <Widget>[
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchItem(
+                      locale: widget.locale,
+                      localizedValues: widget.localizedValues,
+                      productsList: searchProductList,
+                      currency: currency,
+                      favProductList: getTokenValue ? favProductList : null),
                 ),
-              ],
+              );
+            },
+            child: Padding(
+              padding: EdgeInsets.only(right: 15, left: 15),
+              child: Icon(
+                Icons.search,
+              ),
             ),
+          ),
+        ],
+      ),
 //      drawer: Drawer(),
       backgroundColor: bg,
       key: _scaffoldKeydrawer,
@@ -993,14 +987,14 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       banner(),
                       SizedBox(height: 15),
                       categoryRow(),
-                      SizedBox(height: 10),
-                      productRow(
-                          MyLocalizations.of(context).products, productsList),
-                      SizedBox(height: 10),
                       Divider(),
                       SizedBox(height: 10),
                       topDealsRow(MyLocalizations.of(context).topDeals,
                           topDealList, "TopDeals"),
+                      SizedBox(height: 10),
+                      Divider(),
+                      SizedBox(height: 10),
+                      productRow(MyLocalizations.of(context).products, productsList),
                       SizedBox(height: 10),
                       Divider(),
                       SizedBox(height: 10),

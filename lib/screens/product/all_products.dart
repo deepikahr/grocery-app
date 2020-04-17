@@ -128,43 +128,46 @@ class _AllProductsState extends State<AllProducts> {
                 margin: EdgeInsets.only(left: 15, right: 15, top: 15),
                 child: ListView(
                   children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          'Suggested for you',
-                          style: textBarlowMediumBlack(),
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Image.asset(
-                              'lib/assets/icons/filter.png',
-                              width: 20,
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              'Filters',
-                              style: textBarlowMediumBlack(),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                    Divider(
-                      color: Colors.black.withOpacity(0.20),
-                      thickness: 1,
-                    ),
+//                    Row(
+//                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                      children: <Widget>[
+//                        Text(
+//                          'Suggested for you',
+//                          style: textBarlowMediumBlack(),
+//                        ),
+//                        Row(
+//                          children: <Widget>[
+//                            Image.asset(
+//                              'lib/assets/icons/filter.png',
+//                              width: 20,
+//                            ),
+//                            SizedBox(
+//                              width: 5,
+//                            ),
+//                            Text(
+//                              'Filters',
+//                              style: textBarlowMediumBlack(),
+//                            )
+//                          ],
+//                        ),
+//                      ],
+//                    ),
+//                    Divider(
+//                      color: Colors.black.withOpacity(0.20),
+//                      thickness: 1,
+//                    ),
                     GridView.builder(
+                      padding: EdgeInsets.only(bottom: 25),
                       physics: ScrollPhysics(),
                       shrinkWrap: true,
                       itemCount:
                           productsList.length == null ? 0 : productsList.length,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          crossAxisSpacing: 23,
-                          mainAxisSpacing: 23),
+                          childAspectRatio: MediaQuery.of(context).size.width / 400,
+                          crossAxisSpacing: 16,
+                          mainAxisSpacing: 16
+                      ),
                       itemBuilder: (BuildContext context, int i) {
                         if (productsList[i]['averageRating'] == null) {
                           productsList[i]['averageRating'] = 0;

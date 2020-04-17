@@ -22,9 +22,13 @@ class CategoryBlock extends StatelessWidget {
               border: Border.all(
                   color: Colors.black.withOpacity(0.20)),
             ),
-            child: Image.network(
-              image,
-              scale: 8,
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              child: Image.network(
+                image,
+                scale: 8,
+                fit: BoxFit.fill,
+              ),
             ),
           ),
           Expanded(

@@ -102,8 +102,10 @@ class _AllCategoriesState extends State<AllCategories>
                       categoryList.length == null ? 0 : categoryList.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
-                      mainAxisSpacing: 12,
-                      crossAxisSpacing: 12),
+                      childAspectRatio: MediaQuery.of(context).size.width / 400,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12
+                  ),
                   itemBuilder: (BuildContext context, int index) {
                     return InkWell(
                       onTap: () {
@@ -134,17 +136,23 @@ class _AllCategoriesState extends State<AllCategories>
                                 border: Border.all(
                                     color: Colors.black.withOpacity(0.20)),
                               ),
-                              child: Image.network(
-                                categoryList[index]['imageUrl'],
-                                scale: 5,
+                              child: ClipRRect(
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(8)),
+                                child: Image.network(
+                                  categoryList[index]['imageUrl'],
+                                  scale: 5,
+                                  fit: BoxFit.fill,
+                                ),
                               ),
                             ),
-                            Expanded(
-                              child: Text(
-                                categoryList[index]['title'],
-                                style: textBarlowRegularrdarkdull(),
-                                textAlign: TextAlign.center,
-                              ),
+                            Text(
+                                categoryList[index]['title'].length > 9
+                                    ? categoryList[index]['title'].substring(0, 9) +
+                                    ".."
+                                    : categoryList[index]['title'],
+                              style: textBarlowRegularrdarkdull(),
+                              textAlign: TextAlign.center,
                             ),
                           ],
                         ),
