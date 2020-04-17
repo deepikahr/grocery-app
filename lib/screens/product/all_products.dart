@@ -164,8 +164,10 @@ class _AllProductsState extends State<AllProducts> {
                           productsList.length == null ? 0 : productsList.length,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          crossAxisSpacing: 23,
-                          mainAxisSpacing: 23),
+                          childAspectRatio: MediaQuery.of(context).size.width / 400,
+                          crossAxisSpacing: 16,
+                          mainAxisSpacing: 16
+                      ),
                       itemBuilder: (BuildContext context, int i) {
                         if (productsList[i]['averageRating'] == null) {
                           productsList[i]['averageRating'] = 0;

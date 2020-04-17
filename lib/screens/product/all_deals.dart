@@ -152,8 +152,10 @@ class _AllDealsListState extends State<AllDealsList> {
                       itemCount: dealsList.length == null ? 0 : dealsList.length,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          crossAxisSpacing: 23,
-                          mainAxisSpacing: 23),
+                          childAspectRatio: MediaQuery.of(context).size.width / 400,
+                          crossAxisSpacing: 16,
+                          mainAxisSpacing: 16
+                      ),
                       itemBuilder: (BuildContext context, int i) {
                         return InkWell(
                           onTap: () {

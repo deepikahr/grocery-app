@@ -102,8 +102,10 @@ class _AllCategoriesState extends State<AllCategories>
                       categoryList.length == null ? 0 : categoryList.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
-                      mainAxisSpacing: 12,
-                      crossAxisSpacing: 12),
+                      childAspectRatio: MediaQuery.of(context).size.width / 400,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12
+                  ),
                   itemBuilder: (BuildContext context, int index) {
                     return InkWell(
                       onTap: () {
