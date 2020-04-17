@@ -48,7 +48,7 @@ class DealsCard extends StatelessWidget {
                       : Image.network(
                     image,
                     fit: BoxFit.fill,
-                    height: 120,
+                    height: 220,
                     width: MediaQuery.of(context).size.width,
                   ),
                 ),
