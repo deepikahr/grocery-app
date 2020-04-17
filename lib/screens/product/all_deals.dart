@@ -155,6 +155,7 @@ class _AllDealsListState extends State<AllDealsList> {
                           childAspectRatio: MediaQuery.of(context).size.width / 400,
                           crossAxisSpacing: 16,
                           mainAxisSpacing: 16
+
                       ),
                       itemBuilder: (BuildContext context, int i) {
                         return InkWell(
