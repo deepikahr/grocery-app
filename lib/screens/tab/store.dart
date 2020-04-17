@@ -566,8 +566,10 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       itemCount: list.length != null ? list.length : 0,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          crossAxisSpacing: 20,
-                          mainAxisSpacing: 20),
+                          childAspectRatio: MediaQuery.of(context).size.width / 400,
+                          crossAxisSpacing: 16,
+                          mainAxisSpacing: 16
+                      ),
                       itemBuilder: (BuildContext context, int i) {
                         if (list[i]['averageRating'] == null) {
                           list[i]['averageRating'] = 0;
