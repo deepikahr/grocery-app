@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/product/product-details.dart';
 import 'package:grocery_pro/service/localizations.dart';
+import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/style/style.dart';
+import 'package:grocery_pro/widgets/loader.dart';
 
 class SearchItem extends StatefulWidget {
   final List productsList, favProductList;
@@ -23,13 +25,52 @@ class SearchItem extends StatefulWidget {
 class _SearchItemState extends State<SearchItem> {
   final globalKey = new GlobalKey<ScaffoldState>();
   final TextEditingController _controller = new TextEditingController();
-  bool _isSearching;
+  bool isSearching = false, isFirstTime = true;
   List searchresult = new List();
 
-  @override
-  void initState() {
-    super.initState();
-    _isSearching = false;
+  void _searchForProducts(String query) async {
+    if (query.length > 2) {
+      if (mounted) {
+        setState(() {
+          isFirstTime = false;
+          isSearching = true;
+        });
+      }
+      ProductService.getSearchList(query).then((onValue) {
+        try {
+          if (onValue != null && onValue['response_data'] is List) {
+            if (mounted) {
+              setState(() {
+                searchresult = onValue['response_data'];
+              });
+            }
+          } else {
+            if (mounted) {
+              setState(() {
+                searchresult = [];
+              });
+            }
+          }
+          if (mounted) {
+            setState(() {
+              isSearching = false;
+            });
+          }
+        } catch (error, stackTrace) {
+          sentryError.reportError(error, stackTrace);
+        }
+      }).catchError((error) {
+        sentryError.reportError(error, null);
+      });
+    } else {
+      searchresult = [];
+      if (mounted) {
+        setState(() {
+          isFirstTime = true;
+          isSearching = false;
+        });
+      }
+    }
   }
 
   @override
@@ -72,190 +113,187 @@ class _SearchItemState extends State<SearchItem> {
                     borderSide: BorderSide(color: primary),
                   ),
                 ),
-                onChanged: searchOperation,
+                onSubmitted: (String term) {
+                  _searchForProducts(term);
+                },
+                onChanged: _searchForProducts,
               ),
             ),
           ),
-          searchresult.length > 0 ||
-                  searchresult.length != 0 ||
-                  _controller.text.length > 3
+          isFirstTime
               ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.only(
-                          top: 18.0, bottom: 18.0, left: 20.0, right: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                              searchresult.length.toString() +
-                                  " " +
-                                  MyLocalizations.of(context).iteamsFounds,
-                              style: textBarlowMediumBlack()),
-                        ],
+                      padding: const EdgeInsets.only(top: 100.0),
+                      child: Text(
+                        MyLocalizations.of(context).typeToSearch,
+                        textAlign: TextAlign.center,
+                        style: hintSfMediumprimary(),
                       ),
                     ),
-                    new ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: searchresult.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Container(
-                          margin: EdgeInsets.only(bottom: 20),
-                          color: Colors.grey[100],
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ProductDetails(
-                                      locale: widget.locale,
-                                      localizedValues: widget.localizedValues,
-                                      productID: searchresult[index]['_id'],
-                                      favProductList:
-                                          widget.favProductList == null
-                                              ? null
-                                              : widget.favProductList),
-                                ),
-                              );
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                children: <Widget>[
-                                  new ListTile(
-                                    leading: Image(
-                                      height: 60,
-                                      width: 90,
-                                      image: NetworkImage(
-                                          searchresult[index]['imageUrl']),
-                                    ),
-                                    title: new Text(
-                                      searchresult[index]['title'].length > 20
-                                          ? searchresult[index]['title']
-                                                  .substring(0, 20) +
-                                              ".."
-                                          : searchresult[index]['title']
-                                              .toString(),
-                                      style: textbarlowRegularBlack(),
-                                    ),
-                                    subtitle: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        new Text("",
-                                            style: textBarlowRegularrBlacksm()),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            new Text(
-                                              widget.currency +
-                                                  searchresult[index]['variant']
-                                                          [0]['price']
-                                                      .toString() +
-                                                  "/" +
-                                                  searchresult[index]['variant']
-                                                          [0]['unit']
-                                                      .toString(),
-                                              style: textBarlowMediumGreen(),
-                                            ),
-                                            searchresult[index]
-                                                        ['isDealAvailable'] ==
-                                                    true
-                                                ? Container(
-                                                    height: 20,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.only(
-                                                        topLeft:
-                                                            Radius.circular(20),
-                                                        bottomRight:
-                                                            Radius.circular(20),
-                                                      ),
-                                                    ),
-                                                    child: GFButtonBadge(
-                                                      text:
-                                                          "${searchresult[index]['delaPercent']}% off",
-                                                      onPressed: null,
-                                                      color: Colors
-                                                          .deepOrange[300],
-                                                    ),
-                                                  )
-                                                : Container()
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  // Divider()
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
+                    SizedBox(height: 20.0),
+                    Icon(
+                      Icons.search,
+                      size: 50.0,
+                      color: primary,
                     ),
                   ],
                 )
-              : Center(
-                  child: Container(
-                    child: Image.asset('lib/assets/images/no-orders.png'),
-                  ),
-                ),
+              : searchresult.length > 0
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 18.0, bottom: 18.0, left: 20.0, right: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                  searchresult.length.toString() +
+                                      " " +
+                                      MyLocalizations.of(context).iteamsFounds,
+                                  style: textBarlowMediumBlack()),
+                            ],
+                          ),
+                        ),
+                        new ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: searchresult.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Container(
+                              margin: EdgeInsets.only(bottom: 20),
+                              color: Colors.grey[100],
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ProductDetails(
+                                          locale: widget.locale,
+                                          localizedValues:
+                                              widget.localizedValues,
+                                          productID: searchresult[index]['_id'],
+                                          favProductList:
+                                              widget.favProductList == null
+                                                  ? null
+                                                  : widget.favProductList),
+                                    ),
+                                  );
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: <Widget>[
+                                      new ListTile(
+                                        leading: Image(
+                                          height: 60,
+                                          width: 90,
+                                          image: NetworkImage(
+                                              searchresult[index]['imageUrl']),
+                                        ),
+                                        title: new Text(
+                                          searchresult[index]['title'].length >
+                                                  20
+                                              ? searchresult[index]['title']
+                                                      .substring(0, 20) +
+                                                  ".."
+                                              : searchresult[index]['title']
+                                                  .toString(),
+                                          style: textbarlowRegularBlack(),
+                                        ),
+                                        subtitle: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            new Text("",
+                                                style:
+                                                    textBarlowRegularrBlacksm()),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: <Widget>[
+                                                new Text(
+                                                  widget.currency +
+                                                      searchresult[index]
+                                                                  ['variant'][0]
+                                                              ['price']
+                                                          .toString() +
+                                                      "/" +
+                                                      searchresult[index]
+                                                                  ['variant'][0]
+                                                              ['unit']
+                                                          .toString(),
+                                                  style:
+                                                      textBarlowMediumGreen(),
+                                                ),
+                                                searchresult[index][
+                                                            'isDealAvailable'] ==
+                                                        true
+                                                    ? Container(
+                                                        height: 20,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                            topLeft:
+                                                                Radius.circular(
+                                                                    20),
+                                                            bottomRight:
+                                                                Radius.circular(
+                                                                    20),
+                                                          ),
+                                                        ),
+                                                        child: GFButtonBadge(
+                                                          text:
+                                                              "${searchresult[index]['delaPercent']}% off",
+                                                          onPressed: null,
+                                                          color: Colors
+                                                              .deepOrange[300],
+                                                        ),
+                                                      )
+                                                    : Container()
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    )
+                  : isSearching
+                      ? Center(
+                          child: SquareLoader(),
+                        )
+                      : Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(top: 100.0),
+                              child: Text(
+                                MyLocalizations.of(context).noResultsFound,
+                                textAlign: TextAlign.center,
+                                style: hintSfMediumprimary(),
+                              ),
+                            ),
+                            SizedBox(height: 20.0),
+                            Icon(
+                              Icons.hourglass_empty,
+                              size: 50.0,
+                              color: primary,
+                            ),
+                          ],
+                        )
         ],
       ),
     );
-  }
-
-  Widget buildAppBar(BuildContext context) {
-    return new AppBar(
-      centerTitle: true,
-      elevation: 0.0,
-      title: Container(
-        width: 343,
-        height: 45,
-        margin: EdgeInsets.only(top: 10),
-        child: new TextField(
-          controller: _controller,
-          style: textBarlowRegularBlackwithOpa(),
-          decoration: new InputDecoration(
-            contentPadding: EdgeInsets.only(top: 5),
-            prefixIcon: new Icon(Icons.arrow_back, color: Colors.black54),
-            hintText: "What are you buying today?",
-            hintStyle: textBarlowRegularBlackwithOpa(),
-            enabledBorder: const OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.grey, width: 0.0),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: primary),
-            ),
-          ),
-          onChanged: searchOperation,
-        ),
-      ),
-      backgroundColor: Colors.transparent,
-      iconTheme: IconThemeData(color: Colors.black54),
-      automaticallyImplyLeading: false,
-    );
-  }
-
-  void searchOperation(String searchText) {
-    searchresult.clear();
-    if (_isSearching != null && searchText.length > 3) {
-      for (int i = 0; i < widget.productsList.length; i++) {
-        if (widget.productsList[i]['title']
-            .toLowerCase()
-            .contains(searchText.toLowerCase())) {
-          setState(() {
-            searchresult.add(widget.productsList[i]);
-          });
-        }
-      }
-    } else if (searchText.length == 0 || searchText.length < 3) {
-      setState(() {
-        searchresult.clear();
-      });
-    }
   }
 }

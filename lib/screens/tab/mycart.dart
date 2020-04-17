@@ -660,7 +660,6 @@ class _MyCartState extends State<MyCart> {
                                     Container(
                                       child: RawMaterialButton(
                                         onPressed: () {
-                                          print("d");
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(

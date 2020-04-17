@@ -37,16 +37,17 @@ class AddressService {
   }
 
 //getDeliverySlots
-  static Future<Map<String, dynamic>> deliverySlot(time) async {
+  static Future<Map<String, dynamic>> deliverySlot(time, timeStamp) async {
     String token;
     await Common.getToken().then((onValue) {
       token = onValue;
     });
-    final response = await client
-        .get(Constants.baseURL + "setting/working/time/user/$time", headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'bearer $token'
-    });
+    final response = await client.get(
+        Constants.baseURL + "setting/working/time/user/$time/$timeStamp",
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'bearer $token'
+        });
     return json.decode(response.body);
   }
 

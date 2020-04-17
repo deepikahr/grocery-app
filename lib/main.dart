@@ -83,7 +83,6 @@ class _MyAppState extends State<MyApp> {
   var language;
   bool isloading = false;
   void initState() {
-    print(widget.locale);
     if (widget.languagesSelection == false) {
       getGlobalSettingsData();
     }

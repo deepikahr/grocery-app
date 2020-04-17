@@ -148,10 +148,10 @@ class _CheckoutState extends State<Checkout> {
     }
 
     await AddressService.deliverySlot(
-            DateFormat('HH:mm').format(DateTime.now()))
+            DateFormat('HH:mm').format(DateTime.now()),
+            DateTime.now().millisecondsSinceEpoch)
         .then((onValue) {
       _refreshController.refreshCompleted();
-
       try {
         if (mounted) {
           setState(() {
@@ -776,237 +776,229 @@ class _CheckoutState extends State<Checkout> {
                               ),
                             ),
                             GFAccordion(
-                                collapsedTitlebackgroundColor:
-                                    Color(0xFFF0F0F0),
-                                titleborder:
-                                    Border.all(color: Color(0xffD6D6D6)),
-                                contentbackgroundColor: Colors.white,
-                                contentPadding:
-                                    EdgeInsets.only(top: 5, bottom: 5),
-                                titleChild: Row(
-                                  children: <Widget>[
-                                    Icon(Icons.location_on),
-                                    Text(
-                                      selectedAddress == null
-                                          ? addressList.length == 0
-                                              ? " You have not added any address yet."
-                                              : addressList[0]['flatNo'] +
-                                                  " ," +
-                                                  addressList[0]
-                                                      ['apartmentName'] +
-                                                  '....'
-                                          : selectedAddress['flatNo'] +
-                                              " ," +
-                                              selectedAddress['apartmentName'] +
-                                              '....',
-                                      style: textBarlowRegularBlack(),
-                                    )
-                                  ],
-                                ),
-                                contentChild: Column(
-                                  children: <Widget>[
-                                    ListView.builder(
-                                      physics: ScrollPhysics(),
-                                      shrinkWrap: true,
-                                      itemCount: addressList.length == null
-                                          ? 0
-                                          : addressList.length,
-                                      itemBuilder:
-                                          (BuildContext context, int i) {
-                                        return Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: <Widget>[
-                                            RadioListTile(
-                                              groupValue: groupValue1,
-                                              activeColor: primary,
-                                              value: i,
-                                              title: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                              collapsedTitlebackgroundColor: Color(0xFFF0F0F0),
+                              titleborder: Border.all(color: Color(0xffD6D6D6)),
+                              contentbackgroundColor: Colors.white,
+                              contentPadding:
+                                  EdgeInsets.only(top: 5, bottom: 5),
+                              titleChild: Row(
+                                children: <Widget>[
+                                  Icon(Icons.location_on),
+                                  Text(
+                                    selectedAddress == null
+                                        ? addressList.length == 0
+                                            ? " You have not added any address yet."
+                                            : addressList[0]['flatNo'] +
+                                                " ," +
+                                                addressList[0]
+                                                    ['apartmentName'] +
+                                                '....'
+                                        : selectedAddress['flatNo'] +
+                                            " ," +
+                                            selectedAddress['apartmentName'] +
+                                            '....',
+                                    style: textBarlowRegularBlack(),
+                                  )
+                                ],
+                              ),
+                              contentChild: Column(
+                                children: <Widget>[
+                                  ListView.builder(
+                                    physics: ScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: addressList.length == null
+                                        ? 0
+                                        : addressList.length,
+                                    itemBuilder: (BuildContext context, int i) {
+                                      return Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          RadioListTile(
+                                            groupValue: groupValue1,
+                                            activeColor: primary,
+                                            value: i,
+                                            title: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    '${addressList[i]['flatNo']}, ${addressList[i]['apartmentName']},${addressList[i]['address']},',
+                                                    style:
+                                                        textBarlowRegularBlack(),
+                                                  ),
+                                                  Text(
+                                                    "${addressList[i]['landmark']} ,"
+                                                    '${addressList[i]['postalCode']}, ${addressList[i]['contactNumber']}',
+                                                    style:
+                                                        textBarlowRegularBlackdl(),
+                                                  ),
+                                                ]),
+                                            onChanged: addressRadioValueChanged,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 0.0),
+                                                child: Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      '${addressList[i]['flatNo']}, ${addressList[i]['apartmentName']},${addressList[i]['address']},',
-                                                      style:
-                                                          textBarlowRegularBlack(),
-                                                    ),
-                                                    Text(
-                                                      "${addressList[i]['landmark']} ,"
-                                                      '${addressList[i]['postalCode']}, ${addressList[i]['contactNumber']}',
-                                                      style:
-                                                          textBarlowRegularBlackdl(),
-                                                    ),
-                                                  ]),
-                                              onChanged:
-                                                  addressRadioValueChanged,
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: <Widget>[
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 0.0),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: <Widget>[
-                                                      GFButton(
-                                                        onPressed: () async {
-                                                          await Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                              builder:
-                                                                  (context) =>
-                                                                      EditAddress(
-                                                                locale: widget
-                                                                    .locale,
-                                                                localizedValues:
-                                                                    widget
-                                                                        .localizedValues,
-                                                                isCheckout:
-                                                                    true,
-                                                                updateAddressID:
-                                                                    addressList[
-                                                                        i],
-                                                              ),
+                                                  children: <Widget>[
+                                                    GFButton(
+                                                      onPressed: () async {
+                                                        await Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder:
+                                                                (context) =>
+                                                                    EditAddress(
+                                                              locale:
+                                                                  widget.locale,
+                                                              localizedValues:
+                                                                  widget
+                                                                      .localizedValues,
+                                                              isCheckout: true,
+                                                              updateAddressID:
+                                                                  addressList[
+                                                                      i],
                                                             ),
-                                                          );
-                                                          getAddress();
+                                                          ),
+                                                        );
+                                                        getAddress();
+                                                      },
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                left: 18.0,
+                                                                right: 18.0),
+                                                        child: Text(
+                                                          MyLocalizations.of(
+                                                                  context)
+                                                              .edit,
+                                                          style:
+                                                              textbarlowRegularaPrimar(),
+                                                        ),
+                                                      ),
+                                                      type:
+                                                          GFButtonType.outline,
+                                                      color: GFColors.WARNING,
+                                                      size: GFSize.MEDIUM,
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              right: 18.0,
+                                                              left: 20.0),
+                                                      child: GFButton(
+                                                        onPressed: () {
+                                                          deleteAddress(
+                                                              addressList[i]
+                                                                  ['_id']);
                                                         },
                                                         child: Padding(
                                                           padding:
                                                               const EdgeInsets
                                                                       .only(
-                                                                  left: 18.0,
-                                                                  right: 18.0),
+                                                                  left: 8.0,
+                                                                  right: 8.0),
                                                           child: Text(
                                                             MyLocalizations.of(
                                                                     context)
-                                                                .edit,
+                                                                .delete,
                                                             style:
                                                                 textbarlowRegularaPrimar(),
                                                           ),
                                                         ),
+                                                        color: GFColors.WARNING,
                                                         type: GFButtonType
                                                             .outline,
-                                                        color: GFColors.WARNING,
-                                                        size: GFSize.MEDIUM,
                                                       ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                right: 18.0,
-                                                                left: 20.0),
-                                                        child: GFButton(
-                                                          onPressed: () {
-                                                            deleteAddress(
-                                                                addressList[i]
-                                                                    ['_id']);
-                                                          },
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    left: 8.0,
-                                                                    right: 8.0),
-                                                            child: Text(
-                                                              MyLocalizations.of(
-                                                                      context)
-                                                                  .delete,
-                                                              style:
-                                                                  textbarlowRegularaPrimar(),
-                                                            ),
-                                                          ),
-                                                          color:
-                                                              GFColors.WARNING,
-                                                          type: GFButtonType
-                                                              .outline,
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
+                                                    )
+                                                  ],
                                                 ),
-                                              ],
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.only(
-                                                  left: 20, right: 20),
-                                              child: Divider(
-                                                thickness: 1,
                                               ),
+                                            ],
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                                left: 20, right: 20),
+                                            child: Divider(
+                                              thickness: 1,
                                             ),
-                                          ],
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  DottedBorder(
+                                    color: Color(0XFFBBBBBB),
+                                    dashPattern: [4, 2],
+                                    strokeWidth: 2,
+                                    padding:
+                                        EdgeInsets.only(left: 10, right: 10),
+                                    child: GFButton(
+                                      onPressed: () async {
+                                        LocationResult result =
+                                            await showLocationPicker(
+                                          context,
+                                          "AIzaSyD6Q4UgAYOL203nuwNeBr4j_-yAd1U1gko",
+                                          initialCenter:
+                                              LatLng(31.1975844, 29.9598339),
+                                          myLocationButtonEnabled: true,
+                                          layersButtonEnabled: true,
                                         );
-                                      },
-                                    ),
-                                    SizedBox(
-                                      height: 20,
-                                    ),
-                                    DottedBorder(
-                                      color: Color(0XFFBBBBBB),
-                                      dashPattern: [4, 2],
-                                      strokeWidth: 2,
-                                      padding:
-                                          EdgeInsets.only(left: 10, right: 10),
-                                      child: GFButton(
-                                        onPressed: () async {
-                                          LocationResult result =
-                                              await showLocationPicker(
-                                            context,
-                                            "AIzaSyD6Q4UgAYOL203nuwNeBr4j_-yAd1U1gko",
-                                            initialCenter:
-                                                LatLng(31.1975844, 29.9598339),
-                                            myLocationButtonEnabled: true,
-                                            layersButtonEnabled: true,
-                                          );
-                                          if (result != null) {
-                                            setState(() async {
-                                              _pickedLocation = result;
+                                        if (result != null) {
+                                          setState(() async {
+                                            _pickedLocation = result;
 
-                                              Map address =
-                                                  await Navigator.push(
-                                                context,
-                                                new MaterialPageRoute(
-                                                  builder:
-                                                      (BuildContext context) =>
-                                                          new AddAddress(
-                                                    isCheckout: true,
-                                                    pickedLocation:
-                                                        _pickedLocation,
-                                                    locale: widget.locale,
-                                                    localizedValues:
-                                                        widget.localizedValues,
-                                                  ),
+                                            Map address = await Navigator.push(
+                                              context,
+                                              new MaterialPageRoute(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        new AddAddress(
+                                                  isCheckout: true,
+                                                  pickedLocation:
+                                                      _pickedLocation,
+                                                  locale: widget.locale,
+                                                  localizedValues:
+                                                      widget.localizedValues,
                                                 ),
-                                              );
+                                              ),
+                                            );
 
-                                              if (address != null) {
-                                                getAddress();
-                                              } else {
-                                                getAddress();
-                                              }
-                                            });
-                                          }
-                                        },
-                                        type: GFButtonType.transparent,
-                                        color: GFColors.LIGHT,
-                                        child: Text(
-                                          MyLocalizations.of(context)
-                                              .addNewAddress,
-                                          style: textBarlowRegularBb(),
-                                        ),
+                                            if (address != null) {
+                                              getAddress();
+                                            } else {
+                                              getAddress();
+                                            }
+                                          });
+                                        }
+                                      },
+                                      type: GFButtonType.transparent,
+                                      color: GFColors.LIGHT,
+                                      child: Text(
+                                        MyLocalizations.of(context)
+                                            .addNewAddress,
+                                        style: textBarlowRegularBb(),
                                       ),
                                     ),
-                                    SizedBox(
-                                      height: 20,
-                                    ),
-                                  ],
-                                )),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                ],
+                              ),
+                            ),
                             SizedBox(
                               height: 15,
                             ),
