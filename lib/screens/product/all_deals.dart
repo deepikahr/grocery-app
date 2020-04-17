@@ -152,7 +152,7 @@ class _AllDealsListState extends State<AllDealsList> {
                       itemCount: dealsList.length == null ? 0 : dealsList.length,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          childAspectRatio: MediaQuery.of(context).size.width / 400,
+                          childAspectRatio: MediaQuery.of(context).size.width / 640,
                           crossAxisSpacing: 16,
                           mainAxisSpacing: 16
 
