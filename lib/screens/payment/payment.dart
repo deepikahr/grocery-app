@@ -155,9 +155,7 @@ class _PaymentState extends State<Payment> {
         };
         widget.data['card'] = body;
       }
-      print(widget.data['card']);
       await ProductService.placeOrder(widget.data).then((onValue) {
-        print(onValue);
         try {
           if (mounted) {
             setState(() {

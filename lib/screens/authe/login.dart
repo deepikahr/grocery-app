@@ -122,7 +122,6 @@ class _LoginState extends State<Login> {
                   ),
                   (Route<dynamic> route) => false);
             } else if (widget.isProductDetails == true) {
-              print("jj");
               Navigator.pop(context);
             } else {
               Navigator.pushAndRemoveUntil(
