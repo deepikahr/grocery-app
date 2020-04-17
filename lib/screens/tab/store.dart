@@ -1,10 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:getflutter/colors/gf_color.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
-import 'package:getflutter/components/card/gf_card.dart';
 import 'package:getflutter/components/carousel/gf_carousel.dart';
-import 'package:getflutter/components/carousel/gf_items_carousel.dart';
 import 'package:getflutter/components/image/gf_image_overlay.dart';
 import 'package:grocery_pro/screens/categories/allcategories.dart';
 import 'package:grocery_pro/screens/categories/subcategories.dart';
@@ -19,7 +16,6 @@ import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/widgets/dealsCard.dart';
 import 'package:grocery_pro/widgets/loader.dart';
 import 'package:location/location.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -730,7 +726,6 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                         scrollDirection: Axis.horizontal,
                         itemCount: list.length != null ? list.length : 0,
                         itemBuilder: (BuildContext context, int i) {
-                          print(list[i]);
                           return InkWell(
                             onTap: () {
                               if (list[i]['delalType'] == 'Category') {
@@ -933,37 +928,36 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: isLocationLoading || addressData == null
-          ? null
-          : GFAppBar(
-              backgroundColor: bg,
-              elevation: 0,
-              title: deliveryAddress(),
-              actions: <Widget>[
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SearchItem(
-                            locale: widget.locale,
-                            localizedValues: widget.localizedValues,
-                            productsList: searchProductList,
-                            currency: currency,
-                            favProductList:
-                                getTokenValue ? favProductList : null),
-                      ),
-                    );
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 15, left: 15),
-                    child: Icon(
-                      Icons.search,
-                    ),
-                  ),
+      appBar: GFAppBar(
+        backgroundColor: bg,
+        elevation: 0,
+        title: isLocationLoading || addressData == null
+            ? Container()
+            : deliveryAddress(),
+        actions: <Widget>[
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchItem(
+                      locale: widget.locale,
+                      localizedValues: widget.localizedValues,
+                      productsList: searchProductList,
+                      currency: currency,
+                      favProductList: getTokenValue ? favProductList : null),
                 ),
-              ],
+              );
+            },
+            child: Padding(
+              padding: EdgeInsets.only(right: 15, left: 15),
+              child: Icon(
+                Icons.search,
+              ),
             ),
+          ),
+        ],
+      ),
 //      drawer: Drawer(),
       backgroundColor: bg,
       key: _scaffoldKeydrawer,
