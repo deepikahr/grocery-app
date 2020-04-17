@@ -321,7 +321,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                   )
                                 ],
                                 image: new DecorationImage(
-                                  fit: BoxFit.cover,
+                                  fit: BoxFit.fill,
                                   image: new NetworkImage(
                                     productDetail['imageUrl'],
                                   ),
