@@ -342,9 +342,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                   physics: ScrollPhysics(),
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
-                  itemCount: categoryList.length < int.parse(itemCount)
-                      ? categoryList.length
-                      : int.parse(itemCount),
+                  itemCount: categoryList.length != null ? categoryList.length : 0,
                   itemBuilder: (BuildContext context, int index) {
                     return InkWell(
                       onTap: () {
@@ -839,7 +837,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                 height: 20,
               ),
               Container(
-                height: 150,
+                height: 200,
                 child: list.length > 0
                     ? ListView.builder(
                         physics: ScrollPhysics(),
@@ -878,7 +876,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                               }
                             },
                             child: Container(
-                              width: 180,
+                              width: 150,
                               margin: EdgeInsets.only(right: 15),
                               child: GFImageOverlay(
                                 image: NetworkImage(list[i]['imageUrl']),
@@ -886,7 +884,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                 colorFilter: ColorFilter.mode(
                                     Colors.black.withOpacity(0.40),
                                     BlendMode.darken),
-                                height: 60,
+                                height: 150,
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(4)),
                                 child: Padding(
@@ -987,14 +985,14 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       banner(),
                       SizedBox(height: 15),
                       categoryRow(),
-                      SizedBox(height: 10),
-                      productRow(
-                          MyLocalizations.of(context).products, productsList),
-                      SizedBox(height: 10),
                       Divider(),
                       SizedBox(height: 10),
                       topDealsRow(MyLocalizations.of(context).topDeals,
                           topDealList, "TopDeals"),
+                      SizedBox(height: 10),
+                      Divider(),
+                      SizedBox(height: 10),
+                      productRow(MyLocalizations.of(context).products, productsList),
                       SizedBox(height: 10),
                       Divider(),
                       SizedBox(height: 10),
