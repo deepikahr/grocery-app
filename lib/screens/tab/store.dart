@@ -342,7 +342,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                   physics: ScrollPhysics(),
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
-                  itemCount: categoryList.length != null ? categoryList.length : 0,
+                  itemCount:
+                      categoryList.length != null ? categoryList.length : 0,
                   itemBuilder: (BuildContext context, int index) {
                     return InkWell(
                       onTap: () {
@@ -434,7 +435,9 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          url['title'],
+                          url['title'].length > 20
+                              ? url['title'].substring(0, 20) + ".."
+                              : url['title'],
                           style: textbarlowBoldwhite(),
                         ),
                         InkWell(
@@ -566,10 +569,10 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       itemCount: list.length != null ? list.length : 0,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          childAspectRatio: MediaQuery.of(context).size.width / 400,
+                          childAspectRatio:
+                              MediaQuery.of(context).size.width / 400,
                           crossAxisSpacing: 16,
-                          mainAxisSpacing: 16
-                      ),
+                          mainAxisSpacing: 16),
                       itemBuilder: (BuildContext context, int i) {
                         if (list[i]['averageRating'] == null) {
                           list[i]['averageRating'] = 0;
@@ -598,9 +601,9 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                     children: <Widget>[
                                       ProductCard(
                                         image: list[i]['imageUrl'],
-                                        title: list[i]['title'].length > 10
+                                        title: list[i]['title'].length > 15
                                             ? list[i]['title']
-                                                    .substring(0, 10) +
+                                                    .substring(0, 15) +
                                                 ".."
                                             : list[i]['title'],
                                         currency: currency,
@@ -660,7 +663,10 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                 children: <Widget>[
                                   ProductCard(
                                     image: list[i]['imageUrl'],
-                                    title: list[i]['title'],
+                                    title: list[i]['title'].length > 15
+                                        ? list[i]['title'].substring(0, 15) +
+                                            ".."
+                                        : list[i]['title'],
                                     currency: currency,
                                     category: list[i]['category'],
                                     price: list[i]['variant'][0]['price'],
@@ -776,7 +782,12 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                         CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: <Widget>[
-                                      Text(list[i]['name'],
+                                      Text(
+                                          list[i]['name'].length > 15
+                                              ? list[i]['name']
+                                                      .substring(0, 15) +
+                                                  ".."
+                                              : list[i]['name'],
                                           style: textBarlowSemiBoldwbig()),
                                       Text(
                                         list[i]['delaPercent'].toString() +
@@ -905,7 +916,10 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                         height: 5,
                                       ),
                                       Text(
-                                        list[i]['name'],
+                                        list[i]['name'].length > 15
+                                            ? list[i]['name'].substring(0, 15) +
+                                                ".."
+                                            : list[i]['name'],
                                         style: textBarlowmediumsmallWhite(),
                                       )
                                     ],
@@ -994,7 +1008,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       SizedBox(height: 10),
                       Divider(),
                       SizedBox(height: 10),
-                      productRow(MyLocalizations.of(context).products, productsList),
+                      productRow(
+                          MyLocalizations.of(context).products, productsList),
                       SizedBox(height: 10),
                       Divider(),
                       SizedBox(height: 10),
