@@ -161,7 +161,11 @@ class _AllProductsState extends State<AllProducts> {
         header: WaterDropHeader(),
         controller: _refreshController,
         onRefresh: () {
-          getProductListMethod();
+          if (widget.token == true) {
+            getProductListMethodCardAdded();
+          } else {
+            getProductListMethod();
+          }
         },
         child: isLoadingProductsList
             ? SquareLoader()

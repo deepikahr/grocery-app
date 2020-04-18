@@ -145,7 +145,11 @@ class _SubCategoriesState extends State<SubCategories> {
         header: WaterDropHeader(),
         controller: _refreshController,
         onRefresh: () {
-          getProductToCategory(widget.catId);
+          if (getTokenValue) {
+            getProductToCategoryCartAdded(widget.catId);
+          } else {
+            getProductToCategory(widget.catId);
+          }
         },
         child: isLoadingSubProductsList
             ? SquareLoader()
