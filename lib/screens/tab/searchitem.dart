@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
+import 'package:grocery_pro/model/bottomSheet.dart';
 import 'package:grocery_pro/screens/product/product-details.dart';
 import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/product-service.dart';
+import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/widgets/loader.dart';
+
+SentryError sentryError = new SentryError();
 
 class SearchItem extends StatefulWidget {
   final List productsList, favProductList;
   final String currency, locale;
+  final bool token;
   final Map<String, Map<String, String>> localizedValues;
   SearchItem(
       {Key key,
@@ -16,6 +21,7 @@ class SearchItem extends StatefulWidget {
       this.favProductList,
       this.currency,
       this.locale,
+      this.token,
       this.localizedValues})
       : super(key: key);
   @override
@@ -37,6 +43,52 @@ class _SearchItemState extends State<SearchItem> {
         });
       }
       ProductService.getSearchList(query).then((onValue) {
+        try {
+          if (onValue != null && onValue['response_data'] is List) {
+            if (mounted) {
+              setState(() {
+                searchresult = onValue['response_data'];
+              });
+            }
+          } else {
+            if (mounted) {
+              setState(() {
+                searchresult = [];
+              });
+            }
+          }
+          if (mounted) {
+            setState(() {
+              isSearching = false;
+            });
+          }
+        } catch (error, stackTrace) {
+          sentryError.reportError(error, stackTrace);
+        }
+      }).catchError((error) {
+        sentryError.reportError(error, null);
+      });
+    } else {
+      searchresult = [];
+      if (mounted) {
+        setState(() {
+          isFirstTime = true;
+          isSearching = false;
+        });
+      }
+    }
+  }
+
+  void _searchForProductsCartAdded(String query) async {
+    if (query.length > 2) {
+      if (mounted) {
+        setState(() {
+          isFirstTime = false;
+          isSearching = true;
+        });
+      }
+      print("bb");
+      ProductService.getSearchListCartAdded(query).then((onValue) {
         try {
           if (onValue != null && onValue['response_data'] is List) {
             if (mounted) {
@@ -114,9 +166,16 @@ class _SearchItemState extends State<SearchItem> {
                   ),
                 ),
                 onSubmitted: (String term) {
-                  _searchForProducts(term);
+                  if (widget.token == true) {
+                    print("bbb");
+                    _searchForProductsCartAdded(term);
+                  } else {
+                    _searchForProducts(term);
+                  }
                 },
-                onChanged: _searchForProducts,
+                onChanged: widget.token == true
+                    ? _searchForProductsCartAdded
+                    : _searchForProducts,
               ),
             ),
           ),
@@ -162,6 +221,7 @@ class _SearchItemState extends State<SearchItem> {
                           shrinkWrap: true,
                           itemCount: searchresult.length,
                           itemBuilder: (BuildContext context, int index) {
+                            print(searchresult[index]);
                             return Container(
                               margin: EdgeInsets.only(bottom: 20),
                               color: Colors.grey[100],
@@ -207,9 +267,6 @@ class _SearchItemState extends State<SearchItem> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: <Widget>[
-                                            new Text("",
-                                                style:
-                                                    textBarlowRegularrBlacksm()),
                                             Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment
@@ -256,6 +313,81 @@ class _SearchItemState extends State<SearchItem> {
                                                       )
                                                     : Container()
                                               ],
+                                            ),
+                                            SizedBox(
+                                              height: 5.0,
+                                            ),
+                                            widget.token == true
+                                                ? searchresult[index]
+                                                            ['cartAdded'] ==
+                                                        true
+                                                    ? Container(
+                                                        height: 22,
+                                                        child: GFButton(
+                                                          onPressed:
+                                                              () async {},
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    left: 18.0,
+                                                                    right:
+                                                                        18.0),
+                                                            child:
+                                                                Text("Added"),
+                                                          ),
+                                                          type: GFButtonType
+                                                              .solid,
+                                                          color: Colors.green,
+                                                          size: GFSize.MEDIUM,
+                                                        ),
+                                                      )
+                                                    : Container(
+                                                        height: 22,
+                                                        child: GFButton(
+                                                          onPressed: () async {
+                                                            showModalBottomSheet(
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (BuildContext
+                                                                        bc) {
+                                                                  return BottonSheetClassDryClean(
+                                                                      locale: widget
+                                                                          .locale,
+                                                                      localizedValues:
+                                                                          widget
+                                                                              .localizedValues,
+                                                                      currency:
+                                                                          widget
+                                                                              .currency,
+                                                                      productList:
+                                                                          searchresult[
+                                                                              index],
+                                                                      variantsList:
+                                                                          searchresult[index]
+                                                                              [
+                                                                              'variant']);
+                                                                });
+                                                          },
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    left: 18.0,
+                                                                    right:
+                                                                        18.0),
+                                                            child: Text("Add"),
+                                                          ),
+                                                          type: GFButtonType
+                                                              .solid,
+                                                          color: primary,
+                                                          size: GFSize.MEDIUM,
+                                                        ),
+                                                      )
+                                                : Container(),
+                                            SizedBox(
+                                              height: 5.0,
                                             ),
                                           ],
                                         ),

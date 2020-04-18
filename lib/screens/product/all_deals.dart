@@ -7,7 +7,6 @@ import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/widgets/dealsCard.dart';
 import 'package:grocery_pro/widgets/loader.dart';
-import 'package:grocery_pro/widgets/productCard.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 SentryError sentryError = new SentryError();
@@ -142,21 +141,22 @@ class _AllDealsListState extends State<AllDealsList> {
         child: isAllDealsLoadingList
             ? SquareLoader()
             : Container(
-                margin: EdgeInsets.only(left: 15, right: 15, top: 15, bottom: 16),
+                margin:
+                    EdgeInsets.only(left: 15, right: 15, top: 15, bottom: 16),
                 child: ListView(
                   children: <Widget>[
                     GridView.builder(
                       padding: EdgeInsets.only(bottom: 25),
                       physics: ScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: dealsList.length == null ? 0 : dealsList.length,
+                      itemCount:
+                          dealsList.length == null ? 0 : dealsList.length,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          childAspectRatio: MediaQuery.of(context).size.width / 640,
+                          childAspectRatio:
+                              MediaQuery.of(context).size.width / 640,
                           crossAxisSpacing: 16,
-                          mainAxisSpacing: 16
-
-                      ),
+                          mainAxisSpacing: 16),
                       itemBuilder: (BuildContext context, int i) {
                         return InkWell(
                           onTap: () {
@@ -191,8 +191,7 @@ class _AllDealsListState extends State<AllDealsList> {
                           child: DealsCard(
                             image: dealsList[i]['imageUrl'],
                             title: dealsList[i]['name'].length > 10
-                                ? dealsList[i]['name'].substring(0, 10) +
-                                ".."
+                                ? dealsList[i]['name'].substring(0, 10) + ".."
                                 : dealsList[i]['name'],
                             price: dealsList[i]['delaPercent'].toString() +
                                 "% off",
@@ -200,7 +199,9 @@ class _AllDealsListState extends State<AllDealsList> {
                         );
                       },
                     ),
-                    SizedBox(height: 20,),
+                    SizedBox(
+                      height: 20,
+                    ),
                   ],
                 ),
               ),

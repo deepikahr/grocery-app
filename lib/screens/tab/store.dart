@@ -121,6 +121,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
         if (mounted) {
           setState(() {
             getTokenValue = true;
+
             getFavListApi();
           });
         }
@@ -159,6 +160,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       });
     }
     Common.getBanner().then((value) {
+      print(value);
       if (value == null || value['response_data'] == null) {
         if (mounted) {
           setState(() {
@@ -202,6 +204,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       });
     }
     Common.getAllData().then((value) {
+      print(value);
       if (value == null || value['response_data'] == null) {
         if (mounted) {
           setState(() {
@@ -264,6 +267,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       });
     }
     Common.getCurrentLocation().then((value) async {
+      print(value);
+
       if (value != null) {
         if (mounted) {
           setState(() {
@@ -612,6 +617,9 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                             .toString(),
                                         rating:
                                             list[i]['averageRating'].toString(),
+                                        buttonName: null,
+                                        productList: list[i],
+                                        variantList: list[i]['variant'],
                                       ),
                                       list[i]['isDealAvailable'] == true
                                           ? Positioned(
@@ -671,6 +679,9 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                     category: list[i]['category'],
                                     price: list[i]['variant'][0]['price'],
                                     rating: list[i]['averageRating'].toString(),
+                                    buttonName: null,
+                                    productList: list[i],
+                                    variantList: list[i]['variant'],
                                   ),
                                   CardOverlay()
                                 ],
@@ -951,6 +962,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
         actions: <Widget>[
           InkWell(
             onTap: () {
+              print(getTokenValue);
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -959,6 +971,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       localizedValues: widget.localizedValues,
                       productsList: searchProductList,
                       currency: currency,
+                      token: getTokenValue,
                       favProductList: getTokenValue ? favProductList : null),
                 ),
               );

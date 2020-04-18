@@ -44,6 +44,11 @@ class _AllProductsState extends State<AllProducts> {
     currency = widget.currency;
     getTokenValue = widget.token;
     getProductListMethod();
+    if (getTokenValue == true) {
+      getProductListMethodCardAdded();
+    } else {
+      getProductListMethod();
+    }
     super.initState();
   }
 
@@ -53,7 +58,42 @@ class _AllProductsState extends State<AllProducts> {
         isLoadingProductsList = true;
       });
     }
+    print("jjjjjjjjjj");
     await ProductService.getProductListAll().then((onValue) {
+      print(onValue);
+      try {
+        _refreshController.refreshCompleted();
+        if (onValue['response_code'] == 200) {
+          if (mounted) {
+            setState(() {
+              productsList = onValue['response_data'];
+              isLoadingProductsList = false;
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              productsList = [];
+            });
+          }
+        }
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
+  }
+
+  getProductListMethodCardAdded() async {
+    if (mounted) {
+      setState(() {
+        isLoadingProductsList = true;
+      });
+    }
+    print("jjjjjjjjjj");
+    await ProductService.getProductListAllCartAdded().then((onValue) {
+      print(onValue);
       try {
         _refreshController.refreshCompleted();
         if (onValue['response_code'] == 200) {
@@ -101,6 +141,7 @@ class _AllProductsState extends State<AllProducts> {
                       localizedValues: widget.localizedValues,
                       productsList: productsList,
                       currency: currency,
+                      token: getTokenValue,
                       favProductList: getTokenValue ? favProductList : null),
                 ),
               );
@@ -164,10 +205,10 @@ class _AllProductsState extends State<AllProducts> {
                           productsList.length == null ? 0 : productsList.length,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          childAspectRatio: MediaQuery.of(context).size.width / 400,
+                          childAspectRatio:
+                              MediaQuery.of(context).size.width / 400,
                           crossAxisSpacing: 16,
-                          mainAxisSpacing: 16
-                      ),
+                          mainAxisSpacing: 16),
                       itemBuilder: (BuildContext context, int i) {
                         if (productsList[i]['averageRating'] == null) {
                           productsList[i]['averageRating'] = 0;
@@ -207,6 +248,13 @@ class _AllProductsState extends State<AllProducts> {
                                           ['price'],
                                       rating: productsList[i]['averageRating']
                                           .toString(),
+                                      buttonName: getTokenValue
+                                          ? productsList[i]['cartAdded'] == true
+                                              ? "Added"
+                                              : "Add"
+                                          : null,
+                                      productList: productsList[i],
+                                      variantList: productsList[i]['variant'],
                                     ),
                                     productsList[i]['isDealAvailable'] == true
                                         ? Positioned(
@@ -245,6 +293,13 @@ class _AllProductsState extends State<AllProducts> {
                                         ['price'],
                                     rating: productsList[i]['averageRating']
                                         .toString(),
+                                    buttonName: getTokenValue
+                                        ? productsList[i]['cartAdded'] == true
+                                            ? "Added"
+                                            : "Add"
+                                        : null,
+                                    productList: productsList[i],
+                                    variantList: productsList[i]['variant'],
                                   ),
                                   CardOverlay()
                                 ],
