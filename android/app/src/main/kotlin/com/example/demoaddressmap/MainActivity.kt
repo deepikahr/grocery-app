@@ -1,4 +1,4 @@
-package com.ionicfirebaseapp.readymadegroceryuserapp
+package com.clevelandafricanmart.userapp
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
