@@ -64,6 +64,7 @@ class _SavedItemsState extends State<SavedItems> {
 
   getFavListApi() async {
     await FavouriteService.getFavList().then((onValue) {
+      print("fggggggggggg $onValue");
       try {
         if (mounted) {
           setState(() {
@@ -191,6 +192,13 @@ class _SavedItemsState extends State<SavedItems> {
                                         ['variant'][0]['price'],
                                     rating: favProductList[i]['averageRating']
                                         .toString(),
+                                    buttonName:
+                                        favProductList[i]['cartAdded'] == true
+                                            ? "Added"
+                                            : "Add",
+                                    productList: favProductList[i]['product'],
+                                    variantList: favProductList[i]['product']
+                                        ['variant'],
                                   ),
                                   favProductList[i]['isDealAvailable'] == true
                                       ? Positioned(

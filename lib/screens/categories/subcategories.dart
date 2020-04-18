@@ -35,7 +35,6 @@ class _SubCategoriesState extends State<SubCategories> {
   void initState() {
     getToken();
     super.initState();
-    getProductToCategory(widget.catId);
   }
 
   @override
@@ -44,11 +43,28 @@ class _SubCategoriesState extends State<SubCategories> {
   }
 
   getProductToCategory(id) async {
-    if (mounted)
-      setState(() {
-        isLoadingSubProductsList = true;
-      });
+    print("  nnnnnnnnn");
     await ProductService.getProductToCategoryList(id).then((onValue) {
+      print("dddddddddd $onValue");
+      try {
+        if (mounted)
+          setState(() {
+            subProductsList = onValue['response_data'];
+            isLoadingSubProductsList = false;
+            _refreshController.refreshCompleted();
+          });
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
+  }
+
+  getProductToCategoryCartAdded(id) async {
+    print("  nnnnnnnnn");
+    await ProductService.getProductToCategoryListCartAdded(id).then((onValue) {
+      print("dddddddddd $onValue");
       try {
         if (mounted)
           setState(() {
@@ -67,11 +83,16 @@ class _SubCategoriesState extends State<SubCategories> {
   getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     currency = prefs.getString('currency');
+    if (mounted)
+      setState(() {
+        isLoadingSubProductsList = true;
+      });
     await Common.getToken().then((onValue) {
       if (onValue != null) {
         if (mounted) {
           setState(() {
             getTokenValue = true;
+            getProductToCategoryCartAdded(widget.catId);
             getFavListApi();
           });
         }
@@ -79,6 +100,7 @@ class _SubCategoriesState extends State<SubCategories> {
         if (mounted) {
           setState(() {
             getTokenValue = false;
+            getProductToCategory(widget.catId);
           });
         }
       }
@@ -144,10 +166,10 @@ class _SubCategoriesState extends State<SubCategories> {
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2,
-                                  childAspectRatio: MediaQuery.of(context).size.width / 400,
+                                  childAspectRatio:
+                                      MediaQuery.of(context).size.width / 400,
                                   crossAxisSpacing: 16,
-                                  mainAxisSpacing: 16
-                              ),
+                                  mainAxisSpacing: 16),
                           itemBuilder: (BuildContext context, int i) {
                             if (subProductsList[i]['averageRating'] == null) {
                               subProductsList[i]['averageRating'] = 0;
@@ -184,6 +206,14 @@ class _SubCategoriesState extends State<SubCategories> {
                                         ['price'],
                                     rating: subProductsList[i]['averageRating']
                                         .toString(),
+                                    buttonName: getTokenValue
+                                        ? subProductsList[i]['cartAdded'] ==
+                                                true
+                                            ? "Added"
+                                            : "Add"
+                                        : null,
+                                    productList: subProductsList[i],
+                                    variantList: subProductsList[i]['variant'],
                                   ),
                                   subProductsList[i]['isDealAvailable'] == true
                                       ? Positioned(

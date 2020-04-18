@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:getflutter/getflutter.dart';
+import 'package:grocery_pro/model/addToCart.dart';
 import 'package:grocery_pro/screens/authe/login.dart';
 import 'package:grocery_pro/screens/tab/mycart.dart';
 import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/service/cart-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/fav-service.dart';
 import 'package:grocery_pro/widgets/loader.dart';
@@ -259,7 +259,7 @@ class _ProductDetailsState extends State<ProductDetails>
           ? productDetail['variant'][0]['unit'].toString()
           : variantUnit.toString()
     };
-    await CartService.addProductToCart(buyNowProduct).then((onValue) {
+    AddToCart.addToCartMethod(buyNowProduct).then((onValue) {
       try {
         if (mounted) {
           setState(() {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -8,14 +7,14 @@ class DealsCard extends StatelessWidget {
   final image, title, price, currency, rating, category, offer, nullImage;
   DealsCard(
       {Key key,
-        this.image,
-        this.title,
-        this.price,
-        this.currency,
-        this.rating,
-        this.category,
-        this.offer,
-        this.nullImage})
+      this.image,
+      this.title,
+      this.price,
+      this.currency,
+      this.rating,
+      this.category,
+      this.offer,
+      this.nullImage})
       : super(key: key);
 
   @override
@@ -42,15 +41,15 @@ class DealsCard extends StatelessWidget {
               children: <Widget>[
                 ClipRRect(
                   borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(12)),
+                      const BorderRadius.vertical(top: Radius.circular(12)),
                   child: image == null
                       ? Image.asset(nullImage)
                       : Image.network(
-                    image,
-                    fit: BoxFit.fill,
-                    height: 220,
-                    width: MediaQuery.of(context).size.width,
-                  ),
+                          image,
+                          fit: BoxFit.fill,
+                          height: 220,
+                          width: MediaQuery.of(context).size.width,
+                        ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
@@ -62,9 +61,9 @@ class DealsCard extends StatelessWidget {
                         children: <Widget>[
                           Expanded(
                               child: Text(
-                                title,
-                                style: textbarlowRegularBlackb(),
-                              )),
+                            title,
+                            style: textbarlowRegularBlackb(),
+                          )),
 //                          Container(
 //                            height: 19,
 ////                 width: 40,
@@ -96,8 +95,6 @@ class DealsCard extends StatelessWidget {
                   ),
                 ),
               ],
-            )
-        )
-    );
+            )));
   }
 }
