@@ -151,10 +151,10 @@ class _SavedItemsState extends State<SavedItems> {
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2,
-                                  childAspectRatio: MediaQuery.of(context).size.width / 400,
+                                  childAspectRatio:
+                                      MediaQuery.of(context).size.width / 400,
                                   crossAxisSpacing: 16,
-                                  mainAxisSpacing: 16
-                              ),
+                                  mainAxisSpacing: 16),
                           itemBuilder: (BuildContext context, int i) {
                             if (favProductList[i]['averageRating'] == null) {
                               favProductList[i]['averageRating'] = 0;
@@ -181,9 +181,9 @@ class _SavedItemsState extends State<SavedItems> {
                                         ['imageUrl'],
                                     title: favProductList[i]['product']['title']
                                                 .length >
-                                            10
+                                            15
                                         ? favProductList[i]['product']['title']
-                                                .substring(0, 10) +
+                                                .substring(0, 15) +
                                             ".."
                                         : favProductList[i]['product']['title'],
                                     currency: currency,
