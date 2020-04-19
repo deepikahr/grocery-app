@@ -248,11 +248,11 @@ class _AllProductsState extends State<AllProducts> {
                                           ['price'],
                                       rating: productsList[i]['averageRating']
                                           .toString(),
-                                      buttonName: getTokenValue
-                                          ? productsList[i]['cartAdded'] == true
+                                      buttonName:
+                                          productsList[i]['cartAdded'] == true
                                               ? "Added"
-                                              : "Add"
-                                          : null,
+                                              : "Add",
+                                      token: getTokenValue,
                                       productList: productsList[i],
                                       variantList: productsList[i]['variant'],
                                     ),
@@ -293,11 +293,11 @@ class _AllProductsState extends State<AllProducts> {
                                         ['price'],
                                     rating: productsList[i]['averageRating']
                                         .toString(),
-                                    buttonName: getTokenValue
-                                        ? productsList[i]['cartAdded'] == true
+                                    buttonName:
+                                        productsList[i]['cartAdded'] == true
                                             ? "Added"
-                                            : "Add"
-                                        : null,
+                                            : "Add",
+                                    token: getTokenValue,
                                     productList: productsList[i],
                                     variantList: productsList[i]['variant'],
                                   ),

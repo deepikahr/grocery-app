@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/model/bottomSheet.dart';
+import 'package:grocery_pro/screens/authe/login.dart';
 import 'package:grocery_pro/screens/product/product-details.dart';
 import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/product-service.dart';
@@ -314,75 +315,65 @@ class _SearchItemState extends State<SearchItem> {
                                             SizedBox(
                                               height: 5.0,
                                             ),
-                                            widget.token == true
-                                                ? searchresult[index]
-                                                            ['cartAdded'] ==
-                                                        true
-                                                    ? Container(
-                                                        height: 22,
-                                                        child: GFButton(
-                                                          onPressed:
-                                                              () async {},
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    left: 18.0,
-                                                                    right:
-                                                                        18.0),
-                                                            child:
-                                                                Text("Added"),
-                                                          ),
-                                                          type: GFButtonType
-                                                              .solid,
-                                                          color: Colors.green,
-                                                          size: GFSize.MEDIUM,
-                                                        ),
-                                                      )
-                                                    : Container(
-                                                        height: 22,
-                                                        child: GFButton(
-                                                          onPressed: () async {
-                                                            showModalBottomSheet(
-                                                                context:
-                                                                    context,
-                                                                builder:
-                                                                    (BuildContext
-                                                                        bc) {
-                                                                  return BottonSheetClassDryClean(
-                                                                      locale: widget
-                                                                          .locale,
-                                                                      localizedValues:
-                                                                          widget
-                                                                              .localizedValues,
-                                                                      currency:
-                                                                          widget
-                                                                              .currency,
-                                                                      productList:
-                                                                          searchresult[
-                                                                              index],
-                                                                      variantsList:
-                                                                          searchresult[index]
-                                                                              [
-                                                                              'variant']);
-                                                                });
-                                                          },
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    left: 18.0,
-                                                                    right:
-                                                                        18.0),
-                                                            child: Text("Add"),
-                                                          ),
-                                                          type: GFButtonType
-                                                              .solid,
-                                                          color: primary,
-                                                          size: GFSize.MEDIUM,
-                                                        ),
-                                                      )
-                                                : Container(),
+                                            searchresult[index]['cartAdded'] ==
+                                                    true
+                                                ? Container(
+                                                    height: 22,
+                                                    child: GFButton(
+                                                      onPressed: () async {},
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                left: 18.0,
+                                                                right: 18.0),
+                                                        child: Text("Added"),
+                                                      ),
+                                                      type: GFButtonType.solid,
+                                                      color: Colors.green,
+                                                      size: GFSize.MEDIUM,
+                                                    ),
+                                                  )
+                                                : Container(
+                                                    height: 22,
+                                                    child: GFButton(
+                                                      onPressed: () async {
+                                                        showModalBottomSheet(
+                                                            context: context,
+                                                            builder:
+                                                                (BuildContext
+                                                                    bc) {
+                                                              return BottonSheetClassDryClean(
+                                                                  locale: widget
+                                                                      .locale,
+                                                                  localizedValues:
+                                                                      widget
+                                                                          .localizedValues,
+                                                                  currency: widget
+                                                                      .currency,
+                                                                  productList:
+                                                                      searchresult[
+                                                                          index],
+                                                                  variantsList:
+                                                                      searchresult[
+                                                                              index]
+                                                                          [
+                                                                          'variant']);
+                                                            });
+                                                      },
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                left: 18.0,
+                                                                right: 18.0),
+                                                        child: Text("Add"),
+                                                      ),
+                                                      type: GFButtonType.solid,
+                                                      color: primary,
+                                                      size: GFSize.MEDIUM,
+                                                    ),
+                                                  ),
                                             SizedBox(
                                               height: 5.0,
                                             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:grocery_pro/model/bottomSheet.dart';
+import 'package:grocery_pro/screens/authe/login.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -14,6 +15,7 @@ class ProductCard extends StatelessWidget {
       offer,
       nullImage,
       buttonName;
+  final bool token;
   final Map productList;
   final List variantList;
   final String locale;
@@ -32,6 +34,7 @@ class ProductCard extends StatelessWidget {
       this.productList,
       this.variantList,
       this.locale,
+      this.token,
       this.localizedValues})
       : super(key: key);
 
@@ -138,15 +141,18 @@ class ProductCard extends StatelessWidget {
                                     height: 17,
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.all(
-                                            Radius.circular(2)),
+                                          Radius.circular(2),
+                                        ),
                                         color: primary),
                                     padding:
                                         EdgeInsets.only(left: 15, right: 15),
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: <Widget>[
-                                        Text(buttonName,
-                                            style: textBarlowregwhite()),
+                                        Text(
+                                          buttonName,
+                                          style: textBarlowregwhite(),
+                                        ),
                                       ],
                                     ),
                                   ),

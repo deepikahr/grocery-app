@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_pro/model/addToCart.dart';
+import 'package:grocery_pro/screens/authe/login.dart';
 import 'package:grocery_pro/screens/tab/mycart.dart';
+import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
@@ -28,9 +30,10 @@ class BottonSheetClassDryClean extends StatefulWidget {
 
 class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
   int groupValue = 0;
-  bool selectVariant = false, addProductTocart = false;
+  bool selectVariant = false, addProductTocart = false, getTokenValue = false;
   int quantity = 1;
   String variantPrice, variantUnit, variantId;
+
   void _changeProductQuantity(bool increase) {
     if (increase) {
       if (mounted) {
@@ -49,12 +52,45 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
     }
   }
 
-  addToCartMethod() {
+  getToken() async {
     if (mounted) {
       setState(() {
         addProductTocart = true;
       });
     }
+    await Common.getToken().then((onValue) {
+      if (onValue != null) {
+        if (mounted) {
+          setState(() {
+            getTokenValue = true;
+            addToCartMethod();
+          });
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            getTokenValue = false;
+            print("ff");
+            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => Login(
+                  locale: widget.locale,
+                  localizedValues: widget.localizedValues,
+                  isBottomSheet: true,
+                ),
+              ),
+            );
+          });
+        }
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
+  }
+
+  addToCartMethod() {
     Map<String, dynamic> productAddBody = {
       'productId': widget.productList['_id'].toString(),
       'quantity': quantity,
@@ -74,15 +110,15 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
         }
         if (onValue['response_code'] == 200) {
           Navigator.pop(context);
-          Navigator.push(
-            context,
-            new MaterialPageRoute(
-              builder: (BuildContext context) => new MyCart(
-                locale: widget.locale,
-                localizedValues: widget.localizedValues,
-              ),
-            ),
-          );
+          // Navigator.push(
+          //   context,
+          //   new MaterialPageRoute(
+          //     builder: (BuildContext context) => new MyCart(
+          //       locale: widget.locale,
+          //       localizedValues: widget.localizedValues,
+          //     ),
+          //   ),
+          // );
         }
       } catch (error, stackTrace) {
         sentryError.reportError(error, stackTrace);
@@ -269,7 +305,7 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
               ],
             ),
             onPressed: () {
-              addToCartMethod();
+              getToken();
             },
           ),
         ),
