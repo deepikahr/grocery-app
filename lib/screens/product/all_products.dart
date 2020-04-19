@@ -58,9 +58,7 @@ class _AllProductsState extends State<AllProducts> {
         isLoadingProductsList = true;
       });
     }
-    print("jjjjjjjjjj");
     await ProductService.getProductListAll().then((onValue) {
-      print(onValue);
       try {
         _refreshController.refreshCompleted();
         if (onValue['response_code'] == 200) {
@@ -91,9 +89,7 @@ class _AllProductsState extends State<AllProducts> {
         isLoadingProductsList = true;
       });
     }
-    print("jjjjjjjjjj");
     await ProductService.getProductListAllCartAdded().then((onValue) {
-      print(onValue);
       try {
         _refreshController.refreshCompleted();
         if (onValue['response_code'] == 200) {

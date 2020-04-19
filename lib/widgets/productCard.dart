@@ -119,7 +119,6 @@ class ProductCard extends StatelessWidget {
                           : buttonName == "Add"
                               ? InkWell(
                                   onTap: () {
-                                    print("mm$productList$variantList");
                                     if (productList != null &&
                                         variantList != null) {
                                       showModalBottomSheet(

@@ -84,7 +84,8 @@ class _LoginState extends State<Login> {
           }
           if (onValue['response_code'] == 200) {
             Common.setToken(onValue['response_data']['token']);
-            // Navigator.pop(context);
+
+            prefs.setString("userID", onValue['response_data']['_id']);
             if (widget.isCart == true) {
               Navigator.pushAndRemoveUntil(
                   context,

@@ -87,7 +87,6 @@ class _SearchItemState extends State<SearchItem> {
           isSearching = true;
         });
       }
-      print("bb");
       ProductService.getSearchListCartAdded(query).then((onValue) {
         try {
           if (onValue != null && onValue['response_data'] is List) {
@@ -167,7 +166,6 @@ class _SearchItemState extends State<SearchItem> {
                 ),
                 onSubmitted: (String term) {
                   if (widget.token == true) {
-                    print("bbb");
                     _searchForProductsCartAdded(term);
                   } else {
                     _searchForProducts(term);
@@ -221,7 +219,6 @@ class _SearchItemState extends State<SearchItem> {
                           shrinkWrap: true,
                           itemCount: searchresult.length,
                           itemBuilder: (BuildContext context, int index) {
-                            print(searchresult[index]);
                             return Container(
                               margin: EdgeInsets.only(bottom: 20),
                               color: Colors.grey[100],

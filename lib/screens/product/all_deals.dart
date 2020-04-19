@@ -165,12 +165,12 @@ class _AllDealsListState extends State<AllDealsList> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => SubCategories(
-                                    locale: widget.locale,
-                                    localizedValues: widget.localizedValues,
-                                    catId: dealsList[i]['category'],
-                                    catTitle:
-                                        '${dealsList[i]['name'][0].toUpperCase()}${dealsList[i]['name'].substring(1)}',
-                                  ),
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues,
+                                      catId: dealsList[i]['category'],
+                                      catTitle:
+                                          '${dealsList[i]['name'][0].toUpperCase()}${dealsList[i]['name'].substring(1)}',
+                                      token: getTokenValue),
                                 ),
                               );
                             } else {

@@ -17,8 +17,6 @@ class ProductService {
   }
 
   static Future<Map<String, dynamic>> getProductListAll() async {
-    print("bb");
-
     final response = await client.get(
         Constants.baseURL + "products/home/product",
         headers: {'Content-Type': 'application/json'});
@@ -26,11 +24,8 @@ class ProductService {
   }
 
   static Future<Map<String, dynamic>> getProductListAllCartAdded() async {
-    print("bb");
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    print(prefs.getString("userID"));
     String userId = "userId=" + prefs.getString("userID");
-    print(userId);
 
     final response = await client.get(
         Constants.baseURL + "products/home/product?$userId",
@@ -79,7 +74,6 @@ class ProductService {
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String userId = "userId=" + prefs.getString("userID");
-
     final response = await client
         .get(Constants.baseURL + "products/by/category/$id?$userId", headers: {
       'Content-Type': 'application/json',
@@ -187,7 +181,6 @@ class ProductService {
   static Future<dynamic> getSearchListCartAdded(status) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String userId = "userId=" + prefs.getString("userID");
-    print(userId);
     final response = await client
         .get(Constants.baseURL + 'products/search/$status?$userId', headers: {
       'Content-Type': 'application/json',
