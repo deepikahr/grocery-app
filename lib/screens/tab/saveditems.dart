@@ -64,7 +64,6 @@ class _SavedItemsState extends State<SavedItems> {
 
   getFavListApi() async {
     await FavouriteService.getFavList().then((onValue) {
-      print("fggggggggggg $onValue");
       try {
         if (mounted) {
           setState(() {

@@ -197,7 +197,6 @@ class _ProfileState extends State<Profile> {
     }
     Common.setToken(null).then((value) {
       prefs.setString("userID", null);
-      print(prefs.getString("userID"));
       if (value == true) {
         if (mounted) {
           setState(() {
