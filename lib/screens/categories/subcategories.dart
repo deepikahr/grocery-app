@@ -203,12 +203,11 @@ class _SubCategoriesState extends State<SubCategories> {
                                         ['price'],
                                     rating: subProductsList[i]['averageRating']
                                         .toString(),
-                                    buttonName: widget.token
-                                        ? subProductsList[i]['cartAdded'] ==
-                                                true
+                                    buttonName:
+                                        subProductsList[i]['cartAdded'] == true
                                             ? "Added"
-                                            : "Add"
-                                        : null,
+                                            : "Add",
+                                    token: widget.token,
                                     productList: subProductsList[i],
                                     variantList: subProductsList[i]['variant'],
                                   ),
