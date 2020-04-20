@@ -7,7 +7,6 @@ import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/widgets/dealsCard.dart';
 import 'package:grocery_pro/widgets/loader.dart';
-import 'package:grocery_pro/widgets/productCard.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 SentryError sentryError = new SentryError();
@@ -166,12 +165,12 @@ class _AllDealsListState extends State<AllDealsList> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => SubCategories(
-                                    locale: widget.locale,
-                                    localizedValues: widget.localizedValues,
-                                    catId: dealsList[i]['category'],
-                                    catTitle:
-                                        '${dealsList[i]['name'][0].toUpperCase()}${dealsList[i]['name'].substring(1)}',
-                                  ),
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues,
+                                      catId: dealsList[i]['category'],
+                                      catTitle:
+                                          '${dealsList[i]['name'][0].toUpperCase()}${dealsList[i]['name'].substring(1)}',
+                                      token: getTokenValue),
                                 ),
                               );
                             } else {

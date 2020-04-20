@@ -294,17 +294,9 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                       ),
                       new Divider(height: 1.0),
                       Container(
-                        decoration: Theme.of(context).platform ==
-                                TargetPlatform.iOS
-                            ? new BoxDecoration(
-                                border: new Border(
-                                    top:
-                                        new BorderSide(color: Colors.grey[70])),
-                                color: Colors.grey,
-                              )
-                            : BoxDecoration(
-                                color: Colors.grey,
-                              ),
+                        decoration: BoxDecoration(
+                          color: Colors.grey,
+                        ),
                         child: new IconTheme(
                           data: new IconThemeData(
                               color: Theme.of(context).accentColor),
@@ -334,55 +326,26 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                                     ),
                                   ),
                                   new Container(
-                                    decoration: Theme.of(context).platform ==
-                                            TargetPlatform.iOS
-                                        ? new BoxDecoration(
-                                            border: new Border(
-                                              top: new BorderSide(
-                                                  color: Colors.grey[70]),
-                                            ),
-                                            color: Colors.grey,
-                                          )
-                                        : BoxDecoration(
-                                            color: Colors.grey,
-                                          ),
-                                    child: Theme.of(context).platform ==
-                                            TargetPlatform.iOS
-                                        ? new IconButton(
-                                            icon: new Icon(
-                                              Icons.send,
-                                              color: primary,
-                                              size: 30,
-                                            ),
-                                            onPressed: _isWriting
-                                                ? () => _submitMsg(
-                                                    _textController.text)
-                                                : null)
-                                        : new IconButton(
-                                            icon: new Icon(
-                                              Icons.send,
-                                              color: primary,
-                                              size: 30,
-                                            ),
-                                            onPressed: _isWriting
-                                                ? () => _submitMsg(
-                                                    _textController.text)
-                                                : null,
-                                          ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey,
+                                    ),
+                                    child: new IconButton(
+                                      icon: new Icon(
+                                        Icons.send,
+                                        color: primary,
+                                        size: 30,
+                                      ),
+                                      onPressed: _isWriting
+                                          ? () =>
+                                              _submitMsg(_textController.text)
+                                          : null,
+                                    ),
                                   ),
                                 ],
                               ),
-                              decoration: Theme.of(context).platform ==
-                                      TargetPlatform.iOS
-                                  ? new BoxDecoration(
-                                      border: new Border(
-                                          top: new BorderSide(
-                                              color: Colors.white70)),
-                                      color: Colors.white,
-                                    )
-                                  : BoxDecoration(
-                                      color: Colors.white,
-                                    ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),

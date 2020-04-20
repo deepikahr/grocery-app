@@ -61,7 +61,22 @@ checkToken(token) async {
     try {
       if (onValue['response_data']['tokenVerify'] == false) {
         Common.setToken(null);
-      } else {}
+      } else {
+        userInfoMethod();
+      }
+    } catch (error, stackTrace) {
+      sentryError.reportError(error, stackTrace);
+    }
+  }).catchError((error) {
+    sentryError.reportError(error, null);
+  });
+}
+
+userInfoMethod() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await LoginService.getUserInfo().then((onValue) {
+    try {
+      prefs.setString('userID', onValue['response_data']['userInfo']['_id']);
     } catch (error, stackTrace) {
       sentryError.reportError(error, stackTrace);
     }

@@ -44,6 +44,11 @@ class _AllProductsState extends State<AllProducts> {
     currency = widget.currency;
     getTokenValue = widget.token;
     getProductListMethod();
+    if (getTokenValue == true) {
+      getProductListMethodCardAdded();
+    } else {
+      getProductListMethod();
+    }
     super.initState();
   }
 
@@ -54,6 +59,37 @@ class _AllProductsState extends State<AllProducts> {
       });
     }
     await ProductService.getProductListAll().then((onValue) {
+      try {
+        _refreshController.refreshCompleted();
+        if (onValue['response_code'] == 200) {
+          if (mounted) {
+            setState(() {
+              productsList = onValue['response_data'];
+              isLoadingProductsList = false;
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              productsList = [];
+            });
+          }
+        }
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
+  }
+
+  getProductListMethodCardAdded() async {
+    if (mounted) {
+      setState(() {
+        isLoadingProductsList = true;
+      });
+    }
+    await ProductService.getProductListAllCartAdded().then((onValue) {
       try {
         _refreshController.refreshCompleted();
         if (onValue['response_code'] == 200) {
@@ -101,6 +137,7 @@ class _AllProductsState extends State<AllProducts> {
                       localizedValues: widget.localizedValues,
                       productsList: productsList,
                       currency: currency,
+                      token: getTokenValue,
                       favProductList: getTokenValue ? favProductList : null),
                 ),
               );
@@ -120,7 +157,11 @@ class _AllProductsState extends State<AllProducts> {
         header: WaterDropHeader(),
         controller: _refreshController,
         onRefresh: () {
-          getProductListMethod();
+          if (widget.token == true) {
+            getProductListMethodCardAdded();
+          } else {
+            getProductListMethod();
+          }
         },
         child: isLoadingProductsList
             ? SquareLoader()
@@ -207,6 +248,13 @@ class _AllProductsState extends State<AllProducts> {
                                           ['price'],
                                       rating: productsList[i]['averageRating']
                                           .toString(),
+                                      buttonName:
+                                          productsList[i]['cartAdded'] == true
+                                              ? "Added"
+                                              : "Add",
+                                      token: getTokenValue,
+                                      productList: productsList[i],
+                                      variantList: productsList[i]['variant'],
                                     ),
                                     productsList[i]['isDealAvailable'] == true
                                         ? Positioned(
@@ -245,6 +293,13 @@ class _AllProductsState extends State<AllProducts> {
                                         ['price'],
                                     rating: productsList[i]['averageRating']
                                         .toString(),
+                                    buttonName:
+                                        productsList[i]['cartAdded'] == true
+                                            ? "Added"
+                                            : "Add",
+                                    token: getTokenValue,
+                                    productList: productsList[i],
+                                    variantList: productsList[i]['variant'],
                                   ),
                                   CardOverlay()
                                 ],

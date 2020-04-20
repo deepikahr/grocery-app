@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/screens/tab/mycart.dart';
 import 'package:grocery_pro/screens/tab/profile.dart';
@@ -153,6 +154,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       body: currencyLoading
           ? SquareLoader()
           : GFTabBarView(
+              physics: NeverScrollableScrollPhysics(),
               controller: tabController,
               children: <Widget>[
                 Store(

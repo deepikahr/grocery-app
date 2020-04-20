@@ -181,9 +181,9 @@ class _SavedItemsState extends State<SavedItems> {
                                         ['imageUrl'],
                                     title: favProductList[i]['product']['title']
                                                 .length >
-                                            10
+                                            15
                                         ? favProductList[i]['product']['title']
-                                                .substring(0, 10) +
+                                                .substring(0, 15) +
                                             ".."
                                         : favProductList[i]['product']['title'],
                                     currency: currency,
@@ -191,6 +191,13 @@ class _SavedItemsState extends State<SavedItems> {
                                         ['variant'][0]['price'],
                                     rating: favProductList[i]['averageRating']
                                         .toString(),
+                                    buttonName:
+                                        favProductList[i]['cartAdded'] == true
+                                            ? "Added"
+                                            : "Add",
+                                    productList: favProductList[i]['product'],
+                                    variantList: favProductList[i]['product']
+                                        ['variant'],
                                   ),
                                   favProductList[i]['isDealAvailable'] == true
                                       ? Positioned(

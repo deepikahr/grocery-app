@@ -15,7 +15,9 @@ SentryError sentryError = new SentryError();
 class AllCategories extends StatefulWidget {
   final Map<String, Map<String, String>> localizedValues;
   final String locale;
-  AllCategories({Key key, this.locale, this.localizedValues});
+  final bool getTokenValue;
+  AllCategories(
+      {Key key, this.locale, this.localizedValues, this.getTokenValue});
 
   @override
   _AllCategoriesState createState() => _AllCategoriesState();
@@ -116,7 +118,8 @@ class _AllCategoriesState extends State<AllCategories>
                                 localizedValues: widget.localizedValues,
                                 catId: categoryList[index]['_id'],
                                 catTitle:
-                                    '${categoryList[index]['title'][0].toUpperCase()}${categoryList[index]['title'].substring(1)}'),
+                                    '${categoryList[index]['title'][0].toUpperCase()}${categoryList[index]['title'].substring(1)}',
+                                token: widget.getTokenValue),
                           ),
                         );
                       },

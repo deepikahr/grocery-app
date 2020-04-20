@@ -16,26 +16,37 @@ SentryError sentryError = new SentryError();
 
 class SubCategories extends StatefulWidget {
   final String catTitle, locale, catId;
+  final bool token;
   final Map<String, Map<String, String>> localizedValues;
 
   SubCategories(
-      {Key key, this.catId, this.catTitle, this.locale, this.localizedValues})
+      {Key key,
+      this.catId,
+      this.catTitle,
+      this.locale,
+      this.localizedValues,
+      this.token})
       : super(key: key);
   @override
   _SubCategoriesState createState() => _SubCategoriesState();
 }
 
 class _SubCategoriesState extends State<SubCategories> {
-  bool isLoadingSubProductsList = false, getTokenValue = false;
+  bool isLoadingSubProductsList = false;
   List subProductsList, favProductList;
   String currency;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   @override
   void initState() {
-    getToken();
+    if (widget.token == true) {
+      getProductToCategoryCartAdded(widget.catId);
+
+      getFavListApi();
+    } else {
+      getProductToCategory(widget.catId);
+    }
     super.initState();
-    getProductToCategory(widget.catId);
   }
 
   @override
@@ -44,10 +55,13 @@ class _SubCategoriesState extends State<SubCategories> {
   }
 
   getProductToCategory(id) async {
-    if (mounted)
+    if (mounted) {
       setState(() {
         isLoadingSubProductsList = true;
       });
+    }
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    currency = prefs.getString('currency');
     await ProductService.getProductToCategoryList(id).then((onValue) {
       try {
         if (mounted)
@@ -64,23 +78,24 @@ class _SubCategoriesState extends State<SubCategories> {
     });
   }
 
-  getToken() async {
+  getProductToCategoryCartAdded(id) async {
+    if (mounted) {
+      setState(() {
+        isLoadingSubProductsList = true;
+      });
+    }
     SharedPreferences prefs = await SharedPreferences.getInstance();
     currency = prefs.getString('currency');
-    await Common.getToken().then((onValue) {
-      if (onValue != null) {
-        if (mounted) {
+    await ProductService.getProductToCategoryListCartAdded(id).then((onValue) {
+      try {
+        if (mounted)
           setState(() {
-            getTokenValue = true;
-            getFavListApi();
+            subProductsList = onValue['response_data'];
+            isLoadingSubProductsList = false;
+            _refreshController.refreshCompleted();
           });
-        }
-      } else {
-        if (mounted) {
-          setState(() {
-            getTokenValue = false;
-          });
-        }
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
       sentryError.reportError(error, null);
@@ -123,7 +138,11 @@ class _SubCategoriesState extends State<SubCategories> {
         header: WaterDropHeader(),
         controller: _refreshController,
         onRefresh: () {
-          getProductToCategory(widget.catId);
+          if (widget.token) {
+            getProductToCategoryCartAdded(widget.catId);
+          } else {
+            getProductToCategory(widget.catId);
+          }
         },
         child: isLoadingSubProductsList
             ? SquareLoader()
@@ -162,7 +181,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                         locale: widget.locale,
                                         localizedValues: widget.localizedValues,
                                         productID: subProductsList[i]['_id'],
-                                        favProductList: getTokenValue
+                                        favProductList: widget.token
                                             ? favProductList
                                             : null),
                                   ),
@@ -184,6 +203,13 @@ class _SubCategoriesState extends State<SubCategories> {
                                         ['price'],
                                     rating: subProductsList[i]['averageRating']
                                         .toString(),
+                                    buttonName:
+                                        subProductsList[i]['cartAdded'] == true
+                                            ? "Added"
+                                            : "Add",
+                                    token: widget.token,
+                                    productList: subProductsList[i],
+                                    variantList: subProductsList[i]['variant'],
                                   ),
                                   subProductsList[i]['isDealAvailable'] == true
                                       ? Positioned(
