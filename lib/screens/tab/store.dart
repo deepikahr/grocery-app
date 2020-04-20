@@ -5,6 +5,7 @@ import 'package:getflutter/components/carousel/gf_carousel.dart';
 import 'package:getflutter/components/image/gf_image_overlay.dart';
 import 'package:grocery_pro/screens/categories/allcategories.dart';
 import 'package:grocery_pro/screens/categories/subcategories.dart';
+import 'package:grocery_pro/screens/home/drawer.dart';
 import 'package:grocery_pro/screens/product/all_deals.dart';
 import 'package:grocery_pro/screens/product/all_products.dart';
 import 'package:grocery_pro/screens/product/product-details.dart';
@@ -289,18 +290,21 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              MyLocalizations.of(context).deliveryAddress,
-              style: textBarlowRegularrBlacksm(),
-            ),
-            Text(
-              addressData.substring(0, 22) + '...',
-              style: textBarlowSemiBoldBlackbig(),
-            )
-          ],
+        Container(
+          width: MediaQuery.of(context).size.width * 0.6,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                MyLocalizations.of(context).deliveryAddress,
+                style: textBarlowRegularrBlacksm(),
+              ),
+              Text(
+                addressData.substring(0, 22) + '...',
+                style: textBarlowSemiBoldBlackbig(),
+              )
+            ],
+          ),
         ),
       ],
     );
@@ -981,7 +985,9 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
           ),
         ],
       ),
-//      drawer: Drawer(),
+      drawer: Drawer(
+        child: DrawerPage(),
+      ),
       backgroundColor: bg,
       key: _scaffoldKeydrawer,
       body: SmartRefresher(

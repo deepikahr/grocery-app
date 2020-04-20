@@ -19,8 +19,7 @@ class CategoryBlock extends StatelessWidget {
             decoration: BoxDecoration(
 //              color: Colors.white,
               borderRadius: BorderRadius.all(Radius.circular(8)),
-              border: Border.all(
-                  color: Colors.black.withOpacity(0.20)),
+              border: Border.all(color: Colors.black.withOpacity(0.20)),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(8)),

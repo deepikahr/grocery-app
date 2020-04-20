@@ -10,24 +10,19 @@ class CardOverlay extends StatelessWidget {
         height: 171,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(
-              Radius.circular(12)),
-          color:
-          Colors.black.withOpacity(0.40),
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+          color: Colors.black.withOpacity(0.40),
         ),
         child: Column(
-          mainAxisAlignment:
-          MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
               'Oops !',
-              style:
-              textBarlowSemiBoldwhite(),
+              style: textBarlowSemiBoldwhite(),
             ),
             Text(
               'Out of stock',
-              style:
-              textBarlowSemiBoldwhite(),
+              style: textBarlowSemiBoldwhite(),
             ),
           ],
         ),
