@@ -5,6 +5,7 @@ import 'package:getflutter/components/carousel/gf_carousel.dart';
 import 'package:getflutter/components/image/gf_image_overlay.dart';
 import 'package:grocery_pro/screens/categories/allcategories.dart';
 import 'package:grocery_pro/screens/categories/subcategories.dart';
+import 'package:grocery_pro/screens/home/drawer.dart';
 import 'package:grocery_pro/screens/product/all_deals.dart';
 import 'package:grocery_pro/screens/product/all_products.dart';
 import 'package:grocery_pro/screens/product/product-details.dart';
@@ -288,18 +289,21 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              MyLocalizations.of(context).deliveryAddress,
-              style: textBarlowRegularrBlacksm(),
-            ),
-            Text(
-              addressData.substring(0, 22) + '...',
-              style: textBarlowSemiBoldBlackbig(),
-            )
-          ],
+        Container(
+          width: MediaQuery.of(context).size.width * 0.6,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                MyLocalizations.of(context).deliveryAddress,
+                style: textBarlowRegularrBlacksm(),
+              ),
+              Text(
+                addressData.substring(0, 22) + '...',
+                style: textBarlowSemiBoldBlackbig(),
+              )
+            ],
+          ),
         ),
       ],
     );
@@ -342,7 +346,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                   physics: ScrollPhysics(),
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
-                  itemCount: categoryList.length != null ? categoryList.length : 0,
+                  itemCount:
+                      categoryList.length != null ? categoryList.length : 0,
                   itemBuilder: (BuildContext context, int index) {
                     return InkWell(
                       onTap: () {
@@ -566,10 +571,10 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       itemCount: list.length != null ? list.length : 0,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          childAspectRatio: MediaQuery.of(context).size.width / 400,
+                          childAspectRatio:
+                              MediaQuery.of(context).size.width / 400,
                           crossAxisSpacing: 16,
-                          mainAxisSpacing: 16
-                      ),
+                          mainAxisSpacing: 16),
                       itemBuilder: (BuildContext context, int i) {
                         if (list[i]['averageRating'] == null) {
                           list[i]['averageRating'] = 0;
@@ -958,7 +963,9 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
           ),
         ],
       ),
-//      drawer: Drawer(),
+      drawer: Drawer(
+        child: DrawerPage(),
+      ),
       backgroundColor: bg,
       key: _scaffoldKeydrawer,
       body: SmartRefresher(
@@ -994,7 +1001,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       SizedBox(height: 10),
                       Divider(),
                       SizedBox(height: 10),
-                      productRow(MyLocalizations.of(context).products, productsList),
+                      productRow(
+                          MyLocalizations.of(context).products, productsList),
                       SizedBox(height: 10),
                       Divider(),
                       SizedBox(height: 10),

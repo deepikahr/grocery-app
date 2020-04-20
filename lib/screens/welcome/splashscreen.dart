@@ -28,9 +28,7 @@ class _SpalshScreenState extends State<SpalshScreen> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: SquareLoader()
-              )
+                  padding: const EdgeInsets.all(16.0), child: SquareLoader())
             ],
           ),
         ));

@@ -104,8 +104,7 @@ class _AllCategoriesState extends State<AllCategories>
                       crossAxisCount: 3,
                       childAspectRatio: MediaQuery.of(context).size.width / 400,
                       crossAxisSpacing: 12,
-                      mainAxisSpacing: 12
-                  ),
+                      mainAxisSpacing: 12),
                   itemBuilder: (BuildContext context, int index) {
                     return InkWell(
                       onTap: () {
@@ -138,7 +137,7 @@ class _AllCategoriesState extends State<AllCategories>
                               ),
                               child: ClipRRect(
                                 borderRadius:
-                                BorderRadius.all(Radius.circular(8)),
+                                    BorderRadius.all(Radius.circular(8)),
                                 child: Image.network(
                                   categoryList[index]['imageUrl'],
                                   scale: 5,
@@ -147,10 +146,11 @@ class _AllCategoriesState extends State<AllCategories>
                               ),
                             ),
                             Text(
-                                categoryList[index]['title'].length > 9
-                                    ? categoryList[index]['title'].substring(0, 9) +
-                                    ".."
-                                    : categoryList[index]['title'],
+                              categoryList[index]['title'].length > 9
+                                  ? categoryList[index]['title']
+                                          .substring(0, 9) +
+                                      ".."
+                                  : categoryList[index]['title'],
                               style: textBarlowRegularrdarkdull(),
                               textAlign: TextAlign.center,
                             ),
