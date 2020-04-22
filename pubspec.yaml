@@ -71,6 +71,10 @@ flutter:
         - asset: lib/assets/fonts/oswaldBold.ttf
           weight: 400
 
+    - family: 'FuturaBold'
+      fonts:
+        - asset: lib/assets/fonts/futuraBold.otf
+          weight: 400
 
 
   # To add assets to your application, add an assets section, like this:
@@ -116,6 +120,21 @@ flutter:
     - lib/assets/icons/lgout.svg
     - lib/assets/images/banner.png
     - lib/assets/icons/filter.png
+    - lib/assets/icons/Home.png
+    - lib/assets/icons/products.png
+    - lib/assets/icons/orders.png
+    - lib/assets/icons/location.png
+    - lib/assets/icons/fav.png
+    - lib/assets/icons/chat.png
+    - lib/assets/icons/help.png
+    - lib/assets/icons/about.png
+    - lib/assets/icons/lg.png
+    - lib/assets/icons/app.png
+    - lib/assets/icons/mobile.png
+    - lib/assets/icons/mail.png
+
+
+
 
     - lib/assets/splash.png
 

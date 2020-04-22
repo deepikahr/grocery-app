@@ -25,7 +25,6 @@ final greyb = const Color(0xFF707070);
 
 final greyc = const Color(0xFF8E8E93);
 
-
 double screenHeight(context) {
   return MediaQuery.of(context).size.height;
 }
@@ -818,21 +817,21 @@ TextStyle textbarlowmedium() {
     color: Colors.black.withOpacity(0.60),
   );
 }
+
 TextStyle textbarlowmediumwhite() {
   return TextStyle(
-    fontSize: 10.0,
-    fontWeight: FontWeight.w500,
-    fontFamily: 'BarlowMedium',
-    color: Colors.white
-  );
+      fontSize: 10.0,
+      fontWeight: FontWeight.w500,
+      fontFamily: 'BarlowMedium',
+      color: Colors.white);
 }
+
 TextStyle textbarlowmediumwhitedull() {
   return TextStyle(
       fontSize: 10.0,
       fontWeight: FontWeight.w500,
       fontFamily: 'BarlowMedium',
-      color: Colors.white.withOpacity(0.60)
-  );
+      color: Colors.white.withOpacity(0.60));
 }
 
 TextStyle textbarlowmediumwred() {
@@ -840,43 +839,53 @@ TextStyle textbarlowmediumwred() {
       fontSize: 30.0,
       fontWeight: FontWeight.w500,
       fontFamily: 'BarlowMedium',
-      color: Color(0xFFF44242)
-  );
+      color: Color(0xFFF44242));
 }
+
 TextStyle textbarlowmediumwblack() {
   return TextStyle(
       fontSize: 16.0,
       fontWeight: FontWeight.w500,
       fontFamily: 'BarlowMedium',
-      color: Colors.black
-  );
+      color: Colors.black);
 }
+
 TextStyle textbarlowmediumwprimary() {
   return TextStyle(
       fontSize: 16.0,
       fontWeight: FontWeight.w500,
       fontFamily: 'BarlowMedium',
-      color: primary
+      color: primary);
+}
+//////futuraBold//////
+
+TextStyle textbarlowBoldWhitebig() {
+  return TextStyle(
+    fontSize: 25.0,
+    fontWeight: FontWeight.bold,
+    fontFamily: 'FuturaBold',
+    color: Colors.white,
   );
 }
+
 //////barlowBold//////
 
 TextStyle textbarlowBoldBlack() {
   return TextStyle(
-      fontSize: 20.0,
-      fontWeight: FontWeight.bold,
-      fontFamily: 'BarlowBold',
-      color: Colors.black,
-      );
+    fontSize: 20.0,
+    fontWeight: FontWeight.bold,
+    fontFamily: 'BarlowBold',
+    color: Colors.black,
+  );
 }
 
 TextStyle textbarlowBoldGreen() {
   return TextStyle(
-      fontSize: 18.0,
-      fontWeight: FontWeight.bold,
-      fontFamily: 'BarlowBold',
-      color: Color(0xFF00BFA5),
-      );
+    fontSize: 18.0,
+    fontWeight: FontWeight.bold,
+    fontFamily: 'BarlowBold',
+    color: Color(0xFF00BFA5),
+  );
 }
 
 TextStyle textbarlowBoldgreen() {
@@ -890,38 +899,38 @@ TextStyle textbarlowBoldgreen() {
 
 TextStyle textbarlowBoldWhite() {
   return TextStyle(
-      fontSize: 16.0,
-      fontWeight: FontWeight.bold,
-      fontFamily: 'BarlowBold',
-      color: Colors.white,
-      );
+    fontSize: 16.0,
+    fontWeight: FontWeight.bold,
+    fontFamily: 'BarlowBold',
+    color: Colors.white,
+  );
 }
 
 TextStyle textBarlowBoldBlack() {
   return TextStyle(
-      fontSize: 18.0,
-      fontWeight: FontWeight.bold,
-      fontFamily: 'BarlowBold',
-      color: Colors.black,
-      );
+    fontSize: 18.0,
+    fontWeight: FontWeight.bold,
+    fontFamily: 'BarlowBold',
+    color: Colors.black,
+  );
 }
 
 TextStyle textBarlowBoldPrimary() {
   return TextStyle(
-      fontSize: 18.0,
-      fontWeight: FontWeight.bold,
-      fontFamily: 'BarlowBold',
-      color: primary,
-      );
+    fontSize: 18.0,
+    fontWeight: FontWeight.bold,
+    fontFamily: 'BarlowBold',
+    color: primary,
+  );
 }
 
 TextStyle textbarlowBoldsmBlack() {
   return TextStyle(
-      fontSize: 15.0,
-      fontWeight: FontWeight.bold,
-      fontFamily: 'BarlowBold',
-      color: Colors.black,
-      );
+    fontSize: 15.0,
+    fontWeight: FontWeight.bold,
+    fontFamily: 'BarlowBold',
+    color: Colors.black,
+  );
 }
 
 TextStyle textbarlowBoldwhite() {
@@ -937,20 +946,21 @@ TextStyle textbarlowBoldwhite() {
 
 TextStyle textbarlowSemiBoldBlack() {
   return TextStyle(
-      fontSize: 17.0,
-      fontFamily: 'BarlowSemiBold',
-      color: Colors.black,
-      fontWeight: FontWeight.w700,
-      );
+    fontSize: 17.0,
+    fontFamily: 'BarlowSemiBold',
+    color: Colors.black,
+    fontWeight: FontWeight.w700,
+  );
 }
 
 TextStyle textBarlowSemiBoldBlack() {
   return TextStyle(
-      fontSize: 20.0,
-      fontWeight: FontWeight.bold,
-      fontFamily: 'BarlowSemiBold',
-      color: Colors.black,
-      );
+//////barlowBold//////
+    fontSize: 20.0,
+    fontWeight: FontWeight.bold,
+    fontFamily: 'BarlowSemiBold',
+    color: Colors.black,
+  );
 }
 
 TextStyle textBarlowSemiBoldBlackbigg() {
@@ -979,6 +989,7 @@ TextStyle textBarlowSemiBoldBlackbig() {
     color: Colors.black,
   );
 }
+
 TextStyle textBarlowSemiBoldwbig() {
   return TextStyle(
     fontSize: 14.0,
@@ -987,79 +998,81 @@ TextStyle textBarlowSemiBoldwbig() {
     color: Colors.white,
   );
 }
+
 ///barlow medium///
 
 TextStyle textbarlowMediumBlack() {
   return TextStyle(
-      fontSize: 20.0,
-      fontWeight: FontWeight.w400,
-      fontFamily: 'BarlowMedium',
-      color: Colors.black,
-      );
+    fontSize: 20.0,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'BarlowMedium',
+    color: Colors.black,
+  );
 }
 
 TextStyle textbarlowMediumlgBlack() {
   return TextStyle(
-      fontSize: 45.0,
-      fontWeight: FontWeight.w400,
-      fontFamily: 'BarlowMedium',
-      color: Colors.black,
-      );
+    fontSize: 45.0,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'BarlowMedium',
+    color: Colors.black,
+  );
 }
 
 TextStyle textBarlowMediumBlack() {
   return TextStyle(
-      fontSize: 17.0,
-      fontWeight: FontWeight.w500,
-      fontFamily: 'BarlowMedium',
-      color: Colors.black,
-      );
+    fontSize: 17.0,
+    fontWeight: FontWeight.w500,
+    fontFamily: 'BarlowMedium',
+    color: Colors.black,
+  );
 }
 
 TextStyle textBarlowMediumPrimary() {
   return TextStyle(
-      fontSize: 15.0,
-      fontWeight: FontWeight.w400,
-      fontFamily: 'BarlowMedium',
-      color: primary,
-      );
+    fontSize: 15.0,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'BarlowMedium',
+    color: primary,
+  );
 }
 
 TextStyle textBarlowMediumGreen() {
   return TextStyle(
-      fontSize: 16.0,
-      fontWeight: FontWeight.w400,
-      fontFamily: 'BarlowMedium',
-      color: Color(0xFF20C978),
-      );
+    fontSize: 16.0,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'BarlowMedium',
+    color: Color(0xFF20C978),
+  );
 }
 
 TextStyle textBarlowMediumsmBlack() {
   return TextStyle(
-      fontSize: 10.0,
-      fontWeight: FontWeight.w400,
-      fontFamily: 'BarlowMedium',
-      color: Colors.black,
-      );
+    fontSize: 10.0,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'BarlowMedium',
+    color: Colors.black,
+  );
 }
 
 TextStyle textBarlowMediumsmWhite() {
   return TextStyle(
-      fontSize: 10.0,
-      fontWeight: FontWeight.w400,
-      fontFamily: 'BarlowMedium',
-      color: Color(0xFF8E8E93),
-      );
+    fontSize: 10.0,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'BarlowMedium',
+    color: Color(0xFF8E8E93),
+  );
 }
 
 TextStyle textBarlowMediumsmallWhite() {
   return TextStyle(
-      fontSize: 19.0,
-      fontWeight: FontWeight.w400,
-      fontFamily: 'BarlowMedium',
-      color: Colors.white,
-      );
+    fontSize: 19.0,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'BarlowMedium',
+    color: Colors.white,
+  );
 }
+
 TextStyle textBarlowmediumsmallWhite() {
   return TextStyle(
     fontSize: 12.0,
@@ -1068,14 +1081,26 @@ TextStyle textBarlowmediumsmallWhite() {
     color: Colors.white,
   );
 }
+
+TextStyle textBarlowmediumLink() {
+  return TextStyle(
+    fontSize: 12.0,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'BarlowMedium',
+    color: Color(0xFF3783DA),
+  );
+}
+
 ///barlow regular /////
+
 TextStyle textbarlowRegularBlack() {
   return TextStyle(
-      fontSize: 15.0,
-      fontFamily: 'BarlowRegular',
-      color: Colors.black,
-      );
+    fontSize: 15.0,
+    fontFamily: 'BarlowRegular',
+    color: Colors.black,
+  );
 }
+
 TextStyle textbarlowRegularBlackb() {
   return TextStyle(
     fontSize: 13.0,
@@ -1083,44 +1108,43 @@ TextStyle textbarlowRegularBlackb() {
     color: Colors.black,
   );
 }
+
 TextStyle textbarlowRegularBlackd() {
   return TextStyle(
-      fontSize: 16.0,
-      fontFamily: 'BarlowRegular',
-      color: Colors.black.withOpacity(0.60),
-      );
+    fontSize: 16.0,
+    fontFamily: 'BarlowRegular',
+    color: Colors.black.withOpacity(0.60),
+  );
 }
 
 TextStyle textbarlowRegulardull() {
   return TextStyle(
-    fontSize: 13.0,
-    fontFamily: 'BarlowRegular',
-    color: Color(0xFFBBBBBB)
-  );
+      fontSize: 13.0, fontFamily: 'BarlowRegular', color: Color(0xFFBBBBBB));
 }
+
 TextStyle textbarlowRegularBlackdull() {
   return TextStyle(
-      fontSize: 15.0,
-      fontFamily: 'BarlowRegular',
-      color: Colors.black.withOpacity(0.60),
-      );
+    fontSize: 15.0,
+    fontFamily: 'BarlowRegular',
+    color: Colors.black.withOpacity(0.60),
+  );
 }
 
 TextStyle textbarlowRegularaPrimary() {
   return TextStyle(
-      fontSize: 16.0,
-      fontFamily: 'BarlowRegular',
-      fontWeight: FontWeight.w600,
-      color: primary,
-      );
+    fontSize: 16.0,
+    fontFamily: 'BarlowRegular',
+    fontWeight: FontWeight.w600,
+    color: primary,
+  );
 }
 
 TextStyle textbarlowRegularaPrimar() {
   return TextStyle(
-      fontSize: 16.0,
-      fontFamily: 'BarlowRegular',
-      color: primary,
-      );
+    fontSize: 16.0,
+    fontFamily: 'BarlowRegular',
+    color: primary,
+  );
 }
 
 TextStyle textbarlowRegularad() {
@@ -1144,8 +1168,7 @@ TextStyle textBarlowRegularBlack() {
       fontSize: 16.0,
       fontFamily: 'BarlowRegular',
       color: Colors.black,
-    fontWeight: FontWeight.w500
-     );
+      fontWeight: FontWeight.w500);
 }
 
 TextStyle textBarlowRegularBb() {
@@ -1153,8 +1176,7 @@ TextStyle textBarlowRegularBb() {
       fontSize: 13.0,
       fontFamily: 'BarlowRegular',
       color: Color(0xFFBBBBBB),
-      fontWeight: FontWeight.w500
-  );
+      fontWeight: FontWeight.w500);
 }
 
 TextStyle textBarlowRegularBlackdl() {
@@ -1162,8 +1184,7 @@ TextStyle textBarlowRegularBlackdl() {
       fontSize: 14.0,
       fontFamily: 'BarlowRegular',
       color: Colors.black.withOpacity(0.60),
-      fontWeight: FontWeight.w500
-  );
+      fontWeight: FontWeight.w500);
 }
 
 TextStyle textBarlowRegularBlacklight() {
@@ -1171,40 +1192,39 @@ TextStyle textBarlowRegularBlacklight() {
       fontSize: 16.0,
       fontFamily: 'BarlowRegular',
       color: Colors.black.withOpacity(0.20),
-      fontWeight: FontWeight.w500
-  );
+      fontWeight: FontWeight.w500);
 }
 
 TextStyle textBarlowRegularBlackwithOpacity() {
   return TextStyle(
-      fontSize: 16.0,
-      fontFamily: 'BarlowRegular',
-      color: Colors.black.withOpacity(0.30),
-      );
+    fontSize: 16.0,
+    fontFamily: 'BarlowRegular',
+    color: Colors.black.withOpacity(0.30),
+  );
 }
 
 TextStyle textBarlowRegularBlackwithOpa() {
   return TextStyle(
-      fontSize: 16.0,
-      fontFamily: 'BarlowRegular',
-      color: Colors.black.withOpacity(0.50),
-      );
+    fontSize: 16.0,
+    fontFamily: 'BarlowRegular',
+    color: Colors.black.withOpacity(0.50),
+  );
 }
 
 TextStyle textBarlowRegularWhite() {
   return TextStyle(
-      fontSize: 16.0,
-      fontFamily: 'BarlowRegular',
-      color: Colors.white,
-      );
+    fontSize: 16.0,
+    fontFamily: 'BarlowRegular',
+    color: Colors.white,
+  );
 }
 
 TextStyle textBarlowRegularWhit() {
   return TextStyle(
-      fontSize: 15.0,
-      fontFamily: 'BarlowRegular',
-      color: Colors.white,
-      );
+    fontSize: 15.0,
+    fontFamily: 'BarlowRegular',
+    color: Colors.white,
+  );
 }
 
 TextStyle textBarlowregbkck() {
@@ -1214,6 +1234,7 @@ TextStyle textBarlowregbkck() {
     color: Colors.black,
   );
 }
+
 TextStyle textBarlowregwhite() {
   return TextStyle(
     fontSize: 11.0,
@@ -1221,6 +1242,7 @@ TextStyle textBarlowregwhite() {
     color: Colors.white,
   );
 }
+
 //TextStyle textBarlowRegularrBlacksm() {
 //  return TextStyle(
 //      fontSize: 12.0,
@@ -1237,6 +1259,7 @@ TextStyle textSMBarlowRegularrBlack() {
       color: Colors.black.withOpacity(0.6),
       letterSpacing: 0.1);
 }
+
 TextStyle textSMBarlowRegularrGreyb() {
   return TextStyle(
       fontSize: 13.0,
@@ -1245,6 +1268,7 @@ TextStyle textSMBarlowRegularrGreyb() {
       color: greyb,
       letterSpacing: 0.1);
 }
+
 TextStyle titleLargeSegoeBlack() {
   return TextStyle(
       fontSize: 20.0,
@@ -1253,6 +1277,7 @@ TextStyle titleLargeSegoeBlack() {
       color: Colors.black.withOpacity(0.6),
       letterSpacing: 0.1);
 }
+
 TextStyle titleSegoeGreen() {
   return TextStyle(
       fontSize: 16.0,
@@ -1261,6 +1286,7 @@ TextStyle titleSegoeGreen() {
       color: green,
       letterSpacing: 0.1);
 }
+
 TextStyle titleSegoeGrey() {
   return TextStyle(
       fontSize: 16.0,
@@ -1269,6 +1295,7 @@ TextStyle titleSegoeGrey() {
       color: greyb.withOpacity(0.5),
       letterSpacing: 0.1);
 }
+
 TextStyle appbarTitle() {
   return TextStyle(
     fontSize: 17.0,
@@ -1280,20 +1307,20 @@ TextStyle appbarTitle() {
 
 TextStyle textBarlowRegularrBlack() {
   return TextStyle(
-      fontSize: 20.0,
-      fontFamily: 'BarlowRegular',
-      fontWeight: FontWeight.w400,
-      color: Colors.black,
-      );
+    fontSize: 20.0,
+    fontFamily: 'BarlowRegular',
+    fontWeight: FontWeight.w400,
+    color: Colors.black,
+  );
 }
 
 TextStyle textBarlowRegularrWhite() {
   return TextStyle(
-      fontSize: 18.0,
-      fontFamily: 'BarlowRegular',
-      fontWeight: FontWeight.w300,
-      color: Colors.white,
-      );
+    fontSize: 18.0,
+    fontFamily: 'BarlowRegular',
+    fontWeight: FontWeight.w300,
+    color: Colors.white,
+  );
 }
 
 TextStyle textBarlowRegularrdark() {
@@ -1313,28 +1340,46 @@ TextStyle textBarlowRegularrdarkdull() {
     color: Colors.black.withOpacity(0.40),
   );
 }
+
 TextStyle textBarlowRegularGreen() {
   return TextStyle(
-      fontSize: 16.0,
-      fontFamily: 'BarlowRegular',
-      color: Color(0xFF20C978),
-      );
+    fontSize: 16.0,
+    fontFamily: 'BarlowRegular',
+    color: Color(0xFF20C978),
+  );
 }
 
 TextStyle textBarlowRegularrBlacksm() {
   return TextStyle(
-      fontSize: 12.0,
-      fontFamily: 'BarlowRegular',
-      fontWeight: FontWeight.w400,
-      color: Colors.black.withOpacity(0.6),
-      );
+    fontSize: 12.0,
+    fontFamily: 'BarlowRegular',
+    fontWeight: FontWeight.w400,
+    color: Colors.black.withOpacity(0.6),
+  );
 }
+
 TextStyle textBarlowRegularrwhsm() {
   return TextStyle(
     fontSize: 10.0,
     fontFamily: 'BarlowRegular',
     fontWeight: FontWeight.w400,
     color: Colors.white.withOpacity(0.87),
+  );
+}
+
+TextStyle textBarlowregwhitelg() {
+  return TextStyle(
+    fontSize: 20.0,
+    fontFamily: 'BarlowRegular',
+    color: Colors.white.withOpacity(0.70),
+  );
+}
+
+TextStyle textBarlowregredlg() {
+  return TextStyle(
+    fontSize: 20.0,
+    fontFamily: 'BarlowRegular',
+    color: Color(0xFFF44242),
   );
 }
 

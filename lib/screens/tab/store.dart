@@ -5,6 +5,7 @@ import 'package:getflutter/components/carousel/gf_carousel.dart';
 import 'package:getflutter/components/image/gf_image_overlay.dart';
 import 'package:grocery_pro/screens/categories/allcategories.dart';
 import 'package:grocery_pro/screens/categories/subcategories.dart';
+import 'package:grocery_pro/screens/home/drawer.dart';
 import 'package:grocery_pro/screens/product/all_deals.dart';
 import 'package:grocery_pro/screens/product/all_products.dart';
 import 'package:grocery_pro/screens/product/product-details.dart';
@@ -121,6 +122,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
         if (mounted) {
           setState(() {
             getTokenValue = true;
+
             getFavListApi();
           });
         }
@@ -288,18 +290,21 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              MyLocalizations.of(context).deliveryAddress,
-              style: textBarlowRegularrBlacksm(),
-            ),
-            Text(
-              addressData.substring(0, 22) + '...',
-              style: textBarlowSemiBoldBlackbig(),
-            )
-          ],
+        Container(
+          width: MediaQuery.of(context).size.width * 0.6,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                MyLocalizations.of(context).deliveryAddress,
+                style: textBarlowRegularrBlacksm(),
+              ),
+              Text(
+                addressData.substring(0, 22) + '...',
+                style: textBarlowSemiBoldBlackbig(),
+              )
+            ],
+          ),
         ),
       ],
     );
@@ -324,6 +329,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                           builder: (context) => AllCategories(
                             locale: widget.locale,
                             localizedValues: widget.localizedValues,
+                            getTokenValue: getTokenValue,
                           ),
                         ),
                       );
@@ -342,7 +348,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                   physics: ScrollPhysics(),
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
-                  itemCount: categoryList.length != null ? categoryList.length : 0,
+                  itemCount:
+                      categoryList.length != null ? categoryList.length : 0,
                   itemBuilder: (BuildContext context, int index) {
                     return InkWell(
                       onTap: () {
@@ -350,12 +357,12 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                           context,
                           MaterialPageRoute(
                             builder: (context) => SubCategories(
-                              locale: widget.locale,
-                              localizedValues: widget.localizedValues,
-                              catId: categoryList[index]['_id'],
-                              catTitle:
-                                  '${categoryList[index]['title'][0].toUpperCase()}${categoryList[index]['title'].substring(1)}',
-                            ),
+                                locale: widget.locale,
+                                localizedValues: widget.localizedValues,
+                                catId: categoryList[index]['_id'],
+                                catTitle:
+                                    '${categoryList[index]['title'][0].toUpperCase()}${categoryList[index]['title'].substring(1)}',
+                                token: getTokenValue),
                           ),
                         );
                       },
@@ -406,12 +413,12 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                     context,
                     MaterialPageRoute(
                       builder: (context) => SubCategories(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
-                        catId: url['category'],
-                        catTitle:
-                            '${url['title'][0].toUpperCase()}${url['title'].substring(1)}',
-                      ),
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                          catId: url['category'],
+                          catTitle:
+                              '${url['title'][0].toUpperCase()}${url['title'].substring(1)}',
+                          token: getTokenValue),
                     ),
                   );
                 }
@@ -434,7 +441,9 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          url['title'],
+                          url['title'].length > 20
+                              ? url['title'].substring(0, 20) + ".."
+                              : url['title'],
                           style: textbarlowBoldwhite(),
                         ),
                         InkWell(
@@ -457,12 +466,12 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => SubCategories(
-                                    locale: widget.locale,
-                                    localizedValues: widget.localizedValues,
-                                    catId: url['category'],
-                                    catTitle:
-                                        '${url['title'][0].toUpperCase()}${url['title'].substring(1)}',
-                                  ),
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues,
+                                      catId: url['category'],
+                                      catTitle:
+                                          '${url['title'][0].toUpperCase()}${url['title'].substring(1)}',
+                                      token: getTokenValue),
                                 ),
                               );
                             }
@@ -566,10 +575,10 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       itemCount: list.length != null ? list.length : 0,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          childAspectRatio: MediaQuery.of(context).size.width / 400,
+                          childAspectRatio:
+                              MediaQuery.of(context).size.width / 400,
                           crossAxisSpacing: 16,
-                          mainAxisSpacing: 16
-                      ),
+                          mainAxisSpacing: 16),
                       itemBuilder: (BuildContext context, int i) {
                         if (list[i]['averageRating'] == null) {
                           list[i]['averageRating'] = 0;
@@ -598,9 +607,9 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                     children: <Widget>[
                                       ProductCard(
                                         image: list[i]['imageUrl'],
-                                        title: list[i]['title'].length > 10
+                                        title: list[i]['title'].length > 15
                                             ? list[i]['title']
-                                                    .substring(0, 10) +
+                                                    .substring(0, 15) +
                                                 ".."
                                             : list[i]['title'],
                                         currency: currency,
@@ -609,6 +618,9 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                             .toString(),
                                         rating:
                                             list[i]['averageRating'].toString(),
+                                        buttonName: null,
+                                        productList: list[i],
+                                        variantList: list[i]['variant'],
                                       ),
                                       list[i]['isDealAvailable'] == true
                                           ? Positioned(
@@ -660,11 +672,17 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                 children: <Widget>[
                                   ProductCard(
                                     image: list[i]['imageUrl'],
-                                    title: list[i]['title'],
+                                    title: list[i]['title'].length > 15
+                                        ? list[i]['title'].substring(0, 15) +
+                                            ".."
+                                        : list[i]['title'],
                                     currency: currency,
                                     category: list[i]['category'],
                                     price: list[i]['variant'][0]['price'],
                                     rating: list[i]['averageRating'].toString(),
+                                    buttonName: null,
+                                    productList: list[i],
+                                    variantList: list[i]['variant'],
                                   ),
                                   CardOverlay()
                                 ],
@@ -733,12 +751,12 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => SubCategories(
-                                      locale: widget.locale,
-                                      localizedValues: widget.localizedValues,
-                                      catId: list[i]['category'],
-                                      catTitle:
-                                          '${list[i]['name'][0].toUpperCase()}${list[i]['name'].substring(1)}',
-                                    ),
+                                        locale: widget.locale,
+                                        localizedValues: widget.localizedValues,
+                                        catId: list[i]['category'],
+                                        catTitle:
+                                            '${list[i]['name'][0].toUpperCase()}${list[i]['name'].substring(1)}',
+                                        token: getTokenValue),
                                   ),
                                 );
                               } else {
@@ -776,7 +794,12 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                         CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: <Widget>[
-                                      Text(list[i]['name'],
+                                      Text(
+                                          list[i]['name'].length > 15
+                                              ? list[i]['name']
+                                                      .substring(0, 15) +
+                                                  ".."
+                                              : list[i]['name'],
                                           style: textBarlowSemiBoldwbig()),
                                       Text(
                                         list[i]['delaPercent'].toString() +
@@ -854,12 +877,12 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => SubCategories(
-                                      locale: widget.locale,
-                                      localizedValues: widget.localizedValues,
-                                      catId: list[i]['category'],
-                                      catTitle:
-                                          '${list[i]['name'][0].toUpperCase()}${list[i]['name'].substring(1)}',
-                                    ),
+                                        locale: widget.locale,
+                                        localizedValues: widget.localizedValues,
+                                        catId: list[i]['category'],
+                                        catTitle:
+                                            '${list[i]['name'][0].toUpperCase()}${list[i]['name'].substring(1)}',
+                                        token: getTokenValue),
                                   ),
                                 );
                               } else {
@@ -905,7 +928,10 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                         height: 5,
                                       ),
                                       Text(
-                                        list[i]['name'],
+                                        list[i]['name'].length > 15
+                                            ? list[i]['name'].substring(0, 15) +
+                                                ".."
+                                            : list[i]['name'],
                                         style: textBarlowmediumsmallWhite(),
                                       )
                                     ],
@@ -945,6 +971,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       localizedValues: widget.localizedValues,
                       productsList: searchProductList,
                       currency: currency,
+                      token: getTokenValue,
                       favProductList: getTokenValue ? favProductList : null),
                 ),
               );
@@ -958,7 +985,9 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
           ),
         ],
       ),
-//      drawer: Drawer(),
+      drawer: Drawer(
+        child: DrawerPage(),
+      ),
       backgroundColor: bg,
       key: _scaffoldKeydrawer,
       body: SmartRefresher(
@@ -994,7 +1023,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       SizedBox(height: 10),
                       Divider(),
                       SizedBox(height: 10),
-                      productRow(MyLocalizations.of(context).products, productsList),
+                      productRow(
+                          MyLocalizations.of(context).products, productsList),
                       SizedBox(height: 10),
                       Divider(),
                       SizedBox(height: 10),

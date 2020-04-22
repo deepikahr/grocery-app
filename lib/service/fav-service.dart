@@ -1,4 +1,5 @@
 import 'package:http/http.dart' show Client;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'constants.dart';
 import 'common.dart';
@@ -27,6 +28,7 @@ class FavouriteService {
     await Common.getToken().then((onValue) {
       token = onValue;
     });
+
     final response = await client.get(Constants.baseURL + "favourites/user",
         headers: {
           'Content-Type': 'application/json',

@@ -188,13 +188,15 @@ class _ProfileState extends State<Profile> {
     });
   }
 
-  logout() {
+  logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     if (mounted) {
       setState(() {
         logoutLoading = true;
       });
     }
     Common.setToken(null).then((value) {
+      prefs.setString("userID", null);
       if (value == true) {
         if (mounted) {
           setState(() {

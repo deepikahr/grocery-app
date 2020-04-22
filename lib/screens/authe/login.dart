@@ -24,9 +24,10 @@ class Login extends StatefulWidget {
       this.isSaveItem,
       this.isProductDetails,
       this.locale,
-      this.localizedValues})
+      this.localizedValues,
+      this.isBottomSheet})
       : super(key: key);
-  final bool isProfile, isCart, isSaveItem, isProductDetails;
+  final bool isProfile, isCart, isSaveItem, isProductDetails, isBottomSheet;
   final Map<String, Map<String, String>> localizedValues;
   final String locale;
 
@@ -84,7 +85,8 @@ class _LoginState extends State<Login> {
           }
           if (onValue['response_code'] == 200) {
             Common.setToken(onValue['response_data']['token']);
-            // Navigator.pop(context);
+
+            prefs.setString("userID", onValue['response_data']['_id']);
             if (widget.isCart == true) {
               Navigator.pushAndRemoveUntil(
                   context,
@@ -122,6 +124,8 @@ class _LoginState extends State<Login> {
                   ),
                   (Route<dynamic> route) => false);
             } else if (widget.isProductDetails == true) {
+              Navigator.pop(context);
+            } else if (widget.isBottomSheet == true) {
               Navigator.pop(context);
             } else {
               Navigator.pushAndRemoveUntil(
