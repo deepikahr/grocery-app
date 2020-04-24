@@ -950,7 +950,7 @@ class _CheckoutState extends State<Checkout> {
                                         LocationResult result =
                                             await showLocationPicker(
                                           context,
-                                          "AIzaSyD6Q4UgAYOL203nuwNeBr4j_-yAd1U1gko",
+                                          GOOGLE_API_KEY,
                                           initialCenter:
                                               LatLng(31.1975844, 29.9598339),
                                           myLocationButtonEnabled: true,
