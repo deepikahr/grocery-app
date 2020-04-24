@@ -19,6 +19,8 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dotted_border/dotted_border.dart';
 
+import '../../service/constants.dart';
+
 SentryError sentryError = new SentryError();
 
 class Checkout extends StatefulWidget {
@@ -950,7 +952,7 @@ class _CheckoutState extends State<Checkout> {
                                         LocationResult result =
                                             await showLocationPicker(
                                           context,
-                                          GOOGLE_API_KEY,
+                                          Constants.GOOGLE_API_KEY,
                                           initialCenter:
                                               LatLng(31.1975844, 29.9598339),
                                           myLocationButtonEnabled: true,
