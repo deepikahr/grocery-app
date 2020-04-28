@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
-import 'package:grocery_pro/screens/address/address.dart';
+import 'package:grocery_pro/screens/drawer/address.dart';
 import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/sentry-service.dart';

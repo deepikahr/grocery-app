@@ -118,6 +118,7 @@ class _MyAppState extends State<MyApp> {
     }
     SharedPreferences prefs = await SharedPreferences.getInstance();
     getGlobalSettings().then((onValue) {
+      print(onValue);
       try {
         if (onValue['response_data']['languageCode'] == null) {
           prefs.setString('selectedLanguage', 'en');

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:getflutter/getflutter.dart';
-import 'package:grocery_pro/screens/home/drawer.dart';
+import 'package:grocery_pro/screens/drawer/drawer.dart';
 import 'package:grocery_pro/screens/tab/mycart.dart';
 import 'package:grocery_pro/screens/tab/profile.dart';
 import 'package:grocery_pro/screens/tab/saveditems.dart';
@@ -56,6 +56,14 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   Location _location = new Location();
   var addressData;
   void initState() {
+    if (widget.currentIndex != null) {
+      if (mounted) {
+        setState(() {
+          currentIndex = widget.currentIndex;
+          print(currentIndex);
+        });
+      }
+    }
     getResult();
     getGlobalSettingsData();
     configLocalNotification();
@@ -240,6 +248,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         if (mounted) {
           setState(() {
             addressData = address;
+
             print(address);
           });
         }
@@ -253,6 +262,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       if (mounted) {
         setState(() {
           addressData = first.addressLine;
+          isCurrentLoactionLoading = false;
         });
       }
       print(addressData);
@@ -263,13 +273,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.currentIndex != null) {
-      if (mounted) {
-        setState(() {
-          currentIndex = widget.currentIndex;
-        });
-      }
-    }
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: GFAppBar(
@@ -302,7 +305,11 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         ],
       ),
       drawer: Drawer(
-        child: DrawerPage(),
+        child: DrawerPage(
+          locale: widget.locale,
+          localizedValues: widget.localizedValues,
+          addressData: addressData != null ? addressData : widget.addressData,
+        ),
       ),
       body: currencyLoading
           ? SquareLoader()
