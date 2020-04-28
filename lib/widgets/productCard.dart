@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grocery_pro/model/bottomSheet.dart';
 import 'package:grocery_pro/screens/authe/login.dart';
 import 'package:grocery_pro/style/style.dart';
@@ -62,15 +63,15 @@ class ProductCard extends StatelessWidget {
           children: <Widget>[
             ClipRRect(
               borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(12)),
+              const BorderRadius.vertical(top: Radius.circular(12)),
               child: image == null
                   ? Image.asset(nullImage)
                   : Image.network(
-                      image,
-                      fit: BoxFit.fill,
-                      height: 120,
-                      width: MediaQuery.of(context).size.width,
-                    ),
+                image,
+                fit: BoxFit.fill,
+                height: 120,
+                width: MediaQuery.of(context).size.width,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
@@ -117,62 +118,104 @@ class ProductCard extends StatelessWidget {
                           style: textbarlowBoldgreen(),
                         ),
                       ),
-                      buttonName == null
-                          ? Container()
-                          : buttonName == "Add"
-                              ? InkWell(
-                                  onTap: () {
-                                    if (productList != null &&
-                                        variantList != null) {
-                                      showModalBottomSheet(
-                                          context: context,
-                                          builder: (BuildContext bc) {
-                                            return BottonSheetClassDryClean(
-                                                locale: locale,
-                                                localizedValues:
-                                                    localizedValues,
-                                                currency: currency,
-                                                productList: productList,
-                                                variantsList: variantList);
-                                          });
-                                    }
-                                  },
-                                  child: Container(
-                                    height: 17,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(2),
-                                        ),
-                                        color: primary),
-                                    padding:
-                                        EdgeInsets.only(left: 15, right: 15),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: <Widget>[
-                                        Text(
-                                          buttonName,
-                                          style: textBarlowregwhite(),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              : Container(
-                                  height: 17,
-                                  decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(2)),
-                                      color: Colors.green),
-                                  padding: EdgeInsets.only(left: 15, right: 15),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: <Widget>[
-                                      Text(buttonName,
-                                          style: textBarlowregwhite()),
-                                    ],
-                                  ),
-                                ),
+
                     ],
+                  ),
+                  buttonName == null
+                      ? Container()
+                      : buttonName == "Add"
+                      ? InkWell(
+                    onTap: () {
+                      if (productList != null &&
+                          variantList != null) {
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (BuildContext bc) {
+                              return BottonSheetClassDryClean(
+                                  locale: locale,
+                                  localizedValues:
+                                  localizedValues,
+                                  currency: currency,
+                                  productList: productList,
+                                  variantsList: variantList);
+                            });
+                      }
+                    },
+                    child: Container(
+                      height: 35,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(5),
+                          ),
+                          color: primary),
+                      padding:
+                      EdgeInsets.only(left: 15, right: 15, bottom: 5),
+                      margin: EdgeInsets.only(top:5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            buttonName,
+                            style: textbarlowMediumBlackm(),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                      : Container(
+                    height: 35,
+                    decoration: BoxDecoration(
+                        borderRadius:
+                        BorderRadius.all(Radius.circular(5)),
+                        color: Colors.green),
+                    padding: EdgeInsets.only(left: 15, right: 15),
+                    margin: EdgeInsets.only(top:5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(buttonName,
+                            style: textbarlowMediumBlackm()),
+                      ],
+                    ),
+                  ),
+
+                  Container(
+                    height: 35,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(5),
+                        ),
+                        color: Color(0XFFF0F0F0)),
+                    padding:
+                    EdgeInsets.only(),
+                    margin: EdgeInsets.only(top:5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Container(
+                          height: 35,
+                          width:35,
+                          padding: EdgeInsets.only(left: 8, right: 8),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                            color: Colors.black
+                          ),
+                          child:SvgPicture.asset('lib/assets/icons/delete.svg',)
+                        ),
+
+                        Text('1'),
+                        Container(
+                            height: 35,
+                            width:35,
+                            padding: EdgeInsets.only(left: 8, right: 8),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(5)),
+                              color: primary
+                          ),
+                            child:SvgPicture.asset('lib/assets/icons/add1.svg')
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
