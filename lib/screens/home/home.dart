@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:geocoder/geocoder.dart';
 import 'package:getflutter/getflutter.dart';
+import 'package:grocery_pro/screens/drawer/drawer.dart';
 import 'package:grocery_pro/screens/tab/mycart.dart';
 import 'package:grocery_pro/screens/tab/profile.dart';
 import 'package:grocery_pro/screens/tab/saveditems.dart';
+import 'package:grocery_pro/screens/tab/searchitem.dart';
 import 'package:grocery_pro/screens/tab/store.dart';
+import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/service/constants.dart';
+import 'package:grocery_pro/service/fav-service.dart';
 import 'package:grocery_pro/service/localizations.dart';
+import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/settings/globalSettings.dart';
 import 'package:grocery_pro/style/style.dart';
+import 'package:location/location.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:grocery_pro/widgets/loader.dart';
@@ -40,17 +47,26 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       currencyLoading = false,
       isCurrentLoactionLoading = false,
       isLocationLoading = false,
-      languagesSelection = false;
+      languagesSelection = false,
+      getTokenValue = false;
   int currentIndex = 0;
   var language, currency;
-
+  List searchProductList, favProductList;
+  LocationData currentLocation;
+  Location _location = new Location();
+  var addressData;
   void initState() {
-    // getGlobalSettingsData();
-
+    if (widget.currentIndex != null) {
+      if (mounted) {
+        setState(() {
+          currentIndex = widget.currentIndex;
+          print(currentIndex);
+        });
+      }
+    }
+    getResult();
     getGlobalSettingsData();
-
     configLocalNotification();
-
     tabController = TabController(length: 4, vsync: this);
     super.initState();
   }
@@ -77,6 +93,66 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           if (mounted) {
             setState(() {
               currencyLoading = false;
+            });
+          }
+        }
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
+  }
+
+  getToken() async {
+    await Common.getToken().then((onValue) {
+      if (onValue != null) {
+        if (mounted) {
+          setState(() {
+            getTokenValue = true;
+          });
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            getTokenValue = false;
+          });
+        }
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
+  }
+
+  getFavListApi() async {
+    await FavouriteService.getFavList().then((onValue) {
+      try {
+        if (mounted) {
+          setState(() {
+            favProductList = onValue['response_data'];
+          });
+        }
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
+  }
+
+  getProductListMethod() async {
+    await ProductService.getProductListAll().then((onValue) {
+      try {
+        if (onValue['response_code'] == 200) {
+          if (mounted) {
+            setState(() {
+              searchProductList = onValue['response_data'];
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              searchProductList = [];
             });
           }
         }
@@ -140,17 +216,101 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    if (widget.currentIndex != null) {
+  deliveryAddress() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Container(
+          width: MediaQuery.of(context).size.width * 0.6,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                MyLocalizations.of(context).deliveryAddress,
+                style: textBarlowRegularrBlacksm(),
+              ),
+              Text(
+                addressData != null
+                    ? addressData.substring(0, 22) + '...'
+                    : widget.addressData.substring(0, 22) + '...',
+                style: textBarlowSemiBoldBlackbig(),
+              )
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  getResult() async {
+    Common.getCurrentLocation().then((address) async {
+      if (address != null) {
+        if (mounted) {
+          setState(() {
+            addressData = address;
+
+            print(address);
+          });
+        }
+      }
+      currentLocation = await _location.getLocation();
+      final coordinates =
+          new Coordinates(currentLocation.latitude, currentLocation.longitude);
+      var addresses =
+          await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      var first = addresses.first;
       if (mounted) {
         setState(() {
-          currentIndex = widget.currentIndex;
+          addressData = first.addressLine;
+          isCurrentLoactionLoading = false;
         });
       }
-    }
+      print(addressData);
+      Common.setCurrentLocation(addressData);
+      return first;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: GFAppBar(
+        backgroundColor: bg,
+        elevation: 0,
+        title: deliveryAddress(),
+        actions: <Widget>[
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchItem(
+                      locale: widget.locale,
+                      localizedValues: widget.localizedValues,
+                      productsList: searchProductList,
+                      currency: currency,
+                      token: getTokenValue,
+                      favProductList: getTokenValue ? favProductList : null),
+                ),
+              );
+            },
+            child: Padding(
+              padding: EdgeInsets.only(right: 15, left: 15),
+              child: Icon(
+                Icons.search,
+              ),
+            ),
+          ),
+        ],
+      ),
+      drawer: Drawer(
+        child: DrawerPage(
+          locale: widget.locale,
+          localizedValues: widget.localizedValues,
+          addressData: addressData != null ? addressData : widget.addressData,
+        ),
+      ),
       body: currencyLoading
           ? SquareLoader()
           : GFTabBarView(
