@@ -115,20 +115,20 @@ class _SavedItemsState extends State<SavedItems> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: isGetTokenLoading
-          ? null
-          : token == null
-              ? null
-              : GFAppBar(
-                  title: Text(
-                    MyLocalizations.of(context).savedItems,
-                    style: textbarlowSemiBoldBlack(),
-                  ),
-                  centerTitle: true,
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  automaticallyImplyLeading: false,
-                ),
+      // appBar: isGetTokenLoading
+      //     ? null
+      //     : token == null
+      //         ? null
+      //         : GFAppBar(
+      //             title: Text(
+      //               MyLocalizations.of(context).savedItems,
+      //               style: textbarlowSemiBoldBlack(),
+      //             ),
+      //             centerTitle: true,
+      //             backgroundColor: Colors.transparent,
+      //             elevation: 0,
+      //             automaticallyImplyLeading: false,
+      //           ),
       body: isGetTokenLoading
           ? SquareLoader()
           : token == null

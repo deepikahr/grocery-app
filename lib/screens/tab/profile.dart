@@ -4,9 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:grocery_pro/main.dart';
 import 'package:grocery_pro/screens/authe/login.dart';
-import 'package:grocery_pro/screens/chat/chatpage.dart';
+import 'package:grocery_pro/screens/drawer/address.dart';
 import 'package:grocery_pro/screens/orders/orders.dart';
-import 'package:grocery_pro/screens/address/address.dart';
 import 'package:grocery_pro/screens/payment/addCard.dart';
 import 'package:grocery_pro/screens/tab/editprofile.dart';
 import 'package:grocery_pro/service/localizations.dart';
@@ -186,128 +185,6 @@ class _ProfileState extends State<Profile> {
     }).catchError((error) {
       sentryError.reportError(error, null);
     });
-  }
-
-  logout() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (mounted) {
-      setState(() {
-        logoutLoading = true;
-      });
-    }
-    Common.setToken(null).then((value) {
-      prefs.setString("userID", null);
-      if (value == true) {
-        if (mounted) {
-          setState(() {
-            logoutLoading = false;
-          });
-        }
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) =>
-                  MyApp(widget.locale, widget.localizedValues, true),
-            ),
-            (Route<dynamic> route) => false);
-      }
-    });
-  }
-
-  selectLanguagesMethod() async {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return Center(
-            child: Container(
-              height: 200,
-              width: MediaQuery.of(context).size.width * 0.6,
-              decoration: new BoxDecoration(
-                color: Colors.white,
-                borderRadius: new BorderRadius.all(
-                  new Radius.circular(24.0),
-                ),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              child: Column(
-                children: <Widget>[
-                  GFButton(
-                    onPressed: () async {
-                      SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
-                      prefs.setString('selectedLanguage', 'en');
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                MyApp("en", widget.localizedValues, true),
-                          ),
-                          (Route<dynamic> route) => false);
-                    },
-                    type: GFButtonType.transparent,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          "English",
-                          style: hintSfboldBig(),
-                        ),
-                      ],
-                    ),
-                  ),
-                  GFButton(
-                    onPressed: () async {
-                      SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
-                      prefs.setString('selectedLanguage', 'ar');
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                MyApp("ar", widget.localizedValues, true),
-                          ),
-                          (Route<dynamic> route) => false);
-                    },
-                    type: GFButtonType.transparent,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          "Arbic",
-                          style: hintSfboldBig(),
-                        ),
-                      ],
-                    ),
-                  ),
-                  GFButton(
-                    onPressed: () async {
-                      SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
-                      prefs.setString('selectedLanguage', 'fr');
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                MyApp("fr", widget.localizedValues, true),
-                          ),
-                          (Route<dynamic> route) => false);
-                    },
-                    type: GFButtonType.transparent,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          "French",
-                          style: hintSfboldBig(),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
   }
 
   @override
@@ -591,20 +468,20 @@ class _ProfileState extends State<Profile> {
 
     return Scaffold(
       backgroundColor: Color(0xFFFDFDFD),
-      appBar: isGetTokenLoading
-          ? null
-          : token == null
-              ? null
-              : GFAppBar(
-                  elevation: 0,
-                  title: Text(
-                    MyLocalizations.of(context).profile,
-                    style: textbarlowSemiBoldBlack(),
-                  ),
-                  centerTitle: true,
-                  backgroundColor: primary,
-                  automaticallyImplyLeading: false,
-                ),
+      // appBar: isGetTokenLoading
+      //     ? null
+      //     : token == null
+      //         ? null
+      //         : GFAppBar(
+      //             elevation: 0,
+      //             title: Text(
+      //               MyLocalizations.of(context).profile,
+      //               style: textbarlowSemiBoldBlack(),
+      //             ),
+      //             centerTitle: true,
+      //             backgroundColor: primary,
+      //             automaticallyImplyLeading: false,
+      //           ),
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
@@ -860,25 +737,6 @@ class _ProfileState extends State<Profile> {
                               SizedBox(height: 20.0),
                               InkWell(
                                 onTap: () {
-                                  selectLanguagesMethod();
-                                },
-                                child: Container(
-                                  height: 55,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFFF7F7F7),
-                                  ),
-                                  child: ListTile(
-                                    title: Text(
-                                      MyLocalizations.of(context)
-                                          .selectLanguages,
-                                      style: textBarlowMediumBlack(),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 20.0),
-                              InkWell(
-                                onTap: () {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -955,99 +813,6 @@ class _ProfileState extends State<Profile> {
                               SizedBox(
                                 height: 20.0,
                               ),
-                              InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Chat(
-                                        locale: widget.locale,
-                                        localizedValues: widget.localizedValues,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: Container(
-                                  height: 55,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFFF7F7F7),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 10.0,
-                                            bottom: 10.0,
-                                            left: 20.0,
-                                            right: 20.0),
-                                        child: Text(
-                                          MyLocalizations.of(context).chat,
-                                          style: textBarlowMediumBlack(),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 20.0,
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  logout();
-                                },
-                                child: Container(
-                                  height: 55,
-                                  padding: EdgeInsets.only(right: 20),
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFFF7F7F7),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 10.0,
-                                            bottom: 10.0,
-                                            left: 20.0,
-                                            right: 20),
-                                        child: Row(
-                                          children: <Widget>[
-                                            Text(
-                                              MyLocalizations.of(context)
-                                                  .logout,
-                                              style: textBarlowMediumBlack(),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 10.0,
-                                            bottom: 10.0,
-                                            left: 20.0,
-                                            right: 20),
-                                        child: Row(
-                                          children: <Widget>[
-                                            logoutLoading
-                                                ? Image.asset(
-                                                    'lib/assets/images/spinner.gif',
-                                                    width: 10.0,
-                                                    height: 10.0,
-                                                    color: Colors.black,
-                                                  )
-                                                : SvgPicture.asset(
-                                                    'lib/assets/icons/lgout.svg')
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 30)
                             ],
                           ),
       ),

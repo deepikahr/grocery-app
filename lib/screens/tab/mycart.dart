@@ -287,19 +287,19 @@ class _MyCartState extends State<MyCart> {
     return Scaffold(
       backgroundColor: Color(0xFFFDFDFD),
       key: _scaffoldkey,
-      appBar: isGetTokenLoading
-          ? null
-          : token == null
-              ? null
-              : GFAppBar(
-                  title: Text(
-                    MyLocalizations.of(context).myCart,
-                    style: textbarlowSemiBoldBlack(),
-                  ),
-                  centerTitle: true,
-                  backgroundColor: Colors.white,
-                  elevation: 0,
-                ),
+      // appBar: isGetTokenLoading
+      //     ? null
+      //     : token == null
+      //         ? null
+      //         : GFAppBar(
+      //             title: Text(
+      //               MyLocalizations.of(context).myCart,
+      //               style: textbarlowSemiBoldBlack(),
+      //             ),
+      //             centerTitle: true,
+      //             backgroundColor: Colors.white,
+      //             elevation: 0,
+      //           ),
       body: isGetTokenLoading
           ? SquareLoader()
           : token == null
