@@ -135,6 +135,9 @@ flutter:
     - lib/assets/icons/mail.png
     - lib/assets/images/languages.png
     - lib/assets/images/profileIcon.png
+    - lib/assets/icons/plus.png
+    - lib/assets/icons/add1.svg
+    - lib/assets/icons/delete.svg
 
 
 
