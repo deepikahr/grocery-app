@@ -591,20 +591,20 @@ class _ProfileState extends State<Profile> {
 
     return Scaffold(
       backgroundColor: Color(0xFFFDFDFD),
-      appBar: isGetTokenLoading
-          ? null
-          : token == null
-              ? null
-              : GFAppBar(
-                  elevation: 0,
-                  title: Text(
-                    MyLocalizations.of(context).profile,
-                    style: textbarlowSemiBoldBlack(),
-                  ),
-                  centerTitle: true,
-                  backgroundColor: primary,
-                  automaticallyImplyLeading: false,
-                ),
+      // appBar: isGetTokenLoading
+      //     ? null
+      //     : token == null
+      //         ? null
+      //         : GFAppBar(
+      //             elevation: 0,
+      //             title: Text(
+      //               MyLocalizations.of(context).profile,
+      //               style: textbarlowSemiBoldBlack(),
+      //             ),
+      //             centerTitle: true,
+      //             backgroundColor: primary,
+      //             automaticallyImplyLeading: false,
+      //           ),
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,

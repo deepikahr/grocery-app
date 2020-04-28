@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:geocoder/geocoder.dart';
 import 'package:grocery_pro/screens/home/home.dart';
 import 'package:grocery_pro/service/auth-service.dart';
 import 'package:grocery_pro/service/common.dart';
@@ -12,6 +13,7 @@ import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/settings/globalSettings.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/widgets/loader.dart';
+import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
@@ -97,10 +99,14 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   var language;
   bool isloading = false;
+  LocationData currentLocation;
+  Location _location = new Location();
+  var addressData;
   void initState() {
     if (widget.languagesSelection == false) {
       getGlobalSettingsData();
     }
+    getResult();
     super.initState();
   }
 
@@ -136,6 +142,33 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  getResult() async {
+    Common.getCurrentLocation().then((address) async {
+      if (address != null) {
+        if (mounted) {
+          setState(() {
+            addressData = address;
+            print(address);
+          });
+        }
+      }
+      currentLocation = await _location.getLocation();
+      final coordinates =
+          new Coordinates(currentLocation.latitude, currentLocation.longitude);
+      var addresses =
+          await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      var first = addresses.first;
+      if (mounted) {
+        setState(() {
+          addressData = first.addressLine;
+        });
+      }
+      print(addressData);
+      Common.setCurrentLocation(addressData);
+      return first;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -150,12 +183,13 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: Constants.APP_NAME,
       theme: ThemeData(primaryColor: primary, accentColor: primary),
-      home: isloading
+      home: isloading || addressData == null
           ? SquareLoader()
           : Home(
               locale: language != null ? language : widget.locale,
               localizedValues: widget.localizedValues,
               languagesSelection: widget.languagesSelection,
+              addressData: addressData,
             ),
     );
   }

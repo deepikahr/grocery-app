@@ -72,39 +72,12 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   String locale;
   @override
   void initState() {
-    getProductListMethod();
     getToken();
-    getResult();
     getBanner();
     getAllData();
 
     super.initState();
     tabController = TabController(length: 4, vsync: this);
-  }
-
-  getProductListMethod() async {
-    await ProductService.getProductListAll().then((onValue) {
-      try {
-        _refreshController.refreshCompleted();
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              searchProductList = onValue['response_data'];
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              searchProductList = [];
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      sentryError.reportError(error, null);
-    });
   }
 
   @override
@@ -122,8 +95,6 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
         if (mounted) {
           setState(() {
             getTokenValue = true;
-
-            getFavListApi();
           });
         }
       } else {
@@ -132,22 +103,6 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
             getTokenValue = false;
           });
         }
-      }
-    }).catchError((error) {
-      sentryError.reportError(error, null);
-    });
-  }
-
-  getFavListApi() async {
-    await FavouriteService.getFavList().then((onValue) {
-      try {
-        if (mounted) {
-          setState(() {
-            favProductList = onValue['response_data'];
-          });
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
       sentryError.reportError(error, null);
@@ -257,57 +212,6 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
     }).catchError((error) {
       sentryError.reportError(error, null);
     });
-  }
-
-  getResult() async {
-    if (mounted) {
-      setState(() {
-        isLocationLoading = true;
-      });
-    }
-    Common.getCurrentLocation().then((value) async {
-      if (value != null) {
-        if (mounted) {
-          setState(() {
-            isLocationLoading = false;
-            addressData = value;
-          });
-        }
-      }
-      currentLocation = await _location.getLocation();
-      final coordinates =
-          new Coordinates(currentLocation.latitude, currentLocation.longitude);
-      var addresses =
-          await Geocoder.local.findAddressesFromCoordinates(coordinates);
-      var first = addresses.first;
-      addressData = first.addressLine;
-      Common.setCurrentLocation(addressData);
-      return first;
-    });
-  }
-
-  deliveryAddress() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Container(
-          width: MediaQuery.of(context).size.width * 0.6,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                MyLocalizations.of(context).deliveryAddress,
-                style: textBarlowRegularrBlacksm(),
-              ),
-              Text(
-                addressData.substring(0, 22) + '...',
-                style: textBarlowSemiBoldBlackbig(),
-              )
-            ],
-          ),
-        ),
-      ],
-    );
   }
 
   categoryRow() {
@@ -954,40 +858,6 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: GFAppBar(
-        backgroundColor: bg,
-        elevation: 0,
-        title: isLocationLoading || addressData == null
-            ? Container()
-            : deliveryAddress(),
-        actions: <Widget>[
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SearchItem(
-                      locale: widget.locale,
-                      localizedValues: widget.localizedValues,
-                      productsList: searchProductList,
-                      currency: currency,
-                      token: getTokenValue,
-                      favProductList: getTokenValue ? favProductList : null),
-                ),
-              );
-            },
-            child: Padding(
-              padding: EdgeInsets.only(right: 15, left: 15),
-              child: Icon(
-                Icons.search,
-              ),
-            ),
-          ),
-        ],
-      ),
-      drawer: Drawer(
-        child: DrawerPage(),
-      ),
       backgroundColor: bg,
       key: _scaffoldKeydrawer,
       body: SmartRefresher(
@@ -999,7 +869,6 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
           setState(() {
             isLoadingAllData = true;
             isBannerLoading = true;
-            getProductListMethod();
             getBannerData();
             getAllDataMethod();
           });
