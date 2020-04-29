@@ -10,6 +10,7 @@ import 'package:grocery_pro/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:grocery_pro/widgets/productCard.dart';
+import 'package:grocery_pro/widgets/subCategoryProductCart.dart';
 import 'package:grocery_pro/style/style.dart';
 
 import '../../style/style.dart';
@@ -282,7 +283,7 @@ class _SubCategoriesState extends State<SubCategories> {
                       },
                       child: Stack(
                         children: <Widget>[
-                          ProductCard(
+                          SubCategoryProductCard(
                             image: subProductsList[i]['imageUrl'],
 
                             title:
