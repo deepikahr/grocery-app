@@ -13,7 +13,7 @@ class Constants {
 //  // local url
 //  static const baseURL = 'http://b68593d1.ngrok.io/';
 
-  static const baseURL = 'http://96030071.ngrok.io/';
+  static const baseURL = 'http://240af478.ngrok.io/';
 
 
   // ONE_SIGNAL_KEY
