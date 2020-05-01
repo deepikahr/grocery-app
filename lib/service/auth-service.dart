@@ -162,4 +162,12 @@ class LoginService {
     });
     return json.decode(response.body);
   }
+
+  static Future<Map<String, dynamic>> aboutUs() async {
+    final response = await client
+        .get(Constants.baseURL + "business/business/about/us", headers: {
+      'Content-Type': 'application/json',
+    });
+    return json.decode(response.body);
+  }
 }

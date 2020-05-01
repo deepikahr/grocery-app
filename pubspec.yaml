@@ -30,6 +30,7 @@ dependencies:
   geocoder: ^0.2.1
   image: ^2.1.4
   pull_to_refresh: ^1.5.7
+  url_launcher: ^5.4.5
   flutter_localizations:
     sdk: flutter
 
@@ -132,6 +133,12 @@ flutter:
     - lib/assets/icons/app.png
     - lib/assets/icons/mobile.png
     - lib/assets/icons/mail.png
+    - lib/assets/images/languages.png
+    - lib/assets/images/profileIcon.png
+    - lib/assets/icons/plus.png
+    - lib/assets/icons/add1.svg
+    - lib/assets/icons/delete.svg
+
 
 
 

@@ -94,14 +94,32 @@ class _PaymentState extends State<Payment> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     currency = prefs.getString('currency');
     await PaymentService.getCardList().then((onValue) {
-      _refreshController.refreshCompleted();
+      try {
+        _refreshController.refreshCompleted();
 
+        if (mounted) {
+          setState(() {
+            cardList = onValue['response_data'];
+            isCardListLoading = false;
+          });
+        }
+      } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            cardList = [];
+            isCardListLoading = false;
+          });
+        }
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
       if (mounted) {
         setState(() {
-          cardList = onValue['response_data'];
+          cardList = [];
           isCardListLoading = false;
         });
       }
+      sentryError.reportError(error, null);
     });
   }
 
@@ -178,9 +196,19 @@ class _PaymentState extends State<Payment> {
             showSnackbar("${onValue['response_data']}");
           }
         } catch (error, stackTrace) {
+          if (mounted) {
+            setState(() {
+              isPlaceOrderLoading = false;
+            });
+          }
           sentryError.reportError(error, stackTrace);
         }
       }).catchError((error) {
+        if (mounted) {
+          setState(() {
+            isPlaceOrderLoading = false;
+          });
+        }
         sentryError.reportError(error, null);
       });
     } else {
@@ -207,9 +235,19 @@ class _PaymentState extends State<Payment> {
             showSnackbar("${onValue['response_data']}");
           }
         } catch (error, stackTrace) {
+          if (mounted) {
+            setState(() {
+              isPlaceOrderLoading = false;
+            });
+          }
           sentryError.reportError(error, stackTrace);
         }
       }).catchError((error) {
+        if (mounted) {
+          setState(() {
+            isPlaceOrderLoading = false;
+          });
+        }
         sentryError.reportError(error, null);
       });
     }
@@ -453,7 +491,6 @@ class _PaymentState extends State<Payment> {
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
-        header: WaterDropHeader(),
         controller: _refreshController,
         onRefresh: () {
           fetchCardInfo();

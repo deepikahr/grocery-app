@@ -3,6 +3,8 @@ import 'package:getflutter/components/accordian/gf_accordian.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:grocery_pro/screens/drawer/add-address.dart';
+import 'package:grocery_pro/screens/drawer/edit-address.dart';
 import 'package:grocery_pro/screens/payment/payment.dart';
 import 'package:grocery_pro/service/coupon-service.dart';
 import 'package:grocery_pro/service/localizations.dart';
@@ -10,9 +12,7 @@ import 'package:grocery_pro/service/payment-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/auth-service.dart';
-import 'package:grocery_pro/screens/address/add-address.dart';
 import 'package:grocery_pro/service/address-service.dart';
-import 'package:grocery_pro/screens/address/edit-address.dart';
 import 'package:grocery_pro/widgets/loader.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -135,9 +135,19 @@ class _CheckoutState extends State<Checkout> {
           });
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isLoading = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -162,9 +172,19 @@ class _CheckoutState extends State<Checkout> {
           });
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            deliverySlotsLoading = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          deliverySlotsLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -186,9 +206,19 @@ class _CheckoutState extends State<Checkout> {
           });
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            addressLoading = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          addressLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -301,9 +331,19 @@ class _CheckoutState extends State<Checkout> {
             }
           }
         } catch (error, stackTrace) {
+          if (mounted) {
+            setState(() {
+              isPlaceOrderLoading = false;
+            });
+          }
           sentryError.reportError(error, stackTrace);
         }
       }).catchError((error) {
+        if (mounted) {
+          setState(() {
+            isPlaceOrderLoading = false;
+          });
+        }
         sentryError.reportError(error, null);
       });
     }
@@ -470,7 +510,6 @@ class _CheckoutState extends State<Checkout> {
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
-        header: WaterDropHeader(),
         controller: _refreshController,
         onRefresh: () {
           getUserInfo();

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
+import 'package:grocery_pro/model/counterModel.dart';
 import 'package:grocery_pro/screens/categories/subcategories.dart';
+import 'package:grocery_pro/screens/home/home.dart';
 import 'package:grocery_pro/screens/product/product-details.dart';
+import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
@@ -38,6 +41,7 @@ class _AllDealsListState extends State<AllDealsList> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   ScrollController controller;
+  var cartData;
   @override
   void initState() {
     favProductList = widget.favProductList;
@@ -71,13 +75,26 @@ class _AllDealsListState extends State<AllDealsList> {
           if (mounted) {
             setState(() {
               dealsList = [];
+              isAllDealsLoadingList = false;
             });
           }
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            dealsList = [];
+            isAllDealsLoadingList = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          dealsList = [];
+          isAllDealsLoadingList = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -102,19 +119,47 @@ class _AllDealsListState extends State<AllDealsList> {
           if (mounted) {
             setState(() {
               dealsList = [];
+              isAllDealsLoadingList = false;
             });
           }
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            dealsList = [];
+            isAllDealsLoadingList = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          dealsList = [];
+          isAllDealsLoadingList = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (getTokenValue) {
+      CounterModel().getCartDataMethod().then((res) {
+        if (mounted) {
+          setState(() {
+            cartData = res;
+          });
+        }
+      });
+    } else {
+      if (mounted) {
+        setState(() {
+          cartData = null;
+        });
+      }
+    }
     return Scaffold(
       backgroundColor: bg,
       appBar: GFAppBar(
@@ -129,7 +174,6 @@ class _AllDealsListState extends State<AllDealsList> {
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
-        header: WaterDropHeader(),
         controller: _refreshController,
         onRefresh: () {
           if (widget.dealType == "TopDeals") {

@@ -76,9 +76,19 @@ class _MyCartState extends State<MyCart> {
           }
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isGetTokenLoading = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isGetTokenLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -130,9 +140,21 @@ class _MyCartState extends State<MyCart> {
           });
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            cartItem = null;
+            isUpdating = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          cartItem = null;
+          isUpdating = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -165,9 +187,21 @@ class _MyCartState extends State<MyCart> {
           }
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            cartItem = null;
+            isLoadingCart = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          cartItem = null;
+          isLoadingCart = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -249,9 +283,19 @@ class _MyCartState extends State<MyCart> {
           }
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            cartItem = null;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          cartItem = null;
+        });
+      }
       sentryError.reportError(error, null);
     });
     getCartItems();
@@ -275,9 +319,19 @@ class _MyCartState extends State<MyCart> {
           }
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            cartItem = null;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          cartItem = null;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }

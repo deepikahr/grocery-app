@@ -91,20 +91,34 @@ class _ProductDetailsState extends State<ProductDetails>
     SharedPreferences prefs = await SharedPreferences.getInstance();
     currency = prefs.getString('currency');
     await Common.getToken().then((onValue) {
-      if (onValue != null) {
-        if (mounted) {
-          setState(() {
-            getTokenValue = true;
-          });
+      try {
+        if (onValue != null) {
+          if (mounted) {
+            setState(() {
+              getTokenValue = true;
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              getTokenValue = false;
+            });
+          }
         }
-      } else {
+      } catch (error, stackTrace) {
         if (mounted) {
           setState(() {
             getTokenValue = false;
           });
         }
+        sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          getTokenValue = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -116,12 +130,26 @@ class _ProductDetailsState extends State<ProductDetails>
       });
     }
     ProductService.productRating(productDetail['_id']).then((value) {
+      try {
+        if (mounted) {
+          setState(() {
+            isGetProductRating = false;
+          });
+        }
+      } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isGetProductRating = false;
+          });
+        }
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
       if (mounted) {
         setState(() {
           isGetProductRating = false;
         });
       }
-    }).catchError((error) {
       sentryError.reportError(error, null);
     });
   }
@@ -133,13 +161,29 @@ class _ProductDetailsState extends State<ProductDetails>
       });
     }
     ProductService.productDetails(widget.productID).then((value) {
-      if (mounted) {
-        setState(() {
-          productDetail = value['response_data'];
-          isProductDetails = false;
-        });
+      try {
+        if (mounted) {
+          setState(() {
+            productDetail = value['response_data'];
+            isProductDetails = false;
+          });
+        }
+      } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isProductDetails = false;
+            productDetail = null;
+          });
+        }
+        sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isProductDetails = false;
+          productDetail = null;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -181,9 +225,21 @@ class _ProductDetailsState extends State<ProductDetails>
           });
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isFavListLoading = false;
+            isFavProduct = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isFavListLoading = false;
+          isFavProduct = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -278,9 +334,19 @@ class _ProductDetailsState extends State<ProductDetails>
           );
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            addProductTocart = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          addProductTocart = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }

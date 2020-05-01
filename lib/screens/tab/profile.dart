@@ -2,11 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:getflutter/getflutter.dart';
-import 'package:grocery_pro/main.dart';
 import 'package:grocery_pro/screens/authe/login.dart';
-import 'package:grocery_pro/screens/chat/chatpage.dart';
+import 'package:grocery_pro/screens/drawer/address.dart';
 import 'package:grocery_pro/screens/orders/orders.dart';
-import 'package:grocery_pro/screens/address/address.dart';
 import 'package:grocery_pro/screens/payment/addCard.dart';
 import 'package:grocery_pro/screens/tab/editprofile.dart';
 import 'package:grocery_pro/service/localizations.dart';
@@ -17,7 +15,6 @@ import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/service/auth-service.dart';
 import 'package:grocery_pro/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -81,9 +78,19 @@ class _ProfileState extends State<Profile> {
           }
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isGetTokenLoading = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isGetTokenLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -95,33 +102,69 @@ class _ProfileState extends State<Profile> {
       });
     }
     Common.getCardInfo().then((value) {
-      if (value == null) {
-        if (mounted) {
-          setState(() {
-            fetchCardInfoMethod();
-          });
+      try {
+        if (value == null) {
+          if (mounted) {
+            setState(() {
+              fetchCardInfoMethod();
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              isCardListLoading = false;
+              cardList = value['response_data'];
+              fetchCardInfoMethod();
+            });
+          }
         }
-      } else {
+      } catch (error, stackTrace) {
         if (mounted) {
           setState(() {
             isCardListLoading = false;
-            cardList = value['response_data'];
-            fetchCardInfoMethod();
+            cardList = [];
           });
         }
+        sentryError.reportError(error, stackTrace);
       }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          cardList = [];
+          isCardListLoading = false;
+        });
+      }
+      sentryError.reportError(error, null);
     });
   }
 
   fetchCardInfoMethod() async {
     await PaymentService.getCardList().then((onValue) {
       _refreshController.refreshCompleted();
+      try {
+        if (mounted) {
+          setState(() {
+            cardList = onValue['response_data'];
+            isCardListLoading = false;
+          });
+        }
+      } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isCardListLoading = false;
+            cardList = [];
+          });
+        }
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
       if (mounted) {
         setState(() {
-          cardList = onValue['response_data'];
+          cardList = [];
           isCardListLoading = false;
         });
       }
+      sentryError.reportError(error, null);
     });
   }
 
@@ -132,13 +175,31 @@ class _ProfileState extends State<Profile> {
       });
     }
     await PaymentService.deleteCard(id).then((onValue) {
+      try {
+        if (mounted) {
+          setState(() {
+            fetchCardInfo();
+            isCardDelete = false;
+            Navigator.pop(context);
+          });
+        }
+      } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isCardDelete = false;
+            Navigator.pop(context);
+          });
+        }
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
       if (mounted) {
         setState(() {
-          fetchCardInfo();
           isCardDelete = false;
           Navigator.pop(context);
         });
       }
+      sentryError.reportError(error, null);
     });
   }
 
@@ -149,22 +210,42 @@ class _ProfileState extends State<Profile> {
       });
     }
     Common.getUserInfo().then((value) {
-      if (value == null) {
-        if (mounted) {
-          setState(() {
-            userInfoMethod();
-          });
+      try {
+        if (value == null) {
+          if (mounted) {
+            setState(() {
+              userInfoMethod();
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              userInfo = value['response_data']['userInfo'];
+              userID = userInfo['_id'];
+              isLoading = false;
+              userInfoMethod();
+            });
+          }
         }
-      } else {
+      } catch (error, stackTrace) {
         if (mounted) {
           setState(() {
-            userInfo = value['response_data']['userInfo'];
-            userID = userInfo['_id'];
+            userInfo = null;
+            userID = null;
             isLoading = false;
-            userInfoMethod();
           });
         }
+        sentryError.reportError(error, stackTrace);
       }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          userInfo = null;
+          userID = null;
+          isLoading = false;
+        });
+      }
+      sentryError.reportError(error, null);
     });
   }
 
@@ -181,133 +262,25 @@ class _ProfileState extends State<Profile> {
           });
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isLoading = false;
+            userInfo = null;
+            userID = null;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+          userInfo = null;
+          userID = null;
+        });
+      }
       sentryError.reportError(error, null);
     });
-  }
-
-  logout() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (mounted) {
-      setState(() {
-        logoutLoading = true;
-      });
-    }
-    Common.setToken(null).then((value) {
-      prefs.setString("userID", null);
-      if (value == true) {
-        if (mounted) {
-          setState(() {
-            logoutLoading = false;
-          });
-        }
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) =>
-                  MyApp(widget.locale, widget.localizedValues, true),
-            ),
-            (Route<dynamic> route) => false);
-      }
-    });
-  }
-
-  selectLanguagesMethod() async {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return Center(
-            child: Container(
-              height: 200,
-              width: MediaQuery.of(context).size.width * 0.6,
-              decoration: new BoxDecoration(
-                color: Colors.white,
-                borderRadius: new BorderRadius.all(
-                  new Radius.circular(24.0),
-                ),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              child: Column(
-                children: <Widget>[
-                  GFButton(
-                    onPressed: () async {
-                      SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
-                      prefs.setString('selectedLanguage', 'en');
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                MyApp("en", widget.localizedValues, true),
-                          ),
-                          (Route<dynamic> route) => false);
-                    },
-                    type: GFButtonType.transparent,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          "English",
-                          style: hintSfboldBig(),
-                        ),
-                      ],
-                    ),
-                  ),
-                  GFButton(
-                    onPressed: () async {
-                      SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
-                      prefs.setString('selectedLanguage', 'ar');
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                MyApp("ar", widget.localizedValues, true),
-                          ),
-                          (Route<dynamic> route) => false);
-                    },
-                    type: GFButtonType.transparent,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          "Arbic",
-                          style: hintSfboldBig(),
-                        ),
-                      ],
-                    ),
-                  ),
-                  GFButton(
-                    onPressed: () async {
-                      SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
-                      prefs.setString('selectedLanguage', 'fr');
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                MyApp("fr", widget.localizedValues, true),
-                          ),
-                          (Route<dynamic> route) => false);
-                    },
-                    type: GFButtonType.transparent,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          "French",
-                          style: hintSfboldBig(),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
   }
 
   @override
@@ -608,7 +581,6 @@ class _ProfileState extends State<Profile> {
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
-        header: WaterDropHeader(),
         controller: _refreshController,
         onRefresh: () {
           setState(() {
@@ -860,25 +832,6 @@ class _ProfileState extends State<Profile> {
                               SizedBox(height: 20.0),
                               InkWell(
                                 onTap: () {
-                                  selectLanguagesMethod();
-                                },
-                                child: Container(
-                                  height: 55,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFFF7F7F7),
-                                  ),
-                                  child: ListTile(
-                                    title: Text(
-                                      MyLocalizations.of(context)
-                                          .selectLanguages,
-                                      style: textBarlowMediumBlack(),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 20.0),
-                              InkWell(
-                                onTap: () {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -955,99 +908,6 @@ class _ProfileState extends State<Profile> {
                               SizedBox(
                                 height: 20.0,
                               ),
-                              InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Chat(
-                                        locale: widget.locale,
-                                        localizedValues: widget.localizedValues,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: Container(
-                                  height: 55,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFFF7F7F7),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 10.0,
-                                            bottom: 10.0,
-                                            left: 20.0,
-                                            right: 20.0),
-                                        child: Text(
-                                          MyLocalizations.of(context).chat,
-                                          style: textBarlowMediumBlack(),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 20.0,
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  logout();
-                                },
-                                child: Container(
-                                  height: 55,
-                                  padding: EdgeInsets.only(right: 20),
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFFF7F7F7),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 10.0,
-                                            bottom: 10.0,
-                                            left: 20.0,
-                                            right: 20),
-                                        child: Row(
-                                          children: <Widget>[
-                                            Text(
-                                              MyLocalizations.of(context)
-                                                  .logout,
-                                              style: textBarlowMediumBlack(),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 10.0,
-                                            bottom: 10.0,
-                                            left: 20.0,
-                                            right: 20),
-                                        child: Row(
-                                          children: <Widget>[
-                                            logoutLoading
-                                                ? Image.asset(
-                                                    'lib/assets/images/spinner.gif',
-                                                    width: 10.0,
-                                                    height: 10.0,
-                                                    color: Colors.black,
-                                                  )
-                                                : SvgPicture.asset(
-                                                    'lib/assets/icons/lgout.svg')
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 30)
                             ],
                           ),
       ),

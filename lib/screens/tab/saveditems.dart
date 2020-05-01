@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
+import 'package:grocery_pro/model/counterModel.dart';
 import 'package:grocery_pro/screens/authe/login.dart';
+import 'package:grocery_pro/screens/home/home.dart';
 import 'package:grocery_pro/screens/product/product-details.dart';
 import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/service/localizations.dart';
@@ -8,8 +10,8 @@ import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/fav-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/widgets/loader.dart';
+import 'package:grocery_pro/widgets/subCategoryProductCart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:grocery_pro/widgets/productCard.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -26,6 +28,7 @@ class _SavedItemsState extends State<SavedItems> {
   bool isGetTokenLoading = false, isFavListLoading = false;
   String token, currency;
   List<dynamic> favProductList;
+  var cartData;
   @override
   void initState() {
     getToken();
@@ -37,32 +40,12 @@ class _SavedItemsState extends State<SavedItems> {
     super.dispose();
   }
 
-  getFavListMethod() {
+  getFavListMethod() async {
     if (mounted) {
       setState(() {
         isFavListLoading = true;
       });
     }
-    Common.getFavList().then((value) {
-      if (value == null) {
-        if (mounted) {
-          setState(() {
-            getFavListApi();
-          });
-        }
-      } else {
-        if (mounted) {
-          setState(() {
-            isFavListLoading = false;
-            favProductList = value['response_data'];
-            getFavListApi();
-          });
-        }
-      }
-    });
-  }
-
-  getFavListApi() async {
     await FavouriteService.getFavList().then((onValue) {
       try {
         if (mounted) {
@@ -72,9 +55,21 @@ class _SavedItemsState extends State<SavedItems> {
           });
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isFavListLoading = false;
+            favProductList = [];
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isFavListLoading = false;
+          favProductList = [];
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -105,15 +100,40 @@ class _SavedItemsState extends State<SavedItems> {
           }
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isGetTokenLoading = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isGetTokenLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (token != null) {
+      CounterModel().getCartDataMethod().then((res) {
+        if (mounted) {
+          setState(() {
+            cartData = res;
+          });
+        }
+      });
+    } else {
+      if (mounted) {
+        setState(() {
+          cartData = null;
+        });
+      }
+    }
     return Scaffold(
       appBar: isGetTokenLoading
           ? null
@@ -152,7 +172,7 @@ class _SavedItemsState extends State<SavedItems> {
                               SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2,
                                   childAspectRatio:
-                                      MediaQuery.of(context).size.width / 400,
+                                      MediaQuery.of(context).size.width / 500,
                                   crossAxisSpacing: 16,
                                   mainAxisSpacing: 16),
                           itemBuilder: (BuildContext context, int i) {
@@ -176,25 +196,32 @@ class _SavedItemsState extends State<SavedItems> {
                               },
                               child: Stack(
                                 children: <Widget>[
-                                  ProductCard(
+                                  SubCategoryProductCard(
                                     image: favProductList[i]['product']
                                         ['imageUrl'],
                                     title: favProductList[i]['product']['title']
                                                 .length >
-                                            15
+                                            10
                                         ? favProductList[i]['product']['title']
-                                                .substring(0, 15) +
+                                                .substring(0, 10) +
                                             ".."
                                         : favProductList[i]['product']['title'],
                                     currency: currency,
+                                    category: favProductList[i]['product']
+                                        ['category'],
                                     price: favProductList[i]['product']
                                         ['variant'][0]['price'],
-                                    rating: favProductList[i]['averageRating']
+                                    rating: favProductList[i]['product']
+                                            ['averageRating']
                                         .toString(),
-                                    buttonName:
-                                        favProductList[i]['cartAdded'] == true
-                                            ? "Added"
-                                            : "Add",
+                                    buttonName: "Add",
+                                    cartAdded:
+                                        favProductList[i]['cartAdded'] ?? false,
+                                    cartId: favProductList[i]['cartId'],
+                                    productQuantity: favProductList[i]
+                                            ['cartAddedQuantity'] ??
+                                        0,
+                                    token: true,
                                     productList: favProductList[i]['product'],
                                     variantList: favProductList[i]['product']
                                         ['variant'],
@@ -226,6 +253,77 @@ class _SavedItemsState extends State<SavedItems> {
                       : Center(
                           child: Image.asset('lib/assets/images/no-orders.png'),
                         ),
+      bottomNavigationBar: cartData == null
+          ? Container(
+              height: 10.0,
+            )
+          : InkWell(
+              onTap: () {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Home(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                        languagesSelection: false,
+                        currentIndex: 2,
+                      ),
+                    ),
+                    (Route<dynamic> route) => false);
+              },
+              child: Container(
+                height: 55.0,
+                padding: EdgeInsets.only(right: 20),
+                decoration: BoxDecoration(color: primary, boxShadow: [
+                  BoxShadow(
+                      color: Colors.black.withOpacity(0.29), blurRadius: 5)
+                ]),
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Container(
+                          color: Colors.black,
+                          height: 55,
+                          width: MediaQuery.of(context).size.width * 0.35,
+                          child: Column(
+                            children: <Widget>[
+                              SizedBox(height: 7),
+                              new Text(
+                                '${cartData['cart'].length} ' +
+                                    MyLocalizations.of(context).items,
+                                style: textBarlowRegularWhite(),
+                              ),
+                              new Text(
+                                "$currency${cartData['grandTotal']}",
+                                style: textbarlowBoldWhite(),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Row(
+                          children: <Widget>[
+                            new Text(
+                              MyLocalizations.of(context).goToCart,
+                              style: textBarlowRegularBlack(),
+                            ),
+                            SizedBox(width: 4),
+                            Icon(
+                              IconData(
+                                0xe911,
+                                fontFamily: 'icomoon',
+                              ),
+                              color: Colors.black,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 }

@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
+import 'package:grocery_pro/model/counterModel.dart';
+import 'package:grocery_pro/screens/home/home.dart';
 import 'package:grocery_pro/screens/product/product-details.dart';
 import 'package:grocery_pro/screens/tab/searchitem.dart';
+import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/widgets/cardOverlay.dart';
 import 'package:grocery_pro/widgets/loader.dart';
-import 'package:grocery_pro/widgets/productCard.dart';
+import 'package:grocery_pro/widgets/subCategoryProductCart.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -38,26 +42,60 @@ class _AllProductsState extends State<AllProducts> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   ScrollController controller;
+  var cartData;
   @override
   void initState() {
     favProductList = widget.favProductList;
-    currency = widget.currency;
-    getTokenValue = widget.token;
-    getProductListMethod();
-    if (getTokenValue == true) {
-      getProductListMethodCardAdded();
-    } else {
-      getProductListMethod();
-    }
+    getTokenValueMethod();
     super.initState();
   }
 
-  getProductListMethod() async {
+  getTokenValueMethod() async {
     if (mounted) {
       setState(() {
         isLoadingProductsList = true;
       });
     }
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    currency = prefs.getString('currency');
+    await Common.getToken().then((onValue) {
+      try {
+        if (onValue != null) {
+          if (mounted) {
+            setState(() {
+              getTokenValue = true;
+              getProductListMethodCardAdded();
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              getTokenValue = false;
+              getProductListMethod();
+            });
+          }
+        }
+      } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            getTokenValue = false;
+            getProductListMethod();
+          });
+        }
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          getTokenValue = false;
+          getProductListMethod();
+        });
+      }
+      sentryError.reportError(error, null);
+    });
+  }
+
+  getProductListMethod() async {
     await ProductService.getProductListAll().then((onValue) {
       try {
         _refreshController.refreshCompleted();
@@ -72,23 +110,31 @@ class _AllProductsState extends State<AllProducts> {
           if (mounted) {
             setState(() {
               productsList = [];
+              isLoadingProductsList = false;
             });
           }
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            productsList = [];
+            isLoadingProductsList = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          productsList = [];
+          isLoadingProductsList = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
 
   getProductListMethodCardAdded() async {
-    if (mounted) {
-      setState(() {
-        isLoadingProductsList = true;
-      });
-    }
     await ProductService.getProductListAllCartAdded().then((onValue) {
       try {
         _refreshController.refreshCompleted();
@@ -103,19 +149,48 @@ class _AllProductsState extends State<AllProducts> {
           if (mounted) {
             setState(() {
               productsList = [];
+              isLoadingProductsList = false;
             });
           }
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            productsList = [];
+            isLoadingProductsList = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          productsList = [];
+          isLoadingProductsList = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (getTokenValue) {
+      CounterModel().getCartDataMethod().then((res) {
+        if (mounted) {
+          setState(() {
+            cartData = res;
+          });
+        }
+      });
+    } else {
+      if (mounted) {
+        setState(() {
+          cartData = null;
+        });
+      }
+    }
+
     return Scaffold(
       backgroundColor: bg,
       appBar: GFAppBar(
@@ -154,10 +229,9 @@ class _AllProductsState extends State<AllProducts> {
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
-        header: WaterDropHeader(),
         controller: _refreshController,
         onRefresh: () {
-          if (widget.token == true) {
+          if (getTokenValue) {
             getProductListMethodCardAdded();
           } else {
             getProductListMethod();
@@ -206,7 +280,7 @@ class _AllProductsState extends State<AllProducts> {
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           childAspectRatio:
-                              MediaQuery.of(context).size.width / 400,
+                              MediaQuery.of(context).size.width / 500,
                           crossAxisSpacing: 16,
                           mainAxisSpacing: 16),
                       itemBuilder: (BuildContext context, int i) {
@@ -234,7 +308,7 @@ class _AllProductsState extends State<AllProducts> {
                                 },
                                 child: Stack(
                                   children: <Widget>[
-                                    ProductCard(
+                                    SubCategoryProductCard(
                                       image: productsList[i]['imageUrl'],
                                       title:
                                           productsList[i]['title'].length > 10
@@ -248,11 +322,14 @@ class _AllProductsState extends State<AllProducts> {
                                           ['price'],
                                       rating: productsList[i]['averageRating']
                                           .toString(),
-                                      buttonName:
-                                          productsList[i]['cartAdded'] == true
-                                              ? "Added"
-                                              : "Add",
-                                      token: getTokenValue,
+                                      buttonName: "Add",
+                                      cartAdded:
+                                          productsList[i]['cartAdded'] ?? false,
+                                      cartId: productsList[i]['cartId'],
+                                      productQuantity: productsList[i]
+                                              ['cartAddedQuantity'] ??
+                                          0,
+                                      token: widget.token,
                                       productList: productsList[i],
                                       variantList: productsList[i]['variant'],
                                     ),
@@ -284,20 +361,27 @@ class _AllProductsState extends State<AllProducts> {
                               )
                             : Stack(
                                 children: <Widget>[
-                                  ProductCard(
+                                  SubCategoryProductCard(
                                     image: productsList[i]['imageUrl'],
-                                    title: productsList[i]['title'],
+                                    title: productsList[i]['title'].length > 10
+                                        ? productsList[i]['title']
+                                                .substring(0, 10) +
+                                            ".."
+                                        : productsList[i]['title'],
                                     currency: currency,
                                     category: productsList[i]['category'],
                                     price: productsList[i]['variant'][0]
                                         ['price'],
                                     rating: productsList[i]['averageRating']
                                         .toString(),
-                                    buttonName:
-                                        productsList[i]['cartAdded'] == true
-                                            ? "Added"
-                                            : "Add",
-                                    token: getTokenValue,
+                                    buttonName: "Add",
+                                    cartAdded:
+                                        productsList[i]['cartAdded'] ?? false,
+                                    cartId: productsList[i]['cartId'],
+                                    productQuantity: productsList[i]
+                                            ['cartAddedQuantity'] ??
+                                        0,
+                                    token: widget.token,
                                     productList: productsList[i],
                                     variantList: productsList[i]['variant'],
                                   ),
@@ -310,6 +394,56 @@ class _AllProductsState extends State<AllProducts> {
                 ),
               ),
       ),
+      bottomNavigationBar: cartData == null
+          ? Container(
+              height: 10.0,
+            )
+          : InkWell(
+              onTap: () {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Home(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                        languagesSelection: false,
+                        currentIndex: 2,
+                      ),
+                    ),
+                    (Route<dynamic> route) => false);
+              },
+              child: Container(
+                height: 35.0,
+                color: primary,
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 20.0, right: 20.0, top: 5.0, bottom: 5.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          new Text(
+                            '${cartData['cart'].length} ' +
+                                MyLocalizations.of(context).items +
+                                " " +
+                                " | " +
+                                "$currency${cartData['grandTotal']}",
+                            style: textBarlowRegularBlack(),
+                          ),
+                          new Text(
+                            MyLocalizations.of(context).goToCart,
+                            style: textbarlowBoldsmBlack(),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 6),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 }

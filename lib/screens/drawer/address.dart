@@ -4,8 +4,8 @@ import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:grocery_pro/screens/address/add-address.dart';
-import 'package:grocery_pro/screens/address/edit-address.dart';
+import 'package:grocery_pro/screens/drawer/add-address.dart';
+import 'package:grocery_pro/screens/drawer/edit-address.dart';
 import 'package:grocery_pro/service/constants.dart';
 import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
@@ -55,9 +55,21 @@ class _AddressState extends State<Address> {
           });
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            addressList = [];
+            addressLoading = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          addressList = [];
+          addressLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -72,9 +84,21 @@ class _AddressState extends State<Address> {
           });
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            addressList = [];
+            addressLoading = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          addressList = [];
+          addressLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -96,7 +120,6 @@ class _AddressState extends State<Address> {
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
-        header: WaterDropHeader(),
         controller: _refreshController,
         onRefresh: () {
           getAddress();

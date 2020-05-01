@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_pro/model/addToCart.dart';
 import 'package:grocery_pro/screens/authe/login.dart';
-import 'package:grocery_pro/screens/tab/mycart.dart';
 import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
@@ -11,6 +10,7 @@ SentryError sentryError = new SentryError();
 
 class BottonSheetClassDryClean extends StatefulWidget {
   final List variantsList;
+  final int productQuantity;
   final String currency, locale;
   final Map<String, Map<String, String>> localizedValues;
   final Map<String, dynamic> productList;
@@ -20,6 +20,7 @@ class BottonSheetClassDryClean extends StatefulWidget {
       this.variantsList,
       this.productList,
       this.currency,
+      this.productQuantity,
       this.locale,
       this.localizedValues})
       : super(key: key);
@@ -32,7 +33,17 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
   int groupValue = 0;
   bool selectVariant = false, addProductTocart = false, getTokenValue = false;
   int quantity = 1;
-  String variantPrice, variantUnit, variantId;
+  String variantUnit, variantId;
+  var variantPrice;
+  @override
+  void initState() {
+    if (widget.productQuantity == null) {
+      quantity = widget.productQuantity;
+    } else {
+      quantity = 1;
+    }
+    super.initState();
+  }
 
   void _changeProductQuantity(bool increase) {
     if (increase) {
@@ -70,7 +81,6 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
         if (mounted) {
           setState(() {
             getTokenValue = false;
-            print("ff");
             Navigator.pop(context);
             Navigator.push(
               context,
@@ -86,6 +96,11 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
         }
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          getTokenValue = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -109,21 +124,22 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
           });
         }
         if (onValue['response_code'] == 200) {
-          Navigator.pop(context);
-          // Navigator.push(
-          //   context,
-          //   new MaterialPageRoute(
-          //     builder: (BuildContext context) => new MyCart(
-          //       locale: widget.locale,
-          //       localizedValues: widget.localizedValues,
-          //     ),
-          //   ),
-          // );
+          Navigator.of(context).pop(onValue['response_data']);
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            addProductTocart = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          addProductTocart = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -214,8 +230,7 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                         setState(() {
                           groupValue = selected;
                           selectVariant = !selectVariant;
-                          variantPrice =
-                              widget.variantsList[selected]['price'].toString();
+                          variantPrice = widget.variantsList[selected]['price'];
                           variantUnit =
                               widget.variantsList[selected]['unit'].toString();
                           variantId =

@@ -118,12 +118,27 @@ class _SignupState extends State<Signup> {
             showSnackbar('${onValue['response_data']}');
           }
         } catch (error) {
+          if (mounted) {
+            setState(() {
+              registerationLoading = false;
+            });
+          }
           sentryError.reportError(error, null);
         }
       }).catchError((error) {
+        if (mounted) {
+          setState(() {
+            registerationLoading = false;
+          });
+        }
         sentryError.reportError(error, null);
       });
     } else {
+      if (mounted) {
+        setState(() {
+          registerationLoading = false;
+        });
+      }
       return;
     }
   }

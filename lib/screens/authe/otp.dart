@@ -49,14 +49,29 @@ class _OtpState extends State<Otp> {
           if (onValue['response_code'] == 200) {
           } else if (onValue['response_code'] == 400) {
             showAlert('${onValue['response_data']}');
-          } else {}
+          }
         } catch (error, stackTrace) {
+          if (mounted) {
+            setState(() {
+              isEmailLoading = false;
+            });
+          }
           sentryError.reportError(error, stackTrace);
         }
       }).catchError((error) {
+        if (mounted) {
+          setState(() {
+            isEmailLoading = false;
+          });
+        }
         sentryError.reportError(error, null);
       });
     } else {
+      if (mounted) {
+        setState(() {
+          isEmailLoading = false;
+        });
+      }
       return;
     }
   }
@@ -124,15 +139,30 @@ class _OtpState extends State<Otp> {
               showSnackbar('${onValue['response_data']}');
             }
           } catch (error, stackTrace) {
+            if (mounted) {
+              setState(() {
+                isOtpVerifyLoading = false;
+              });
+            }
             sentryError.reportError(error, stackTrace);
           }
         }).catchError((error) {
+          if (mounted) {
+            setState(() {
+              isOtpVerifyLoading = false;
+            });
+          }
           sentryError.reportError(error, null);
         });
       } else {
         return;
       }
     } else {
+      if (mounted) {
+        setState(() {
+          isOtpVerifyLoading = false;
+        });
+      }
       showSnackbar(MyLocalizations.of(context).pleaseEnter4DigitOTP);
     }
   }

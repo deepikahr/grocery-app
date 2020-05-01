@@ -63,13 +63,26 @@ class _AllCategoriesState extends State<AllCategories>
           if (mounted) {
             setState(() {
               categoryList = [];
+              isLoadingcategoryList = false;
             });
           }
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            categoryList = [];
+            isLoadingcategoryList = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          categoryList = [];
+          isLoadingcategoryList = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -88,7 +101,6 @@ class _AllCategoriesState extends State<AllCategories>
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
-        header: WaterDropHeader(),
         controller: _refreshController,
         onRefresh: () {
           getCategoryList();

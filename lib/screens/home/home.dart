@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:geocoder/geocoder.dart';
 import 'package:getflutter/getflutter.dart';
+import 'package:grocery_pro/screens/drawer/drawer.dart';
 import 'package:grocery_pro/screens/tab/mycart.dart';
 import 'package:grocery_pro/screens/tab/profile.dart';
 import 'package:grocery_pro/screens/tab/saveditems.dart';
+import 'package:grocery_pro/screens/tab/searchitem.dart';
 import 'package:grocery_pro/screens/tab/store.dart';
+import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/service/constants.dart';
+import 'package:grocery_pro/service/fav-service.dart';
 import 'package:grocery_pro/service/localizations.dart';
+import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/settings/globalSettings.dart';
 import 'package:grocery_pro/style/style.dart';
+import 'package:location/location.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:grocery_pro/widgets/loader.dart';
@@ -40,17 +47,26 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       currencyLoading = false,
       isCurrentLoactionLoading = false,
       isLocationLoading = false,
-      languagesSelection = false;
+      languagesSelection = false,
+      getTokenValue = false;
   int currentIndex = 0;
-  var language, currency;
-
+  var language;
+  List searchProductList, favProductList;
+  LocationData currentLocation;
+  Location _location = new Location();
+  String currency = "";
+  var addressData, cartData;
   void initState() {
-    // getGlobalSettingsData();
-
+    if (widget.currentIndex != null) {
+      if (mounted) {
+        setState(() {
+          currentIndex = widget.currentIndex;
+        });
+      }
+    }
+    getResult();
     getGlobalSettingsData();
-
     configLocalNotification();
-
     tabController = TabController(length: 4, vsync: this);
     super.initState();
   }
@@ -66,6 +82,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       try {
         if (onValue['response_data']['currencyCode'] == null) {
           prefs.setString('currency', 'Rs');
+          currency = prefs.getString('currency');
           if (mounted) {
             setState(() {
               currencyLoading = false;
@@ -74,6 +91,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         } else {
           prefs.setString(
               'currency', '${onValue['response_data']['currencyCode']}');
+          currency = prefs.getString('currency');
           if (mounted) {
             setState(() {
               currencyLoading = false;
@@ -81,9 +99,104 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           }
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            currencyLoading = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          currencyLoading = false;
+        });
+      }
+      sentryError.reportError(error, null);
+    });
+  }
+
+  getToken() async {
+    await Common.getToken().then((onValue) {
+      if (onValue != null) {
+        if (mounted) {
+          setState(() {
+            getTokenValue = true;
+          });
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            getTokenValue = false;
+          });
+        }
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          getTokenValue = false;
+        });
+      }
+      sentryError.reportError(error, null);
+    });
+  }
+
+  getFavListApi() async {
+    await FavouriteService.getFavList().then((onValue) {
+      try {
+        if (mounted) {
+          setState(() {
+            favProductList = onValue['response_data'];
+          });
+        }
+      } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            favProductList = [];
+          });
+        }
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          favProductList = [];
+        });
+      }
+      sentryError.reportError(error, null);
+    });
+  }
+
+  getProductListMethod() async {
+    await ProductService.getProductListAll().then((onValue) {
+      try {
+        if (onValue['response_code'] == 200) {
+          if (mounted) {
+            setState(() {
+              searchProductList = onValue['response_data'];
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              searchProductList = [];
+            });
+          }
+        }
+      } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            searchProductList = [];
+          });
+        }
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          searchProductList = [];
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -140,69 +253,183 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    if (widget.currentIndex != null) {
-      if (mounted) {
-        setState(() {
-          currentIndex = widget.currentIndex;
-        });
-      }
-    }
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: currencyLoading
-          ? SquareLoader()
-          : GFTabBarView(
-              physics: NeverScrollableScrollPhysics(),
-              controller: tabController,
-              children: <Widget>[
-                Store(
-                  locale: widget.locale,
-                  localizedValues: widget.localizedValues,
-                ),
-                SavedItems(
-                  locale: widget.locale,
-                  localizedValues: widget.localizedValues,
-                ),
-                MyCart(
-                  locale: widget.locale,
-                  localizedValues: widget.localizedValues,
-                ),
-                Profile(
-                  locale: widget.locale,
-                  localizedValues: widget.localizedValues,
-                ),
-              ],
-            ),
-      bottomNavigationBar: GFTabBar(
-        initialIndex: currentIndex,
-        length: 4,
-        controller: tabController,
-        tabs: [
-          tabIcon(0xe90f, MyLocalizations.of(context).store),
-          tabIcon(0xe90d, MyLocalizations.of(context).savedItems),
-          tabIcon(0xe911, MyLocalizations.of(context).myCart),
-          tabIcon(0xe912, MyLocalizations.of(context).profile)
-        ],
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(15.0),
-            topRight: Radius.circular(15.0),
+  deliveryAddress() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Container(
+          width: MediaQuery.of(context).size.width * 0.6,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                MyLocalizations.of(context).deliveryAddress,
+                style: textBarlowRegularrBlacksm(),
+              ),
+              Text(
+                addressData != null
+                    ? addressData.substring(0, 22) + '...'
+                    : widget.addressData.substring(0, 22) + '...',
+                style: textBarlowSemiBoldBlackbig(),
+              )
+            ],
           ),
         ),
-        tabBarHeight: 60,
-        indicator: BoxDecoration(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(15.0),
-              topRight: Radius.circular(15.0),
+      ],
+    );
+  }
+
+  getResult() async {
+    Common.getCurrentLocation().then((address) async {
+      if (address != null) {
+        if (mounted) {
+          setState(() {
+            addressData = address;
+          });
+        }
+      }
+      currentLocation = await _location.getLocation();
+      final coordinates =
+          new Coordinates(currentLocation.latitude, currentLocation.longitude);
+      var addresses =
+          await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      var first = addresses.first;
+      if (mounted) {
+        setState(() {
+          addressData = first.addressLine;
+          isCurrentLoactionLoading = false;
+        });
+      }
+      Common.setCurrentLocation(addressData);
+      return first;
+    });
+  }
+
+  _onTapped(int index) {
+    setState(() {
+      currentIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> _screens = [
+      Store(
+        locale: widget.locale,
+        localizedValues: widget.localizedValues,
+      ),
+      SavedItems(
+        locale: widget.locale,
+        localizedValues: widget.localizedValues,
+      ),
+      MyCart(
+        locale: widget.locale,
+        localizedValues: widget.localizedValues,
+      ),
+      Profile(
+        locale: widget.locale,
+        localizedValues: widget.localizedValues,
+      ),
+    ];
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: currentIndex == 0
+          ? GFAppBar(
+              backgroundColor: bg,
+              elevation: 0,
+              title: deliveryAddress(),
+              actions: <Widget>[
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SearchItem(
+                            locale: widget.locale,
+                            localizedValues: widget.localizedValues,
+                            productsList: searchProductList,
+                            currency: currency,
+                            token: getTokenValue,
+                            favProductList:
+                                getTokenValue ? favProductList : null),
+                      ),
+                    );
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.only(right: 15, left: 15),
+                    child: Icon(
+                      Icons.search,
+                    ),
+                  ),
+                ),
+              ],
+            )
+          : null,
+      drawer: Drawer(
+        child: DrawerPage(
+          locale: widget.locale,
+          localizedValues: widget.localizedValues,
+          addressData: addressData != null ? addressData : widget.addressData,
+        ),
+      ),
+      body: currencyLoading ? SquareLoader() : _screens[currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: currentIndex,
+        backgroundColor: Colors.black,
+        unselectedItemColor: greyc,
+        type: BottomNavigationBarType.fixed,
+        fixedColor: primary,
+        onTap: _onTapped,
+        items: [
+          BottomNavigationBarItem(
+            title: Text(MyLocalizations.of(context).store),
+            icon: Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Icon(
+                IconData(
+                  0xe90f,
+                  fontFamily: 'icomoon',
+                ),
+              ),
             ),
-            color: Colors.black),
-        labelColor: primary,
-        tabBarColor: Colors.black,
-        unselectedLabelColor: greyc,
-        labelStyle: textBarlowMediumsmBlack(),
-        unselectedLabelStyle: textBarlowMediumsmWhite(),
+          ),
+          BottomNavigationBarItem(
+            title: Text(MyLocalizations.of(context).savedItems),
+            icon: Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Icon(
+                IconData(
+                  0xe90d,
+                  fontFamily: 'icomoon',
+                ),
+              ),
+            ),
+          ),
+          BottomNavigationBarItem(
+            title: Text(MyLocalizations.of(context).myCart),
+            icon: Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Icon(
+                IconData(
+                  0xe911,
+                  fontFamily: 'icomoon',
+                ),
+              ),
+            ),
+          ),
+          BottomNavigationBarItem(
+            title: Text(MyLocalizations.of(context).profile),
+            icon: Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Icon(
+                IconData(
+                  0xe912,
+                  fontFamily: 'icomoon',
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
