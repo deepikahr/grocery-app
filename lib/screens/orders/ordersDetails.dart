@@ -55,13 +55,26 @@ class _OrderDetailsState extends State<OrderDetails> {
         } else {}
         if (mounted) {
           setState(() {
+            orderHistory = null;
             isLoading = false;
           });
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            orderHistory = null;
+            isLoading = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          orderHistory = null;
+          isLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }

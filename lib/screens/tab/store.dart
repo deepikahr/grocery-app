@@ -14,13 +14,11 @@ import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/widgets/loader.dart';
-import 'package:location/location.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:grocery_pro/widgets/categoryBlock.dart';
 import 'package:grocery_pro/widgets/productCard.dart';
 import 'package:grocery_pro/widgets/cardOverlay.dart';
-import 'package:geocoder/geocoder.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -37,12 +35,6 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKeydrawer =
       new GlobalKey<ScaffoldState>();
 
-  final List<String> imageList = [
-    'lib/assets/images/cherry.png',
-    'lib/assets/images/product.png',
-    'lib/assets/images/apple.png',
-    'lib/assets/images/orange.png',
-  ];
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   bool getTokenValue = true,
@@ -56,14 +48,13 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       topDealList,
       favProductList,
       bannerList;
-  String currency, itemCount = '4';
+  String currency;
   final List<String> assetImg = [
     'lib/assets/images/product.png',
   ];
 
   TabController tabController;
-  LocationData currentLocation;
-  Location _location = new Location();
+
   var addressData;
   String locale;
   @override
@@ -260,6 +251,9 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                 locale: widget.locale,
                                 localizedValues: widget.localizedValues,
                                 catId: categoryList[index]['_id'],
+                                isSubCategoryAvailable: categoryList[index]
+                                        ['isSubCategoryAvailable'] ??
+                                    false,
                                 catTitle:
                                     '${categoryList[index]['title'][0].toUpperCase()}${categoryList[index]['title'].substring(1)}',
                                 token: getTokenValue),
@@ -859,7 +853,6 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
-        header: WaterDropHeader(),
         controller: _refreshController,
         onRefresh: () {
           setState(() {

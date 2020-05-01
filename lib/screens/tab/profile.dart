@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:getflutter/getflutter.dart';
-import 'package:grocery_pro/main.dart';
 import 'package:grocery_pro/screens/authe/login.dart';
 import 'package:grocery_pro/screens/drawer/address.dart';
 import 'package:grocery_pro/screens/orders/orders.dart';
@@ -16,7 +15,6 @@ import 'package:grocery_pro/service/common.dart';
 import 'package:grocery_pro/service/auth-service.dart';
 import 'package:grocery_pro/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -80,9 +78,19 @@ class _ProfileState extends State<Profile> {
           }
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isGetTokenLoading = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isGetTokenLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -94,33 +102,69 @@ class _ProfileState extends State<Profile> {
       });
     }
     Common.getCardInfo().then((value) {
-      if (value == null) {
-        if (mounted) {
-          setState(() {
-            fetchCardInfoMethod();
-          });
+      try {
+        if (value == null) {
+          if (mounted) {
+            setState(() {
+              fetchCardInfoMethod();
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              isCardListLoading = false;
+              cardList = value['response_data'];
+              fetchCardInfoMethod();
+            });
+          }
         }
-      } else {
+      } catch (error, stackTrace) {
         if (mounted) {
           setState(() {
             isCardListLoading = false;
-            cardList = value['response_data'];
-            fetchCardInfoMethod();
+            cardList = [];
           });
         }
+        sentryError.reportError(error, stackTrace);
       }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          cardList = [];
+          isCardListLoading = false;
+        });
+      }
+      sentryError.reportError(error, null);
     });
   }
 
   fetchCardInfoMethod() async {
     await PaymentService.getCardList().then((onValue) {
       _refreshController.refreshCompleted();
+      try {
+        if (mounted) {
+          setState(() {
+            cardList = onValue['response_data'];
+            isCardListLoading = false;
+          });
+        }
+      } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isCardListLoading = false;
+            cardList = [];
+          });
+        }
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
       if (mounted) {
         setState(() {
-          cardList = onValue['response_data'];
+          cardList = [];
           isCardListLoading = false;
         });
       }
+      sentryError.reportError(error, null);
     });
   }
 
@@ -131,13 +175,31 @@ class _ProfileState extends State<Profile> {
       });
     }
     await PaymentService.deleteCard(id).then((onValue) {
+      try {
+        if (mounted) {
+          setState(() {
+            fetchCardInfo();
+            isCardDelete = false;
+            Navigator.pop(context);
+          });
+        }
+      } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isCardDelete = false;
+            Navigator.pop(context);
+          });
+        }
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
       if (mounted) {
         setState(() {
-          fetchCardInfo();
           isCardDelete = false;
           Navigator.pop(context);
         });
       }
+      sentryError.reportError(error, null);
     });
   }
 
@@ -148,22 +210,42 @@ class _ProfileState extends State<Profile> {
       });
     }
     Common.getUserInfo().then((value) {
-      if (value == null) {
-        if (mounted) {
-          setState(() {
-            userInfoMethod();
-          });
+      try {
+        if (value == null) {
+          if (mounted) {
+            setState(() {
+              userInfoMethod();
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              userInfo = value['response_data']['userInfo'];
+              userID = userInfo['_id'];
+              isLoading = false;
+              userInfoMethod();
+            });
+          }
         }
-      } else {
+      } catch (error, stackTrace) {
         if (mounted) {
           setState(() {
-            userInfo = value['response_data']['userInfo'];
-            userID = userInfo['_id'];
+            userInfo = null;
+            userID = null;
             isLoading = false;
-            userInfoMethod();
           });
         }
+        sentryError.reportError(error, stackTrace);
       }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          userInfo = null;
+          userID = null;
+          isLoading = false;
+        });
+      }
+      sentryError.reportError(error, null);
     });
   }
 
@@ -180,9 +262,23 @@ class _ProfileState extends State<Profile> {
           });
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isLoading = false;
+            userInfo = null;
+            userID = null;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+          userInfo = null;
+          userID = null;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -468,24 +564,23 @@ class _ProfileState extends State<Profile> {
 
     return Scaffold(
       backgroundColor: Color(0xFFFDFDFD),
-      // appBar: isGetTokenLoading
-      //     ? null
-      //     : token == null
-      //         ? null
-      //         : GFAppBar(
-      //             elevation: 0,
-      //             title: Text(
-      //               MyLocalizations.of(context).profile,
-      //               style: textbarlowSemiBoldBlack(),
-      //             ),
-      //             centerTitle: true,
-      //             backgroundColor: primary,
-      //             automaticallyImplyLeading: false,
-      //           ),
+      appBar: isGetTokenLoading
+          ? null
+          : token == null
+              ? null
+              : GFAppBar(
+                  elevation: 0,
+                  title: Text(
+                    MyLocalizations.of(context).profile,
+                    style: textbarlowSemiBoldBlack(),
+                  ),
+                  centerTitle: true,
+                  backgroundColor: primary,
+                  automaticallyImplyLeading: false,
+                ),
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
-        header: WaterDropHeader(),
         controller: _refreshController,
         onRefresh: () {
           setState(() {

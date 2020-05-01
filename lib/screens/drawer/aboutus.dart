@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_pro/service/auth-service.dart';
 import 'package:grocery_pro/service/localizations.dart';
+import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:grocery_pro/widgets/loader.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+SentryError sentryError = new SentryError();
 
 class AboutUs extends StatefulWidget {
   AboutUs({Key key, this.locale, this.localizedValues}) : super(key: key);
@@ -30,14 +33,30 @@ class _AboutUsState extends State<AboutUs> {
       });
     }
     LoginService.aboutUs().then((value) {
-      if (value['response_code'] == 200) {
+      try {
+        if (value['response_code'] == 200) {
+          if (mounted) {
+            setState(() {
+              aboutUsDatails = value['response_data'][0];
+              isAboutUsData = false;
+            });
+          }
+        }
+      } catch (error, stackTrace) {
         if (mounted) {
           setState(() {
-            aboutUsDatails = value['response_data'][0];
             isAboutUsData = false;
           });
         }
+        sentryError.reportError(error, stackTrace);
       }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isAboutUsData = false;
+        });
+      }
+      sentryError.reportError(error, null);
     });
   }
 
@@ -171,26 +190,26 @@ class _AboutUsState extends State<AboutUs> {
                     ),
                   ],
                 ),
-                InkWell(
-                  onTap: () {
-                    _launchURL(aboutUsDatails['tearmsAndConditionUrl']);
-                  },
-                  child: Positioned(
-                    bottom: 30,
-                    left: 15,
+                Positioned(
+                  bottom: 30,
+                  left: 15,
+                  child: InkWell(
+                    onTap: () {
+                      _launchURL(aboutUsDatails['tearmsAndConditionUrl']);
+                    },
                     child: Text(
                       'Terms & Conditions',
                       style: textBarlowmediumLink(),
                     ),
                   ),
                 ),
-                InkWell(
-                  onTap: () {
-                    _launchURL(aboutUsDatails['privacyPolicyUrl']);
-                  },
-                  child: Positioned(
-                    bottom: 30,
-                    right: 15,
+                Positioned(
+                  bottom: 30,
+                  right: 15,
+                  child: InkWell(
+                    onTap: () {
+                      _launchURL(aboutUsDatails['privacyPolicyUrl']);
+                    },
                     child: Text(
                       'Privacy policy',
                       style: textBarlowmediumLink(),

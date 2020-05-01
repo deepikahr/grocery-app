@@ -12,7 +12,6 @@ import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/service/settings/globalSettings.dart';
 import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/widgets/loader.dart';
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -118,7 +117,6 @@ class _MyAppState extends State<MyApp> {
     }
     SharedPreferences prefs = await SharedPreferences.getInstance();
     getGlobalSettings().then((onValue) {
-      print(onValue);
       try {
         if (onValue['response_data']['languageCode'] == null) {
           prefs.setString('selectedLanguage', 'en');
@@ -149,7 +147,6 @@ class _MyAppState extends State<MyApp> {
         if (mounted) {
           setState(() {
             addressData = address;
-            print(address);
           });
         }
       }
@@ -164,7 +161,6 @@ class _MyAppState extends State<MyApp> {
           addressData = first.addressLine;
         });
       }
-      print(addressData);
       Common.setCurrentLocation(addressData);
       return first;
     });
@@ -185,13 +181,45 @@ class _MyAppState extends State<MyApp> {
       title: Constants.APP_NAME,
       theme: ThemeData(primaryColor: primary, accentColor: primary),
       home: isloading || addressData == null
-          ? SquareLoader()
+          ? AnimatedScreen(
+              locale: language != null ? language : widget.locale,
+              localizedValues: widget.localizedValues,
+            )
           : Home(
               locale: language != null ? language : widget.locale,
               localizedValues: widget.localizedValues,
               languagesSelection: widget.languagesSelection,
               addressData: addressData,
             ),
+    );
+  }
+}
+
+class AnimatedScreen extends StatefulWidget {
+  final Map<String, Map<String, String>> localizedValues;
+  final String locale;
+  AnimatedScreen({Key key, this.locale, this.localizedValues})
+      : super(key: key);
+
+  @override
+  _AnimatedScreenState createState() => _AnimatedScreenState();
+}
+
+class _AnimatedScreenState extends State<AnimatedScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        color: Colors.white,
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: Image.asset(
+          'lib/assets/splash.png',
+          fit: BoxFit.contain,
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+        ),
+      ),
     );
   }
 }

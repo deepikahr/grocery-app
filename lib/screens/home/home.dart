@@ -50,17 +50,17 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       languagesSelection = false,
       getTokenValue = false;
   int currentIndex = 0;
-  var language, currency;
+  var language;
   List searchProductList, favProductList;
   LocationData currentLocation;
   Location _location = new Location();
-  var addressData;
+  String currency = "";
+  var addressData, cartData;
   void initState() {
     if (widget.currentIndex != null) {
       if (mounted) {
         setState(() {
           currentIndex = widget.currentIndex;
-          print(currentIndex);
         });
       }
     }
@@ -82,6 +82,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       try {
         if (onValue['response_data']['currencyCode'] == null) {
           prefs.setString('currency', 'Rs');
+          currency = prefs.getString('currency');
           if (mounted) {
             setState(() {
               currencyLoading = false;
@@ -90,6 +91,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         } else {
           prefs.setString(
               'currency', '${onValue['response_data']['currencyCode']}');
+          currency = prefs.getString('currency');
           if (mounted) {
             setState(() {
               currencyLoading = false;
@@ -97,9 +99,19 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           }
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            currencyLoading = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          currencyLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -120,6 +132,11 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         }
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          getTokenValue = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -133,9 +150,19 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           });
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            favProductList = [];
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          favProductList = [];
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -157,9 +184,19 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           }
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            searchProductList = [];
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          searchProductList = [];
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -248,8 +285,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         if (mounted) {
           setState(() {
             addressData = address;
-
-            print(address);
           });
         }
       }
@@ -265,45 +300,71 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           isCurrentLoactionLoading = false;
         });
       }
-      print(addressData);
       Common.setCurrentLocation(addressData);
       return first;
     });
   }
 
+  _onTapped(int index) {
+    setState(() {
+      currentIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    List<Widget> _screens = [
+      Store(
+        locale: widget.locale,
+        localizedValues: widget.localizedValues,
+      ),
+      SavedItems(
+        locale: widget.locale,
+        localizedValues: widget.localizedValues,
+      ),
+      MyCart(
+        locale: widget.locale,
+        localizedValues: widget.localizedValues,
+      ),
+      Profile(
+        locale: widget.locale,
+        localizedValues: widget.localizedValues,
+      ),
+    ];
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: GFAppBar(
-        backgroundColor: bg,
-        elevation: 0,
-        title: deliveryAddress(),
-        actions: <Widget>[
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SearchItem(
-                      locale: widget.locale,
-                      localizedValues: widget.localizedValues,
-                      productsList: searchProductList,
-                      currency: currency,
-                      token: getTokenValue,
-                      favProductList: getTokenValue ? favProductList : null),
+      appBar: currentIndex == 0
+          ? GFAppBar(
+              backgroundColor: bg,
+              elevation: 0,
+              title: deliveryAddress(),
+              actions: <Widget>[
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SearchItem(
+                            locale: widget.locale,
+                            localizedValues: widget.localizedValues,
+                            productsList: searchProductList,
+                            currency: currency,
+                            token: getTokenValue,
+                            favProductList:
+                                getTokenValue ? favProductList : null),
+                      ),
+                    );
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.only(right: 15, left: 15),
+                    child: Icon(
+                      Icons.search,
+                    ),
+                  ),
                 ),
-              );
-            },
-            child: Padding(
-              padding: EdgeInsets.only(right: 15, left: 15),
-              child: Icon(
-                Icons.search,
-              ),
-            ),
-          ),
-        ],
-      ),
+              ],
+            )
+          : null,
       drawer: Drawer(
         child: DrawerPage(
           locale: widget.locale,
@@ -311,58 +372,64 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           addressData: addressData != null ? addressData : widget.addressData,
         ),
       ),
-      body: currencyLoading
-          ? SquareLoader()
-          : GFTabBarView(
-              physics: NeverScrollableScrollPhysics(),
-              controller: tabController,
-              children: <Widget>[
-                Store(
-                  locale: widget.locale,
-                  localizedValues: widget.localizedValues,
+      body: currencyLoading ? SquareLoader() : _screens[currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: currentIndex,
+        backgroundColor: Colors.black,
+        unselectedItemColor: greyc,
+        type: BottomNavigationBarType.fixed,
+        fixedColor: primary,
+        onTap: _onTapped,
+        items: [
+          BottomNavigationBarItem(
+            title: Text(MyLocalizations.of(context).store),
+            icon: Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Icon(
+                IconData(
+                  0xe90f,
+                  fontFamily: 'icomoon',
                 ),
-                SavedItems(
-                  locale: widget.locale,
-                  localizedValues: widget.localizedValues,
-                ),
-                MyCart(
-                  locale: widget.locale,
-                  localizedValues: widget.localizedValues,
-                ),
-                Profile(
-                  locale: widget.locale,
-                  localizedValues: widget.localizedValues,
-                ),
-              ],
+              ),
             ),
-      bottomNavigationBar: GFTabBar(
-        initialIndex: currentIndex,
-        length: 4,
-        controller: tabController,
-        tabs: [
-          tabIcon(0xe90f, MyLocalizations.of(context).store),
-          tabIcon(0xe90d, MyLocalizations.of(context).savedItems),
-          tabIcon(0xe911, MyLocalizations.of(context).myCart),
-          tabIcon(0xe912, MyLocalizations.of(context).profile)
-        ],
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(15.0),
-            topRight: Radius.circular(15.0),
           ),
-        ),
-        tabBarHeight: 60,
-        indicator: BoxDecoration(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(15.0),
-              topRight: Radius.circular(15.0),
+          BottomNavigationBarItem(
+            title: Text(MyLocalizations.of(context).savedItems),
+            icon: Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Icon(
+                IconData(
+                  0xe90d,
+                  fontFamily: 'icomoon',
+                ),
+              ),
             ),
-            color: Colors.black),
-        labelColor: primary,
-        tabBarColor: Colors.black,
-        unselectedLabelColor: greyc,
-        labelStyle: textBarlowMediumsmBlack(),
-        unselectedLabelStyle: textBarlowMediumsmWhite(),
+          ),
+          BottomNavigationBarItem(
+            title: Text(MyLocalizations.of(context).myCart),
+            icon: Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Icon(
+                IconData(
+                  0xe911,
+                  fontFamily: 'icomoon',
+                ),
+              ),
+            ),
+          ),
+          BottomNavigationBarItem(
+            title: Text(MyLocalizations.of(context).profile),
+            icon: Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Icon(
+                IconData(
+                  0xe912,
+                  fontFamily: 'icomoon',
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

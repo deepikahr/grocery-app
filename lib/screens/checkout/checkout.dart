@@ -135,9 +135,19 @@ class _CheckoutState extends State<Checkout> {
           });
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isLoading = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -162,9 +172,19 @@ class _CheckoutState extends State<Checkout> {
           });
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            deliverySlotsLoading = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          deliverySlotsLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -186,9 +206,19 @@ class _CheckoutState extends State<Checkout> {
           });
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            addressLoading = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          addressLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -301,9 +331,19 @@ class _CheckoutState extends State<Checkout> {
             }
           }
         } catch (error, stackTrace) {
+          if (mounted) {
+            setState(() {
+              isPlaceOrderLoading = false;
+            });
+          }
           sentryError.reportError(error, stackTrace);
         }
       }).catchError((error) {
+        if (mounted) {
+          setState(() {
+            isPlaceOrderLoading = false;
+          });
+        }
         sentryError.reportError(error, null);
       });
     }
@@ -470,7 +510,6 @@ class _CheckoutState extends State<Checkout> {
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
-        header: WaterDropHeader(),
         controller: _refreshController,
         onRefresh: () {
           getUserInfo();

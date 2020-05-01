@@ -104,12 +104,27 @@ class _EditAddressState extends State<EditAddress> {
             });
           }
         } catch (error, stackTrace) {
+          if (mounted) {
+            setState(() {
+              isUpdateAddress = false;
+            });
+          }
           sentryError.reportError(error, stackTrace);
         }
       }).catchError((onError) {
+        if (mounted) {
+          setState(() {
+            isUpdateAddress = false;
+          });
+        }
         sentryError.reportError(onError, null);
       });
     } else {
+      if (mounted) {
+        setState(() {
+          isUpdateAddress = false;
+        });
+      }
       return;
     }
   }

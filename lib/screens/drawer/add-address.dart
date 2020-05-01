@@ -85,9 +85,19 @@ class _AddAddressState extends State<AddAddress> {
             });
           }
         } catch (error, stackTrace) {
+          if (mounted) {
+            setState(() {
+              isLoading = false;
+            });
+          }
           sentryError.reportError(error, stackTrace);
         }
       }).catchError((onError) {
+        if (mounted) {
+          setState(() {
+            isLoading = false;
+          });
+        }
         sentryError.reportError(onError, null);
       });
     } else {
