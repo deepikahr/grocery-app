@@ -96,13 +96,12 @@ class LoginService {
   static Future<Map<String, dynamic>> imagedelete(key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token');
-    Map<String, dynamic> body = {'key': key};
-    final response = await client.post(Constants.baseURL + "utils/file/delete",
-        body: json.encode(body),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'bearer $token'
-        });
+
+    final response = await client
+        .delete(Constants.baseURL + "utils/imgaeKit/delete/$key", headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'bearer $token'
+    });
     return json.decode(response.body);
   }
 
@@ -171,3 +170,4 @@ class LoginService {
     return json.decode(response.body);
   }
 }
+

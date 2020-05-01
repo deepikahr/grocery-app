@@ -58,6 +58,7 @@ class _OrdersState extends State<Orders> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     currency = prefs.getString('currency');
     await ProductService.getOrderByUserID(widget.userID).then((onValue) {
+      print(onValue);
       try {
         _refreshController.refreshCompleted();
 
@@ -65,19 +66,14 @@ class _OrdersState extends State<Orders> {
           if (mounted) {
             setState(() {
               orderList = onValue['response_data'];
+              isLoading = false;
             });
           }
-        }
-        if (mounted) {
-          setState(() {
-            orderList = null;
-            isLoading = false;
-          });
         }
       } catch (error, stackTrace) {
         if (mounted) {
           setState(() {
-            orderList = null;
+            orderList = [];
             isLoading = false;
           });
         }
@@ -86,7 +82,7 @@ class _OrdersState extends State<Orders> {
     }).catchError((error) {
       if (mounted) {
         setState(() {
-          orderList = null;
+          orderList = [];
           isLoading = false;
         });
       }

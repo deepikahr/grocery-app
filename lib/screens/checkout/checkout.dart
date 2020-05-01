@@ -230,6 +230,7 @@ class _CheckoutState extends State<Checkout> {
         if (mounted) {
           setState(() {
             addressList = addressList;
+            showSnackbar("Address deleted successfully");
           });
         }
       } catch (error, stackTrace) {

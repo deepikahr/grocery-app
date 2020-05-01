@@ -48,16 +48,9 @@ class _OrderDetailsState extends State<OrderDetails> {
           if (mounted) {
             setState(() {
               orderHistory = onValue['response_data'];
-
               isLoading = false;
             });
           }
-        } else {}
-        if (mounted) {
-          setState(() {
-            orderHistory = null;
-            isLoading = false;
-          });
         }
       } catch (error, stackTrace) {
         if (mounted) {
