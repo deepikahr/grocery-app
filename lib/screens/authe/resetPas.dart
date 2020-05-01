@@ -93,12 +93,27 @@ class _ResetPasswordState extends State<ResetPassword> {
             showSnackbar('${onValue['response_data']}');
           }
         } catch (error, stackTrace) {
+          if (mounted) {
+            setState(() {
+              isResetPasswordLoading = false;
+            });
+          }
           sentryError.reportError(error, stackTrace);
         }
       }).catchError((error) {
+        if (mounted) {
+          setState(() {
+            isResetPasswordLoading = false;
+          });
+        }
         sentryError.reportError(error, null);
       });
     } else {
+      if (mounted) {
+        setState(() {
+          isResetPasswordLoading = false;
+        });
+      }
       return;
     }
   }

@@ -67,16 +67,29 @@ class _OrdersState extends State<Orders> {
               orderList = onValue['response_data'];
             });
           }
-        } else {}
+        }
         if (mounted) {
           setState(() {
+            orderList = null;
             isLoading = false;
           });
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            orderList = null;
+            isLoading = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          orderList = null;
+          isLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -223,7 +236,6 @@ class _OrdersState extends State<Orders> {
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
-        header: WaterDropHeader(),
         controller: _refreshController,
         onRefresh: () {
           getOrderByUserID();

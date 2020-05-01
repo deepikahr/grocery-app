@@ -92,11 +92,20 @@ class _EditProfileState extends State<EditProfile> {
         } else {
           showSnackbar(onValue['response_data']);
         }
-        if (onValue['response_code'] == 200) {}
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isPicUploading = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isPicUploading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -123,19 +132,30 @@ class _EditProfileState extends State<EditProfile> {
 
       await LoginService.updateUserInfo(body).then((onValue) {
         try {
-          if (mounted)
+          if (mounted) {
             setState(() {
               profileEdit = false;
             });
+          }
           if (onValue['response_code'] == 200) {
             showSnackbar(onValue['response_data']);
           } else {
             showSnackbar(onValue['response_data']);
           }
         } catch (error, stackTrace) {
+          if (mounted) {
+            setState(() {
+              profileEdit = false;
+            });
+          }
           sentryError.reportError(error, stackTrace);
         }
       }).catchError((error) {
+        if (mounted) {
+          setState(() {
+            profileEdit = false;
+          });
+        }
         sentryError.reportError(error, null);
       });
     }
@@ -182,6 +202,11 @@ class _EditProfileState extends State<EditProfile> {
     await Common.getToken().then((onValue) {
       token = onValue;
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isPicUploading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
 
@@ -194,6 +219,11 @@ class _EditProfileState extends State<EditProfile> {
             data['response_data'][1]['thumbImage']['key']);
       });
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isPicUploading = true;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -282,18 +312,34 @@ class _EditProfileState extends State<EditProfile> {
       });
     }
     LoginService.imagedelete(userInfo['profilePicId'].toString()).then((value) {
-      if (value['response_code'] == 200) {
+      try {
+        if (value['response_code'] == 200) {
+          if (mounted) {
+            setState(() {
+              isPicUploading = false;
+
+              Navigator.pop(context);
+
+              updateUserInfo(null, null);
+            });
+          }
+        }
+      } catch (error, stackTrace) {
         if (mounted) {
           setState(() {
             isPicUploading = false;
-
             Navigator.pop(context);
-
-            updateUserInfo(null, null);
           });
         }
+        sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isPicUploading = false;
+          Navigator.pop(context);
+        });
+      }
       sentryError.reportError(error, null);
     });
   }

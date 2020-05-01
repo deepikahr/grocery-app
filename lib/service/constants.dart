@@ -1,8 +1,6 @@
 class Constants {
   // app name
   static const APP_NAME = "Readymade Grocery App";
-  // heroku url
-  // static const baseURL = "https://grocery-pro-new.herokuapp.com/";
 
   // delopy url production
   // static const baseURL = "http://162.243.171.81:3000/";
@@ -10,11 +8,8 @@ class Constants {
   // delopy url testing
   // static const baseURL = "http://162.243.171.81:4000/";
 
-//  // local url
-//  static const baseURL = 'http://b68593d1.ngrok.io/';
-
-  static const baseURL = 'http://240af478.ngrok.io/';
-
+  // local url
+  static const baseURL = 'http://ba74ad0c.ngrok.io/';
 
   // ONE_SIGNAL_KEY
   static const ONE_SIGNAL_KEY = "a76b6867-bf12-440f-8bc2-30946c652af8";

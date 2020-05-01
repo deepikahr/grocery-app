@@ -125,8 +125,6 @@ class _LoginState extends State<Login> {
                   (Route<dynamic> route) => false);
             } else if (widget.isProductDetails == true) {
               Navigator.pop(context);
-            } else if (widget.isBottomSheet == true) {
-              Navigator.pop(context);
             } else {
               Navigator.pushAndRemoveUntil(
                   context,
@@ -135,7 +133,7 @@ class _LoginState extends State<Login> {
                       locale: widget.locale,
                       localizedValues: widget.localizedValues,
                       languagesSelection: true,
-                      currentIndex: 2,
+                      currentIndex: 0,
                     ),
                   ),
                   (Route<dynamic> route) => false);
@@ -146,12 +144,27 @@ class _LoginState extends State<Login> {
             showSnackbar(onValue['response_data']);
           }
         } catch (error, stackTrace) {
+          if (mounted) {
+            setState(() {
+              isUserLoaginLoading = false;
+            });
+          }
           sentryError.reportError(error, stackTrace);
         }
       }).catchError((error) {
+        if (mounted) {
+          setState(() {
+            isUserLoaginLoading = false;
+          });
+        }
         sentryError.reportError(error, null);
       });
     } else {
+      if (mounted) {
+        setState(() {
+          isUserLoaginLoading = false;
+        });
+      }
       return;
     }
   }

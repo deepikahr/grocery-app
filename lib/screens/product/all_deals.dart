@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
+import 'package:grocery_pro/model/counterModel.dart';
 import 'package:grocery_pro/screens/categories/subcategories.dart';
+import 'package:grocery_pro/screens/home/home.dart';
 import 'package:grocery_pro/screens/product/product-details.dart';
+import 'package:grocery_pro/service/localizations.dart';
 import 'package:grocery_pro/service/product-service.dart';
 import 'package:grocery_pro/service/sentry-service.dart';
 import 'package:grocery_pro/style/style.dart';
@@ -38,6 +41,7 @@ class _AllDealsListState extends State<AllDealsList> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   ScrollController controller;
+  var cartData;
   @override
   void initState() {
     favProductList = widget.favProductList;
@@ -71,13 +75,26 @@ class _AllDealsListState extends State<AllDealsList> {
           if (mounted) {
             setState(() {
               dealsList = [];
+              isAllDealsLoadingList = false;
             });
           }
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            dealsList = [];
+            isAllDealsLoadingList = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          dealsList = [];
+          isAllDealsLoadingList = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -102,19 +119,47 @@ class _AllDealsListState extends State<AllDealsList> {
           if (mounted) {
             setState(() {
               dealsList = [];
+              isAllDealsLoadingList = false;
             });
           }
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            dealsList = [];
+            isAllDealsLoadingList = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          dealsList = [];
+          isAllDealsLoadingList = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (getTokenValue) {
+      CounterModel().getCartDataMethod().then((res) {
+        if (mounted) {
+          setState(() {
+            cartData = res;
+          });
+        }
+      });
+    } else {
+      if (mounted) {
+        setState(() {
+          cartData = null;
+        });
+      }
+    }
     return Scaffold(
       backgroundColor: bg,
       appBar: GFAppBar(
@@ -129,7 +174,6 @@ class _AllDealsListState extends State<AllDealsList> {
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
-        header: WaterDropHeader(),
         controller: _refreshController,
         onRefresh: () {
           if (widget.dealType == "TopDeals") {
@@ -206,6 +250,56 @@ class _AllDealsListState extends State<AllDealsList> {
                 ),
               ),
       ),
+      bottomNavigationBar: cartData == null
+          ? Container(
+              height: 10.0,
+            )
+          : InkWell(
+              onTap: () {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Home(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                        languagesSelection: false,
+                        currentIndex: 2,
+                      ),
+                    ),
+                    (Route<dynamic> route) => false);
+              },
+              child: Container(
+                height: 35.0,
+                color: primary,
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 20.0, right: 20.0, top: 5.0, bottom: 5.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          new Text(
+                            '${cartData['cart'].length} ' +
+                                MyLocalizations.of(context).items +
+                                " " +
+                                " | " +
+                                "$currency${cartData['grandTotal']}",
+                            style: textBarlowRegularBlack(),
+                          ),
+                          new Text(
+                            MyLocalizations.of(context).goToCart,
+                            style: textbarlowBoldsmBlack(),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 6),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 }

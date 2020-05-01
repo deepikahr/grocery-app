@@ -83,6 +83,40 @@ class ProductService {
     return json.decode(response.body);
   }
 
+  static Future<Map<String, dynamic>> getProductToSubCategoryList(id) async {
+    String token;
+    await Common.getToken().then((onValue) {
+      token = onValue;
+    });
+
+    final response = await client
+        .get(Constants.baseURL + "products/by/subcategory/$id", headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'bearer $token'
+    });
+
+    return json.decode(response.body);
+  }
+
+  // get product to category
+  static Future<Map<String, dynamic>> getProductToSubCategoryListCartAdded(
+      id) async {
+    String token;
+    await Common.getToken().then((onValue) {
+      token = onValue;
+    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String userId = "userId=" + prefs.getString("userID");
+    final response = await client.get(
+        Constants.baseURL + "products/by/subcategory/$id?$userId",
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'bearer $token'
+        });
+
+    return json.decode(response.body);
+  }
+
   // place order
   static Future<Map<String, dynamic>> placeOrder(body) async {
     String token;
@@ -166,6 +200,17 @@ class ProductService {
     final response = await client.get(Constants.baseURL + "products/home/page",
         headers: {'Content-Type': 'application/json'});
     Common.setAllData(json.decode(response.body));
+    return json.decode(response.body);
+  }
+
+  static Future<Map<String, dynamic>> getProdCatDealTopDealQuary() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String userId = "userId=" + prefs.getString("userID");
+    final response = await client.get(
+        Constants.baseURL + "products/home/page?$userId",
+        headers: {'Content-Type': 'application/json'});
+    Common.setAllDataQuary(json.decode(response.body));
     return json.decode(response.body);
   }
 

@@ -55,9 +55,21 @@ class _AddressState extends State<Address> {
           });
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            addressList = [];
+            addressLoading = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          addressList = [];
+          addressLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -72,9 +84,21 @@ class _AddressState extends State<Address> {
           });
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            addressList = [];
+            addressLoading = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          addressList = [];
+          addressLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -96,7 +120,6 @@ class _AddressState extends State<Address> {
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
-        header: WaterDropHeader(),
         controller: _refreshController,
         onRefresh: () {
           getAddress();

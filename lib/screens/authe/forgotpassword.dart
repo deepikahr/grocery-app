@@ -90,12 +90,27 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             showSnackbar('${onValue['response_data']}');
           }
         } catch (error, stackTrace) {
+          if (mounted) {
+            setState(() {
+              isVerfyEmailLoading = false;
+            });
+          }
           sentryError.reportError(error, stackTrace);
         }
       }).catchError((error) {
+        if (mounted) {
+          setState(() {
+            isVerfyEmailLoading = false;
+          });
+        }
         sentryError.reportError(error, null);
       });
     } else {
+      if (mounted) {
+        setState(() {
+          isVerfyEmailLoading = false;
+        });
+      }
       return;
     }
   }

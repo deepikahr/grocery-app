@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:grocery_pro/model/bottomSheet.dart';
-import 'package:grocery_pro/screens/authe/login.dart';
 import 'package:grocery_pro/style/style.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -63,15 +60,15 @@ class ProductCard extends StatelessWidget {
           children: <Widget>[
             ClipRRect(
               borderRadius:
-              const BorderRadius.vertical(top: Radius.circular(12)),
+                  const BorderRadius.vertical(top: Radius.circular(12)),
               child: image == null
                   ? Image.asset(nullImage)
                   : Image.network(
-                image,
-                fit: BoxFit.fill,
-                height: 120,
-                width: MediaQuery.of(context).size.width,
-              ),
+                      image,
+                      fit: BoxFit.fill,
+                      height: 120,
+                      width: MediaQuery.of(context).size.width,
+                    ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
@@ -118,12 +115,8 @@ class ProductCard extends StatelessWidget {
                           style: textbarlowBoldgreen(),
                         ),
                       ),
-
                     ],
                   ),
-
-
-
                 ],
               ),
             ),

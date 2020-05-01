@@ -104,9 +104,19 @@ class _AddCardState extends State<AddCard> {
               showSnackbar('${onValue['response_data']}');
             }
           } catch (error) {
+            if (mounted) {
+              setState(() {
+                isCardListLoading = false;
+              });
+            }
             sentryError.reportError(error, null);
           }
         }).catchError((error) {
+          if (mounted) {
+            setState(() {
+              isCardListLoading = false;
+            });
+          }
           sentryError.reportError(error, null);
         });
       } else {
@@ -119,6 +129,11 @@ class _AddCardState extends State<AddCard> {
             MyLocalizations.of(context).pleaseentercorrectexpirymonthandyear);
       }
     } else {
+      if (mounted) {
+        setState(() {
+          isCardListLoading = false;
+        });
+      }
       return;
     }
   }
