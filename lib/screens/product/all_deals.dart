@@ -250,56 +250,6 @@ class _AllDealsListState extends State<AllDealsList> {
                 ),
               ),
       ),
-      bottomNavigationBar: cartData == null
-          ? Container(
-              height: 10.0,
-            )
-          : InkWell(
-              onTap: () {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => Home(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
-                        languagesSelection: false,
-                        currentIndex: 2,
-                      ),
-                    ),
-                    (Route<dynamic> route) => false);
-              },
-              child: Container(
-                height: 35.0,
-                color: primary,
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 20.0, right: 20.0, top: 5.0, bottom: 5.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          new Text(
-                            '${cartData['cart'].length} ' +
-                                MyLocalizations.of(context).items +
-                                " " +
-                                " | " +
-                                "$currency${cartData['grandTotal']}",
-                            style: textBarlowRegularBlack(),
-                          ),
-                          new Text(
-                            MyLocalizations.of(context).goToCart,
-                            style: textbarlowBoldsmBlack(),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 6),
-                  ],
-                ),
-              ),
-            ),
     );
   }
 }

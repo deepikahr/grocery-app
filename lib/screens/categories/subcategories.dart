@@ -727,33 +727,58 @@ class _SubCategoriesState extends State<SubCategories> {
                     (Route<dynamic> route) => false);
               },
               child: Container(
-                height: 35.0,
-                color: primary,
+                height: 55.0,
+                padding: EdgeInsets.only(right: 20),
+                decoration: BoxDecoration(color: primary, boxShadow: [
+                  BoxShadow(
+                      color: Colors.black.withOpacity(0.29), blurRadius: 5)
+                ]),
                 child: Column(
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 20.0, right: 20.0, top: 5.0, bottom: 5.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          new Text(
-                            '${cartData['cart'].length} ' +
-                                MyLocalizations.of(context).items +
-                                " " +
-                                " | " +
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Container(
+                          color: Colors.black,
+                          width: MediaQuery.of(context).size.width * 0.35,
+                          height: 55,
+                          child: Column(
+                            children: <Widget>[
+                              SizedBox(height: 7),
+                              new Text(
+                                '${cartData['cart'].length} ' +
+                                    MyLocalizations.of(context).items,
+                                style: textBarlowRegularWhite(),
+                              ),
+                              new Text(
                                 "$currency${cartData['grandTotal']}",
-                            style: textBarlowRegularBlack(),
+                                style: textbarlowBoldWhite(),
+                              ),
+                            ],
                           ),
-                          new Text(
-                            MyLocalizations.of(context).goToCart,
-                            style: textbarlowBoldsmBlack(),
-                          ),
-                        ],
-                      ),
+                        ),
+                        Column(
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                new Text(
+                                  MyLocalizations.of(context).goToCart,
+                                  style: textBarlowRegularBlack(),
+                                ),
+                                SizedBox(width: 4),
+                                Icon(
+                                  IconData(
+                                    0xe911,
+                                    fontFamily: 'icomoon',
+                                  ),
+                                  color: Colors.black,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                    SizedBox(height: 6),
                   ],
                 ),
               ),

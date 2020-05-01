@@ -1009,6 +1009,7 @@ TextStyle textbarlowMediumBlack() {
     color: Colors.black,
   );
 }
+
 TextStyle textbarlowMediumBlackm() {
   return TextStyle(
     fontSize: 14.0,
@@ -1017,6 +1018,7 @@ TextStyle textbarlowMediumBlackm() {
     color: Colors.black,
   );
 }
+
 TextStyle textbarlowMediumlgBlack() {
   return TextStyle(
     fontSize: 45.0,
