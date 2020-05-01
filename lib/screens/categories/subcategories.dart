@@ -39,8 +39,9 @@ class SubCategories extends StatefulWidget {
 class _SubCategoriesState extends State<SubCategories> {
   bool isLoadingSubProductsList = false, isLoadingSubCatProductsList = false;
   List subProductsList, favProductList, subCategryList, subCategryByProduct;
-  bool isColorChange = false;
-  String currency;
+
+  bool isSelected = true, isSelectedIndexZero = false;
+  String currency, isSelectetedId;
   var cartData;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -265,19 +266,23 @@ class _SubCategoriesState extends State<SubCategories> {
                                 if (subCategryList[i]['isSelected'] == null) {
                                   subCategryList[i]['isSelected'] = false;
                                 }
+
                                 return i == 0
                                     ? Row(
                                         children: <Widget>[
                                           InkWell(
                                             onTap: () {
                                               subCategryByProduct = null;
+                                              if (mounted) {
+                                                setState(() {
+                                                  isLoadingSubProductsList =
+                                                      true;
+                                                  isSelected = true;
+                                                  isSelectedIndexZero = false;
+                                                  isSelectetedId = null;
+                                                });
+                                              }
                                               if (widget.token == true) {
-                                                if (mounted) {
-                                                  setState(() {
-                                                    isLoadingSubCatProductsList =
-                                                        true;
-                                                  });
-                                                }
                                                 getProductToCategoryCartAdded(
                                                     widget.catId);
                                               } else {
@@ -292,7 +297,9 @@ class _SubCategoriesState extends State<SubCategories> {
                                               margin:
                                                   EdgeInsets.only(right: 15),
                                               decoration: BoxDecoration(
-                                                color: Color(0xFFFFCF2D),
+                                                color: isSelected
+                                                    ? Color(0xFFFFCF2D)
+                                                    : Color(0xFFf0F0F0),
                                                 borderRadius: BorderRadius.all(
                                                   Radius.circular(4),
                                                 ),
@@ -310,6 +317,9 @@ class _SubCategoriesState extends State<SubCategories> {
                                                 setState(() {
                                                   isLoadingSubCatProductsList =
                                                       true;
+                                                  isSelected = false;
+                                                  isSelectedIndexZero = true;
+                                                  isSelectetedId = null;
                                                 });
                                               }
                                               if (widget.token == true) {
@@ -329,9 +339,12 @@ class _SubCategoriesState extends State<SubCategories> {
                                               margin:
                                                   EdgeInsets.only(right: 15),
                                               decoration: BoxDecoration(
-                                                color: Color(0xFFf0F0F0),
+                                                color: isSelectedIndexZero
+                                                    ? Color(0xFFFFCF2D)
+                                                    : Color(0xFFf0F0F0),
                                                 border: Border.all(
-                                                    color: Color(0xFFDFDFDF)),
+                                                  color: Color(0xFFDFDFDF),
+                                                ),
                                                 borderRadius: BorderRadius.all(
                                                   Radius.circular(4),
                                                 ),
@@ -349,29 +362,13 @@ class _SubCategoriesState extends State<SubCategories> {
                                         onTap: () {
                                           if (mounted) {
                                             setState(() {
+                                              isSelected = false;
+                                              isSelectedIndexZero = false;
                                               isLoadingSubCatProductsList =
                                                   true;
+                                              isSelectetedId =
+                                                  subCategryList[i]['_id'];
                                             });
-                                          }
-                                          for (int j = 0;
-                                              j < subCategryList.length;
-                                              j++) {
-                                            if (subCategryList[j]['_id'] ==
-                                                subCategryList[i]['_id']) {
-                                              if (mounted) {
-                                                setState(() {
-                                                  subCategryList[i]
-                                                      ['isSelected'] = true;
-                                                });
-                                              }
-                                            } else {
-                                              if (mounted) {
-                                                setState(() {
-                                                  subCategryList[i]
-                                                      ['isSelected'] = false;
-                                                });
-                                              }
-                                            }
                                           }
                                           if (widget.token == true) {
                                             getProductToSubCategoryCartAdded(
@@ -389,8 +386,8 @@ class _SubCategoriesState extends State<SubCategories> {
                                               left: 15, right: 15, top: 8),
                                           margin: EdgeInsets.only(right: 15),
                                           decoration: BoxDecoration(
-                                            color: !subCategryList[i]
-                                                    ['isSelected']
+                                            color: isSelectetedId ==
+                                                    subCategryList[i]['_id']
                                                 ? Color(0xFFFFCF2D)
                                                 : Color(0xFFf0F0F0),
                                             border: Border.all(
