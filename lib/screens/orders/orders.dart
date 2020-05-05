@@ -4,14 +4,14 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
-import 'package:grocery_pro/screens/orders/ordersDetails.dart';
-import 'package:grocery_pro/screens/tab/mycart.dart';
-import 'package:grocery_pro/service/cart-service.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/service/product-service.dart';
-import 'package:grocery_pro/widgets/loader.dart';
+import 'package:readymadeGroceryApp/screens/orders/ordersDetails.dart';
+import 'package:readymadeGroceryApp/screens/tab/mycart.dart';
+import 'package:readymadeGroceryApp/service/cart-service.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/service/product-service.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -58,7 +58,6 @@ class _OrdersState extends State<Orders> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     currency = prefs.getString('currency');
     await ProductService.getOrderByUserID(widget.userID).then((onValue) {
-      print(onValue);
       try {
         _refreshController.refreshCompleted();
 
@@ -408,7 +407,6 @@ class _OrdersState extends State<Orders> {
             ),
           ),
           GFListTile(
-//            icon:Padding(padding: EdgeInsets.only(bottom: 20),child: Image.asset('lib/assets/icons/confirm.png'),),
             avatar: Column(
               children: <Widget>[
                 GFAvatar(

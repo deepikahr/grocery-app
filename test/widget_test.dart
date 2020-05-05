@@ -8,7 +8,5 @@
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    print('Its test OutPut.');
-  });
+  testWidgets('Counter increments smoke test', (WidgetTester tester) async {});
 }

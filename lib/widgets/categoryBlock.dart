@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_pro/style/style.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
 
 class CategoryBlock extends StatelessWidget {
   final image, title;
@@ -17,7 +17,6 @@ class CategoryBlock extends StatelessWidget {
             height: 68,
             padding: EdgeInsets.all(5),
             decoration: BoxDecoration(
-//              color: Colors.white,
               borderRadius: BorderRadius.all(Radius.circular(8)),
               border: Border.all(color: Colors.black.withOpacity(0.20)),
             ),

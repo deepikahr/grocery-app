@@ -2,19 +2,19 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:grocery_pro/service/auth-service.dart';
+import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:getflutter/getflutter.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/service/common.dart';
-import 'package:grocery_pro/style/style.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../service/constants.dart';
 import 'package:path/path.dart' as path;
 import 'package:http/http.dart' as http;
 import 'package:async/async.dart';
 import 'dart:ui';
-import 'package:grocery_pro/widgets/loader.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -233,75 +233,76 @@ class _EditProfileState extends State<EditProfile> {
         context: context,
         builder: (context) {
           return Center(
-              child: Container(
-            height: 220,
-            width: MediaQuery.of(context).size.width * 0.8,
-            decoration: new BoxDecoration(
-              color: Colors.white,
-              borderRadius: new BorderRadius.all(
-                new Radius.circular(24.0),
+            child: Container(
+              height: 220,
+              width: MediaQuery.of(context).size.width * 0.8,
+              decoration: new BoxDecoration(
+                color: Colors.white,
+                borderRadius: new BorderRadius.all(
+                  new Radius.circular(24.0),
+                ),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(
+                      MyLocalizations.of(context).select,
+                      style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 20,
+                          decoration: TextDecoration.none),
+                    ),
+                  ),
+                  GFButton(
+                    onPressed: selectCamera,
+                    type: GFButtonType.transparent,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          MyLocalizations.of(context).takePhoto,
+                          style: hintSfboldBig(),
+                        ),
+                        Icon(Icons.camera_alt),
+                      ],
+                    ),
+                  ),
+                  GFButton(
+                    onPressed: selectGallary,
+                    type: GFButtonType.transparent,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          MyLocalizations.of(context).chooseFromPhotos,
+                          style: hintSfboldBig(),
+                        ),
+                        Icon(Icons.image),
+                      ],
+                    ),
+                  ),
+                  userInfo['profilePic'] != null
+                      ? GFButton(
+                          onPressed: removeImage,
+                          type: GFButtonType.transparent,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                MyLocalizations.of(context).removePhoto,
+                                style: hintSfboldBig(),
+                              ),
+                              Icon(Icons.delete_forever),
+                            ],
+                          ),
+                        )
+                      : Container(),
+                ],
               ),
             ),
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Text(
-                    MyLocalizations.of(context).select,
-                    style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 20,
-                        decoration: TextDecoration.none),
-                  ),
-                ),
-                GFButton(
-                  onPressed: selectCamera,
-                  type: GFButtonType.transparent,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        MyLocalizations.of(context).takePhoto,
-                        style: hintSfboldBig(),
-                      ),
-                      Icon(Icons.camera_alt),
-                    ],
-                  ),
-                ),
-                GFButton(
-                  onPressed: selectGallary,
-                  type: GFButtonType.transparent,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        MyLocalizations.of(context).chooseFromPhotos,
-                        style: hintSfboldBig(),
-                      ),
-                      Icon(Icons.image),
-                    ],
-                  ),
-                ),
-                userInfo['profilePic'] != null
-                    ? GFButton(
-                        onPressed: removeImage,
-                        type: GFButtonType.transparent,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              MyLocalizations.of(context).removePhoto,
-                              style: hintSfboldBig(),
-                            ),
-                            Icon(Icons.delete_forever),
-                          ],
-                        ),
-                      )
-                    : Container(),
-              ],
-            ),
-          ));
+          );
         });
   }
 
@@ -317,9 +318,7 @@ class _EditProfileState extends State<EditProfile> {
           if (mounted) {
             setState(() {
               isPicUploading = false;
-
               Navigator.pop(context);
-
               updateUserInfo(null, null);
             });
           }
@@ -337,7 +336,6 @@ class _EditProfileState extends State<EditProfile> {
       if (mounted) {
         setState(() {
           isPicUploading = false;
-          Navigator.pop(context);
         });
       }
       sentryError.reportError(error, null);
@@ -537,9 +535,6 @@ class _EditProfileState extends State<EditProfile> {
                         if (value.isEmpty) {
                           return MyLocalizations.of(context)
                               .enterYourContactNumber;
-                        } else if (value.length != 10) {
-                          return MyLocalizations.of(context)
-                              .pleaseenter10digitcontactnumber;
                         } else
                           return null;
                       },

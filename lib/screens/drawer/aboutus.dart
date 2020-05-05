@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_pro/service/auth-service.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/widgets/loader.dart';
+import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 SentryError sentryError = new SentryError();
@@ -174,48 +174,48 @@ class _AboutUsState extends State<AboutUs> {
                         ),
                       ),
                     ),
-                    InkWell(
-                      onTap: () {
-                        _launchURL(aboutUsDatails['googleUrl']);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 15.0, bottom: 15),
-                        child: Row(
-                          children: <Widget>[
-                            Icon(Icons.location_searching),
-                            Text(' Locate Us', style: textbarlowRegularBlackd())
-                          ],
-                        ),
-                      ),
-                    ),
+                    // InkWell(
+                    //   onTap: () {
+                    //     _launchURL(aboutUsDatails['googleUrl']);
+                    //   },
+                    //   child: Padding(
+                    //     padding: const EdgeInsets.only(left: 15.0, bottom: 15),
+                    //     child: Row(
+                    //       children: <Widget>[
+                    //         Icon(Icons.location_searching),
+                    //         Text(' Locate Us', style: textbarlowRegularBlackd())
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
-                Positioned(
-                  bottom: 30,
-                  left: 15,
-                  child: InkWell(
-                    onTap: () {
-                      _launchURL(aboutUsDatails['tearmsAndConditionUrl']);
-                    },
-                    child: Text(
-                      'Terms & Conditions',
-                      style: textBarlowmediumLink(),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  bottom: 30,
-                  right: 15,
-                  child: InkWell(
-                    onTap: () {
-                      _launchURL(aboutUsDatails['privacyPolicyUrl']);
-                    },
-                    child: Text(
-                      'Privacy policy',
-                      style: textBarlowmediumLink(),
-                    ),
-                  ),
-                ),
+                // Positioned(
+                //   bottom: 30,
+                //   left: 15,
+                //   child: InkWell(
+                //     onTap: () {
+                //       _launchURL(aboutUsDatails['tearmsAndConditionUrl']);
+                //     },
+                //     child: Text(
+                //       'Terms & Conditions',
+                //       style: textBarlowmediumLink(),
+                //     ),
+                //   ),
+                // ),
+                // Positioned(
+                //   bottom: 30,
+                //   right: 15,
+                //   child: InkWell(
+                //     onTap: () {
+                //       _launchURL(aboutUsDatails['privacyPolicyUrl']);
+                //     },
+                //     child: Text(
+                //       'Privacy policy',
+                //       style: textBarlowmediumLink(),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
     );

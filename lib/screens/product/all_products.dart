@@ -1,17 +1,19 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
-import 'package:grocery_pro/model/counterModel.dart';
-import 'package:grocery_pro/screens/home/home.dart';
-import 'package:grocery_pro/screens/product/product-details.dart';
-import 'package:grocery_pro/screens/tab/searchitem.dart';
-import 'package:grocery_pro/service/common.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/service/product-service.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/widgets/cardOverlay.dart';
-import 'package:grocery_pro/widgets/loader.dart';
-import 'package:grocery_pro/widgets/subCategoryProductCart.dart';
+import 'package:readymadeGroceryApp/model/counterModel.dart';
+import 'package:readymadeGroceryApp/screens/home/home.dart';
+import 'package:readymadeGroceryApp/screens/product/product-details.dart';
+import 'package:readymadeGroceryApp/screens/tab/searchitem.dart';
+import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/product-service.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/widgets/cardOverlay.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
+import 'package:readymadeGroceryApp/widgets/subCategoryProductCart.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -36,26 +38,48 @@ class AllProducts extends StatefulWidget {
 }
 
 class _AllProductsState extends State<AllProducts> {
-  List productsList, favProductList;
+  List productsList = [], favProductList;
   String currency;
   bool getTokenValue = false, isLoadingProductsList = false;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   ScrollController controller;
+  ScrollController _scrollController = new ScrollController();
+  int index = 0, totalIndex = 0;
+  bool productListApiCall = false;
   var cartData;
   @override
   void initState() {
     favProductList = widget.favProductList;
-    getTokenValueMethod();
-    super.initState();
-  }
-
-  getTokenValueMethod() async {
     if (mounted) {
       setState(() {
         isLoadingProductsList = true;
       });
     }
+
+    getTokenValueMethod();
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        if (mounted) {
+          setState(() {
+            getTokenValueMethod();
+          });
+        }
+      }
+    });
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  getTokenValueMethod() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     currency = prefs.getString('currency');
     await Common.getToken().then((onValue) {
@@ -64,14 +88,12 @@ class _AllProductsState extends State<AllProducts> {
           if (mounted) {
             setState(() {
               getTokenValue = true;
-              getProductListMethodCardAdded();
             });
           }
         } else {
           if (mounted) {
             setState(() {
               getTokenValue = false;
-              getProductListMethod();
             });
           }
         }
@@ -79,7 +101,6 @@ class _AllProductsState extends State<AllProducts> {
         if (mounted) {
           setState(() {
             getTokenValue = false;
-            getProductListMethod();
           });
         }
         sentryError.reportError(error, stackTrace);
@@ -88,21 +109,28 @@ class _AllProductsState extends State<AllProducts> {
       if (mounted) {
         setState(() {
           getTokenValue = false;
-          getProductListMethod();
         });
       }
       sentryError.reportError(error, null);
     });
+
+    if (getTokenValue) {
+      getProductListMethodCardAdded(index);
+    } else {
+      getProductListMethod(index);
+    }
   }
 
-  getProductListMethod() async {
-    await ProductService.getProductListAll().then((onValue) {
+  getProductListMethod(productIndex) async {
+    await ProductService.getProductListAll(productIndex).then((onValue) {
       try {
         _refreshController.refreshCompleted();
         if (onValue['response_code'] == 200) {
           if (mounted) {
             setState(() {
-              productsList = onValue['response_data'];
+              productsList.addAll(onValue['response_data']['products']);
+              index = productsList.length;
+              totalIndex = onValue['response_data']["total"];
               isLoadingProductsList = false;
             });
           }
@@ -134,14 +162,17 @@ class _AllProductsState extends State<AllProducts> {
     });
   }
 
-  getProductListMethodCardAdded() async {
-    await ProductService.getProductListAllCartAdded().then((onValue) {
+  getProductListMethodCardAdded(productIndex) async {
+    await ProductService.getProductListAllCartAdded(productIndex)
+        .then((onValue) {
       try {
         _refreshController.refreshCompleted();
         if (onValue['response_code'] == 200) {
           if (mounted) {
             setState(() {
-              productsList = onValue['response_data'];
+              productsList.addAll(onValue['response_data']['products']);
+              index = productsList.length;
+              totalIndex = onValue['response_data']["total"];
               isLoadingProductsList = false;
             });
           }
@@ -232,9 +263,9 @@ class _AllProductsState extends State<AllProducts> {
         controller: _refreshController,
         onRefresh: () {
           if (getTokenValue) {
-            getProductListMethodCardAdded();
+            getProductListMethodCardAdded(1);
           } else {
-            getProductListMethod();
+            getProductListMethod(1);
           }
         },
         child: isLoadingProductsList
@@ -242,35 +273,8 @@ class _AllProductsState extends State<AllProducts> {
             : Container(
                 margin: EdgeInsets.only(left: 15, right: 15, top: 15),
                 child: ListView(
+                  controller: _scrollController,
                   children: <Widget>[
-//                    Row(
-//                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                      children: <Widget>[
-//                        Text(
-//                          'Suggested for you',
-//                          style: textBarlowMediumBlack(),
-//                        ),
-//                        Row(
-//                          children: <Widget>[
-//                            Image.asset(
-//                              'lib/assets/icons/filter.png',
-//                              width: 20,
-//                            ),
-//                            SizedBox(
-//                              width: 5,
-//                            ),
-//                            Text(
-//                              'Filters',
-//                              style: textBarlowMediumBlack(),
-//                            )
-//                          ],
-//                        ),
-//                      ],
-//                    ),
-//                    Divider(
-//                      color: Colors.black.withOpacity(0.20),
-//                      thickness: 1,
-//                    ),
                     GridView.builder(
                       padding: EdgeInsets.only(bottom: 25),
                       physics: ScrollPhysics(),
@@ -309,30 +313,34 @@ class _AllProductsState extends State<AllProducts> {
                                 child: Stack(
                                   children: <Widget>[
                                     SubCategoryProductCard(
-                                      image: productsList[i]['imageUrl'],
-                                      title:
-                                          productsList[i]['title'].length > 10
-                                              ? productsList[i]['title']
-                                                      .substring(0, 10) +
-                                                  ".."
-                                              : productsList[i]['title'],
-                                      currency: currency,
-                                      category: productsList[i]['category'],
-                                      price: productsList[i]['variant'][0]
-                                          ['price'],
-                                      rating: productsList[i]['averageRating']
-                                          .toString(),
-                                      buttonName: "Add",
-                                      cartAdded:
-                                          productsList[i]['cartAdded'] ?? false,
-                                      cartId: productsList[i]['cartId'],
-                                      productQuantity: productsList[i]
-                                              ['cartAddedQuantity'] ??
-                                          0,
-                                      token: widget.token,
-                                      productList: productsList[i],
-                                      variantList: productsList[i]['variant'],
-                                    ),
+                                        image: productsList[i]['imageUrl'],
+                                        title:
+                                            productsList[i]['title'].length > 10
+                                                ? productsList[i]['title']
+                                                        .substring(0, 10) +
+                                                    ".."
+                                                : productsList[i]['title'],
+                                        currency: currency,
+                                        category: productsList[i]['category'],
+                                        price: productsList[i]['variant'][0]
+                                            ['price'],
+                                        variantStock: productsList[0]['variant']
+                                            [0]['productstock'],
+                                        rating: productsList[i]['averageRating']
+                                            .toString(),
+                                        buttonName: "Add",
+                                        cartAdded: productsList[i]
+                                                ['cartAdded'] ??
+                                            false,
+                                        cartId: productsList[i]['cartId'],
+                                        productQuantity: productsList[i]
+                                                ['cartAddedQuantity'] ??
+                                            0,
+                                        token: widget.token,
+                                        productList: productsList[i],
+                                        variantList: productsList[i]['variant'],
+                                        subCategoryId: productsList[i]
+                                            ['subcategory']),
                                     productsList[i]['isDealAvailable'] == true
                                         ? Positioned(
                                             child: Stack(
@@ -362,29 +370,31 @@ class _AllProductsState extends State<AllProducts> {
                             : Stack(
                                 children: <Widget>[
                                   SubCategoryProductCard(
-                                    image: productsList[i]['imageUrl'],
-                                    title: productsList[i]['title'].length > 10
-                                        ? productsList[i]['title']
-                                                .substring(0, 10) +
-                                            ".."
-                                        : productsList[i]['title'],
-                                    currency: currency,
-                                    category: productsList[i]['category'],
-                                    price: productsList[i]['variant'][0]
-                                        ['price'],
-                                    rating: productsList[i]['averageRating']
-                                        .toString(),
-                                    buttonName: "Add",
-                                    cartAdded:
-                                        productsList[i]['cartAdded'] ?? false,
-                                    cartId: productsList[i]['cartId'],
-                                    productQuantity: productsList[i]
-                                            ['cartAddedQuantity'] ??
-                                        0,
-                                    token: widget.token,
-                                    productList: productsList[i],
-                                    variantList: productsList[i]['variant'],
-                                  ),
+                                      image: productsList[i]['imageUrl'],
+                                      title:
+                                          productsList[i]['title'].length > 10
+                                              ? productsList[i]['title']
+                                                      .substring(0, 10) +
+                                                  ".."
+                                              : productsList[i]['title'],
+                                      currency: currency,
+                                      category: productsList[i]['category'],
+                                      price: productsList[i]['variant'][0]
+                                          ['price'],
+                                      rating: productsList[i]['averageRating']
+                                          .toString(),
+                                      buttonName: "Add",
+                                      cartAdded:
+                                          productsList[i]['cartAdded'] ?? false,
+                                      cartId: productsList[i]['cartId'],
+                                      productQuantity: productsList[i]
+                                              ['cartAddedQuantity'] ??
+                                          0,
+                                      token: widget.token,
+                                      productList: productsList[i],
+                                      variantList: productsList[i]['variant'],
+                                      subCategoryId: productsList[i]
+                                          ['subcategory']),
                                   CardOverlay()
                                 ],
                               );

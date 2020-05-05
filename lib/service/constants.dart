@@ -9,7 +9,7 @@ class Constants {
   static const baseURL = "http://162.243.171.81:4000/";
 
   // local url
-  // static const baseURL = 'http://a1c179e0.ngrok.io/';
+  // static const baseURL = 'https://2b60baaf.ngrok.io/';
 
   // ONE_SIGNAL_KEY
   static const ONE_SIGNAL_KEY = "a76b6867-bf12-440f-8bc2-30946c652af8";
@@ -17,6 +17,19 @@ class Constants {
   // googleapikey
   static const GOOGLE_API_KEY = "AIzaSyDXxt_aIn5HWQZg3gFYOqcuf8hjUuzmvKg";
 
+  // stripe key
+  static const STRIPE_KEY = "pk_test_RBdAu6jIbEByY3KaBQFbH4N100nMkViv6g";
+
   //languages list
-  static const List<String> LANGUAGES = ['en', 'fr', 'ar'];
+  static const List<String> LANGUAGES = [
+    'en',
+    'fr',
+    'zh',
+    'ar',
+    'ru',
+    'ja',
+    'it',
+    'pt',
+    'es'
+  ];
 }

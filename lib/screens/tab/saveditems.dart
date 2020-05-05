@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
-import 'package:grocery_pro/model/counterModel.dart';
-import 'package:grocery_pro/screens/authe/login.dart';
-import 'package:grocery_pro/screens/home/home.dart';
-import 'package:grocery_pro/screens/product/product-details.dart';
-import 'package:grocery_pro/service/common.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/service/fav-service.dart';
-import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/widgets/loader.dart';
-import 'package:grocery_pro/widgets/subCategoryProductCart.dart';
+import 'package:readymadeGroceryApp/model/counterModel.dart';
+import 'package:readymadeGroceryApp/screens/authe/login.dart';
+import 'package:readymadeGroceryApp/screens/home/home.dart';
+import 'package:readymadeGroceryApp/screens/product/product-details.dart';
+import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/fav-service.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
+import 'package:readymadeGroceryApp/widgets/subCategoryProductCart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
@@ -179,6 +179,7 @@ class _SavedItemsState extends State<SavedItems> {
                             if (favProductList[i]['averageRating'] == null) {
                               favProductList[i]['averageRating'] = 0;
                             }
+
                             return InkWell(
                               onTap: () {
                                 Navigator.push(
@@ -197,35 +198,32 @@ class _SavedItemsState extends State<SavedItems> {
                               child: Stack(
                                 children: <Widget>[
                                   SubCategoryProductCard(
-                                    image: favProductList[i]['product']
-                                        ['imageUrl'],
-                                    title: favProductList[i]['product']['title']
-                                                .length >
-                                            10
-                                        ? favProductList[i]['product']['title']
-                                                .substring(0, 10) +
-                                            ".."
-                                        : favProductList[i]['product']['title'],
-                                    currency: currency,
-                                    category: favProductList[i]['product']
-                                        ['category'],
-                                    price: favProductList[i]['product']
-                                        ['variant'][0]['price'],
-                                    rating: favProductList[i]['product']
-                                            ['averageRating']
-                                        .toString(),
-                                    buttonName: "Add",
-                                    cartAdded:
-                                        favProductList[i]['cartAdded'] ?? false,
-                                    cartId: favProductList[i]['cartId'],
-                                    productQuantity: favProductList[i]
-                                            ['cartAddedQuantity'] ??
-                                        0,
-                                    token: true,
-                                    productList: favProductList[i]['product'],
-                                    variantList: favProductList[i]['product']
-                                        ['variant'],
-                                  ),
+                                      image: favProductList[i]['product']
+                                          ['imageUrl'],
+                                      title: favProductList[i]['product']['title'].length > 10
+                                          ? favProductList[i]['product']['title']
+                                                  .substring(0, 10) +
+                                              ".."
+                                          : favProductList[i]['product']
+                                              ['title'],
+                                      currency: currency,
+                                      category: favProductList[i]['product']
+                                          ['category'],
+                                      price: favProductList[i]['product']
+                                          ['variant'][0]['price'],
+                                      rating:  favProductList[i]['product']
+                                                      ['averageRating']
+                                                  .toString(),
+                                      buttonName: "Add",
+                                      cartAdded: favProductList[i]['cartAdded'] ?? false,
+                                      cartId: favProductList[i]['cartId'],
+                                      productQuantity: favProductList[i]['cartAddedQuantity'] ?? 0,
+                                      variantStock:favProductList[i]['product']
+                                          ['variant'][0]['productstock'],
+                                      token: true,
+                                      productList: favProductList[i]['product'],
+                                      variantList: favProductList[i]['product']['variant'],
+                                      subCategoryId: favProductList[i]['subcategory']),
                                   favProductList[i]['isDealAvailable'] == true
                                       ? Positioned(
                                           child: Stack(

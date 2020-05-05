@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_pro/widgets/loader.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
 import '../../style/style.dart';
 
 class SpalshScreen extends StatefulWidget {

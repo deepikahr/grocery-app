@@ -4,14 +4,14 @@ import 'package:getflutter/components/button/gf_button.dart';
 import 'package:getflutter/components/typography/gf_typography.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:getflutter/size/gf_size.dart';
-import 'package:grocery_pro/screens/authe/forgotpassword.dart';
-import 'package:grocery_pro/screens/authe/signup.dart';
-import 'package:grocery_pro/screens/home/home.dart';
-import 'package:grocery_pro/service/common.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/service/auth-service.dart';
+import 'package:readymadeGroceryApp/screens/authe/forgotpassword.dart';
+import 'package:readymadeGroceryApp/screens/authe/signup.dart';
+import 'package:readymadeGroceryApp/screens/home/home.dart';
+import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
@@ -220,7 +220,6 @@ class _LoginState extends State<Login> {
               buildcontinuetext(),
               SizedBox(height: 10),
               buildsignuplink(),
-              // buildsocialbuttons()
             ],
           ),
         ),

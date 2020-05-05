@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:grocery_pro/service/auth-service.dart';
-import 'package:grocery_pro/service/constants.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/widgets/loader.dart';
+import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
 SentryError sentryError = new SentryError();
@@ -140,7 +140,6 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
 //fetchres info
   fetchRestaurantInfo() async {
     LoginService.restoInfo().then((response) {
-      print(response);
       try {
         resInfo = response['response_data'];
         socketInt();
@@ -503,7 +502,6 @@ class Msg extends StatelessWidget {
               child: new CircleAvatar(
                 child: new Text('${name[0]}'),
                 backgroundColor: primary,
-                // foregroundColor: lightBlue,
               ),
             ),
             new Expanded(

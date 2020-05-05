@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_pro/model/counterModel.dart';
-import 'package:grocery_pro/screens/home/home.dart';
-import 'package:grocery_pro/screens/product/product-details.dart';
-import 'package:grocery_pro/service/common.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/service/product-service.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/widgets/loader.dart';
-import 'package:grocery_pro/widgets/subCategoryProductCart.dart';
+import 'package:readymadeGroceryApp/model/counterModel.dart';
+import 'package:readymadeGroceryApp/screens/home/home.dart';
+import 'package:readymadeGroceryApp/screens/product/product-details.dart';
+import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/product-service.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
+import 'package:readymadeGroceryApp/widgets/subCategoryProductCart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
@@ -354,36 +354,36 @@ class _SearchItemState extends State<SearchItem> {
                                     child: Stack(
                                       children: <Widget>[
                                         SubCategoryProductCard(
-                                          image: searchresult[index]
-                                              ['imageUrl'],
-                                          title: searchresult[index]['title']
-                                                      .length >
-                                                  10
-                                              ? searchresult[index]['title']
-                                                      .substring(0, 10) +
-                                                  ".."
-                                              : searchresult[index]['title'],
-                                          currency: currency,
-                                          category: searchresult[index]
-                                              ['category'],
-                                          price: searchresult[index]['variant']
-                                              [0]['price'],
-                                          rating: searchresult[index]
-                                                  ['averageRating']
-                                              .toString(),
-                                          buttonName: "Add",
-                                          cartAdded: searchresult[index]
-                                                  ['cartAdded'] ??
-                                              false,
-                                          cartId: searchresult[index]['cartId'],
-                                          productQuantity: searchresult[index]
-                                                  ['cartAddedQuantity'] ??
-                                              0,
-                                          token: true,
-                                          productList: searchresult[index],
-                                          variantList: searchresult[index]
-                                              ['variant'],
-                                        ),
+                                            image: searchresult[index]
+                                                ['imageUrl'],
+                                            title: searchresult[index]['title'].length > 10
+                                                ? searchresult[index]['title']
+                                                        .substring(0, 10) +
+                                                    ".."
+                                                : searchresult[index]['title'],
+                                            currency: currency,
+                                            category: searchresult[index]
+                                                ['category'],
+                                            price: searchresult[index]
+                                                ['variant'][0]['price'],
+                                             variantStock:searchresult[index]
+                                                ['variant'][0]['productstock'],
+                                            rating: searchresult[index]
+                                                    ['averageRating']
+                                                .toString(),
+                                            buttonName: "Add",
+                                            cartAdded: searchresult[index]
+                                                    ['cartAdded'] ??
+                                                false,
+                                            cartId: searchresult[index]
+                                                ['cartId'],
+                                            productQuantity: searchresult[index]
+                                                    ['cartAddedQuantity'] ??
+                                                0,
+                                            token: true,
+                                            productList: searchresult[index],
+                                            variantList: searchresult[index]['variant'],
+                                            subCategoryId: searchresult[index]['subcategory']),
                                       ],
                                     ),
                                   );

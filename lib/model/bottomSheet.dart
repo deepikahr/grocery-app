@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_pro/model/addToCart.dart';
-import 'package:grocery_pro/screens/authe/login.dart';
-import 'package:grocery_pro/service/common.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/style/style.dart';
+import 'package:readymadeGroceryApp/model/addToCart.dart';
+import 'package:readymadeGroceryApp/screens/authe/login.dart';
+import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -30,10 +30,13 @@ class BottonSheetClassDryClean extends StatefulWidget {
 }
 
 class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   int groupValue = 0;
   bool selectVariant = false, addProductTocart = false, getTokenValue = false;
   int quantity = 1;
   String variantUnit, variantId;
+  int variantStock;
   var variantPrice;
   @override
   void initState() {
@@ -106,47 +109,63 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
   }
 
   addToCartMethod() {
-    Map<String, dynamic> productAddBody = {
-      'productId': widget.productList['_id'].toString(),
-      'quantity': quantity,
-      "price": double.parse(variantPrice == null
-          ? widget.variantsList[0]['price'].toString()
-          : variantPrice.toString()),
-      "unit": variantUnit == null
-          ? widget.variantsList[0]['unit'].toString()
-          : variantUnit.toString()
-    };
-    AddToCart.addToCartMethod(productAddBody).then((onValue) {
-      try {
+    if ((variantStock == null
+            ? widget.variantsList[0]['productstock']
+            : variantStock) >=
+        quantity) {
+      Map<String, dynamic> productAddBody = {
+        "category": widget.productList['category'],
+        "subcategory": widget.productList['subcategory'],
+        'productId': widget.productList['_id'].toString(),
+        'quantity': quantity,
+        "price": double.parse(variantPrice == null
+            ? widget.variantsList[0]['price'].toString()
+            : variantPrice.toString()),
+        "unit": variantUnit == null
+            ? widget.variantsList[0]['unit'].toString()
+            : variantUnit.toString()
+      };
+      AddToCart.addToCartMethod(productAddBody).then((onValue) {
+        try {
+          if (mounted) {
+            setState(() {
+              addProductTocart = false;
+            });
+          }
+          if (onValue['response_code'] == 200) {
+            Navigator.of(context).pop(onValue['response_data']);
+          }
+        } catch (error, stackTrace) {
+          if (mounted) {
+            setState(() {
+              addProductTocart = false;
+            });
+          }
+          sentryError.reportError(error, stackTrace);
+        }
+      }).catchError((error) {
         if (mounted) {
           setState(() {
             addProductTocart = false;
           });
         }
-        if (onValue['response_code'] == 200) {
-          Navigator.of(context).pop(onValue['response_data']);
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            addProductTocart = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
+        sentryError.reportError(error, null);
+      });
+    } else {
       if (mounted) {
         setState(() {
           addProductTocart = false;
         });
       }
-      sentryError.reportError(error, null);
-    });
+      showSnackbar(
+          "Limited quantity available, you can't add more than ${variantStock == null ? widget.variantsList[0]['productstock'] : variantStock} of this item");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -201,7 +220,15 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                             ),
                             child: InkWell(
                               onTap: () {
-                                _changeProductQuantity(true);
+                                if ((variantStock == null
+                                        ? widget.variantsList[0]['productstock']
+                                        : variantStock) >
+                                    quantity) {
+                                  _changeProductQuantity(true);
+                                } else {
+                                  showSnackbar(
+                                      "Limited quantity available, you can't add more than ${variantStock == null ? widget.variantsList[0]['productstock'] : variantStock} of this item");
+                                }
                               },
                               child: Icon(Icons.add),
                             ),
@@ -235,6 +262,8 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                               widget.variantsList[selected]['unit'].toString();
                           variantId =
                               widget.variantsList[selected]['_id'].toString();
+                          variantStock =
+                              widget.variantsList[selected]['productstock'];
                         });
                       }
                     },
@@ -326,5 +355,13 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
         ),
       ),
     );
+  }
+
+  void showSnackbar(message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(milliseconds: 3000),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 }

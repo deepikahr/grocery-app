@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_pro/screens/home/home.dart';
-import 'package:grocery_pro/service/localizations.dart';
+import 'package:readymadeGroceryApp/screens/home/home.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
 
-import 'package:grocery_pro/style/style.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
 
 class Thankyou extends StatefulWidget {
   final Map<String, Map<String, String>> localizedValues;

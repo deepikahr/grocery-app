@@ -2,24 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:getflutter/getflutter.dart';
-import 'package:grocery_pro/screens/drawer/drawer.dart';
-import 'package:grocery_pro/screens/tab/mycart.dart';
-import 'package:grocery_pro/screens/tab/profile.dart';
-import 'package:grocery_pro/screens/tab/saveditems.dart';
-import 'package:grocery_pro/screens/tab/searchitem.dart';
-import 'package:grocery_pro/screens/tab/store.dart';
-import 'package:grocery_pro/service/common.dart';
-import 'package:grocery_pro/service/constants.dart';
-import 'package:grocery_pro/service/fav-service.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/service/product-service.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/service/settings/globalSettings.dart';
-import 'package:grocery_pro/style/style.dart';
+import 'package:readymadeGroceryApp/screens/drawer/drawer.dart';
+import 'package:readymadeGroceryApp/screens/tab/mycart.dart';
+import 'package:readymadeGroceryApp/screens/tab/profile.dart';
+import 'package:readymadeGroceryApp/screens/tab/saveditems.dart';
+import 'package:readymadeGroceryApp/screens/tab/searchitem.dart';
+import 'package:readymadeGroceryApp/screens/tab/store.dart';
+import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
+import 'package:readymadeGroceryApp/service/fav-service.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/product-service.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/settings/globalSettings.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:location/location.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:grocery_pro/widgets/loader.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -168,12 +168,12 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   }
 
   getProductListMethod() async {
-    await ProductService.getProductListAll().then((onValue) {
+    await ProductService.getProductListAll(1).then((onValue) {
       try {
         if (onValue['response_code'] == 200) {
           if (mounted) {
             setState(() {
-              searchProductList = onValue['response_data'];
+              searchProductList = onValue['response_data']['products'];
             });
           }
         } else {
@@ -270,7 +270,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                 addressData != null
                     ? addressData.substring(0, 22) + '...'
                     : widget.addressData.substring(0, 22) + '...',
-                style: textBarlowSemiBoldBlackbig(),
+                style: textAddressLocation(),
               )
             ],
           ),

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:getflutter/getflutter.dart';
-import 'package:grocery_pro/model/addToCart.dart';
-import 'package:grocery_pro/screens/authe/login.dart';
-import 'package:grocery_pro/screens/tab/mycart.dart';
-import 'package:grocery_pro/service/common.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/service/product-service.dart';
-import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/service/fav-service.dart';
-import 'package:grocery_pro/widgets/loader.dart';
+import 'package:readymadeGroceryApp/model/addToCart.dart';
+import 'package:readymadeGroceryApp/screens/authe/login.dart';
+import 'package:readymadeGroceryApp/screens/tab/mycart.dart';
+import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/product-service.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/fav-service.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
@@ -58,7 +58,7 @@ class _ProductDetailsState extends State<ProductDetails>
       addProductTocart = false,
       isGetProductRating = false,
       isProductDetails = false;
-  int quantity = 1, variantPrice, variantProductstock;
+  int quantity = 1, variantPrice, variantStock;
   void _changeProductQuantity(bool increase) {
     if (increase) {
       if (mounted) {
@@ -305,50 +305,66 @@ class _ProductDetailsState extends State<ProductDetails>
         addProductTocart = true;
       });
     }
-    Map<String, dynamic> buyNowProduct = {
-      'productId': data['_id'].toString(),
-      'quantity': quantity,
-      "price": double.parse(variantPrice == null
-          ? productDetail['variant'][0]['price'].toString()
-          : variantPrice.toString()),
-      "unit": variantUnit == null
-          ? productDetail['variant'][0]['unit'].toString()
-          : variantUnit.toString()
-    };
-    AddToCart.addToCartMethod(buyNowProduct).then((onValue) {
-      try {
-        if (mounted) {
-          setState(() {
-            addProductTocart = false;
-          });
-        }
-        if (onValue['response_code'] == 200) {
-          Navigator.push(
-            context,
-            new MaterialPageRoute(
-              builder: (BuildContext context) => new MyCart(
-                locale: widget.locale,
-                localizedValues: widget.localizedValues,
+
+    if ((variantStock == null
+            ? productDetail['variant'][0]['productstock']
+            : variantStock) >
+        quantity) {
+      Map<String, dynamic> buyNowProduct = {
+        "category": data['category'],
+        "subcategory": data['subcategory'],
+        'productId': data['_id'].toString(),
+        'quantity': quantity,
+        "price": double.parse(variantPrice == null
+            ? productDetail['variant'][0]['price'].toString()
+            : variantPrice.toString()),
+        "unit": variantUnit == null
+            ? productDetail['variant'][0]['unit'].toString()
+            : variantUnit.toString()
+      };
+      AddToCart.addToCartMethod(buyNowProduct).then((onValue) {
+        try {
+          if (mounted) {
+            setState(() {
+              addProductTocart = false;
+            });
+          }
+          if (onValue['response_code'] == 200) {
+            Navigator.push(
+              context,
+              new MaterialPageRoute(
+                builder: (BuildContext context) => new MyCart(
+                  locale: widget.locale,
+                  localizedValues: widget.localizedValues,
+                ),
               ),
-            ),
-          );
+            );
+          }
+        } catch (error, stackTrace) {
+          if (mounted) {
+            setState(() {
+              addProductTocart = false;
+            });
+          }
+          sentryError.reportError(error, stackTrace);
         }
-      } catch (error, stackTrace) {
+      }).catchError((error) {
         if (mounted) {
           setState(() {
             addProductTocart = false;
           });
         }
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
+        sentryError.reportError(error, null);
+      });
+    } else {
       if (mounted) {
         setState(() {
           addProductTocart = false;
         });
       }
-      sentryError.reportError(error, null);
-    });
+      showSnackbar(
+          "Limited quantity available, you can't add more than ${variantStock == null ? productDetail['variant'][0]['productstock'] : variantStock} of this item");
+    }
   }
 
   @override
@@ -545,8 +561,18 @@ class _ProductDetailsState extends State<ProductDetails>
                                                 ),
                                                 child: InkWell(
                                                   onTap: () {
-                                                    _changeProductQuantity(
-                                                        true);
+                                                    if ((variantStock == null
+                                                            ? productDetail[
+                                                                    'variant'][0]
+                                                                ['productstock']
+                                                            : variantStock) >
+                                                        quantity) {
+                                                      _changeProductQuantity(
+                                                          true);
+                                                    } else {
+                                                      showSnackbar(
+                                                          "Limited quantity available, you can't add more than ${variantStock == null ? productDetail['variant'][0]['productstock'] : variantStock} of this item");
+                                                    }
                                                   },
                                                   child: Icon(Icons.add),
                                                 ),
@@ -578,8 +604,6 @@ class _ProductDetailsState extends State<ProductDetails>
                                             value: i,
                                             groupValue: groupValue,
                                             onChanged: (int value) {
-                                              // sizeSelectOnChanged(value);
-                                              // if (sizeSelect == true) {
                                               if (mounted) {
                                                 setState(() {
                                                   groupValue = value;
@@ -593,6 +617,10 @@ class _ProductDetailsState extends State<ProductDetails>
                                                   variantId =
                                                       productDetail['variant']
                                                           [value]['_id'];
+                                                  variantStock =
+                                                      productDetail['variant']
+                                                              [value]
+                                                          ['productstock'];
                                                 });
                                               }
                                             },

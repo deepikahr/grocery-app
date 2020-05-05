@@ -16,19 +16,21 @@ class ProductService {
     return json.decode(response.body);
   }
 
-  static Future<Map<String, dynamic>> getProductListAll() async {
+  static Future<Map<String, dynamic>> getProductListAll(index) async {
+    String productIndex = "page=" + "$index";
+
     final response = await client.get(
-        Constants.baseURL + "products/home/product",
+        Constants.baseURL + "products/home/product?$productIndex",
         headers: {'Content-Type': 'application/json'});
     return json.decode(response.body);
   }
 
-  static Future<Map<String, dynamic>> getProductListAllCartAdded() async {
+  static Future<Map<String, dynamic>> getProductListAllCartAdded(index) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String userId = "userId=" + prefs.getString("userID");
-
+    String productIndex = "page=" + "$index";
     final response = await client.get(
-        Constants.baseURL + "products/home/product?$userId",
+        Constants.baseURL + "products/home/product?$userId&$productIndex",
         headers: {'Content-Type': 'application/json'});
     return json.decode(response.body);
   }

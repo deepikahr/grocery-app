@@ -4,11 +4,11 @@ import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/components/button/gf_button.dart';
 import 'package:getflutter/components/typography/gf_typography.dart';
 import 'package:getflutter/size/gf_size.dart';
-import 'package:grocery_pro/screens/authe/otp.dart';
-import 'package:grocery_pro/service/auth-service.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/style/style.dart';
+import 'package:readymadeGroceryApp/screens/authe/otp.dart';
+import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -120,7 +120,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: GFAppBar(
-        // automaticallyImplyLeading: false,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(20),

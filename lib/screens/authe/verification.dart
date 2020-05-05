@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/components/button/gf_button.dart';
 import 'package:getflutter/components/typography/gf_typography.dart';
-import 'package:grocery_pro/screens/authe/otp.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/style/style.dart';
+import 'package:readymadeGroceryApp/screens/authe/otp.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
 
 class Verification extends StatefulWidget {
   Verification({Key key, this.title, this.locale, this.localizedValues})
