@@ -31,7 +31,7 @@ dependencies:
   image: ^2.1.4
   pull_to_refresh: ^1.5.7
   url_launcher: ^5.4.5
-  stripe_payment: ^1.0.6
+  stripe_payment: ^1.0.7
   flutter_localizations:
     sdk: flutter
 
@@ -47,37 +47,35 @@ flutter:
       fonts:
         - asset: lib/assets/fonts/icomoon.ttf
 
-
-    - family: 'BarlowBold'
-      fonts:   
+    - family: "BarlowBold"
+      fonts:
         - asset: lib/assets/fonts/Barlow-Bold.ttf
           weight: 400
 
-    - family: 'BarlowMedium'
-      fonts:   
+    - family: "BarlowMedium"
+      fonts:
         - asset: lib/assets/fonts/Barlow-Medium.ttf
           weight: 400
 
-    - family: 'BarlowRegular'
-      fonts:   
+    - family: "BarlowRegular"
+      fonts:
         - asset: lib/assets/fonts/Barlow-Regular.ttf
           weight: 400
-          
-    - family: 'BarlowSemiBold'
-      fonts:   
+
+    - family: "BarlowSemiBold"
+      fonts:
         - asset: lib/assets/fonts/Barlow-SemiBold.ttf
           weight: 400
 
-    - family: 'OswaldBold'
+    - family: "OswaldBold"
       fonts:
         - asset: lib/assets/fonts/oswaldBold.ttf
           weight: 400
 
-    - family: 'FuturaBold'
+    - family: "FuturaBold"
       fonts:
         - asset: lib/assets/fonts/futuraBold.otf
           weight: 400
-
 
   # To add assets to your application, add an assets section, like this:
   assets:

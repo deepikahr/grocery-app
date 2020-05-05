@@ -152,8 +152,8 @@ class _MyAppState extends State<MyApp> {
         }
       }
       currentLocation = await _location.getLocation();
-      final coordinates =
-          new Coordinates(currentLocation.latitude, currentLocation.longitude);
+      final coordinates = new Coordinates(currentLocation.latitude ?? 14.264383,
+          currentLocation.longitude ?? 78.974842);
       var addresses =
           await Geocoder.local.findAddressesFromCoordinates(coordinates);
       var first = addresses.first;

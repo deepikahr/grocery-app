@@ -132,10 +132,47 @@ class _MyCartState extends State<MyCart> {
     }
 
     await CartService.updateProductToCart(body).then((onValue) {
+      print(onValue);
       try {
         if (mounted) {
-          setState(() {
+          if (onValue['response_code'] == 400) {
+            cartItem['cart'][i]['quantity']--;
+            showDialog<Null>(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return Container(
+                  width: 270.0,
+                  child: new AlertDialog(
+                    content: new SingleChildScrollView(
+                      child: new ListBody(
+                        children: <Widget>[
+                          new Text(
+                            onValue['response_data'],
+                            style: hintSfsemiboldred(),
+                          ),
+                        ],
+                      ),
+                    ),
+                    actions: <Widget>[
+                      new FlatButton(
+                        child: new Text(
+                          MyLocalizations.of(context).ok,
+                          style: textbarlowRegularaPrimary(),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          } else {
             cartItem = onValue['response_data'];
+          }
+          setState(() {
             isUpdating = false;
           });
         }

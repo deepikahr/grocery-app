@@ -8,6 +8,8 @@ class CartService {
 
   // add product in cart
   static Future<Map<String, dynamic>> addProductToCart(body) async {
+    print('addprodtocart');
+    print(body);
     String token;
     await Common.getToken().then((onValue) {
       token = onValue;

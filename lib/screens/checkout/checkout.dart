@@ -285,6 +285,7 @@ class _CheckoutState extends State<Checkout> {
         });
       }
       PaymentService.getDeliveryCharges(body).then((value) {
+        print(value);
         try {
           if (mounted) {
             setState(() {
@@ -343,6 +344,7 @@ class _CheckoutState extends State<Checkout> {
       });
     }
     await CouponService.applyCouponsCode(cartId, data).then((onValue) {
+      print(onValue);
       try {
         if (onValue['response_code'] == 200) {
           if (mounted) {
