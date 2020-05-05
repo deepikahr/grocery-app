@@ -1,12 +1,11 @@
 import 'dart:async' show Future;
 import 'package:flutter/foundation.dart' show SynchronousFuture;
 import 'package:flutter/material.dart';
-import 'package:grocery_pro/service/constants.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
 
 class MyLocalizations {
   final Map<String, Map<String, String>> localizedValues;
   MyLocalizations(this.locale, this.localizedValues);
-
   final Locale locale;
 
   static MyLocalizations of(BuildContext context) {

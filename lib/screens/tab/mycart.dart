@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
-import 'package:grocery_pro/screens/authe/login.dart';
-import 'package:grocery_pro/service/common.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/service/cart-service.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/screens/checkout/checkout.dart';
+import 'package:readymadeGroceryApp/screens/authe/login.dart';
+import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/service/cart-service.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/screens/checkout/checkout.dart';
 import 'package:getflutter/getflutter.dart';
-import 'package:grocery_pro/widgets/loader.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -475,17 +475,6 @@ class _MyCartState extends State<MyCart> {
                                                   style:
                                                       textBarlowRegularBlack(),
                                                 ),
-                                                // SizedBox(height: 40),
-//                                                Text(
-//                                                  cartItem['cart'][i]
-//                                                              ['description'] ==
-//                                                          null
-//                                                      ? " "
-//                                                      : cartItem['cart'][i]
-//                                                          ['description'],
-//                                                  style:
-//                                                      textbarlowRegularBlack(),
-//                                                ),
                                                 Row(
                                                   children: <Widget>[
                                                     Text(

@@ -1,22 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
-import 'package:grocery_pro/screens/payment/addCard.dart';
-import 'package:grocery_pro/screens/thank-you/thankyou.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/service/payment-service.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/service/product-service.dart';
-import 'package:grocery_pro/widgets/loader.dart';
+import 'package:readymadeGroceryApp/screens/home/home.dart';
+import 'package:readymadeGroceryApp/screens/payment/addCard.dart';
+import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
+import 'package:readymadeGroceryApp/service/cart-service.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/payment-service.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/service/product-service.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:stripe_payment/stripe_payment.dart';
 
 SentryError sentryError = new SentryError();
 
 class Payment extends StatefulWidget {
-  final int quantity, grandTotal, deliveryCharge, currentIndex;
+  final int quantity, currentIndex;
   final String type, locale;
-  final double grandTotals, deliveryCharges;
+  final grandTotals, deliveryCharges;
 
   final Map<String, dynamic> data;
   final Map<String, Map<String, String>> localizedValues;
@@ -28,9 +32,7 @@ class Payment extends StatefulWidget {
       this.currentIndex,
       this.type,
       this.deliveryCharges,
-      this.deliveryCharge,
       this.grandTotals,
-      this.grandTotal,
       this.locale,
       this.localizedValues})
       : super(key: key);
@@ -45,7 +47,7 @@ class _PaymentState extends State<Payment> {
   int selectedRadio,
       cashOnDelivery = 0,
       payByCard = 1,
-      groupValue = 0,
+      groupValue,
       cardValue = 0;
   String paymentType, cvv, selectedPaymentType, cardID, currency;
   var grandTotal, deliveryCharges;
@@ -53,10 +55,12 @@ class _PaymentState extends State<Payment> {
       ispaymentMethodLoading = false,
       isFirstTime = true,
       isCardDelete = false,
-      isCardListLoading = false;
+      isCardListLoading = false,
+      isSelected = false;
   var paymentMethodValue;
   List cardList;
   var cardDetails;
+  String paymentMethodId;
   List<Map<String, dynamic>> paymentTypes = [
     {
       'type': 'COD',
@@ -75,13 +79,14 @@ class _PaymentState extends State<Payment> {
   @override
   void initState() {
     fetchCardInfo();
-    if (widget.grandTotal == null && widget.deliveryCharge == null) {
-      deliveryCharges = widget.deliveryCharges;
-      grandTotal = widget.grandTotals;
-    } else {
-      deliveryCharges = widget.deliveryCharge;
-      grandTotal = widget.grandTotal;
-    }
+    StripePayment.setOptions(StripeOptions(
+        publishableKey: Constants.STRIPE_KEY,
+        merchantId: "Test",
+        androidPayMode: 'test'));
+
+    deliveryCharges = widget.deliveryCharges;
+    grandTotal = widget.grandTotals;
+
     super.initState();
   }
 
@@ -148,109 +153,141 @@ class _PaymentState extends State<Payment> {
     }
 
     if (groupValue == null) {
-      widget.data['paymentType'] = "COD";
-    } else {
-      widget.data['paymentType'] = paymentMethodValue.toString();
-    }
-
-    if (widget.data['paymentType'] == "CARD") {
-      if (cardID == null) {
-        var body = {
-          "cardHolderName": cardList[0]['cardHolderName'],
-          "cardNumber": cardList[0]['cardNumber'],
-          "expiryMonth": cardList[0]['expiryMonth'],
-          "expiryYear": cardList[0]['expiryYear'],
-          "cvv": cardList[0]['cvv'],
-        };
-        widget.data['card'] = body;
-      } else {
-        var body = {
-          "cardHolderName": cardDetails['cardHolderName'],
-          "cardNumber": cardDetails['cardNumber'],
-          "expiryMonth": cardDetails['expiryMonth'],
-          "expiryYear": cardDetails['expiryYear'],
-          "cvv": cardDetails['cvv'],
-        };
-        widget.data['card'] = body;
+      if (mounted) {
+        setState(() {
+          isPlaceOrderLoading = false;
+        });
       }
-      await ProductService.placeOrder(widget.data).then((onValue) {
-        try {
-          if (mounted) {
-            setState(() {
-              isPlaceOrderLoading = false;
-            });
-          }
-          if (onValue['response_code'] == 201) {
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => Thankyou(
-                    locale: widget.locale,
-                    localizedValues: widget.localizedValues,
-                  ),
-                ),
-                (Route<dynamic> route) => false);
-          } else if (onValue['response_code'] == 400) {
-            showSnackbar("${onValue['response_data']}");
-          } else {
-            showSnackbar("${onValue['response_data']}");
-          }
-        } catch (error, stackTrace) {
-          if (mounted) {
-            setState(() {
-              isPlaceOrderLoading = false;
-            });
-          }
-          sentryError.reportError(error, stackTrace);
-        }
-      }).catchError((error) {
-        if (mounted) {
-          setState(() {
-            isPlaceOrderLoading = false;
-          });
-        }
-        sentryError.reportError(error, null);
-      });
+      showSnackbar(MyLocalizations.of(context).selectPaymentMethod);
     } else {
-      await ProductService.placeOrder(widget.data).then((onValue) {
-        try {
+      widget.data['paymentType'] = paymentTypes[groupValue]['type'];
+
+      if (widget.data['paymentType'] == "CARD") {
+        StripePayment.paymentRequestWithCardForm(CardFormPaymentRequest())
+            .then((pm) {
+          setState(() {
+            Map transactionDetails = {"paymentMethodId": pm.id.toString()};
+            widget.data['transactionDetails'] = transactionDetails;
+            palceOrderMethod(widget.data);
+          });
+        }).catchError((e) {
           if (mounted) {
             setState(() {
               isPlaceOrderLoading = false;
             });
           }
-          if (onValue['response_code'] == 201) {
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => Thankyou(
-                    locale: widget.locale,
-                    localizedValues: widget.localizedValues,
-                  ),
-                ),
-                (Route<dynamic> route) => false);
-          } else if (onValue['response_code'] == 400) {
-            showSnackbar("${onValue['response_data']}");
-          } else {
-            showSnackbar("${onValue['response_data']}");
-          }
-        } catch (error, stackTrace) {
-          if (mounted) {
-            setState(() {
-              isPlaceOrderLoading = false;
-            });
-          }
-          sentryError.reportError(error, stackTrace);
-        }
-      }).catchError((error) {
+          showSnackbar(e.toString());
+        });
+      } else {
+        palceOrderMethod(widget.data);
+      }
+    }
+  }
+
+  palceOrderMethod(cartData) async {
+    await ProductService.placeOrder(cartData).then((onValue) {
+      try {
         if (mounted) {
           setState(() {
             isPlaceOrderLoading = false;
           });
         }
-        sentryError.reportError(error, null);
-      });
-    }
+        if (onValue['response_code'] == 201) {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => Thankyou(
+                  locale: widget.locale,
+                  localizedValues: widget.localizedValues,
+                ),
+              ),
+              (Route<dynamic> route) => false);
+        } else if (onValue['response_code'] == 400) {
+          showSnackbar("${onValue['response_data']}");
+        } else if (onValue['response_code'] == 403) {
+          verifyTokenAlert(onValue['response_data'], cartData['cart']);
+        } else {
+          showSnackbar("${onValue['response_data']}");
+        }
+      } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isPlaceOrderLoading = false;
+          });
+        }
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isPlaceOrderLoading = false;
+        });
+      }
+      sentryError.reportError(error, null);
+    });
+  }
+
+  verifyTokenAlert(responseData, cartId) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            responseData['message'],
+          ),
+          content: SingleChildScrollView(
+            child: responseData['cartVerifyData']['cartArr'].length > 0
+                ? ListView.builder(
+                    physics: ScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: responseData['cartVerifyData']['cartArr'].length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Text(
+                        responseData['cartVerifyData']['cartArr'][index]
+                                ['title']
+                            .toString(),
+                      );
+                    })
+                : Text(""),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(MyLocalizations.of(context).cancel),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text(MyLocalizations.of(context).removeItem),
+              onPressed: () {
+                Map body = {
+                  "cartId": cartId,
+                  "cart": responseData['cartVerifyData']['cartArr']
+                };
+                CartService.paymentTimeCarDataDelete(body).then((response) {
+                  if (response['response_code'] == 200) {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => Home(
+                            locale: widget.locale,
+                            localizedValues: widget.localizedValues,
+                            currentIndex: 2,
+                          ),
+                        ),
+                        (Route<dynamic> route) => false);
+                  } else {
+                    showSnackbar("${response['response_data']}");
+                    Navigator.pop(context);
+                  }
+                });
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -494,13 +531,9 @@ class _PaymentState extends State<Payment> {
         controller: _refreshController,
         onRefresh: () {
           fetchCardInfo();
-          if (widget.grandTotal == null && widget.deliveryCharge == null) {
-            deliveryCharges = widget.deliveryCharges;
-            grandTotal = widget.grandTotals;
-          } else {
-            deliveryCharges = widget.deliveryCharge;
-            grandTotal = widget.grandTotal;
-          }
+
+          deliveryCharges = widget.deliveryCharges;
+          grandTotal = widget.grandTotals;
         },
         child: isCardListLoading
             ? SquareLoader()
@@ -556,7 +589,7 @@ class _PaymentState extends State<Payment> {
                           Column(
                             children: <Widget>[
                               Text(
-                                MyLocalizations.of(context).total,
+                                MyLocalizations.of(context).grandTotal,
                                 style: textbarlowMediumBlack(),
                               ),
                             ],
@@ -607,7 +640,7 @@ class _PaymentState extends State<Payment> {
                                   child: RadioListTile(
                                     value: index,
                                     groupValue: groupValue,
-                                    selected: paymentTypes[index]['isSelected'],
+                                    selected: isSelected,
                                     activeColor: primary,
                                     title: Text(
                                       paymentTypes[index]['type'],
@@ -617,16 +650,6 @@ class _PaymentState extends State<Payment> {
                                       if (mounted) {
                                         setState(() {
                                           groupValue = selected;
-                                          paymentTypes[index]['isSelected'] =
-                                              !paymentTypes[index]
-                                                  ['isSelected'];
-
-                                          paymentMethodValue =
-                                              paymentTypes[index]['type'];
-                                          if (paymentTypes[index]['type'] ==
-                                              "COD") {
-                                            ispaymentMethodLoading = false;
-                                          }
                                         });
                                       }
                                     },
@@ -649,10 +672,6 @@ class _PaymentState extends State<Payment> {
                       ),
                     ],
                   ),
-                  paymentMethodValue != 'COD' ? paymentMethod() : Container(),
-                  paymentMethodValue != 'COD'
-                      ? buildSaveCardInfo()
-                      : Container(),
                 ],
               ),
       ),

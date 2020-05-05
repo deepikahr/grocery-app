@@ -27,11 +27,6 @@ class _NoDataState extends State<NoData> {
                       child: widget.icon,
                     )
                   : Container(),
-              // Text(
-              //   widget.message ?? 'No Resources found.',
-              //   textAlign: TextAlign.center,
-              //   style: hintSfMediumprimary(),
-              // ),
             ],
           ),
         ),

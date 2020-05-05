@@ -1,4 +1,4 @@
-name: grocery_pro
+name: readymadeGroceryApp
 description: A new Flutter project.
 
 version: 1.1.0+8
@@ -31,6 +31,7 @@ dependencies:
   image: ^2.1.4
   pull_to_refresh: ^1.5.7
   url_launcher: ^5.4.5
+  stripe_payment: ^1.0.6
   flutter_localizations:
     sdk: flutter
 
@@ -139,12 +140,14 @@ flutter:
     - lib/assets/icons/add1.svg
     - lib/assets/icons/delete.svg
 
-
-
-
-
     - lib/assets/splash.png
 
     - lib/assets/i18n/en.json
     - lib/assets/i18n/fr.json
     - lib/assets/i18n/ar.json
+    - lib/assets/i18n/es.json
+    - lib/assets/i18n/it.json
+    - lib/assets/i18n/ja.json
+    - lib/assets/i18n/pt.json
+    - lib/assets/i18n/ru.json
+    - lib/assets/i18n/zh.json

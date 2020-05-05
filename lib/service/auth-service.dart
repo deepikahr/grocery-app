@@ -96,7 +96,6 @@ class LoginService {
   static Future<Map<String, dynamic>> imagedelete(key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token');
-
     final response = await client
         .delete(Constants.baseURL + "utils/imgaeKit/delete/$key", headers: {
       'Content-Type': 'application/json',
@@ -170,4 +169,3 @@ class LoginService {
     return json.decode(response.body);
   }
 }
-

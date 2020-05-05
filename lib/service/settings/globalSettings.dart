@@ -1,8 +1,8 @@
-import 'package:grocery_pro/service/constants.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
 
 SentryError sentryError = new SentryError();
 

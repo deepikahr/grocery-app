@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:grocery_pro/service/cart-service.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/cart-service.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
 
 SentryError sentryError = new SentryError();
 

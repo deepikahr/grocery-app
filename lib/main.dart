@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:geocoder/geocoder.dart';
-import 'package:grocery_pro/screens/home/home.dart';
-import 'package:grocery_pro/service/auth-service.dart';
-import 'package:grocery_pro/service/common.dart';
-import 'package:grocery_pro/service/constants.dart';
-import 'package:grocery_pro/service/initialize_i18n.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/service/settings/globalSettings.dart';
-import 'package:grocery_pro/style/style.dart';
+import 'package:readymadeGroceryApp/screens/home/home.dart';
+import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
+import 'package:readymadeGroceryApp/service/initialize_i18n.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/settings/globalSettings.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -102,43 +102,44 @@ class _MyAppState extends State<MyApp> {
   Location _location = new Location();
   var addressData;
   void initState() {
-    if (widget.languagesSelection == false) {
-      getGlobalSettingsData();
-    }
+    getGlobalSettingsData();
+
     getResult();
     super.initState();
   }
 
   getGlobalSettingsData() async {
-    if (mounted) {
-      setState(() {
-        isloading = true;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getString('selectedLanguage') == null) {
+      if (mounted) {
+        setState(() {
+          isloading = true;
+        });
+      }
+      getGlobalSettings().then((onValue) {
+        try {
+          if (onValue['response_data']['languageCode'] == null) {
+            prefs.setString('selectedLanguage', 'en');
+            language = prefs.getString("selectedLanguage");
+          } else {
+            prefs.setString('selectedLanguage',
+                '${onValue['response_data']['languageCode']}');
+            language = prefs.getString("selectedLanguage");
+          }
+          if (language != null) {
+            if (mounted) {
+              setState(() {
+                isloading = false;
+              });
+            }
+          }
+        } catch (error, stackTrace) {
+          sentryError.reportError(error, stackTrace);
+        }
+      }).catchError((error) {
+        sentryError.reportError(error, null);
       });
     }
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    getGlobalSettings().then((onValue) {
-      try {
-        if (onValue['response_data']['languageCode'] == null) {
-          prefs.setString('selectedLanguage', 'en');
-          language = prefs.getString("selectedLanguage");
-        } else {
-          prefs.setString('selectedLanguage',
-              '${onValue['response_data']['languageCode']}');
-          language = prefs.getString("selectedLanguage");
-        }
-        if (language != null) {
-          if (mounted) {
-            setState(() {
-              isloading = false;
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      sentryError.reportError(error, null);
-    });
   }
 
   getResult() async {
@@ -215,7 +216,7 @@ class _AnimatedScreenState extends State<AnimatedScreen> {
         width: MediaQuery.of(context).size.width,
         child: Image.asset(
           'lib/assets/splash.png',
-          fit: BoxFit.contain,
+          fit: BoxFit.cover,
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
         ),

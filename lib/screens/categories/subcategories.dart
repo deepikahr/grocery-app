@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
 import 'package:getflutter/getflutter.dart';
-import 'package:grocery_pro/model/counterModel.dart';
-import 'package:grocery_pro/screens/home/home.dart';
-import 'package:grocery_pro/screens/product/product-details.dart';
-import 'package:grocery_pro/service/fav-service.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/service/product-service.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/widgets/loader.dart';
+import 'package:readymadeGroceryApp/model/counterModel.dart';
+import 'package:readymadeGroceryApp/screens/home/home.dart';
+import 'package:readymadeGroceryApp/screens/product/product-details.dart';
+import 'package:readymadeGroceryApp/service/fav-service.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/product-service.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:grocery_pro/widgets/subCategoryProductCart.dart';
-import 'package:grocery_pro/style/style.dart';
+import 'package:readymadeGroceryApp/widgets/subCategoryProductCart.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
 
 import '../../style/style.dart';
 
@@ -500,6 +500,13 @@ class _SubCategoriesState extends State<SubCategories> {
                                                                         i]
                                                                     ['variant']
                                                                 [0]['price'],
+                                                        variantStock:
+                                                        
+                                                            subCategryByProduct[
+                                                                        i][
+                                                                    'variant'][0]
+                                                                [
+                                                                'productstock'],
                                                         rating: subCategryByProduct[
                                                                     i][
                                                                 'averageRating']
@@ -525,6 +532,10 @@ class _SubCategoriesState extends State<SubCategories> {
                                                         variantList:
                                                             subCategryByProduct[
                                                                 i]['variant'],
+                                                        subCategoryId:
+                                                            subCategryByProduct[
+                                                                    i]
+                                                                ['subcategory'],
                                                       ),
                                                       subCategryByProduct[i][
                                                                   'isDealAvailable'] ==
@@ -623,53 +634,40 @@ class _SubCategoriesState extends State<SubCategories> {
                                                   child: Stack(
                                                     children: <Widget>[
                                                       SubCategoryProductCard(
-                                                        image:
-                                                            subProductsList[i]
-                                                                ['imageUrl'],
-                                                        title: subProductsList[
-                                                                            i][
-                                                                        'title']
-                                                                    .length >
-                                                                10
-                                                            ? subProductsList[i]
-                                                                        [
-                                                                        'title']
-                                                                    .substring(
-                                                                        0, 10) +
-                                                                ".."
-                                                            : subProductsList[i]
-                                                                ['title'],
-                                                        currency: currency,
-                                                        category:
-                                                            subProductsList[i]
-                                                                ['category'],
-                                                        price:
-                                                            subProductsList[i]
-                                                                    ['variant']
-                                                                [0]['price'],
-                                                        rating: subProductsList[
-                                                                    i][
-                                                                'averageRating']
-                                                            .toString(),
-                                                        buttonName: "Add",
-                                                        cartAdded: subProductsList[
-                                                                    i]
-                                                                ['cartAdded'] ??
-                                                            false,
-                                                        cartId:
-                                                            subProductsList[i]
-                                                                ['cartId'],
-                                                        productQuantity:
-                                                            subProductsList[i][
-                                                                    'cartAddedQuantity'] ??
-                                                                0,
-                                                        token: widget.token,
-                                                        productList:
-                                                            subProductsList[i],
-                                                        variantList:
-                                                            subProductsList[i]
-                                                                ['variant'],
-                                                      ),
+                                                          image: subProductsList[i]
+                                                              ['imageUrl'],
+                                                          title: subProductsList[i]['title'].length > 10
+                                                              ? subProductsList[i]['title'].substring(0, 10) +
+                                                                  ".."
+                                                              : subProductsList[i]
+                                                                  ['title'],
+                                                          currency: currency,
+                                                          category:
+                                                              subProductsList[i]
+                                                                  ['category'],
+                                                          price: subProductsList[i]
+                                                                  ['variant'][0]
+                                                              ['price'],
+                                                              variantStock:
+                                                            subProductsList[
+                                                                        i][
+                                                                    'variant'][0]
+                                                                [
+                                                                'productstock'],
+                                                          rating: subProductsList[i]['averageRating']
+                                                              .toString(),
+                                                          buttonName: "Add",
+                                                          cartAdded:
+                                                              subProductsList[i]['cartAdded'] ??
+                                                                  false,
+                                                          cartId: subProductsList[i]
+                                                              ['cartId'],
+                                                          productQuantity:
+                                                              subProductsList[i]['cartAddedQuantity'] ?? 0,
+                                                          token: widget.token,
+                                                          productList: subProductsList[i],
+                                                          variantList: subProductsList[i]['variant'],
+                                                          subCategoryId: subProductsList[i]['subcategory']),
                                                       subProductsList[i][
                                                                   'isDealAvailable'] ==
                                                               true
@@ -704,7 +702,6 @@ class _SubCategoriesState extends State<SubCategories> {
                                 ],
                               ),
                             )
-//
                 ],
               ),
       ),

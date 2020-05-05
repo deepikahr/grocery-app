@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:getflutter/components/button/gf_button.dart';
-import 'package:getflutter/getflutter.dart';
-import 'package:grocery_pro/screens/authe/login.dart';
-import 'package:grocery_pro/screens/drawer/aboutus.dart';
-import 'package:grocery_pro/screens/drawer/address.dart';
-import 'package:grocery_pro/screens/drawer/chatpage.dart';
-import 'package:grocery_pro/screens/home/home.dart';
-import 'package:grocery_pro/screens/product/all_products.dart';
-import 'package:grocery_pro/service/common.dart';
-import 'package:grocery_pro/service/localizations.dart';
+import 'package:readymadeGroceryApp/screens/authe/login.dart';
+import 'package:readymadeGroceryApp/screens/drawer/aboutus.dart';
+import 'package:readymadeGroceryApp/screens/drawer/address.dart';
+import 'package:readymadeGroceryApp/screens/drawer/chatpage.dart';
+import 'package:readymadeGroceryApp/screens/home/home.dart';
+import 'package:readymadeGroceryApp/screens/product/all_products.dart';
+import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../main.dart';
 import '../../style/style.dart';
@@ -25,7 +23,8 @@ class DrawerPage extends StatefulWidget {
 
 class _DrawerPageState extends State<DrawerPage> {
   bool getTokenValue = true;
-  String currency = "";
+  String currency = "", newValue;
+
   @override
   void initState() {
     getToken();
@@ -52,103 +51,6 @@ class _DrawerPageState extends State<DrawerPage> {
     });
   }
 
-  selectLanguagesMethod() async {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return Center(
-            child: Container(
-              height: 200,
-              width: MediaQuery.of(context).size.width * 0.6,
-              decoration: new BoxDecoration(
-                color: Colors.white,
-                borderRadius: new BorderRadius.all(
-                  new Radius.circular(24.0),
-                ),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              child: Column(
-                children: <Widget>[
-                  GFButton(
-                    onPressed: () async {
-                      SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
-                      prefs.setString('selectedLanguage', 'en');
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                MyApp("en", widget.localizedValues, true),
-                          ),
-                          (Route<dynamic> route) => false);
-                    },
-                    type: GFButtonType.transparent,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          "English",
-                          style: hintSfboldBig(),
-                        ),
-                      ],
-                    ),
-                  ),
-                  GFButton(
-                    onPressed: () async {
-                      SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
-                      prefs.setString('selectedLanguage', 'ar');
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                MyApp("ar", widget.localizedValues, true),
-                          ),
-                          (Route<dynamic> route) => false);
-                    },
-                    type: GFButtonType.transparent,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          "Arbic",
-                          style: hintSfboldBig(),
-                        ),
-                      ],
-                    ),
-                  ),
-                  GFButton(
-                    onPressed: () async {
-                      SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
-                      prefs.setString('selectedLanguage', 'fr');
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                MyApp("fr", widget.localizedValues, true),
-                          ),
-                          (Route<dynamic> route) => false);
-                    },
-                    type: GFButtonType.transparent,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          "French",
-                          style: hintSfboldBig(),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
-  }
-
-// bool selected=false;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -159,12 +61,13 @@ class _DrawerPageState extends State<DrawerPage> {
             color: Color(0xFF000000),
             child: ListView(
               children: <Widget>[
-                SizedBox(height: 60),
+                SizedBox(height: 40),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      'Grocery App',
+                      'Readymade\nGrocery',
+                      textAlign: TextAlign.center,
                       style: textbarlowBoldWhitebig(),
                     ),
                   ],
@@ -239,9 +142,6 @@ class _DrawerPageState extends State<DrawerPage> {
                       locale: widget.locale,
                       localizedValues: widget.localizedValues,
                     )),
-                _buildMenuTileList('lib/assets/images/languages.png',
-                    MyLocalizations.of(context).selectLanguages, 0,
-                    route: null),
                 SizedBox(height: 20.0),
                 getTokenValue
                     ? _buildMenuTileList1('lib/assets/icons/lg.png',
@@ -294,9 +194,7 @@ class _DrawerPageState extends State<DrawerPage> {
                 context,
                 MaterialPageRoute(builder: (BuildContext context) => route),
                 (Route<dynamic> route) => false);
-          } else {
-            selectLanguagesMethod();
-          }
+          } else {}
         },
         child: Container(
           child: Row(
@@ -353,17 +251,18 @@ class _DrawerPageState extends State<DrawerPage> {
               flex: 2,
               child: ListTile(
                 leading: Image.asset(icon,
-                    width: 35, height: 35, color: Color(0xFFF44242)),
-                // onTap: (){
-
-                // },
+                    width: 35,
+                    height: 35,
+                    color: !getTokenValue ? Colors.green : Color(0xFFF44242)),
               ),
             ),
             Expanded(
               flex: 5,
               child: Text(
                 name,
-                style: textBarlowregredlg(),
+                style: !getTokenValue
+                    ? textBarlowregredGreen()
+                    : textBarlowregredlg(),
               ),
             ),
           ],

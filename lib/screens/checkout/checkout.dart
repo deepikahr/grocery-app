@@ -3,17 +3,17 @@ import 'package:getflutter/components/accordian/gf_accordian.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:grocery_pro/screens/drawer/add-address.dart';
-import 'package:grocery_pro/screens/drawer/edit-address.dart';
-import 'package:grocery_pro/screens/payment/payment.dart';
-import 'package:grocery_pro/service/coupon-service.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/service/payment-service.dart';
-import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/service/auth-service.dart';
-import 'package:grocery_pro/service/address-service.dart';
-import 'package:grocery_pro/widgets/loader.dart';
+import 'package:readymadeGroceryApp/screens/drawer/add-address.dart';
+import 'package:readymadeGroceryApp/screens/drawer/edit-address.dart';
+import 'package:readymadeGroceryApp/screens/payment/payment.dart';
+import 'package:readymadeGroceryApp/service/coupon-service.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/payment-service.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/service/address-service.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -286,50 +286,26 @@ class _CheckoutState extends State<Checkout> {
       }
       PaymentService.getDeliveryCharges(body).then((value) {
         try {
+          if (mounted) {
+            setState(() {
+              isPlaceOrderLoading = false;
+            });
+          }
           if (value['response_code'] == 200) {
-            if (mounted) {
-              setState(() {
-                isPlaceOrderLoading = false;
-              });
-            }
-            if (value['response_data']['deliveryDetails']['deliveryCharges']
-                is int) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Payment(
-                    locale: widget.locale,
-                    localizedValues: widget.localizedValues,
-                    data: data,
-                    type: widget.buy,
-                    grandTotals: null,
-                    grandTotal: value['response_data']['cartData']
-                        ['grandTotal'],
-                    deliveryCharges: null,
-                    deliveryCharge: value['response_data']['deliveryDetails']
-                        ['deliveryCharges'],
-                  ),
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Payment(
+                  locale: widget.locale,
+                  localizedValues: widget.localizedValues,
+                  data: data,
+                  type: widget.buy,
+                  grandTotals: value['response_data']['cartData']['grandTotal'],
+                  deliveryCharges: value['response_data']['deliveryDetails']
+                      ['deliveryCharges'],
                 ),
-              );
-            } else {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Payment(
-                    locale: widget.locale,
-                    localizedValues: widget.localizedValues,
-                    data: data,
-                    type: widget.buy,
-                    grandTotal: null,
-                    grandTotals: value['response_data']['cartData']
-                        ['grandTotal'],
-                    deliveryCharges: value['response_data']['deliveryDetails']
-                        ['deliveryCharges'],
-                    deliveryCharge: null,
-                  ),
-                ),
-              );
-            }
+              ),
+            );
           }
         } catch (error, stackTrace) {
           if (mounted) {
@@ -409,8 +385,6 @@ class _CheckoutState extends State<Checkout> {
               couponApplied = false;
             });
           }
-
-          // showError('', 'Coupon is applied');
         } else if (onValue['response_code'] == 400) {
           showSnackbar('${onValue['response_data']}');
         } else {
@@ -606,7 +580,7 @@ class _CheckoutState extends State<Checkout> {
                                   Form(
                                     key: _formKey,
                                     child: Container(
-                                      child: couponApplied
+                                      child: cartItem['couponInfo'] != null
                                           ? Column(
                                               children: <Widget>[
                                                 Row(
