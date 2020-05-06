@@ -35,6 +35,7 @@ class _MyCartState extends State<MyCart> {
       isLoading = false,
       favSelected = false;
   String token, currency;
+  String quantityUpdateType = '+';
   Map<String, dynamic> cartItem;
   int count = 1;
   RefreshController _refreshController =
@@ -94,6 +95,7 @@ class _MyCartState extends State<MyCart> {
   }
 
   void _incrementCount(i) {
+    quantityUpdateType = '+';
     if (mounted)
       setState(() {
         cartItem['cart'][i]['quantity']++;
@@ -102,6 +104,7 @@ class _MyCartState extends State<MyCart> {
   }
 
   void _decrementCount(i) {
+    quantityUpdateType = '-';
     if (cartItem['cart'][i]['quantity'] > 1) {
       if (mounted) {
         setState(() {
@@ -128,15 +131,16 @@ class _MyCartState extends State<MyCart> {
     if (mounted) {
       setState(() {
         isUpdating = true;
+        cartItem['cart'][i]['isQuantityUpdating'] = true;
       });
     }
-
     await CartService.updateProductToCart(body).then((onValue) {
       print(onValue);
       try {
         if (mounted) {
           if (onValue['response_code'] == 400) {
             cartItem['cart'][i]['quantity']--;
+            cartItem['cart'][i]['isQuantityUpdating'] = false;
             showDialog<Null>(
               context: context,
               barrierDismissible: false,
@@ -174,6 +178,7 @@ class _MyCartState extends State<MyCart> {
           }
           setState(() {
             isUpdating = false;
+            cartItem['cart'][i]['isQuantityUpdating'] = false;
           });
         }
       } catch (error, stackTrace) {
@@ -283,7 +288,7 @@ class _MyCartState extends State<MyCart> {
         },
       );
     } else {
-      Navigator.push(
+      var result = Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => Checkout(
@@ -294,6 +299,9 @@ class _MyCartState extends State<MyCart> {
           ),
         ),
       );
+      result.then((value) {
+        getCartItems();
+      });
     }
   }
 
@@ -591,10 +599,27 @@ class _MyCartState extends State<MyCart> {
                                                 children: <Widget>[
                                                   InkWell(
                                                     onTap: () {
-                                                      _incrementCount(i);
+                                                      if (cartItem['cart'][i][
+                                                                  'isQuantityUpdating'] ==
+                                                              null ||
+                                                          cartItem['cart'][i][
+                                                                  'isQuantityUpdating'] ==
+                                                              false) {
+                                                        _incrementCount(i);
+                                                      }
                                                     },
-                                                    child: SvgPicture.asset(
-                                                        'lib/assets/icons/plus.svg'),
+                                                    child: cartItem['cart'][i][
+                                                                    'isQuantityUpdating'] ==
+                                                                true &&
+                                                            quantityUpdateType ==
+                                                                '+'
+                                                        ? GFLoader(
+                                                            type: GFLoaderType
+                                                                .ios,
+                                                            size: 34,
+                                                          )
+                                                        : SvgPicture.asset(
+                                                            'lib/assets/icons/plus.svg'),
                                                   ),
                                                   cartItem['cart'][i]
                                                               ['quantity'] ==
@@ -607,10 +632,27 @@ class _MyCartState extends State<MyCart> {
                                                         ),
                                                   InkWell(
                                                     onTap: () {
-                                                      _decrementCount(i);
+                                                      if (cartItem['cart'][i][
+                                                                  'isQuantityUpdating'] ==
+                                                              null ||
+                                                          cartItem['cart'][i][
+                                                                  'isQuantityUpdating'] ==
+                                                              false) {
+                                                        _decrementCount(i);
+                                                      }
                                                     },
-                                                    child: SvgPicture.asset(
-                                                        'lib/assets/icons/minus.svg'),
+                                                    child: cartItem['cart'][i][
+                                                                    'isQuantityUpdating'] ==
+                                                                true &&
+                                                            quantityUpdateType ==
+                                                                '-'
+                                                        ? GFLoader(
+                                                            type: GFLoaderType
+                                                                .ios,
+                                                            size: 34,
+                                                          )
+                                                        : SvgPicture.asset(
+                                                            'lib/assets/icons/minus.svg'),
                                                   ),
                                                 ],
                                               ),
@@ -634,16 +676,16 @@ class _MyCartState extends State<MyCart> {
           ? SquareLoader()
           : token == null
               ? Container(
-                  height: 120,
+                  height: 165,
                 )
               : isLoadingCart
                   ? SquareLoader()
                   : cartItem == null
                       ? Container(
-                          height: 120.0,
+                          height: 175.0,
                         )
                       : Container(
-                          height: 130.0,
+                          height: cartItem['deliveryCharges'] == 0 ? 155 : 175,
                           child: Column(
                             children: <Widget>[
                               Padding(
@@ -666,6 +708,32 @@ class _MyCartState extends State<MyCart> {
                                 ),
                               ),
                               SizedBox(height: 6),
+                              cartItem['deliveryCharges'] == 0
+                                  ? Container()
+                                  : Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 20.0, right: 20.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          new Text(
+                                            MyLocalizations.of(context)
+                                                .deliveryCharges,
+                                            style: textBarlowRegularBlack(),
+                                          ),
+                                          new Text(
+                                            '$currency ${cartItem['deliveryCharges']}',
+                                            style: textbarlowBoldsmBlack(),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                              cartItem['deliveryCharges'] == 0
+                                  ? Container()
+                                  : SizedBox(height: 6),
                               Padding(
                                 padding: const EdgeInsets.only(
                                     left: 20.0, right: 20.0),
@@ -693,7 +761,36 @@ class _MyCartState extends State<MyCart> {
                                 ),
                               ),
                               SizedBox(height: 6),
-                              SizedBox(height: 6),
+                              cartItem['couponInfo'] == null
+                                  ? Container()
+                                  : Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 20.0, right: 20.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          new Text(
+                                            MyLocalizations.of(context)
+                                                    .couponApplied +
+                                                " (" +
+                                                "${MyLocalizations.of(context).discount}"
+                                                    ")",
+                                            style: textBarlowRegularBlack(),
+                                          ),
+                                          new Text(
+                                            '$currency ${cartItem['couponInfo']['couponDiscountAmount']}',
+                                            style: textbarlowBoldsmBlack(),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                              cartItem['couponInfo'] == null
+                                  ? Container()
+                                  : SizedBox(height: 6),
+                              SizedBox(height: 10),
                               Container(
                                 height: 55,
                                 margin: EdgeInsets.only(left: 15, right: 15),
@@ -740,7 +837,7 @@ class _MyCartState extends State<MyCart> {
                                     Container(
                                       child: RawMaterialButton(
                                         onPressed: () {
-                                          Navigator.push(
+                                          var result = Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) => Checkout(
@@ -756,6 +853,9 @@ class _MyCartState extends State<MyCart> {
                                               ),
                                             ),
                                           );
+                                          result.then((value) {
+                                            getCartItems();
+                                          });
                                         },
                                         child: Container(
                                           width: MediaQuery.of(context)

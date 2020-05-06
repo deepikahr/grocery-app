@@ -33,6 +33,7 @@ class _AboutUsState extends State<AboutUs> {
       });
     }
     LoginService.aboutUs().then((value) {
+      print(value);
       try {
         if (value['response_code'] == 200) {
           if (mounted) {
@@ -132,12 +133,25 @@ class _AboutUsState extends State<AboutUs> {
                           margin: EdgeInsets.all(15),
                           width: MediaQuery.of(context).size.width * 0.91,
                           child: Text(
-                            aboutUsDatails['description'],
+                            aboutUsDatails['aboutUs'],
                             style: textbarlowRegularBlackd(),
                           ),
                         )
                       ],
                     ),
+                    Container(
+                      margin: EdgeInsets.only(left: 15, bottom: 15),
+                      child: Text(
+                        MyLocalizations.of(context).addressInformation + ':',
+                        style: textBarlowMediumBlack(),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 15.0, right: 15.0, bottom: 15),
+                      child: Text(aboutUsDatails['address']),
+                    ),
+
                     Container(
                       margin: EdgeInsets.only(left: 15, bottom: 15),
                       child: Text(

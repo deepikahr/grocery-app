@@ -176,8 +176,9 @@ class _SavedItemsState extends State<SavedItems> {
                                   crossAxisSpacing: 16,
                                   mainAxisSpacing: 16),
                           itemBuilder: (BuildContext context, int i) {
-                            if (favProductList[i]['averageRating'] == null) {
-                              favProductList[i]['averageRating'] = 0;
+                            if (favProductList[i]['product']['averageRating'] ==
+                                null) {
+                              favProductList[i]['product']['averageRating'] = 0;
                             }
 
                             return InkWell(
@@ -200,30 +201,32 @@ class _SavedItemsState extends State<SavedItems> {
                                   SubCategoryProductCard(
                                       image: favProductList[i]['product']
                                           ['imageUrl'],
-                                      title: favProductList[i]['product']['title'].length > 10
-                                          ? favProductList[i]['product']['title']
-                                                  .substring(0, 10) +
-                                              ".."
-                                          : favProductList[i]['product']
-                                              ['title'],
+                                      title: favProductList[i]['product']
+                                          ['title'],
                                       currency: currency,
                                       category: favProductList[i]['product']
                                           ['category'],
                                       price: favProductList[i]['product']
                                           ['variant'][0]['price'],
-                                      rating:  favProductList[i]['product']
-                                                      ['averageRating']
-                                                  .toString(),
+                                      rating: favProductList[i]['product']
+                                              ['averageRating']
+                                          .toString(),
                                       buttonName: "Add",
-                                      cartAdded: favProductList[i]['cartAdded'] ?? false,
+                                      cartAdded: favProductList[i]
+                                              ['cartAdded'] ??
+                                          false,
                                       cartId: favProductList[i]['cartId'],
-                                      productQuantity: favProductList[i]['cartAddedQuantity'] ?? 0,
-                                      variantStock:favProductList[i]['product']
+                                      productQuantity: favProductList[i]
+                                              ['cartAddedQuantity'] ??
+                                          0,
+                                      variantStock: favProductList[i]['product']
                                           ['variant'][0]['productstock'],
                                       token: true,
                                       productList: favProductList[i]['product'],
-                                      variantList: favProductList[i]['product']['variant'],
-                                      subCategoryId: favProductList[i]['subcategory']),
+                                      variantList: favProductList[i]['product']
+                                          ['variant'],
+                                      subCategoryId: favProductList[i]
+                                          ['subcategory']),
                                   favProductList[i]['isDealAvailable'] == true
                                       ? Positioned(
                                           child: Stack(

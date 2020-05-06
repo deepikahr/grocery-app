@@ -65,6 +65,7 @@ class _OrdersState extends State<Orders> {
           if (mounted) {
             setState(() {
               orderList = onValue['response_data'];
+              print(orderList);
               isLoading = false;
             });
           }
@@ -251,6 +252,7 @@ class _OrdersState extends State<Orders> {
                           itemCount:
                               orderList.length == null ? 0 : orderList.length,
                           itemBuilder: (BuildContext context, int i) {
+                            print(orderList[i]['orderStatus']);
                             return orderList[i]['cart'] == null
                                 ? Container()
                                 : InkWell(
@@ -304,7 +306,7 @@ class _OrdersState extends State<Orders> {
         children: <Widget>[
           Container(
             height: 103.0,
-            width: 100,
+            width: 99,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(5)),
               boxShadow: [
@@ -323,44 +325,36 @@ class _OrdersState extends State<Orders> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                orderDetails['cart']['cart'][0]['title'] ?? "",
+                '${orderDetails['cart']['cart'][0]['title']}' ?? "",
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
                 style: textBarlowRegularrdark(),
               ),
-              SizedBox(height: 5),
-              Text(
-                orderDetails['cart']['cart'][0]['description'].length > 20
-                    ? orderDetails['cart']['cart'][0]['description']
-                            .substring(0, 20) +
-                        ".."
-                    : orderDetails['cart']['cart'][0]['description'] ?? "",
-                style: textSMBarlowRegularrBlack(),
-              ),
+              orderDetails['cart']['cart'].length == 1
+                  ? Container()
+                  : SizedBox(height: 5),
+              orderDetails['cart']['cart'].length == 1
+                  ? Container()
+                  : Text(
+                      'and ${(orderDetails['cart']['cart'].length - 1)} more items',
+                      style: textSMBarlowRegularrBlack(),
+                    ),
               SizedBox(height: 10),
               Text(
                 currency + orderDetails['grandTotal'].toString(),
                 style: titleLargeSegoeBlack(),
               ),
               SizedBox(height: 10),
-              orderDetails['appTimestamp'] == null
-                  ? Text(
-                      MyLocalizations.of(context).ordered +
-                              ' : ' +
-                              orderDetails['createdAt'].substring(0, 10) +
-                              ", " +
-                              orderDetails['createdAt'].substring(11, 16) ??
-                          "",
-                      style: textSMBarlowRegularrBlack(),
-                    )
-                  : Text(
-                      MyLocalizations.of(context).ordered +
-                              ' : ' +
-                              DateFormat('dd/MM/yyyy, hh:mm a').format(
-                                DateTime.fromMillisecondsSinceEpoch(
-                                    orderDetails['appTimestamp']),
-                              ) ??
-                          "",
-                      style: textSMBarlowRegularrBlack(),
-                    )
+              Text(
+                MyLocalizations.of(context).ordered +
+                        ' : ' +
+                        DateFormat('dd/MM/yyyy, hh:mm a').format(
+                          DateTime.fromMillisecondsSinceEpoch(
+                              orderDetails['appTimestamp']),
+                        ) ??
+                    "",
+                style: textSMBarlowRegularrBlack(),
+              )
             ],
           )
         ],

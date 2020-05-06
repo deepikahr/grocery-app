@@ -254,6 +254,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   }
 
   deliveryAddress() {
+    print(addressData);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
@@ -263,13 +264,13 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                MyLocalizations.of(context).deliveryAddress,
+                // MyLocalizations.of(context).deliveryAddress,
+                'Your Location',
                 style: textBarlowRegularrBlacksm(),
               ),
               Text(
-                addressData != null
-                    ? addressData.substring(0, 22) + '...'
-                    : widget.addressData.substring(0, 22) + '...',
+                addressData != null ? addressData : widget.addressData,
+                overflow: TextOverflow.ellipsis,
                 style: textAddressLocation(),
               )
             ],

@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/components/button/gf_button.dart';
+import 'package:getflutter/components/loader/gf_loader.dart';
 import 'package:getflutter/components/typography/gf_typography.dart';
+import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -319,11 +321,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                           height: 10,
                         ),
                         isResetPasswordLoading
-                            ? Image.asset(
-                                'lib/assets/images/spinner.gif',
-                                width: 15.0,
-                                height: 15.0,
-                                color: Colors.black,
+                            ? GFLoader(
+                                type: GFLoaderType.ios,
                               )
                             : Text("")
                       ],

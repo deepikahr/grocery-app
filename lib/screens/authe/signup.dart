@@ -538,11 +538,8 @@ class _SignupState extends State<Signup> {
               height: 10,
             ),
             registerationLoading
-                ? Image.asset(
-                    'lib/assets/images/spinner.gif',
-                    width: 15.0,
-                    height: 15.0,
-                    color: Colors.black,
+                ? GFLoader(
+                    type: GFLoaderType.ios,
                   )
                 : Text("")
           ],

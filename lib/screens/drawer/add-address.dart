@@ -576,11 +576,8 @@ class _AddAddressState extends State<AddAddress> {
                             height: 10,
                           ),
                           isLoading
-                              ? Image.asset(
-                                  'lib/assets/images/spinner.gif',
-                                  width: 15.0,
-                                  height: 15.0,
-                                  color: Colors.black,
+                              ? GFLoader(
+                                  type: GFLoaderType.ios,
                                 )
                               : Text("")
                         ],

@@ -57,7 +57,8 @@ class _ProductDetailsState extends State<ProductDetails>
       isFavListLoading = false,
       addProductTocart = false,
       isGetProductRating = false,
-      isProductDetails = false;
+      isProductDetails = false,
+      isFavProductLoading = false;
   int quantity = 1, variantPrice, variantStock;
   void _changeProductQuantity(bool increase) {
     if (increase) {
@@ -81,9 +82,9 @@ class _ProductDetailsState extends State<ProductDetails>
   void initState() {
     getTokenValueMethod();
     getProductDetails();
-    if (widget.favProductList != null) {
-      _checkFavourite();
-    }
+
+    _checkFavourite();
+
     super.initState();
   }
 
@@ -189,36 +190,55 @@ class _ProductDetailsState extends State<ProductDetails>
   }
 
   void _checkFavourite() async {
+    print('calleeeeeee');
     if (mounted) {
       setState(() {
         isFavListLoading = true;
+        isFavProductLoading = true;
       });
     }
     await FavouriteService.getFavList().then((onValue) {
+      print(onValue['response_data']);
       try {
         if (mounted) {
+          bool isProductFound = false;
+          print('here2');
           setState(() {
             favProductList = onValue['response_data'];
             if (favProductList.length > 0) {
+              print('here');
               for (int i = 0; i < favProductList.length; i++) {
+                print('here2');
                 if (favProductList[i]['product'] != null) {
+                  print('here3');
                   if (favProductList[i]['product']['_id'] ==
                       productDetail['_id']) {
+                    print('here4');
                     if (mounted) {
                       setState(() {
+                        isProductFound = true;
                         isFavListLoading = false;
                         isFavProduct = true;
+                        isFavProductLoading = false;
                         favId = favProductList[i]['_id'];
                       });
                     }
                   }
                 }
               }
+              if (mounted && !isProductFound) {
+                setState(() {
+                  isFavProduct = false;
+                  isFavProductLoading = false;
+                  isFavListLoading = false;
+                });
+              }
             } else {
               if (mounted) {
                 setState(() {
                   isFavListLoading = false;
                   isFavProduct = false;
+                  isFavProductLoading = false;
                 });
               }
             }
@@ -274,6 +294,9 @@ class _ProductDetailsState extends State<ProductDetails>
   }
 
   addToFavApi(id) async {
+    setState(() {
+      isFavProductLoading = true;
+    });
     if (isFavProduct) {
       Map<String, dynamic> body = {"product": id};
       await FavouriteService.addToFav(body).then((onValue) {
@@ -290,6 +313,7 @@ class _ProductDetailsState extends State<ProductDetails>
       await FavouriteService.deleteToFav(id).then((onValue) {
         try {
           showSnackbar(onValue['response_data']);
+          _checkFavourite();
         } catch (error, stackTrace) {
           sentryError.reportError(error, stackTrace);
         }
@@ -308,7 +332,7 @@ class _ProductDetailsState extends State<ProductDetails>
 
     if ((variantStock == null
             ? productDetail['variant'][0]['productstock']
-            : variantStock) >
+            : variantStock) >=
         quantity) {
       Map<String, dynamic> buyNowProduct = {
         "category": data['category'],
@@ -664,27 +688,33 @@ class _ProductDetailsState extends State<ProductDetails>
                                       onTap: () {
                                         if (mounted) {
                                           setState(() {
-                                            if (isFavProduct == true) {
-                                              isFavProduct = false;
-                                              addToFavApi(favId);
-                                            } else {
-                                              isFavProduct = true;
-                                              addToFavApi(productDetail['_id']);
+                                            if (!isFavProductLoading) {
+                                              if (isFavProduct == true) {
+                                                isFavProduct = false;
+                                                addToFavApi(favId);
+                                              } else {
+                                                isFavProduct = true;
+                                                addToFavApi(
+                                                    productDetail['_id']);
+                                              }
                                             }
                                           });
                                         }
                                       },
-                                      child: isFavProduct
-                                          ? Icon(
-                                              Icons.favorite,
-                                              color: Colors.red,
-                                              size: 25.0,
-                                            )
-                                          : Icon(
-                                              Icons.favorite_border,
-                                              color: Colors.red,
-                                              size: 25.0,
-                                            ),
+                                      child: isFavProductLoading
+                                          ? GFLoader(
+                                              type: GFLoaderType.ios, size: 27)
+                                          : isFavProduct
+                                              ? Icon(
+                                                  Icons.favorite,
+                                                  color: Colors.red,
+                                                  size: 25.0,
+                                                )
+                                              : Icon(
+                                                  Icons.favorite_border,
+                                                  color: Colors.red,
+                                                  size: 25.0,
+                                                ),
                                     ),
                                     type: GFButtonType.transparent,
                                   ),
@@ -694,10 +724,22 @@ class _ProductDetailsState extends State<ProductDetails>
                           top: 45,
                           left: 20,
                           child: InkWell(
-                              onTap: () {
-                                Navigator.pop(context);
-                              },
-                              child: Icon(Icons.arrow_back)),
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                                height: 40,
+                                width: 40,
+                                decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                  color: Colors.black26,
+                                ),
+                                child: Icon(
+                                  Icons.arrow_back_ios,
+                                  color: Colors.white,
+                                )),
+                          ),
                         ),
                       ],
                     ),
@@ -759,11 +801,8 @@ class _ProductDetailsState extends State<ProductDetails>
                         ),
                       ),
                       addProductTocart
-                          ? Image.asset(
-                              'lib/assets/images/spinner.gif',
-                              width: 15.0,
-                              height: 15.0,
-                              color: Colors.black,
+                          ? GFLoader(
+                              type: GFLoaderType.ios,
                             )
                           : Text(""),
                       Padding(

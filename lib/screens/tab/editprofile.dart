@@ -565,11 +565,8 @@ class _EditProfileState extends State<EditProfile> {
                   style: textBarlowRegularrBlack(),
                 ),
                 profileEdit
-                    ? Image.asset(
-                        'lib/assets/images/spinner.gif',
-                        width: 15.0,
-                        height: 15.0,
-                        color: Colors.black,
+                    ? GFLoader(
+                        type: GFLoaderType.ios,
                       )
                     : Text("")
               ],

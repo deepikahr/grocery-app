@@ -101,6 +101,7 @@
   "date": "Date",
   "totalOrder": "Total Order",
   "contactInformation": "Contact Information",
+  "addressInformation": "Address",
   "selectAddress": "Select Address",
   "addAddress": "Add Address",
   "orderDetails": "Order Details",

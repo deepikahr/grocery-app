@@ -234,9 +234,7 @@ class _AllDealsListState extends State<AllDealsList> {
                           },
                           child: DealsCard(
                             image: dealsList[i]['imageUrl'],
-                            title: dealsList[i]['name'].length > 10
-                                ? dealsList[i]['name'].substring(0, 10) + ".."
-                                : dealsList[i]['name'],
+                            title: dealsList[i]['name'],
                             price: dealsList[i]['delaPercent'].toString() +
                                 "% off",
                           ),

@@ -395,11 +395,8 @@ class _LoginState extends State<Login> {
               height: 10,
             ),
             isUserLoaginLoading
-                ? Image.asset(
-                    'lib/assets/images/spinner.gif',
-                    width: 15.0,
-                    height: 15.0,
-                    color: Colors.black,
+                ? GFLoader(
+                    type: GFLoaderType.ios,
                   )
                 : Text("")
           ],

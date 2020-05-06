@@ -266,7 +266,6 @@ class _SubCategoriesState extends State<SubCategories> {
                                 if (subCategryList[i]['isSelected'] == null) {
                                   subCategryList[i]['isSelected'] = false;
                                 }
-
                                 return i == 0
                                     ? Row(
                                         children: <Widget>[
@@ -478,18 +477,8 @@ class _SubCategoriesState extends State<SubCategories> {
                                                         image:
                                                             subCategryByProduct[
                                                                 i]['imageUrl'],
-                                                        title: subCategryByProduct[
-                                                                            i][
-                                                                        'title']
-                                                                    .length >
-                                                                10
-                                                            ? subCategryByProduct[
-                                                                            i][
-                                                                        'title']
-                                                                    .substring(
-                                                                        0, 10) +
-                                                                ".."
-                                                            : subCategryByProduct[
+                                                        title:
+                                                            subCategryByProduct[
                                                                 i]['title'],
                                                         currency: currency,
                                                         category:
@@ -501,7 +490,6 @@ class _SubCategoriesState extends State<SubCategories> {
                                                                     ['variant']
                                                                 [0]['price'],
                                                         variantStock:
-                                                        
                                                             subCategryByProduct[
                                                                         i][
                                                                     'variant'][0]
@@ -636,11 +624,8 @@ class _SubCategoriesState extends State<SubCategories> {
                                                       SubCategoryProductCard(
                                                           image: subProductsList[i]
                                                               ['imageUrl'],
-                                                          title: subProductsList[i]['title'].length > 10
-                                                              ? subProductsList[i]['title'].substring(0, 10) +
-                                                                  ".."
-                                                              : subProductsList[i]
-                                                                  ['title'],
+                                                          title: subProductsList[i]
+                                                              ['title'],
                                                           currency: currency,
                                                           category:
                                                               subProductsList[i]
@@ -648,12 +633,9 @@ class _SubCategoriesState extends State<SubCategories> {
                                                           price: subProductsList[i]
                                                                   ['variant'][0]
                                                               ['price'],
-                                                              variantStock:
-                                                            subProductsList[
-                                                                        i][
-                                                                    'variant'][0]
-                                                                [
-                                                                'productstock'],
+                                                          variantStock: subProductsList[i]
+                                                                  ['variant'][0]
+                                                              ['productstock'],
                                                           rating: subProductsList[i]['averageRating']
                                                               .toString(),
                                                           buttonName: "Add",

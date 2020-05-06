@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:getflutter/getflutter.dart';
+import 'package:getflutter/types/gf_loader_type.dart';
 import 'package:readymadeGroceryApp/model/addToCart.dart';
 import 'package:readymadeGroceryApp/model/bottomSheet.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
@@ -8,6 +10,7 @@ import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
 
 class SubCategoryProductCard extends StatefulWidget {
   final image,
@@ -56,9 +59,9 @@ class SubCategoryProductCard extends StatefulWidget {
 
 class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
   int quanity;
-  bool cardAdded = false;
+  bool cardAdded = false, isAddInProgress = false, isQuantityUpdating = false;
   var variantPrice, variantStock;
-  String cartId;
+  String cartId, quantityChangeType = '+';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -78,27 +81,18 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
   }
 
   void _changeProductQuantity(bool increase, id) {
+    setState(() {
+      isQuantityUpdating = true;
+    });
     if (increase) {
-      if (mounted) {
-        setState(() {
-          quanity++;
-          updateCart(quanity, id);
-        });
-      }
+      quanity++;
+      updateCart(quanity, id);
     } else {
       if (quanity > 1) {
-        if (mounted) {
-          setState(() {
-            quanity--;
-            updateCart(quanity, id);
-          });
-        }
+        quanity--;
+        updateCart(quanity, id);
       } else {
-        if (mounted) {
-          setState(() {
-            deleteCart(id);
-          });
-        }
+        deleteCart(id);
       }
     }
   }
@@ -109,7 +103,13 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
       'productId': id,
       'quantity': quanity
     };
-    await CartService.updateProductToCart(body).then((onValue) {});
+    await CartService.updateProductToCart(body).then((onValue) {
+      if (mounted) {
+        setState(() {
+          isQuantityUpdating = false;
+        });
+      }
+    });
   }
 
   deleteCart(id) async {
@@ -122,6 +122,7 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
       if (mounted) {
         setState(() {
           cardAdded = false;
+          isQuantityUpdating = false;
         });
       }
     });
@@ -173,6 +174,7 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                           Expanded(
                             child: Text(
                               widget.title,
+                              overflow: TextOverflow.ellipsis,
                               style: textbarlowRegularBlackb(),
                             ),
                           ),
@@ -259,58 +261,66 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                           if (widget.variantList[0]
                                                   ['productstock'] >
                                               quanity) {
-                                            Map<String, dynamic>
-                                                productAddBody = {
-                                              "category": widget
-                                                  .productList['category'],
-                                              "subcategory": widget
-                                                  .productList['subcategory'],
-                                              'productId': widget
-                                                  .productList['_id']
-                                                  .toString(),
-                                              'quantity': 1,
-                                              "price": double.parse(widget
-                                                  .variantList[0]['price']
-                                                  .toString()),
-                                              "unit": widget.variantList[0]
-                                                      ['unit']
-                                                  .toString()
-                                            };
-                                            AddToCart.addToCartMethod(
-                                                    productAddBody)
-                                                .then((onValue) {
-                                              if (onValue['response_code'] ==
-                                                  200) {
-                                                for (int i = 0;
-                                                    i <
+                                            if (!isAddInProgress) {
+                                              Map<String, dynamic>
+                                                  productAddBody = {
+                                                "category": widget
+                                                    .productList['category'],
+                                                "subcategory": widget
+                                                    .productList['subcategory'],
+                                                'productId': widget
+                                                    .productList['_id']
+                                                    .toString(),
+                                                'quantity': 1,
+                                                "price": double.parse(widget
+                                                    .variantList[0]['price']
+                                                    .toString()),
+                                                "unit": widget.variantList[0]
+                                                        ['unit']
+                                                    .toString()
+                                              };
+                                              setState(() {
+                                                isAddInProgress = true;
+                                              });
+                                              AddToCart.addToCartMethod(
+                                                      productAddBody)
+                                                  .then((onValue) {
+                                                if (onValue['response_code'] ==
+                                                    200) {
+                                                  for (int i = 0;
+                                                      i <
+                                                          onValue['response_data']
+                                                                  ['cart']
+                                                              .length;
+                                                      i++) {
+                                                    if (widget.productList[
+                                                            "_id"] ==
                                                         onValue['response_data']
-                                                                ['cart']
-                                                            .length;
-                                                    i++) {
-                                                  if (widget
-                                                          .productList["_id"] ==
-                                                      onValue['response_data']
-                                                              ['cart'][i]
-                                                          ["productId"]) {
-                                                    if (mounted) {
-                                                      setState(() {
-                                                        quanity = onValue[
-                                                                'response_data']
-                                                            [
-                                                            'cart'][i]['quantity'];
-                                                        cartId = onValue[
-                                                                'response_data']
-                                                            ['_id'];
-                                                        variantStock = widget
-                                                                .variantList[0]
-                                                            ['productstock'];
-                                                        cardAdded = true;
-                                                      });
+                                                                ['cart'][i]
+                                                            ["productId"]) {
+                                                      if (mounted) {
+                                                        setState(() {
+                                                          quanity = onValue[
+                                                                      'response_data']
+                                                                  ['cart'][i]
+                                                              ['quantity'];
+                                                          cartId = onValue[
+                                                                  'response_data']
+                                                              ['_id'];
+                                                          variantStock = widget
+                                                                  .variantList[0]
+                                                              ['productstock'];
+                                                          cardAdded = true;
+                                                        });
+                                                      }
                                                     }
                                                   }
                                                 }
-                                              }
-                                            });
+                                                setState(() {
+                                                  isAddInProgress = false;
+                                                });
+                                              });
+                                            }
                                           } else {
                                             showSnackbar(
                                                 "Limited quantity available, you can't add more than ${widget.variantList[0]['productstock']} of this item");
@@ -348,15 +358,20 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                 padding: EdgeInsets.only(
                                     left: 15, right: 15, bottom: 5),
                                 margin: EdgeInsets.only(top: 5),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text(
-                                      widget.buttonName,
-                                      style: textbarlowMediumBlackm(),
-                                    ),
-                                  ],
-                                ),
+                                child: isAddInProgress
+                                    ? GFLoader(
+                                        type: GFLoaderType.ios,
+                                      )
+                                    : Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Text(
+                                            widget.buttonName,
+                                            style: textbarlowMediumBlackm(),
+                                          ),
+                                        ],
+                                      ),
                               ),
                             )
                           : Container(
@@ -379,17 +394,29 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(5)),
-                                        color: Colors.black),
+                                        color: isQuantityUpdating &&
+                                                quantityChangeType == '-'
+                                            ? Colors.grey.shade100
+                                            : Colors.black),
                                     child: InkWell(
                                       onTap: () async {
-                                        _changeProductQuantity(
-                                          false,
-                                          widget.productList["_id"],
-                                        );
+                                        if (!isQuantityUpdating) {
+                                          quantityChangeType = '-';
+                                          _changeProductQuantity(
+                                            false,
+                                            widget.productList["_id"],
+                                          );
+                                        }
                                       },
-                                      child: SvgPicture.asset(
-                                        'lib/assets/icons/delete.svg',
-                                      ),
+                                      child: isQuantityUpdating &&
+                                              quantityChangeType == '-'
+                                          ? GFLoader(
+                                              type: GFLoaderType.ios,
+                                              size: 35,
+                                            )
+                                          : SvgPicture.asset(
+                                              'lib/assets/icons/delete.svg',
+                                            ),
                                     ),
                                   ),
                                   Text(quanity == null
@@ -402,21 +429,31 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(5)),
-                                        color: primary),
+                                        color: isQuantityUpdating &&
+                                                quantityChangeType == '+'
+                                            ? Colors.grey.shade100
+                                            : primary),
                                     child: InkWell(
                                       onTap: () async {
-                                        if (variantStock > quanity) {
-                                          _changeProductQuantity(
-                                            true,
-                                            widget.productList["_id"],
-                                          );
-                                        } else {
-                                          showSnackbar(
-                                              "Limited quantity available, you can't add more than $variantStock of this item");
+                                        if (!isQuantityUpdating) {
+                                          quantityChangeType = '+';
+                                          if (variantStock > quanity) {
+                                            _changeProductQuantity(
+                                              true,
+                                              widget.productList["_id"],
+                                            );
+                                          } else {
+                                            showSnackbar(
+                                                "Limited quantity available, you can't add more than $variantStock of this item");
+                                          }
                                         }
                                       },
-                                      child: SvgPicture.asset(
-                                          'lib/assets/icons/add1.svg'),
+                                      child: isQuantityUpdating &&
+                                              quantityChangeType == '+'
+                                          ? GFLoader(
+                                              type: GFLoaderType.ios, size: 35)
+                                          : SvgPicture.asset(
+                                              'lib/assets/icons/add1.svg'),
                                     ),
                                   ),
                                 ],

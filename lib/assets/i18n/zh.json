@@ -101,6 +101,7 @@
   "date": "日期",
   "totalOrder": "总了",
   "contactInformation": "联系信息",
+  "addressInformation": "Address",
   "selectAddress": "选择的地址",
   "addAddress": "添加地址",
   "orderDetails": "订单的详细信息",

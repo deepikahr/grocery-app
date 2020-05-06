@@ -45,8 +45,8 @@ class _AllProductsState extends State<AllProducts> {
       RefreshController(initialRefresh: false);
   ScrollController controller;
   ScrollController _scrollController = new ScrollController();
-  int index = 0, totalIndex = 0;
-  bool productListApiCall = false;
+  int index = 0, totalIndex = 1;
+  bool productListApiCall = false, isNewProductsLoading = false;
   var cartData;
   @override
   void initState() {
@@ -113,15 +113,19 @@ class _AllProductsState extends State<AllProducts> {
       }
       sentryError.reportError(error, null);
     });
-
-    if (getTokenValue) {
-      getProductListMethodCardAdded(index);
-    } else {
-      getProductListMethod(index);
+    if (index < totalIndex) {
+      if (getTokenValue) {
+        getProductListMethodCardAdded(index);
+      } else {
+        getProductListMethod(index);
+      }
     }
   }
 
   getProductListMethod(productIndex) async {
+    setState(() {
+      isNewProductsLoading = true;
+    });
     await ProductService.getProductListAll(productIndex).then((onValue) {
       try {
         _refreshController.refreshCompleted();
@@ -131,7 +135,9 @@ class _AllProductsState extends State<AllProducts> {
               productsList.addAll(onValue['response_data']['products']);
               index = productsList.length;
               totalIndex = onValue['response_data']["total"];
+              print('index $index totalindex $totalIndex');
               isLoadingProductsList = false;
+              isNewProductsLoading = false;
             });
           }
         } else {
@@ -139,6 +145,7 @@ class _AllProductsState extends State<AllProducts> {
             setState(() {
               productsList = [];
               isLoadingProductsList = false;
+              isNewProductsLoading = false;
             });
           }
         }
@@ -147,6 +154,7 @@ class _AllProductsState extends State<AllProducts> {
           setState(() {
             productsList = [];
             isLoadingProductsList = false;
+            isNewProductsLoading = false;
           });
         }
         sentryError.reportError(error, stackTrace);
@@ -156,6 +164,7 @@ class _AllProductsState extends State<AllProducts> {
         setState(() {
           productsList = [];
           isLoadingProductsList = false;
+          isNewProductsLoading = false;
         });
       }
       sentryError.reportError(error, null);
@@ -163,6 +172,9 @@ class _AllProductsState extends State<AllProducts> {
   }
 
   getProductListMethodCardAdded(productIndex) async {
+    setState(() {
+      isNewProductsLoading = true;
+    });
     await ProductService.getProductListAllCartAdded(productIndex)
         .then((onValue) {
       try {
@@ -173,7 +185,9 @@ class _AllProductsState extends State<AllProducts> {
               productsList.addAll(onValue['response_data']['products']);
               index = productsList.length;
               totalIndex = onValue['response_data']["total"];
+              print('index $index totalindex $totalIndex');
               isLoadingProductsList = false;
+              isNewProductsLoading = false;
             });
           }
         } else {
@@ -181,6 +195,7 @@ class _AllProductsState extends State<AllProducts> {
             setState(() {
               productsList = [];
               isLoadingProductsList = false;
+              isNewProductsLoading = false;
             });
           }
         }
@@ -189,6 +204,7 @@ class _AllProductsState extends State<AllProducts> {
           setState(() {
             productsList = [];
             isLoadingProductsList = false;
+            isNewProductsLoading = false;
           });
         }
         sentryError.reportError(error, stackTrace);
@@ -198,6 +214,7 @@ class _AllProductsState extends State<AllProducts> {
         setState(() {
           productsList = [];
           isLoadingProductsList = false;
+          isNewProductsLoading = false;
         });
       }
       sentryError.reportError(error, null);
@@ -262,10 +279,15 @@ class _AllProductsState extends State<AllProducts> {
         enablePullUp: false,
         controller: _refreshController,
         onRefresh: () {
-          if (getTokenValue) {
-            getProductListMethodCardAdded(1);
-          } else {
-            getProductListMethod(1);
+          if (index < totalIndex) {
+            productsList = [];
+            index = productsList.length;
+
+            if (getTokenValue) {
+              getProductListMethodCardAdded(index);
+            } else {
+              getProductListMethod(index);
+            }
           }
         },
         child: isLoadingProductsList
@@ -314,12 +336,12 @@ class _AllProductsState extends State<AllProducts> {
                                   children: <Widget>[
                                     SubCategoryProductCard(
                                         image: productsList[i]['imageUrl'],
-                                        title:
-                                            productsList[i]['title'].length > 10
-                                                ? productsList[i]['title']
-                                                        .substring(0, 10) +
-                                                    ".."
-                                                : productsList[i]['title'],
+                                        title: productsList[i]['title'],
+                                        // .length > 10
+                                        //     ? productsList[i]['title']
+                                        //             .substring(0, 10) +
+                                        //         ".."
+                                        //     : productsList[i]['title'],
                                         currency: currency,
                                         category: productsList[i]['category'],
                                         price: productsList[i]['variant'][0]
@@ -371,12 +393,12 @@ class _AllProductsState extends State<AllProducts> {
                                 children: <Widget>[
                                   SubCategoryProductCard(
                                       image: productsList[i]['imageUrl'],
-                                      title:
-                                          productsList[i]['title'].length > 10
-                                              ? productsList[i]['title']
-                                                      .substring(0, 10) +
-                                                  ".."
-                                              : productsList[i]['title'],
+                                      title: productsList[i]['title'],
+                                      // .length > 10
+                                      //     ? productsList[i]['title']
+                                      //             .substring(0, 10) +
+                                      //         ".."
+                                      //     : productsList[i]['title'],
                                       currency: currency,
                                       category: productsList[i]['category'],
                                       price: productsList[i]['variant'][0]
@@ -399,7 +421,8 @@ class _AllProductsState extends State<AllProducts> {
                                 ],
                               );
                       },
-                    )
+                    ),
+                    isNewProductsLoading ? SquareLoader() : Container()
                   ],
                 ),
               ),

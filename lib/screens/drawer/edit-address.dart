@@ -578,11 +578,8 @@ class _EditAddressState extends State<EditAddress> {
                             height: 10,
                           ),
                           isUpdateAddress
-                              ? Image.asset(
-                                  'lib/assets/images/spinner.gif',
-                                  width: 15.0,
-                                  height: 15.0,
-                                  color: Colors.black,
+                              ? GFLoader(
+                                  type: GFLoaderType.ios,
                                 )
                               : Text("")
                         ],

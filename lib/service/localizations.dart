@@ -1068,6 +1068,10 @@ class MyLocalizations {
     return localizedValues[locale.languageCode]['contactInformation'];
   }
 
+  String get addressInformation {
+    return localizedValues[locale.languageCode]['addressInformation'];
+  }
+
   String get orderSummary {
     return localizedValues[locale.languageCode]['orderSummary'];
   }

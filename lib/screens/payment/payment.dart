@@ -484,11 +484,8 @@ class _PaymentState extends State<Payment> {
                                 ),
                                 new FlatButton(
                                   child: isCardDelete
-                                      ? Image.asset(
-                                          'lib/assets/images/spinner.gif',
-                                          width: 10.0,
-                                          height: 10.0,
-                                          color: Colors.black,
+                                      ? GFLoader(
+                                          type: GFLoaderType.ios,
                                         )
                                       : Text(
                                           MyLocalizations.of(context).ok,
@@ -699,11 +696,8 @@ class _PaymentState extends State<Payment> {
                   style: textBarlowRegularBlack(),
                 ),
                 isPlaceOrderLoading
-                    ? Image.asset(
-                        'lib/assets/images/spinner.gif',
-                        width: 15.0,
-                        height: 15.0,
-                        color: Colors.black,
+                    ? GFLoader(
+                        type: GFLoaderType.ios,
                       )
                     : Text("")
               ],

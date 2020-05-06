@@ -101,6 +101,7 @@
     "date": "日",
     "totalOrder": "合計順",
     "contactInformation": "連絡先",
+    "addressInformation": "Address",
     "selectAddress": "選択アドレス",
     "addAddress": "アドレス追加",
     "orderDetails": "注文内容に間違いがなければ",

@@ -62,6 +62,7 @@ class DealsCard extends StatelessWidget {
                       Expanded(
                           child: Text(
                         title,
+                        overflow: TextOverflow.ellipsis,
                         style: textbarlowRegularBlackb(),
                       )),
                     ],

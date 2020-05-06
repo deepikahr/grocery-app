@@ -501,11 +501,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                     children: <Widget>[
                                       ProductCard(
                                         image: list[i]['imageUrl'],
-                                        title: list[i]['title'].length > 15
-                                            ? list[i]['title']
-                                                    .substring(0, 15) +
-                                                ".."
-                                            : list[i]['title'],
+                                        title: list[i]['title'],
                                         currency: currency,
                                         category: list[i]['category'],
                                         price: list[i]['variant'][0]['price']
@@ -566,10 +562,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                 children: <Widget>[
                                   ProductCard(
                                     image: list[i]['imageUrl'],
-                                    title: list[i]['title'].length > 15
-                                        ? list[i]['title'].substring(0, 15) +
-                                            ".."
-                                        : list[i]['title'],
+                                    title: list[i]['title'],
                                     currency: currency,
                                     category: list[i]['category'],
                                     price: list[i]['variant'][0]['price'],

@@ -334,6 +334,12 @@ class _SearchItemState extends State<SearchItem> {
                                         crossAxisSpacing: 16,
                                         mainAxisSpacing: 16),
                                 itemBuilder: (BuildContext context, int index) {
+                                  if (searchresult[index]
+                                          ['averageRating'] ==
+                                      null) {
+                                    searchresult[index]
+                                        ['averageRating'] = 0;
+                                  }
                                   return InkWell(
                                     onTap: () {
                                       Navigator.push(
@@ -356,17 +362,13 @@ class _SearchItemState extends State<SearchItem> {
                                         SubCategoryProductCard(
                                             image: searchresult[index]
                                                 ['imageUrl'],
-                                            title: searchresult[index]['title'].length > 10
-                                                ? searchresult[index]['title']
-                                                        .substring(0, 10) +
-                                                    ".."
-                                                : searchresult[index]['title'],
+                                            title: searchresult[index]['title'],
                                             currency: currency,
                                             category: searchresult[index]
                                                 ['category'],
                                             price: searchresult[index]
                                                 ['variant'][0]['price'],
-                                             variantStock:searchresult[index]
+                                            variantStock: searchresult[index]
                                                 ['variant'][0]['productstock'],
                                             rating: searchresult[index]
                                                     ['averageRating']
@@ -382,8 +384,10 @@ class _SearchItemState extends State<SearchItem> {
                                                 0,
                                             token: true,
                                             productList: searchresult[index],
-                                            variantList: searchresult[index]['variant'],
-                                            subCategoryId: searchresult[index]['subcategory']),
+                                            variantList: searchresult[index]
+                                                ['variant'],
+                                            subCategoryId: searchresult[index]
+                                                ['subcategory']),
                                       ],
                                     ),
                                   );

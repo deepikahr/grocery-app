@@ -159,7 +159,7 @@ class _MyAppState extends State<MyApp> {
       var first = addresses.first;
       if (mounted) {
         setState(() {
-          addressData = first.addressLine;
+          addressData = first.subLocality;
         });
       }
       Common.setCurrentLocation(addressData);

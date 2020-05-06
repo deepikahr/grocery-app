@@ -101,6 +101,7 @@
     "date": "Дата",
     "totalOrder": "Общий Порядок",
     "contactInformation": "Контактная Информация",
+    "addressInformation": "Address",
     "selectAddress": "Выберите Адрес",
     "addAddress": "Добавить Адрес",
     "orderDetails": "Детали Заказа ",

@@ -500,11 +500,8 @@ class _AddCardState extends State<AddCard> {
                 style: textBarlowRegularrBlack(),
               ),
               isCardListLoading
-                  ? Image.asset(
-                      'lib/assets/images/spinner.gif',
-                      width: 15.0,
-                      height: 15.0,
-                      color: Colors.black,
+                  ? GFLoader(
+                      type: GFLoaderType.ios,
                     )
                   : Text("")
             ],

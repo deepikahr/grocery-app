@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/model/addToCart.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
@@ -331,11 +332,8 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                   ),
                 ),
                 addProductTocart
-                    ? Image.asset(
-                        'lib/assets/images/spinner.gif',
-                        width: 15.0,
-                        height: 15.0,
-                        color: Colors.black,
+                    ? GFLoader(
+                        type: GFLoaderType.ios,
                       )
                     : Text(""),
                 Padding(

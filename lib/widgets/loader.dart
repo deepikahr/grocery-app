@@ -3,6 +3,8 @@ import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 
 class SquareLoader extends StatelessWidget {
+  final size;
+  SquareLoader({this.size});
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -11,7 +13,7 @@ class SquareLoader extends StatelessWidget {
         loaderColorOne: primary,
         loaderColorTwo: darkGrey,
         loaderColorThree: primaryLight,
-        size: 45,
+        size: size ?? 45,
       ),
     );
   }

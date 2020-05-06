@@ -101,6 +101,7 @@
     "date": "Fecha",
     "totalOrder": "Total De La Orden De",
     "contactInformation": "Información De Contacto",
+    "addressInformation": "Address",
     "selectAddress": "Seleccione La Dirección De",
     "addAddress": "Agregar Dirección",
     "orderDetails": "Los Detalles De La Orden",
