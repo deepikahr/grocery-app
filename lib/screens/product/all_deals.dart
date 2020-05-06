@@ -236,7 +236,8 @@ class _AllDealsListState extends State<AllDealsList> {
                             image: dealsList[i]['imageUrl'],
                             title: dealsList[i]['name'],
                             price: dealsList[i]['delaPercent'].toString() +
-                                "% off",
+                                "% " +
+                                MyLocalizations.of(context).off,
                           ),
                         );
                       },

@@ -81,7 +81,6 @@ class _ProductDetailsState extends State<ProductDetails>
   @override
   void initState() {
     getTokenValueMethod();
-    getProductDetails();
 
     _checkFavourite();
 
@@ -89,6 +88,11 @@ class _ProductDetailsState extends State<ProductDetails>
   }
 
   getTokenValueMethod() async {
+    if (mounted) {
+      setState(() {
+        isProductDetails = true;
+      });
+    }
     SharedPreferences prefs = await SharedPreferences.getInstance();
     currency = prefs.getString('currency');
     await Common.getToken().then((onValue) {
@@ -97,12 +101,14 @@ class _ProductDetailsState extends State<ProductDetails>
           if (mounted) {
             setState(() {
               getTokenValue = true;
+              getProductDetailsLog();
             });
           }
         } else {
           if (mounted) {
             setState(() {
               getTokenValue = false;
+              getProductDetailsWithLog();
             });
           }
         }
@@ -110,6 +116,7 @@ class _ProductDetailsState extends State<ProductDetails>
         if (mounted) {
           setState(() {
             getTokenValue = false;
+            getProductDetailsWithLog();
           });
         }
         sentryError.reportError(error, stackTrace);
@@ -118,6 +125,7 @@ class _ProductDetailsState extends State<ProductDetails>
       if (mounted) {
         setState(() {
           getTokenValue = false;
+          getProductDetailsWithLog();
         });
       }
       sentryError.reportError(error, null);
@@ -125,11 +133,6 @@ class _ProductDetailsState extends State<ProductDetails>
   }
 
   getProductRating() {
-    if (mounted) {
-      setState(() {
-        isGetProductRating = true;
-      });
-    }
     ProductService.productRating(productDetail['_id']).then((value) {
       try {
         if (mounted) {
@@ -155,13 +158,44 @@ class _ProductDetailsState extends State<ProductDetails>
     });
   }
 
-  getProductDetails() {
-    if (mounted) {
-      setState(() {
-        isProductDetails = true;
-      });
-    }
-    ProductService.productDetails(widget.productID).then((value) {
+  getProductDetailsLog() {
+    ProductService.productDetailsLogin(widget.productID).then((value) {
+      print("logi $value");
+
+      try {
+        if (mounted) {
+          setState(() {
+            productDetail = value['response_data'];
+            print(productDetail['cartAddedQuantity']);
+            if (productDetail['cartAddedQuantity'] != null) {
+              quantity = productDetail['cartAddedQuantity'];
+            }
+            isProductDetails = false;
+          });
+        }
+      } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isProductDetails = false;
+            productDetail = null;
+          });
+        }
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isProductDetails = false;
+          productDetail = null;
+        });
+      }
+      sentryError.reportError(error, null);
+    });
+  }
+
+  getProductDetailsWithLog() {
+    ProductService.productDetailsWithoutLogin(widget.productID).then((value) {
+      print("without $value");
       try {
         if (mounted) {
           setState(() {
@@ -190,7 +224,6 @@ class _ProductDetailsState extends State<ProductDetails>
   }
 
   void _checkFavourite() async {
-    print('calleeeeeee');
     if (mounted) {
       setState(() {
         isFavListLoading = true;
@@ -198,22 +231,16 @@ class _ProductDetailsState extends State<ProductDetails>
       });
     }
     await FavouriteService.getFavList().then((onValue) {
-      print(onValue['response_data']);
       try {
         if (mounted) {
           bool isProductFound = false;
-          print('here2');
           setState(() {
             favProductList = onValue['response_data'];
             if (favProductList.length > 0) {
-              print('here');
               for (int i = 0; i < favProductList.length; i++) {
-                print('here2');
                 if (favProductList[i]['product'] != null) {
-                  print('here3');
                   if (favProductList[i]['product']['_id'] ==
                       productDetail['_id']) {
-                    print('here4');
                     if (mounted) {
                       setState(() {
                         isProductFound = true;
@@ -386,8 +413,10 @@ class _ProductDetailsState extends State<ProductDetails>
           addProductTocart = false;
         });
       }
-      showSnackbar(
-          "Limited quantity available, you can't add more than ${variantStock == null ? productDetail['variant'][0]['productstock'] : variantStock} of this item");
+      showSnackbar(MyLocalizations.of(context)
+              .limitedquantityavailableyoucantaddmorethan +
+          "${variantStock == null ? productDetail['variant'][0]['productstock'] : variantStock}" +
+          MyLocalizations.of(context).ofthisitem);
     }
   }
 
@@ -414,8 +443,9 @@ class _ProductDetailsState extends State<ProductDetails>
                               width: MediaQuery.of(context).size.width,
                               decoration: new BoxDecoration(
                                 borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(40),
-                                    bottomRight: Radius.circular(40)),
+                                  bottomLeft: Radius.circular(40),
+                                  bottomRight: Radius.circular(40),
+                                ),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.grey,
@@ -594,8 +624,13 @@ class _ProductDetailsState extends State<ProductDetails>
                                                       _changeProductQuantity(
                                                           true);
                                                     } else {
-                                                      showSnackbar(
-                                                          "Limited quantity available, you can't add more than ${variantStock == null ? productDetail['variant'][0]['productstock'] : variantStock} of this item");
+                                                      showSnackbar(MyLocalizations
+                                                                  .of(context)
+                                                              .limitedquantityavailableyoucantaddmorethan +
+                                                          "${variantStock == null ? productDetail['variant'][0]['productstock'] : variantStock} " +
+                                                          MyLocalizations.of(
+                                                                  context)
+                                                              .ofthisitem);
                                                     }
                                                   },
                                                   child: Icon(Icons.add),

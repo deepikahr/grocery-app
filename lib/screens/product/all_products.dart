@@ -377,7 +377,10 @@ class _AllProductsState extends State<AllProducts> {
                                                         productsList[i]
                                                                 ['delaPercent']
                                                             .toString() +
-                                                        "% Off",
+                                                        "% " +
+                                                        MyLocalizations.of(
+                                                                context)
+                                                            .off,
                                                     style: hintSfboldwhitemed(),
                                                     textAlign: TextAlign.center,
                                                   ),
@@ -405,7 +408,8 @@ class _AllProductsState extends State<AllProducts> {
                                           ['price'],
                                       rating: productsList[i]['averageRating']
                                           .toString(),
-                                      buttonName: "Add",
+                                      buttonName:
+                                          MyLocalizations.of(context).add,
                                       cartAdded:
                                           productsList[i]['cartAdded'] ?? false,
                                       cartId: productsList[i]['cartId'],

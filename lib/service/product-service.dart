@@ -190,7 +190,18 @@ class ProductService {
     return json.decode(response.body);
   }
 
-  static Future<Map<String, dynamic>> productDetails(productId) async {
+  static Future<Map<String, dynamic>> productDetailsLogin(productId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String userId = "userId=" + prefs.getString("userID");
+    final response = await client
+        .get(Constants.baseURL + "products/info/$productId?$userId", headers: {
+      'Content-Type': 'application/json',
+    });
+    return json.decode(response.body);
+  }
+
+  static Future<Map<String, dynamic>> productDetailsWithoutLogin(
+      productId) async {
     final response = await client
         .get(Constants.baseURL + "products/info/$productId", headers: {
       'Content-Type': 'application/json',

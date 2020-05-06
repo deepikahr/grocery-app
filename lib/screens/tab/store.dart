@@ -372,7 +372,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                           },
                           child: Row(
                             children: <Widget>[
-                              Text('Order  now'),
+                              Text(MyLocalizations.of(context).ordernow),
                               Icon(Icons.arrow_right)
                             ],
                           ),
@@ -526,7 +526,10 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                                       " " +
                                                           list[i]['delaPercent']
                                                               .toString() +
-                                                          "% Off",
+                                                          "% " +
+                                                          MyLocalizations.of(
+                                                                  context)
+                                                              .off,
                                                       style:
                                                           hintSfboldwhitemed(),
                                                       textAlign:
@@ -690,7 +693,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                           style: textBarlowSemiBoldwbig()),
                                       Text(
                                         list[i]['delaPercent'].toString() +
-                                            "% OFF",
+                                            "% " +
+                                            MyLocalizations.of(context).off,
                                         style: textBarlowRegularrwhsm(),
                                       )
                                     ],
@@ -809,7 +813,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                     children: <Widget>[
                                       Text(
                                           list[i]['delaPercent'].toString() +
-                                              "% OFF",
+                                              "% " +
+                                              MyLocalizations.of(context).off,
                                           style: textoswaldboldwhite()),
                                       SizedBox(
                                         height: 5,

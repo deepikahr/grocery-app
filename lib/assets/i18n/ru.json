@@ -439,5 +439,17 @@
     "products": "Продукты",
     "deal": "Интернет",
     "topDeals": "Лучшие Предложения",
-    "dealsoftheday": "Предложения дня"
+    "dealsoftheday": "Предложения дня",
+    "limitedquantityavailableyoucantaddmorethan": "Доступно ограниченное количество, вы не можете добавить больше, чем",
+    "ofthisitem": "этого предмета",
+    "youhavenotselectedanyaddressyet": " You have not selected any address yet.",
+    "mailUs": "Вы еще не выбрали ни одного адреса.",
+    "callUs": "Написать нам",
+    "yourLocation": "Позвоните нам",
+    "off": "Твое местонахождение",
+    "ordernow": "Заказать сейчас",
+    "oops": "Ой!",
+    "outOfStock": "Нет на складе",
+    "and": "а также",
+    "moreitems": "больше предметов"
 }

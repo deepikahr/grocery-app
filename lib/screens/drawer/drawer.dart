@@ -166,6 +166,7 @@ class _DrawerPageState extends State<DrawerPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Common.setToken(null).then((value) {
       prefs.setString("userID", null);
+      Common.setUserInfo(null);
       if (value == true) {
         Navigator.pushAndRemoveUntil(
             context,
