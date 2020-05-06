@@ -211,7 +211,7 @@ class _SavedItemsState extends State<SavedItems> {
                                       rating: favProductList[i]['product']
                                               ['averageRating']
                                           .toString(),
-                                      buttonName: "Add",
+                                      buttonName: MyLocalizations.of(context).add,
                                       cartAdded: favProductList[i]
                                               ['cartAdded'] ??
                                           false,
@@ -238,7 +238,9 @@ class _SavedItemsState extends State<SavedItems> {
                                                     favProductList[i]
                                                             ['delaPercent']
                                                         .toString() +
-                                                    "% Off",
+                                                    "% " +
+                                                    MyLocalizations.of(context)
+                                                        .off,
                                                 style: hintSfboldwhitemed(),
                                                 textAlign: TextAlign.center,
                                               )

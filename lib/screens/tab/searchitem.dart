@@ -334,11 +334,9 @@ class _SearchItemState extends State<SearchItem> {
                                         crossAxisSpacing: 16,
                                         mainAxisSpacing: 16),
                                 itemBuilder: (BuildContext context, int index) {
-                                  if (searchresult[index]
-                                          ['averageRating'] ==
+                                  if (searchresult[index]['averageRating'] ==
                                       null) {
-                                    searchresult[index]
-                                        ['averageRating'] = 0;
+                                    searchresult[index]['averageRating'] = 0;
                                   }
                                   return InkWell(
                                     onTap: () {
@@ -373,7 +371,8 @@ class _SearchItemState extends State<SearchItem> {
                                             rating: searchresult[index]
                                                     ['averageRating']
                                                 .toString(),
-                                            buttonName: "Add",
+                                            buttonName:
+                                                MyLocalizations.of(context).add,
                                             cartAdded: searchresult[index]
                                                     ['cartAdded'] ??
                                                 false,

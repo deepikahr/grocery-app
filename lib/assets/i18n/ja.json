@@ -439,5 +439,17 @@
     "products": "製品",
     "deal": "対応",
     "topDeals": "Top得",
-    "dealsoftheday": "お得な当日の"
+    "dealsoftheday": "お得な当日の",
+    "limitedquantityavailableyoucantaddmorethan": "数量限定のため、これ以上追加することはできません",
+    "ofthisitem": "このアイテムの",
+    "youhavenotselectedanyaddressyet": "  まだアドレスを選択していません。",
+    "mailUs": "メールでお問い合わせ",
+    "callUs": "お電話ください",
+    "yourLocation": "あなたの場所",
+    "off": "オフ",
+    "ordernow": "今すぐ注文",
+    "oops": "おっとっと ！",
+    "outOfStock": "在庫切れ",
+    "and": "et",
+    "moreitems": "Plus d'articles"
 }

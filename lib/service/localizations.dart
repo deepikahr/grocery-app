@@ -1815,6 +1815,56 @@ class MyLocalizations {
     return localizedValues[locale.languageCode]['dealsoftheday'];
   }
 
+  String get limitedquantityavailableyoucantaddmorethan {
+    return localizedValues[locale.languageCode]
+        ['limitedquantityavailableyoucantaddmorethan'];
+  }
+
+  String get ofthisitem {
+    return localizedValues[locale.languageCode]['ofthisitem'];
+  }
+
+  String get youhavenotselectedanyaddressyet {
+    return localizedValues[locale.languageCode]
+        ['youhavenotselectedanyaddressyet'];
+  }
+
+  String get mailUs {
+    return localizedValues[locale.languageCode]['mailUs'];
+  }
+
+  String get callUs {
+    return localizedValues[locale.languageCode]['callUs'];
+  }
+
+  String get yourLocation {
+    return localizedValues[locale.languageCode]['yourLocation'];
+  }
+
+  String get off {
+    return localizedValues[locale.languageCode]['off'];
+  }
+
+  String get ordernow {
+    return localizedValues[locale.languageCode]['ordernow'];
+  }
+
+  String get oops {
+    return localizedValues[locale.languageCode]['oops'];
+  }
+
+  String get outOfStock {
+    return localizedValues[locale.languageCode]['outOfStock'];
+  }
+
+  String get and {
+    return localizedValues[locale.languageCode]['and'];
+  }
+
+  String get moreitems {
+    return localizedValues[locale.languageCode]['moreitems'];
+  }
+
   greetTo(name) {
     return localizedValues[locale.languageCode]['greetTo']
         .replaceAll('{{name}}', name);

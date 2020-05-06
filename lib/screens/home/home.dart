@@ -264,8 +264,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                // MyLocalizations.of(context).deliveryAddress,
-                'Your Location',
+                MyLocalizations.of(context).yourLocation,
                 style: textBarlowRegularrBlacksm(),
               ),
               Text(
@@ -297,7 +296,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       var first = addresses.first;
       if (mounted) {
         setState(() {
-          addressData = first.addressLine;
+          addressData = first.subLocality;
           isCurrentLoactionLoading = false;
         });
       }

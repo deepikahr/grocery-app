@@ -439,5 +439,17 @@
     "products": "Productos",
     "deal": "Oferta",
     "topDeals": "Las Mejores Ofertas",
-    "dealsoftheday": "Ofertas del día"
+    "dealsoftheday": "Ofertas del día",
+    "limitedquantityavailableyoucantaddmorethan": "Cantidad limitada disponible, no puede agregar más de",
+    "ofthisitem": "de este artículo",
+    "youhavenotselectedanyaddressyet": " Aún no ha seleccionado ninguna dirección.",
+    "mailUs": "Envíenos un correo",
+    "callUs": "Llamenos",
+    "yourLocation": "Tu ubicación",
+    "off": "APAGADO",
+    "ordernow": "Ordenar ahora",
+    "oops": "¡Uy!",
+    "outOfStock": "Agotado",
+    "and": "y",
+    "moreitems": "mas cosas"
 }

@@ -439,5 +439,17 @@
     "products": "Prodotti",
     "deal": "Tassi",
     "topDeals": "Top Offerte",
-    "dealsoftheday": "Offerte del giorno"
+    "dealsoftheday": "Offerte del giorno",
+    "limitedquantityavailableyoucantaddmorethan": "Quantità limitata disponibile, non puoi aggiungere più di",
+    "ofthisitem": "di questo articolo",
+    "youhavenotselectedanyaddressyet": " Non hai ancora selezionato alcun indirizzo.",
+    "mailUs": "Scrivici",
+    "callUs": "Chiamaci",
+    "yourLocation": "La tua posizione",
+    "off": "OFF",
+    "ordernow": "Ordina adesso",
+    "oops": "Oops !",
+    "outOfStock": "Esaurito",
+    "and": "e",
+    "moreitems": "più articoli"
 }
