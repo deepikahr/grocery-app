@@ -4,11 +4,11 @@ import 'package:getflutter/components/button/gf_button.dart';
 import 'package:getflutter/components/typography/gf_typography.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:getflutter/size/gf_size.dart';
-import 'package:grocery_pro/screens/authe/login.dart';
-import 'package:grocery_pro/service/auth-service.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/screens/authe/login.dart';
+import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -118,12 +118,27 @@ class _SignupState extends State<Signup> {
             showSnackbar('${onValue['response_data']}');
           }
         } catch (error) {
+          if (mounted) {
+            setState(() {
+              registerationLoading = false;
+            });
+          }
           sentryError.reportError(error, null);
         }
       }).catchError((error) {
+        if (mounted) {
+          setState(() {
+            registerationLoading = false;
+          });
+        }
         sentryError.reportError(error, null);
       });
     } else {
+      if (mounted) {
+        setState(() {
+          registerationLoading = false;
+        });
+      }
       return;
     }
   }
@@ -235,8 +250,6 @@ class _SignupState extends State<Signup> {
               buildPasswordTextField(),
               buildsignuplink(),
               buildLoginButton(),
-              // buildcontinuetext(),
-              // buildsocialbuttons(),
             ],
           ),
         ),
@@ -313,59 +326,6 @@ class _SignupState extends State<Signup> {
       ),
     );
   }
-
-  // Widget buildUserLastName() {
-  //   return Padding(
-  //     padding: const EdgeInsets.only(top: 20.0),
-  //     child: GFTypography(
-  //       showDivider: false,
-  //       child: RichText(
-  //         text: TextSpan(
-  //           children: <TextSpan>[
-  //             TextSpan(text: "Last Name", style: textbarlowRegularBlackdull()),
-  //             TextSpan(
-  //               text: ' *',
-  //               style: TextStyle(color: Colors.red),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // Widget buildUserLastNameField() {
-  //   return Padding(
-  //     padding: const EdgeInsets.only(top: 5.0, bottom: 10.0),
-  //     child: Container(
-  //       child: TextFormField(
-  //         style: textBarlowRegularBlack(),
-  //         keyboardType: TextInputType.emailAddress,
-  //         validator: (String value) {
-  //           if (value.isEmpty || !RegExp(r'^[A-Za-z ]+$').hasMatch(value)) {
-  //             return "Please Enter Valid Last Name";
-  //           } else
-  //             return null;
-  //         },
-  //         onSaved: (String value) {
-  //           lastName = value;
-  //         },
-  //         decoration: InputDecoration(
-  //           errorBorder: OutlineInputBorder(
-  //               borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
-  //           errorStyle: TextStyle(color: Color(0xFFF44242)),
-  //           contentPadding: EdgeInsets.all(10),
-  //           enabledBorder: const OutlineInputBorder(
-  //             borderSide: const BorderSide(color: Colors.grey, width: 0.0),
-  //           ),
-  //           focusedBorder: OutlineInputBorder(
-  //             borderSide: BorderSide(color: primary),
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Widget buildEmailText() {
     return Padding(
@@ -525,8 +485,6 @@ class _SignupState extends State<Signup> {
         validator: (String value) {
           if (value.isEmpty) {
             return MyLocalizations.of(context).enterYourContactNumber;
-          } else if (value.length != 10) {
-            return MyLocalizations.of(context).pleaseenter10digitcontactnumber;
           } else
             return null;
         },
@@ -580,16 +538,12 @@ class _SignupState extends State<Signup> {
               height: 10,
             ),
             registerationLoading
-                ? Image.asset(
-                    'lib/assets/images/spinner.gif',
-                    width: 15.0,
-                    height: 15.0,
-                    color: Colors.black,
+                ? GFLoader(
+                    type: GFLoaderType.ios,
                   )
                 : Text("")
           ],
         ),
-        // textStyle: TextStyle(fontSize: 17.0, color: Colors.black),
       ),
     );
   }
@@ -659,7 +613,6 @@ class _SignupState extends State<Signup> {
             ),
           ),
         ),
-        // ),
         SizedBox(
           height: 10,
         ),

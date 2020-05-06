@@ -2,20 +2,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:getflutter/getflutter.dart';
-import 'package:grocery_pro/main.dart';
-import 'package:grocery_pro/screens/authe/login.dart';
-import 'package:grocery_pro/screens/chat/chatpage.dart';
-import 'package:grocery_pro/screens/orders/orders.dart';
-import 'package:grocery_pro/screens/address/address.dart';
-import 'package:grocery_pro/screens/payment/addCard.dart';
-import 'package:grocery_pro/screens/tab/editprofile.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/service/payment-service.dart';
-import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/service/common.dart';
-import 'package:grocery_pro/service/auth-service.dart';
-import 'package:grocery_pro/widgets/loader.dart';
+import 'package:readymadeGroceryApp/main.dart';
+import 'package:readymadeGroceryApp/screens/authe/login.dart';
+import 'package:readymadeGroceryApp/screens/drawer/address.dart';
+import 'package:readymadeGroceryApp/screens/orders/orders.dart';
+import 'package:readymadeGroceryApp/screens/tab/editprofile.dart';
+import 'package:readymadeGroceryApp/service/initialize_i18n.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/payment-service.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -42,7 +41,19 @@ class _ProfileState extends State<Profile> {
   String token, selectedLanguages, userID;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  List<String> languages = ['English', 'French', 'Arbic'];
+  String newValue;
+  List<String> languages = [
+    'English',
+    'French',
+    'Chinese',
+    'Arbic',
+    'Japanese',
+    'Russian',
+    'Italian',
+    'Spanish',
+    'Portuguese'
+  ];
+  Map<String, Map<String, String>> localizedValues;
   var userData;
 
   @override
@@ -81,9 +92,19 @@ class _ProfileState extends State<Profile> {
           }
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isGetTokenLoading = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isGetTokenLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -95,33 +116,69 @@ class _ProfileState extends State<Profile> {
       });
     }
     Common.getCardInfo().then((value) {
-      if (value == null) {
-        if (mounted) {
-          setState(() {
-            fetchCardInfoMethod();
-          });
+      try {
+        if (value == null) {
+          if (mounted) {
+            setState(() {
+              fetchCardInfoMethod();
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              isCardListLoading = false;
+              cardList = value['response_data'];
+              fetchCardInfoMethod();
+            });
+          }
         }
-      } else {
+      } catch (error, stackTrace) {
         if (mounted) {
           setState(() {
             isCardListLoading = false;
-            cardList = value['response_data'];
-            fetchCardInfoMethod();
+            cardList = [];
           });
         }
+        sentryError.reportError(error, stackTrace);
       }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          cardList = [];
+          isCardListLoading = false;
+        });
+      }
+      sentryError.reportError(error, null);
     });
   }
 
   fetchCardInfoMethod() async {
     await PaymentService.getCardList().then((onValue) {
       _refreshController.refreshCompleted();
+      try {
+        if (mounted) {
+          setState(() {
+            cardList = onValue['response_data'];
+            isCardListLoading = false;
+          });
+        }
+      } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isCardListLoading = false;
+            cardList = [];
+          });
+        }
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
       if (mounted) {
         setState(() {
-          cardList = onValue['response_data'];
+          cardList = [];
           isCardListLoading = false;
         });
       }
+      sentryError.reportError(error, null);
     });
   }
 
@@ -132,13 +189,31 @@ class _ProfileState extends State<Profile> {
       });
     }
     await PaymentService.deleteCard(id).then((onValue) {
+      try {
+        if (mounted) {
+          setState(() {
+            fetchCardInfo();
+            isCardDelete = false;
+            Navigator.pop(context);
+          });
+        }
+      } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isCardDelete = false;
+            Navigator.pop(context);
+          });
+        }
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
       if (mounted) {
         setState(() {
-          fetchCardInfo();
           isCardDelete = false;
           Navigator.pop(context);
         });
       }
+      sentryError.reportError(error, null);
     });
   }
 
@@ -149,22 +224,42 @@ class _ProfileState extends State<Profile> {
       });
     }
     Common.getUserInfo().then((value) {
-      if (value == null) {
-        if (mounted) {
-          setState(() {
-            userInfoMethod();
-          });
+      try {
+        if (value == null) {
+          if (mounted) {
+            setState(() {
+              userInfoMethod();
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              userInfo = value['response_data']['userInfo'];
+              userID = userInfo['_id'];
+              isLoading = false;
+              userInfoMethod();
+            });
+          }
         }
-      } else {
+      } catch (error, stackTrace) {
         if (mounted) {
           setState(() {
-            userInfo = value['response_data']['userInfo'];
-            userID = userInfo['_id'];
+            userInfo = null;
+            userID = null;
             isLoading = false;
-            userInfoMethod();
           });
         }
+        sentryError.reportError(error, stackTrace);
       }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          userInfo = null;
+          userID = null;
+          isLoading = false;
+        });
+      }
+      sentryError.reportError(error, null);
     });
   }
 
@@ -181,36 +276,24 @@ class _ProfileState extends State<Profile> {
           });
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isLoading = false;
+            userInfo = null;
+            userID = null;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
-      sentryError.reportError(error, null);
-    });
-  }
-
-  logout() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (mounted) {
-      setState(() {
-        logoutLoading = true;
-      });
-    }
-    Common.setToken(null).then((value) {
-      prefs.setString("userID", null);
-      if (value == true) {
-        if (mounted) {
-          setState(() {
-            logoutLoading = false;
-          });
-        }
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) =>
-                  MyApp(widget.locale, widget.localizedValues, true),
-            ),
-            (Route<dynamic> route) => false);
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+          userInfo = null;
+          userID = null;
+        });
       }
+      sentryError.reportError(error, null);
     });
   }
 
@@ -220,8 +303,8 @@ class _ProfileState extends State<Profile> {
         builder: (context) {
           return Center(
             child: Container(
-              height: 200,
-              width: MediaQuery.of(context).size.width * 0.6,
+              height: 250,
+              width: MediaQuery.of(context).size.width * 0.7,
               decoration: new BoxDecoration(
                 color: Colors.white,
                 borderRadius: new BorderRadius.all(
@@ -229,80 +312,138 @@ class _ProfileState extends State<Profile> {
                 ),
               ),
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              child: Column(
+              child: ListView(
                 children: <Widget>[
-                  GFButton(
-                    onPressed: () async {
-                      SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
-                      prefs.setString('selectedLanguage', 'en');
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                MyApp("en", widget.localizedValues, true),
+                  ListView.builder(
+                      padding: EdgeInsets.only(bottom: 25),
+                      physics: ScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount:
+                          languages.length == null ? 0 : languages.length,
+                      itemBuilder: (BuildContext context, int i) {
+                        return GFButton(
+                          onPressed: () async {
+                            await initializeI18n().then((value) async {
+                              localizedValues = value;
+                              if (mounted) {
+                                setState(() {
+                                  newValue = languages[i];
+                                });
+                              }
+                              if (newValue == 'English') {
+                                SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                prefs.setString('selectedLanguage', 'en');
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          MyApp("en", localizedValues, true),
+                                    ),
+                                    (Route<dynamic> route) => false);
+                              } else if (newValue == 'Chinese') {
+                                SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                prefs.setString('selectedLanguage', 'zh');
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          MyApp("zh", localizedValues, true),
+                                    ),
+                                    (Route<dynamic> route) => false);
+                              } else if (newValue == 'Arbic') {
+                                SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                prefs.setString('selectedLanguage', 'ar');
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          MyApp("ar", localizedValues, true),
+                                    ),
+                                    (Route<dynamic> route) => false);
+                              } else if (newValue == 'Japanese') {
+                                SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                prefs.setString('selectedLanguage', 'ja');
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          MyApp("ja", localizedValues, true),
+                                    ),
+                                    (Route<dynamic> route) => false);
+                              } else if (newValue == 'Russian') {
+                                SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                prefs.setString('selectedLanguage', 'ru');
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          MyApp("ru", localizedValues, true),
+                                    ),
+                                    (Route<dynamic> route) => false);
+                              } else if (newValue == 'Italian') {
+                                SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                prefs.setString('selectedLanguage', 'it');
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          MyApp("it", localizedValues, true),
+                                    ),
+                                    (Route<dynamic> route) => false);
+                              } else if (newValue == 'Spanish') {
+                                SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                prefs.setString('selectedLanguage', 'es');
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          MyApp("es", localizedValues, true),
+                                    ),
+                                    (Route<dynamic> route) => false);
+                              } else if (newValue == 'Portuguese') {
+                                SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                prefs.setString('selectedLanguage', 'pt');
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          MyApp("pt", localizedValues, true),
+                                    ),
+                                    (Route<dynamic> route) => false);
+                              } else {
+                                SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                prefs.setString('selectedLanguage', 'fr');
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          MyApp("fr", localizedValues, true),
+                                    ),
+                                    (Route<dynamic> route) => false);
+                              }
+                            });
+                          },
+                          type: GFButtonType.transparent,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                languages[i],
+                                style: hintSfboldBig(),
+                              ),
+                            ],
                           ),
-                          (Route<dynamic> route) => false);
-                    },
-                    type: GFButtonType.transparent,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          "English",
-                          style: hintSfboldBig(),
-                        ),
-                      ],
-                    ),
-                  ),
-                  GFButton(
-                    onPressed: () async {
-                      SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
-                      prefs.setString('selectedLanguage', 'ar');
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                MyApp("ar", widget.localizedValues, true),
-                          ),
-                          (Route<dynamic> route) => false);
-                    },
-                    type: GFButtonType.transparent,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          "Arbic",
-                          style: hintSfboldBig(),
-                        ),
-                      ],
-                    ),
-                  ),
-                  GFButton(
-                    onPressed: () async {
-                      SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
-                      prefs.setString('selectedLanguage', 'fr');
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                MyApp("fr", widget.localizedValues, true),
-                          ),
-                          (Route<dynamic> route) => false);
-                    },
-                    type: GFButtonType.transparent,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          "French",
-                          style: hintSfboldBig(),
-                        ),
-                      ],
-                    ),
-                  ),
+                        );
+                      }),
                 ],
               ),
             ),
@@ -312,283 +453,6 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    Widget itemCard = cardList.length == 0
-        ? InkWell(
-            onTap: () {
-              var result = Navigator.push(
-                context,
-                new MaterialPageRoute(
-                  builder: (BuildContext context) => new AddCard(
-                    locale: widget.locale,
-                    localizedValues: widget.localizedValues,
-                  ),
-                ),
-              );
-
-              if (result != null) {
-                result.then((onValue) {
-                  fetchCardInfo();
-                  if (mounted) {
-                    setState(() {
-                      cardList = cardList;
-                    });
-                  }
-                });
-              }
-            },
-            child: Container(
-              height: 141,
-              width: 232,
-              decoration: BoxDecoration(
-                  color: Colors.grey[400],
-                  borderRadius: BorderRadius.circular(5.0)),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(
-                    Icons.add,
-                    size: 40,
-                    color: Colors.black54,
-                  ),
-                  SizedBox(height: 5),
-                  Text(
-                    MyLocalizations.of(context).addCard,
-                    style: textBarlowRegularBlack(),
-                  )
-                ],
-              ),
-            ),
-          )
-        : Row(
-            children: <Widget>[
-              ListView.builder(
-                physics: ScrollPhysics(),
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                itemCount: cardList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Padding(
-                    padding: const EdgeInsets.only(
-                        top: 8.0, bottom: 8, right: 8, left: 6),
-                    child: Container(
-                      height: 141,
-                      width: 232,
-                      padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              stops: [
-                                0.0,
-                                0.4,
-                                0.6,
-                                1.0
-                              ],
-                              colors: [
-                                Color(0xFF5FE5CF),
-                                Color(0xFF5FB8E5),
-                                Color(0xFF5FB8E5),
-                                Color(0xFF5FB8E5),
-                              ]),
-                          borderRadius: BorderRadius.circular(5.0)),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Padding(
-                            padding:
-                                EdgeInsets.only(left: 20, right: 20, top: 18),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                cardList[index]['cardImage'] == null
-                                    ? Image.asset(
-                                        'lib/assets/icons/mastercard-logo.png')
-                                    : Image.network(
-                                        '${cardList[index]['cardImage']}',
-                                      ),
-                                SizedBox(width: 5),
-                                Expanded(
-                                  child: Text(
-                                    '${cardList[index]['bank']}',
-                                    style: textBarlowRegularWhite(),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    showDialog<Null>(
-                                      context: context,
-                                      barrierDismissible: false,
-                                      builder: (BuildContext context) {
-                                        return Container(
-                                          width: 270.0,
-                                          child: new AlertDialog(
-                                            title: new Text(
-                                              MyLocalizations.of(context)
-                                                      .areYouSure +
-                                                  "?",
-                                              style: hintSfsemiboldred(),
-                                            ),
-                                            content: new SingleChildScrollView(
-                                              child: new ListBody(
-                                                children: <Widget>[
-                                                  new Text(
-                                                    MyLocalizations.of(context)
-                                                        .deleteCard,
-                                                    style:
-                                                        hintSfsemiboldblacktext(),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            actions: <Widget>[
-                                              new FlatButton(
-                                                child: new Text(
-                                                  MyLocalizations.of(context)
-                                                      .cancel,
-                                                  style: TextStyle(color: red),
-                                                ),
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                              ),
-                                              new FlatButton(
-                                                child: isCardDelete
-                                                    ? Image.asset(
-                                                        'lib/assets/images/spinner.gif',
-                                                        width: 10.0,
-                                                        height: 10.0,
-                                                        color: Colors.black,
-                                                      )
-                                                    : Text(
-                                                        MyLocalizations.of(
-                                                                context)
-                                                            .ok,
-                                                        style:
-                                                            textBarlowRegularBlack(),
-                                                      ),
-                                                onPressed: () {
-                                                  deleteCard(
-                                                      cardList[index]['_id']);
-                                                },
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                  child: Icon(
-                                    Icons.delete,
-                                    color: Colors.black45,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(left: 20.0, right: 20),
-                            child: Text(
-                              '************${cardList[index]['lastFourDigits']}',
-                              style: textBarlowRegularWhite(),
-                            ),
-                          ),
-                          SizedBox(height: 15),
-                          Padding(
-                            padding: EdgeInsets.only(left: 20, right: 20),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text(
-                                      MyLocalizations.of(context)
-                                          .cardHolderName,
-                                      style: textbarlowmediumwhitedull(),
-                                    ),
-                                    Text(
-                                      '${cardList[index]['cardHolderName']}',
-                                      style: textbarlowmediumwhite(),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: <Widget>[
-                                    Text(
-                                      MyLocalizations.of(context).expired,
-                                      style: textbarlowmediumwhitedull(),
-                                    ),
-                                    Text(
-                                      '${cardList[index]['expiryMonth']}/${cardList[index]['expiryYear']}',
-                                      style: textbarlowmediumwhite(),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-              InkWell(
-                onTap: () {
-                  var result = Navigator.push(
-                    context,
-                    new MaterialPageRoute(
-                      builder: (BuildContext context) => new AddCard(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
-                      ),
-                    ),
-                  );
-
-                  if (result != null) {
-                    result.then((onValue) {
-                      fetchCardInfo();
-                      if (mounted) {
-                        setState(() {
-                          cardList = cardList;
-                        });
-                      }
-                    });
-                  }
-                },
-                child: Container(
-                  padding: const EdgeInsets.only(left: 15.0),
-                  height: 141,
-                  width: 232,
-                  decoration: BoxDecoration(
-                      color: Color(0xFFF0F0F0),
-                      border: Border.all(color: Color(0xFFD3D3D3), width: 1),
-                      borderRadius: BorderRadius.circular(5.0)),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(
-                        Icons.add,
-                        size: 40,
-                        color: Colors.black54,
-                      ),
-                      SizedBox(height: 5),
-                      Text(
-                        MyLocalizations.of(context).addCard,
-                        style: textBarlowRegularBlack(),
-                      )
-                    ],
-                  ),
-                ),
-              )
-            ],
-          );
-
     return Scaffold(
       backgroundColor: Color(0xFFFDFDFD),
       appBar: isGetTokenLoading
@@ -608,7 +472,6 @@ class _ProfileState extends State<Profile> {
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
-        header: WaterDropHeader(),
         controller: _refreshController,
         onRefresh: () {
           setState(() {
@@ -727,56 +590,30 @@ class _ProfileState extends State<Profile> {
                                             Padding(
                                               padding: const EdgeInsets.only(
                                                   right: .0, bottom: 6.0),
-                                              child: userInfo == null &&
-                                                      userInfo['firstName'] ==
-                                                          null &&
-                                                      userInfo['lastName'] ==
-                                                          null
-                                                  ? Text(
-                                                      '',
-                                                      style:
-                                                          textBarlowMediumBlack(),
-                                                    )
-                                                  : Text(
-                                                      '${userInfo['firstName']} ${userInfo['lastName'] == null ? "" : userInfo['lastName']}',
-                                                      style:
-                                                          textBarlowMediumBlack(),
-                                                    ),
+                                              child: Text(
+                                                '${userInfo['firstName'] ?? ""} ${userInfo['lastName'] ?? ""}',
+                                                style: textBarlowMediumBlack(),
+                                              ),
                                             ),
                                             SizedBox(height: 6),
-                                            userInfo == null &&
-                                                    userInfo['email'] == null
-                                                ? Text(
-                                                    '',
-                                                    style: textbarlowmedium(),
-                                                  )
-                                                : Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: <Widget>[
-                                                      Text(
-                                                        '${userInfo['email']}',
-                                                        style:
-                                                            textbarlowmedium(),
-                                                      ),
-                                                    ],
-                                                  ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: <Widget>[
+                                                Text(
+                                                  '${userInfo['email'] ?? ""}',
+                                                  style: textbarlowmedium(),
+                                                ),
+                                              ],
+                                            ),
                                             SizedBox(height: 6),
                                             Padding(
                                               padding: const EdgeInsets.only(
                                                   top: 5.0, right: .0),
-                                              child: userInfo == null &&
-                                                      userInfo[
-                                                              'mobileNumber'] ==
-                                                          null
-                                                  ? Text(
-                                                      '',
-                                                      style: textbarlowmedium(),
-                                                    )
-                                                  : Text(
-                                                      '${userInfo['mobileNumber'] == null ? "" : userInfo['mobileNumber']}',
-                                                      style: textbarlowmedium(),
-                                                    ),
+                                              child: Text(
+                                                '${userInfo['mobileNumber'] ?? ""}',
+                                                style: textbarlowmedium(),
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -804,79 +641,6 @@ class _ProfileState extends State<Profile> {
                                 ),
                               ),
                               SizedBox(height: 15),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 10.0,
-                                        bottom: 10.0,
-                                        left: 20.0,
-                                        right: 20.0),
-                                    child: Text(
-                                      MyLocalizations.of(context).savedCards,
-                                      style: textBarlowMediumBlack(),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  left: 15.0,
-                                ),
-                                child: Container(
-                                  height: 160,
-                                  child: ListView.builder(
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: 1,
-                                    itemBuilder:
-                                        (BuildContext context, int index) =>
-                                            Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 15.0),
-                                      child: Container(
-                                        child: Row(
-                                          children: <Widget>[
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  right: 15.0),
-                                              child: isCardListLoading
-                                                  ? Image.asset(
-                                                      'lib/assets/images/spinner.gif',
-                                                      width: 10.0,
-                                                      height: 10.0,
-                                                      color: Colors.black,
-                                                    )
-                                                  : itemCard,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 20.0),
-                              InkWell(
-                                onTap: () {
-                                  selectLanguagesMethod();
-                                },
-                                child: Container(
-                                  height: 55,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFFF7F7F7),
-                                  ),
-                                  child: ListTile(
-                                    title: Text(
-                                      MyLocalizations.of(context)
-                                          .selectLanguages,
-                                      style: textBarlowMediumBlack(),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 20.0),
                               InkWell(
                                 onTap: () {
                                   Navigator.push(
@@ -905,6 +669,35 @@ class _ProfileState extends State<Profile> {
                                             right: 20.0),
                                         child: Text(
                                           MyLocalizations.of(context).address,
+                                          style: textBarlowMediumBlack(),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 15),
+                              InkWell(
+                                onTap: () {
+                                  selectLanguagesMethod();
+                                },
+                                child: Container(
+                                  height: 55,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFFF7F7F7),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 10.0,
+                                            bottom: 10.0,
+                                            left: 20.0,
+                                            right: 20.0),
+                                        child: Text(
+                                          MyLocalizations.of(context)
+                                              .selectLanguage,
                                           style: textBarlowMediumBlack(),
                                         ),
                                       ),
@@ -955,99 +748,6 @@ class _ProfileState extends State<Profile> {
                               SizedBox(
                                 height: 20.0,
                               ),
-                              InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Chat(
-                                        locale: widget.locale,
-                                        localizedValues: widget.localizedValues,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: Container(
-                                  height: 55,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFFF7F7F7),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 10.0,
-                                            bottom: 10.0,
-                                            left: 20.0,
-                                            right: 20.0),
-                                        child: Text(
-                                          MyLocalizations.of(context).chat,
-                                          style: textBarlowMediumBlack(),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 20.0,
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  logout();
-                                },
-                                child: Container(
-                                  height: 55,
-                                  padding: EdgeInsets.only(right: 20),
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFFF7F7F7),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 10.0,
-                                            bottom: 10.0,
-                                            left: 20.0,
-                                            right: 20),
-                                        child: Row(
-                                          children: <Widget>[
-                                            Text(
-                                              MyLocalizations.of(context)
-                                                  .logout,
-                                              style: textBarlowMediumBlack(),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 10.0,
-                                            bottom: 10.0,
-                                            left: 20.0,
-                                            right: 20),
-                                        child: Row(
-                                          children: <Widget>[
-                                            logoutLoading
-                                                ? Image.asset(
-                                                    'lib/assets/images/spinner.gif',
-                                                    width: 10.0,
-                                                    height: 10.0,
-                                                    color: Colors.black,
-                                                  )
-                                                : SvgPicture.asset(
-                                                    'lib/assets/icons/lgout.svg')
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 30)
                             ],
                           ),
       ),

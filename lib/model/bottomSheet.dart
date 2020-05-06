@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_pro/model/addToCart.dart';
-import 'package:grocery_pro/screens/authe/login.dart';
-import 'package:grocery_pro/screens/tab/mycart.dart';
-import 'package:grocery_pro/service/common.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/style/style.dart';
+import 'package:getflutter/getflutter.dart';
+import 'package:readymadeGroceryApp/model/addToCart.dart';
+import 'package:readymadeGroceryApp/screens/authe/login.dart';
+import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
 
 SentryError sentryError = new SentryError();
 
 class BottonSheetClassDryClean extends StatefulWidget {
   final List variantsList;
+  final int productQuantity;
   final String currency, locale;
   final Map<String, Map<String, String>> localizedValues;
   final Map<String, dynamic> productList;
@@ -20,6 +21,7 @@ class BottonSheetClassDryClean extends StatefulWidget {
       this.variantsList,
       this.productList,
       this.currency,
+      this.productQuantity,
       this.locale,
       this.localizedValues})
       : super(key: key);
@@ -29,10 +31,23 @@ class BottonSheetClassDryClean extends StatefulWidget {
 }
 
 class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   int groupValue = 0;
   bool selectVariant = false, addProductTocart = false, getTokenValue = false;
   int quantity = 1;
-  String variantPrice, variantUnit, variantId;
+  String variantUnit, variantId;
+  int variantStock;
+  var variantPrice;
+  @override
+  void initState() {
+    if (widget.productQuantity == null) {
+      quantity = widget.productQuantity;
+    } else {
+      quantity = 1;
+    }
+    super.initState();
+  }
 
   void _changeProductQuantity(bool increase) {
     if (increase) {
@@ -70,7 +85,6 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
         if (mounted) {
           setState(() {
             getTokenValue = false;
-            print("ff");
             Navigator.pop(context);
             Navigator.push(
               context,
@@ -86,51 +100,76 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
         }
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          getTokenValue = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
 
   addToCartMethod() {
-    Map<String, dynamic> productAddBody = {
-      'productId': widget.productList['_id'].toString(),
-      'quantity': quantity,
-      "price": double.parse(variantPrice == null
-          ? widget.variantsList[0]['price'].toString()
-          : variantPrice.toString()),
-      "unit": variantUnit == null
-          ? widget.variantsList[0]['unit'].toString()
-          : variantUnit.toString()
-    };
-    AddToCart.addToCartMethod(productAddBody).then((onValue) {
-      try {
+    if ((variantStock == null
+            ? widget.variantsList[0]['productstock']
+            : variantStock) >=
+        quantity) {
+      Map<String, dynamic> productAddBody = {
+        "category": widget.productList['category'],
+        "subcategory": widget.productList['subcategory'],
+        'productId': widget.productList['_id'].toString(),
+        'quantity': quantity,
+        "price": double.parse(variantPrice == null
+            ? widget.variantsList[0]['price'].toString()
+            : variantPrice.toString()),
+        "unit": variantUnit == null
+            ? widget.variantsList[0]['unit'].toString()
+            : variantUnit.toString()
+      };
+      AddToCart.addToCartMethod(productAddBody).then((onValue) {
+        try {
+          if (mounted) {
+            setState(() {
+              addProductTocart = false;
+            });
+          }
+          if (onValue['response_code'] == 200) {
+            Navigator.of(context).pop(onValue['response_data']);
+          }
+        } catch (error, stackTrace) {
+          if (mounted) {
+            setState(() {
+              addProductTocart = false;
+            });
+          }
+          sentryError.reportError(error, stackTrace);
+        }
+      }).catchError((error) {
         if (mounted) {
           setState(() {
             addProductTocart = false;
           });
         }
-        if (onValue['response_code'] == 200) {
-          Navigator.pop(context);
-          // Navigator.push(
-          //   context,
-          //   new MaterialPageRoute(
-          //     builder: (BuildContext context) => new MyCart(
-          //       locale: widget.locale,
-          //       localizedValues: widget.localizedValues,
-          //     ),
-          //   ),
-          // );
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
+        sentryError.reportError(error, null);
+      });
+    } else {
+      if (mounted) {
+        setState(() {
+          addProductTocart = false;
+        });
       }
-    }).catchError((error) {
-      sentryError.reportError(error, null);
-    });
+
+      showSnackbar(MyLocalizations.of(context)
+              .limitedquantityavailableyoucantaddmorethan +
+          " ${variantStock == null ? widget.variantsList[0]['productstock'] : variantStock} " +
+          MyLocalizations.of(context).ofthisitem);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -185,7 +224,17 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                             ),
                             child: InkWell(
                               onTap: () {
-                                _changeProductQuantity(true);
+                                if ((variantStock == null
+                                        ? widget.variantsList[0]['productstock']
+                                        : variantStock) >
+                                    quantity) {
+                                  _changeProductQuantity(true);
+                                } else {
+                                  showSnackbar(MyLocalizations.of(context)
+                                          .limitedquantityavailableyoucantaddmorethan +
+                                      " ${variantStock == null ? widget.variantsList[0]['productstock'] : variantStock} " +
+                                      MyLocalizations.of(context).ofthisitem);
+                                }
                               },
                               child: Icon(Icons.add),
                             ),
@@ -214,12 +263,13 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                         setState(() {
                           groupValue = selected;
                           selectVariant = !selectVariant;
-                          variantPrice =
-                              widget.variantsList[selected]['price'].toString();
+                          variantPrice = widget.variantsList[selected]['price'];
                           variantUnit =
                               widget.variantsList[selected]['unit'].toString();
                           variantId =
                               widget.variantsList[selected]['_id'].toString();
+                          variantStock =
+                              widget.variantsList[selected]['productstock'];
                         });
                       }
                     },
@@ -266,11 +316,11 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                           text: TextSpan(
                             children: <TextSpan>[
                               TextSpan(
-                                text: '${quantity.toString()}',
+                                text: '(${quantity.toString()}) ',
                                 style: textBarlowRegularWhite(),
                               ),
                               TextSpan(
-                                  text: MyLocalizations.of(context).item,
+                                  text: MyLocalizations.of(context).items,
                                   style: textBarlowRegularWhite()),
                             ],
                           ),
@@ -287,11 +337,8 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                   ),
                 ),
                 addProductTocart
-                    ? Image.asset(
-                        'lib/assets/images/spinner.gif',
-                        width: 15.0,
-                        height: 15.0,
-                        color: Colors.black,
+                    ? GFLoader(
+                        type: GFLoaderType.ios,
                       )
                     : Text(""),
                 Padding(
@@ -311,5 +358,13 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
         ),
       ),
     );
+  }
+
+  void showSnackbar(message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(milliseconds: 3000),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 }

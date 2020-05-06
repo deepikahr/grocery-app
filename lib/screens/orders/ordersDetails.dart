@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
-import 'package:grocery_pro/service/auth-service.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/service/product-service.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/widgets/loader.dart';
+import 'package:intl/intl.dart';
+import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/product-service.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
@@ -23,7 +24,7 @@ class OrderDetails extends StatefulWidget {
 }
 
 class _OrderDetailsState extends State<OrderDetails> {
-  bool isLoading = false;
+  bool isLoading = false, isRatingSubmitting = false;
   var orderHistory;
   String currency;
   double rating;
@@ -48,20 +49,26 @@ class _OrderDetailsState extends State<OrderDetails> {
           if (mounted) {
             setState(() {
               orderHistory = onValue['response_data'];
-
               isLoading = false;
             });
           }
-        } else {}
+        }
+      } catch (error, stackTrace) {
         if (mounted) {
           setState(() {
+            orderHistory = null;
             isLoading = false;
           });
         }
-      } catch (error, stackTrace) {
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          orderHistory = null;
+          isLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -70,84 +77,69 @@ class _OrderDetailsState extends State<OrderDetails> {
     return showDialog(
       context: context,
       builder: (context) {
-        return Center(
-          child: Container(
-            height: 220,
-            width: MediaQuery.of(context).size.width * 0.8,
-            decoration: new BoxDecoration(
-              color: Colors.white,
-              borderRadius: new BorderRadius.all(
-                new Radius.circular(32.0),
-              ),
+        return AlertDialog(
+            title: Text(
+              MyLocalizations.of(context).rateProduct,
+              style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 20,
+                  decoration: TextDecoration.none),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 25.0),
-                  child: Text(
-                    MyLocalizations.of(context).rateProduct,
-                    style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 20,
-                        decoration: TextDecoration.none),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: RatingBar(
-                        initialRating: 3,
-                        minRating: 1,
-                        direction: Axis.horizontal,
-                        allowHalfRating: true,
-                        itemSize: 44.0,
-                        itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                        itemBuilder: (context, _) => Icon(
-                          Icons.star,
-                          color: primary,
-                          size: 15.0,
-                        ),
-                        onRatingUpdate: (rate) {
-                          setState(() {
-                            rating = rate;
-                          });
-                        },
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(height: 30),
-                Center(
-                    child: Container(
-                  margin: EdgeInsets.only(bottom: 20),
-                  height: 45,
-                  width: 134,
-                  child: GFButton(
-                    onPressed: () {
+            actions: <Widget>[
+              Center(
+                  child: Container(
+                child: GFButton(
+                  onPressed: () {
+                    if (!isRatingSubmitting) {
                       if (rating == null) {
                         rating = 3.0;
                       }
                       orderRating(orderId, rating, productID);
-                    },
-                    text: MyLocalizations.of(context).submit,
-                    color: primary,
-                    textStyle: textBarlowRegularBlack(),
-                  ),
-                ))
-              ],
-            ),
-          ),
-        );
+                    }
+                  },
+                  text: MyLocalizations.of(context).submit,
+                  color: primary,
+                  textStyle: textBarlowRegularBlack(),
+                ),
+              ))
+            ],
+            content: Container(
+              // height: 220,
+              // width: MediaQuery.of(context).size.width * 0.8,
+              decoration: new BoxDecoration(
+                color: Colors.white,
+                borderRadius: new BorderRadius.all(
+                  new Radius.circular(32.0),
+                ),
+              ),
+              child: RatingBar(
+                initialRating: 3,
+                minRating: 1,
+                direction: Axis.horizontal,
+                allowHalfRating: true,
+                itemSize: 44.0,
+                itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                itemBuilder: (context, _) => Icon(
+                  Icons.star,
+                  color: primary,
+                  size: 15.0,
+                ),
+                onRatingUpdate: (rate) {
+                  setState(() {
+                    rating = rate;
+                  });
+                },
+              ),
+            ));
       },
     );
   }
 
   orderRating(orderId, rating, productID) async {
     var body = {"rate": rating, "order": orderId, "productId": productID};
-
+    setState(() {
+      isRatingSubmitting = true;
+    });
     await ProductService.productRate(body).then((onValue) {
       try {
         if (onValue['response_code'] == 201) {
@@ -157,8 +149,14 @@ class _OrderDetailsState extends State<OrderDetails> {
       } catch (error, stackTrace) {
         sentryError.reportError(error, stackTrace);
       }
+      setState(() {
+        isRatingSubmitting = false;
+      });
     }).catchError((error) {
       sentryError.reportError(error, null);
+      setState(() {
+        isRatingSubmitting = false;
+      });
     });
   }
 
@@ -219,7 +217,30 @@ class _OrderDetailsState extends State<OrderDetails> {
                                         style: textBarlowMediumBlack()),
                                     SizedBox(width: 5),
                                     Expanded(
+                                      child: Text(
+                                          DateFormat('dd/MM/yyyy, hh:mm a')
+                                              .format(
+                                            DateTime.fromMillisecondsSinceEpoch(
+                                                orderHistory['appTimestamp']),
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                          style: textBarlowMediumBlack()),
+                                    )
+                                  ],
+                                ),
+                                SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                        MyLocalizations.of(context)
+                                                .deliveryDate +
+                                            ' :',
+                                        style: textBarlowMediumBlack()),
+                                    SizedBox(width: 5),
+                                    Expanded(
                                       child: Text(orderHistory['deliveryDate'],
+                                          overflow: TextOverflow.ellipsis,
                                           style: textBarlowMediumBlack()),
                                     )
                                   ],
@@ -273,40 +294,40 @@ class _OrderDetailsState extends State<OrderDetails> {
                               ],
                             ),
                           ),
-                          SizedBox(width: 10),
-                          Flexible(
-                              fit: FlexFit.tight,
-                              flex: 3,
-                              child: Container(
-                                height: 125,
-                                width: 141,
-                                decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5)),
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Color(0xFF0000000A),
-                                        blurRadius: 0.40)
-                                  ],
-                                  image: DecorationImage(
-                                      image: NetworkImage(orderHistory['cart']
-                                          ['cart'][0]['imageUrl']),
-                                      fit: BoxFit.fill),
-                                ),
-                              ))
+                          // SizedBox(width: 10),
+                          // Flexible(
+                          //     fit: FlexFit.tight,
+                          //     flex: 3,
+                          //     child: Container(
+                          //       height: 125,
+                          //       width: 141,
+                          //       decoration: BoxDecoration(
+                          //         borderRadius:
+                          //             BorderRadius.all(Radius.circular(5)),
+                          //         boxShadow: [
+                          //           BoxShadow(
+                          //               color: Color(0xFF0000000A),
+                          //               blurRadius: 0.40)
+                          //         ],
+                          //         image: DecorationImage(
+                          //             image: NetworkImage(orderHistory['cart']
+                          //                 ['cart'][0]['imageUrl']),
+                          //             fit: BoxFit.fill),
+                          //       ),
+                          //     ))
                         ],
                       )
                     ],
                   ),
                 ),
-                SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Text(
-                    MyLocalizations.of(context).itemsList,
-                    style: textBarlowBoldBlack(),
-                  ),
-                ),
+                // SizedBox(height: 20),
+                // Padding(
+                //   padding: const EdgeInsets.all(15.0),
+                //   child: Text(
+                //     MyLocalizations.of(context).itemsList,
+                //     style: textBarlowBoldBlack(),
+                //   ),
+                // ),
                 ListView.builder(
                   physics: ScrollPhysics(),
                   shrinkWrap: true,
@@ -314,104 +335,130 @@ class _OrderDetailsState extends State<OrderDetails> {
                       ? 0
                       : orderHistory['cart']['cart'].length,
                   itemBuilder: (BuildContext context, int i) {
-                    return Column(
-                      children: <Widget>[
-                        Container(
-                          padding:
-                              EdgeInsets.only(left: 15, right: 15, bottom: 10),
-                          child: Row(
-                            children: <Widget>[
-                              Flexible(
-                                  child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    orderHistory['cart']['cart'][i]['title'],
-                                    style: textBarlowMediumBlack(),
+                    Map order = orderHistory['cart']['cart'][i];
+                    return Container(
+                      width: MediaQuery.of(context).size.width,
+                      color: Color(0xFFF7F7F7),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 15, vertical: 24),
+                      child: Row(
+                        children: <Widget>[
+                          Container(
+                            height: 103.0,
+                            width: 99,
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5)),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Color(0xFF0000000A),
+                                    blurRadius: 0.40)
+                              ],
+                              image: DecorationImage(
+                                  image: NetworkImage(
+                                    order['imageUrl'],
                                   ),
-                                  SizedBox(height: 15),
-                                  Text(
-                                    orderHistory['cart']['cart'][i]
-                                                    ['description']
-                                                .length >
-                                            25
-                                        ? orderHistory['cart']['cart'][i]
-                                                    ['description']
-                                                .substring(0, 25) +
-                                            ".."
-                                        : orderHistory['cart']['cart'][i]
-                                            ['description'],
-                                    style: textBarlowRegularBlack(),
-                                  ),
-                                  SizedBox(height: 15),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      Text(
-                                        currency,
-                                        style: textBarlowBoldBlack(),
-                                      ),
-                                      Text(
-                                        orderHistory['cart']['cart'][i]['price']
-                                            .toString(),
-                                        style: textBarlowBoldBlack(),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Text(
-                                        orderHistory['cart']['cart'][i]
-                                                ['unit'] +
-                                            " * " +
-                                            orderHistory['cart']['cart'][i]
-                                                    ['quantity']
-                                                .toString(),
-                                        style: textBarlowMediumBlack(),
-                                      ),
-                                      orderHistory['orderStatus'] == "DELIVERED"
-                                          ? orderHistory['cart']['cart'][i]
-                                                      ['rating'] ==
-                                                  null
-                                              ? GFButton(
-                                                  shape: GFButtonShape.pills,
-                                                  onPressed: () {
-                                                    ratingAlert(
-                                                        orderHistory['_id'],
-                                                        orderHistory['user']
-                                                            ['_id'],
-                                                        orderHistory['cart']
-                                                                ['cart'][i]
-                                                            ['productId']);
-                                                  },
-                                                  color: primary,
-                                                  text: MyLocalizations.of(
-                                                          context)
-                                                      .rateNow,
-                                                )
-                                              : GFButton(
-                                                  onPressed: null,
-                                                  shape: GFButtonShape.pills,
-                                                  color: primary,
-                                                  text: orderHistory['cart']
-                                                                  ['cart'][i]
-                                                              ['rating']
-                                                          .toString() +
-                                                      MyLocalizations.of(
-                                                              context)
-                                                          .star,
-                                                )
-                                          : Container()
-                                    ],
-                                  ),
-                                ],
-                              ))
-                            ],
+                                  fit: BoxFit.cover),
+                            ),
                           ),
-                        ),
-                      ],
+                          SizedBox(width: 17),
+                          Container(
+                            width: MediaQuery.of(context).size.width - 146,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  '${order['title']}' ?? "",
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: textBarlowRegularrdark(),
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                  '${order['unit']} (${order['quantity']}) *  $currency${order['price']}',
+                                  style: textSMBarlowRegularrBlack(),
+                                ),
+                                order['dealTotalAmount'] == 0
+                                    ? Container()
+                                    : SizedBox(height: 5),
+                                order['dealTotalAmount'] == 0
+                                    ? Container()
+                                    : Text(
+                                        'Deal Amount : $currency${order['dealTotalAmount']}',
+                                        style: textSMBarlowRegularrBlack(),
+                                      ),
+                                SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      '$currency ${order['productTotal']}',
+                                      style: textBarlowMediumBlack(),
+                                    ),
+                                    SizedBox(
+                                      width: 50,
+                                    ),
+                                    orderHistory['orderStatus'] == "DELIVERED"
+                                        ? order['rating'] == null
+                                            ? GFButton(
+                                                shape: GFButtonShape.pills,
+                                                onPressed: () {
+                                                  ratingAlert(
+                                                      orderHistory['_id'],
+                                                      orderHistory['user']
+                                                          ['_id'],
+                                                      order['productId']);
+                                                },
+                                                color: primary,
+                                                text:
+                                                    MyLocalizations.of(context)
+                                                        .rateNow,
+                                              )
+                                            : RatingBar(
+                                                initialRating:
+                                                    order['rating'] == null
+                                                        ? 0
+                                                        : double.parse(
+                                                            order['rating']
+                                                                .toString()),
+                                                minRating: 0,
+                                                direction: Axis.horizontal,
+                                                allowHalfRating: true,
+                                                itemCount: 5,
+                                                itemSize: 15.0,
+                                                itemPadding:
+                                                    EdgeInsets.symmetric(
+                                                        horizontal: 1.0),
+                                                itemBuilder: (context, _) =>
+                                                    Icon(
+                                                  Icons.star,
+                                                  color: Colors.red,
+                                                  size: 10.0,
+                                                ),
+                                                onRatingUpdate: null,
+                                              )
+                                        : Container()
+                                  ],
+                                ),
+                                // SizedBox(height: 10),
+                                // Text(
+                                //   MyLocalizations.of(context).ordered +
+                                //           ' : ' +
+                                //           DateFormat('dd/MM/yyyy, hh:mm a')
+                                //               .format(
+                                //             DateTime.fromMillisecondsSinceEpoch(
+                                //                 orderDetails['appTimestamp']),
+                                //           ) ??
+                                //       "",
+                                //   style: textSMBarlowRegularrBlack(),
+                                // )
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                     );
                   },
                 ),
@@ -522,6 +569,47 @@ class _OrderDetailsState extends State<OrderDetails> {
                         ],
                       ),
                     ),
+                    orderHistory['cart']['couponInfo'] == null
+                        ? Container()
+                        : Padding(
+                            padding:
+                                const EdgeInsets.only(left: 18.0, right: 18.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Text(
+                                    MyLocalizations.of(context).couponApplied +
+                                        " (" +
+                                        "${MyLocalizations.of(context).discount}"
+                                            ") :",
+                                    style: textBarlowMediumBlack()),
+                                Container(
+                                  margin: EdgeInsets.only(left: 8),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                      top: 15.0,
+                                      bottom: 5.0,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          currency,
+                                          style: textBarlowBoldBlack(),
+                                        ),
+                                        Text(
+                                          '${orderHistory['cart']['couponInfo']['couponDiscountAmount']}',
+                                          style: textBarlowBoldBlack(),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                    SizedBox(height: 6),
                   ],
                 ),
                 Container(

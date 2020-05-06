@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
-import 'package:grocery_pro/screens/categories/subcategories.dart';
-import 'package:grocery_pro/service/localizations.dart';
+import 'package:readymadeGroceryApp/screens/categories/subcategories.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
 
-import 'package:grocery_pro/service/product-service.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/widgets/loader.dart';
+import 'package:readymadeGroceryApp/service/product-service.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 SentryError sentryError = new SentryError();
@@ -63,13 +63,26 @@ class _AllCategoriesState extends State<AllCategories>
           if (mounted) {
             setState(() {
               categoryList = [];
+              isLoadingcategoryList = false;
             });
           }
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            categoryList = [];
+            isLoadingcategoryList = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          categoryList = [];
+          isLoadingcategoryList = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -88,7 +101,6 @@ class _AllCategoriesState extends State<AllCategories>
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
-        header: WaterDropHeader(),
         controller: _refreshController,
         onRefresh: () {
           getCategoryList();

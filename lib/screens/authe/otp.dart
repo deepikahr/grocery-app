@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/components/button/gf_button.dart';
 import 'package:getflutter/components/typography/gf_typography.dart';
-import 'package:grocery_pro/screens/authe/resetPas.dart';
-import 'package:grocery_pro/service/auth-service.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/style/style.dart';
+import 'package:getflutter/getflutter.dart';
+import 'package:readymadeGroceryApp/screens/authe/resetPas.dart';
+import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:pin_entry_text_field/pin_entry_text_field.dart';
 
 SentryError sentryError = new SentryError();
@@ -49,14 +50,29 @@ class _OtpState extends State<Otp> {
           if (onValue['response_code'] == 200) {
           } else if (onValue['response_code'] == 400) {
             showAlert('${onValue['response_data']}');
-          } else {}
+          }
         } catch (error, stackTrace) {
+          if (mounted) {
+            setState(() {
+              isEmailLoading = false;
+            });
+          }
           sentryError.reportError(error, stackTrace);
         }
       }).catchError((error) {
+        if (mounted) {
+          setState(() {
+            isEmailLoading = false;
+          });
+        }
         sentryError.reportError(error, null);
       });
     } else {
+      if (mounted) {
+        setState(() {
+          isEmailLoading = false;
+        });
+      }
       return;
     }
   }
@@ -124,15 +140,30 @@ class _OtpState extends State<Otp> {
               showSnackbar('${onValue['response_data']}');
             }
           } catch (error, stackTrace) {
+            if (mounted) {
+              setState(() {
+                isOtpVerifyLoading = false;
+              });
+            }
             sentryError.reportError(error, stackTrace);
           }
         }).catchError((error) {
+          if (mounted) {
+            setState(() {
+              isOtpVerifyLoading = false;
+            });
+          }
           sentryError.reportError(error, null);
         });
       } else {
         return;
       }
     } else {
+      if (mounted) {
+        setState(() {
+          isOtpVerifyLoading = false;
+        });
+      }
       showSnackbar(MyLocalizations.of(context).pleaseEnter4DigitOTP);
     }
   }
@@ -271,11 +302,8 @@ class _OtpState extends State<Otp> {
                       height: 10,
                     ),
                     isOtpVerifyLoading
-                        ? Image.asset(
-                            'lib/assets/images/spinner.gif',
-                            width: 15.0,
-                            height: 15.0,
-                            color: Colors.black,
+                        ? GFLoader(
+                            type: GFLoaderType.ios,
                           )
                         : Text("")
                   ],

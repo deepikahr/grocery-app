@@ -101,6 +101,7 @@
   "date": "Date",
   "totalOrder": "Total Order",
   "contactInformation": "Contact Information",
+  "addressInformation": "Address",
   "selectAddress": "Select Address",
   "addAddress": "Add Address",
   "orderDetails": "Order Details",
@@ -438,5 +439,17 @@
   "products": "Products",
   "deal": "Deal",
   "topDeals": "Top Deals",
-  "dealsoftheday": "Deals of the day"
+  "dealsoftheday": "Deals of the day",
+  "limitedquantityavailableyoucantaddmorethan": "Limited quantity available, you can't add more than",
+  "ofthisitem": "of this item",
+  "youhavenotselectedanyaddressyet": " You have not selected any address yet.",
+  "mailUs": "Mail Us",
+  "callUs": "Call Us",
+  "yourLocation": "Your Location",
+  "off": "OFF",
+  "ordernow": "Order now",
+  "oops": "Oops !",
+  "outOfStock": "Out Of Stock",
+  "and": "and",
+  "moreitems": "more items"
 }

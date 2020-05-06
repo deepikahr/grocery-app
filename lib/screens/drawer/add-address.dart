@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
-import 'package:grocery_pro/screens/address/address.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/service/address-service.dart';
+import 'package:readymadeGroceryApp/screens/drawer/address.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/address-service.dart';
 import 'package:location/location.dart';
 
 SentryError sentryError = new SentryError();
@@ -85,9 +85,19 @@ class _AddAddressState extends State<AddAddress> {
             });
           }
         } catch (error, stackTrace) {
+          if (mounted) {
+            setState(() {
+              isLoading = false;
+            });
+          }
           sentryError.reportError(error, stackTrace);
         }
       }).catchError((onError) {
+        if (mounted) {
+          setState(() {
+            isLoading = false;
+          });
+        }
         sentryError.reportError(onError, null);
       });
     } else {
@@ -482,9 +492,6 @@ class _AddAddressState extends State<AddAddress> {
                       if (value.isEmpty) {
                         return MyLocalizations.of(context)
                             .pleaseentercontactnumber;
-                      } else if (value.length != 10) {
-                        return MyLocalizations.of(context)
-                            .pleaseenter10digitcontactnumber;
                       } else
                         return null;
                     },
@@ -569,11 +576,8 @@ class _AddAddressState extends State<AddAddress> {
                             height: 10,
                           ),
                           isLoading
-                              ? Image.asset(
-                                  'lib/assets/images/spinner.gif',
-                                  width: 15.0,
-                                  height: 15.0,
-                                  color: Colors.black,
+                              ? GFLoader(
+                                  type: GFLoaderType.ios,
                                 )
                               : Text("")
                         ],

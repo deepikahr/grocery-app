@@ -49,6 +49,11 @@ class Common {
     return prefs.setString('allData', json.encode(cartInfo));
   }
 
+  static Future<bool> setAllDataQuary(Map<String, dynamic> cartInfo) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setString('allDataQuary', json.encode(cartInfo));
+  }
+
   static Future<Map<String, dynamic>> getAddressList() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String cartStorage = prefs.getString('addressList');
@@ -72,6 +77,16 @@ class Common {
   static Future<Map<String, dynamic>> getAllData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String cartStorage = prefs.getString('allData');
+    try {
+      return json.decode(cartStorage) as Map<String, dynamic>;
+    } catch (err) {
+      return Future(() => null);
+    }
+  }
+
+  static Future<Map<String, dynamic>> getAllDataQuary() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String cartStorage = prefs.getString('allDataQuary');
     try {
       return json.decode(cartStorage) as Map<String, dynamic>;
     } catch (err) {

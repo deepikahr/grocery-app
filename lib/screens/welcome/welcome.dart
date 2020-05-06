@@ -1,5 +1,5 @@
 // import 'package:flutter/material.dart';
-// import 'package:grocery_pro/style/style.dart';
+// import 'package:readymadeGroceryApp/style/style.dart';
 
 // class WelcomePage extends StatefulWidget {
 //   @override

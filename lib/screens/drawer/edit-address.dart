@@ -6,11 +6,11 @@ import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:grocery_pro/service/constants.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/service/address-service.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/address-service.dart';
 import 'package:location/location.dart';
 
 SentryError sentryError = new SentryError();
@@ -104,12 +104,27 @@ class _EditAddressState extends State<EditAddress> {
             });
           }
         } catch (error, stackTrace) {
+          if (mounted) {
+            setState(() {
+              isUpdateAddress = false;
+            });
+          }
           sentryError.reportError(error, stackTrace);
         }
       }).catchError((onError) {
+        if (mounted) {
+          setState(() {
+            isUpdateAddress = false;
+          });
+        }
         sentryError.reportError(onError, null);
       });
     } else {
+      if (mounted) {
+        setState(() {
+          isUpdateAddress = false;
+        });
+      }
       return;
     }
   }
@@ -485,9 +500,6 @@ class _EditAddressState extends State<EditAddress> {
                       if (value.isEmpty) {
                         return MyLocalizations.of(context)
                             .pleaseentercontactnumber;
-                      } else if (value.length != 10) {
-                        return MyLocalizations.of(context)
-                            .pleaseenter10digitcontactnumber;
                       } else
                         return null;
                     },
@@ -566,11 +578,8 @@ class _EditAddressState extends State<EditAddress> {
                             height: 10,
                           ),
                           isUpdateAddress
-                              ? Image.asset(
-                                  'lib/assets/images/spinner.gif',
-                                  width: 15.0,
-                                  height: 15.0,
-                                  color: Colors.black,
+                              ? GFLoader(
+                                  type: GFLoaderType.ios,
                                 )
                               : Text("")
                         ],

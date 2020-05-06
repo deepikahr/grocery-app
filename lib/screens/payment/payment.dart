@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
-import 'package:grocery_pro/screens/payment/addCard.dart';
-import 'package:grocery_pro/screens/thank-you/thankyou.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/service/payment-service.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/service/product-service.dart';
-import 'package:grocery_pro/widgets/loader.dart';
+import 'package:readymadeGroceryApp/screens/home/home.dart';
+import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
+import 'package:readymadeGroceryApp/service/cart-service.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/payment-service.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/service/product-service.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:stripe_payment/stripe_payment.dart';
 
 SentryError sentryError = new SentryError();
 
 class Payment extends StatefulWidget {
-  final int quantity, grandTotal, deliveryCharge, currentIndex;
+  final int quantity, currentIndex;
   final String type, locale;
-  final double grandTotals, deliveryCharges;
+  final grandTotals, deliveryCharges;
 
   final Map<String, dynamic> data;
   final Map<String, Map<String, String>> localizedValues;
@@ -28,9 +31,7 @@ class Payment extends StatefulWidget {
       this.currentIndex,
       this.type,
       this.deliveryCharges,
-      this.deliveryCharge,
       this.grandTotals,
-      this.grandTotal,
       this.locale,
       this.localizedValues})
       : super(key: key);
@@ -45,7 +46,7 @@ class _PaymentState extends State<Payment> {
   int selectedRadio,
       cashOnDelivery = 0,
       payByCard = 1,
-      groupValue = 0,
+      groupValue,
       cardValue = 0;
   String paymentType, cvv, selectedPaymentType, cardID, currency;
   var grandTotal, deliveryCharges;
@@ -53,10 +54,12 @@ class _PaymentState extends State<Payment> {
       ispaymentMethodLoading = false,
       isFirstTime = true,
       isCardDelete = false,
-      isCardListLoading = false;
+      isCardListLoading = false,
+      isSelected = false;
   var paymentMethodValue;
   List cardList;
   var cardDetails;
+  String paymentMethodId;
   List<Map<String, dynamic>> paymentTypes = [
     {
       'type': 'COD',
@@ -75,13 +78,14 @@ class _PaymentState extends State<Payment> {
   @override
   void initState() {
     fetchCardInfo();
-    if (widget.grandTotal == null && widget.deliveryCharge == null) {
-      deliveryCharges = widget.deliveryCharges;
-      grandTotal = widget.grandTotals;
-    } else {
-      deliveryCharges = widget.deliveryCharge;
-      grandTotal = widget.grandTotal;
-    }
+    StripePayment.setOptions(StripeOptions(
+        publishableKey: Constants.STRIPE_KEY,
+        merchantId: "Test",
+        androidPayMode: 'test'));
+
+    deliveryCharges = widget.deliveryCharges;
+    grandTotal = widget.grandTotals;
+
     super.initState();
   }
 
@@ -94,14 +98,32 @@ class _PaymentState extends State<Payment> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     currency = prefs.getString('currency');
     await PaymentService.getCardList().then((onValue) {
-      _refreshController.refreshCompleted();
+      try {
+        _refreshController.refreshCompleted();
 
+        if (mounted) {
+          setState(() {
+            cardList = onValue['response_data'];
+            isCardListLoading = false;
+          });
+        }
+      } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            cardList = [];
+            isCardListLoading = false;
+          });
+        }
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
       if (mounted) {
         setState(() {
-          cardList = onValue['response_data'];
+          cardList = [];
           isCardListLoading = false;
         });
       }
+      sentryError.reportError(error, null);
     });
   }
 
@@ -130,89 +152,141 @@ class _PaymentState extends State<Payment> {
     }
 
     if (groupValue == null) {
-      widget.data['paymentType'] = "COD";
-    } else {
-      widget.data['paymentType'] = paymentMethodValue.toString();
-    }
-
-    if (widget.data['paymentType'] == "CARD") {
-      if (cardID == null) {
-        var body = {
-          "cardHolderName": cardList[0]['cardHolderName'],
-          "cardNumber": cardList[0]['cardNumber'],
-          "expiryMonth": cardList[0]['expiryMonth'],
-          "expiryYear": cardList[0]['expiryYear'],
-          "cvv": cardList[0]['cvv'],
-        };
-        widget.data['card'] = body;
-      } else {
-        var body = {
-          "cardHolderName": cardDetails['cardHolderName'],
-          "cardNumber": cardDetails['cardNumber'],
-          "expiryMonth": cardDetails['expiryMonth'],
-          "expiryYear": cardDetails['expiryYear'],
-          "cvv": cardDetails['cvv'],
-        };
-        widget.data['card'] = body;
+      if (mounted) {
+        setState(() {
+          isPlaceOrderLoading = false;
+        });
       }
-      await ProductService.placeOrder(widget.data).then((onValue) {
-        try {
-          if (mounted) {
-            setState(() {
-              isPlaceOrderLoading = false;
-            });
-          }
-          if (onValue['response_code'] == 201) {
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => Thankyou(
-                    locale: widget.locale,
-                    localizedValues: widget.localizedValues,
-                  ),
-                ),
-                (Route<dynamic> route) => false);
-          } else if (onValue['response_code'] == 400) {
-            showSnackbar("${onValue['response_data']}");
-          } else {
-            showSnackbar("${onValue['response_data']}");
-          }
-        } catch (error, stackTrace) {
-          sentryError.reportError(error, stackTrace);
-        }
-      }).catchError((error) {
-        sentryError.reportError(error, null);
-      });
+      showSnackbar(MyLocalizations.of(context).selectPaymentMethod);
     } else {
-      await ProductService.placeOrder(widget.data).then((onValue) {
-        try {
+      widget.data['paymentType'] = paymentTypes[groupValue]['type'];
+
+      if (widget.data['paymentType'] == "CARD") {
+        StripePayment.paymentRequestWithCardForm(CardFormPaymentRequest())
+            .then((pm) {
+          setState(() {
+            Map transactionDetails = {"paymentMethodId": pm.id.toString()};
+            widget.data['transactionDetails'] = transactionDetails;
+            palceOrderMethod(widget.data);
+          });
+        }).catchError((e) {
           if (mounted) {
             setState(() {
               isPlaceOrderLoading = false;
             });
           }
-          if (onValue['response_code'] == 201) {
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => Thankyou(
-                    locale: widget.locale,
-                    localizedValues: widget.localizedValues,
-                  ),
-                ),
-                (Route<dynamic> route) => false);
-          } else if (onValue['response_code'] == 400) {
-            showSnackbar("${onValue['response_data']}");
-          } else {
-            showSnackbar("${onValue['response_data']}");
-          }
-        } catch (error, stackTrace) {
-          sentryError.reportError(error, stackTrace);
-        }
-      }).catchError((error) {
-        sentryError.reportError(error, null);
-      });
+          showSnackbar(e.toString());
+        });
+      } else {
+        palceOrderMethod(widget.data);
+      }
     }
+  }
+
+  palceOrderMethod(cartData) async {
+    await ProductService.placeOrder(cartData).then((onValue) {
+      try {
+        if (mounted) {
+          setState(() {
+            isPlaceOrderLoading = false;
+          });
+        }
+        if (onValue['response_code'] == 201) {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => Thankyou(
+                  locale: widget.locale,
+                  localizedValues: widget.localizedValues,
+                ),
+              ),
+              (Route<dynamic> route) => false);
+        } else if (onValue['response_code'] == 400) {
+          showSnackbar("${onValue['response_data']}");
+        } else if (onValue['response_code'] == 403) {
+          verifyTokenAlert(onValue['response_data'], cartData['cart']);
+        } else {
+          showSnackbar("${onValue['response_data']}");
+        }
+      } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isPlaceOrderLoading = false;
+          });
+        }
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isPlaceOrderLoading = false;
+        });
+      }
+      sentryError.reportError(error, null);
+    });
+  }
+
+  verifyTokenAlert(responseData, cartId) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            responseData['message'],
+          ),
+          content: SingleChildScrollView(
+            child: responseData['cartVerifyData']['cartArr'].length > 0
+                ? ListView.builder(
+                    physics: ScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: responseData['cartVerifyData']['cartArr'].length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Text(
+                        responseData['cartVerifyData']['cartArr'][index]
+                                ['title']
+                            .toString(),
+                      );
+                    })
+                : Text(""),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(MyLocalizations.of(context).cancel),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text(MyLocalizations.of(context).removeItem),
+              onPressed: () {
+                Map body = {
+                  "cartId": cartId,
+                  "cart": responseData['cartVerifyData']['cartArr']
+                };
+                CartService.paymentTimeCarDataDelete(body).then((response) {
+                  if (response['response_code'] == 200) {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => Home(
+                            locale: widget.locale,
+                            localizedValues: widget.localizedValues,
+                            currentIndex: 2,
+                          ),
+                        ),
+                        (Route<dynamic> route) => false);
+                  } else {
+                    showSnackbar("${response['response_data']}");
+                    Navigator.pop(context);
+                  }
+                });
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -220,222 +294,6 @@ class _PaymentState extends State<Payment> {
     if (isFirstTime) {
       paymentMethodValue = 'COD';
       isFirstTime = false;
-    }
-    Widget paymentMethod() {
-      return isCardListLoading
-          ? SquareLoader()
-          : Container(
-              margin: EdgeInsetsDirectional.only(top: 10.0),
-              decoration: BoxDecoration(color: Colors.white, boxShadow: [
-                BoxShadow(
-                    color: Colors.black.withOpacity(0.16), blurRadius: 4.0)
-              ]),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(left: 15.0, right: 18.0),
-                    child: new Text(
-                      MyLocalizations.of(context).selectCard,
-                      style: textBarlowRegularBlack(),
-                    ),
-                  ),
-                  RawMaterialButton(
-                    onPressed: () {
-                      var result = Navigator.push(
-                          context,
-                          new MaterialPageRoute(
-                            builder: (BuildContext context) => new AddCard(
-                              locale: widget.locale,
-                              localizedValues: widget.localizedValues,
-                            ),
-                          ));
-
-                      if (result != null) {
-                        result.then((onValue) {
-                          fetchCardInfo();
-                          if (mounted) {
-                            setState(() {
-                              cardList = cardList;
-                            });
-                          }
-                        });
-                      }
-                    },
-                    child: new Text(
-                      MyLocalizations.of(context).addCard,
-                      style: textBarlowRegularBlack(),
-                    ),
-                  ),
-                ],
-              ),
-            );
-    }
-
-    Widget buildSaveCardInfo() {
-      return cardList.length == 0
-          ? Container(
-              alignment: AlignmentDirectional.center,
-              padding: EdgeInsets.only(top: 20),
-              child: Text(
-                MyLocalizations.of(context).noSavedCardsPleaseaddone + '!',
-                style: textBarlowRegularBlack(),
-              ),
-            )
-          : ListView.builder(
-              physics: ScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: cardList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return RadioListTile(
-                  value: index,
-                  groupValue: cardValue,
-                  activeColor: primary,
-                  title: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
-                      decoration: BoxDecoration(
-                          color: Colors.blue[400],
-                          borderRadius: BorderRadius.circular(5.0)),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 38.0, top: 20.0),
-                                child: cardList[index]['cardImage'] == null
-                                    ? Image.asset(
-                                        'lib/assets/icons/mastercard-logo.png')
-                                    : Image.network(
-                                        '${cardList[index]['cardImage']}'),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 15.0),
-                                child: Text(
-                                  '${cardList[index]['bank']}',
-                                  style: textBarlowRegularWhite(),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 20),
-                          Center(
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 15.0),
-                              child: Text(
-                                '************${cardList[index]['lastFourDigits']}',
-                                style: textBarlowRegularWhite(),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 15),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              Column(
-                                children: <Widget>[
-                                  Text(
-                                    MyLocalizations.of(context).cardHolderName,
-                                    style: textBarlowRegularWhit(),
-                                  ),
-                                  Text(
-                                    '${cardList[index]['cardHolderName']}',
-                                    style: textBarlowRegularWhit(),
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                children: <Widget>[
-                                  Text(
-                                    MyLocalizations.of(context).expired,
-                                    style: textBarlowRegularWhit(),
-                                  ),
-                                  Text(
-                                    '${cardList[index]['expiryMonth']}/${cardList[index]['expiryYear']}',
-                                    style: textBarlowRegularWhit(),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  onChanged: (int selected) {
-                    if (mounted) {
-                      setState(() {
-                        cardValue = selected;
-                        cardID = cardList[index]['_id'];
-                        cardDetails = cardList[index];
-                      });
-                    }
-                  },
-                  secondary: InkWell(
-                    onTap: () {
-                      showDialog<Null>(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (BuildContext context) {
-                          return Container(
-                            width: 270.0,
-                            child: new AlertDialog(
-                              title: new Text(
-                                  MyLocalizations.of(context).areYouSure + "?",
-                                  style: hintSfsemiboldred()),
-                              content: new SingleChildScrollView(
-                                child: new ListBody(
-                                  children: <Widget>[
-                                    new Text(
-                                      MyLocalizations.of(context).deleteCard,
-                                      style: textBarlowRegularBlack(),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              actions: <Widget>[
-                                new FlatButton(
-                                  child: new Text(
-                                    MyLocalizations.of(context).cancel,
-                                    style: textbarlowRegularaPrimar(),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                                new FlatButton(
-                                  child: isCardDelete
-                                      ? Image.asset(
-                                          'lib/assets/images/spinner.gif',
-                                          width: 10.0,
-                                          height: 10.0,
-                                          color: Colors.black,
-                                        )
-                                      : Text(
-                                          MyLocalizations.of(context).ok,
-                                          style: textbarlowRegularaPrimar(),
-                                        ),
-                                  onPressed: () {
-                                    deleteCard(cardList[index]['_id']);
-                                  },
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    child: Icon(
-                      Icons.delete,
-                      color: primary,
-                    ),
-                  ),
-                );
-              },
-            );
     }
 
     return Scaffold(
@@ -453,17 +311,12 @@ class _PaymentState extends State<Payment> {
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
-        header: WaterDropHeader(),
         controller: _refreshController,
         onRefresh: () {
           fetchCardInfo();
-          if (widget.grandTotal == null && widget.deliveryCharge == null) {
-            deliveryCharges = widget.deliveryCharges;
-            grandTotal = widget.grandTotals;
-          } else {
-            deliveryCharges = widget.deliveryCharge;
-            grandTotal = widget.grandTotal;
-          }
+
+          deliveryCharges = widget.deliveryCharges;
+          grandTotal = widget.grandTotals;
         },
         child: isCardListLoading
             ? SquareLoader()
@@ -519,7 +372,7 @@ class _PaymentState extends State<Payment> {
                           Column(
                             children: <Widget>[
                               Text(
-                                MyLocalizations.of(context).total,
+                                MyLocalizations.of(context).grandTotal,
                                 style: textbarlowMediumBlack(),
                               ),
                             ],
@@ -570,7 +423,7 @@ class _PaymentState extends State<Payment> {
                                   child: RadioListTile(
                                     value: index,
                                     groupValue: groupValue,
-                                    selected: paymentTypes[index]['isSelected'],
+                                    selected: isSelected,
                                     activeColor: primary,
                                     title: Text(
                                       paymentTypes[index]['type'],
@@ -580,16 +433,6 @@ class _PaymentState extends State<Payment> {
                                       if (mounted) {
                                         setState(() {
                                           groupValue = selected;
-                                          paymentTypes[index]['isSelected'] =
-                                              !paymentTypes[index]
-                                                  ['isSelected'];
-
-                                          paymentMethodValue =
-                                              paymentTypes[index]['type'];
-                                          if (paymentTypes[index]['type'] ==
-                                              "COD") {
-                                            ispaymentMethodLoading = false;
-                                          }
                                         });
                                       }
                                     },
@@ -612,10 +455,6 @@ class _PaymentState extends State<Payment> {
                       ),
                     ],
                   ),
-                  paymentMethodValue != 'COD' ? paymentMethod() : Container(),
-                  paymentMethodValue != 'COD'
-                      ? buildSaveCardInfo()
-                      : Container(),
                 ],
               ),
       ),
@@ -642,11 +481,8 @@ class _PaymentState extends State<Payment> {
                   style: textBarlowRegularBlack(),
                 ),
                 isPlaceOrderLoading
-                    ? Image.asset(
-                        'lib/assets/images/spinner.gif',
-                        width: 15.0,
-                        height: 15.0,
-                        color: Colors.black,
+                    ? GFLoader(
+                        type: GFLoaderType.ios,
                       )
                     : Text("")
               ],

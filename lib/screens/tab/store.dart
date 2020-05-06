@@ -1,30 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/components/carousel/gf_carousel.dart';
 import 'package:getflutter/components/image/gf_image_overlay.dart';
-import 'package:grocery_pro/screens/categories/allcategories.dart';
-import 'package:grocery_pro/screens/categories/subcategories.dart';
-import 'package:grocery_pro/screens/home/drawer.dart';
-import 'package:grocery_pro/screens/product/all_deals.dart';
-import 'package:grocery_pro/screens/product/all_products.dart';
-import 'package:grocery_pro/screens/product/product-details.dart';
-import 'package:grocery_pro/screens/tab/searchitem.dart';
-import 'package:grocery_pro/service/auth-service.dart';
-import 'package:grocery_pro/service/common.dart';
-import 'package:grocery_pro/service/fav-service.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/service/product-service.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/widgets/loader.dart';
-import 'package:location/location.dart';
+import 'package:readymadeGroceryApp/screens/categories/allcategories.dart';
+import 'package:readymadeGroceryApp/screens/categories/subcategories.dart';
+import 'package:readymadeGroceryApp/screens/product/all_deals.dart';
+import 'package:readymadeGroceryApp/screens/product/all_products.dart';
+import 'package:readymadeGroceryApp/screens/product/product-details.dart';
+import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/product-service.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:grocery_pro/widgets/categoryBlock.dart';
-import 'package:grocery_pro/widgets/productCard.dart';
-import 'package:grocery_pro/widgets/cardOverlay.dart';
-import 'package:geocoder/geocoder.dart';
+import 'package:readymadeGroceryApp/widgets/categoryBlock.dart';
+import 'package:readymadeGroceryApp/widgets/productCard.dart';
+import 'package:readymadeGroceryApp/widgets/cardOverlay.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -41,12 +35,6 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKeydrawer =
       new GlobalKey<ScaffoldState>();
 
-  final List<String> imageList = [
-    'lib/assets/images/cherry.png',
-    'lib/assets/images/product.png',
-    'lib/assets/images/apple.png',
-    'lib/assets/images/orange.png',
-  ];
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   bool getTokenValue = true,
@@ -60,51 +48,23 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       topDealList,
       favProductList,
       bannerList;
-  String currency, itemCount = '4';
+  String currency;
   final List<String> assetImg = [
     'lib/assets/images/product.png',
   ];
 
   TabController tabController;
-  LocationData currentLocation;
-  Location _location = new Location();
+
   var addressData;
   String locale;
   @override
   void initState() {
-    getProductListMethod();
     getToken();
-    getResult();
     getBanner();
     getAllData();
 
     super.initState();
     tabController = TabController(length: 4, vsync: this);
-  }
-
-  getProductListMethod() async {
-    await ProductService.getProductListAll().then((onValue) {
-      try {
-        _refreshController.refreshCompleted();
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              searchProductList = onValue['response_data'];
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              searchProductList = [];
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      sentryError.reportError(error, null);
-    });
   }
 
   @override
@@ -122,8 +82,6 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
         if (mounted) {
           setState(() {
             getTokenValue = true;
-
-            getFavListApi();
           });
         }
       } else {
@@ -132,22 +90,6 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
             getTokenValue = false;
           });
         }
-      }
-    }).catchError((error) {
-      sentryError.reportError(error, null);
-    });
-  }
-
-  getFavListApi() async {
-    await FavouriteService.getFavList().then((onValue) {
-      try {
-        if (mounted) {
-          setState(() {
-            favProductList = onValue['response_data'];
-          });
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
       sentryError.reportError(error, null);
@@ -259,57 +201,6 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
     });
   }
 
-  getResult() async {
-    if (mounted) {
-      setState(() {
-        isLocationLoading = true;
-      });
-    }
-    Common.getCurrentLocation().then((value) async {
-      if (value != null) {
-        if (mounted) {
-          setState(() {
-            isLocationLoading = false;
-            addressData = value;
-          });
-        }
-      }
-      currentLocation = await _location.getLocation();
-      final coordinates =
-          new Coordinates(currentLocation.latitude, currentLocation.longitude);
-      var addresses =
-          await Geocoder.local.findAddressesFromCoordinates(coordinates);
-      var first = addresses.first;
-      addressData = first.addressLine;
-      Common.setCurrentLocation(addressData);
-      return first;
-    });
-  }
-
-  deliveryAddress() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Container(
-          width: MediaQuery.of(context).size.width * 0.6,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                MyLocalizations.of(context).deliveryAddress,
-                style: textBarlowRegularrBlacksm(),
-              ),
-              Text(
-                addressData.substring(0, 22) + '...',
-                style: textBarlowSemiBoldBlackbig(),
-              )
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
   categoryRow() {
     return categoryList.length > 0
         ? Column(
@@ -360,6 +251,9 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                 locale: widget.locale,
                                 localizedValues: widget.localizedValues,
                                 catId: categoryList[index]['_id'],
+                                isSubCategoryAvailable: categoryList[index]
+                                        ['isSubCategoryAvailable'] ??
+                                    false,
                                 catTitle:
                                     '${categoryList[index]['title'][0].toUpperCase()}${categoryList[index]['title'].substring(1)}',
                                 token: getTokenValue),
@@ -440,11 +334,16 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(
-                          url['title'].length > 20
-                              ? url['title'].substring(0, 20) + ".."
-                              : url['title'],
-                          style: textbarlowBoldwhite(),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            right: 100,
+                          ),
+                          child: Text(
+                            url['title'],
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            style: textbarlowBoldwhite(),
+                          ),
                         ),
                         InkWell(
                           onTap: () {
@@ -478,7 +377,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                           },
                           child: Row(
                             children: <Widget>[
-                              Text('Order  now'),
+                              Text(MyLocalizations.of(context).ordernow),
                               Icon(Icons.arrow_right)
                             ],
                           ),
@@ -607,11 +506,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                     children: <Widget>[
                                       ProductCard(
                                         image: list[i]['imageUrl'],
-                                        title: list[i]['title'].length > 15
-                                            ? list[i]['title']
-                                                    .substring(0, 15) +
-                                                ".."
-                                            : list[i]['title'],
+                                        title: list[i]['title'],
                                         currency: currency,
                                         category: list[i]['category'],
                                         price: list[i]['variant'][0]['price']
@@ -636,7 +531,10 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                                       " " +
                                                           list[i]['delaPercent']
                                                               .toString() +
-                                                          "% Off",
+                                                          "% " +
+                                                          MyLocalizations.of(
+                                                                  context)
+                                                              .off,
                                                       style:
                                                           hintSfboldwhitemed(),
                                                       textAlign:
@@ -672,10 +570,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                 children: <Widget>[
                                   ProductCard(
                                     image: list[i]['imageUrl'],
-                                    title: list[i]['title'].length > 15
-                                        ? list[i]['title'].substring(0, 15) +
-                                            ".."
-                                        : list[i]['title'],
+                                    title: list[i]['title'],
                                     currency: currency,
                                     category: list[i]['category'],
                                     price: list[i]['variant'][0]['price'],
@@ -803,7 +698,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                           style: textBarlowSemiBoldwbig()),
                                       Text(
                                         list[i]['delaPercent'].toString() +
-                                            "% OFF",
+                                            "% " +
+                                            MyLocalizations.of(context).off,
                                         style: textBarlowRegularrwhsm(),
                                       )
                                     ],
@@ -922,7 +818,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                     children: <Widget>[
                                       Text(
                                           list[i]['delaPercent'].toString() +
-                                              "% OFF",
+                                              "% " +
+                                              MyLocalizations.of(context).off,
                                           style: textoswaldboldwhite()),
                                       SizedBox(
                                         height: 5,
@@ -954,52 +851,16 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: GFAppBar(
-        backgroundColor: bg,
-        elevation: 0,
-        title: isLocationLoading || addressData == null
-            ? Container()
-            : deliveryAddress(),
-        actions: <Widget>[
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SearchItem(
-                      locale: widget.locale,
-                      localizedValues: widget.localizedValues,
-                      productsList: searchProductList,
-                      currency: currency,
-                      token: getTokenValue,
-                      favProductList: getTokenValue ? favProductList : null),
-                ),
-              );
-            },
-            child: Padding(
-              padding: EdgeInsets.only(right: 15, left: 15),
-              child: Icon(
-                Icons.search,
-              ),
-            ),
-          ),
-        ],
-      ),
-      drawer: Drawer(
-        child: DrawerPage(),
-      ),
       backgroundColor: bg,
       key: _scaffoldKeydrawer,
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
-        header: WaterDropHeader(),
         controller: _refreshController,
         onRefresh: () {
           setState(() {
             isLoadingAllData = true;
             isBannerLoading = true;
-            getProductListMethod();
             getBannerData();
             getAllDataMethod();
           });

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/service/payment-service.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/style/style.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/payment-service.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:intl/intl.dart';
 
 SentryError sentryError = new SentryError();
@@ -104,9 +104,19 @@ class _AddCardState extends State<AddCard> {
               showSnackbar('${onValue['response_data']}');
             }
           } catch (error) {
+            if (mounted) {
+              setState(() {
+                isCardListLoading = false;
+              });
+            }
             sentryError.reportError(error, null);
           }
         }).catchError((error) {
+          if (mounted) {
+            setState(() {
+              isCardListLoading = false;
+            });
+          }
           sentryError.reportError(error, null);
         });
       } else {
@@ -119,6 +129,11 @@ class _AddCardState extends State<AddCard> {
             MyLocalizations.of(context).pleaseentercorrectexpirymonthandyear);
       }
     } else {
+      if (mounted) {
+        setState(() {
+          isCardListLoading = false;
+        });
+      }
       return;
     }
   }
@@ -485,11 +500,8 @@ class _AddCardState extends State<AddCard> {
                 style: textBarlowRegularrBlack(),
               ),
               isCardListLoading
-                  ? Image.asset(
-                      'lib/assets/images/spinner.gif',
-                      width: 15.0,
-                      height: 15.0,
-                      color: Colors.black,
+                  ? GFLoader(
+                      type: GFLoaderType.ios,
                     )
                   : Text("")
             ],

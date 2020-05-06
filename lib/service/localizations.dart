@@ -1,12 +1,11 @@
 import 'dart:async' show Future;
 import 'package:flutter/foundation.dart' show SynchronousFuture;
 import 'package:flutter/material.dart';
-import 'package:grocery_pro/service/constants.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
 
 class MyLocalizations {
   final Map<String, Map<String, String>> localizedValues;
   MyLocalizations(this.locale, this.localizedValues);
-
   final Locale locale;
 
   static MyLocalizations of(BuildContext context) {
@@ -1069,6 +1068,10 @@ class MyLocalizations {
     return localizedValues[locale.languageCode]['contactInformation'];
   }
 
+  String get addressInformation {
+    return localizedValues[locale.languageCode]['addressInformation'];
+  }
+
   String get orderSummary {
     return localizedValues[locale.languageCode]['orderSummary'];
   }
@@ -1810,6 +1813,56 @@ class MyLocalizations {
 
   String get dealsoftheday {
     return localizedValues[locale.languageCode]['dealsoftheday'];
+  }
+
+  String get limitedquantityavailableyoucantaddmorethan {
+    return localizedValues[locale.languageCode]
+        ['limitedquantityavailableyoucantaddmorethan'];
+  }
+
+  String get ofthisitem {
+    return localizedValues[locale.languageCode]['ofthisitem'];
+  }
+
+  String get youhavenotselectedanyaddressyet {
+    return localizedValues[locale.languageCode]
+        ['youhavenotselectedanyaddressyet'];
+  }
+
+  String get mailUs {
+    return localizedValues[locale.languageCode]['mailUs'];
+  }
+
+  String get callUs {
+    return localizedValues[locale.languageCode]['callUs'];
+  }
+
+  String get yourLocation {
+    return localizedValues[locale.languageCode]['yourLocation'];
+  }
+
+  String get off {
+    return localizedValues[locale.languageCode]['off'];
+  }
+
+  String get ordernow {
+    return localizedValues[locale.languageCode]['ordernow'];
+  }
+
+  String get oops {
+    return localizedValues[locale.languageCode]['oops'];
+  }
+
+  String get outOfStock {
+    return localizedValues[locale.languageCode]['outOfStock'];
+  }
+
+  String get and {
+    return localizedValues[locale.languageCode]['and'];
+  }
+
+  String get moreitems {
+    return localizedValues[locale.languageCode]['moreitems'];
   }
 
   greetTo(name) {

@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/components/button/gf_button.dart';
 import 'package:getflutter/components/typography/gf_typography.dart';
+import 'package:getflutter/getflutter.dart';
 import 'package:getflutter/size/gf_size.dart';
-import 'package:grocery_pro/screens/authe/otp.dart';
-import 'package:grocery_pro/service/auth-service.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/style/style.dart';
+import 'package:readymadeGroceryApp/screens/authe/otp.dart';
+import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -90,12 +91,27 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             showSnackbar('${onValue['response_data']}');
           }
         } catch (error, stackTrace) {
+          if (mounted) {
+            setState(() {
+              isVerfyEmailLoading = false;
+            });
+          }
           sentryError.reportError(error, stackTrace);
         }
       }).catchError((error) {
+        if (mounted) {
+          setState(() {
+            isVerfyEmailLoading = false;
+          });
+        }
         sentryError.reportError(error, null);
       });
     } else {
+      if (mounted) {
+        setState(() {
+          isVerfyEmailLoading = false;
+        });
+      }
       return;
     }
   }
@@ -105,7 +121,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: GFAppBar(
-        // automaticallyImplyLeading: false,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(20),
@@ -223,11 +238,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         height: 10,
                       ),
                       isVerfyEmailLoading
-                          ? Image.asset(
-                              'lib/assets/images/spinner.gif',
-                              width: 15.0,
-                              height: 15.0,
-                              color: Colors.black,
+                          ? GFLoader(
+                              type: GFLoaderType.ios,
                             )
                           : Text("")
                     ],

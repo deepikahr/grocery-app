@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:grocery_pro/model/bottomSheet.dart';
-import 'package:grocery_pro/screens/authe/login.dart';
-import 'package:grocery_pro/style/style.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:flutter/cupertino.dart';
 
 class ProductCard extends StatelessWidget {
@@ -83,6 +81,7 @@ class ProductCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           title,
+                          overflow: TextOverflow.ellipsis,
                           style: textbarlowRegularBlackb(),
                         ),
                       ),
@@ -117,61 +116,6 @@ class ProductCard extends StatelessWidget {
                           style: textbarlowBoldgreen(),
                         ),
                       ),
-                      buttonName == null
-                          ? Container()
-                          : buttonName == "Add"
-                              ? InkWell(
-                                  onTap: () {
-                                    if (productList != null &&
-                                        variantList != null) {
-                                      showModalBottomSheet(
-                                          context: context,
-                                          builder: (BuildContext bc) {
-                                            return BottonSheetClassDryClean(
-                                                locale: locale,
-                                                localizedValues:
-                                                    localizedValues,
-                                                currency: currency,
-                                                productList: productList,
-                                                variantsList: variantList);
-                                          });
-                                    }
-                                  },
-                                  child: Container(
-                                    height: 17,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(2),
-                                        ),
-                                        color: primary),
-                                    padding:
-                                        EdgeInsets.only(left: 15, right: 15),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: <Widget>[
-                                        Text(
-                                          buttonName,
-                                          style: textBarlowregwhite(),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              : Container(
-                                  height: 17,
-                                  decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(2)),
-                                      color: Colors.green),
-                                  padding: EdgeInsets.only(left: 15, right: 15),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: <Widget>[
-                                      Text(buttonName,
-                                          style: textBarlowregwhite()),
-                                    ],
-                                  ),
-                                ),
                     ],
                   ),
                 ],

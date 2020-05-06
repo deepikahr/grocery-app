@@ -4,14 +4,14 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
-import 'package:grocery_pro/screens/orders/ordersDetails.dart';
-import 'package:grocery_pro/screens/tab/mycart.dart';
-import 'package:grocery_pro/service/cart-service.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/service/product-service.dart';
-import 'package:grocery_pro/widgets/loader.dart';
+import 'package:readymadeGroceryApp/screens/orders/ordersDetails.dart';
+import 'package:readymadeGroceryApp/screens/tab/mycart.dart';
+import 'package:readymadeGroceryApp/service/cart-service.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/service/product-service.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -65,18 +65,26 @@ class _OrdersState extends State<Orders> {
           if (mounted) {
             setState(() {
               orderList = onValue['response_data'];
+              isLoading = false;
             });
           }
-        } else {}
+        }
+      } catch (error, stackTrace) {
         if (mounted) {
           setState(() {
+            orderList = [];
             isLoading = false;
           });
         }
-      } catch (error, stackTrace) {
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          orderList = [];
+          isLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -223,7 +231,6 @@ class _OrdersState extends State<Orders> {
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
-        header: WaterDropHeader(),
         controller: _refreshController,
         onRefresh: () {
           getOrderByUserID();
@@ -264,6 +271,8 @@ class _OrdersState extends State<Orders> {
                                       children: <Widget>[
                                         product(orderList[i]),
                                         orderList[i]['orderStatus'] !=
+                                                    "Cancelled" &&
+                                                orderList[i]['orderStatus'] !=
                                                     "DELIVERED" &&
                                                 orderList[i]['orderStatus'] !=
                                                     "Pending"
@@ -297,7 +306,7 @@ class _OrdersState extends State<Orders> {
         children: <Widget>[
           Container(
             height: 103.0,
-            width: 100,
+            width: 99,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(5)),
               boxShadow: [
@@ -311,50 +320,47 @@ class _OrdersState extends State<Orders> {
             ),
           ),
           SizedBox(width: 17),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                orderDetails['cart']['cart'][0]['title'] ?? "",
-                style: textBarlowRegularrdark(),
-              ),
-              SizedBox(height: 5),
-              Text(
-                orderDetails['cart']['cart'][0]['description'].length > 20
-                    ? orderDetails['cart']['cart'][0]['description']
-                            .substring(0, 20) +
-                        ".."
-                    : orderDetails['cart']['cart'][0]['description'] ?? "",
-                style: textSMBarlowRegularrBlack(),
-              ),
-              SizedBox(height: 10),
-              Text(
-                currency + orderDetails['grandTotal'].toString(),
-                style: titleLargeSegoeBlack(),
-              ),
-              SizedBox(height: 10),
-              orderDetails['appTimestamp'] == null
-                  ? Text(
-                      MyLocalizations.of(context).ordered +
-                              ' : ' +
-                              orderDetails['createdAt'].substring(0, 10) +
-                              ", " +
-                              orderDetails['createdAt'].substring(11, 16) ??
-                          "",
-                      style: textSMBarlowRegularrBlack(),
-                    )
-                  : Text(
-                      MyLocalizations.of(context).ordered +
-                              ' : ' +
-                              DateFormat('dd/MM/yyyy, hh:mm a').format(
-                                DateTime.fromMillisecondsSinceEpoch(
-                                    orderDetails['appTimestamp']),
-                              ) ??
-                          "",
-                      style: textSMBarlowRegularrBlack(),
-                    )
-            ],
+          Container(
+            width: MediaQuery.of(context).size.width - 146,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  '${orderDetails['cart']['cart'][0]['title']}' ?? "",
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: textBarlowRegularrdark(),
+                ),
+                orderDetails['cart']['cart'].length == 1
+                    ? Container()
+                    : SizedBox(height: 5),
+                orderDetails['cart']['cart'].length == 1
+                    ? Container()
+                    : Text(
+                        MyLocalizations.of(context).and +
+                            ' ${(orderDetails['cart']['cart'].length - 1)} ' +
+                            MyLocalizations.of(context).moreitems,
+                        style: textSMBarlowRegularrBlack(),
+                      ),
+                SizedBox(height: 10),
+                Text(
+                  currency + orderDetails['grandTotal'].toString(),
+                  style: titleLargeSegoeBlack(),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  MyLocalizations.of(context).ordered +
+                          ' : ' +
+                          DateFormat('dd/MM/yyyy, hh:mm a').format(
+                            DateTime.fromMillisecondsSinceEpoch(
+                                orderDetails['appTimestamp']),
+                          ) ??
+                      "",
+                  style: textSMBarlowRegularrBlack(),
+                )
+              ],
+            ),
           )
         ],
       ),
@@ -371,10 +377,11 @@ class _OrdersState extends State<Orders> {
             avatar: Column(
               children: <Widget>[
                 GFAvatar(
-                  backgroundColor: orderDetails['orderStatus'] == "Confirmed" ||
-                          orderDetails['orderStatus'] == "Out of delivery"
-                      ? green
-                      : greyb.withOpacity(0.5),
+                  backgroundColor:
+                      (orderDetails['orderStatus'] == "Confirmed" ||
+                              orderDetails['orderStatus'] == "Out for delivery")
+                          ? green
+                          : greyb.withOpacity(0.5),
                   radius: 6,
                 ),
                 SizedBox(
@@ -400,7 +407,6 @@ class _OrdersState extends State<Orders> {
             ),
           ),
           GFListTile(
-//            icon:Padding(padding: EdgeInsets.only(bottom: 20),child: Image.asset('lib/assets/icons/confirm.png'),),
             avatar: Column(
               children: <Widget>[
                 GFAvatar(
@@ -422,6 +428,12 @@ class _OrdersState extends State<Orders> {
                   ? titleSegoeGreen()
                   : titleSegoeGrey(),
             ),
+            icon: orderDetails['orderStatus'] == "Out for delivery"
+                ? Padding(
+                    padding: EdgeInsets.only(bottom: 20),
+                    child: SvgPicture.asset('lib/assets/icons/tick.svg'),
+                  )
+                : null,
             subTitle: Text(
               '',
               style: textSMBarlowRegularrGreyb(),
@@ -443,6 +455,12 @@ class _OrdersState extends State<Orders> {
               MyLocalizations.of(context).orderdelivered,
               style: titleSegoeGrey(),
             ),
+            icon: orderDetails['orderStatus'] == "DELIVERED"
+                ? Padding(
+                    padding: EdgeInsets.only(bottom: 20),
+                    child: SvgPicture.asset('lib/assets/icons/tick.svg'),
+                  )
+                : null,
             subTitle: Text(
               '',
               style: textSMBarlowRegularrGreyb(),

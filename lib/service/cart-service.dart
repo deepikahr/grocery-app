@@ -78,4 +78,19 @@ class CartService {
     });
     return json.decode(response.body);
   }
+
+  static Future<Map<String, dynamic>> paymentTimeCarDataDelete(Map body) async {
+    String token;
+    await Common.getToken().then((onValue) {
+      token = onValue;
+    });
+    final response = await client.put(
+        Constants.baseURL + "cart/remove/multi/product",
+        body: json.encode(body),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'bearer $token'
+        });
+    return json.decode(response.body);
+  }
 }

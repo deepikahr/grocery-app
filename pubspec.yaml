@@ -1,7 +1,7 @@
-name: grocery_pro
+name: readymadeGroceryApp
 description: A new Flutter project.
 
-version: 1.1.0+7
+version: 1.2.0+9
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -30,6 +30,8 @@ dependencies:
   geocoder: ^0.2.1
   image: ^2.1.4
   pull_to_refresh: ^1.5.7
+  url_launcher: ^5.4.5
+  stripe_payment: ^1.0.7
   flutter_localizations:
     sdk: flutter
 
@@ -45,37 +47,35 @@ flutter:
       fonts:
         - asset: lib/assets/fonts/icomoon.ttf
 
-
-    - family: 'BarlowBold'
-      fonts:   
+    - family: "BarlowBold"
+      fonts:
         - asset: lib/assets/fonts/Barlow-Bold.ttf
           weight: 400
 
-    - family: 'BarlowMedium'
-      fonts:   
+    - family: "BarlowMedium"
+      fonts:
         - asset: lib/assets/fonts/Barlow-Medium.ttf
           weight: 400
 
-    - family: 'BarlowRegular'
-      fonts:   
+    - family: "BarlowRegular"
+      fonts:
         - asset: lib/assets/fonts/Barlow-Regular.ttf
           weight: 400
-          
-    - family: 'BarlowSemiBold'
-      fonts:   
+
+    - family: "BarlowSemiBold"
+      fonts:
         - asset: lib/assets/fonts/Barlow-SemiBold.ttf
           weight: 400
 
-    - family: 'OswaldBold'
+    - family: "OswaldBold"
       fonts:
         - asset: lib/assets/fonts/oswaldBold.ttf
           weight: 400
 
-    - family: 'FuturaBold'
+    - family: "FuturaBold"
       fonts:
         - asset: lib/assets/fonts/futuraBold.otf
           weight: 400
-
 
   # To add assets to your application, add an assets section, like this:
   assets:
@@ -132,12 +132,20 @@ flutter:
     - lib/assets/icons/app.png
     - lib/assets/icons/mobile.png
     - lib/assets/icons/mail.png
-
-
-
+    - lib/assets/images/languages.png
+    - lib/assets/images/profileIcon.png
+    - lib/assets/icons/plus.png
+    - lib/assets/icons/add1.svg
+    - lib/assets/icons/delete.svg
 
     - lib/assets/splash.png
 
     - lib/assets/i18n/en.json
     - lib/assets/i18n/fr.json
     - lib/assets/i18n/ar.json
+    - lib/assets/i18n/es.json
+    - lib/assets/i18n/it.json
+    - lib/assets/i18n/ja.json
+    - lib/assets/i18n/pt.json
+    - lib/assets/i18n/ru.json
+    - lib/assets/i18n/zh.json

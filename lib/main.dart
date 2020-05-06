@@ -2,16 +2,17 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:grocery_pro/screens/home/home.dart';
-import 'package:grocery_pro/service/auth-service.dart';
-import 'package:grocery_pro/service/common.dart';
-import 'package:grocery_pro/service/constants.dart';
-import 'package:grocery_pro/service/initialize_i18n.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/service/settings/globalSettings.dart';
-import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/widgets/loader.dart';
+import 'package:geocoder/geocoder.dart';
+import 'package:readymadeGroceryApp/screens/home/home.dart';
+import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
+import 'package:readymadeGroceryApp/service/initialize_i18n.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/settings/globalSettings.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
@@ -97,42 +98,72 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   var language;
   bool isloading = false;
+  LocationData currentLocation;
+  Location _location = new Location();
+  var addressData;
   void initState() {
-    if (widget.languagesSelection == false) {
-      getGlobalSettingsData();
-    }
+    getGlobalSettingsData();
+
+    getResult();
     super.initState();
   }
 
   getGlobalSettingsData() async {
-    if (mounted) {
-      setState(() {
-        isloading = true;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getString('selectedLanguage') == null) {
+      if (mounted) {
+        setState(() {
+          isloading = true;
+        });
+      }
+      getGlobalSettings().then((onValue) {
+        try {
+          if (onValue['response_data']['languageCode'] == null) {
+            prefs.setString('selectedLanguage', 'en');
+            language = prefs.getString("selectedLanguage");
+          } else {
+            prefs.setString('selectedLanguage',
+                '${onValue['response_data']['languageCode']}');
+            language = prefs.getString("selectedLanguage");
+          }
+          if (language != null) {
+            if (mounted) {
+              setState(() {
+                isloading = false;
+              });
+            }
+          }
+        } catch (error, stackTrace) {
+          sentryError.reportError(error, stackTrace);
+        }
+      }).catchError((error) {
+        sentryError.reportError(error, null);
       });
     }
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    getGlobalSettings().then((onValue) {
-      try {
-        if (onValue['response_data']['languageCode'] == null) {
-          prefs.setString('selectedLanguage', 'en');
-          language = prefs.getString("selectedLanguage");
-        } else {
-          prefs.setString('selectedLanguage',
-              '${onValue['response_data']['languageCode']}');
-          language = prefs.getString("selectedLanguage");
+  }
+
+  getResult() async {
+    Common.getCurrentLocation().then((address) async {
+      if (address != null) {
+        if (mounted) {
+          setState(() {
+            addressData = address;
+          });
         }
-        if (language != null) {
-          if (mounted) {
-            setState(() {
-              isloading = false;
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
       }
-    }).catchError((error) {
-      sentryError.reportError(error, null);
+      currentLocation = await _location.getLocation();
+      final coordinates = new Coordinates(currentLocation.latitude ?? 14.264383,
+          currentLocation.longitude ?? 78.974842);
+      var addresses =
+          await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      var first = addresses.first;
+      if (mounted) {
+        setState(() {
+          addressData = first.subLocality;
+        });
+      }
+      Common.setCurrentLocation(addressData);
+      return first;
     });
   }
 
@@ -150,13 +181,46 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: Constants.APP_NAME,
       theme: ThemeData(primaryColor: primary, accentColor: primary),
-      home: isloading
-          ? SquareLoader()
+      home: isloading || addressData == null
+          ? AnimatedScreen(
+              locale: language != null ? language : widget.locale,
+              localizedValues: widget.localizedValues,
+            )
           : Home(
               locale: language != null ? language : widget.locale,
               localizedValues: widget.localizedValues,
               languagesSelection: widget.languagesSelection,
+              addressData: addressData,
             ),
+    );
+  }
+}
+
+class AnimatedScreen extends StatefulWidget {
+  final Map<String, Map<String, String>> localizedValues;
+  final String locale;
+  AnimatedScreen({Key key, this.locale, this.localizedValues})
+      : super(key: key);
+
+  @override
+  _AnimatedScreenState createState() => _AnimatedScreenState();
+}
+
+class _AnimatedScreenState extends State<AnimatedScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        color: Colors.white,
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: Image.asset(
+          'lib/assets/splash.png',
+          fit: BoxFit.cover,
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+        ),
+      ),
     );
   }
 }

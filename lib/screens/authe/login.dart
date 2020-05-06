@@ -4,14 +4,14 @@ import 'package:getflutter/components/button/gf_button.dart';
 import 'package:getflutter/components/typography/gf_typography.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:getflutter/size/gf_size.dart';
-import 'package:grocery_pro/screens/authe/forgotpassword.dart';
-import 'package:grocery_pro/screens/authe/signup.dart';
-import 'package:grocery_pro/screens/home/home.dart';
-import 'package:grocery_pro/service/common.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/service/auth-service.dart';
+import 'package:readymadeGroceryApp/screens/authe/forgotpassword.dart';
+import 'package:readymadeGroceryApp/screens/authe/signup.dart';
+import 'package:readymadeGroceryApp/screens/home/home.dart';
+import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
@@ -125,8 +125,6 @@ class _LoginState extends State<Login> {
                   (Route<dynamic> route) => false);
             } else if (widget.isProductDetails == true) {
               Navigator.pop(context);
-            } else if (widget.isBottomSheet == true) {
-              Navigator.pop(context);
             } else {
               Navigator.pushAndRemoveUntil(
                   context,
@@ -135,7 +133,7 @@ class _LoginState extends State<Login> {
                       locale: widget.locale,
                       localizedValues: widget.localizedValues,
                       languagesSelection: true,
-                      currentIndex: 2,
+                      currentIndex: 0,
                     ),
                   ),
                   (Route<dynamic> route) => false);
@@ -146,12 +144,27 @@ class _LoginState extends State<Login> {
             showSnackbar(onValue['response_data']);
           }
         } catch (error, stackTrace) {
+          if (mounted) {
+            setState(() {
+              isUserLoaginLoading = false;
+            });
+          }
           sentryError.reportError(error, stackTrace);
         }
       }).catchError((error) {
+        if (mounted) {
+          setState(() {
+            isUserLoaginLoading = false;
+          });
+        }
         sentryError.reportError(error, null);
       });
     } else {
+      if (mounted) {
+        setState(() {
+          isUserLoaginLoading = false;
+        });
+      }
       return;
     }
   }
@@ -207,7 +220,6 @@ class _LoginState extends State<Login> {
               buildcontinuetext(),
               SizedBox(height: 10),
               buildsignuplink(),
-              // buildsocialbuttons()
             ],
           ),
         ),
@@ -383,11 +395,8 @@ class _LoginState extends State<Login> {
               height: 10,
             ),
             isUserLoaginLoading
-                ? Image.asset(
-                    'lib/assets/images/spinner.gif',
-                    width: 15.0,
-                    height: 15.0,
-                    color: Colors.black,
+                ? GFLoader(
+                    type: GFLoaderType.ios,
                   )
                 : Text("")
           ],

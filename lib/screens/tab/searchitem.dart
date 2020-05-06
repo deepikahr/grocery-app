@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:getflutter/getflutter.dart';
-import 'package:grocery_pro/model/bottomSheet.dart';
-import 'package:grocery_pro/screens/authe/login.dart';
-import 'package:grocery_pro/screens/product/product-details.dart';
-import 'package:grocery_pro/service/localizations.dart';
-import 'package:grocery_pro/service/product-service.dart';
-import 'package:grocery_pro/service/sentry-service.dart';
-import 'package:grocery_pro/style/style.dart';
-import 'package:grocery_pro/widgets/loader.dart';
+import 'package:readymadeGroceryApp/model/counterModel.dart';
+import 'package:readymadeGroceryApp/screens/home/home.dart';
+import 'package:readymadeGroceryApp/screens/product/product-details.dart';
+import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/product-service.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
+import 'package:readymadeGroceryApp/widgets/subCategoryProductCart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -32,10 +34,62 @@ class SearchItem extends StatefulWidget {
 class _SearchItemState extends State<SearchItem> {
   final globalKey = new GlobalKey<ScaffoldState>();
   final TextEditingController _controller = new TextEditingController();
-  bool isSearching = false, isFirstTime = true;
+  bool isSearching = false,
+      isFirstTime = true,
+      cardAdded = false,
+      getTokenValue = false,
+      isTokenGetLoading = false;
   List searchresult = new List();
+  int quanity = 1;
+  String cartId, searchTerm;
+  var variantPrice, cartData;
+  String currency;
+
+  @override
+  void initState() {
+    getCurrency();
+    super.initState();
+  }
+
+  getCurrency() async {
+    if (mounted) {
+      setState(() {
+        isTokenGetLoading = true;
+      });
+    }
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    currency = prefs.getString('currency');
+
+    await Common.getToken().then((onValue) {
+      if (onValue != null) {
+        if (mounted) {
+          setState(() {
+            getTokenValue = true;
+            isTokenGetLoading = false;
+          });
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            getTokenValue = false;
+            isTokenGetLoading = false;
+          });
+        }
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          getTokenValue = false;
+          isTokenGetLoading = false;
+        });
+      }
+      sentryError.reportError(error, null);
+    });
+  }
 
   void _searchForProducts(String query) async {
+    searchTerm = query;
     if (query.length > 2) {
       if (mounted) {
         setState(() {
@@ -64,9 +118,21 @@ class _SearchItemState extends State<SearchItem> {
             });
           }
         } catch (error, stackTrace) {
+          searchresult = [];
+          if (mounted) {
+            setState(() {
+              isSearching = false;
+            });
+          }
           sentryError.reportError(error, stackTrace);
         }
       }).catchError((error) {
+        searchresult = [];
+        if (mounted) {
+          setState(() {
+            isSearching = false;
+          });
+        }
         sentryError.reportError(error, null);
       });
     } else {
@@ -81,6 +147,7 @@ class _SearchItemState extends State<SearchItem> {
   }
 
   void _searchForProductsCartAdded(String query) async {
+    searchTerm = query;
     if (query.length > 2) {
       if (mounted) {
         setState(() {
@@ -109,9 +176,21 @@ class _SearchItemState extends State<SearchItem> {
             });
           }
         } catch (error, stackTrace) {
+          if (mounted) {
+            setState(() {
+              isSearching = false;
+              searchresult = [];
+            });
+          }
           sentryError.reportError(error, stackTrace);
         }
       }).catchError((error) {
+        if (mounted) {
+          setState(() {
+            isSearching = false;
+            searchresult = [];
+          });
+        }
         sentryError.reportError(error, null);
       });
     } else {
@@ -127,293 +206,303 @@ class _SearchItemState extends State<SearchItem> {
 
   @override
   Widget build(BuildContext context) {
+    if (getTokenValue) {
+      CounterModel().getCartDataMethod().then((res) {
+        if (mounted) {
+          setState(() {
+            cartData = res;
+          });
+        }
+      });
+    } else {
+      if (mounted) {
+        setState(() {
+          cartData = null;
+        });
+      }
+    }
     return new Scaffold(
       key: globalKey,
-      body: ListView(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(
-                bottom: 15.0, left: 15.0, right: 15.0, top: 50.0),
-            child: Container(
-              child: new TextField(
-                controller: _controller,
-                style: new TextStyle(
-                  color: Colors.black,
-                ),
-                decoration: new InputDecoration(
-                  prefixIcon: InkWell(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: new Icon(Icons.arrow_back, color: Colors.black),
-                  ),
-                  hintText:
-                      MyLocalizations.of(context).whatareyoubuyingtoday + "?",
-                  fillColor: Color(0xFFF0F0F0),
-                  filled: true,
-                  focusColor: Colors.black,
-                  contentPadding: EdgeInsets.only(
-                    left: 15.0,
-                    right: 15.0,
-                    top: 10.0,
-                    bottom: 10.0,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: primary, width: 0.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: primary),
-                  ),
-                ),
-                onSubmitted: (String term) {
-                  if (widget.token == true) {
-                    _searchForProductsCartAdded(term);
-                  } else {
-                    _searchForProducts(term);
-                  }
-                },
-                onChanged: widget.token == true
-                    ? _searchForProductsCartAdded
-                    : _searchForProducts,
-              ),
-            ),
-          ),
-          isFirstTime
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(top: 100.0),
-                      child: Text(
-                        MyLocalizations.of(context).typeToSearch,
-                        textAlign: TextAlign.center,
-                        style: hintSfMediumprimary(),
+      body: isTokenGetLoading
+          ? SquareLoader()
+          : ListView(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(
+                      bottom: 15.0, left: 15.0, right: 15.0, top: 50.0),
+                  child: Container(
+                    child: new TextField(
+                      controller: _controller,
+                      style: new TextStyle(
+                        color: Colors.black,
                       ),
-                    ),
-                    SizedBox(height: 20.0),
-                    Icon(
-                      Icons.search,
-                      size: 50.0,
-                      color: primary,
-                    ),
-                  ],
-                )
-              : searchresult.length > 0
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              top: 18.0, bottom: 18.0, left: 20.0, right: 20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(
-                                  searchresult.length.toString() +
-                                      " " +
-                                      MyLocalizations.of(context).iteamsFounds,
-                                  style: textBarlowMediumBlack()),
-                            ],
-                          ),
+                      decoration: new InputDecoration(
+                        prefixIcon: InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child:
+                              new Icon(Icons.arrow_back, color: Colors.black),
                         ),
-                        new ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: searchresult.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Container(
-                              margin: EdgeInsets.only(bottom: 20),
-                              color: Colors.grey[100],
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ProductDetails(
-                                          locale: widget.locale,
-                                          localizedValues:
-                                              widget.localizedValues,
-                                          productID: searchresult[index]['_id'],
-                                          favProductList:
-                                              widget.favProductList == null
-                                                  ? null
-                                                  : widget.favProductList),
+                        hintText:
+                            MyLocalizations.of(context).whatareyoubuyingtoday +
+                                "?",
+                        fillColor: Color(0xFFF0F0F0),
+                        filled: true,
+                        focusColor: Colors.black,
+                        contentPadding: EdgeInsets.only(
+                          left: 15.0,
+                          right: 15.0,
+                          top: 10.0,
+                          bottom: 10.0,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: primary, width: 0.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: primary),
+                        ),
+                      ),
+                      onSubmitted: (String term) {
+                        searchTerm = term;
+                        if (getTokenValue) {
+                          _searchForProductsCartAdded(term);
+                        } else {
+                          _searchForProducts(term);
+                        }
+                      },
+                      onChanged: getTokenValue
+                          ? _searchForProductsCartAdded
+                          : _searchForProducts,
+                    ),
+                  ),
+                ),
+                isFirstTime
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(top: 100.0),
+                            child: Text(
+                              MyLocalizations.of(context).typeToSearch,
+                              textAlign: TextAlign.center,
+                              style: hintSfMediumprimary(),
+                            ),
+                          ),
+                          SizedBox(height: 20.0),
+                          Icon(
+                            Icons.search,
+                            size: 50.0,
+                            color: primary,
+                          ),
+                        ],
+                      )
+                    : searchresult.length > 0
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 18.0,
+                                    bottom: 18.0,
+                                    left: 20.0,
+                                    right: 20),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                        searchresult.length.toString() +
+                                            " " +
+                                            MyLocalizations.of(context)
+                                                .iteamsFounds,
+                                        style: textBarlowMediumBlack()),
+                                  ],
+                                ),
+                              ),
+                              GridView.builder(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 16, horizontal: 16),
+                                physics: ScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: searchresult.length == null
+                                    ? 0
+                                    : searchresult.length,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        childAspectRatio:
+                                            MediaQuery.of(context).size.width /
+                                                500,
+                                        crossAxisSpacing: 16,
+                                        mainAxisSpacing: 16),
+                                itemBuilder: (BuildContext context, int index) {
+                                  if (searchresult[index]['averageRating'] ==
+                                      null) {
+                                    searchresult[index]['averageRating'] = 0;
+                                  }
+                                  return InkWell(
+                                    onTap: () {
+                                      var result = Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ProductDetails(
+                                            locale: widget.locale,
+                                            localizedValues:
+                                                widget.localizedValues,
+                                            productID: searchresult[index]
+                                                ['_id'],
+                                            favProductList:
+                                                widget.favProductList,
+                                          ),
+                                        ),
+                                      );
+                                      result.then((value) {
+                                        searchresult = [];
+                                        if (getTokenValue) {
+                                          _searchForProductsCartAdded(
+                                              searchTerm);
+                                        } else {
+                                          _searchForProducts(searchTerm);
+                                        }
+                                      });
+                                    },
+                                    child: Stack(
+                                      children: <Widget>[
+                                        SubCategoryProductCard(
+                                            image: searchresult[index]
+                                                ['imageUrl'],
+                                            title: searchresult[index]['title'],
+                                            currency: currency,
+                                            category: searchresult[index]
+                                                ['category'],
+                                            price: searchresult[index]
+                                                ['variant'][0]['price'],
+                                            variantStock: searchresult[index]
+                                                ['variant'][0]['productstock'],
+                                            rating: searchresult[index]
+                                                    ['averageRating']
+                                                .toString(),
+                                            buttonName:
+                                                MyLocalizations.of(context).add,
+                                            cartAdded: searchresult[index]
+                                                    ['cartAdded'] ??
+                                                false,
+                                            cartId: searchresult[index]
+                                                ['cartId'],
+                                            productQuantity: searchresult[index]
+                                                    ['cartAddedQuantity'] ??
+                                                0,
+                                            token: true,
+                                            productList: searchresult[index],
+                                            variantList: searchresult[index]
+                                                ['variant'],
+                                            subCategoryId: searchresult[index]
+                                                ['subcategory']),
+                                      ],
                                     ),
                                   );
                                 },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    children: <Widget>[
-                                      new ListTile(
-                                        leading: Image(
-                                          height: 60,
-                                          width: 90,
-                                          image: NetworkImage(
-                                              searchresult[index]['imageUrl']),
-                                        ),
-                                        title: new Text(
-                                          searchresult[index]['title'].length >
-                                                  20
-                                              ? searchresult[index]['title']
-                                                      .substring(0, 20) +
-                                                  ".."
-                                              : searchresult[index]['title']
-                                                  .toString(),
-                                          style: textbarlowRegularBlack(),
-                                        ),
-                                        subtitle: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: <Widget>[
-                                                new Text(
-                                                  widget.currency +
-                                                      searchresult[index]
-                                                                  ['variant'][0]
-                                                              ['price']
-                                                          .toString() +
-                                                      "/" +
-                                                      searchresult[index]
-                                                                  ['variant'][0]
-                                                              ['unit']
-                                                          .toString(),
-                                                  style:
-                                                      textBarlowMediumGreen(),
-                                                ),
-                                                searchresult[index][
-                                                            'isDealAvailable'] ==
-                                                        true
-                                                    ? Container(
-                                                        height: 20,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius.only(
-                                                            topLeft:
-                                                                Radius.circular(
-                                                                    20),
-                                                            bottomRight:
-                                                                Radius.circular(
-                                                                    20),
-                                                          ),
-                                                        ),
-                                                        child: GFButtonBadge(
-                                                          text:
-                                                              "${searchresult[index]['delaPercent']}% off",
-                                                          onPressed: null,
-                                                          color: Colors
-                                                              .deepOrange[300],
-                                                        ),
-                                                      )
-                                                    : Container()
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              height: 5.0,
-                                            ),
-                                            searchresult[index]['cartAdded'] ==
-                                                    true
-                                                ? Container(
-                                                    height: 22,
-                                                    child: GFButton(
-                                                      onPressed: () async {},
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                left: 18.0,
-                                                                right: 18.0),
-                                                        child: Text("Added"),
-                                                      ),
-                                                      type: GFButtonType.solid,
-                                                      color: Colors.green,
-                                                      size: GFSize.MEDIUM,
-                                                    ),
-                                                  )
-                                                : Container(
-                                                    height: 22,
-                                                    child: GFButton(
-                                                      onPressed: () async {
-                                                        showModalBottomSheet(
-                                                            context: context,
-                                                            builder:
-                                                                (BuildContext
-                                                                    bc) {
-                                                              return BottonSheetClassDryClean(
-                                                                  locale: widget
-                                                                      .locale,
-                                                                  localizedValues:
-                                                                      widget
-                                                                          .localizedValues,
-                                                                  currency: widget
-                                                                      .currency,
-                                                                  productList:
-                                                                      searchresult[
-                                                                          index],
-                                                                  variantsList:
-                                                                      searchresult[
-                                                                              index]
-                                                                          [
-                                                                          'variant']);
-                                                            });
-                                                      },
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                left: 18.0,
-                                                                right: 18.0),
-                                                        child: Text("Add"),
-                                                      ),
-                                                      type: GFButtonType.solid,
-                                                      color: primary,
-                                                      size: GFSize.MEDIUM,
-                                                    ),
-                                                  ),
-                                            SizedBox(
-                                              height: 5.0,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
+                              ),
+                            ],
+                          )
+                        : isSearching
+                            ? Center(
+                                child: SquareLoader(),
+                              )
+                            : Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 100.0),
+                                    child: Text(
+                                      MyLocalizations.of(context)
+                                          .noResultsFound,
+                                      textAlign: TextAlign.center,
+                                      style: hintSfMediumprimary(),
+                                    ),
                                   ),
-                                ),
+                                  SizedBox(height: 20.0),
+                                  Icon(
+                                    Icons.hourglass_empty,
+                                    size: 50.0,
+                                    color: primary,
+                                  ),
+                                ],
+                              )
+              ],
+            ),
+      bottomNavigationBar: cartData == null
+          ? Container(
+              height: 10.0,
+            )
+          : InkWell(
+              onTap: () {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Home(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                        languagesSelection: false,
+                        currentIndex: 2,
+                      ),
+                    ),
+                    (Route<dynamic> route) => false);
+              },
+              child: Container(
+                height: 55.0,
+                decoration: BoxDecoration(color: primary, boxShadow: [
+                  BoxShadow(
+                      color: Colors.black.withOpacity(0.29), blurRadius: 5)
+                ]),
+                padding: EdgeInsets.only(right: 20),
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Container(
+                          color: Colors.black,
+                          height: 55,
+                          width: MediaQuery.of(context).size.width * 0.35,
+                          child: Column(
+                            children: <Widget>[
+                              SizedBox(height: 7),
+                              new Text(
+                                '(${cartData['cart'].length})  ' +
+                                    MyLocalizations.of(context).items,
+                                style: textBarlowRegularWhite(),
                               ),
-                            );
-                          },
+                              new Text(
+                                "$currency${cartData['grandTotal']}",
+                                style: textbarlowBoldWhite(),
+                              ),
+                            ],
+                          ),
                         ),
-                      ],
-                    )
-                  : isSearching
-                      ? Center(
-                          child: SquareLoader(),
-                        )
-                      : Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        Row(
                           children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(top: 100.0),
-                              child: Text(
-                                MyLocalizations.of(context).noResultsFound,
-                                textAlign: TextAlign.center,
-                                style: hintSfMediumprimary(),
-                              ),
+                            new Text(
+                              MyLocalizations.of(context).goToCart,
+                              style: textBarlowRegularBlack(),
                             ),
-                            SizedBox(height: 20.0),
+                            SizedBox(width: 4),
                             Icon(
-                              Icons.hourglass_empty,
-                              size: 50.0,
-                              color: primary,
+                              IconData(
+                                0xe911,
+                                fontFamily: 'icomoon',
+                              ),
+                              color: Colors.black,
                             ),
                           ],
-                        )
-        ],
-      ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 }

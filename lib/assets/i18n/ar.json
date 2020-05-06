@@ -101,6 +101,7 @@
     "date": "تاريخ",
     "totalOrder": "النظام الكلي",
     "contactInformation": "معلومات الاتصال",
+    "addressInformation": "Address",
     "selectAddress": "حدد عنوان",
     "addAddress": "إضافة عنوان",
     "orderDetails": "تفاصيل النظام",
@@ -438,5 +439,17 @@
     "products": "منتجات",
     "deal": "صفقات",
     "topDeals": "أهم الصفقات",
-    "dealsoftheday": "صفقات اليوم"
+    "dealsoftheday": "صفقات اليوم",
+    "limitedquantityavailableyoucantaddmorethan": "كمية محدودة متاحة ، لا يمكنك إضافة أكثر من",
+    "ofthisitem": "من هذا البند",
+    "youhavenotselectedanyaddressyet": " لم تقم بتحديد أي عنوان حتى الآن.",
+    "mailUs": "راسلنا",
+    "callUs": "اتصل بنا",
+    "yourLocation": "موقعك",
+    "off": "إيقاف",
+    "ordernow": "اطلب الان",
+    "oops": "وجه الفتاة!",
+    "outOfStock": "إنتهى من المخزن",
+    "and": "و",
+    "moreitems": "المزيد من العناصر"
 }
