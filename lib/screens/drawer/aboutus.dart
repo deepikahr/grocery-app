@@ -115,8 +115,6 @@ class _AboutUsState extends State<AboutUs> {
                       child: Center(
                         child: Image.network(
                           aboutUsDatails['userApp']['imageUrl'],
-                          width: 135,
-                          height: 70,
                         ),
                       ),
                     ),
