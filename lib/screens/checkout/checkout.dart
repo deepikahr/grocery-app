@@ -94,9 +94,7 @@ class _CheckoutState extends State<Checkout> {
       });
     }
     await CartService.getProductToCart().then((onValue) {
-      print('response of cart items');
       getAddress();
-      print(onValue);
       _refreshController.refreshCompleted();
       try {
         if (mounted) {
@@ -146,7 +144,6 @@ class _CheckoutState extends State<Checkout> {
         });
       });
     }
-    print('selected address $selectedAddress');
     return value;
   }
 
@@ -250,9 +247,6 @@ class _CheckoutState extends State<Checkout> {
     }
     await AddressService.getAddress().then((onValue) {
       _refreshController.refreshCompleted();
-      print('all address ${cartItem['deliveryAddress']}');
-
-      print(onValue);
       try {
         if (mounted) {
           addressList = onValue['response_data'];
@@ -329,8 +323,6 @@ class _CheckoutState extends State<Checkout> {
       data['deliveryDate'] = selectedDate.toString();
       data['deliveryTime'] = selectedTime.toString();
       data['cart'] = widget.id;
-      print('cart dataaaaaaa');
-      print(data['cart']);
       var body = {
         "latitude": selectedAddress['location']['lat'],
         "longitude": selectedAddress['location']['long'],
@@ -343,7 +335,6 @@ class _CheckoutState extends State<Checkout> {
         });
       }
       PaymentService.getDeliveryCharges(body).then((value) {
-        print(value);
         try {
           if (mounted) {
             setState(() {
@@ -405,8 +396,6 @@ class _CheckoutState extends State<Checkout> {
       });
     }
     await CouponService.applyCouponsCode(cartId, data).then((onValue) {
-      print('final cart info');
-      print(onValue);
       try {
         if (onValue['response_code'] == 200) {
           if (mounted) {

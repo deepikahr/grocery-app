@@ -6,7 +6,6 @@ import 'package:readymadeGroceryApp/main.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/drawer/address.dart';
 import 'package:readymadeGroceryApp/screens/orders/orders.dart';
-import 'package:readymadeGroceryApp/screens/payment/addCard.dart';
 import 'package:readymadeGroceryApp/screens/tab/editprofile.dart';
 import 'package:readymadeGroceryApp/service/initialize_i18n.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';

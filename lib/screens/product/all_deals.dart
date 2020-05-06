@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:readymadeGroceryApp/model/counterModel.dart';
 import 'package:readymadeGroceryApp/screens/categories/subcategories.dart';
-import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/product/product-details.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';

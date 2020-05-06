@@ -254,7 +254,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   }
 
   deliveryAddress() {
-    print(addressData);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[

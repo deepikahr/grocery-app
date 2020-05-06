@@ -464,7 +464,6 @@ class _SubCategoriesState extends State<SubCategories> {
 
                                                 return InkWell(
                                                   onTap: () {
-                                                    print('ontap presseddddd2');
                                                     var result = Navigator.push(
                                                       context,
                                                       MaterialPageRoute(
@@ -623,7 +622,6 @@ class _SubCategoriesState extends State<SubCategories> {
 
                                                 return InkWell(
                                                   onTap: () {
-                                                    print('ontap presseddddd3');
                                                     var result = Navigator.push(
                                                       context,
                                                       MaterialPageRoute(
@@ -642,7 +640,6 @@ class _SubCategoriesState extends State<SubCategories> {
                                                       ),
                                                     );
                                                     result.then((value) {
-                                                      print(value);
                                                       if (mounted) {
                                                         setState(() {
                                                           isLoadingSubProductsList =

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:readymadeGroceryApp/model/counterModel.dart';
@@ -103,7 +101,6 @@ class _AllProductsState extends State<AllProducts> {
         sentryError.reportError(error, stackTrace);
       }
       if (index < totalIndex) {
-        print('check data fetch');
         if (getTokenValue) {
           getProductListMethodCardAdded(index);
         } else {
@@ -133,7 +130,6 @@ class _AllProductsState extends State<AllProducts> {
               productsList.addAll(onValue['response_data']['products']);
               index = productsList.length;
               totalIndex = onValue['response_data']["total"];
-              print('index $index totalindex $totalIndex');
               isLoadingProductsList = false;
               isNewProductsLoading = false;
             });
@@ -183,7 +179,6 @@ class _AllProductsState extends State<AllProducts> {
               productsList.addAll(onValue['response_data']['products']);
               index = productsList.length;
               totalIndex = onValue['response_data']["total"];
-              print('index $index totalindex $totalIndex');
               isLoadingProductsList = false;
               isNewProductsLoading = false;
             });

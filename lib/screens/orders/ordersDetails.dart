@@ -44,7 +44,6 @@ class _OrderDetailsState extends State<OrderDetails> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     currency = prefs.getString('currency');
     await LoginService.getOrderHistory(widget.orderId).then((onValue) {
-      print(onValue['response_data']['cart']['couponInfo']);
       try {
         if (onValue['response_code'] == 200) {
           if (mounted) {
@@ -142,7 +141,6 @@ class _OrderDetailsState extends State<OrderDetails> {
       isRatingSubmitting = true;
     });
     await ProductService.productRate(body).then((onValue) {
-      print(onValue);
       try {
         if (onValue['response_code'] == 201) {
           Navigator.pop(context);

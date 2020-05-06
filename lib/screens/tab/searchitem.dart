@@ -148,7 +148,6 @@ class _SearchItemState extends State<SearchItem> {
 
   void _searchForProductsCartAdded(String query) async {
     searchTerm = query;
-    print('searcj term $query');
     if (query.length > 2) {
       if (mounted) {
         setState(() {
@@ -157,7 +156,6 @@ class _SearchItemState extends State<SearchItem> {
         });
       }
       ProductService.getSearchListCartAdded(query).then((onValue) {
-        print('searcj term $query $onValue');
         try {
           if (onValue != null && onValue['response_data'] is List) {
             if (mounted) {

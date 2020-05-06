@@ -4,7 +4,6 @@ import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/model/addToCart.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
-import 'package:readymadeGroceryApp/screens/tab/mycart.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -164,13 +163,10 @@ class _ProductDetailsState extends State<ProductDetails>
 
   getProductDetailsLog() {
     ProductService.productDetailsLogin(widget.productID).then((value) {
-      print("logi ${value['response_data']['cartId']}");
-
       try {
         if (mounted) {
           setState(() {
             productDetail = value['response_data'];
-            print(productDetail['cartAddedQuantity']);
             if (productDetail['cartAddedQuantity'] != null) {
               quantity = productDetail['cartAddedQuantity'];
               isProductAlredayInCart = productDetail['cartAdded'];
@@ -201,7 +197,6 @@ class _ProductDetailsState extends State<ProductDetails>
 
   getProductDetailsWithLog() {
     ProductService.productDetailsWithoutLogin(widget.productID).then((value) {
-      print("without $value");
       try {
         if (mounted) {
           setState(() {
@@ -404,8 +399,6 @@ class _ProductDetailsState extends State<ProductDetails>
           ? productDetail['variant'][0]['unit'].toString()
           : variantUnit.toString()
     };
-    print('cart submit body $buyNowProduct');
-
     AddToCart.addToCartMethod(buyNowProduct).then((onValue) {
       try {
         if (mounted) {
