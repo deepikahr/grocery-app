@@ -326,7 +326,7 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                             showSnackbar(MyLocalizations.of(
                                                         context)
                                                     .limitedquantityavailableyoucantaddmorethan +
-                                                "${widget.variantList[0]['productstock']}" +
+                                                " ${widget.variantList[0]['productstock']} " +
                                                 MyLocalizations.of(context)
                                                     .ofthisitem);
                                           }
@@ -451,7 +451,7 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                             showSnackbar(MyLocalizations.of(
                                                         context)
                                                     .limitedquantityavailableyoucantaddmorethan +
-                                                "$variantStock" +
+                                                " $variantStock " +
                                                 MyLocalizations.of(context)
                                                     .ofthisitem);
                                           }

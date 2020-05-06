@@ -415,7 +415,7 @@ class _ProductDetailsState extends State<ProductDetails>
       }
       showSnackbar(MyLocalizations.of(context)
               .limitedquantityavailableyoucantaddmorethan +
-          "${variantStock == null ? productDetail['variant'][0]['productstock'] : variantStock}" +
+          " ${variantStock == null ? productDetail['variant'][0]['productstock'] : variantStock} " +
           MyLocalizations.of(context).ofthisitem);
     }
   }
@@ -627,7 +627,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                                       showSnackbar(MyLocalizations
                                                                   .of(context)
                                                               .limitedquantityavailableyoucantaddmorethan +
-                                                          "${variantStock == null ? productDetail['variant'][0]['productstock'] : variantStock} " +
+                                                          " ${variantStock == null ? productDetail['variant'][0]['productstock'] : variantStock} " +
                                                           MyLocalizations.of(
                                                                   context)
                                                               .ofthisitem);
