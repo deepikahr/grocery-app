@@ -167,7 +167,8 @@ class _AboutUsState extends State<AboutUs> {
                         child: Row(
                           children: <Widget>[
                             Icon(Icons.phone),
-                            Text(' Call Us', style: textbarlowRegularBlackd())
+                            Text(" " + MyLocalizations.of(context).callUs,
+                                style: textbarlowRegularBlackd())
                           ],
                         ),
                       ),
@@ -181,7 +182,8 @@ class _AboutUsState extends State<AboutUs> {
                         child: Row(
                           children: <Widget>[
                             Icon(Icons.email),
-                            Text(' Mail Us', style: textbarlowRegularBlackd())
+                            Text(' ' + MyLocalizations.of(context).mailUs,
+                                style: textbarlowRegularBlackd())
                           ],
                         ),
                       ),

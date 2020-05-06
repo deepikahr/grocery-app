@@ -334,11 +334,16 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(
-                          url['title'].length > 20
-                              ? url['title'].substring(0, 20) + ".."
-                              : url['title'],
-                          style: textbarlowBoldwhite(),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            right: 100,
+                          ),
+                          child: Text(
+                            url['title'],
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            style: textbarlowBoldwhite(),
+                          ),
                         ),
                         InkWell(
                           onTap: () {
@@ -372,7 +377,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                           },
                           child: Row(
                             children: <Widget>[
-                              Text('Order  now'),
+                              Text(MyLocalizations.of(context).ordernow),
                               Icon(Icons.arrow_right)
                             ],
                           ),
@@ -526,7 +531,10 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                                       " " +
                                                           list[i]['delaPercent']
                                                               .toString() +
-                                                          "% Off",
+                                                          "% " +
+                                                          MyLocalizations.of(
+                                                                  context)
+                                                              .off,
                                                       style:
                                                           hintSfboldwhitemed(),
                                                       textAlign:
@@ -690,7 +698,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                           style: textBarlowSemiBoldwbig()),
                                       Text(
                                         list[i]['delaPercent'].toString() +
-                                            "% OFF",
+                                            "% " +
+                                            MyLocalizations.of(context).off,
                                         style: textBarlowRegularrwhsm(),
                                       )
                                     ],
@@ -809,7 +818,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                     children: <Widget>[
                                       Text(
                                           list[i]['delaPercent'].toString() +
-                                              "% OFF",
+                                              "% " +
+                                              MyLocalizations.of(context).off,
                                           style: textoswaldboldwhite()),
                                       SizedBox(
                                         height: 5,

@@ -41,14 +41,14 @@ class _SearchItemState extends State<SearchItem> {
       isTokenGetLoading = false;
   List searchresult = new List();
   int quanity = 1;
-  String cartId;
+  String cartId, searchTerm;
   var variantPrice, cartData;
   String currency;
 
   @override
   void initState() {
-    super.initState();
     getCurrency();
+    super.initState();
   }
 
   getCurrency() async {
@@ -89,6 +89,7 @@ class _SearchItemState extends State<SearchItem> {
   }
 
   void _searchForProducts(String query) async {
+    searchTerm = query;
     if (query.length > 2) {
       if (mounted) {
         setState(() {
@@ -146,6 +147,8 @@ class _SearchItemState extends State<SearchItem> {
   }
 
   void _searchForProductsCartAdded(String query) async {
+    searchTerm = query;
+    print('searcj term $query');
     if (query.length > 2) {
       if (mounted) {
         setState(() {
@@ -154,6 +157,7 @@ class _SearchItemState extends State<SearchItem> {
         });
       }
       ProductService.getSearchListCartAdded(query).then((onValue) {
+        print('searcj term $query $onValue');
         try {
           if (onValue != null && onValue['response_data'] is List) {
             if (mounted) {
@@ -262,6 +266,7 @@ class _SearchItemState extends State<SearchItem> {
                         ),
                       ),
                       onSubmitted: (String term) {
+                        searchTerm = term;
                         if (getTokenValue) {
                           _searchForProductsCartAdded(term);
                         } else {
@@ -334,15 +339,13 @@ class _SearchItemState extends State<SearchItem> {
                                         crossAxisSpacing: 16,
                                         mainAxisSpacing: 16),
                                 itemBuilder: (BuildContext context, int index) {
-                                  if (searchresult[index]
-                                          ['averageRating'] ==
+                                  if (searchresult[index]['averageRating'] ==
                                       null) {
-                                    searchresult[index]
-                                        ['averageRating'] = 0;
+                                    searchresult[index]['averageRating'] = 0;
                                   }
                                   return InkWell(
                                     onTap: () {
-                                      Navigator.push(
+                                      var result = Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => ProductDetails(
@@ -356,6 +359,15 @@ class _SearchItemState extends State<SearchItem> {
                                           ),
                                         ),
                                       );
+                                      result.then((value) {
+                                        searchresult = [];
+                                        if (getTokenValue) {
+                                          _searchForProductsCartAdded(
+                                              searchTerm);
+                                        } else {
+                                          _searchForProducts(searchTerm);
+                                        }
+                                      });
                                     },
                                     child: Stack(
                                       children: <Widget>[
@@ -373,7 +385,8 @@ class _SearchItemState extends State<SearchItem> {
                                             rating: searchresult[index]
                                                     ['averageRating']
                                                 .toString(),
-                                            buttonName: "Add",
+                                            buttonName:
+                                                MyLocalizations.of(context).add,
                                             cartAdded: searchresult[index]
                                                     ['cartAdded'] ??
                                                 false,
@@ -459,7 +472,7 @@ class _SearchItemState extends State<SearchItem> {
                             children: <Widget>[
                               SizedBox(height: 7),
                               new Text(
-                                '${cartData['cart'].length} ' +
+                                '(${cartData['cart'].length})  ' +
                                     MyLocalizations.of(context).items,
                                 style: textBarlowRegularWhite(),
                               ),

@@ -882,7 +882,8 @@ class _CheckoutState extends State<Checkout> {
                           contentPadding: EdgeInsets.only(top: 5, bottom: 5),
                           titleChild: Text(
                             selectedAddress == null
-                                ? " You have not selected any address yet."
+                                ? MyLocalizations.of(context)
+                                    .youhavenotselectedanyaddressyet
                                 : '${selectedAddress['flatNo']}, ${selectedAddress['apartmentName']},${selectedAddress['address']}',
                             overflow: TextOverflow.clip,
                             maxLines: 1,

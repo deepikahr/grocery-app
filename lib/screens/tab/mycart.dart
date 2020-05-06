@@ -572,7 +572,10 @@ class _MyCartState extends State<MyCart> {
                                                                     [
                                                                     'delaPercent'])
                                                                 .toString() +
-                                                            "% off",
+                                                            "% " +
+                                                            MyLocalizations.of(
+                                                                    context)
+                                                                .off,
                                                         style:
                                                             textBarlowRegularBlack(),
                                                       )

@@ -158,8 +158,11 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
           addProductTocart = false;
         });
       }
-      showSnackbar(
-          "Limited quantity available, you can't add more than ${variantStock == null ? widget.variantsList[0]['productstock'] : variantStock} of this item");
+
+      showSnackbar(MyLocalizations.of(context)
+              .limitedquantityavailableyoucantaddmorethan +
+          " ${variantStock == null ? widget.variantsList[0]['productstock'] : variantStock} " +
+          MyLocalizations.of(context).ofthisitem);
     }
   }
 
@@ -227,8 +230,10 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                                     quantity) {
                                   _changeProductQuantity(true);
                                 } else {
-                                  showSnackbar(
-                                      "Limited quantity available, you can't add more than ${variantStock == null ? widget.variantsList[0]['productstock'] : variantStock} of this item");
+                                  showSnackbar(MyLocalizations.of(context)
+                                          .limitedquantityavailableyoucantaddmorethan +
+                                      " ${variantStock == null ? widget.variantsList[0]['productstock'] : variantStock} " +
+                                      MyLocalizations.of(context).ofthisitem);
                                 }
                               },
                               child: Icon(Icons.add),
@@ -311,11 +316,11 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                           text: TextSpan(
                             children: <TextSpan>[
                               TextSpan(
-                                text: '${quantity.toString()}',
+                                text: '(${quantity.toString()})  ',
                                 style: textBarlowRegularWhite(),
                               ),
                               TextSpan(
-                                  text: MyLocalizations.of(context).item,
+                                  text: MyLocalizations.of(context).items,
                                   style: textBarlowRegularWhite()),
                             ],
                           ),

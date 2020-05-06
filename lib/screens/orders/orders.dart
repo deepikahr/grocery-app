@@ -273,6 +273,8 @@ class _OrdersState extends State<Orders> {
                                       children: <Widget>[
                                         product(orderList[i]),
                                         orderList[i]['orderStatus'] !=
+                                                    "Cancelled" &&
+                                                orderList[i]['orderStatus'] !=
                                                     "DELIVERED" &&
                                                 orderList[i]['orderStatus'] !=
                                                     "Pending"
@@ -320,42 +322,47 @@ class _OrdersState extends State<Orders> {
             ),
           ),
           SizedBox(width: 17),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                '${orderDetails['cart']['cart'][0]['title']}' ?? "",
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-                style: textBarlowRegularrdark(),
-              ),
-              orderDetails['cart']['cart'].length == 1
-                  ? Container()
-                  : SizedBox(height: 5),
-              orderDetails['cart']['cart'].length == 1
-                  ? Container()
-                  : Text(
-                      'and ${(orderDetails['cart']['cart'].length - 1)} more items',
-                      style: textSMBarlowRegularrBlack(),
-                    ),
-              SizedBox(height: 10),
-              Text(
-                currency + orderDetails['grandTotal'].toString(),
-                style: titleLargeSegoeBlack(),
-              ),
-              SizedBox(height: 10),
-              Text(
-                MyLocalizations.of(context).ordered +
-                        ' : ' +
-                        DateFormat('dd/MM/yyyy, hh:mm a').format(
-                          DateTime.fromMillisecondsSinceEpoch(
-                              orderDetails['appTimestamp']),
-                        ) ??
-                    "",
-                style: textSMBarlowRegularrBlack(),
-              )
-            ],
+          Container(
+            width: MediaQuery.of(context).size.width - 146,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  '${orderDetails['cart']['cart'][0]['title']}' ?? "",
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: textBarlowRegularrdark(),
+                ),
+                orderDetails['cart']['cart'].length == 1
+                    ? Container()
+                    : SizedBox(height: 5),
+                orderDetails['cart']['cart'].length == 1
+                    ? Container()
+                    : Text(
+                        MyLocalizations.of(context).and +
+                            ' ${(orderDetails['cart']['cart'].length - 1)} ' +
+                            MyLocalizations.of(context).moreitems,
+                        style: textSMBarlowRegularrBlack(),
+                      ),
+                SizedBox(height: 10),
+                Text(
+                  currency + orderDetails['grandTotal'].toString(),
+                  style: titleLargeSegoeBlack(),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  MyLocalizations.of(context).ordered +
+                          ' : ' +
+                          DateFormat('dd/MM/yyyy, hh:mm a').format(
+                            DateTime.fromMillisecondsSinceEpoch(
+                                orderDetails['appTimestamp']),
+                          ) ??
+                      "",
+                  style: textSMBarlowRegularrBlack(),
+                )
+              ],
+            ),
           )
         ],
       ),
@@ -363,6 +370,7 @@ class _OrdersState extends State<Orders> {
   }
 
   orderTrack(orderDetails) {
+    print("dbd ${orderDetails['orderStatus']}");
     return Container(
       color: Color(0xFFF7F7F7),
       child: Column(
@@ -372,10 +380,11 @@ class _OrdersState extends State<Orders> {
             avatar: Column(
               children: <Widget>[
                 GFAvatar(
-                  backgroundColor: orderDetails['orderStatus'] == "Confirmed" ||
-                          orderDetails['orderStatus'] == "Out of delivery"
-                      ? green
-                      : greyb.withOpacity(0.5),
+                  backgroundColor:
+                      (orderDetails['orderStatus'] == "Confirmed" ||
+                              orderDetails['orderStatus'] == "Out for delivery")
+                          ? green
+                          : greyb.withOpacity(0.5),
                   radius: 6,
                 ),
                 SizedBox(
@@ -422,6 +431,12 @@ class _OrdersState extends State<Orders> {
                   ? titleSegoeGreen()
                   : titleSegoeGrey(),
             ),
+            icon: orderDetails['orderStatus'] == "Out for delivery"
+                ? Padding(
+                    padding: EdgeInsets.only(bottom: 20),
+                    child: SvgPicture.asset('lib/assets/icons/tick.svg'),
+                  )
+                : null,
             subTitle: Text(
               '',
               style: textSMBarlowRegularrGreyb(),
@@ -443,6 +458,12 @@ class _OrdersState extends State<Orders> {
               MyLocalizations.of(context).orderdelivered,
               style: titleSegoeGrey(),
             ),
+            icon: orderDetails['orderStatus'] == "DELIVERED"
+                ? Padding(
+                    padding: EdgeInsets.only(bottom: 20),
+                    child: SvgPicture.asset('lib/assets/icons/tick.svg'),
+                  )
+                : null,
             subTitle: Text(
               '',
               style: textSMBarlowRegularrGreyb(),

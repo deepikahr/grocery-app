@@ -16,7 +16,7 @@
         android:label="Readymade Grocery App"
         android:icon="@mipmap/ic_launcher">
         <uses-library android:name="org.apache.http.legacy" android:required="false"/>
-         <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyDXxt_aIn5HWQZg3gFYOqcuf8hjUuzmvKg"/>
+         <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyD6Q4UgAYOL203nuwNeBr4j_-yAd1U1gko"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

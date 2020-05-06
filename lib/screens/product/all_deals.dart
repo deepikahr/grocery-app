@@ -218,7 +218,7 @@ class _AllDealsListState extends State<AllDealsList> {
                                 ),
                               );
                             } else {
-                              Navigator.push(
+                              var result = Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => ProductDetails(
@@ -230,13 +230,21 @@ class _AllDealsListState extends State<AllDealsList> {
                                           : null),
                                 ),
                               );
+                              result.then((value) {
+                                if (widget.dealType == "TopDeals") {
+                                  getAllTopDealsListMethod();
+                                } else {
+                                  getAllTodayDealsListMethod();
+                                }
+                              });
                             }
                           },
                           child: DealsCard(
                             image: dealsList[i]['imageUrl'],
                             title: dealsList[i]['name'],
                             price: dealsList[i]['delaPercent'].toString() +
-                                "% off",
+                                "% " +
+                                MyLocalizations.of(context).off,
                           ),
                         );
                       },

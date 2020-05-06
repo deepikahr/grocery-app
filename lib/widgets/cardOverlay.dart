@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 
 class CardOverlay extends StatelessWidget {
@@ -17,11 +18,11 @@ class CardOverlay extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Oops !',
+              MyLocalizations.of(context).oops,
               style: textBarlowSemiBoldwhite(),
             ),
             Text(
-              'Out of stock',
+              MyLocalizations.of(context).outOfStock,
               style: textBarlowSemiBoldwhite(),
             ),
           ],

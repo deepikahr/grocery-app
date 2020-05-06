@@ -462,58 +462,6 @@ class _OrderDetailsState extends State<OrderDetails> {
                         ],
                       ),
                     );
-                    // return Column(
-                    //   children: <Widget>[
-                    //     Container(
-                    //       padding:
-                    //           EdgeInsets.only(left: 15, right: 15, bottom: 10),
-                    //       child: Row(
-                    //         children: <Widget>[
-                    //           Flexible(
-                    //               child: Column(
-                    //             crossAxisAlignment: CrossAxisAlignment.start,
-                    //             children: <Widget>[
-                    //               Text(
-                    //                 orderHistory['cart']['cart'][i]['title'],
-                    //                 style: textBarlowMediumBlack(),
-                    //               ),
-                    //               SizedBox(height: 15),
-                    //               Text(
-                    //                 orderHistory['cart']['cart'][i]
-                    //                                 ['description']
-                    //                             .length >
-                    //                         25
-                    //                     ? orderHistory['cart']['cart'][i]
-                    //                                 ['description']
-                    //                             .substring(0, 25) +
-                    //                         ".."
-                    //                     : orderHistory['cart']['cart'][i]
-                    //                         ['description'],
-                    //                 style: textBarlowRegularBlack(),
-                    //               ),
-                    //               SizedBox(height: 15),
-                    //               Row(
-                    //                 mainAxisAlignment: MainAxisAlignment.start,
-                    //                 children: <Widget>[
-                    //                   Text(
-                    //                     currency,
-                    //                     style: textBarlowBoldBlack(),
-                    //                   ),
-                    //                   Text(
-                    //                     orderHistory['cart']['cart'][i]['price']
-                    //                         .toString(),
-                    //                     style: textBarlowBoldBlack(),
-                    //                   ),
-                    //                 ],
-                    //               ),
-
-                    // ],
-                    // )
-                    // ],
-                    // ),
-                    //     ),
-                    //   ],
-                    // );
                   },
                 ),
                 Padding(

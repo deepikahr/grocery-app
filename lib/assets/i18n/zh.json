@@ -439,5 +439,17 @@
   "products": "产品",
   "deal": "处理",
   "topDeals": "顶级交易",
-  "dealsoftheday": "交易的一天"
+  "dealsoftheday": "交易的一天",
+  "limitedquantityavailableyoucantaddmorethan": "Quantità limitata disponibile, non puoi aggiungere più di",
+  "ofthisitem": "di questo articolo",
+  "youhavenotselectedanyaddressyet": " Non hai ancora selezionato alcun indirizzo.",
+  "mailUs": "Scrivici",
+  "callUs": "Chiamaci",
+  "yourLocation": "La tua posizione",
+  "off": "OFF",
+  "ordernow": "Ordina adesso",
+  "oops": "Oops !",
+  "outOfStock": "Esaurito",
+  "and": "e",
+  "moreitems": "più articoli"
 }

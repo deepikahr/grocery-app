@@ -8,6 +8,7 @@ import 'package:readymadeGroceryApp/model/bottomSheet.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
@@ -322,8 +323,12 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                               });
                                             }
                                           } else {
-                                            showSnackbar(
-                                                "Limited quantity available, you can't add more than ${widget.variantList[0]['productstock']} of this item");
+                                            showSnackbar(MyLocalizations.of(
+                                                        context)
+                                                    .limitedquantityavailableyoucantaddmorethan +
+                                                " ${widget.variantList[0]['productstock']} " +
+                                                MyLocalizations.of(context)
+                                                    .ofthisitem);
                                           }
                                         });
                                       }
@@ -443,8 +448,12 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                               widget.productList["_id"],
                                             );
                                           } else {
-                                            showSnackbar(
-                                                "Limited quantity available, you can't add more than $variantStock of this item");
+                                            showSnackbar(MyLocalizations.of(
+                                                        context)
+                                                    .limitedquantityavailableyoucantaddmorethan +
+                                                " $variantStock " +
+                                                MyLocalizations.of(context)
+                                                    .ofthisitem);
                                           }
                                         }
                                       },
