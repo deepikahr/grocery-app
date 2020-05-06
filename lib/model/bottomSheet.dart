@@ -161,7 +161,7 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
 
       showSnackbar(MyLocalizations.of(context)
               .limitedquantityavailableyoucantaddmorethan +
-          "${variantStock == null ? widget.variantsList[0]['productstock'] : variantStock} " +
+          " ${variantStock == null ? widget.variantsList[0]['productstock'] : variantStock} " +
           MyLocalizations.of(context).ofthisitem);
     }
   }
@@ -232,7 +232,7 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                                 } else {
                                   showSnackbar(MyLocalizations.of(context)
                                           .limitedquantityavailableyoucantaddmorethan +
-                                      "${variantStock == null ? widget.variantsList[0]['productstock'] : variantStock} " +
+                                      " ${variantStock == null ? widget.variantsList[0]['productstock'] : variantStock} " +
                                       MyLocalizations.of(context).ofthisitem);
                                 }
                               },
