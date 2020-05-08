@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/components/accordian/gf_accordian.dart';
 import 'package:getflutter/getflutter.dart';
-import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:readymadeGroceryApp/screens/drawer/add-address.dart';
 import 'package:readymadeGroceryApp/screens/drawer/edit-address.dart';
@@ -21,6 +20,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dotted_border/dotted_border.dart';
 
 import '../../service/constants.dart';
+import 'package:flutter_map_picker/flutter_map_picker.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -65,7 +65,8 @@ class _CheckoutState extends State<Checkout> {
       deliverySlot = false,
       isLoadingCart = false,
       isDeliveryChargeLoading = false;
-  LocationResult _pickedLocation;
+  // LocationResult _pickedLocation;
+  PlacePickerResult _pickerLocation;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   @override
@@ -1013,38 +1014,40 @@ class _CheckoutState extends State<Checkout> {
                                 padding: EdgeInsets.only(left: 10, right: 10),
                                 child: GFButton(
                                   onPressed: () async {
-                                    LocationResult result =
-                                        await showLocationPicker(
-                                      context,
-                                      Constants.GOOGLE_API_KEY,
-                                      initialCenter:
-                                          LatLng(31.1975844, 29.9598339),
-                                      myLocationButtonEnabled: true,
-                                      layersButtonEnabled: true,
-                                    );
-                                    if (result != null) {
-                                      setState(() async {
-                                        _pickedLocation = result;
-
-                                        Map address = await Navigator.push(
+                                    PlacePickerResult pickerResult =
+                                        await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    PlacePickerScreen(
+                                                      googlePlacesApiKey:
+                                                          Constants
+                                                              .GOOGLE_API_KEY,
+                                                      initialPosition: LatLng(
+                                                          31.1975844,
+                                                          29.9598339),
+                                                      mainColor: primary,
+                                                      mapStrings:
+                                                          MapPickerStrings
+                                                              .english(),
+                                                      placeAutoCompleteLanguage:
+                                                          'en',
+                                                    )));
+                                    if (pickerResult != null) {
+                                      setState(() {
+                                        Navigator.push(
                                           context,
                                           new MaterialPageRoute(
                                             builder: (BuildContext context) =>
                                                 new AddAddress(
-                                              isCheckout: true,
-                                              pickedLocation: _pickedLocation,
+                                              isProfile: true,
+                                              pickedLocation: pickerResult,
                                               locale: widget.locale,
                                               localizedValues:
                                                   widget.localizedValues,
                                             ),
                                           ),
                                         );
-
-                                        if (address != null) {
-                                          getAddress();
-                                        } else {
-                                          getAddress();
-                                        }
                                       });
                                     }
                                   },
