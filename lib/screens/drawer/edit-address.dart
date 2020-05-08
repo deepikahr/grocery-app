@@ -152,13 +152,8 @@ class _EditAddressState extends State<EditAddress> {
                 style: TextStyle(color: green),
               ),
               onPressed: () {
-                if (widget.isProfile == true) {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop(address);
-                } else {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
-                }
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
               },
             ),
           ],
