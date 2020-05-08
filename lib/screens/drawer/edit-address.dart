@@ -1,10 +1,9 @@
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map_picker/flutter_map_picker.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
-import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -42,8 +41,9 @@ class _EditAddressState extends State<EditAddress> {
   LocationData currentLocation;
   bool chooseAddress = false, isUpdateAddress = false;
   StreamSubscription<LocationData> locationSubscription;
+  PlacePickerResult _pickedLocation;
   int selectedRadio = 0, selectedRadioFirst;
-  LocationResult _pickedLocation;
+  // LocationResult _pickedLocation;
   String fullAddress;
   @override
   void initState() {
@@ -239,16 +239,21 @@ class _EditAddressState extends State<EditAddress> {
                         color: primary,
                         blockButton: true,
                         onPressed: () async {
-                          LocationResult result = await showLocationPicker(
-                            context,
-                            Constants.GOOGLE_API_KEY,
-                            initialCenter: LatLng(31.1975844, 29.9598339),
-                            myLocationButtonEnabled: true,
-                            layersButtonEnabled: true,
-                          );
+                          PlacePickerResult pickerResult = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => PlacePickerScreen(
+                                        googlePlacesApiKey:
+                                            Constants.GOOGLE_API_KEY,
+                                        initialPosition:
+                                            LatLng(31.1975844, 29.9598339),
+                                        mainColor: primary,
+                                        mapStrings: MapPickerStrings.english(),
+                                        placeAutoCompleteLanguage: 'en',
+                                      )));
                           setState(() {
-                            _pickedLocation = result;
-                            fullAddress = result.address.toString();
+                            _pickedLocation = pickerResult;
+                            fullAddress = pickerResult.address.toString();
                           });
                         },
                         text: MyLocalizations.of(context).updateAddress,
