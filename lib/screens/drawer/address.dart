@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
-import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:readymadeGroceryApp/screens/drawer/add-address.dart';
 import 'package:readymadeGroceryApp/screens/drawer/edit-address.dart';
@@ -13,6 +12,7 @@ import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/address-service.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:flutter_map_picker/flutter_map_picker.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -28,7 +28,9 @@ class Address extends StatefulWidget {
 class _AddressState extends State<Address> {
   bool isProfile = false, addressLoading = false;
   List addressList = List();
-  LocationResult _pickedLocation;
+  // LocationResult _pickedLocation;
+  PlacePickerResult pickedLocation;
+
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   @override
@@ -225,22 +227,24 @@ class _AddressState extends State<Address> {
             color: primary,
             blockButton: true,
             onPressed: () async {
-              LocationResult result = await showLocationPicker(
-                context,
-                Constants.GOOGLE_API_KEY,
-                initialCenter: LatLng(31.1975844, 29.9598339),
-                myLocationButtonEnabled: true,
-                layersButtonEnabled: true,
-              );
-              if (result != null) {
+              PlacePickerResult pickerResult = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PlacePickerScreen(
+                            googlePlacesApiKey: Constants.GOOGLE_API_KEY,
+                            initialPosition: LatLng(31.1975844, 29.9598339),
+                            mainColor: primary,
+                            mapStrings: MapPickerStrings.english(),
+                            placeAutoCompleteLanguage: 'en',
+                          )));
+              if (pickerResult != null) {
                 setState(() {
-                  _pickedLocation = result;
                   Navigator.push(
                     context,
                     new MaterialPageRoute(
                       builder: (BuildContext context) => new AddAddress(
                         isProfile: true,
-                        pickedLocation: _pickedLocation,
+                        pickedLocation: pickerResult,
                         locale: widget.locale,
                         localizedValues: widget.localizedValues,
                       ),

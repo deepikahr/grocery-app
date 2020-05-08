@@ -3,13 +3,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
-import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:readymadeGroceryApp/screens/drawer/address.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/address-service.dart';
 import 'package:location/location.dart';
+import 'package:flutter_map_picker/flutter_map_picker.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -25,7 +25,8 @@ class AddAddress extends StatefulWidget {
       this.localizedValues})
       : super(key: key);
   final bool isCheckout, isProfile;
-  final LocationResult pickedLocation;
+  // final LocationResult pickedLocation;
+  final PlacePickerResult pickedLocation;
   final Map<String, dynamic> updateAddressID;
   final LocationData currentLocation;
   final Map<String, Map<String, String>> localizedValues;
@@ -65,8 +66,9 @@ class _AddAddressState extends State<AddAddress> {
         isLoading = true;
       });
     }
-
-    address['address'] = widget.pickedLocation.address;
+    if (widget.pickedLocation.address != null) {
+      address['address'] = widget.pickedLocation.address;
+    } else {}
     var location = {
       "lat": widget.pickedLocation.latLng.latitude,
       "long": widget.pickedLocation.latLng.longitude
