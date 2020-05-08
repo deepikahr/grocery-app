@@ -239,7 +239,7 @@ class _AddressState extends State<Address> {
                           )));
               if (pickerResult != null) {
                 setState(() {
-                  Navigator.push(
+                  var result = Navigator.push(
                     context,
                     new MaterialPageRoute(
                       builder: (BuildContext context) => new AddAddress(
@@ -250,6 +250,9 @@ class _AddressState extends State<Address> {
                       ),
                     ),
                   );
+                  result.then((res) {
+                    getAddress();
+                  });
                 });
               }
             },
@@ -268,8 +271,8 @@ class _AddressState extends State<Address> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           GFButton(
-            onPressed: () async {
-              await Navigator.push(
+            onPressed: () {
+              var result = Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => EditAddress(
@@ -280,7 +283,9 @@ class _AddressState extends State<Address> {
                   ),
                 ),
               );
-              getAddress();
+              result.then((update) {
+                getAddress();
+              });
             },
             child: Padding(
               padding: const EdgeInsets.only(left: 18.0, right: 18.0),
