@@ -183,7 +183,7 @@ class _SavedItemsState extends State<SavedItems> {
 
                             return InkWell(
                               onTap: () {
-                                Navigator.push(
+                                var result = Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => ProductDetails(
@@ -195,6 +195,9 @@ class _SavedItemsState extends State<SavedItems> {
                                     ),
                                   ),
                                 );
+                                result.then((value) {
+                                  getToken();
+                                });
                               },
                               child: Stack(
                                 children: <Widget>[
@@ -211,7 +214,8 @@ class _SavedItemsState extends State<SavedItems> {
                                       rating: favProductList[i]['product']
                                               ['averageRating']
                                           .toString(),
-                                      buttonName: MyLocalizations.of(context).add,
+                                      buttonName:
+                                          MyLocalizations.of(context).add,
                                       cartAdded: favProductList[i]
                                               ['cartAdded'] ??
                                           false,
@@ -294,7 +298,7 @@ class _SavedItemsState extends State<SavedItems> {
                             children: <Widget>[
                               SizedBox(height: 7),
                               new Text(
-                                '${cartData['cart'].length} ' +
+                                '(${cartData['cart'].length})  ' +
                                     MyLocalizations.of(context).items,
                                 style: textBarlowRegularWhite(),
                               ),

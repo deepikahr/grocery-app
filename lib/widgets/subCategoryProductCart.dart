@@ -11,7 +11,6 @@ import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:readymadeGroceryApp/widgets/loader.dart';
 
 class SubCategoryProductCard extends StatefulWidget {
   final image,

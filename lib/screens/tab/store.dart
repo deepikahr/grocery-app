@@ -334,11 +334,16 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(
-                          url['title'].length > 20
-                              ? url['title'].substring(0, 20) + ".."
-                              : url['title'],
-                          style: textbarlowBoldwhite(),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            right: 100,
+                          ),
+                          child: Text(
+                            url['title'],
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            style: textbarlowBoldwhite(),
+                          ),
                         ),
                         InkWell(
                           onTap: () {

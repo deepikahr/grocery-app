@@ -140,7 +140,6 @@ class LoginService {
   // notification list
 
   static Future<Map<String, dynamic>> getOrderHistory(orderId) async {
-    print(orderId);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token');
     final response = await client

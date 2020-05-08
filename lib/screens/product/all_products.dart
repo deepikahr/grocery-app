@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:readymadeGroceryApp/model/counterModel.dart';
@@ -56,9 +54,7 @@ class _AllProductsState extends State<AllProducts> {
         isLoadingProductsList = true;
       });
     }
-
     getTokenValueMethod();
-
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
@@ -69,7 +65,6 @@ class _AllProductsState extends State<AllProducts> {
         }
       }
     });
-
     super.initState();
   }
 
@@ -105,6 +100,13 @@ class _AllProductsState extends State<AllProducts> {
         }
         sentryError.reportError(error, stackTrace);
       }
+      if (index < totalIndex) {
+        if (getTokenValue) {
+          getProductListMethodCardAdded(index);
+        } else {
+          getProductListMethod(index);
+        }
+      }
     }).catchError((error) {
       if (mounted) {
         setState(() {
@@ -113,13 +115,6 @@ class _AllProductsState extends State<AllProducts> {
       }
       sentryError.reportError(error, null);
     });
-    if (index < totalIndex) {
-      if (getTokenValue) {
-        getProductListMethodCardAdded(index);
-      } else {
-        getProductListMethod(index);
-      }
-    }
   }
 
   getProductListMethod(productIndex) async {
@@ -135,7 +130,6 @@ class _AllProductsState extends State<AllProducts> {
               productsList.addAll(onValue['response_data']['products']);
               index = productsList.length;
               totalIndex = onValue['response_data']["total"];
-              print('index $index totalindex $totalIndex');
               isLoadingProductsList = false;
               isNewProductsLoading = false;
             });
@@ -185,7 +179,6 @@ class _AllProductsState extends State<AllProducts> {
               productsList.addAll(onValue['response_data']['products']);
               index = productsList.length;
               totalIndex = onValue['response_data']["total"];
-              print('index $index totalindex $totalIndex');
               isLoadingProductsList = false;
               isNewProductsLoading = false;
             });
@@ -252,7 +245,7 @@ class _AllProductsState extends State<AllProducts> {
         actions: <Widget>[
           InkWell(
             onTap: () {
-              Navigator.push(
+              var result = Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => SearchItem(
@@ -264,6 +257,14 @@ class _AllProductsState extends State<AllProducts> {
                       favProductList: getTokenValue ? favProductList : null),
                 ),
               );
+              result.then((value) {
+                if (mounted) {
+                  setState(() {
+                    isLoadingProductsList = true;
+                  });
+                }
+                getTokenValueMethod();
+              });
             },
             child: Padding(
               padding: EdgeInsets.only(right: 15, left: 15),
@@ -318,7 +319,7 @@ class _AllProductsState extends State<AllProducts> {
                                 productsList[i]['outOfStock'] != false
                             ? InkWell(
                                 onTap: () {
-                                  Navigator.push(
+                                  var result = Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => ProductDetails(
@@ -331,17 +332,23 @@ class _AllProductsState extends State<AllProducts> {
                                               : null),
                                     ),
                                   );
+                                  result.then((value) {
+                                    if (mounted) {
+                                      setState(() {
+                                        isLoadingProductsList = true;
+                                      });
+                                    }
+                                    index = 0;
+                                    totalIndex = 1;
+                                    productsList = [];
+                                    getTokenValueMethod();
+                                  });
                                 },
                                 child: Stack(
                                   children: <Widget>[
                                     SubCategoryProductCard(
                                         image: productsList[i]['imageUrl'],
                                         title: productsList[i]['title'],
-                                        // .length > 10
-                                        //     ? productsList[i]['title']
-                                        //             .substring(0, 10) +
-                                        //         ".."
-                                        //     : productsList[i]['title'],
                                         currency: currency,
                                         category: productsList[i]['category'],
                                         price: productsList[i]['variant'][0]
@@ -397,11 +404,6 @@ class _AllProductsState extends State<AllProducts> {
                                   SubCategoryProductCard(
                                       image: productsList[i]['imageUrl'],
                                       title: productsList[i]['title'],
-                                      // .length > 10
-                                      //     ? productsList[i]['title']
-                                      //             .substring(0, 10) +
-                                      //         ".."
-                                      //     : productsList[i]['title'],
                                       currency: currency,
                                       category: productsList[i]['category'],
                                       price: productsList[i]['variant'][0]
@@ -469,7 +471,7 @@ class _AllProductsState extends State<AllProducts> {
                             children: <Widget>[
                               SizedBox(height: 7),
                               new Text(
-                                '${cartData['cart'].length} ' +
+                                '(${cartData['cart'].length})  ' +
                                     MyLocalizations.of(context).items,
                                 style: textBarlowRegularWhite(),
                               ),

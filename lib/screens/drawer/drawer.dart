@@ -6,6 +6,7 @@ import 'package:readymadeGroceryApp/screens/drawer/chatpage.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/product/all_products.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../main.dart';
@@ -66,8 +67,9 @@ class _DrawerPageState extends State<DrawerPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      'Readymade\nGrocery',
+                      Constants.APP_NAME.split(' ').join('\n'),
                       textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
                       style: textbarlowBoldWhitebig(),
                     ),
                   ],
@@ -107,7 +109,7 @@ class _DrawerPageState extends State<DrawerPage> {
                     : Container(),
                 getTokenValue
                     ? _buildMenuTileList('lib/assets/icons/location.png',
-                        MyLocalizations.of(context).savedAddress, 0,
+                        MyLocalizations.of(context).address, 0,
                         notOpen: false,
                         route: Address(
                           locale: widget.locale,

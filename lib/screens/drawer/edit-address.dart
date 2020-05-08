@@ -43,7 +43,6 @@ class _EditAddressState extends State<EditAddress> {
   StreamSubscription<LocationData> locationSubscription;
   PlacePickerResult _pickedLocation;
   int selectedRadio = 0, selectedRadioFirst;
-  // LocationResult _pickedLocation;
   String fullAddress;
   @override
   void initState() {

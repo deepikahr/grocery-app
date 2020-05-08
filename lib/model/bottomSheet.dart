@@ -316,11 +316,11 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                           text: TextSpan(
                             children: <TextSpan>[
                               TextSpan(
-                                text: '${quantity.toString()}',
+                                text: '(${quantity.toString()}) ',
                                 style: textBarlowRegularWhite(),
                               ),
                               TextSpan(
-                                  text: MyLocalizations.of(context).item,
+                                  text: MyLocalizations.of(context).items,
                                   style: textBarlowRegularWhite()),
                             ],
                           ),

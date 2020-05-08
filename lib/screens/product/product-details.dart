@@ -3,7 +3,8 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/model/addToCart.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
-import 'package:readymadeGroceryApp/screens/tab/mycart.dart';
+import 'package:readymadeGroceryApp/screens/home/home.dart';
+import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
@@ -48,6 +49,7 @@ class _ProductDetailsState extends State<ProductDetails>
   String variantUnit, variantId, favId, currency;
   List<Variants> variantList;
   List favProductList;
+  String currentCardId;
 
   int value;
   int groupValue = 0;
@@ -58,7 +60,8 @@ class _ProductDetailsState extends State<ProductDetails>
       addProductTocart = false,
       isGetProductRating = false,
       isProductDetails = false,
-      isFavProductLoading = false;
+      isFavProductLoading = false,
+      isProductAlredayInCart = false;
   int quantity = 1, variantPrice, variantStock;
   void _changeProductQuantity(bool increase) {
     if (increase) {
@@ -160,15 +163,14 @@ class _ProductDetailsState extends State<ProductDetails>
 
   getProductDetailsLog() {
     ProductService.productDetailsLogin(widget.productID).then((value) {
-      print("logi $value");
-
       try {
         if (mounted) {
           setState(() {
             productDetail = value['response_data'];
-            print(productDetail['cartAddedQuantity']);
             if (productDetail['cartAddedQuantity'] != null) {
               quantity = productDetail['cartAddedQuantity'];
+              isProductAlredayInCart = productDetail['cartAdded'];
+              currentCardId = value['response_data']['cartId'];
             }
             isProductDetails = false;
           });
@@ -195,7 +197,6 @@ class _ProductDetailsState extends State<ProductDetails>
 
   getProductDetailsWithLog() {
     ProductService.productDetailsWithoutLogin(widget.productID).then((value) {
-      print("without $value");
       try {
         if (mounted) {
           setState(() {
@@ -361,52 +362,17 @@ class _ProductDetailsState extends State<ProductDetails>
             ? productDetail['variant'][0]['productstock']
             : variantStock) >=
         quantity) {
-      Map<String, dynamic> buyNowProduct = {
-        "category": data['category'],
-        "subcategory": data['subcategory'],
-        'productId': data['_id'].toString(),
-        'quantity': quantity,
-        "price": double.parse(variantPrice == null
-            ? productDetail['variant'][0]['price'].toString()
-            : variantPrice.toString()),
-        "unit": variantUnit == null
-            ? productDetail['variant'][0]['unit'].toString()
-            : variantUnit.toString()
-      };
-      AddToCart.addToCartMethod(buyNowProduct).then((onValue) {
-        try {
-          if (mounted) {
-            setState(() {
-              addProductTocart = false;
-            });
-          }
-          if (onValue['response_code'] == 200) {
-            Navigator.push(
-              context,
-              new MaterialPageRoute(
-                builder: (BuildContext context) => new MyCart(
-                  locale: widget.locale,
-                  localizedValues: widget.localizedValues,
-                ),
-              ),
-            );
-          }
-        } catch (error, stackTrace) {
-          if (mounted) {
-            setState(() {
-              addProductTocart = false;
-            });
-          }
-          sentryError.reportError(error, stackTrace);
-        }
-      }).catchError((error) {
-        if (mounted) {
-          setState(() {
-            addProductTocart = false;
-          });
-        }
-        sentryError.reportError(error, null);
-      });
+      if (isProductAlredayInCart) {
+        Map<String, dynamic> body = {
+          'cartId': currentCardId,
+          'productId': data['_id'].toString(),
+        };
+        await CartService.deleteDataFromCart(body).then((onValue) {
+          addProductToCart(data);
+        });
+      } else {
+        addProductToCart(data);
+      }
     } else {
       if (mounted) {
         setState(() {
@@ -418,6 +384,60 @@ class _ProductDetailsState extends State<ProductDetails>
           " ${variantStock == null ? productDetail['variant'][0]['productstock'] : variantStock} " +
           MyLocalizations.of(context).ofthisitem);
     }
+  }
+
+  addProductToCart(data) {
+    Map<String, dynamic> buyNowProduct = {
+      "category": data['category'],
+      "subcategory": data['subcategory'],
+      'productId': data['_id'].toString(),
+      'quantity': quantity,
+      "price": double.parse(variantPrice == null
+          ? productDetail['variant'][0]['price'].toString()
+          : variantPrice.toString()),
+      "unit": variantUnit == null
+          ? productDetail['variant'][0]['unit'].toString()
+          : variantUnit.toString()
+    };
+    AddToCart.addToCartMethod(buyNowProduct).then((onValue) {
+      try {
+        if (mounted) {
+          setState(() {
+            addProductTocart = false;
+            groupValue = 0;
+          });
+        }
+        if (onValue['response_code'] == 200) {
+          var result = Navigator.push(
+            context,
+            new MaterialPageRoute(
+              builder: (BuildContext context) => new Home(
+                currentIndex: 2,
+                locale: widget.locale,
+                localizedValues: widget.localizedValues,
+              ),
+            ),
+          );
+          result.then((value) {
+            getTokenValueMethod();
+          });
+        }
+      } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            addProductTocart = false;
+          });
+        }
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          addProductTocart = false;
+        });
+      }
+      sentryError.reportError(error, null);
+    });
   }
 
   @override
@@ -815,11 +835,11 @@ class _ProductDetailsState extends State<ProductDetails>
                                 text: TextSpan(
                                   children: <TextSpan>[
                                     TextSpan(
-                                      text: '${quantity.toString()}',
+                                      text: '(${quantity.toString()})  ',
                                       style: textBarlowRegularWhite(),
                                     ),
                                     TextSpan(
-                                        text: MyLocalizations.of(context).item,
+                                        text: MyLocalizations.of(context).items,
                                         style: textBarlowRegularWhite()),
                                   ],
                                 ),

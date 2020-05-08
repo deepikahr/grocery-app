@@ -65,7 +65,6 @@ class _OrdersState extends State<Orders> {
           if (mounted) {
             setState(() {
               orderList = onValue['response_data'];
-              print(orderList);
               isLoading = false;
             });
           }
@@ -252,7 +251,6 @@ class _OrdersState extends State<Orders> {
                           itemCount:
                               orderList.length == null ? 0 : orderList.length,
                           itemBuilder: (BuildContext context, int i) {
-                            print(orderList[i]['orderStatus']);
                             return orderList[i]['cart'] == null
                                 ? Container()
                                 : InkWell(
@@ -370,7 +368,6 @@ class _OrdersState extends State<Orders> {
   }
 
   orderTrack(orderDetails) {
-    print("dbd ${orderDetails['orderStatus']}");
     return Container(
       color: Color(0xFFF7F7F7),
       child: Column(

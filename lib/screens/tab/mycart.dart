@@ -135,7 +135,6 @@ class _MyCartState extends State<MyCart> {
       });
     }
     await CartService.updateProductToCart(body).then((onValue) {
-      print(onValue);
       try {
         if (mounted) {
           if (onValue['response_code'] == 400) {

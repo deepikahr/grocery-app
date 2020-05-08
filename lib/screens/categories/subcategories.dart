@@ -41,7 +41,7 @@ class _SubCategoriesState extends State<SubCategories> {
   List subProductsList, favProductList, subCategryList, subCategryByProduct;
 
   bool isSelected = true, isSelectedIndexZero = false;
-  String currency, isSelectetedId;
+  String currency, isSelectetedId, currentSubCategoryId;
   var cartData;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -237,6 +237,11 @@ class _SubCategoriesState extends State<SubCategories> {
         enablePullUp: false,
         controller: _refreshController,
         onRefresh: () {
+          if (mounted) {
+            setState(() {
+              isLoadingSubProductsList = true;
+            });
+          }
           if (widget.token) {
             getProductToCategoryCartAdded(widget.catId);
           } else {
@@ -321,6 +326,9 @@ class _SubCategoriesState extends State<SubCategories> {
                                                   isSelectetedId = null;
                                                 });
                                               }
+                                              currentSubCategoryId =
+                                                  subCategryList[0]['_id']
+                                                      .toString();
                                               if (widget.token == true) {
                                                 getProductToSubCategoryCartAdded(
                                                     subCategryList[0]['_id']
@@ -369,6 +377,9 @@ class _SubCategoriesState extends State<SubCategories> {
                                                   subCategryList[i]['_id'];
                                             });
                                           }
+                                          currentSubCategoryId =
+                                              subCategryList[i]['_id']
+                                                  .toString();
                                           if (widget.token == true) {
                                             getProductToSubCategoryCartAdded(
                                                 subCategryList[i]['_id']
@@ -453,7 +464,7 @@ class _SubCategoriesState extends State<SubCategories> {
 
                                                 return InkWell(
                                                   onTap: () {
-                                                    Navigator.push(
+                                                    var result = Navigator.push(
                                                       context,
                                                       MaterialPageRoute(
                                                         builder: (context) => ProductDetails(
@@ -470,6 +481,16 @@ class _SubCategoriesState extends State<SubCategories> {
                                                                 : null),
                                                       ),
                                                     );
+                                                    result.then((value) {
+                                                      if (mounted) {
+                                                        setState(() {
+                                                          isLoadingSubCatProductsList =
+                                                              true;
+                                                        });
+                                                      }
+                                                      getProductToSubCategoryCartAdded(
+                                                          currentSubCategoryId);
+                                                    });
                                                   },
                                                   child: Stack(
                                                     children: <Widget>[
@@ -601,7 +622,7 @@ class _SubCategoriesState extends State<SubCategories> {
 
                                                 return InkWell(
                                                   onTap: () {
-                                                    Navigator.push(
+                                                    var result = Navigator.push(
                                                       context,
                                                       MaterialPageRoute(
                                                         builder: (context) => ProductDetails(
@@ -618,6 +639,23 @@ class _SubCategoriesState extends State<SubCategories> {
                                                                 : null),
                                                       ),
                                                     );
+                                                    result.then((value) {
+                                                      if (mounted) {
+                                                        setState(() {
+                                                          isLoadingSubProductsList =
+                                                              true;
+                                                        });
+                                                      }
+                                                      if (widget.token ==
+                                                          true) {
+                                                        getProductToCategoryCartAdded(
+                                                            widget.catId);
+                                                        getFavListApi();
+                                                      } else {
+                                                        getProductToCategory(
+                                                            widget.catId);
+                                                      }
+                                                    });
                                                   },
                                                   child: Stack(
                                                     children: <Widget>[
@@ -725,7 +763,7 @@ class _SubCategoriesState extends State<SubCategories> {
                             children: <Widget>[
                               SizedBox(height: 7),
                               new Text(
-                                '${cartData['cart'].length} ' +
+                                '(${cartData['cart'].length})  ' +
                                     MyLocalizations.of(context).items,
                                 style: textBarlowRegularWhite(),
                               ),

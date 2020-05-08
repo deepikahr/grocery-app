@@ -33,7 +33,6 @@ class _AboutUsState extends State<AboutUs> {
       });
     }
     LoginService.aboutUs().then((value) {
-      print(value);
       try {
         if (value['response_code'] == 200) {
           if (mounted) {
@@ -82,13 +81,13 @@ class _AboutUsState extends State<AboutUs> {
     }
   }
 
-  _launchURL(location) async {
-    if (await canLaunch(location)) {
-      await launch(location);
-    } else {
-      throw 'Could not launch $location';
-    }
-  }
+  // _launchURL(location) async {
+  //   if (await canLaunch(location)) {
+  //     await launch(location);
+  //   } else {
+  //     throw 'Could not launch $location';
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -115,8 +114,6 @@ class _AboutUsState extends State<AboutUs> {
                       child: Center(
                         child: Image.network(
                           aboutUsDatails['userApp']['imageUrl'],
-                          width: 135,
-                          height: 70,
                         ),
                       ),
                     ),

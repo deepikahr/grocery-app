@@ -252,30 +252,6 @@ class _AddressState extends State<Address> {
                   );
                 });
               }
-
-              //   LocationResult result = await showLocationPicker(
-              //     context,
-              //     Constants.GOOGLE_API_KEY,
-              //     initialCenter: LatLng(31.1975844, 29.9598339),
-              //     myLocationButtonEnabled: true,
-              //     layersButtonEnabled: true,
-              //   );
-              //   if (result != null) {
-              //     setState(() {
-              //       _pickedLocation = result;
-              //       Navigator.push(
-              //         context,
-              //         new MaterialPageRoute(
-              //           builder: (BuildContext context) => new AddAddress(
-              //             isProfile: true,
-              //             pickedLocation: _pickedLocation,
-              //             locale: widget.locale,
-              //             localizedValues: widget.localizedValues,
-              //           ),
-              //         ),
-              //       );
-              //     });
-              //   }
             },
             text: MyLocalizations.of(context).addNewAddress,
             textStyle: textBarlowRegularBlack(),

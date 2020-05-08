@@ -44,7 +44,6 @@ class _OrderDetailsState extends State<OrderDetails> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     currency = prefs.getString('currency');
     await LoginService.getOrderHistory(widget.orderId).then((onValue) {
-      print(onValue['response_data']['cart']['couponInfo']);
       try {
         if (onValue['response_code'] == 200) {
           if (mounted) {
@@ -142,7 +141,6 @@ class _OrderDetailsState extends State<OrderDetails> {
       isRatingSubmitting = true;
     });
     await ProductService.productRate(body).then((onValue) {
-      print(onValue);
       try {
         if (onValue['response_code'] == 201) {
           Navigator.pop(context);
@@ -339,6 +337,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                   itemBuilder: (BuildContext context, int i) {
                     Map order = orderHistory['cart']['cart'][i];
                     return Container(
+                      width: MediaQuery.of(context).size.width,
                       color: Color(0xFFF7F7F7),
                       padding:
                           EdgeInsets.symmetric(horizontal: 15, vertical: 24),
@@ -363,138 +362,104 @@ class _OrderDetailsState extends State<OrderDetails> {
                             ),
                           ),
                           SizedBox(width: 17),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                '${order['title']}' ?? "",
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                style: textBarlowRegularrdark(),
-                              ),
-                              Text(
-                                '${order['unit']} (${order['quantity']}) *  $currency${order['price']}',
-                                style: textSMBarlowRegularrBlack(),
-                              ),
-                              SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text(
-                                    '$currency ${order['productTotal']}',
-                                    style: textBarlowMediumBlack(),
-                                  ),
-                                  SizedBox(
-                                    width: 50,
-                                  ),
-                                  orderHistory['orderStatus'] == "DELIVERED"
-                                      ? order['rating'] == null
-                                          ? GFButton(
-                                              shape: GFButtonShape.pills,
-                                              onPressed: () {
-                                                ratingAlert(
-                                                    orderHistory['_id'],
-                                                    orderHistory['user']['_id'],
-                                                    order['productId']);
-                                              },
-                                              color: primary,
-                                              text: MyLocalizations.of(context)
-                                                  .rateNow,
-                                            )
-                                          : RatingBar(
-                                              initialRating: order['rating'] ==
-                                                      null
-                                                  ? 0
-                                                  : double.parse(order['rating']
-                                                      .toString()),
-                                              minRating: 0,
-                                              direction: Axis.horizontal,
-                                              allowHalfRating: true,
-                                              itemCount: 5,
-                                              itemSize: 15.0,
-                                              itemPadding: EdgeInsets.symmetric(
-                                                  horizontal: 1.0),
-                                              itemBuilder: (context, _) => Icon(
-                                                Icons.star,
-                                                color: Colors.red,
-                                                size: 10.0,
-                                              ),
-                                              onRatingUpdate: null,
-                                            )
-                                      : Container()
-                                ],
-                              ),
-                              // SizedBox(height: 10),
-                              // Text(
-                              //   MyLocalizations.of(context).ordered +
-                              //           ' : ' +
-                              //           DateFormat('dd/MM/yyyy, hh:mm a')
-                              //               .format(
-                              //             DateTime.fromMillisecondsSinceEpoch(
-                              //                 orderDetails['appTimestamp']),
-                              //           ) ??
-                              //       "",
-                              //   style: textSMBarlowRegularrBlack(),
-                              // )
-                            ],
+                          Container(
+                            width: MediaQuery.of(context).size.width - 146,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  '${order['title']}' ?? "",
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: textBarlowRegularrdark(),
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                  '${order['unit']} (${order['quantity']}) *  $currency${order['price']}',
+                                  style: textSMBarlowRegularrBlack(),
+                                ),
+                                order['dealTotalAmount'] == 0
+                                    ? Container()
+                                    : SizedBox(height: 5),
+                                order['dealTotalAmount'] == 0
+                                    ? Container()
+                                    : Text(
+                                        'Deal Amount : $currency${order['dealTotalAmount']}',
+                                        style: textSMBarlowRegularrBlack(),
+                                      ),
+                                SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      '$currency ${order['productTotal']}',
+                                      style: textBarlowMediumBlack(),
+                                    ),
+                                    SizedBox(
+                                      width: 50,
+                                    ),
+                                    orderHistory['orderStatus'] == "DELIVERED"
+                                        ? order['rating'] == null
+                                            ? GFButton(
+                                                shape: GFButtonShape.pills,
+                                                onPressed: () {
+                                                  ratingAlert(
+                                                      orderHistory['_id'],
+                                                      orderHistory['user']
+                                                          ['_id'],
+                                                      order['productId']);
+                                                },
+                                                color: primary,
+                                                text:
+                                                    MyLocalizations.of(context)
+                                                        .rateNow,
+                                              )
+                                            : RatingBar(
+                                                initialRating:
+                                                    order['rating'] == null
+                                                        ? 0
+                                                        : double.parse(
+                                                            order['rating']
+                                                                .toString()),
+                                                minRating: 0,
+                                                direction: Axis.horizontal,
+                                                allowHalfRating: true,
+                                                itemCount: 5,
+                                                itemSize: 15.0,
+                                                itemPadding:
+                                                    EdgeInsets.symmetric(
+                                                        horizontal: 1.0),
+                                                itemBuilder: (context, _) =>
+                                                    Icon(
+                                                  Icons.star,
+                                                  color: Colors.red,
+                                                  size: 10.0,
+                                                ),
+                                                onRatingUpdate: null,
+                                              )
+                                        : Container()
+                                  ],
+                                ),
+                                // SizedBox(height: 10),
+                                // Text(
+                                //   MyLocalizations.of(context).ordered +
+                                //           ' : ' +
+                                //           DateFormat('dd/MM/yyyy, hh:mm a')
+                                //               .format(
+                                //             DateTime.fromMillisecondsSinceEpoch(
+                                //                 orderDetails['appTimestamp']),
+                                //           ) ??
+                                //       "",
+                                //   style: textSMBarlowRegularrBlack(),
+                                // )
+                              ],
+                            ),
                           )
                         ],
                       ),
                     );
-                    // return Column(
-                    //   children: <Widget>[
-                    //     Container(
-                    //       padding:
-                    //           EdgeInsets.only(left: 15, right: 15, bottom: 10),
-                    //       child: Row(
-                    //         children: <Widget>[
-                    //           Flexible(
-                    //               child: Column(
-                    //             crossAxisAlignment: CrossAxisAlignment.start,
-                    //             children: <Widget>[
-                    //               Text(
-                    //                 orderHistory['cart']['cart'][i]['title'],
-                    //                 style: textBarlowMediumBlack(),
-                    //               ),
-                    //               SizedBox(height: 15),
-                    //               Text(
-                    //                 orderHistory['cart']['cart'][i]
-                    //                                 ['description']
-                    //                             .length >
-                    //                         25
-                    //                     ? orderHistory['cart']['cart'][i]
-                    //                                 ['description']
-                    //                             .substring(0, 25) +
-                    //                         ".."
-                    //                     : orderHistory['cart']['cart'][i]
-                    //                         ['description'],
-                    //                 style: textBarlowRegularBlack(),
-                    //               ),
-                    //               SizedBox(height: 15),
-                    //               Row(
-                    //                 mainAxisAlignment: MainAxisAlignment.start,
-                    //                 children: <Widget>[
-                    //                   Text(
-                    //                     currency,
-                    //                     style: textBarlowBoldBlack(),
-                    //                   ),
-                    //                   Text(
-                    //                     orderHistory['cart']['cart'][i]['price']
-                    //                         .toString(),
-                    //                     style: textBarlowBoldBlack(),
-                    //                   ),
-                    //                 ],
-                    //               ),
-
-                    // ],
-                    // )
-                    // ],
-                    // ),
-                    //     ),
-                    //   ],
-                    // );
                   },
                 ),
                 Padding(

@@ -52,7 +52,6 @@ class PaymentService {
   }
 
   static Future<Map<String, dynamic>> getDeliveryCharges(body) async {
-    print(body);
     String token;
     await Common.getToken().then((onValue) {
       token = onValue;
