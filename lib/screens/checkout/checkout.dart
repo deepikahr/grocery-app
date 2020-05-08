@@ -1035,7 +1035,7 @@ class _CheckoutState extends State<Checkout> {
                                                     )));
                                     if (pickerResult != null) {
                                       setState(() {
-                                        Navigator.push(
+                                        var result = Navigator.push(
                                           context,
                                           new MaterialPageRoute(
                                             builder: (BuildContext context) =>
@@ -1048,6 +1048,9 @@ class _CheckoutState extends State<Checkout> {
                                             ),
                                           ),
                                         );
+                                        result.then((res) {
+                                          getAddress();
+                                        });
                                       });
                                     }
                                   },

@@ -136,23 +136,8 @@ class _AddAddressState extends State<AddAddress> {
                 style: textbarlowRegularaPrimar(),
               ),
               onPressed: () {
-                if (widget.isProfile == true) {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
-                  Navigator.push(
-                    context,
-                    new MaterialPageRoute(
-                      builder: (BuildContext context) => new Address(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
-                      ),
-                    ),
-                  );
-                } else if (widget.isCheckout == true) {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop(address);
-                }
+                Navigator.pop(context);
+                Navigator.pop(context);
               },
             ),
           ],
