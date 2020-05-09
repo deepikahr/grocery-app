@@ -233,14 +233,22 @@ class _EditAddressState extends State<EditAddress> {
                         color: primary,
                         blockButton: true,
                         onPressed: () async {
+                          var lat, long;
+                          if (_pickedLocation == null) {
+                            lat = widget.updateAddressID['location']['lat'];
+                            long = widget.updateAddressID['location']['long'];
+                          } else {
+                            lat = _pickedLocation.latLng.latitude;
+                            long = _pickedLocation.latLng.longitude;
+                          }
+
                           PlacePickerResult pickerResult = await Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => PlacePickerScreen(
                                         googlePlacesApiKey:
                                             Constants.GOOGLE_API_KEY,
-                                        initialPosition:
-                                            LatLng(31.1975844, 29.9598339),
+                                        initialPosition: LatLng(lat, long),
                                         mainColor: primary,
                                         mapStrings: MapPickerStrings.english(),
                                         placeAutoCompleteLanguage: 'en',
@@ -445,9 +453,6 @@ class _EditAddressState extends State<EditAddress> {
                         if (value.isEmpty) {
                           return MyLocalizations.of(context)
                               .pleaseenterpostalcode;
-                        } else if (value.length != 6) {
-                          return MyLocalizations.of(context)
-                              .pleaseenter6digitpostalcode;
                         } else
                           return null;
                       },
