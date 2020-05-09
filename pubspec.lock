@@ -224,6 +224,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.2"
+  location_permissions:
+    dependency: "direct main"
+    description:
+      name: location_permissions
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.5"
   location_platform_interface:
     dependency: transitive
     description:
