@@ -453,9 +453,6 @@ class _EditAddressState extends State<EditAddress> {
                         if (value.isEmpty) {
                           return MyLocalizations.of(context)
                               .pleaseenterpostalcode;
-                        } else if (value.length != 6) {
-                          return MyLocalizations.of(context)
-                              .pleaseenter6digitpostalcode;
                         } else
                           return null;
                       },
