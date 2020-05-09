@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:getflutter/components/accordian/gf_accordian.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 import 'package:readymadeGroceryApp/screens/drawer/add-address.dart';
 import 'package:readymadeGroceryApp/screens/drawer/edit-address.dart';
 import 'package:readymadeGroceryApp/screens/payment/payment.dart';
@@ -65,8 +66,8 @@ class _CheckoutState extends State<Checkout> {
       deliverySlot = false,
       isLoadingCart = false,
       isDeliveryChargeLoading = false;
-  // LocationResult _pickedLocation;
-  PlacePickerResult _pickerLocation;
+  LocationData currentLocation;
+  Location _location = new Location();
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   @override
@@ -1014,44 +1015,50 @@ class _CheckoutState extends State<Checkout> {
                                 padding: EdgeInsets.only(left: 10, right: 10),
                                 child: GFButton(
                                   onPressed: () async {
-                                    PlacePickerResult pickerResult =
-                                        await Navigator.push(
+                                    currentLocation =
+                                        await _location.getLocation();
+                                    if (currentLocation != null) {
+                                      PlacePickerResult pickerResult =
+                                          await Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      PlacePickerScreen(
+                                                        googlePlacesApiKey:
+                                                            Constants
+                                                                .GOOGLE_API_KEY,
+                                                        initialPosition: LatLng(
+                                                            currentLocation
+                                                                .latitude,
+                                                            currentLocation
+                                                                .longitude),
+                                                        mainColor: primary,
+                                                        mapStrings:
+                                                            MapPickerStrings
+                                                                .english(),
+                                                        placeAutoCompleteLanguage:
+                                                            'en',
+                                                      )));
+                                      if (pickerResult != null) {
+                                        setState(() {
+                                          var result = Navigator.push(
                                             context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    PlacePickerScreen(
-                                                      googlePlacesApiKey:
-                                                          Constants
-                                                              .GOOGLE_API_KEY,
-                                                      initialPosition: LatLng(
-                                                          31.1975844,
-                                                          29.9598339),
-                                                      mainColor: primary,
-                                                      mapStrings:
-                                                          MapPickerStrings
-                                                              .english(),
-                                                      placeAutoCompleteLanguage:
-                                                          'en',
-                                                    )));
-                                    if (pickerResult != null) {
-                                      setState(() {
-                                        var result = Navigator.push(
-                                          context,
-                                          new MaterialPageRoute(
-                                            builder: (BuildContext context) =>
-                                                new AddAddress(
-                                              isProfile: true,
-                                              pickedLocation: pickerResult,
-                                              locale: widget.locale,
-                                              localizedValues:
-                                                  widget.localizedValues,
+                                            new MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  new AddAddress(
+                                                isProfile: true,
+                                                pickedLocation: pickerResult,
+                                                locale: widget.locale,
+                                                localizedValues:
+                                                    widget.localizedValues,
+                                              ),
                                             ),
-                                          ),
-                                        );
-                                        result.then((res) {
-                                          getAddress();
+                                          );
+                                          result.then((res) {
+                                            getAddress();
+                                          });
                                         });
-                                      });
+                                      }
                                     }
                                   },
                                   type: GFButtonType.transparent,

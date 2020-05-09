@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 import 'package:readymadeGroceryApp/screens/drawer/add-address.dart';
 import 'package:readymadeGroceryApp/screens/drawer/edit-address.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
@@ -30,7 +31,8 @@ class _AddressState extends State<Address> {
   List addressList = List();
   // LocationResult _pickedLocation;
   PlacePickerResult pickedLocation;
-
+  LocationData currentLocation;
+  Location _location = new Location();
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   @override
@@ -227,33 +229,37 @@ class _AddressState extends State<Address> {
             color: primary,
             blockButton: true,
             onPressed: () async {
-              PlacePickerResult pickerResult = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => PlacePickerScreen(
-                            googlePlacesApiKey: Constants.GOOGLE_API_KEY,
-                            initialPosition: LatLng(31.1975844, 29.9598339),
-                            mainColor: primary,
-                            mapStrings: MapPickerStrings.english(),
-                            placeAutoCompleteLanguage: 'en',
-                          )));
-              if (pickerResult != null) {
-                setState(() {
-                  var result = Navigator.push(
+              currentLocation = await _location.getLocation();
+              if (currentLocation != null) {
+                PlacePickerResult pickerResult = await Navigator.push(
                     context,
-                    new MaterialPageRoute(
-                      builder: (BuildContext context) => new AddAddress(
-                        isProfile: true,
-                        pickedLocation: pickerResult,
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
+                    MaterialPageRoute(
+                        builder: (context) => PlacePickerScreen(
+                              googlePlacesApiKey: Constants.GOOGLE_API_KEY,
+                              initialPosition: LatLng(currentLocation.latitude,
+                                  currentLocation.longitude),
+                              mainColor: primary,
+                              mapStrings: MapPickerStrings.english(),
+                              placeAutoCompleteLanguage: 'en',
+                            )));
+                if (pickerResult != null) {
+                  setState(() {
+                    var result = Navigator.push(
+                      context,
+                      new MaterialPageRoute(
+                        builder: (BuildContext context) => new AddAddress(
+                          isProfile: true,
+                          pickedLocation: pickerResult,
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                        ),
                       ),
-                    ),
-                  );
-                  result.then((res) {
-                    getAddress();
+                    );
+                    result.then((res) {
+                      getAddress();
+                    });
                   });
-                });
+                }
               }
             },
             text: MyLocalizations.of(context).addNewAddress,
