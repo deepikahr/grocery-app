@@ -211,6 +211,8 @@ class _SavedItemsState extends State<SavedItems> {
                                           ['category'],
                                       price: favProductList[i]['product']
                                           ['variant'][0]['price'],
+                                          unit: favProductList[i]['product']
+                                          ['variant'][0]['unit'],
                                       rating: favProductList[i]['product']
                                               ['averageRating']
                                           .toString(),
@@ -266,17 +268,17 @@ class _SavedItemsState extends State<SavedItems> {
             )
           : InkWell(
               onTap: () {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => Home(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
-                        languagesSelection: false,
-                        currentIndex: 2,
-                      ),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => Home(
+                      locale: widget.locale,
+                      localizedValues: widget.localizedValues,
+                      languagesSelection: false,
+                      currentIndex: 2,
                     ),
-                    (Route<dynamic> route) => false);
+                  ),
+                );
               },
               child: Container(
                 height: 55.0,
