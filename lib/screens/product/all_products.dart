@@ -355,6 +355,8 @@ class _AllProductsState extends State<AllProducts> {
                                             ['price'],
                                         variantStock: productsList[0]['variant']
                                             [0]['productstock'],
+                                        unit: productsList[0]['variant'][0]
+                                            ['unit'],
                                         rating: productsList[i]['averageRating']
                                             .toString(),
                                         buttonName: "Add",
@@ -408,6 +410,8 @@ class _AllProductsState extends State<AllProducts> {
                                       category: productsList[i]['category'],
                                       price: productsList[i]['variant'][0]
                                           ['price'],
+                                      unit: productsList[i]['variant'][0]
+                                          ['unit'],
                                       rating: productsList[i]['averageRating']
                                           .toString(),
                                       buttonName:
@@ -439,17 +443,17 @@ class _AllProductsState extends State<AllProducts> {
             )
           : InkWell(
               onTap: () {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => Home(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
-                        languagesSelection: false,
-                        currentIndex: 2,
-                      ),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => Home(
+                      locale: widget.locale,
+                      localizedValues: widget.localizedValues,
+                      languagesSelection: false,
+                      currentIndex: 2,
                     ),
-                    (Route<dynamic> route) => false);
+                  ),
+                );
               },
               child: Container(
                 height: 55.0,

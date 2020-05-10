@@ -378,6 +378,8 @@ class _SearchItemState extends State<SearchItem> {
                                                 ['category'],
                                             price: searchresult[index]
                                                 ['variant'][0]['price'],
+                                            unit: searchresult[index]['variant']
+                                                [0]['unit'],
                                             variantStock: searchresult[index]
                                                 ['variant'][0]['productstock'],
                                             rating: searchresult[index]
@@ -397,8 +399,7 @@ class _SearchItemState extends State<SearchItem> {
                                             productList: searchresult[index],
                                             variantList: searchresult[index]
                                                 ['variant'],
-                                            subCategoryId: searchresult[index]
-                                                ['subcategory']),
+                                            subCategoryId: searchresult[index]['subcategory']),
                                       ],
                                     ),
                                   );
@@ -438,17 +439,17 @@ class _SearchItemState extends State<SearchItem> {
             )
           : InkWell(
               onTap: () {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => Home(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
-                        languagesSelection: false,
-                        currentIndex: 2,
-                      ),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => Home(
+                      locale: widget.locale,
+                      localizedValues: widget.localizedValues,
+                      languagesSelection: false,
+                      currentIndex: 2,
                     ),
-                    (Route<dynamic> route) => false);
+                  ),
+                );
               },
               child: Container(
                 height: 55.0,

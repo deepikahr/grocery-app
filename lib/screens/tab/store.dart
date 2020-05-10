@@ -511,6 +511,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                         category: list[i]['category'],
                                         price: list[i]['variant'][0]['price']
                                             .toString(),
+                                        unit: list[i]['variant'][0]['unit']
+                                            .toString(),
                                         rating:
                                             list[i]['averageRating'].toString(),
                                         buttonName: null,

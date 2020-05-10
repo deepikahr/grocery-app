@@ -18,6 +18,7 @@ class SubCategoryProductCard extends StatefulWidget {
       variantStock,
       price,
       currency,
+      unit,
       rating,
       category,
       offer,
@@ -37,6 +38,7 @@ class SubCategoryProductCard extends StatefulWidget {
       this.variantStock,
       this.subCategoryId,
       this.title,
+      this.unit,
       this.price,
       this.currency,
       this.rating,
@@ -60,7 +62,7 @@ class SubCategoryProductCard extends StatefulWidget {
 class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
   int quanity;
   bool cardAdded = false, isAddInProgress = false, isQuantityUpdating = false;
-  var variantPrice, variantStock;
+  var variantPrice, variantStock, variantUnit;
   String cartId, quantityChangeType = '+';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -207,7 +209,7 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                         children: <Widget>[
                           Expanded(
                             child: Text(
-                              '${widget.currency}${variantPrice == null ? widget.price : variantPrice}',
+                              '${widget.currency}${variantPrice == null ? widget.price : variantPrice}/${variantUnit == null ? widget.unit : variantUnit}',
                               style: textbarlowBoldgreen(),
                             ),
                           ),
@@ -246,6 +248,8 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                               variantPrice =
                                                   onValue['cart'][i]['price'];
                                               cartId = onValue['_id'];
+                                              variantUnit =
+                                                  onValue['cart'][i]['unit'];
                                               cardAdded = true;
                                             });
                                           }
@@ -310,6 +314,7 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                                           variantStock = widget
                                                                   .variantList[0]
                                                               ['productstock'];
+
                                                           cardAdded = true;
                                                         });
                                                       }
