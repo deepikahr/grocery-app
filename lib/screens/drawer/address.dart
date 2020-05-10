@@ -294,7 +294,7 @@ class _AddressState extends State<Address> {
               });
             },
             child: Padding(
-              padding: const EdgeInsets.only(left: 18.0, right: 18.0),
+              padding: const EdgeInsets.only(left: 3.0, right: 3.0),
               child: Text(
                 MyLocalizations.of(context).edit,
                 style: textbarlowRegularaPrimar(),
@@ -305,13 +305,13 @@ class _AddressState extends State<Address> {
             size: GFSize.MEDIUM,
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 20.0, right: 18.0),
+            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
             child: GFButton(
               onPressed: () {
                 deleteAddress(addressList['_id']);
               },
               child: Padding(
-                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                padding: const EdgeInsets.only(left: 3.0, right: 3.0),
                 child: Text(
                   MyLocalizations.of(context).delete,
                   style: textbarlowRegularaPrimar(),
