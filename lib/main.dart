@@ -104,11 +104,12 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     getGlobalSettingsData();
 
-    getResult();
+    // getResult();
     super.initState();
   }
 
   getGlobalSettingsData() async {
+    currentLocation = await _location.getLocation();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.getString('selectedLanguage') == null) {
       if (mounted) {
@@ -142,31 +143,6 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  getResult() async {
-    Common.getCurrentLocation().then((address) async {
-      if (address != null) {
-        if (mounted) {
-          setState(() {
-            addressData = address;
-          });
-        }
-      }
-      currentLocation = await _location.getLocation();
-      final coordinates = new Coordinates(currentLocation.latitude ?? 14.264383,
-          currentLocation.longitude ?? 78.974842);
-      var addresses =
-          await Geocoder.local.findAddressesFromCoordinates(coordinates);
-      var first = addresses.first;
-      if (mounted) {
-        setState(() {
-          addressData = first.subLocality;
-        });
-      }
-      Common.setCurrentLocation(addressData);
-      return first;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -181,7 +157,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: Constants.APP_NAME,
       theme: ThemeData(primaryColor: primary, accentColor: primary),
-      home: isloading || addressData == null
+      home: isloading
           ? AnimatedScreen(
               locale: language != null ? language : widget.locale,
               localizedValues: widget.localizedValues,
@@ -190,7 +166,6 @@ class _MyAppState extends State<MyApp> {
               locale: language != null ? language : widget.locale,
               localizedValues: widget.localizedValues,
               languagesSelection: widget.languagesSelection,
-              addressData: addressData,
             ),
     );
   }

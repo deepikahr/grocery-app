@@ -78,18 +78,15 @@ class _DrawerPageState extends State<DrawerPage> {
                   padding: const EdgeInsets.only(top: 40.0),
                   child: _buildMenuTileList('lib/assets/icons/Home.png',
                       MyLocalizations.of(context).home, 0,
-                      notOpen: true,
                       route: Home(
                         locale: widget.locale,
                         localizedValues: widget.localizedValues,
                         languagesSelection: false,
                         currentIndex: 0,
-                        addressData: widget.addressData,
                       )),
                 ),
                 _buildMenuTileList('lib/assets/icons/products.png',
                     MyLocalizations.of(context).products, 0,
-                    notOpen: false,
                     route: AllProducts(
                       locale: widget.locale,
                       localizedValues: widget.localizedValues,
@@ -98,19 +95,16 @@ class _DrawerPageState extends State<DrawerPage> {
                 getTokenValue
                     ? _buildMenuTileList('lib/assets/images/profileIcon.png',
                         MyLocalizations.of(context).profile, 0,
-                        notOpen: true,
                         route: Home(
                           locale: widget.locale,
                           localizedValues: widget.localizedValues,
                           languagesSelection: false,
                           currentIndex: 3,
-                          addressData: widget.addressData,
                         ))
                     : Container(),
                 getTokenValue
                     ? _buildMenuTileList('lib/assets/icons/location.png',
                         MyLocalizations.of(context).address, 0,
-                        notOpen: false,
                         route: Address(
                           locale: widget.locale,
                           localizedValues: widget.localizedValues,
@@ -119,19 +113,16 @@ class _DrawerPageState extends State<DrawerPage> {
                 getTokenValue
                     ? _buildMenuTileList('lib/assets/icons/fav.png',
                         MyLocalizations.of(context).savedItems, 0,
-                        notOpen: true,
                         route: Home(
                           locale: widget.locale,
                           localizedValues: widget.localizedValues,
                           languagesSelection: false,
                           currentIndex: 1,
-                          addressData: widget.addressData,
                         ))
                     : Container(),
                 getTokenValue
                     ? _buildMenuTileList('lib/assets/icons/chat.png',
                         MyLocalizations.of(context).chat, 0,
-                        notOpen: false,
                         route: Chat(
                           locale: widget.locale,
                           localizedValues: widget.localizedValues,
@@ -139,7 +130,6 @@ class _DrawerPageState extends State<DrawerPage> {
                     : Container(),
                 _buildMenuTileList('lib/assets/icons/about.png',
                     MyLocalizations.of(context).aboutUs, 0,
-                    notOpen: false,
                     route: AboutUs(
                       locale: widget.locale,
                       localizedValues: widget.localizedValues,
@@ -147,11 +137,9 @@ class _DrawerPageState extends State<DrawerPage> {
                 SizedBox(height: 20.0),
                 getTokenValue
                     ? _buildMenuTileList1('lib/assets/icons/lg.png',
-                        MyLocalizations.of(context).logout, 0,
-                        notOpen: true, route: null)
+                        MyLocalizations.of(context).logout, 0, route: null)
                     : _buildMenuTileList1('lib/assets/icons/lg.png',
                         MyLocalizations.of(context).login, 0,
-                        notOpen: false,
                         route: Login(
                           locale: widget.locale,
                           localizedValues: widget.localizedValues,
@@ -182,22 +170,16 @@ class _DrawerPageState extends State<DrawerPage> {
   }
 
   Widget _buildMenuTileList(String icon, String name, int count,
-      {Widget route, bool notOpen, bool check}) {
+      {Widget route, bool check}) {
     return Container(
       margin: EdgeInsets.only(bottom: 12.0),
       child: GestureDetector(
         onTap: () {
-          if (route != null && !notOpen) {
+          if (route != null) {
             Navigator.pop(context);
             Navigator.push(context,
                 MaterialPageRoute(builder: (BuildContext context) => route));
-          } else if (route != null && notOpen) {
-            Navigator.pop(context);
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (BuildContext context) => route),
-                (Route<dynamic> route) => false);
-          } else {}
+          }
         },
         child: Container(
           child: Row(
@@ -229,21 +211,15 @@ class _DrawerPageState extends State<DrawerPage> {
   }
 
   Widget _buildMenuTileList1(String icon, String name, int count,
-      {Widget route, bool notOpen, bool check}) {
+      {Widget route, bool check}) {
     return Container(
       margin: EdgeInsets.only(bottom: 12.0),
       child: GestureDetector(
         onTap: () {
-          if (route != null && !notOpen) {
+          if (route != null) {
             Navigator.pop(context);
             Navigator.push(context,
                 MaterialPageRoute(builder: (BuildContext context) => route));
-          } else if (route != null && notOpen) {
-            Navigator.pop(context);
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (BuildContext context) => route),
-                (Route<dynamic> route) => false);
           } else {
             logout();
           }

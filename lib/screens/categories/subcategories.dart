@@ -516,6 +516,11 @@ class _SubCategoriesState extends State<SubCategories> {
                                                                     'variant'][0]
                                                                 [
                                                                 'productstock'],
+                                                        unit:
+                                                            subCategryByProduct[
+                                                                        i]
+                                                                    ['variant']
+                                                                [0]['unit'],
                                                         rating: subCategryByProduct[
                                                                     i][
                                                                 'averageRating']
@@ -674,16 +679,17 @@ class _SubCategoriesState extends State<SubCategories> {
                                                           variantStock: subProductsList[i]
                                                                   ['variant'][0]
                                                               ['productstock'],
-                                                          rating: subProductsList[i]['averageRating']
+                                                          unit:
+                                                              subProductsList[i]
+                                                                      ['variant']
+                                                                  [0]['unit'],
+                                                          rating: subProductsList[i]
+                                                                  ['averageRating']
                                                               .toString(),
                                                           buttonName: "Add",
-                                                          cartAdded:
-                                                              subProductsList[i]['cartAdded'] ??
-                                                                  false,
-                                                          cartId: subProductsList[i]
-                                                              ['cartId'],
-                                                          productQuantity:
-                                                              subProductsList[i]['cartAddedQuantity'] ?? 0,
+                                                          cartAdded: subProductsList[i]['cartAdded'] ?? false,
+                                                          cartId: subProductsList[i]['cartId'],
+                                                          productQuantity: subProductsList[i]['cartAddedQuantity'] ?? 0,
                                                           token: widget.token,
                                                           productList: subProductsList[i],
                                                           variantList: subProductsList[i]['variant'],
@@ -731,17 +737,17 @@ class _SubCategoriesState extends State<SubCategories> {
             )
           : InkWell(
               onTap: () {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => Home(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
-                        languagesSelection: false,
-                        currentIndex: 2,
-                      ),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => Home(
+                      locale: widget.locale,
+                      localizedValues: widget.localizedValues,
+                      languagesSelection: false,
+                      currentIndex: 2,
                     ),
-                    (Route<dynamic> route) => false);
+                  ),
+                );
               },
               child: Container(
                 height: 55.0,

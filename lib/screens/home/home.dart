@@ -26,14 +26,13 @@ SentryError sentryError = new SentryError();
 class Home extends StatefulWidget {
   final int currentIndex;
   final Map<String, Map<String, String>> localizedValues;
-  final String locale, addressData;
+  final String locale;
   final bool languagesSelection;
   Home(
       {Key key,
       this.currentIndex,
       this.locale,
       this.localizedValues,
-      this.addressData,
       this.languagesSelection})
       : super(key: key);
 
@@ -267,7 +266,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                 style: textBarlowRegularrBlacksm(),
               ),
               Text(
-                addressData != null ? addressData : widget.addressData,
+                addressData ?? "No Found",
                 overflow: TextOverflow.ellipsis,
                 style: textAddressLocation(),
               )
@@ -295,7 +294,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       var first = addresses.first;
       if (mounted) {
         setState(() {
-          addressData = first.subLocality;
+          addressData = first.addressLine;
           isCurrentLoactionLoading = false;
         });
       }
@@ -368,7 +367,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         child: DrawerPage(
           locale: widget.locale,
           localizedValues: widget.localizedValues,
-          addressData: addressData != null ? addressData : widget.addressData,
+          addressData: addressData ?? "No Found",
         ),
       ),
       body: currencyLoading ? SquareLoader() : _screens[currentIndex],

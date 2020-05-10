@@ -12,6 +12,7 @@ class ProductCard extends StatelessWidget {
       category,
       offer,
       nullImage,
+      unit,
       buttonName;
   final bool token;
   final Map productList;
@@ -20,6 +21,7 @@ class ProductCard extends StatelessWidget {
   final Map<String, Map<String, String>> localizedValues;
   ProductCard(
       {Key key,
+      this.unit,
       this.image,
       this.title,
       this.price,
@@ -112,7 +114,7 @@ class ProductCard extends StatelessWidget {
                     children: <Widget>[
                       Expanded(
                         child: Text(
-                          '$currency$price',
+                          '$currency$price/$unit',
                           style: textbarlowBoldgreen(),
                         ),
                       ),
