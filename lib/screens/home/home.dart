@@ -266,7 +266,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                 style: textBarlowRegularrBlacksm(),
               ),
               Text(
-                addressData ?? "No Found",
+                addressData ?? "",
                 overflow: TextOverflow.ellipsis,
                 style: textAddressLocation(),
               )
@@ -367,7 +367,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         child: DrawerPage(
           locale: widget.locale,
           localizedValues: widget.localizedValues,
-          addressData: addressData ?? "No Found",
+          addressData: addressData ?? "",
         ),
       ),
       body: currencyLoading ? SquareLoader() : _screens[currentIndex],
