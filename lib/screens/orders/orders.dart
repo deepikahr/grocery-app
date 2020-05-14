@@ -7,6 +7,7 @@ import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/screens/orders/ordersDetails.dart';
 import 'package:readymadeGroceryApp/screens/tab/mycart.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -314,7 +315,9 @@ class _OrdersState extends State<Orders> {
               ],
               image: DecorationImage(
                   image: NetworkImage(
-                    orderDetails['cart']['cart'][0]['imageUrl'],
+                    Constants.IMAGE_URL_PATH +
+                        "tr:dpr-auto,tr:w-500" +
+                        orderDetails['cart']['cart'][0]['filePath'],
                   ),
                   fit: BoxFit.cover),
             ),

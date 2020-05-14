@@ -6,6 +6,7 @@ import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -479,7 +480,9 @@ class _ProductDetailsState extends State<ProductDetails>
                                 image: new DecorationImage(
                                   fit: BoxFit.fill,
                                   image: new NetworkImage(
-                                    productDetail['imageUrl'],
+                                    Constants.IMAGE_URL_PATH +
+                                        "tr:dpr-auto,tr:w-1000" +
+                                        productDetail['filePath'],
                                   ),
                                 ),
                               ),

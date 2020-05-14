@@ -8,6 +8,7 @@ import 'package:readymadeGroceryApp/model/bottomSheet.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:flutter/cupertino.dart';
@@ -159,7 +160,9 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                   child: widget.image == null
                       ? Image.asset(widget.nullImage)
                       : Image.network(
-                          widget.image,
+                          Constants.IMAGE_URL_PATH +
+                              "tr:dpr-auto,tr:w-500" +
+                              widget.image,
                           fit: BoxFit.fill,
                           height: 120,
                           width: MediaQuery.of(context).size.width,

@@ -347,7 +347,7 @@ class _AllProductsState extends State<AllProducts> {
                                 child: Stack(
                                   children: <Widget>[
                                     SubCategoryProductCard(
-                                        image: productsList[i]['imageUrl'],
+                                        image: productsList[i]['filePath'],
                                         title: productsList[i]['title'],
                                         currency: currency,
                                         category: productsList[i]['category'],
@@ -404,7 +404,7 @@ class _AllProductsState extends State<AllProducts> {
                             : Stack(
                                 children: <Widget>[
                                   SubCategoryProductCard(
-                                      image: productsList[i]['imageUrl'],
+                                      image: productsList[i]['filePath'],
                                       title: productsList[i]['title'],
                                       currency: currency,
                                       category: productsList[i]['category'],
