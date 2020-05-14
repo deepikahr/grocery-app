@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -45,7 +46,7 @@ class DealsCard extends StatelessWidget {
               child: image == null
                   ? Image.asset(nullImage)
                   : Image.network(
-                      image,
+                      Constants.IMAGE_URL_PATH + "tr:dpr-auto,tr:w-500" + image,
                       fit: BoxFit.fill,
                       height: 220,
                       width: MediaQuery.of(context).size.width,

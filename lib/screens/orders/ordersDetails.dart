@@ -5,6 +5,7 @@ import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:intl/intl.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
@@ -294,40 +295,11 @@ class _OrderDetailsState extends State<OrderDetails> {
                               ],
                             ),
                           ),
-                          // SizedBox(width: 10),
-                          // Flexible(
-                          //     fit: FlexFit.tight,
-                          //     flex: 3,
-                          //     child: Container(
-                          //       height: 125,
-                          //       width: 141,
-                          //       decoration: BoxDecoration(
-                          //         borderRadius:
-                          //             BorderRadius.all(Radius.circular(5)),
-                          //         boxShadow: [
-                          //           BoxShadow(
-                          //               color: Color(0xFF0000000A),
-                          //               blurRadius: 0.40)
-                          //         ],
-                          //         image: DecorationImage(
-                          //             image: NetworkImage(orderHistory['cart']
-                          //                 ['cart'][0]['imageUrl']),
-                          //             fit: BoxFit.fill),
-                          //       ),
-                          //     ))
                         ],
                       )
                     ],
                   ),
                 ),
-                // SizedBox(height: 20),
-                // Padding(
-                //   padding: const EdgeInsets.all(15.0),
-                //   child: Text(
-                //     MyLocalizations.of(context).itemsList,
-                //     style: textBarlowBoldBlack(),
-                //   ),
-                // ),
                 ListView.builder(
                   physics: ScrollPhysics(),
                   shrinkWrap: true,
@@ -356,7 +328,9 @@ class _OrderDetailsState extends State<OrderDetails> {
                               ],
                               image: DecorationImage(
                                   image: NetworkImage(
-                                    order['imageUrl'],
+                                    Constants.IMAGE_URL_PATH +
+                                        "tr:dpr-auto,tr:w-500" +
+                                        order['filePath'],
                                   ),
                                   fit: BoxFit.cover),
                             ),

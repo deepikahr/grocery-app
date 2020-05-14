@@ -203,7 +203,7 @@ class _SavedItemsState extends State<SavedItems> {
                                 children: <Widget>[
                                   SubCategoryProductCard(
                                       image: favProductList[i]['product']
-                                          ['imageUrl'],
+                                          ['filePath'],
                                       title: favProductList[i]['product']
                                           ['title'],
                                       currency: currency,
