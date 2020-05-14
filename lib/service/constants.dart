@@ -6,10 +6,10 @@ class Constants {
   // static const baseURL = "http://162.243.171.81:3000/";
 
   // delopy url testing
-  // static const baseURL = "http://162.243.171.81:4000/";
+  static const baseURL = "http://162.243.171.81:4000/";
 
   // local url
-  static const baseURL = 'http://c2e6c93d.ngrok.io/';
+  // static const baseURL = 'http://c2e6c93d.ngrok.io/';
 
   // ONE_SIGNAL_KEY
   static const ONE_SIGNAL_KEY = "a76b6867-bf12-440f-8bc2-30946c652af8";
@@ -19,6 +19,9 @@ class Constants {
 
   // stripe key
   static const STRIPE_KEY = "pk_test_RBdAu6jIbEByY3KaBQFbH4N100nMkViv6g";
+
+  // image url
+  static const IMAGE_URL_PATH = "https://ik.imagekit.io/kplhvthqbi/";
 
   //languages list
   static const List<String> LANGUAGES = [
@@ -32,6 +35,4 @@ class Constants {
     'pt',
     'es'
   ];
-  // image url
-  static const IMAGE_URL_PATH = "https://ik.imagekit.io/kplhvthqbi/";
 }

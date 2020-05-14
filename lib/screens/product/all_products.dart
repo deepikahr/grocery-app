@@ -353,9 +353,9 @@ class _AllProductsState extends State<AllProducts> {
                                         category: productsList[i]['category'],
                                         price: productsList[i]['variant'][0]
                                             ['price'],
-                                        variantStock: productsList[0]['variant']
+                                        variantStock: productsList[i]['variant']
                                             [0]['productstock'],
-                                        unit: productsList[0]['variant'][0]
+                                        unit: productsList[i]['variant'][0]
                                             ['unit'],
                                         rating: productsList[i]['averageRating']
                                             .toString(),

@@ -12,7 +12,6 @@ class ProductCard extends StatelessWidget {
       rating,
       category,
       offer,
-      nullImage,
       unit,
       buttonName;
   final bool token;
@@ -30,7 +29,6 @@ class ProductCard extends StatelessWidget {
       this.rating,
       this.category,
       this.offer,
-      this.nullImage,
       this.buttonName,
       this.productList,
       this.variantList,
@@ -64,14 +62,12 @@ class ProductCard extends StatelessWidget {
             ClipRRect(
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(12)),
-              child: image == null
-                  ? Image.asset(nullImage)
-                  : Image.network(
-                      Constants.IMAGE_URL_PATH + "tr:dpr-auto,tr:w-500" + image,
-                      fit: BoxFit.fill,
-                      height: 120,
-                      width: MediaQuery.of(context).size.width,
-                    ),
+              child: Image.network(
+                Constants.IMAGE_URL_PATH + "tr:dpr-auto,tr:w-500" + image,
+                fit: BoxFit.fill,
+                height: 120,
+                width: MediaQuery.of(context).size.width,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
