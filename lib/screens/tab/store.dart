@@ -9,6 +9,7 @@ import 'package:readymadeGroceryApp/screens/product/all_products.dart';
 import 'package:readymadeGroceryApp/screens/product/product-details.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
@@ -261,11 +262,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                         );
                       },
                       child: CategoryBlock(
-                        image: categoryList[index]['imageUrl'],
-                        title: categoryList[index]['title'].length > 7
-                            ? categoryList[index]['title'].substring(0, 7) +
-                                ".."
-                            : categoryList[index]['title'],
+                        image: categoryList[index]['filePath'],
+                        title: categoryList[index]['title'],
                       ),
                     );
                   },
@@ -399,7 +397,9 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                               ],
                               shape: BoxShape.circle,
                               image: DecorationImage(
-                                  image: NetworkImage(url['imageURL']),
+                                  image: NetworkImage(Constants.IMAGE_URL_PATH +
+                                      "tr:dpr-auto,tr:w-500" +
+                                      url['filePath']),
                                   fit: BoxFit.fill),
                             ),
                           ),
@@ -417,7 +417,9 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                               ],
                               shape: BoxShape.circle,
                               image: DecorationImage(
-                                  image: NetworkImage(url['imageURL']),
+                                  image: NetworkImage(Constants.IMAGE_URL_PATH +
+                                      "tr:dpr-auto,tr:w-500" +
+                                      url['filePath']),
                                   fit: BoxFit.fill),
                             ),
                           ),
@@ -505,7 +507,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                   child: Stack(
                                     children: <Widget>[
                                       ProductCard(
-                                        image: list[i]['imageUrl'],
+                                        image: list[i]['filePath'],
                                         title: list[i]['title'],
                                         currency: currency,
                                         category: list[i]['category'],
@@ -571,7 +573,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                             : Stack(
                                 children: <Widget>[
                                   ProductCard(
-                                    image: list[i]['imageUrl'],
+                                    image: list[i]['filePath'],
                                     title: list[i]['title'],
                                     currency: currency,
                                     category: list[i]['category'],
@@ -675,7 +677,9 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                               width: 150,
                               margin: EdgeInsets.only(right: 15),
                               child: GFImageOverlay(
-                                image: NetworkImage(list[i]['imageUrl']),
+                                image: NetworkImage(Constants.IMAGE_URL_PATH +
+                                    "tr:dpr-auto,tr:w-500" +
+                                    list[i]['filePath']),
                                 color: Colors.black,
                                 colorFilter: ColorFilter.mode(
                                     Colors.black.withOpacity(0.40),
@@ -691,12 +695,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                         CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: <Widget>[
-                                      Text(
-                                          list[i]['name'].length > 15
-                                              ? list[i]['name']
-                                                      .substring(0, 15) +
-                                                  ".."
-                                              : list[i]['name'],
+                                      Text(list[i]['name'],
+                                          overflow: TextOverflow.ellipsis,
                                           style: textBarlowSemiBoldwbig()),
                                       Text(
                                         list[i]['delaPercent'].toString() +
@@ -802,7 +802,9 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                               width: 150,
                               margin: EdgeInsets.only(right: 15),
                               child: GFImageOverlay(
-                                image: NetworkImage(list[i]['imageUrl']),
+                                image: NetworkImage(Constants.IMAGE_URL_PATH +
+                                    "tr:dpr-auto,tr:w-500" +
+                                    list[i]['filePath']),
                                 color: Colors.black,
                                 colorFilter: ColorFilter.mode(
                                     Colors.black.withOpacity(0.40),
@@ -827,10 +829,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                         height: 5,
                                       ),
                                       Text(
-                                        list[i]['name'].length > 15
-                                            ? list[i]['name'].substring(0, 15) +
-                                                ".."
-                                            : list[i]['name'],
+                                        list[i]['name'],
+                                        overflow: TextOverflow.ellipsis,
                                         style: textBarlowmediumsmallWhite(),
                                       )
                                     ],

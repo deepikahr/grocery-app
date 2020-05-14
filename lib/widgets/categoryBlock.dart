@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 
 class CategoryBlock extends StatelessWidget {
@@ -23,7 +24,7 @@ class CategoryBlock extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(8)),
               child: Image.network(
-                image,
+                Constants.IMAGE_URL_PATH + "tr:dpr-auto,tr:w-500" + image,
                 scale: 8,
                 fit: BoxFit.fill,
               ),
@@ -32,6 +33,7 @@ class CategoryBlock extends StatelessWidget {
           Expanded(
             child: Text(
               title,
+              overflow: TextOverflow.ellipsis,
               style: textBarlowRegularrdarkdull(),
               textAlign: TextAlign.center,
             ),

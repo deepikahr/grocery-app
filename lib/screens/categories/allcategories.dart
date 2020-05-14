@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/screens/categories/subcategories.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 
 import 'package:readymadeGroceryApp/service/product-service.dart';
@@ -154,18 +155,17 @@ class _AllCategoriesState extends State<AllCategories>
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(8)),
                                 child: Image.network(
-                                  categoryList[index]['imageUrl'],
+                                  Constants.IMAGE_URL_PATH +
+                                      "tr:dpr-auto,tr:w-500" +
+                                      categoryList[index]['filePath'],
                                   scale: 5,
                                   fit: BoxFit.fill,
                                 ),
                               ),
                             ),
                             Text(
-                              categoryList[index]['title'].length > 9
-                                  ? categoryList[index]['title']
-                                          .substring(0, 9) +
-                                      ".."
-                                  : categoryList[index]['title'],
+                              categoryList[index]['title'],
+                              overflow: TextOverflow.ellipsis,
                               style: textBarlowRegularrdarkdull(),
                               textAlign: TextAlign.center,
                             ),
