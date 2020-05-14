@@ -8,6 +8,7 @@ import 'package:readymadeGroceryApp/model/bottomSheet.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,7 +24,6 @@ class SubCategoryProductCard extends StatefulWidget {
       category,
       offer,
       productQuantity,
-      nullImage,
       buttonName,
       cartId,
       subCategoryId;
@@ -46,7 +46,6 @@ class SubCategoryProductCard extends StatefulWidget {
       this.offer,
       this.productQuantity,
       this.cartAdded,
-      this.nullImage,
       this.buttonName,
       this.productList,
       this.variantList,
@@ -156,14 +155,14 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                 ClipRRect(
                   borderRadius:
                       const BorderRadius.vertical(top: Radius.circular(12)),
-                  child: widget.image == null
-                      ? Image.asset(widget.nullImage)
-                      : Image.network(
-                          widget.image,
-                          fit: BoxFit.fill,
-                          height: 120,
-                          width: MediaQuery.of(context).size.width,
-                        ),
+                  child: Image.network(
+                    Constants.IMAGE_URL_PATH +
+                        "tr:dpr-auto,tr:w-500" +
+                        widget.image,
+                    fit: BoxFit.fill,
+                    height: 120,
+                    width: MediaQuery.of(context).size.width,
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
@@ -209,7 +208,7 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                         children: <Widget>[
                           Expanded(
                             child: Text(
-                              '${widget.currency}${variantPrice == null ? widget.price : variantPrice}/${variantUnit == null ? widget.unit : variantUnit}',
+                              '${widget.currency}${variantPrice == null ? widget.price : variantPrice} / ${variantUnit == null ? widget.unit : variantUnit}',
                               style: textbarlowBoldgreen(),
                             ),
                           ),

@@ -70,10 +70,11 @@ class _EditProfileState extends State<EditProfile> {
     });
   }
 
-  updateUserInfo(url, key) async {
+  updateUserInfo(url, key, filePath) async {
     var body = {
       "profilePic": url,
       "profilePicId": key,
+      "filePath": filePath,
       "role": "User",
     };
 
@@ -215,8 +216,11 @@ class _EditProfileState extends State<EditProfile> {
       await response.stream.transform(utf8.decoder).listen((value) async {
         Map<String, dynamic> data;
         data = json.decode(value);
-        updateUserInfo(data['response_data'][1]['thumbImage']['url'],
-            data['response_data'][1]['thumbImage']['key']);
+        print(data);
+        updateUserInfo(
+            data['response_data'][0]['originalImage']['url'],
+            data['response_data'][0]['originalImage']['key'],
+            data['response_data'][0]['originalImage']['filePath']);
       });
     }).catchError((error) {
       if (mounted) {
@@ -283,7 +287,7 @@ class _EditProfileState extends State<EditProfile> {
                       ],
                     ),
                   ),
-                  userInfo['profilePic'] != null
+                  userInfo['filePath'] != null
                       ? GFButton(
                           onPressed: removeImage,
                           type: GFButtonType.transparent,
@@ -319,7 +323,7 @@ class _EditProfileState extends State<EditProfile> {
             setState(() {
               isPicUploading = false;
               Navigator.pop(context);
-              updateUserInfo(null, null);
+              updateUserInfo(null, null, null);
             });
           }
         }
@@ -366,7 +370,7 @@ class _EditProfileState extends State<EditProfile> {
                     child: Stack(
                       children: <Widget>[
                         image == null
-                            ? userInfo['profilePic'] == null
+                            ? userInfo['filePath'] == null
                                 ? Center(
                                     child: new Container(
                                       width: 200.0,
@@ -392,7 +396,9 @@ class _EditProfileState extends State<EditProfile> {
                                         image: new DecorationImage(
                                           fit: BoxFit.fill,
                                           image: new NetworkImage(
-                                              userInfo['profilePic']),
+                                              Constants.IMAGE_URL_PATH +
+                                                  "tr:dpr-auto,tr:w-500" +
+                                                  userInfo['filePath']),
                                         ),
                                       ),
                                     ),

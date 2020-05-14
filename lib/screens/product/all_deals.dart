@@ -239,7 +239,7 @@ class _AllDealsListState extends State<AllDealsList> {
                             }
                           },
                           child: DealsCard(
-                            image: dealsList[i]['imageUrl'],
+                            image: dealsList[i]['filePath'],
                             title: dealsList[i]['name'],
                             price: dealsList[i]['delaPercent'].toString() +
                                 "% " +

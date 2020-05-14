@@ -7,9 +7,9 @@ import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/drawer/address.dart';
 import 'package:readymadeGroceryApp/screens/orders/orders.dart';
 import 'package:readymadeGroceryApp/screens/tab/editprofile.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/initialize_i18n.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/service/payment-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
@@ -31,13 +31,8 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   Map<String, dynamic> userInfo;
-  bool isLoading = false,
-      logoutLoading = false,
-      isProfile = true,
-      isCardListLoading = false,
-      isCardDelete = false,
-      isGetTokenLoading = false;
-  List orderList = List(), cardList = List();
+  bool isProfile = true, isGetTokenLoading = false;
+  List orderList = List();
   String token, selectedLanguages, userID;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -78,10 +73,8 @@ class _ProfileState extends State<Profile> {
         if (onValue != null) {
           if (mounted) {
             setState(() {
-              isGetTokenLoading = false;
               token = onValue;
-              fetchCardInfo();
-              getUserInfoApi();
+              userInfoMethod();
             });
           }
         } else {
@@ -109,167 +102,14 @@ class _ProfileState extends State<Profile> {
     });
   }
 
-  fetchCardInfo() async {
-    if (mounted) {
-      setState(() {
-        isCardListLoading = true;
-      });
-    }
-    Common.getCardInfo().then((value) {
-      try {
-        if (value == null) {
-          if (mounted) {
-            setState(() {
-              fetchCardInfoMethod();
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              isCardListLoading = false;
-              cardList = value['response_data'];
-              fetchCardInfoMethod();
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            isCardListLoading = false;
-            cardList = [];
-          });
-        }
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          cardList = [];
-          isCardListLoading = false;
-        });
-      }
-      sentryError.reportError(error, null);
-    });
-  }
-
-  fetchCardInfoMethod() async {
-    await PaymentService.getCardList().then((onValue) {
-      _refreshController.refreshCompleted();
-      try {
-        if (mounted) {
-          setState(() {
-            cardList = onValue['response_data'];
-            isCardListLoading = false;
-          });
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            isCardListLoading = false;
-            cardList = [];
-          });
-        }
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          cardList = [];
-          isCardListLoading = false;
-        });
-      }
-      sentryError.reportError(error, null);
-    });
-  }
-
-  deleteCard(id) async {
-    if (mounted) {
-      setState(() {
-        isCardDelete = true;
-      });
-    }
-    await PaymentService.deleteCard(id).then((onValue) {
-      try {
-        if (mounted) {
-          setState(() {
-            fetchCardInfo();
-            isCardDelete = false;
-            Navigator.pop(context);
-          });
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            isCardDelete = false;
-            Navigator.pop(context);
-          });
-        }
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          isCardDelete = false;
-          Navigator.pop(context);
-        });
-      }
-      sentryError.reportError(error, null);
-    });
-  }
-
-  getUserInfoApi() async {
-    if (mounted) {
-      setState(() {
-        isLoading = true;
-      });
-    }
-    Common.getUserInfo().then((value) {
-      try {
-        if (value == null) {
-          if (mounted) {
-            setState(() {
-              userInfoMethod();
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              userInfo = value['response_data']['userInfo'];
-              userID = userInfo['_id'];
-              isLoading = false;
-              userInfoMethod();
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            userInfo = null;
-            userID = null;
-            isLoading = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          userInfo = null;
-          userID = null;
-          isLoading = false;
-        });
-      }
-      sentryError.reportError(error, null);
-    });
-  }
-
   userInfoMethod() async {
     await LoginService.getUserInfo().then((onValue) {
       try {
         _refreshController.refreshCompleted();
         if (mounted) {
           setState(() {
-            isLoading = false;
+            isGetTokenLoading = false;
+
             userInfo = onValue['response_data']['userInfo'];
 
             userID = userInfo['_id'];
@@ -278,7 +118,8 @@ class _ProfileState extends State<Profile> {
       } catch (error, stackTrace) {
         if (mounted) {
           setState(() {
-            isLoading = false;
+            isGetTokenLoading = false;
+
             userInfo = null;
             userID = null;
           });
@@ -288,7 +129,8 @@ class _ProfileState extends State<Profile> {
     }).catchError((error) {
       if (mounted) {
         setState(() {
-          isLoading = false;
+          isGetTokenLoading = false;
+
           userInfo = null;
           userID = null;
         });
@@ -475,10 +317,7 @@ class _ProfileState extends State<Profile> {
         controller: _refreshController,
         onRefresh: () {
           setState(() {
-            isCardListLoading = true;
-            isLoading = true;
-            userInfoMethod();
-            fetchCardInfoMethod();
+            getToken();
           });
         },
         child: isGetTokenLoading
@@ -488,268 +327,262 @@ class _ProfileState extends State<Profile> {
                     locale: widget.locale,
                     localizedValues: widget.localizedValues,
                     isProfile: true)
-                : isCardListLoading
-                    ? SquareLoader()
-                    : isLoading
-                        ? SquareLoader()
-                        : ListView(
-                            children: <Widget>[
-                              InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => EditProfile(
-                                          locale: widget.locale,
-                                          localizedValues:
-                                              widget.localizedValues,
-                                          userInfo: userInfo),
-                                    ),
-                                  );
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.only(left: 10.0),
-                                  margin: EdgeInsets.only(
-                                    top: 20,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5.0),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      Flexible(
-                                        flex: 2,
-                                        fit: FlexFit.tight,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(27)),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                      color: Colors.black
-                                                          .withOpacity(0.29),
-                                                      blurRadius: 6)
-                                                ]),
-                                            height: 90.0,
-                                            width: 91.0,
-                                            child: userInfo == null ||
-                                                    userInfo['profilePic'] ==
-                                                        null
-                                                ? Center(
-                                                    child: new Container(
-                                                      width: 200.0,
-                                                      height: 200.0,
-                                                      decoration:
-                                                          new BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(27.0),
-                                                        image:
-                                                            new DecorationImage(
-                                                          fit: BoxFit.fill,
-                                                          image: new AssetImage(
-                                                              'lib/assets/images/profile.png'),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  )
-                                                : Center(
-                                                    child: new Container(
-                                                      width: 200.0,
-                                                      height: 200.0,
-                                                      decoration:
-                                                          new BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(20.0),
-                                                        image:
-                                                            new DecorationImage(
-                                                          fit: BoxFit.fill,
-                                                          image: new NetworkImage(
-                                                              userInfo[
-                                                                  'profilePic']),
-                                                        ),
-                                                      ),
+                : userInfo == null
+                    ? Container()
+                    : ListView(
+                        children: <Widget>[
+                          InkWell(
+                            onTap: () {
+                              var result = Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => EditProfile(
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues,
+                                      userInfo: userInfo),
+                                ),
+                              );
+                              result.then((value) => getToken());
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.only(left: 10.0),
+                              margin: EdgeInsets.only(
+                                top: 20,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Flexible(
+                                    flex: 2,
+                                    fit: FlexFit.tight,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(27)),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  color: Colors.black
+                                                      .withOpacity(0.29),
+                                                  blurRadius: 6)
+                                            ]),
+                                        height: 90.0,
+                                        width: 91.0,
+                                        child: userInfo == null ||
+                                                userInfo['filePath'] == null
+                                            ? Center(
+                                                child: new Container(
+                                                  width: 200.0,
+                                                  height: 200.0,
+                                                  decoration: new BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            27.0),
+                                                    image: new DecorationImage(
+                                                      fit: BoxFit.fill,
+                                                      image: new AssetImage(
+                                                          'lib/assets/images/profile.png'),
                                                     ),
                                                   ),
+                                                ),
+                                              )
+                                            : Center(
+                                                child: new Container(
+                                                  width: 200.0,
+                                                  height: 200.0,
+                                                  decoration: new BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20.0),
+                                                    image: new DecorationImage(
+                                                      fit: BoxFit.fill,
+                                                      image: new NetworkImage(Constants
+                                                              .IMAGE_URL_PATH +
+                                                          "tr:dpr-auto,tr:w-500" +
+                                                          userInfo['filePath']),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                      ),
+                                    ),
+                                  ),
+                                  Flexible(
+                                    flex: 4,
+                                    fit: FlexFit.tight,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              right: .0, bottom: 6.0),
+                                          child: Text(
+                                            '${userInfo['firstName'] ?? ""} ${userInfo['lastName'] ?? ""}',
+                                            style: textBarlowMediumBlack(),
                                           ),
                                         ),
-                                      ),
-                                      Flexible(
-                                        flex: 4,
-                                        fit: FlexFit.tight,
-                                        child: Column(
+                                        SizedBox(height: 6),
+                                        Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
                                           children: <Widget>[
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  right: .0, bottom: 6.0),
-                                              child: Text(
-                                                '${userInfo['firstName'] ?? ""} ${userInfo['lastName'] ?? ""}',
-                                                style: textBarlowMediumBlack(),
-                                              ),
-                                            ),
-                                            SizedBox(height: 6),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: <Widget>[
-                                                Text(
-                                                  '${userInfo['email'] ?? ""}',
-                                                  style: textbarlowmedium(),
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(height: 6),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 5.0, right: .0),
-                                              child: Text(
-                                                '${userInfo['mobileNumber'] ?? ""}',
-                                                style: textbarlowmedium(),
-                                              ),
+                                            Text(
+                                              '${userInfo['email'] ?? ""}',
+                                              style: textbarlowmedium(),
                                             ),
                                           ],
                                         ),
-                                      ),
-                                      Flexible(
-                                        child: Row(
+                                        SizedBox(height: 6),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 5.0, right: .0),
+                                          child: Text(
+                                            '${userInfo['mobileNumber'] ?? ""}',
+                                            style: textbarlowmedium(),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Flexible(
+                                    child: Row(
+                                      children: <Widget>[
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
                                           children: <Widget>[
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: <Widget>[
-                                                Padding(
-                                                  padding:
-                                                      EdgeInsets.only(top: 45),
-                                                  child: SvgPicture.asset(
-                                                      'lib/assets/icons/editt.svg'),
-                                                )
-                                              ],
+                                            Padding(
+                                              padding: EdgeInsets.only(top: 45),
+                                              child: SvgPicture.asset(
+                                                  'lib/assets/icons/editt.svg'),
                                             )
                                           ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 15),
-                              InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Address(
-                                        locale: widget.locale,
-                                        localizedValues: widget.localizedValues,
-                                      ),
+                                        )
+                                      ],
                                     ),
-                                  );
-                                },
-                                child: Container(
-                                  height: 55,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFFF7F7F7),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 10.0,
-                                            bottom: 10.0,
-                                            left: 20.0,
-                                            right: 20.0),
-                                        child: Text(
-                                          MyLocalizations.of(context).address,
-                                          style: textBarlowMediumBlack(),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                  )
+                                ],
                               ),
-                              SizedBox(height: 15),
-                              InkWell(
-                                onTap: () {
-                                  selectLanguagesMethod();
-                                },
-                                child: Container(
-                                  height: 55,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFFF7F7F7),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 10.0,
-                                            bottom: 10.0,
-                                            left: 20.0,
-                                            right: 20.0),
-                                        child: Text(
-                                          MyLocalizations.of(context)
-                                              .selectLanguage,
-                                          style: textBarlowMediumBlack(),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 20.0,
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Orders(
-                                        locale: widget.locale,
-                                        localizedValues: widget.localizedValues,
-                                        userID: userID,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: Container(
-                                  height: 55,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFFF7F7F7),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 10.0,
-                                            bottom: 10.0,
-                                            left: 20.0,
-                                            right: 20.0),
-                                        child: Text(
-                                          MyLocalizations.of(context)
-                                              .orderHistory,
-                                          style: textBarlowMediumBlack(),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 20.0,
-                              ),
-                            ],
+                            ),
                           ),
+                          SizedBox(height: 15),
+                          InkWell(
+                            onTap: () {
+                              var result = Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Address(
+                                    locale: widget.locale,
+                                    localizedValues: widget.localizedValues,
+                                  ),
+                                ),
+                              );
+                              result.then((value) => getToken());
+                            },
+                            child: Container(
+                              height: 55,
+                              decoration: BoxDecoration(
+                                color: Color(0xFFF7F7F7),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 10.0,
+                                        bottom: 10.0,
+                                        left: 20.0,
+                                        right: 20.0),
+                                    child: Text(
+                                      MyLocalizations.of(context).address,
+                                      style: textBarlowMediumBlack(),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 15),
+                          InkWell(
+                            onTap: () {
+                              selectLanguagesMethod();
+                            },
+                            child: Container(
+                              height: 55,
+                              decoration: BoxDecoration(
+                                color: Color(0xFFF7F7F7),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 10.0,
+                                        bottom: 10.0,
+                                        left: 20.0,
+                                        right: 20.0),
+                                    child: Text(
+                                      MyLocalizations.of(context)
+                                          .selectLanguage,
+                                      style: textBarlowMediumBlack(),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          InkWell(
+                            onTap: () {
+                              var result = Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Orders(
+                                    locale: widget.locale,
+                                    localizedValues: widget.localizedValues,
+                                    userID: userID,
+                                  ),
+                                ),
+                              );
+                              result.then((value) => getToken());
+                            },
+                            child: Container(
+                              height: 55,
+                              decoration: BoxDecoration(
+                                color: Color(0xFFF7F7F7),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 10.0,
+                                        bottom: 10.0,
+                                        left: 20.0,
+                                        right: 20.0),
+                                    child: Text(
+                                      MyLocalizations.of(context).orderHistory,
+                                      style: textBarlowMediumBlack(),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                        ],
+                      ),
       ),
     );
   }

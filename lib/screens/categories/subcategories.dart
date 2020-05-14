@@ -497,7 +497,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                                       SubCategoryProductCard(
                                                         image:
                                                             subCategryByProduct[
-                                                                i]['imageUrl'],
+                                                                i]['filePath'],
                                                         title:
                                                             subCategryByProduct[
                                                                 i]['title'],
@@ -666,7 +666,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                                     children: <Widget>[
                                                       SubCategoryProductCard(
                                                           image: subProductsList[i]
-                                                              ['imageUrl'],
+                                                              ['filePath'],
                                                           title: subProductsList[i]
                                                               ['title'],
                                                           currency: currency,

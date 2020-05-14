@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
@@ -484,13 +485,17 @@ class _MyCartState extends State<MyCart> {
                                                 image: DecorationImage(
                                                   fit: BoxFit.fill,
                                                   image: cartItem['cart'][i]
-                                                              ['imageUrl'] ==
+                                                              ['filePath'] ==
                                                           null
                                                       ? AssetImage(
                                                           'lib/assets/images/no-orders.png')
                                                       : NetworkImage(
-                                                          cartItem['cart'][i]
-                                                              ['imageUrl'],
+                                                          Constants
+                                                                  .IMAGE_URL_PATH +
+                                                              "tr:dpr-auto,tr:w-500" +
+                                                              cartItem['cart']
+                                                                      [i]
+                                                                  ['filePath'],
                                                         ),
                                                 ),
                                               ),
@@ -516,6 +521,8 @@ class _MyCartState extends State<MyCart> {
                                                       ? " "
                                                       : cartItem['cart'][i]
                                                           ['title'],
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   style:
                                                       textBarlowRegularBlack(),
                                                 ),

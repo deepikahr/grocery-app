@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -110,10 +111,12 @@ class _AboutUsState extends State<AboutUs> {
                 ListView(
                   children: <Widget>[
                     Container(
-                      margin: EdgeInsets.only(bottom: 20),
+                      margin: EdgeInsets.all(20),
                       child: Center(
                         child: Image.network(
-                          aboutUsDatails['userApp']['imageUrl'],
+                          Constants.IMAGE_URL_PATH +
+                              "tr:dpr-auto,tr:w-500" +
+                              aboutUsDatails['userApp']['filePath'],
                         ),
                       ),
                     ),
