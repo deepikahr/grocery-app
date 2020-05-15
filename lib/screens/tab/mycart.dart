@@ -549,6 +549,17 @@ class _MyCartState extends State<MyCart> {
                                                       style:
                                                           textbarlowBoldGreen(),
                                                     ),
+                                                    SizedBox(width: 3),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 5.0),
+                                                      child: Text(
+                                                        "10/kg",
+                                                        style:
+                                                            barlowregularlackstrike(),
+                                                      ),
+                                                    ),
                                                   ],
                                                 ),
                                                 cartItem['cart'][i]

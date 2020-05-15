@@ -204,14 +204,20 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                         ],
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              '${widget.currency}${variantPrice == null ? widget.price : variantPrice} / ${variantUnit == null ? widget.unit : variantUnit}',
-                              style: textbarlowBoldgreen(),
-                            ),
+                          Text(
+                            '${widget.currency}${variantPrice == null ? widget.price : variantPrice} / ${variantUnit == null ? widget.unit : variantUnit}',
+                            style: textbarlowBoldgreen(),
                           ),
+                          SizedBox(width: 3),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: Text(
+                              "10/kg",
+                              style: barlowregularlackstrike(),
+                            ),
+                          )
                         ],
                       ),
                       !cardAdded

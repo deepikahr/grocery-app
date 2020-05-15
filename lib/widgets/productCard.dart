@@ -107,14 +107,19 @@ class ProductCard extends StatelessWidget {
                     ],
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Expanded(
-                        child: Text(
-                          '$currency$price/$unit',
-                          style: textbarlowBoldgreen(),
-                        ),
+                      Text(
+                        '$currency$price/$unit',
+                        style: textbarlowBoldgreen(),
                       ),
+                      SizedBox(width: 3),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5.0),
+                        child: Text(
+                          "10/kg",
+                          style: barlowregularlackstrike(),
+                        ),
+                      )
                     ],
                   ),
                 ],

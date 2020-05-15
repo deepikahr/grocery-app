@@ -1109,6 +1109,15 @@ TextStyle textBarlowmediumLink() {
 }
 
 ///barlow regular /////
+///
+TextStyle barlowregularlackstrike() {
+  return TextStyle(
+    fontSize: 10.0,
+    color: Colors.black.withOpacity(0.60),
+    decoration: TextDecoration.lineThrough,
+    fontFamily: 'BarlowRegular',
+  );
+}
 
 TextStyle textbarlowRegularBlack() {
   return TextStyle(

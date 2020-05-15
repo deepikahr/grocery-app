@@ -211,7 +211,7 @@ class _SavedItemsState extends State<SavedItems> {
                                           ['category'],
                                       price: favProductList[i]['product']
                                           ['variant'][0]['price'],
-                                          unit: favProductList[i]['product']
+                                      unit: favProductList[i]['product']
                                           ['variant'][0]['unit'],
                                       rating: favProductList[i]['product']
                                               ['averageRating']
@@ -231,8 +231,7 @@ class _SavedItemsState extends State<SavedItems> {
                                       productList: favProductList[i]['product'],
                                       variantList: favProductList[i]['product']
                                           ['variant'],
-                                      subCategoryId: favProductList[i]
-                                          ['subcategory']),
+                                      subCategoryId: favProductList[i]['subcategory']),
                                   favProductList[i]['isDealAvailable'] == true
                                       ? Positioned(
                                           child: Stack(
