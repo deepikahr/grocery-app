@@ -568,9 +568,24 @@ class _ProductDetailsState extends State<ProductDetails>
                                                 left: 10.0,
                                                 top: 5.0,
                                                 right: 10),
-                                            child: Text(
-                                              '$currency${variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice}',
-                                              style: textbarlowBoldGreen(),
+                                            child: Row(
+                                              children: <Widget>[
+                                                Text(
+                                                  '$currency${variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice}',
+                                                  style: textbarlowBoldGreen(),
+                                                ),
+                                                SizedBox(width: 3),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 5.0),
+                                                  child: Text(
+                                                    "10/kg",
+                                                    style:
+                                                        barlowregularlackstrike(),
+                                                  ),
+                                                )
+                                              ],
                                             ),
                                           ),
                                         ],
