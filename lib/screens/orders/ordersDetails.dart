@@ -332,13 +332,17 @@ class _OrderDetailsState extends State<OrderDetails> {
                                     blurRadius: 0.40)
                               ],
                               image: DecorationImage(
-                                  image: NetworkImage(
-                                    order['filePath'] == null
-                                        ? order['imageUrl']
-                                        : Constants.IMAGE_URL_PATH +
-                                            "tr:dpr-auto,tr:w-500" +
-                                            order['filePath'],
-                                  ),
+                                  image: order['filePath'] == null &&
+                                          order['imageUrl'] == null
+                                      ? AssetImage(
+                                          'lib/assets/images/no-orders.png')
+                                      : NetworkImage(
+                                          order['filePath'] == null
+                                              ? order['imageUrl']
+                                              : Constants.IMAGE_URL_PATH +
+                                                  "tr:dpr-auto,tr:w-500" +
+                                                  order['filePath'],
+                                        ),
                                   fit: BoxFit.cover),
                             ),
                           ),

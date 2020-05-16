@@ -496,10 +496,19 @@ class _SubCategoriesState extends State<SubCategories> {
                                                     children: <Widget>[
                                                       SubCategoryProductCard(
                                                         image: subCategryByProduct[
-                                                                    i]
-                                                                ['filePath'] ??
-                                                            subCategryByProduct[
-                                                                i]['imageUrl'],
+                                                                        i][
+                                                                    'filePath'] ==
+                                                                null
+                                                            ? subCategryByProduct[
+                                                                i]['imageUrl']
+                                                            : subCategryByProduct[
+                                                                i]['filePath'],
+                                                        isPath: subCategryByProduct[
+                                                                        i][
+                                                                    'filePath'] ==
+                                                                null
+                                                            ? false
+                                                            : true,
                                                         title:
                                                             subCategryByProduct[
                                                                 i]['title'],
@@ -677,25 +686,34 @@ class _SubCategoriesState extends State<SubCategories> {
                                                   child: Stack(
                                                     children: <Widget>[
                                                       SubCategoryProductCard(
-                                                          image: subProductsList[i]['filePath'] ??
+                                                          image: subProductsList[i]['filePath'] ==
+                                                                  null
+                                                              ? subProductsList[i]
+                                                                  ['imageUrl']
+                                                              : subProductsList[i]
+                                                                  ['filePath'],
+                                                          isPath:
+                                                              subProductsList[i]['filePath'] ==
+                                                                      null
+                                                                  ? false
+                                                                  : true,
+                                                          title:
                                                               subProductsList[i]
-                                                                  ['imageUrl'],
-                                                          title: subProductsList[i]
-                                                              ['title'],
+                                                                  ['title'],
                                                           currency: currency,
-                                                          category: subProductsList[i]
-                                                              ['category'],
-                                                          price: subProductsList[i]
-                                                                  ['variant'][0]
-                                                              ['price'],
-                                                          dealPercentage: subProductsList[i]['isDealAvailable']
-                                                              ? double.parse(subProductsList[i]['delaPercent']
-                                                                  .toStringAsFixed(
-                                                                      1))
-                                                              : null,
-                                                          variantStock: subProductsList[i]
-                                                                  ['variant'][0]
-                                                              ['productstock'],
+                                                          category:
+                                                              subProductsList[i]
+                                                                  ['category'],
+                                                          price:
+                                                              subProductsList[i]
+                                                                      ['variant']
+                                                                  [0]['price'],
+                                                          dealPercentage:
+                                                              subProductsList[i]
+                                                                      ['isDealAvailable']
+                                                                  ? double.parse(subProductsList[i]['delaPercent'].toStringAsFixed(1))
+                                                                  : null,
+                                                          variantStock: subProductsList[i]['variant'][0]['productstock'],
                                                           unit: subProductsList[i]['variant'][0]['unit'],
                                                           rating: subProductsList[i]['averageRating'].toStringAsFixed(1),
                                                           buttonName: "Add",

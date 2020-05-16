@@ -202,9 +202,14 @@ class _SavedItemsState extends State<SavedItems> {
                               child: Stack(
                                 children: <Widget>[
                                   SubCategoryProductCard(
-                                      image: favProductList[i]['product']['filePath'] ??
-                                          favProductList[i]['product']
-                                              ['imageUrl'],
+                                      image: favProductList[i]['product']['filePath'] == null
+                                          ? favProductList[i]['product']
+                                              ['imageUrl']
+                                          : favProductList[i]['product']
+                                              ['filePath'],
+                                      isPath: favProductList[i]['product']['filePath'] == null
+                                          ? false
+                                          : true,
                                       title: favProductList[i]['product']
                                           ['title'],
                                       currency: currency,
@@ -220,8 +225,7 @@ class _SavedItemsState extends State<SavedItems> {
                                           : null,
                                       unit: favProductList[i]['product']
                                           ['variant'][0]['unit'],
-                                      rating: favProductList[i]['product']['averageRating']
-                                          .toStringAsFixed(1),
+                                      rating: favProductList[i]['product']['averageRating'].toStringAsFixed(1),
                                       buttonName: MyLocalizations.of(context).add,
                                       cartAdded: favProductList[i]['cartAdded'] ?? false,
                                       cartId: favProductList[i]['cartId'],

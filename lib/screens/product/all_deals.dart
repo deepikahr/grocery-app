@@ -241,6 +241,8 @@ class _AllDealsListState extends State<AllDealsList> {
                           child: DealsCard(
                             image: dealsList[i]['filePath'] ??
                                 dealsList[i]['imageUrl'],
+                            isPath:
+                                dealsList[i]['filePath'] == null ? false : true,
                             title: dealsList[i]['name'],
                             price: dealsList[i]['delaPercent'].toString() +
                                 "% " +

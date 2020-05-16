@@ -6,12 +6,14 @@ import 'package:flutter/cupertino.dart';
 
 class DealsCard extends StatelessWidget {
   final image, title, price, currency, rating, category, offer, nullImage;
+  final bool isPath;
   DealsCard(
       {Key key,
       this.image,
       this.title,
       this.price,
       this.currency,
+      this.isPath,
       this.rating,
       this.category,
       this.offer,
@@ -43,14 +45,14 @@ class DealsCard extends StatelessWidget {
             ClipRRect(
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(12)),
-              child: image == null
-                  ? Image.asset(nullImage)
-                  : Image.network(
-                      Constants.IMAGE_URL_PATH + "tr:dpr-auto,tr:w-500" + image,
-                      fit: BoxFit.fill,
-                      height: 220,
-                      width: MediaQuery.of(context).size.width,
-                    ),
+              child: Image.network(
+                isPath
+                    ? Constants.IMAGE_URL_PATH + "tr:dpr-auto,tr:w-500" + image
+                    : image,
+                fit: BoxFit.fill,
+                height: 220,
+                width: MediaQuery.of(context).size.width,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 8, right: 8, top: 8),

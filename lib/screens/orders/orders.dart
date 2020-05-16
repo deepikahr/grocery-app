@@ -314,13 +314,16 @@ class _OrdersState extends State<Orders> {
                 BoxShadow(color: Color(0xFF0000000A), blurRadius: 0.40)
               ],
               image: DecorationImage(
-                  image: NetworkImage(
-                    orderDetails['cart']['cart'][0]['filePath'] == null
-                        ? orderDetails['cart']['cart'][0]['imageUrl']
-                        : Constants.IMAGE_URL_PATH +
-                            "tr:dpr-auto,tr:w-500" +
-                            orderDetails['cart']['cart'][0]['filePath'],
-                  ),
+                  image: orderDetails['cart']['cart'][0]['filePath'] == null &&
+                          orderDetails['cart']['cart'][0]['imageUrl'] == null
+                      ? AssetImage('lib/assets/images/no-orders.png')
+                      : NetworkImage(
+                          orderDetails['cart']['cart'][0]['filePath'] == null
+                              ? orderDetails['cart']['cart'][0]['imageUrl']
+                              : Constants.IMAGE_URL_PATH +
+                                  "tr:dpr-auto,tr:w-500" +
+                                  orderDetails['cart']['cart'][0]['filePath'],
+                        ),
                   fit: BoxFit.cover),
             ),
           ),

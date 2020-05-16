@@ -4,7 +4,9 @@ import 'package:readymadeGroceryApp/style/style.dart';
 
 class CategoryBlock extends StatelessWidget {
   final image, title;
-  CategoryBlock({Key key, this.image, this.title}) : super(key: key);
+  final isPath;
+  CategoryBlock({Key key, this.image, this.title, this.isPath})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +26,9 @@ class CategoryBlock extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(8)),
               child: Image.network(
-                Constants.IMAGE_URL_PATH + "tr:dpr-auto,tr:w-500" + image,
+                isPath
+                    ? Constants.IMAGE_URL_PATH + "tr:dpr-auto,tr:w-500" + image
+                    : image,
                 scale: 8,
                 fit: BoxFit.fill,
               ),

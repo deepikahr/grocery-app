@@ -262,9 +262,13 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                         );
                       },
                       child: CategoryBlock(
-                        image: categoryList[index]['filePath'] ??
-                            categoryList[index]['imageUrl'],
+                        image: categoryList[index]['filePath'] == null
+                            ? categoryList[index]['imageUrl']
+                            : categoryList[index]['filePath'],
                         title: categoryList[index]['title'],
+                        isPath: categoryList[index]['filePath'] == null
+                            ? false
+                            : true,
                       ),
                     );
                   },
@@ -285,134 +289,132 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       activeIndicator: Colors.transparent,
       height: 140,
       aspectRatio: 2,
-      items: bannerList
-          .map(
-            (url) => InkWell(
-              onTap: () {
-                if (url['bannerType'] == "Product") {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ProductDetails(
-                          locale: widget.locale,
-                          localizedValues: widget.localizedValues,
-                          productID: url['product'],
-                          favProductList:
-                              getTokenValue ? favProductList : null),
-                    ),
-                  );
-                } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SubCategories(
-                          locale: widget.locale,
-                          localizedValues: widget.localizedValues,
-                          catId: url['category'],
-                          catTitle:
-                              '${url['title'][0].toUpperCase()}${url['title'].substring(1)}',
-                          token: getTokenValue),
-                    ),
-                  );
-                }
-              },
-              child: Stack(
-                children: <Widget>[
-                  Container(
-                    height: 130,
-                    color: bg,
-                  ),
-                  Container(
-                    height: 106,
-                    margin: EdgeInsets.only(top: 10),
-                    padding: EdgeInsets.only(top: 5, left: 20, right: 20),
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                        color: primary,
-                        borderRadius: BorderRadius.all(Radius.circular(5))),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.only(
-                            right: locale == 'ar' ? 0 : 100,
-                            left: locale == 'ar' ? 100 : 0,
-                          ),
-                          child: Text(
-                            url['title'],
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
-                            style: textbarlowBoldwhite(),
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            if (url['bannerType'] == "Product") {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ProductDetails(
-                                      locale: widget.locale,
-                                      localizedValues: widget.localizedValues,
-                                      productID: url['product'],
-                                      favProductList: getTokenValue
-                                          ? favProductList
-                                          : null),
-                                ),
-                              );
-                            } else {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => SubCategories(
-                                      locale: widget.locale,
-                                      localizedValues: widget.localizedValues,
-                                      catId: url['category'],
-                                      catTitle:
-                                          '${url['title'][0].toUpperCase()}${url['title'].substring(1)}',
-                                      token: getTokenValue),
-                                ),
-                              );
-                            }
-                          },
-                          child: Row(
-                            children: <Widget>[
-                              Text(MyLocalizations.of(context).ordernow),
-                              Icon(Icons.arrow_right)
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    right: locale == 'ar' ? null : 0,
-                    left: locale == 'ar' ? 0 : null,
-                    child: Container(
-                      height: 122,
-                      width: 124,
-                      decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                              color: Colors.black.withOpacity(0.33),
-                              blurRadius: 6)
-                        ],
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                            image: NetworkImage(url['filePath'] == null
-                                ? url['imageUrl']
-                                : Constants.IMAGE_URL_PATH +
-                                    "tr:dpr-auto,tr:w-500" +
-                                    url['filePath']),
-                            fit: BoxFit.fill),
+      items: bannerList.map((url) {
+        return InkWell(
+          onTap: () {
+            if (url['bannerType'] == "Product") {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProductDetails(
+                      locale: widget.locale,
+                      localizedValues: widget.localizedValues,
+                      productID: url['product'],
+                      favProductList: getTokenValue ? favProductList : null),
+                ),
+              );
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SubCategories(
+                      locale: widget.locale,
+                      localizedValues: widget.localizedValues,
+                      catId: url['category'],
+                      catTitle:
+                          '${url['title'][0].toUpperCase()}${url['title'].substring(1)}',
+                      token: getTokenValue),
+                ),
+              );
+            }
+          },
+          child: Stack(
+            children: <Widget>[
+              Container(
+                height: 130,
+                color: bg,
+              ),
+              Container(
+                height: 106,
+                margin: EdgeInsets.only(top: 10),
+                padding: EdgeInsets.only(top: 5, left: 20, right: 20),
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                    color: primary,
+                    borderRadius: BorderRadius.all(Radius.circular(5))),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(
+                        right: locale == 'ar' ? 0 : 100,
+                        left: locale == 'ar' ? 100 : 0,
+                      ),
+                      child: Text(
+                        url['title'],
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        style: textbarlowBoldwhite(),
                       ),
                     ),
-                  ),
-                ],
+                    InkWell(
+                      onTap: () {
+                        if (url['bannerType'] == "Product") {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProductDetails(
+                                  locale: widget.locale,
+                                  localizedValues: widget.localizedValues,
+                                  productID: url['product'],
+                                  favProductList:
+                                      getTokenValue ? favProductList : null),
+                            ),
+                          );
+                        } else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SubCategories(
+                                  locale: widget.locale,
+                                  localizedValues: widget.localizedValues,
+                                  catId: url['category'],
+                                  catTitle:
+                                      '${url['title'][0].toUpperCase()}${url['title'].substring(1)}',
+                                  token: getTokenValue),
+                            ),
+                          );
+                        }
+                      },
+                      child: Row(
+                        children: <Widget>[
+                          Text(MyLocalizations.of(context).ordernow),
+                          Icon(Icons.arrow_right)
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
-            ),
-          )
-          .toList(),
+              url['filePath'] == null && url['filePath'] == null
+                  ? Container()
+                  : Positioned(
+                      right: locale == 'ar' ? null : 0,
+                      left: locale == 'ar' ? 0 : null,
+                      child: Container(
+                        height: 122,
+                        width: 124,
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.black.withOpacity(0.33),
+                                blurRadius: 6)
+                          ],
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                              image: NetworkImage((url['filePath'] == null
+                                  ? url['imageUrl']
+                                  : Constants.IMAGE_URL_PATH +
+                                      "tr:dpr-auto,tr:w-500" +
+                                      url['filePath'])),
+                              fit: BoxFit.fill),
+                        ),
+                      ),
+                    ),
+            ],
+          ),
+        );
+      }).toList(),
     );
   }
 
@@ -490,8 +492,12 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                   child: Stack(
                                     children: <Widget>[
                                       ProductCard(
-                                        image: list[i]['filePath'] ??
-                                            list[i]['imageUrl'],
+                                        image: list[i]['filePath'] == null
+                                            ? list[i]['imageUrl']
+                                            : list[i]['filePath'],
+                                        isPath: list[i]['filePath'] == null
+                                            ? false
+                                            : true,
                                         title: list[i]['title'],
                                         currency: currency,
                                         category: list[i]['category'],
