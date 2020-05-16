@@ -483,7 +483,7 @@ class _MyCartState extends State<MyCart> {
                                                   )
                                                 ],
                                                 image: DecorationImage(
-                                                  fit: BoxFit.fill,
+                                                  fit: BoxFit.cover,
                                                   image: cartItem['cart'][i][
                                                                   'filePath'] ==
                                                               null &&

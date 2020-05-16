@@ -57,7 +57,7 @@ class ProductCard extends StatelessWidget {
                   const BorderRadius.vertical(top: Radius.circular(12)),
               child: Image.network(
                 Constants.IMAGE_URL_PATH + "tr:dpr-auto,tr:w-500" + image,
-                fit: BoxFit.fill,
+                fit: BoxFit.cover,
               ),
             ),
             Padding(
