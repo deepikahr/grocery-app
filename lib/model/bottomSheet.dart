@@ -12,6 +12,7 @@ SentryError sentryError = new SentryError();
 class BottonSheetClassDryClean extends StatefulWidget {
   final List variantsList;
   final int productQuantity;
+  final double dealPercentage;
   final String currency, locale;
   final Map<String, Map<String, String>> localizedValues;
   final Map<String, dynamic> productList;
@@ -22,6 +23,7 @@ class BottonSheetClassDryClean extends StatefulWidget {
       this.productList,
       this.currency,
       this.productQuantity,
+      this.dealPercentage,
       this.locale,
       this.localizedValues})
       : super(key: key);
@@ -274,9 +276,41 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                       }
                     },
                     activeColor: primary,
-                    title: new Text(
-                      "${widget.currency}${widget.variantsList[index]['price'].toString()}/${widget.variantsList[index]['unit']} ",
-                      textAlign: TextAlign.start,
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              widget.dealPercentage != null
+                                  ? "${widget.currency}${(widget.variantsList[index]['price'] - (widget.variantsList[index]['price'] * (widget.dealPercentage / 100)))}"
+                                  : '${widget.currency}${widget.variantsList[index]['price']}',
+                              style: textbarlowBoldGreen(),
+                            ),
+                            SizedBox(width: 3),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 5.0),
+                              child: widget.dealPercentage != null
+                                  ? Text(
+                                      '${widget.currency}${widget.variantsList[index]['price']}',
+                                      style: barlowregularlackstrike(),
+                                    )
+                                  : Container(),
+                            ),
+                          ],
+                        ),
+                        SizedBox(width: 3),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5.0),
+                          child: widget.dealPercentage != null
+                              ? Text(
+                                  '${widget.variantsList[index]['unit']} ',
+                                  style: textbarlowBoldGreen(),
+                                )
+                              : Container(),
+                        ),
+                      ],
                     ),
                   );
                 }),
@@ -329,7 +363,9 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                           height: 1.0,
                         ),
                         new Text(
-                          '${widget.currency}${variantPrice == null ? (widget.variantsList[0]['price'] * quantity) : (variantPrice * quantity)}',
+                          widget.dealPercentage != null
+                              ? '${widget.currency}${(variantPrice == null ? (widget.variantsList[0]['price'] * quantity) : (variantPrice * quantity)) - ((variantPrice == null ? (widget.variantsList[0]['price'] * quantity) : (variantPrice * quantity)) * (widget.dealPercentage / 100))}'
+                              : '${widget.currency}${variantPrice == null ? (widget.variantsList[0]['price'] * quantity) : (variantPrice * quantity)}',
                           style: textbarlowBoldWhite(),
                         ),
                       ],

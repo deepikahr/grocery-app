@@ -114,9 +114,11 @@ class _AboutUsState extends State<AboutUs> {
                       margin: EdgeInsets.all(20),
                       child: Center(
                         child: Image.network(
-                          Constants.IMAGE_URL_PATH +
-                              "tr:dpr-auto,tr:w-500" +
-                              aboutUsDatails['userApp']['filePath'],
+                          aboutUsDatails['userApp']['filePath'] == null
+                              ? aboutUsDatails['userApp']['imageUrl']
+                              : Constants.IMAGE_URL_PATH +
+                                  "tr:dpr-auto,tr:w-500" +
+                                  aboutUsDatails['userApp']['filePath'],
                         ),
                       ),
                     ),

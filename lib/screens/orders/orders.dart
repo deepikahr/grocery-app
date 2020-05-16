@@ -315,9 +315,11 @@ class _OrdersState extends State<Orders> {
               ],
               image: DecorationImage(
                   image: NetworkImage(
-                    Constants.IMAGE_URL_PATH +
-                        "tr:dpr-auto,tr:w-500" +
-                        orderDetails['cart']['cart'][0]['filePath'],
+                    orderDetails['cart']['cart'][0]['filePath'] == null
+                        ? orderDetails['cart']['cart'][0]['imageUrl']
+                        : Constants.IMAGE_URL_PATH +
+                            "tr:dpr-auto,tr:w-500" +
+                            orderDetails['cart']['cart'][0]['filePath'],
                   ),
                   fit: BoxFit.cover),
             ),
@@ -348,7 +350,7 @@ class _OrdersState extends State<Orders> {
                       ),
                 SizedBox(height: 10),
                 Text(
-                  currency + orderDetails['grandTotal'].toString(),
+                  '$currency${orderDetails['grandTotal'].toStringAsFixed(2)}',
                   style: titleLargeSegoeBlack(),
                 ),
                 SizedBox(height: 10),

@@ -484,18 +484,27 @@ class _MyCartState extends State<MyCart> {
                                                 ],
                                                 image: DecorationImage(
                                                   fit: BoxFit.fill,
-                                                  image: cartItem['cart'][i]
-                                                              ['filePath'] ==
-                                                          null
+                                                  image: cartItem['cart'][i][
+                                                                  'filePath'] ==
+                                                              null &&
+                                                          cartItem['cart'][i][
+                                                                  'imageUrl'] ==
+                                                              null
                                                       ? AssetImage(
                                                           'lib/assets/images/no-orders.png')
                                                       : NetworkImage(
-                                                          Constants
-                                                                  .IMAGE_URL_PATH +
-                                                              "tr:dpr-auto,tr:w-500" +
-                                                              cartItem['cart']
+                                                          cartItem['cart'][i][
+                                                                      'filePath'] ==
+                                                                  null
+                                                              ? cartItem['cart']
                                                                       [i]
-                                                                  ['filePath'],
+                                                                  ['imageUrl']
+                                                              : Constants
+                                                                      .IMAGE_URL_PATH +
+                                                                  "tr:dpr-auto,tr:w-500" +
+                                                                  cartItem['cart']
+                                                                          [i][
+                                                                      'filePath'],
                                                         ),
                                                 ),
                                               ),
@@ -521,11 +530,13 @@ class _MyCartState extends State<MyCart> {
                                                       ? " "
                                                       : cartItem['cart'][i]
                                                           ['title'],
+                                                  maxLines: 2,
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   style:
                                                       textBarlowRegularBlack(),
                                                 ),
+                                                SizedBox(height: 10),
                                                 Row(
                                                   children: <Widget>[
                                                     Text(
@@ -538,34 +549,46 @@ class _MyCartState extends State<MyCart> {
                                                                   ['price'] ==
                                                               null
                                                           ? " "
-                                                          : cartItem['cart'][i]
-                                                                      ['price']
-                                                                  .toString() +
-                                                              "/" +
-                                                              cartItem['cart']
-                                                                          [i]
-                                                                      ['unit']
-                                                                  .toString(),
+                                                          : cartItem['cart'][i][
+                                                                  'productTotal']
+                                                              .toDouble()
+                                                              .toStringAsFixed(
+                                                                  2)
+                                                              .toString(),
                                                       style:
                                                           textbarlowBoldGreen(),
                                                     ),
+                                                    SizedBox(width: 3),
+                                                    cartItem['cart'][i]
+                                                            ['isDealAvailable']
+                                                        ? Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    top: 5.0),
+                                                            child: Text(
+                                                              '$currency${((cartItem['cart'][i]['price']) * (cartItem['cart'][i]['quantity'])).toDouble().toStringAsFixed(2)}',
+                                                              style:
+                                                                  barlowregularlackstrike(),
+                                                            ),
+                                                          )
+                                                        : Container(),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 5.0),
+                                                      child: Text(
+                                                        " / " +
+                                                            cartItem['cart'][i]
+                                                                    ['unit']
+                                                                .toString(),
+                                                        style:
+                                                            barlowregularlack(),
+                                                      ),
+                                                    ),
                                                   ],
                                                 ),
-                                                cartItem['cart'][i]
-                                                            ['productTotal'] ==
-                                                        null
-                                                    ? Text("")
-                                                    : Text(
-                                                        " (" +
-                                                            currency +
-                                                            (cartItem['cart'][i]
-                                                                    [
-                                                                    'productTotal'])
-                                                                .toString() +
-                                                            ")",
-                                                        style:
-                                                            textbarlowBoldGreen(),
-                                                      ),
+                                                SizedBox(height: 10),
                                                 cartItem['cart'][i][
                                                             'isDealAvailable'] ==
                                                         true
@@ -583,7 +606,8 @@ class _MyCartState extends State<MyCart> {
                                                                     context)
                                                                 .off,
                                                         style:
-                                                            textBarlowRegularBlack(),
+                                                            barlowregularlack(),
+                                                        // textBarlowRegularBlack(),
                                                       )
                                                     : Text("")
                                               ],
@@ -710,7 +734,7 @@ class _MyCartState extends State<MyCart> {
                                       style: textBarlowRegularBlack(),
                                     ),
                                     new Text(
-                                      '$currency ${cartItem['subTotal']}',
+                                      '$currency${cartItem['subTotal'].toDouble().toStringAsFixed(2)}',
                                       style: textbarlowBoldsmBlack(),
                                     ),
                                   ],
@@ -734,7 +758,7 @@ class _MyCartState extends State<MyCart> {
                                             style: textBarlowRegularBlack(),
                                           ),
                                           new Text(
-                                            '$currency ${cartItem['deliveryCharges']}',
+                                            '$currency${cartItem['deliveryCharges'].toDouble().toStringAsFixed(2)}',
                                             style: textbarlowBoldsmBlack(),
                                           ),
                                         ],
@@ -743,32 +767,35 @@ class _MyCartState extends State<MyCart> {
                               cartItem['deliveryCharges'] == 0
                                   ? Container()
                                   : SizedBox(height: 6),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 20.0, right: 20.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Row(
-                                      children: <Widget>[
-                                        Image.asset(
-                                            'lib/assets/icons/sale.png'),
-                                        SizedBox(width: 5),
-                                        new Text(
-                                          MyLocalizations.of(context).tax,
-                                          style: textBarlowRegularBlack(),
-                                        ),
-                                      ],
+                              cartItem['tax'] == 0
+                                  ? Container()
+                                  : Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 20.0, right: 20.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          Row(
+                                            children: <Widget>[
+                                              Image.asset(
+                                                  'lib/assets/icons/sale.png'),
+                                              SizedBox(width: 5),
+                                              new Text(
+                                                MyLocalizations.of(context).tax,
+                                                style: textBarlowRegularBlack(),
+                                              ),
+                                            ],
+                                          ),
+                                          new Text(
+                                            '$currency${cartItem['tax'].toDouble().toStringAsFixed(2)}',
+                                            style: textbarlowBoldsmBlack(),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    new Text(
-                                      '$currency ${cartItem['tax']}',
-                                      style: textbarlowBoldsmBlack(),
-                                    ),
-                                  ],
-                                ),
-                              ),
                               SizedBox(height: 6),
                               cartItem['couponInfo'] == null
                                   ? Container()
@@ -790,7 +817,7 @@ class _MyCartState extends State<MyCart> {
                                             style: textBarlowRegularBlack(),
                                           ),
                                           new Text(
-                                            '$currency ${cartItem['couponInfo']['couponDiscountAmount']}',
+                                            '$currency${cartItem['couponInfo']['couponDiscountAmount'].toDouble().toStringAsFixed(2)}',
                                             style: textbarlowBoldsmBlack(),
                                           ),
                                         ],
@@ -837,7 +864,7 @@ class _MyCartState extends State<MyCart> {
                                             style: textBarlowRegularWhite(),
                                           ),
                                           new Text(
-                                            '$currency ${cartItem['grandTotal']}  ',
+                                            '$currency${cartItem['grandTotal'].toDouble().toStringAsFixed(2)}',
                                             style: textbarlowBoldWhite(),
                                           ),
                                         ],
