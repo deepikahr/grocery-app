@@ -202,8 +202,9 @@ class _SavedItemsState extends State<SavedItems> {
                               child: Stack(
                                 children: <Widget>[
                                   SubCategoryProductCard(
-                                      image: favProductList[i]['product']
-                                          ['filePath'],
+                                      image: favProductList[i]['product']['filePath'] ??
+                                          favProductList[i]['product']
+                                              ['imageUrl'],
                                       title: favProductList[i]['product']
                                           ['title'],
                                       currency: currency,
@@ -211,28 +212,25 @@ class _SavedItemsState extends State<SavedItems> {
                                           ['category'],
                                       price: favProductList[i]['product']
                                           ['variant'][0]['price'],
-                                          unit: favProductList[i]['product']
+                                      dealPercentage: favProductList[i]
+                                              ['product']['isDealAvailable']
+                                          ? double.parse(favProductList[i]
+                                                  ['product']['delaPercent']
+                                              .toStringAsFixed(1))
+                                          : null,
+                                      unit: favProductList[i]['product']
                                           ['variant'][0]['unit'],
-                                      rating: favProductList[i]['product']
-                                              ['averageRating']
-                                          .toString(),
-                                      buttonName:
-                                          MyLocalizations.of(context).add,
-                                      cartAdded: favProductList[i]
-                                              ['cartAdded'] ??
-                                          false,
+                                      rating: favProductList[i]['product']['averageRating']
+                                          .toStringAsFixed(1),
+                                      buttonName: MyLocalizations.of(context).add,
+                                      cartAdded: favProductList[i]['cartAdded'] ?? false,
                                       cartId: favProductList[i]['cartId'],
-                                      productQuantity: favProductList[i]
-                                              ['cartAddedQuantity'] ??
-                                          0,
-                                      variantStock: favProductList[i]['product']
-                                          ['variant'][0]['productstock'],
+                                      productQuantity: favProductList[i]['cartAddedQuantity'] ?? 0,
+                                      variantStock: favProductList[i]['product']['variant'][0]['productstock'],
                                       token: true,
                                       productList: favProductList[i]['product'],
-                                      variantList: favProductList[i]['product']
-                                          ['variant'],
-                                      subCategoryId: favProductList[i]
-                                          ['subcategory']),
+                                      variantList: favProductList[i]['product']['variant'],
+                                      subCategoryId: favProductList[i]['subcategory']),
                                   favProductList[i]['isDealAvailable'] == true
                                       ? Positioned(
                                           child: Stack(

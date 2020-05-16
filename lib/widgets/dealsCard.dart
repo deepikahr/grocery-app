@@ -63,6 +63,7 @@ class DealsCard extends StatelessWidget {
                       Expanded(
                           child: Text(
                         title,
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: textbarlowRegularBlackb(),
                       )),

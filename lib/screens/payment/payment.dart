@@ -350,7 +350,9 @@ class _PaymentState extends State<Payment> {
                                     ),
                                   ),
                                   Text(
-                                    deliveryCharges.toString(),
+                                    deliveryCharges
+                                        .toDouble()
+                                        .toStringAsFixed(2),
                                     style: textbarlowBoldBlack(),
                                   ),
                                 ],
@@ -389,7 +391,7 @@ class _PaymentState extends State<Payment> {
                                     ),
                                   ),
                                   Text(
-                                    grandTotal.toString(),
+                                    grandTotal.toDouble().toStringAsFixed(2),
                                     style: textbarlowBoldBlack(),
                                   ),
                                 ],
@@ -409,7 +411,7 @@ class _PaymentState extends State<Payment> {
                         padding: EdgeInsets.only(right: 0.0),
                         itemCount: paymentTypes.length,
                         itemBuilder: (BuildContext context, int index) {
-                          if (grandTotal >= 50) {
+                          if (grandTotal >= 0.5) {
                             paymentTypes[0]['isSelected'] = true;
                             paymentTypes[1]['isSelected'] = true;
                           } else {
@@ -426,7 +428,9 @@ class _PaymentState extends State<Payment> {
                                     selected: isSelected,
                                     activeColor: primary,
                                     title: Text(
-                                      paymentTypes[index]['type'],
+                                      paymentTypes[index]['type'] == 'COD'
+                                          ? 'Cash on Delivery'
+                                          : 'Pay with Card',
                                       style: TextStyle(color: primary),
                                     ),
                                     onChanged: (int selected) {
@@ -436,18 +440,17 @@ class _PaymentState extends State<Payment> {
                                         });
                                       }
                                     },
-                                    secondary:
-                                        paymentTypes[index]['type'] == "COD"
-                                            ? Icon(
-                                                Icons.attach_money,
-                                                color: primary,
-                                                size: 16.0,
-                                              )
-                                            : Icon(
-                                                Icons.credit_card,
-                                                color: primary,
-                                                size: 16.0,
-                                              ),
+                                    secondary: paymentTypes[index]['type'] ==
+                                            "COD"
+                                        ? Text(
+                                            currency,
+                                            style: TextStyle(color: primary),
+                                          )
+                                        : Icon(
+                                            Icons.credit_card,
+                                            color: primary,
+                                            size: 16.0,
+                                          ),
                                   ),
                                 )
                               : Container();

@@ -260,6 +260,9 @@ class _AddressState extends State<Address> {
                     });
                   });
                 }
+              } else {
+                showError('Enable To get location!',
+                    'There is problem using your device location. Please check your GPS settings');
               }
             },
             text: MyLocalizations.of(context).addNewAddress,
@@ -323,6 +326,70 @@ class _AddressState extends State<Address> {
           )
         ],
       ),
+    );
+  }
+
+  showError(error, message) async {
+    showDialog<Null>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.only(
+            top: 10.0,
+          ),
+          title: new Text(
+            "$error",
+            style: hintSfsemiboldb(),
+            textAlign: TextAlign.center,
+          ),
+          content: Container(
+            height: 100.0,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                  child: new Text(
+                    "$message",
+                    style: hintSfLightsm(),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Column(
+                  children: <Widget>[
+                    Divider(),
+                    IntrinsicHeight(
+                      child: new Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                margin: EdgeInsets.only(bottom: 12.0),
+                                height: 30.0,
+                                decoration: BoxDecoration(),
+                                child: Text(
+                                  MyLocalizations.of(context).ok,
+                                  style: hintSfLightbig(),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

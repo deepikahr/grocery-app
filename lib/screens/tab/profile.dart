@@ -373,7 +373,9 @@ class _ProfileState extends State<Profile> {
                                         height: 90.0,
                                         width: 91.0,
                                         child: userInfo == null ||
-                                                userInfo['filePath'] == null
+                                                (userInfo['filePath'] == null &&
+                                                    userInfo['profilePic'] ==
+                                                        null)
                                             ? Center(
                                                 child: new Container(
                                                   width: 200.0,
@@ -400,10 +402,16 @@ class _ProfileState extends State<Profile> {
                                                             20.0),
                                                     image: new DecorationImage(
                                                       fit: BoxFit.fill,
-                                                      image: new NetworkImage(Constants
-                                                              .IMAGE_URL_PATH +
-                                                          "tr:dpr-auto,tr:w-500" +
-                                                          userInfo['filePath']),
+                                                      image: new NetworkImage(userInfo[
+                                                                  'filePath'] ==
+                                                              null
+                                                          ? userInfo[
+                                                              'profilePic']
+                                                          : Constants
+                                                                  .IMAGE_URL_PATH +
+                                                              "tr:dpr-auto,tr:w-500" +
+                                                              userInfo[
+                                                                  'filePath']),
                                                     ),
                                                   ),
                                                 ),

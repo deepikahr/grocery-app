@@ -221,9 +221,12 @@ class _OrderDetailsState extends State<OrderDetails> {
                                       child: Text(
                                           DateFormat('dd/MM/yyyy, hh:mm a')
                                               .format(
-                                            DateTime.fromMillisecondsSinceEpoch(
-                                                orderHistory['appTimestamp']),
-                                          ),
+                                                DateTime
+                                                    .fromMillisecondsSinceEpoch(
+                                                        orderHistory[
+                                                            'appTimestamp']),
+                                              )
+                                              .replaceAll('-', '/'),
                                           overflow: TextOverflow.ellipsis,
                                           style: textBarlowMediumBlack()),
                                     )
@@ -240,7 +243,9 @@ class _OrderDetailsState extends State<OrderDetails> {
                                         style: textBarlowMediumBlack()),
                                     SizedBox(width: 5),
                                     Expanded(
-                                      child: Text(orderHistory['deliveryDate'],
+                                      child: Text(
+                                          orderHistory['deliveryDate']
+                                              .replaceAll('-', '/'),
                                           overflow: TextOverflow.ellipsis,
                                           style: textBarlowMediumBlack()),
                                     )
@@ -328,9 +333,11 @@ class _OrderDetailsState extends State<OrderDetails> {
                               ],
                               image: DecorationImage(
                                   image: NetworkImage(
-                                    Constants.IMAGE_URL_PATH +
-                                        "tr:dpr-auto,tr:w-500" +
-                                        order['filePath'],
+                                    order['filePath'] == null
+                                        ? order['imageUrl']
+                                        : Constants.IMAGE_URL_PATH +
+                                            "tr:dpr-auto,tr:w-500" +
+                                            order['filePath'],
                                   ),
                                   fit: BoxFit.cover),
                             ),
@@ -350,7 +357,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                 ),
                                 SizedBox(height: 10),
                                 Text(
-                                  '${order['unit']} (${order['quantity']}) *  $currency${order['price']}',
+                                  '${order['unit']} (${order['quantity']}) *  $currency${order['price'].toStringAsFixed(2)}',
                                   style: textSMBarlowRegularrBlack(),
                                 ),
                                 order['dealTotalAmount'] == 0
@@ -359,7 +366,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                 order['dealTotalAmount'] == 0
                                     ? Container()
                                     : Text(
-                                        'Deal Amount : $currency${order['dealTotalAmount']}',
+                                        'Deal Amount : $currency${order['dealTotalAmount'].toStringAsFixed(2)}',
                                         style: textSMBarlowRegularrBlack(),
                                       ),
                                 SizedBox(height: 10),
@@ -368,7 +375,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                       MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
                                     Text(
-                                      '$currency ${order['productTotal']}',
+                                      '$currency ${order['productTotal'].toStringAsFixed(2)}',
                                       style: textBarlowMediumBlack(),
                                     ),
                                     SizedBox(
@@ -394,9 +401,10 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                 initialRating:
                                                     order['rating'] == null
                                                         ? 0
-                                                        : double.parse(
-                                                            order['rating']
-                                                                .toString()),
+                                                        : double.parse(order[
+                                                                'rating']
+                                                            .toStringAsFixed(
+                                                                1)),
                                                 minRating: 0,
                                                 direction: Axis.horizontal,
                                                 allowHalfRating: true,
@@ -416,18 +424,6 @@ class _OrderDetailsState extends State<OrderDetails> {
                                         : Container()
                                   ],
                                 ),
-                                // SizedBox(height: 10),
-                                // Text(
-                                //   MyLocalizations.of(context).ordered +
-                                //           ' : ' +
-                                //           DateFormat('dd/MM/yyyy, hh:mm a')
-                                //               .format(
-                                //             DateTime.fromMillisecondsSinceEpoch(
-                                //                 orderDetails['appTimestamp']),
-                                //           ) ??
-                                //       "",
-                                //   style: textSMBarlowRegularrBlack(),
-                                // )
                               ],
                             ),
                           )
@@ -468,7 +464,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                     style: textBarlowBoldBlack(),
                                   ),
                                   Text(
-                                    orderHistory['subTotal'].toString(),
+                                    orderHistory['subTotal'].toStringAsFixed(2),
                                     style: textBarlowBoldBlack(),
                                   )
                                 ],
@@ -478,37 +474,42 @@ class _OrderDetailsState extends State<OrderDetails> {
                         ],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 18.0, right: 18.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(MyLocalizations.of(context).tax + ' :',
-                              style: textBarlowMediumBlack()),
-                          Container(
-                            margin: EdgeInsets.only(left: 8),
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                top: 15.0,
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    currency,
-                                    style: textBarlowBoldBlack(),
+                    orderHistory['tax'] == 0
+                        ? Container()
+                        : Padding(
+                            padding:
+                                const EdgeInsets.only(left: 18.0, right: 18.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Text(MyLocalizations.of(context).tax + ' :',
+                                    style: textBarlowMediumBlack()),
+                                Container(
+                                  margin: EdgeInsets.only(left: 8),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                      top: 15.0,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          currency,
+                                          style: textBarlowBoldBlack(),
+                                        ),
+                                        Text(
+                                          orderHistory['tax']
+                                              .toStringAsFixed(2),
+                                          style: textBarlowBoldBlack(),
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                  Text(
-                                    orderHistory['tax'].toString(),
-                                    style: textBarlowBoldBlack(),
-                                  )
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
-                    ),
                     Padding(
                       padding: const EdgeInsets.only(left: 18.0, right: 18.0),
                       child: Row(
@@ -533,7 +534,8 @@ class _OrderDetailsState extends State<OrderDetails> {
                                     style: textBarlowBoldBlack(),
                                   ),
                                   Text(
-                                    orderHistory['deliveryCharges'].toString(),
+                                    orderHistory['deliveryCharges']
+                                        .toStringAsFixed(2),
                                     style: textBarlowBoldBlack(),
                                   )
                                 ],
@@ -573,7 +575,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                           style: textBarlowBoldBlack(),
                                         ),
                                         Text(
-                                          '${orderHistory['cart']['couponInfo']['couponDiscountAmount']}',
+                                          '${orderHistory['cart']['couponInfo']['couponDiscountAmount'].toStringAsFixed(2)}',
                                           style: textBarlowBoldBlack(),
                                         )
                                       ],
@@ -614,7 +616,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                 style: textBarlowBoldBlack(),
                               ),
                               Text(
-                                orderHistory['grandTotal'].toString(),
+                                orderHistory['grandTotal'].toStringAsFixed(2),
                                 style: textBarlowBoldBlack(),
                               )
                             ],

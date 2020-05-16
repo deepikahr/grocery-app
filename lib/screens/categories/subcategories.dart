@@ -495,9 +495,11 @@ class _SubCategoriesState extends State<SubCategories> {
                                                   child: Stack(
                                                     children: <Widget>[
                                                       SubCategoryProductCard(
-                                                        image:
+                                                        image: subCategryByProduct[
+                                                                    i]
+                                                                ['filePath'] ??
                                                             subCategryByProduct[
-                                                                i]['filePath'],
+                                                                i]['imageUrl'],
                                                         title:
                                                             subCategryByProduct[
                                                                 i]['title'],
@@ -510,6 +512,16 @@ class _SubCategoriesState extends State<SubCategories> {
                                                                         i]
                                                                     ['variant']
                                                                 [0]['price'],
+                                                        dealPercentage: subCategryByProduct[
+                                                                    i][
+                                                                'isDealAvailable']
+                                                            ? double.parse(
+                                                                subCategryByProduct[
+                                                                            i][
+                                                                        'delaPercent']
+                                                                    .toStringAsFixed(
+                                                                        1))
+                                                            : null,
                                                         variantStock:
                                                             subCategryByProduct[
                                                                         i][
@@ -524,7 +536,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                                         rating: subCategryByProduct[
                                                                     i][
                                                                 'averageRating']
-                                                            .toString(),
+                                                            .toStringAsFixed(1),
                                                         buttonName: "Add",
                                                         cartAdded:
                                                             subCategryByProduct[
@@ -665,27 +677,27 @@ class _SubCategoriesState extends State<SubCategories> {
                                                   child: Stack(
                                                     children: <Widget>[
                                                       SubCategoryProductCard(
-                                                          image: subProductsList[i]
-                                                              ['filePath'],
+                                                          image: subProductsList[i]['filePath'] ??
+                                                              subProductsList[i]
+                                                                  ['imageUrl'],
                                                           title: subProductsList[i]
                                                               ['title'],
                                                           currency: currency,
-                                                          category:
-                                                              subProductsList[i]
-                                                                  ['category'],
+                                                          category: subProductsList[i]
+                                                              ['category'],
                                                           price: subProductsList[i]
                                                                   ['variant'][0]
                                                               ['price'],
+                                                          dealPercentage: subProductsList[i]['isDealAvailable']
+                                                              ? double.parse(subProductsList[i]['delaPercent']
+                                                                  .toStringAsFixed(
+                                                                      1))
+                                                              : null,
                                                           variantStock: subProductsList[i]
                                                                   ['variant'][0]
                                                               ['productstock'],
-                                                          unit:
-                                                              subProductsList[i]
-                                                                      ['variant']
-                                                                  [0]['unit'],
-                                                          rating: subProductsList[i]
-                                                                  ['averageRating']
-                                                              .toString(),
+                                                          unit: subProductsList[i]['variant'][0]['unit'],
+                                                          rating: subProductsList[i]['averageRating'].toStringAsFixed(1),
                                                           buttonName: "Add",
                                                           cartAdded: subProductsList[i]['cartAdded'] ?? false,
                                                           cartId: subProductsList[i]['cartId'],

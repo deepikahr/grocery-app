@@ -76,7 +76,6 @@ class _EditAddressState extends State<EditAddress> {
         });
       }
       _formKey.currentState.save();
-
       if (_pickedLocation == null) {
         address['address'] = fullAddress == null
             ? widget.updateAddressID['address']
@@ -90,7 +89,6 @@ class _EditAddressState extends State<EditAddress> {
         };
         address['location'] = location;
       }
-
       address['addressType'] = addressType[
           selectedRadioFirst == null ? selectedRadio : selectedRadioFirst];
       AddressService.updateAddress(address, widget.updateAddressID['_id'])
@@ -99,7 +97,7 @@ class _EditAddressState extends State<EditAddress> {
           if (mounted) {
             setState(() {
               isUpdateAddress = false;
-              showAlert(onValue['response_data']);
+              Navigator.of(context).pop();
             });
           }
         } catch (error, stackTrace) {
@@ -126,40 +124,6 @@ class _EditAddressState extends State<EditAddress> {
       }
       return;
     }
-  }
-
-  // show alert
-  showAlert(message) {
-    showDialog<Null>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return new AlertDialog(
-          content: new SingleChildScrollView(
-            child: new ListBody(
-              children: <Widget>[
-                new Text(
-                  message,
-                  style: hintSfMediumblackbig(),
-                ),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            new FlatButton(
-              child: new Text(
-                MyLocalizations.of(context).ok,
-                style: TextStyle(color: green),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -279,6 +243,7 @@ class _EditAddressState extends State<EditAddress> {
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
                     initialValue: widget.updateAddressID['flatNo'],
+                    maxLength: 14,
                     style: labelStyle(),
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
@@ -480,7 +445,7 @@ class _EditAddressState extends State<EditAddress> {
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
                     initialValue: widget.updateAddressID['contactNumber'],
-                    maxLength: 10,
+                    maxLength: 15,
                     style: labelStyle(),
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(

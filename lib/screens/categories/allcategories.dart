@@ -117,9 +117,9 @@ class _AllCategoriesState extends State<AllCategories>
                       categoryList.length == null ? 0 : categoryList.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
-                      childAspectRatio: MediaQuery.of(context).size.width / 400,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12),
+                      // childAspectRatio: MediaQuery.of(context).size.width / 400,
+                      crossAxisSpacing: 0,
+                      mainAxisSpacing: 0),
                   itemBuilder: (BuildContext context, int index) {
                     return InkWell(
                       onTap: () {
@@ -155,9 +155,11 @@ class _AllCategoriesState extends State<AllCategories>
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(8)),
                                 child: Image.network(
-                                  Constants.IMAGE_URL_PATH +
-                                      "tr:dpr-auto,tr:w-500" +
-                                      categoryList[index]['filePath'],
+                                  categoryList[index]['filePath'] == null
+                                      ? categoryList[index]['imageUrl']
+                                      : Constants.IMAGE_URL_PATH +
+                                          "tr:dpr-auto,tr:w-500" +
+                                          categoryList[index]['filePath'],
                                   scale: 5,
                                   fit: BoxFit.fill,
                                 ),
@@ -165,6 +167,7 @@ class _AllCategoriesState extends State<AllCategories>
                             ),
                             Text(
                               categoryList[index]['title'],
+                              maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: textBarlowRegularrdarkdull(),
                               textAlign: TextAlign.center,
