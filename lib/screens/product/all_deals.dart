@@ -197,7 +197,7 @@ class _AllDealsListState extends State<AllDealsList> {
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           childAspectRatio:
-                              MediaQuery.of(context).size.width / 640,
+                              MediaQuery.of(context).size.width / 680,
                           crossAxisSpacing: 16,
                           mainAxisSpacing: 16),
                       itemBuilder: (BuildContext context, int i) {
@@ -241,6 +241,8 @@ class _AllDealsListState extends State<AllDealsList> {
                           child: DealsCard(
                             image: dealsList[i]['filePath'] ??
                                 dealsList[i]['imageUrl'],
+                            isPath:
+                                dealsList[i]['filePath'] == null ? false : true,
                             title: dealsList[i]['name'],
                             price: dealsList[i]['delaPercent'].toString() +
                                 "% " +

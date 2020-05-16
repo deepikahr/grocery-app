@@ -7,7 +7,7 @@ import 'package:flutter/cupertino.dart';
 class ProductCard extends StatelessWidget {
   final image, title, currency, rating, category, offer, unit, buttonName;
   final double price, dealPercentage;
-  final bool token;
+  final bool token, isPath;
   final Map productList;
   final List variantList;
   final String locale;
@@ -19,6 +19,7 @@ class ProductCard extends StatelessWidget {
       this.title,
       this.price,
       this.currency,
+      this.isPath,
       this.rating,
       this.dealPercentage,
       this.category,
@@ -56,7 +57,9 @@ class ProductCard extends StatelessWidget {
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(12)),
               child: Image.network(
-                Constants.IMAGE_URL_PATH + "tr:dpr-auto,tr:w-500" + image,
+                isPath
+                    ? Constants.IMAGE_URL_PATH + "tr:dpr-auto,tr:w-500" + image
+                    : image,
                 fit: BoxFit.cover,
               ),
             ),

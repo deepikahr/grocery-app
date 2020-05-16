@@ -19,6 +19,7 @@ class SubCategoryProductCard extends StatefulWidget {
       variantStock,
       price,
       currency,
+      isPath,
       unit,
       rating,
       category,
@@ -40,6 +41,7 @@ class SubCategoryProductCard extends StatefulWidget {
       this.subCategoryId,
       this.title,
       this.unit,
+      this.isPath,
       this.price,
       this.currency,
       this.rating,
@@ -158,9 +160,11 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                   borderRadius:
                       const BorderRadius.vertical(top: Radius.circular(12)),
                   child: Image.network(
-                    Constants.IMAGE_URL_PATH +
-                        "tr:dpr-auto,tr:w-500" +
-                        widget.image,
+                    widget.isPath
+                        ? Constants.IMAGE_URL_PATH +
+                            "tr:dpr-auto,tr:w-500" +
+                            widget.image
+                        : widget.image,
                     fit: BoxFit.fill,
                     height: 120,
                     width: MediaQuery.of(context).size.width,
@@ -183,8 +187,8 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                             ),
                           ),
                           widget.rating == null ||
-                                  widget.rating == 0 ||
-                                  widget.rating == '0'
+                                  widget.rating == 0.0 ||
+                                  widget.rating == '0.0'
                               ? Container()
                               : Container(
                                   height: 19,

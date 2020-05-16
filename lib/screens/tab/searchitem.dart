@@ -370,8 +370,9 @@ class _SearchItemState extends State<SearchItem> {
                                     child: Stack(
                                       children: <Widget>[
                                         SubCategoryProductCard(
-                                            image: searchresult[index]['filePath'] ??
-                                                searchresult[index]['imageUrl'],
+                                            image: searchresult[index]['filePath'] ==null?
+                                                searchresult[index]['imageUrl']:searchresult[index]['filePath'],
+                                                isPath: searchresult[index]['filePath']==null?false:true,
                                             title: searchresult[index]['title'],
                                             currency: currency,
                                             category: searchresult[index]
