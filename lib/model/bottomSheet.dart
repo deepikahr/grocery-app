@@ -284,8 +284,8 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                           children: <Widget>[
                             Text(
                               widget.dealPercentage != null
-                                  ? "${widget.currency}${(widget.variantsList[index]['price'] - (widget.variantsList[index]['price'] * (widget.dealPercentage / 100)))}"
-                                  : '${widget.currency}${widget.variantsList[index]['price']}',
+                                  ? "${widget.currency}${((widget.variantsList[index]['price'] - (widget.variantsList[index]['price'] * (widget.dealPercentage / 100)))).toStringAsFixed(2)}"
+                                  : '${widget.currency}${(widget.variantsList[index]['price']).toStringAsFixed(2)}',
                               style: textbarlowBoldGreen(),
                             ),
                             SizedBox(width: 3),
@@ -293,7 +293,7 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                               padding: const EdgeInsets.only(top: 5.0),
                               child: widget.dealPercentage != null
                                   ? Text(
-                                      '${widget.currency}${widget.variantsList[index]['price']}',
+                                      '${widget.currency}${(widget.variantsList[index]['price']).toStringAsFixed(2)}',
                                       style: barlowregularlackstrike(),
                                     )
                                   : Container(),
@@ -364,8 +364,8 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                         ),
                         new Text(
                           widget.dealPercentage != null
-                              ? '${widget.currency}${(variantPrice == null ? (widget.variantsList[0]['price'] * quantity) : (variantPrice * quantity)) - ((variantPrice == null ? (widget.variantsList[0]['price'] * quantity) : (variantPrice * quantity)) * (widget.dealPercentage / 100))}'
-                              : '${widget.currency}${variantPrice == null ? (widget.variantsList[0]['price'] * quantity) : (variantPrice * quantity)}',
+                              ? '${widget.currency}${((variantPrice == null ? (widget.variantsList[0]['price'] * quantity) : (variantPrice * quantity)) - ((variantPrice == null ? (widget.variantsList[0]['price'] * quantity) : (variantPrice * quantity)) * (widget.dealPercentage / 100))).toStringAsFixed(2)}'
+                              : '${widget.currency}${variantPrice == null ? (widget.variantsList[0]['price'] * quantity) : (variantPrice * quantity).toStringAsFixed(2)}',
                           style: textbarlowBoldWhite(),
                         ),
                       ],
