@@ -479,7 +479,7 @@ class _SignupState extends State<Signup> {
     return Container(
       margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
       child: TextFormField(
-        maxLength: 10,
+        maxLength: 15,
         style: textBarlowRegularBlack(),
         keyboardType: TextInputType.number,
         validator: (String value) {

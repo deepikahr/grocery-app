@@ -60,7 +60,7 @@ class ProductCard extends StatelessWidget {
                 isPath
                     ? Constants.IMAGE_URL_PATH + "tr:dpr-auto,tr:w-500" + image
                     : image,
-                fit: BoxFit.fill,
+                fit: BoxFit.cover,
               ),
             ),
             Padding(

@@ -197,7 +197,7 @@ class _AllDealsListState extends State<AllDealsList> {
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           childAspectRatio:
-                              MediaQuery.of(context).size.width / 640,
+                              MediaQuery.of(context).size.width / 680,
                           crossAxisSpacing: 16,
                           mainAxisSpacing: 16),
                       itemBuilder: (BuildContext context, int i) {

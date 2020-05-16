@@ -478,7 +478,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                   )
                                 ],
                                 image: new DecorationImage(
-                                  fit: BoxFit.fill,
+                                  fit: BoxFit.cover,
                                   image: new NetworkImage(
                                     productDetail['filePath'] == null
                                         ? productDetail['imageUrl']
