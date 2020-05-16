@@ -50,10 +50,10 @@ class _ThankyouState extends State<Thankyou> {
                     ),
                     (Route<dynamic> route) => false);
               },
-              color: green,
+              color: Colors.black,
               child: Text(
                 MyLocalizations.of(context).backToHome,
-                style: textbarlowMediumBlack(),
+                style: textbarlowMediumPrimary(),
               ),
             ),
           ],

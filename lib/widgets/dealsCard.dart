@@ -47,9 +47,9 @@ class DealsCard extends StatelessWidget {
                   ? Image.asset(nullImage)
                   : Image.network(
                       Constants.IMAGE_URL_PATH + "tr:dpr-auto,tr:w-500" + image,
-                      fit: BoxFit.fill,
-                      height: 220,
-                      width: MediaQuery.of(context).size.width,
+                      fit: BoxFit.cover,
+//                      height: 220,
+//                      width: MediaQuery.of(context).size.width,
                     ),
             ),
             Padding(

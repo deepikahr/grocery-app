@@ -683,11 +683,12 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                     : Constants.IMAGE_URL_PATH +
                                         "tr:dpr-auto,tr:w-500" +
                                         list[i]['filePath']),
+                                boxFit: BoxFit.cover,
                                 color: Colors.black,
                                 colorFilter: ColorFilter.mode(
                                     Colors.black.withOpacity(0.40),
                                     BlendMode.darken),
-                                height: 150,
+//                                height: 150,
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(4)),
                                 child: Padding(
@@ -810,12 +811,13 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                     ? list[i]['imageUrl']
                                     : Constants.IMAGE_URL_PATH +
                                         "tr:dpr-auto,tr:w-500" +
-                                        list[i]['filePath']),
+                                        list[i]['filePath'], ),
+                                boxFit: BoxFit.cover,
                                 color: Colors.black,
                                 colorFilter: ColorFilter.mode(
                                     Colors.black.withOpacity(0.40),
                                     BlendMode.darken),
-                                height: 150,
+//                                height: 150,
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(4)),
                                 child: Padding(
