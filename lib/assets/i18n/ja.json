@@ -282,6 +282,7 @@
     "deliveryInstructions": "配送指示",
     "callReceiveDelivery": "電話の受信機を納品",
     "cashOnDelivery": "代金引換",
+    "payByCard": "カードで支払う",
     "creditDebit": "クレジット\/デビットカード",
     "enterRecipientName": "を入力■宛先名",
     "enterRecipientContactNumber": "入者連絡番号",

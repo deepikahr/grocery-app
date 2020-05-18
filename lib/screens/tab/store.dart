@@ -386,7 +386,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                   ],
                 ),
               ),
-              url['filePath'] == null && url['filePath'] == null
+              url['filePath'] == null && url['imageURL'] == null
                   ? Container()
                   : Positioned(
                       right: locale == 'ar' ? null : 0,
@@ -403,7 +403,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                           shape: BoxShape.circle,
                           image: DecorationImage(
                             image: NetworkImage((url['filePath'] == null
-                                ? url['imageUrl']
+                                ? url['imageURL']
                                 : Constants.IMAGE_URL_PATH +
                                     "tr:dpr-auto,tr:w-500" +
                                     url['filePath'])),
@@ -707,7 +707,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                     const BorderRadius.all(Radius.circular(4)),
                                 child: Padding(
                                   padding: const EdgeInsets.only(
-                                      bottom: 10, left: 10),
+                                      bottom: 10, left: 10, right: 10),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -837,7 +837,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                     const BorderRadius.all(Radius.circular(4)),
                                 child: Padding(
                                   padding: const EdgeInsets.only(
-                                      bottom: 10, left: 10),
+                                      bottom: 10, left: 10, right: 10),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,

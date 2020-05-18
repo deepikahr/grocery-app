@@ -282,6 +282,7 @@
     "deliveryInstructions": "Istruzioni Di Consegna",
     "callReceiveDelivery": "Ricevitore di chiamata prima della consegna",
     "cashOnDelivery": "In contanti alla Consegna",
+    "payByCard": "pagare tramite carta",
     "creditDebit": "Carta Di Credito\/Debito",
     "enterRecipientName": "Immettere Il Nome Del Destinatario",
     "enterRecipientContactNumber": "Immettere Il Destinatario Contattare Il Numero",
