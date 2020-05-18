@@ -21,7 +21,7 @@ class Constants {
   static const STRIPE_KEY = "pk_test_RBdAu6jIbEByY3KaBQFbH4N100nMkViv6g";
 
   // image url
-  static const IMAGE_URL_PATH = "https://ik.imagekit.io/grocery365malta/";
+  static const IMAGE_URL_PATH = "https://ik.imagekit.io/kplhvthqbi/";
 
   //languages list
   static const List<String> LANGUAGES = [
