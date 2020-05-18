@@ -166,8 +166,7 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                             widget.image
                         : widget.image,
                     fit: BoxFit.cover,
-                    // height: 120,
-                    // width: MediaQuery.of(context).size.width,
+                    height: 123,
                   ),
                 ),
                 Padding(
