@@ -402,12 +402,13 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                           ],
                           shape: BoxShape.circle,
                           image: DecorationImage(
-                              image: NetworkImage((url['filePath'] == null
-                                  ? url['imageUrl']
-                                  : Constants.IMAGE_URL_PATH +
-                                      "tr:dpr-auto,tr:w-500" +
-                                      url['filePath'])),
-                              fit: BoxFit.fill),
+                            image: NetworkImage((url['filePath'] == null
+                                ? url['imageUrl']
+                                : Constants.IMAGE_URL_PATH +
+                                    "tr:dpr-auto,tr:w-500" +
+                                    url['filePath'])),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),
@@ -512,8 +513,14 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                                         ['delaPercent']
                                                     .toStringAsFixed(1))
                                                 : null,
-                                        rating:
-                                            list[i]['averageRating'].toString(),
+                                        rating: list[i]['averageRating'] ==
+                                                    null ||
+                                                list[i]['averageRating'] ==
+                                                    '0.0' ||
+                                                list[i]['averageRating'] == 0.0
+                                            ? null
+                                            : list[i]['averageRating']
+                                                .toStringAsFixed(1),
                                         buttonName: null,
                                         productList: list[i],
                                         variantList: list[i]['variant'],
@@ -813,11 +820,13 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                               width: 150,
                               margin: EdgeInsets.only(right: 15),
                               child: GFImageOverlay(
-                                image: NetworkImage(list[i]['filePath'] == null
-                                    ? list[i]['imageUrl']
-                                    : Constants.IMAGE_URL_PATH +
-                                        "tr:dpr-auto,tr:w-500" +
-                                        list[i]['filePath'], ),
+                                image: NetworkImage(
+                                  list[i]['filePath'] == null
+                                      ? list[i]['imageUrl']
+                                      : Constants.IMAGE_URL_PATH +
+                                          "tr:dpr-auto,tr:w-500" +
+                                          list[i]['filePath'],
+                                ),
                                 boxFit: BoxFit.cover,
                                 color: Colors.black,
                                 colorFilter: ColorFilter.mode(

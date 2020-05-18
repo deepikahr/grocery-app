@@ -302,11 +302,11 @@ class _OrdersState extends State<Orders> {
   product(orderDetails) {
     return Container(
       color: Color(0xFFF7F7F7),
-      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 24),
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
       child: Row(
         children: <Widget>[
           Container(
-            height: 103.0,
+            height: 70,
             width: 99,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -369,7 +369,7 @@ class _OrdersState extends State<Orders> {
                 )
               ],
             ),
-          )
+          ),
         ],
       ),
     );

@@ -380,7 +380,7 @@ class _EditProfileState extends State<EditProfile> {
                                         borderRadius:
                                             BorderRadius.circular(20.0),
                                         image: new DecorationImage(
-                                          fit: BoxFit.fill,
+                                          fit: BoxFit.cover,
                                           image: new AssetImage(
                                               'lib/assets/images/profile.png'),
                                         ),
@@ -395,7 +395,7 @@ class _EditProfileState extends State<EditProfile> {
                                         borderRadius:
                                             BorderRadius.circular(20.0),
                                         image: new DecorationImage(
-                                          fit: BoxFit.fill,
+                                          fit: BoxFit.cover,
                                           image: new NetworkImage(
                                               userInfo['filePath'] == null
                                                   ? userInfo['profilePic']
@@ -416,7 +416,7 @@ class _EditProfileState extends State<EditProfile> {
                                         borderRadius:
                                             BorderRadius.circular(20.0),
                                         image: new DecorationImage(
-                                          fit: BoxFit.fill,
+                                          fit: BoxFit.cover,
                                           image: new FileImage(image),
                                         ),
                                       ),

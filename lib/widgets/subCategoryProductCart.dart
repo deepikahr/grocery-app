@@ -165,9 +165,9 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                             "tr:dpr-auto,tr:w-500" +
                             widget.image
                         : widget.image,
-                    fit: BoxFit.fill,
-                    height: 120,
-                    width: MediaQuery.of(context).size.width,
+                    fit: BoxFit.cover,
+                    // height: 120,
+                    // width: MediaQuery.of(context).size.width,
                   ),
                 ),
                 Padding(

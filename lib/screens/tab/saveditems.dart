@@ -225,7 +225,7 @@ class _SavedItemsState extends State<SavedItems> {
                                           : null,
                                       unit: favProductList[i]['product']
                                           ['variant'][0]['unit'],
-                                      rating: favProductList[i]['product']['averageRating'].toStringAsFixed(1),
+                                      rating: (favProductList[i]['product']['averageRating'] == null || favProductList[i]['product']['averageRating'] == '0.0' || favProductList[i]['product']['averageRating'] == 0.0) ? null : favProductList[i]['product']['averageRating'].toStringAsFixed(1),
                                       buttonName: MyLocalizations.of(context).add,
                                       cartAdded: favProductList[i]['cartAdded'] ?? false,
                                       cartId: favProductList[i]['cartId'],

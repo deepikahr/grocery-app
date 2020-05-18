@@ -30,7 +30,7 @@ class CategoryBlock extends StatelessWidget {
                     ? Constants.IMAGE_URL_PATH + "tr:dpr-auto,tr:w-500" + image
                     : image,
                 scale: 8,
-                fit: BoxFit.fill,
+                fit: BoxFit.cover,
               ),
             ),
           ),

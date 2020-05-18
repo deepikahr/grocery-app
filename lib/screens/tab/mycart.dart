@@ -39,6 +39,7 @@ class _MyCartState extends State<MyCart> {
   String quantityUpdateType = '+';
   Map<String, dynamic> cartItem;
   int count = 1;
+  double bottomBarHeight = 110;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   @override
@@ -222,7 +223,18 @@ class _MyCartState extends State<MyCart> {
           if (mounted) {
             setState(() {
               cartItem = onValue['response_data'];
+
               if (cartItem['grandTotal'] != null) {
+                bottomBarHeight = 110;
+                if (cartItem['deliveryCharges'] != 0) {
+                  bottomBarHeight = bottomBarHeight + 20;
+                }
+                if (cartItem['tax'] != 0) {
+                  bottomBarHeight = bottomBarHeight + 20;
+                }
+                if (cartItem['couponInfo'] != null) {
+                  bottomBarHeight = bottomBarHeight + 20;
+                }
                 isLoadingCart = false;
               }
             });
@@ -458,7 +470,7 @@ class _MyCartState extends State<MyCart> {
                                       : cartItem['cart'].length,
                                   itemBuilder: (BuildContext context, int i) {
                                     return Container(
-                                      margin: EdgeInsets.only(bottom: 20),
+                                      margin: EdgeInsets.only(bottom: 5),
                                       padding: EdgeInsets.all(10),
                                       decoration: BoxDecoration(
                                         color: Color(0xFFF7F7F7),
@@ -469,7 +481,7 @@ class _MyCartState extends State<MyCart> {
                                             flex: 3,
                                             fit: FlexFit.tight,
                                             child: Container(
-                                              height: 103,
+                                              height: 90,
                                               width: 117,
                                               decoration: BoxDecoration(
                                                 color: Colors.white,
@@ -617,7 +629,7 @@ class _MyCartState extends State<MyCart> {
                                             flex: 1,
                                             fit: FlexFit.tight,
                                             child: Container(
-                                              height: 133,
+                                              height: 110,
                                               width: 43,
                                               decoration: BoxDecoration(
                                                 color: Color(0xFFF0F0F0),
@@ -718,7 +730,7 @@ class _MyCartState extends State<MyCart> {
                           height: 175.0,
                         )
                       : Container(
-                          height: cartItem['deliveryCharges'] == 0 ? 155 : 175,
+                          height: bottomBarHeight,
                           child: Column(
                             children: <Widget>[
                               Padding(
