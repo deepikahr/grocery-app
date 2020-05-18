@@ -701,7 +701,6 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                 colorFilter: ColorFilter.mode(
                                     Colors.black.withOpacity(0.40),
                                     BlendMode.darken),
-//                                height: 150,
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(4)),
                                 child: Padding(
@@ -832,7 +831,6 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                 colorFilter: ColorFilter.mode(
                                     Colors.black.withOpacity(0.40),
                                     BlendMode.darken),
-//                                height: 150,
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(4)),
                                 child: Padding(

@@ -61,6 +61,7 @@ class ProductCard extends StatelessWidget {
                     ? Constants.IMAGE_URL_PATH + "tr:dpr-auto,tr:w-500" + image
                     : image,
                 fit: BoxFit.cover,
+                height: 123,
               ),
             ),
             Padding(
@@ -110,7 +111,9 @@ class ProductCard extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            '$currency${(price - (price * dealPercentage) / 100).toDouble().toStringAsFixed(2)}',
+                            dealPercentage != null
+                                ? '$currency${(price - (price * dealPercentage) / 100).toDouble().toStringAsFixed(2)}'
+                                : '$currency${(price).toDouble().toStringAsFixed(2)}',
                             style: textbarlowBoldgreen(),
                           ),
                           SizedBox(width: 3),

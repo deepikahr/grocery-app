@@ -461,7 +461,6 @@ class _ProductDetailsState extends State<ProductDetails>
                               padding: EdgeInsets.zero,
                               margin: EdgeInsets.zero,
                               height: 340,
-                              width: MediaQuery.of(context).size.width,
                               decoration: new BoxDecoration(
                                 borderRadius: BorderRadius.only(
                                   bottomLeft: Radius.circular(40),

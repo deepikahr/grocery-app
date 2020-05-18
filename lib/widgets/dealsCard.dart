@@ -50,8 +50,6 @@ class DealsCard extends StatelessWidget {
                     ? Constants.IMAGE_URL_PATH + "tr:dpr-auto,tr:w-500" + image
                     : image,
                 fit: BoxFit.cover,
-                // height: 220,
-                // width: MediaQuery.of(context).size.width,
               ),
             ),
             Padding(
