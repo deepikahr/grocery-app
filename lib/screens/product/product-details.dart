@@ -514,9 +514,9 @@ class _ProductDetailsState extends State<ProductDetails>
                                     ),
                                     productDetail['averageRating'] == null ||
                                             productDetail['averageRating'] ==
-                                                0 ||
+                                                0.0 ||
                                             productDetail['averageRating'] ==
-                                                '0'
+                                                '0.0'
                                         ? Container()
                                         : Expanded(
                                             flex: 3,

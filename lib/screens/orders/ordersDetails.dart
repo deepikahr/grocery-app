@@ -317,11 +317,11 @@ class _OrderDetailsState extends State<OrderDetails> {
                       width: MediaQuery.of(context).size.width,
                       color: Color(0xFFF7F7F7),
                       padding:
-                          EdgeInsets.symmetric(horizontal: 15, vertical: 24),
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                       child: Row(
                         children: <Widget>[
                           Container(
-                            height: 103.0,
+                            height: 75,
                             width: 99,
                             decoration: BoxDecoration(
                               borderRadius:
@@ -428,6 +428,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                         : Container()
                                   ],
                                 ),
+                                Divider(),
                               ],
                             ),
                           )

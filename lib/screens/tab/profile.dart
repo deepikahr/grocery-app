@@ -385,7 +385,7 @@ class _ProfileState extends State<Profile> {
                                                         BorderRadius.circular(
                                                             27.0),
                                                     image: new DecorationImage(
-                                                      fit: BoxFit.fill,
+                                                      fit: BoxFit.cover,
                                                       image: new AssetImage(
                                                           'lib/assets/images/profile.png'),
                                                     ),
@@ -401,7 +401,7 @@ class _ProfileState extends State<Profile> {
                                                         BorderRadius.circular(
                                                             20.0),
                                                     image: new DecorationImage(
-                                                      fit: BoxFit.fill,
+                                                      fit: BoxFit.cover,
                                                       image: new NetworkImage(userInfo[
                                                                   'filePath'] ==
                                                               null

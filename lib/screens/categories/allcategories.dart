@@ -161,7 +161,7 @@ class _AllCategoriesState extends State<AllCategories>
                                           "tr:dpr-auto,tr:w-500" +
                                           categoryList[index]['filePath'],
                                   scale: 5,
-                                  fit: BoxFit.fill,
+                                  fit: BoxFit.cover,
                                 ),
                               ),
                             ),
