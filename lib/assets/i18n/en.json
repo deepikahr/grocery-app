@@ -282,6 +282,7 @@
   "deliveryInstructions": "Delivery Instructions",
   "callReceiveDelivery": "Call receiver before delivery",
   "cashOnDelivery": "Cash on Delivery",
+  "payByCard": "Pay via Card",
   "creditDebit": "Credit/Debit Card",
   "enterRecipientName": "Enter Recipient Name",
   "enterRecipientContactNumber": "Enter Recipient Contact Number",

@@ -287,7 +287,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       pagination: true,
       viewportFraction: 1.0,
       activeIndicator: Colors.transparent,
-      height: 140,
+      height: 150,
       aspectRatio: 2,
       items: bannerList.map((url) {
         return InkWell(
@@ -325,7 +325,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                 color: bg,
               ),
               Container(
-                height: 106,
+                height: 115,
                 margin: EdgeInsets.only(top: 10),
                 padding: EdgeInsets.only(top: 5, left: 20, right: 20),
                 width: MediaQuery.of(context).size.width,
@@ -386,7 +386,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                   ],
                 ),
               ),
-              url['filePath'] == null && url['filePath'] == null
+              url['filePath'] == null && url['imageURL'] == null
                   ? Container()
                   : Positioned(
                       right: locale == 'ar' ? null : 0,
@@ -403,7 +403,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                           shape: BoxShape.circle,
                           image: DecorationImage(
                             image: NetworkImage((url['filePath'] == null
-                                ? url['imageUrl']
+                                ? url['imageURL']
                                 : Constants.IMAGE_URL_PATH +
                                     "tr:dpr-auto,tr:w-500" +
                                     url['filePath'])),
@@ -465,6 +465,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                         crossAxisCount: 2,
                         crossAxisSpacing: 14,
                         mainAxisSpacing: 14,
+                        childAspectRatio:
+                            MediaQuery.of(context).size.width / 435,
                       ),
                       itemBuilder: (BuildContext context, int i) {
                         if (list[i]['averageRating'] == null) {
@@ -705,7 +707,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                     const BorderRadius.all(Radius.circular(4)),
                                 child: Padding(
                                   padding: const EdgeInsets.only(
-                                      bottom: 10, left: 10),
+                                      bottom: 10, left: 10, right: 10),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -835,7 +837,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                     const BorderRadius.all(Radius.circular(4)),
                                 child: Padding(
                                   padding: const EdgeInsets.only(
-                                      bottom: 10, left: 10),
+                                      bottom: 10, left: 10, right: 10),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,

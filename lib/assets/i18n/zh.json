@@ -282,6 +282,7 @@
   "deliveryInstructions": "传递指令",
   "callReceiveDelivery": "呼叫接收器之前交货",
   "cashOnDelivery": "交付现金",
+  "payByCard": "通过卡支付",
   "creditDebit": "信用卡",
   "enterRecipientName": "进入收件人的名字",
   "enterRecipientContactNumber": "进入收件人的联系号码",

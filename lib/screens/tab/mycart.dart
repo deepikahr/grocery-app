@@ -39,7 +39,7 @@ class _MyCartState extends State<MyCart> {
   String quantityUpdateType = '+';
   Map<String, dynamic> cartItem;
   int count = 1;
-  double bottomBarHeight = 110;
+  double bottomBarHeight = 124;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   @override
@@ -225,7 +225,7 @@ class _MyCartState extends State<MyCart> {
               cartItem = onValue['response_data'];
 
               if (cartItem['grandTotal'] != null) {
-                bottomBarHeight = 110;
+                bottomBarHeight = 124;
                 if (cartItem['deliveryCharges'] != 0) {
                   bottomBarHeight = bottomBarHeight + 20;
                 }
@@ -752,7 +752,7 @@ class _MyCartState extends State<MyCart> {
                                   ],
                                 ),
                               ),
-                              SizedBox(height: 6),
+                              SizedBox(height: 4),
                               cartItem['deliveryCharges'] == 0
                                   ? Container()
                                   : Padding(

@@ -117,7 +117,7 @@ class _AllCategoriesState extends State<AllCategories>
                       categoryList.length == null ? 0 : categoryList.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
-                      // childAspectRatio: MediaQuery.of(context).size.width / 400,
+                      childAspectRatio: MediaQuery.of(context).size.width / 420,
                       crossAxisSpacing: 0,
                       mainAxisSpacing: 0),
                   itemBuilder: (BuildContext context, int index) {

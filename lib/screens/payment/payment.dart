@@ -429,8 +429,10 @@ class _PaymentState extends State<Payment> {
                                     activeColor: primary,
                                     title: Text(
                                       paymentTypes[index]['type'] == 'COD'
-                                          ? 'Cash on Delivery'
-                                          : 'Pay with Card',
+                                          ? MyLocalizations.of(context)
+                                              .cashOnDelivery
+                                          : MyLocalizations.of(context)
+                                              .payByCard,
                                       style: TextStyle(color: primary),
                                     ),
                                     onChanged: (int selected) {

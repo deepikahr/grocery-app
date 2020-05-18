@@ -282,6 +282,7 @@
     "deliveryInstructions": "Инструкции По Доставке ",
     "callReceiveDelivery": "Получателя вызова до доставки",
     "cashOnDelivery": "Оплата наличными при доставке",
+    "payByCard": "оплатить с помощью карты",
     "creditDebit": "Кредитной\/Дебетовой Карты",
     "enterRecipientName": "Введите Имя Получателя ",
     "enterRecipientContactNumber": "Введите Контактный Номер Телефона Получателя ",

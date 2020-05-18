@@ -282,6 +282,7 @@
     "deliveryInstructions": "تعليمات تسليم",
     "callReceiveDelivery": "استقبال المكالمة قبل التسليم",
     "cashOnDelivery": "نقدا عند التسليم",
+    "payByCard": "الدفع عن طريق البطاقة",
     "creditDebit": "بطاقة الائتمان\/الخصم",
     "enterRecipientName": "أدخل اسم المستلم",
     "enterRecipientContactNumber": "أدخل المستلم ورقم الاتصال",
