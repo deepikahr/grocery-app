@@ -333,7 +333,7 @@ class _SearchItemState extends State<SearchItem> {
                                         crossAxisCount: 2,
                                         childAspectRatio:
                                             MediaQuery.of(context).size.width /
-                                                500,
+                                                520,
                                         crossAxisSpacing: 16,
                                         mainAxisSpacing: 16),
                                 itemBuilder: (BuildContext context, int index) {
@@ -370,27 +370,31 @@ class _SearchItemState extends State<SearchItem> {
                                     child: Stack(
                                       children: <Widget>[
                                         SubCategoryProductCard(
-                                            image: searchresult[index]['filePath'] ==null?
-                                                searchresult[index]['imageUrl']:searchresult[index]['filePath'],
-                                                isPath: searchresult[index]['filePath']==null?false:true,
+                                            image: searchresult[index]['filePath'] == null
+                                                ? searchresult[index]
+                                                    ['imageUrl']
+                                                : searchresult[index]
+                                                    ['filePath'],
+                                            isPath: searchresult[index]['filePath'] == null
+                                                ? false
+                                                : true,
                                             title: searchresult[index]['title'],
                                             currency: currency,
                                             category: searchresult[index]
                                                 ['category'],
                                             price: searchresult[index]
                                                 ['variant'][0]['price'],
-                                            dealPercentage: searchresult[index]
-                                                    ['isDealAvailable']
-                                                ? double.parse(searchresult[index]
-                                                        ['delaPercent']
+                                            dealPercentage: searchresult[index]['isDealAvailable'] != null &&
+                                                    searchresult[index]
+                                                        ['isDealAvailable']
+                                                ? double.parse(searchresult[index]['delaPercent']
                                                     .toStringAsFixed(1))
                                                 : null,
                                             unit: searchresult[index]['variant']
                                                 [0]['unit'],
                                             variantStock: searchresult[index]
                                                 ['variant'][0]['productstock'],
-                                            rating: searchresult[index]['averageRating']
-                                                .toStringAsFixed(1),
+                                            rating: searchresult[index]['averageRating'].toStringAsFixed(1),
                                             buttonName: MyLocalizations.of(context).add,
                                             cartAdded: searchresult[index]['cartAdded'] ?? false,
                                             cartId: searchresult[index]['cartId'],

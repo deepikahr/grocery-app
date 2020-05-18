@@ -428,9 +428,7 @@ class _PaymentState extends State<Payment> {
                                     selected: isSelected,
                                     activeColor: primary,
                                     title: Text(
-                                      paymentTypes[index]['type'] == 'COD'
-                                          ? 'Cash on Delivery'
-                                          : 'Pay with Card',
+                                      paymentTypes[index]['type'],
                                       style: TextStyle(color: primary),
                                     ),
                                     onChanged: (int selected) {

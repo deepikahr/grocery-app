@@ -287,7 +287,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       pagination: true,
       viewportFraction: 1.0,
       activeIndicator: Colors.transparent,
-      height: 140,
+      height: 150,
       aspectRatio: 2,
       items: bannerList.map((url) {
         return InkWell(
@@ -325,7 +325,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                 color: bg,
               ),
               Container(
-                height: 106,
+                height: 115,
                 margin: EdgeInsets.only(top: 10),
                 padding: EdgeInsets.only(top: 5, left: 20, right: 20),
                 width: MediaQuery.of(context).size.width,
@@ -465,6 +465,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                         crossAxisCount: 2,
                         crossAxisSpacing: 14,
                         mainAxisSpacing: 14,
+                        childAspectRatio:
+                            MediaQuery.of(context).size.width / 435,
                       ),
                       itemBuilder: (BuildContext context, int i) {
                         if (list[i]['averageRating'] == null) {

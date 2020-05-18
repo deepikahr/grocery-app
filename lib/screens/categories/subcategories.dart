@@ -449,7 +449,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                                           MediaQuery.of(context)
                                                                   .size
                                                                   .width /
-                                                              500,
+                                                              520,
                                                       crossAxisSpacing: 16,
                                                       mainAxisSpacing: 16),
                                               itemBuilder:
@@ -546,7 +546,10 @@ class _SubCategoriesState extends State<SubCategories> {
                                                                     i][
                                                                 'averageRating']
                                                             .toStringAsFixed(1),
-                                                        buttonName: "Add",
+                                                        buttonName:
+                                                            MyLocalizations.of(
+                                                                    context)
+                                                                .add,
                                                         cartAdded:
                                                             subCategryByProduct[
                                                                         i][
@@ -585,7 +588,9 @@ class _SubCategoriesState extends State<SubCategories> {
                                                                     " " +
                                                                         subCategryByProduct[i]['delaPercent']
                                                                             .toString() +
-                                                                        "% Off",
+                                                                        "% " +
+                                                                        MyLocalizations.of(context)
+                                                                            .off,
                                                                     style:
                                                                         hintSfboldwhitemed(),
                                                                     textAlign:
@@ -633,7 +638,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                                           MediaQuery.of(context)
                                                                   .size
                                                                   .width /
-                                                              500,
+                                                              520,
                                                       crossAxisSpacing: 16,
                                                       mainAxisSpacing: 16),
                                               itemBuilder:
@@ -716,7 +721,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                                           variantStock: subProductsList[i]['variant'][0]['productstock'],
                                                           unit: subProductsList[i]['variant'][0]['unit'],
                                                           rating: subProductsList[i]['averageRating'].toStringAsFixed(1),
-                                                          buttonName: "Add",
+                                                          buttonName: MyLocalizations.of(context).add,
                                                           cartAdded: subProductsList[i]['cartAdded'] ?? false,
                                                           cartId: subProductsList[i]['cartId'],
                                                           productQuantity: subProductsList[i]['cartAddedQuantity'] ?? 0,
@@ -737,7 +742,9 @@ class _SubCategoriesState extends State<SubCategories> {
                                                                     " " +
                                                                         subProductsList[i]['delaPercent']
                                                                             .toString() +
-                                                                        "% Off",
+                                                                        "% " +
+                                                                        MyLocalizations.of(context)
+                                                                            .off,
                                                                     style:
                                                                         hintSfboldwhitemed(),
                                                                     textAlign:

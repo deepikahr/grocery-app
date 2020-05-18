@@ -752,7 +752,7 @@ class _MyCartState extends State<MyCart> {
                                   ],
                                 ),
                               ),
-                              SizedBox(height: 6),
+                              SizedBox(height: 4),
                               cartItem['deliveryCharges'] == 0
                                   ? Container()
                                   : Padding(

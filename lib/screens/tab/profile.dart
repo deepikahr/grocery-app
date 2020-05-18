@@ -41,7 +41,7 @@ class _ProfileState extends State<Profile> {
     'English',
     'French',
     'Chinese',
-    'Arbic',
+    'Arabic',
     'Japanese',
     'Russian',
     'Italian',
@@ -194,7 +194,7 @@ class _ProfileState extends State<Profile> {
                                           MyApp("zh", localizedValues, true),
                                     ),
                                     (Route<dynamic> route) => false);
-                              } else if (newValue == 'Arbic') {
+                              } else if (newValue == 'Arabic') {
                                 SharedPreferences prefs =
                                     await SharedPreferences.getInstance();
                                 prefs.setString('selectedLanguage', 'ar');

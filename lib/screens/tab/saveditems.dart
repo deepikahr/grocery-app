@@ -172,7 +172,7 @@ class _SavedItemsState extends State<SavedItems> {
                               SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2,
                                   childAspectRatio:
-                                      MediaQuery.of(context).size.width / 500,
+                                      MediaQuery.of(context).size.width / 520,
                                   crossAxisSpacing: 16,
                                   mainAxisSpacing: 16),
                           itemBuilder: (BuildContext context, int i) {
