@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 
@@ -35,8 +36,8 @@ class _ThankyouState extends State<Thankyou> {
               style: textbarlowMediumlgBlack(),
             ),
             SizedBox(height: 30.0),
-            InkWell(
-              onTap: () {
+            GFButton(
+              onPressed: () {
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
@@ -49,11 +50,12 @@ class _ThankyouState extends State<Thankyou> {
                     ),
                     (Route<dynamic> route) => false);
               },
+              color: Colors.black,
               child: Text(
                 MyLocalizations.of(context).backToHome,
-                style: textbarlowMediumBlack(),
+                style: textbarlowMediumPrimary(),
               ),
-            )
+            ),
           ],
         ),
       ),

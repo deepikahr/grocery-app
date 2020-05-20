@@ -68,6 +68,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         style: textbarlowRegularaPrimary(),
                       ),
                       onPressed: () {
+                        Navigator.pop(context);
                         Navigator.push(
                           context,
                           MaterialPageRoute(

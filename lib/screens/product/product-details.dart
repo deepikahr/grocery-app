@@ -461,7 +461,6 @@ class _ProductDetailsState extends State<ProductDetails>
                               padding: EdgeInsets.zero,
                               margin: EdgeInsets.zero,
                               height: 340,
-                              width: MediaQuery.of(context).size.width,
                               decoration: new BoxDecoration(
                                 borderRadius: BorderRadius.only(
                                   bottomLeft: Radius.circular(40),
@@ -478,11 +477,13 @@ class _ProductDetailsState extends State<ProductDetails>
                                   )
                                 ],
                                 image: new DecorationImage(
-                                  fit: BoxFit.fill,
+                                  fit: BoxFit.cover,
                                   image: new NetworkImage(
-                                    Constants.IMAGE_URL_PATH +
-                                        "tr:dpr-auto,tr:w-1000" +
-                                        productDetail['filePath'],
+                                    productDetail['filePath'] == null
+                                        ? productDetail['imageUrl']
+                                        : Constants.IMAGE_URL_PATH +
+                                            "tr:dpr-auto,tr:w-1000" +
+                                            productDetail['filePath'],
                                   ),
                                 ),
                               ),
@@ -497,40 +498,55 @@ class _ProductDetailsState extends State<ProductDetails>
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 20, right: 20),
-                                      child: Text(
-                                        '${productDetail['title'][0].toUpperCase()}${productDetail['title'].substring(1)}',
-                                        style: textBarlowSemiBoldBlack(),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 0.0, right: 5.0, left: 5.0),
-                                      child: RatingBar(
-                                        initialRating: productDetail[
-                                                    'averageRating'] ==
-                                                null
-                                            ? 0
-                                            : double.parse(
-                                                productDetail['averageRating']
-                                                    .toString()),
-                                        minRating: 0,
-                                        direction: Axis.horizontal,
-                                        allowHalfRating: true,
-                                        itemCount: 5,
-                                        itemSize: 15.0,
-                                        itemPadding: EdgeInsets.symmetric(
-                                            horizontal: 1.0),
-                                        itemBuilder: (context, _) => Icon(
-                                          Icons.star,
-                                          color: Colors.red,
-                                          size: 10.0,
+                                    Expanded(
+                                      flex: 7,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 20, right: 20),
+                                        child: Text(
+                                          productDetail['title'],
+                                          maxLines: 3,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: textBarlowSemiBoldBlack(),
                                         ),
-                                        onRatingUpdate: null,
                                       ),
                                     ),
+                                    productDetail['averageRating'] == null ||
+                                            productDetail['averageRating'] ==
+                                                0.0 ||
+                                            productDetail['averageRating'] ==
+                                                '0.0'
+                                        ? Container()
+                                        : Expanded(
+                                            flex: 3,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 0.0,
+                                                  right: 5.0,
+                                                  left: 5.0),
+                                              child: RatingBar(
+                                                initialRating: double.parse(
+                                                    productDetail[
+                                                            'averageRating']
+                                                        .toStringAsFixed(1)),
+                                                minRating: 0,
+                                                direction: Axis.horizontal,
+                                                allowHalfRating: true,
+                                                itemCount: 5,
+                                                itemSize: 15.0,
+                                                itemPadding:
+                                                    EdgeInsets.symmetric(
+                                                        horizontal: 1.0),
+                                                itemBuilder: (context, _) =>
+                                                    Icon(
+                                                  Icons.star,
+                                                  color: Colors.red,
+                                                  size: 10.0,
+                                                ),
+                                                onRatingUpdate: null,
+                                              ),
+                                            ),
+                                          ),
                                   ],
                                 ),
                                 Container(
@@ -568,9 +584,29 @@ class _ProductDetailsState extends State<ProductDetails>
                                                 left: 10.0,
                                                 top: 5.0,
                                                 right: 10),
-                                            child: Text(
-                                              '$currency${variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice}',
-                                              style: textbarlowBoldGreen(),
+                                            child: Row(
+                                              children: <Widget>[
+                                                Text(
+                                                  productDetail[
+                                                          'isDealAvailable']
+                                                      ? "$currency${((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * (productDetail['delaPercent'] / 100))).toDouble().toStringAsFixed(2)}"
+                                                      : '$currency${(variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice).toDouble().toStringAsFixed(2)}',
+                                                  style: textbarlowBoldGreen(),
+                                                ),
+                                                SizedBox(width: 3),
+                                                productDetail['isDealAvailable']
+                                                    ? Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(top: 5.0),
+                                                        child: Text(
+                                                          "$currency${(variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice).toDouble().toStringAsFixed(2)}",
+                                                          style:
+                                                              barlowregularlackstrike(),
+                                                        ),
+                                                      )
+                                                    : Container()
+                                              ],
                                             ),
                                           ),
                                         ],
@@ -585,11 +621,14 @@ class _ProductDetailsState extends State<ProductDetails>
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
-                                      Text(
-                                        MyLocalizations.of(context).quantity +
-                                            ':',
-                                        style: textBarlowMediumBlack(),
-                                      ),
+                                      productDetail['variant'].length > 1
+                                          ? Text(
+                                              MyLocalizations.of(context)
+                                                      .quantity +
+                                                  ':',
+                                              style: textBarlowMediumBlack(),
+                                            )
+                                          : Container(),
                                       Container(
                                         decoration: BoxDecoration(
                                             color: Colors.grey[300],
@@ -678,13 +717,9 @@ class _ProductDetailsState extends State<ProductDetails>
                                         itemBuilder:
                                             (BuildContext context, int i) {
                                           return RadioListTile(
-                                            controlAffinity:
-                                                ListTileControlAffinity
-                                                    .trailing,
-                                            activeColor: primary,
-                                            dense: true,
                                             value: i,
                                             groupValue: groupValue,
+                                            selected: sizeSelect,
                                             onChanged: (int value) {
                                               if (mounted) {
                                                 setState(() {
@@ -706,14 +741,34 @@ class _ProductDetailsState extends State<ProductDetails>
                                                 });
                                               }
                                             },
-                                            selected: sizeSelect,
                                             secondary: Text(
                                               '${productDetail['variant'][i]['unit']}',
-                                              style: hintSfMediumgreyersmall(),
-                                            ),
-                                            title: Text(
-                                              '$currency${productDetail['variant'][i]['price']}',
                                               style: textbarlowBoldGreen(),
+                                            ),
+                                            title: Row(
+                                              children: <Widget>[
+                                                Text(
+                                                  productDetail[
+                                                          'isDealAvailable']
+                                                      ? "$currency${(productDetail['variant'][i]['price'] - (productDetail['variant'][i]['price'] * (productDetail['delaPercent'] / 100))).toDouble().toStringAsFixed(2)}"
+                                                      : '$currency${productDetail['variant'][i]['price'].toDouble().toStringAsFixed(2)}',
+                                                  style: textbarlowBoldGreen(),
+                                                ),
+                                                SizedBox(width: 3),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 5.0),
+                                                  child: productDetail[
+                                                          'isDealAvailable']
+                                                      ? Text(
+                                                          '$currency${productDetail['variant'][i]['price'].toDouble().toStringAsFixed(2)}',
+                                                          style:
+                                                              barlowregularlackstrike(),
+                                                        )
+                                                      : Container(),
+                                                )
+                                              ],
                                             ),
                                           );
                                         })
@@ -851,7 +906,9 @@ class _ProductDetailsState extends State<ProductDetails>
                                 height: 1.0,
                               ),
                               new Text(
-                                '$currency${variantPrice == null ? (productDetail['variant'][0]['price'] * quantity) : (variantPrice * quantity)}',
+                                productDetail['isDealAvailable']
+                                    ? "$currency${((((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * (productDetail['delaPercent'] / 100)))) * quantity).toDouble().toStringAsFixed(2)}"
+                                    : '$currency${((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * quantity).toDouble().toStringAsFixed(2)}',
                                 style: textbarlowBoldWhite(),
                               ),
                             ],

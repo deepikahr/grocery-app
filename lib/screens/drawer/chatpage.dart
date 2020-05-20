@@ -223,7 +223,6 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                 onPressed: () {
                   socket.emit("close-chat",
                       {"chatId": chatID, "store": resInfo['_id']});
-
                   Navigator.of(context).pop();
                   Navigator.of(context).pop();
                 },

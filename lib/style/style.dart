@@ -1018,6 +1018,15 @@ TextStyle textbarlowMediumBlack() {
   );
 }
 
+TextStyle textbarlowMediumPrimary() {
+  return TextStyle(
+    fontSize: 20.0,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'BarlowMedium',
+    color: primary,
+  );
+}
+
 TextStyle textbarlowMediumBlackm() {
   return TextStyle(
     fontSize: 14.0,
@@ -1109,6 +1118,23 @@ TextStyle textBarlowmediumLink() {
 }
 
 ///barlow regular /////
+///
+TextStyle barlowregularlackstrike() {
+  return TextStyle(
+    fontSize: 10.0,
+    color: Colors.black.withOpacity(0.60),
+    decoration: TextDecoration.lineThrough,
+    fontFamily: 'BarlowRegular',
+  );
+}
+
+TextStyle barlowregularlack() {
+  return TextStyle(
+    fontSize: 10.0,
+    color: Colors.black.withOpacity(0.60),
+    fontFamily: 'BarlowRegular',
+  );
+}
 
 TextStyle textbarlowRegularBlack() {
   return TextStyle(

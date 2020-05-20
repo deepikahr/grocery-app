@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
-import 'package:readymadeGroceryApp/screens/drawer/address.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
@@ -68,7 +67,7 @@ class _AddAddressState extends State<AddAddress> {
     }
     if (widget.pickedLocation.address != null) {
       address['address'] = widget.pickedLocation.address;
-    } else {}
+    }
     var location = {
       "lat": widget.pickedLocation.latLng.latitude,
       "long": widget.pickedLocation.latLng.longitude
@@ -83,7 +82,7 @@ class _AddAddressState extends State<AddAddress> {
           if (mounted) {
             setState(() {
               isLoading = false;
-              showAlert(onValue['response_data']['message']);
+              Navigator.pop(context);
             });
           }
         } catch (error, stackTrace) {
@@ -110,40 +109,6 @@ class _AddAddressState extends State<AddAddress> {
       }
       return;
     }
-  }
-
-  // show alert
-  showAlert(message) {
-    showDialog<Null>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return new AlertDialog(
-          content: new SingleChildScrollView(
-            child: new ListBody(
-              children: <Widget>[
-                new Text(
-                  message,
-                  style: hintSfMediumblackbig(),
-                ),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            new FlatButton(
-              child: new Text(
-                MyLocalizations.of(context).ok,
-                style: textbarlowRegularaPrimar(),
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   setSelectedRadio(int val) async {
@@ -220,6 +185,7 @@ class _AddAddressState extends State<AddAddress> {
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
+                    maxLength: 14,
                     style: textBarlowRegularBlack(),
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
@@ -392,7 +358,6 @@ class _AddAddressState extends State<AddAddress> {
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
-                      maxLength: 6,
                       style: textBarlowRegularBlack(),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
@@ -452,7 +417,7 @@ class _AddAddressState extends State<AddAddress> {
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
-                    maxLength: 10,
+                    maxLength: 15,
                     style: labelStyle(),
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(

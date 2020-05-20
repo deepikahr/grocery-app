@@ -279,13 +279,13 @@ class _OrdersState extends State<Orders> {
                                                     "Pending"
                                             ? orderTrack(orderList[i])
                                             : Container(),
-                                        orderList[i]['orderStatus'] ==
-                                                "DELIVERED"
-                                            ? reorder(orderList[i])
-                                            : Container(),
-                                        SizedBox(
-                                          height: 20,
-                                        )
+                                        // orderList[i]['orderStatus'] ==
+                                        //         "DELIVERED"
+                                        //     ? reorder(orderList[i])
+                                        //     : Container(),
+                                        // SizedBox(
+                                        //   height: 20,
+                                        // )
                                       ],
                                     ),
                                   );
@@ -302,11 +302,11 @@ class _OrdersState extends State<Orders> {
   product(orderDetails) {
     return Container(
       color: Color(0xFFF7F7F7),
-      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 24),
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
       child: Row(
         children: <Widget>[
           Container(
-            height: 103.0,
+            height: 70,
             width: 99,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -314,11 +314,16 @@ class _OrdersState extends State<Orders> {
                 BoxShadow(color: Color(0xFF0000000A), blurRadius: 0.40)
               ],
               image: DecorationImage(
-                  image: NetworkImage(
-                    Constants.IMAGE_URL_PATH +
-                        "tr:dpr-auto,tr:w-500" +
-                        orderDetails['cart']['cart'][0]['filePath'],
-                  ),
+                  image: orderDetails['cart']['cart'][0]['filePath'] == null &&
+                          orderDetails['cart']['cart'][0]['imageUrl'] == null
+                      ? AssetImage('lib/assets/images/no-orders.png')
+                      : NetworkImage(
+                          orderDetails['cart']['cart'][0]['filePath'] == null
+                              ? orderDetails['cart']['cart'][0]['imageUrl']
+                              : Constants.IMAGE_URL_PATH +
+                                  "tr:dpr-auto,tr:w-500" +
+                                  orderDetails['cart']['cart'][0]['filePath'],
+                        ),
                   fit: BoxFit.cover),
             ),
           ),
@@ -348,7 +353,7 @@ class _OrdersState extends State<Orders> {
                       ),
                 SizedBox(height: 10),
                 Text(
-                  currency + orderDetails['grandTotal'].toString(),
+                  '$currency${orderDetails['grandTotal'].toStringAsFixed(2)}',
                   style: titleLargeSegoeBlack(),
                 ),
                 SizedBox(height: 10),
@@ -364,7 +369,7 @@ class _OrdersState extends State<Orders> {
                 )
               ],
             ),
-          )
+          ),
         ],
       ),
     );

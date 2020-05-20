@@ -449,7 +449,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                                           MediaQuery.of(context)
                                                                   .size
                                                                   .width /
-                                                              500,
+                                                              520,
                                                       crossAxisSpacing: 16,
                                                       mainAxisSpacing: 16),
                                               itemBuilder:
@@ -495,9 +495,20 @@ class _SubCategoriesState extends State<SubCategories> {
                                                   child: Stack(
                                                     children: <Widget>[
                                                       SubCategoryProductCard(
-                                                        image:
-                                                            subCategryByProduct[
+                                                        image: subCategryByProduct[
+                                                                        i][
+                                                                    'filePath'] ==
+                                                                null
+                                                            ? subCategryByProduct[
+                                                                i]['imageUrl']
+                                                            : subCategryByProduct[
                                                                 i]['filePath'],
+                                                        isPath: subCategryByProduct[
+                                                                        i][
+                                                                    'filePath'] ==
+                                                                null
+                                                            ? false
+                                                            : true,
                                                         title:
                                                             subCategryByProduct[
                                                                 i]['title'],
@@ -510,6 +521,16 @@ class _SubCategoriesState extends State<SubCategories> {
                                                                         i]
                                                                     ['variant']
                                                                 [0]['price'],
+                                                        dealPercentage: subCategryByProduct[
+                                                                    i][
+                                                                'isDealAvailable']
+                                                            ? double.parse(
+                                                                subCategryByProduct[
+                                                                            i][
+                                                                        'delaPercent']
+                                                                    .toStringAsFixed(
+                                                                        1))
+                                                            : null,
                                                         variantStock:
                                                             subCategryByProduct[
                                                                         i][
@@ -524,8 +545,11 @@ class _SubCategoriesState extends State<SubCategories> {
                                                         rating: subCategryByProduct[
                                                                     i][
                                                                 'averageRating']
-                                                            .toString(),
-                                                        buttonName: "Add",
+                                                            .toStringAsFixed(1),
+                                                        buttonName:
+                                                            MyLocalizations.of(
+                                                                    context)
+                                                                .add,
                                                         cartAdded:
                                                             subCategryByProduct[
                                                                         i][
@@ -564,7 +588,9 @@ class _SubCategoriesState extends State<SubCategories> {
                                                                     " " +
                                                                         subCategryByProduct[i]['delaPercent']
                                                                             .toString() +
-                                                                        "% Off",
+                                                                        "% " +
+                                                                        MyLocalizations.of(context)
+                                                                            .off,
                                                                     style:
                                                                         hintSfboldwhitemed(),
                                                                     textAlign:
@@ -612,7 +638,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                                           MediaQuery.of(context)
                                                                   .size
                                                                   .width /
-                                                              500,
+                                                              520,
                                                       crossAxisSpacing: 16,
                                                       mainAxisSpacing: 16),
                                               itemBuilder:
@@ -665,28 +691,37 @@ class _SubCategoriesState extends State<SubCategories> {
                                                   child: Stack(
                                                     children: <Widget>[
                                                       SubCategoryProductCard(
-                                                          image: subProductsList[i]
-                                                              ['filePath'],
-                                                          title: subProductsList[i]
-                                                              ['title'],
+                                                          image: subProductsList[i]['filePath'] ==
+                                                                  null
+                                                              ? subProductsList[i]
+                                                                  ['imageUrl']
+                                                              : subProductsList[i]
+                                                                  ['filePath'],
+                                                          isPath:
+                                                              subProductsList[i]['filePath'] ==
+                                                                      null
+                                                                  ? false
+                                                                  : true,
+                                                          title:
+                                                              subProductsList[i]
+                                                                  ['title'],
                                                           currency: currency,
                                                           category:
                                                               subProductsList[i]
                                                                   ['category'],
-                                                          price: subProductsList[i]
-                                                                  ['variant'][0]
-                                                              ['price'],
-                                                          variantStock: subProductsList[i]
-                                                                  ['variant'][0]
-                                                              ['productstock'],
-                                                          unit:
+                                                          price:
                                                               subProductsList[i]
                                                                       ['variant']
-                                                                  [0]['unit'],
-                                                          rating: subProductsList[i]
-                                                                  ['averageRating']
-                                                              .toString(),
-                                                          buttonName: "Add",
+                                                                  [0]['price'],
+                                                          dealPercentage:
+                                                              subProductsList[i]
+                                                                      ['isDealAvailable']
+                                                                  ? double.parse(subProductsList[i]['delaPercent'].toStringAsFixed(1))
+                                                                  : null,
+                                                          variantStock: subProductsList[i]['variant'][0]['productstock'],
+                                                          unit: subProductsList[i]['variant'][0]['unit'],
+                                                          rating: subProductsList[i]['averageRating'].toStringAsFixed(1),
+                                                          buttonName: MyLocalizations.of(context).add,
                                                           cartAdded: subProductsList[i]['cartAdded'] ?? false,
                                                           cartId: subProductsList[i]['cartId'],
                                                           productQuantity: subProductsList[i]['cartAddedQuantity'] ?? 0,
@@ -707,7 +742,9 @@ class _SubCategoriesState extends State<SubCategories> {
                                                                     " " +
                                                                         subProductsList[i]['delaPercent']
                                                                             .toString() +
-                                                                        "% Off",
+                                                                        "% " +
+                                                                        MyLocalizations.of(context)
+                                                                            .off,
                                                                     style:
                                                                         hintSfboldwhitemed(),
                                                                     textAlign:

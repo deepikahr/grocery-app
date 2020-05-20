@@ -41,7 +41,7 @@ class _ProfileState extends State<Profile> {
     'English',
     'French',
     'Chinese',
-    'Arbic',
+    'Arabic',
     'Japanese',
     'Russian',
     'Italian',
@@ -194,7 +194,7 @@ class _ProfileState extends State<Profile> {
                                           MyApp("zh", localizedValues, true),
                                     ),
                                     (Route<dynamic> route) => false);
-                              } else if (newValue == 'Arbic') {
+                              } else if (newValue == 'Arabic') {
                                 SharedPreferences prefs =
                                     await SharedPreferences.getInstance();
                                 prefs.setString('selectedLanguage', 'ar');
@@ -373,7 +373,9 @@ class _ProfileState extends State<Profile> {
                                         height: 90.0,
                                         width: 91.0,
                                         child: userInfo == null ||
-                                                userInfo['filePath'] == null
+                                                (userInfo['filePath'] == null &&
+                                                    userInfo['profilePic'] ==
+                                                        null)
                                             ? Center(
                                                 child: new Container(
                                                   width: 200.0,
@@ -383,7 +385,7 @@ class _ProfileState extends State<Profile> {
                                                         BorderRadius.circular(
                                                             27.0),
                                                     image: new DecorationImage(
-                                                      fit: BoxFit.fill,
+                                                      fit: BoxFit.cover,
                                                       image: new AssetImage(
                                                           'lib/assets/images/profile.png'),
                                                     ),
@@ -399,11 +401,17 @@ class _ProfileState extends State<Profile> {
                                                         BorderRadius.circular(
                                                             20.0),
                                                     image: new DecorationImage(
-                                                      fit: BoxFit.fill,
-                                                      image: new NetworkImage(Constants
-                                                              .IMAGE_URL_PATH +
-                                                          "tr:dpr-auto,tr:w-500" +
-                                                          userInfo['filePath']),
+                                                      fit: BoxFit.cover,
+                                                      image: new NetworkImage(userInfo[
+                                                                  'filePath'] ==
+                                                              null
+                                                          ? userInfo[
+                                                              'profilePic']
+                                                          : Constants
+                                                                  .IMAGE_URL_PATH +
+                                                              "tr:dpr-auto,tr:w-500" +
+                                                              userInfo[
+                                                                  'filePath']),
                                                     ),
                                                   ),
                                                 ),

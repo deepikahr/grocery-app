@@ -408,6 +408,10 @@ class MyLocalizations {
     return localizedValues[locale.languageCode]['cashOnDelivery'];
   }
 
+  String get payByCard {
+    return localizedValues[locale.languageCode]['payByCard'];
+  }
+
   String get creditDebit {
     return localizedValues[locale.languageCode]['creditDebit'];
   }

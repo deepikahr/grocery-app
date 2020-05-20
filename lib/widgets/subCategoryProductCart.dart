@@ -19,6 +19,7 @@ class SubCategoryProductCard extends StatefulWidget {
       variantStock,
       price,
       currency,
+      isPath,
       unit,
       rating,
       category,
@@ -27,6 +28,7 @@ class SubCategoryProductCard extends StatefulWidget {
       buttonName,
       cartId,
       subCategoryId;
+  final double dealPercentage;
   final bool token, cartAdded;
   final Map productList;
   final List variantList;
@@ -39,9 +41,11 @@ class SubCategoryProductCard extends StatefulWidget {
       this.subCategoryId,
       this.title,
       this.unit,
+      this.isPath,
       this.price,
       this.currency,
       this.rating,
+      this.dealPercentage,
       this.category,
       this.offer,
       this.productQuantity,
@@ -156,12 +160,13 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                   borderRadius:
                       const BorderRadius.vertical(top: Radius.circular(12)),
                   child: Image.network(
-                    Constants.IMAGE_URL_PATH +
-                        "tr:dpr-auto,tr:w-500" +
-                        widget.image,
-                    fit: BoxFit.fill,
-                    height: 120,
-                    width: MediaQuery.of(context).size.width,
+                    widget.isPath
+                        ? Constants.IMAGE_URL_PATH +
+                            "tr:dpr-auto,tr:w-500" +
+                            widget.image
+                        : widget.image,
+                    fit: BoxFit.cover,
+                    height: 123,
                   ),
                 ),
                 Padding(
@@ -175,43 +180,71 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                           Expanded(
                             child: Text(
                               widget.title,
+                              maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: textbarlowRegularBlackb(),
                             ),
                           ),
-                          Container(
-                            height: 19,
-                            decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(2)),
-                              color: Color(0xFF20C978),
-                            ),
-                            padding: EdgeInsets.only(left: 5, right: 5),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                Text(
-                                    widget.rating == null ? '0' : widget.rating,
-                                    style: textBarlowregwhite()),
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.white,
-                                  size: 10,
-                                ),
-                              ],
-                            ),
-                          )
+                          widget.rating == null ||
+                                  widget.rating == 0.0 ||
+                                  widget.rating == '0.0'
+                              ? Container()
+                              : Container(
+                                  height: 19,
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(2)),
+                                    color: Color(0xFF20C978),
+                                  ),
+                                  padding: EdgeInsets.only(left: 5, right: 5),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: <Widget>[
+                                      Text(widget.rating,
+                                          style: textBarlowregwhite()),
+                                      Icon(
+                                        Icons.star,
+                                        color: Colors.white,
+                                        size: 10,
+                                      ),
+                                    ],
+                                  ),
+                                )
                         ],
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              '${widget.currency}${variantPrice == null ? widget.price : variantPrice} / ${variantUnit == null ? widget.unit : variantUnit}',
-                              style: textbarlowBoldgreen(),
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.dealPercentage == null
+                                    ? '${widget.currency}${(variantPrice == null ? widget.price : variantPrice).toDouble().toStringAsFixed(2)}'
+                                    : '${widget.currency}${((variantPrice == null ? widget.price : variantPrice) - ((variantPrice == null ? widget.price : variantPrice) * (widget.dealPercentage / 100))).toDouble().toStringAsFixed(2)}',
+                                style: textbarlowBoldgreen(),
+                              ),
+                              SizedBox(width: 3),
+                              widget.dealPercentage == null
+                                  ? Container()
+                                  : Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 5.0, left: 0),
+                                      child: Text(
+                                        '${widget.currency}${(variantPrice == null ? widget.price : variantPrice).toDouble().toStringAsFixed(2)}',
+                                        style: barlowregularlackstrike(),
+                                      ),
+                                    ),
+                            ],
                           ),
+                          SizedBox(width: 3),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: Text(
+                              '${variantUnit == null ? widget.unit : variantUnit}',
+                              style: barlowregularlack(),
+                            ),
+                          )
                         ],
                       ),
                       !cardAdded
@@ -229,6 +262,8 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                                   widget.localizedValues,
                                               currency: widget.currency,
                                               productList: widget.productList,
+                                              dealPercentage:
+                                                  widget.dealPercentage,
                                               variantsList: widget.variantList,
                                               productQuantity: quanity == null
                                                   ? widget.productQuantity

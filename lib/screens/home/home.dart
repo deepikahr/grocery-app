@@ -232,25 +232,25 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     }
   }
 
-  tabIcon(icon, title) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8),
-      child: Column(
-        children: <Widget>[
-          Icon(
-            IconData(
-              icon,
-              fontFamily: 'icomoon',
-            ),
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          Text(title)
-        ],
-      ),
-    );
-  }
+  // tabIcon(icon, title) {
+  //   return Padding(
+  //     padding: const EdgeInsets.only(top: 8),
+  //     child: Column(
+  //       children: <Widget>[
+  //         Icon(
+  //           IconData(
+  //             icon,
+  //             fontFamily: 'icomoon',
+  //           ),
+  //         ),
+  //         SizedBox(
+  //           height: 5,
+  //         ),
+  //         Text(title)
+  //       ],
+  //     ),
+  //   );
+  // }
 
   deliveryAddress() {
     return Row(

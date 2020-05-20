@@ -300,8 +300,9 @@ class _CheckoutState extends State<Checkout> {
   }
 
 // Changes the selected value on 'onChanged' click on each radio button
-
   _onSelected(int index) {
+    selectedTime = null;
+    selectedRadio = null;
     if (mounted) {
       setState(() => _selectedIndex = index);
     }
@@ -585,45 +586,51 @@ class _CheckoutState extends State<Checkout> {
                                         style: textbarlowBoldsmBlack(),
                                       ),
                                       Text(
-                                        '${cartItem['subTotal']}',
+                                        '${cartItem['subTotal'].toDouble().toStringAsFixed(2)}',
                                         style: textbarlowBoldsmBlack(),
                                       )
                                     ],
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Row(
-                                    children: <Widget>[
-                                      Image.asset('lib/assets/icons/sale.png'),
-                                      SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(
-                                        MyLocalizations.of(context).tax,
-                                        style: textBarlowRegularBlack(),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: <Widget>[
-                                      Text(
-                                        currency,
-                                        style: textbarlowBoldsmBlack(),
-                                      ),
-                                      Text(
-                                        '${cartItem['tax']}',
-                                        style: textbarlowBoldsmBlack(),
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
+                              cartItem['tax'] == 0
+                                  ? Container()
+                                  : SizedBox(height: 10),
+                              cartItem['tax'] == 0
+                                  ? Container()
+                                  : Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Row(
+                                          children: <Widget>[
+                                            Image.asset(
+                                                'lib/assets/icons/sale.png'),
+                                            SizedBox(
+                                              width: 5,
+                                            ),
+                                            Text(
+                                              MyLocalizations.of(context).tax,
+                                              style: textBarlowRegularBlack(),
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: <Widget>[
+                                            Text(
+                                              currency,
+                                              style: textbarlowBoldsmBlack(),
+                                            ),
+                                            Text(
+                                              '${cartItem['tax'].toDouble().toStringAsFixed(2)}',
+                                              style: textbarlowBoldsmBlack(),
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                               SizedBox(height: 10),
                               Form(
                                 key: _formKey,
@@ -686,7 +693,7 @@ class _CheckoutState extends State<Checkout> {
                                                           textbarlowBoldsmBlack(),
                                                     ),
                                                     Text(
-                                                      '${cartItem['couponInfo']['couponDiscountAmount']}',
+                                                      '${cartItem['couponInfo']['couponDiscountAmount'].toDouble().toStringAsFixed(2)}',
                                                       style:
                                                           textbarlowBoldsmBlack(),
                                                     )
@@ -822,7 +829,7 @@ class _CheckoutState extends State<Checkout> {
                                                         textbarlowBoldsmBlack(),
                                                   ),
                                                   Text(
-                                                    '${cartItem['deliveryCharges']}'
+                                                    '${cartItem['deliveryCharges'].toDouble().toStringAsFixed(2)}'
                                                         .toString(),
                                                     style:
                                                         textbarlowBoldsmBlack(),
@@ -848,7 +855,7 @@ class _CheckoutState extends State<Checkout> {
                                         style: textBarlowBoldBlack(),
                                       ),
                                       Text(
-                                        '${cartItem['grandTotal']}',
+                                        '${cartItem['grandTotal'].toDouble().toStringAsFixed(2)}',
                                         style: textBarlowBoldBlack(),
                                       )
                                     ],
@@ -858,11 +865,6 @@ class _CheckoutState extends State<Checkout> {
                               SizedBox(height: 20),
                               Text(MyLocalizations.of(context).deliveryAddress,
                                   style: textBarlowSemiBoldBlackbigg()),
-                              // SizedBox(height: 10),
-                              // Text(
-                              //   MyLocalizations.of(context).homeDelivery,
-                              //   style: textBarlowRegularBlack(),
-                              // ),
                             ],
                           ),
                         ),
@@ -1059,6 +1061,9 @@ class _CheckoutState extends State<Checkout> {
                                           });
                                         });
                                       }
+                                    } else {
+                                      showError('Enable To get location!',
+                                          'There is problem using your device location. Please check your GPS settings');
                                     }
                                   },
                                   type: GFButtonType.transparent,

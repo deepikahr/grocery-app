@@ -307,7 +307,7 @@ class _AllProductsState extends State<AllProducts> {
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           childAspectRatio:
-                              MediaQuery.of(context).size.width / 500,
+                              MediaQuery.of(context).size.width / 520,
                           crossAxisSpacing: 16,
                           mainAxisSpacing: 16),
                       itemBuilder: (BuildContext context, int i) {
@@ -347,21 +347,29 @@ class _AllProductsState extends State<AllProducts> {
                                 child: Stack(
                                   children: <Widget>[
                                     SubCategoryProductCard(
-                                        image: productsList[i]['filePath'],
+                                        image: productsList[i]['filePath'] ==null?
+                                            productsList[i]['imageUrl']:productsList[i]['filePath'],
+                                            isPath: productsList[i]['filePath']==null?false:true,
+                                            
                                         title: productsList[i]['title'],
                                         currency: currency,
                                         category: productsList[i]['category'],
                                         price: productsList[i]['variant'][0]
                                             ['price'],
+                                        dealPercentage: productsList[i]
+                                                ['isDealAvailable']
+                                            ? double.parse(productsList[i]
+                                                    ['delaPercent']
+                                                .toStringAsFixed(1))
+                                            : null,
                                         variantStock: productsList[i]['variant']
                                             [0]['productstock'],
                                         unit: productsList[i]['variant'][0]
                                             ['unit'],
                                         rating: productsList[i]['averageRating']
-                                            .toString(),
+                                            .toStringAsFixed(1),
                                         buttonName: "Add",
-                                        cartAdded: productsList[i]
-                                                ['cartAdded'] ??
+                                        cartAdded: productsList[i]['cartAdded'] ??
                                             false,
                                         cartId: productsList[i]['cartId'],
                                         productQuantity: productsList[i]
@@ -370,8 +378,7 @@ class _AllProductsState extends State<AllProducts> {
                                         token: widget.token,
                                         productList: productsList[i],
                                         variantList: productsList[i]['variant'],
-                                        subCategoryId: productsList[i]
-                                            ['subcategory']),
+                                        subCategoryId: productsList[i]['subcategory']),
                                     productsList[i]['isDealAvailable'] == true
                                         ? Positioned(
                                             child: Stack(
@@ -404,16 +411,24 @@ class _AllProductsState extends State<AllProducts> {
                             : Stack(
                                 children: <Widget>[
                                   SubCategoryProductCard(
-                                      image: productsList[i]['filePath'],
+                                      image: productsList[i]['filePath'] ==null?
+                                          productsList[i]['imageUrl']:productsList[i]['filePath'],
+                                          isPath: productsList[i]['filePath']==null?false:true,
                                       title: productsList[i]['title'],
                                       currency: currency,
                                       category: productsList[i]['category'],
                                       price: productsList[i]['variant'][0]
                                           ['price'],
+                                      dealPercentage: productsList[i]
+                                              ['isDealAvailable']
+                                          ? double.parse(productsList[i]
+                                                  ['delaPercent']
+                                              .toStringAsFixed(1))
+                                          : null,
                                       unit: productsList[i]['variant'][0]
                                           ['unit'],
                                       rating: productsList[i]['averageRating']
-                                          .toString(),
+                                          .toStringAsFixed(1),
                                       buttonName:
                                           MyLocalizations.of(context).add,
                                       cartAdded:

@@ -216,11 +216,11 @@ class _EditProfileState extends State<EditProfile> {
       await response.stream.transform(utf8.decoder).listen((value) async {
         Map<String, dynamic> data;
         data = json.decode(value);
-        print(data);
         updateUserInfo(
             data['response_data'][0]['originalImage']['url'],
             data['response_data'][0]['originalImage']['key'],
-            data['response_data'][0]['originalImage']['filePath']);
+            data['response_data'][0]['originalImage']['filePath'] ??
+                data['response_data'][0]['originalImage']['profilePic']);
       });
     }).catchError((error) {
       if (mounted) {
@@ -287,7 +287,7 @@ class _EditProfileState extends State<EditProfile> {
                       ],
                     ),
                   ),
-                  userInfo['filePath'] != null
+                  userInfo['filePath'] != null && userInfo['profilePic'] != null
                       ? GFButton(
                           onPressed: removeImage,
                           type: GFButtonType.transparent,
@@ -370,7 +370,8 @@ class _EditProfileState extends State<EditProfile> {
                     child: Stack(
                       children: <Widget>[
                         image == null
-                            ? userInfo['filePath'] == null
+                            ? userInfo['filePath'] == null &&
+                                    userInfo['profilePic'] == null
                                 ? Center(
                                     child: new Container(
                                       width: 200.0,
@@ -379,7 +380,7 @@ class _EditProfileState extends State<EditProfile> {
                                         borderRadius:
                                             BorderRadius.circular(20.0),
                                         image: new DecorationImage(
-                                          fit: BoxFit.fill,
+                                          fit: BoxFit.cover,
                                           image: new AssetImage(
                                               'lib/assets/images/profile.png'),
                                         ),
@@ -394,11 +395,13 @@ class _EditProfileState extends State<EditProfile> {
                                         borderRadius:
                                             BorderRadius.circular(20.0),
                                         image: new DecorationImage(
-                                          fit: BoxFit.fill,
+                                          fit: BoxFit.cover,
                                           image: new NetworkImage(
-                                              Constants.IMAGE_URL_PATH +
-                                                  "tr:dpr-auto,tr:w-500" +
-                                                  userInfo['filePath']),
+                                              userInfo['filePath'] == null
+                                                  ? userInfo['profilePic']
+                                                  : Constants.IMAGE_URL_PATH +
+                                                      "tr:dpr-auto,tr:w-500" +
+                                                      userInfo['filePath']),
                                         ),
                                       ),
                                     ),
@@ -413,7 +416,7 @@ class _EditProfileState extends State<EditProfile> {
                                         borderRadius:
                                             BorderRadius.circular(20.0),
                                         image: new DecorationImage(
-                                          fit: BoxFit.fill,
+                                          fit: BoxFit.cover,
                                           image: new FileImage(image),
                                         ),
                                       ),

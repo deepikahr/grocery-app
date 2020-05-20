@@ -5,16 +5,9 @@ import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:flutter/cupertino.dart';
 
 class ProductCard extends StatelessWidget {
-  final image,
-      title,
-      price,
-      currency,
-      rating,
-      category,
-      offer,
-      unit,
-      buttonName;
-  final bool token;
+  final image, title, currency, rating, category, offer, unit, buttonName;
+  final double price, dealPercentage;
+  final bool token, isPath;
   final Map productList;
   final List variantList;
   final String locale;
@@ -26,7 +19,9 @@ class ProductCard extends StatelessWidget {
       this.title,
       this.price,
       this.currency,
+      this.isPath,
       this.rating,
+      this.dealPercentage,
       this.category,
       this.offer,
       this.buttonName,
@@ -44,7 +39,6 @@ class ProductCard extends StatelessWidget {
     final Clip _defaultClipBehavior = Clip.none;
 
     return Container(
-      width: MediaQuery.of(context).size.width * 0.5,
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(12)),
       ),
@@ -63,10 +57,11 @@ class ProductCard extends StatelessWidget {
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(12)),
               child: Image.network(
-                Constants.IMAGE_URL_PATH + "tr:dpr-auto,tr:w-500" + image,
-                fit: BoxFit.fill,
-                height: 120,
-                width: MediaQuery.of(context).size.width,
+                isPath
+                    ? Constants.IMAGE_URL_PATH + "tr:dpr-auto,tr:w-500" + image
+                    : image,
+                fit: BoxFit.cover,
+                height: 123,
               ),
             ),
             Padding(
@@ -80,39 +75,65 @@ class ProductCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           title,
+                          maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: textbarlowRegularBlackb(),
                         ),
                       ),
-                      Container(
-                        height: 19,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(2)),
-                          color: Color(0xFF20C978),
-                        ),
-                        padding: EdgeInsets.only(left: 5, right: 5),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            Text(rating == null ? '0' : rating,
-                                style: textBarlowregwhite()),
-                            Icon(
-                              Icons.star,
-                              color: Colors.white,
-                              size: 10,
-                            ),
-                          ],
-                        ),
-                      )
+                      rating == null || rating == 0 || rating == '0'
+                          ? Container()
+                          : Container(
+                              // height: 19,
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(2)),
+                                color: Color(0xFF20C978),
+                              ),
+                              padding: EdgeInsets.only(left: 5, right: 5),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  Text(rating, style: textBarlowregwhite()),
+                                  Icon(
+                                    Icons.star,
+                                    color: Colors.white,
+                                    size: 10,
+                                  ),
+                                ],
+                              ),
+                            )
                     ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Expanded(
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            dealPercentage != null
+                                ? '$currency${(price - (price * dealPercentage) / 100).toDouble().toStringAsFixed(2)}'
+                                : '$currency${(price).toDouble().toStringAsFixed(2)}',
+                            style: textbarlowBoldgreen(),
+                          ),
+                          SizedBox(width: 3),
+                          dealPercentage == null
+                              ? Container()
+                              : Padding(
+                                  padding: const EdgeInsets.only(top: 5.0),
+                                  child: Text(
+                                    '$currency${price.toDouble().toStringAsFixed(2)}',
+                                    style: barlowregularlackstrike(),
+                                  ),
+                                ),
+                        ],
+                      ),
+                      SizedBox(width: 3),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5.0),
                         child: Text(
-                          '$currency$price/$unit',
-                          style: textbarlowBoldgreen(),
+                          '$unit',
+                          style: barlowregularlack(),
                         ),
                       ),
                     ],
