@@ -495,7 +495,7 @@ class _AllProductsState extends State<AllProducts> {
                                 style: textBarlowRegularWhite(),
                               ),
                               new Text(
-                                "$currency${cartData['grandTotal']}",
+                                "$currency${cartData['subTotal'].toStringAsFixed(2)}",
                                 style: textbarlowBoldWhite(),
                               ),
                             ],
