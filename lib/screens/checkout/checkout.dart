@@ -632,14 +632,14 @@ class _CheckoutState extends State<Checkout> {
                                                 : Text(
                                                     MyLocalizations.of(context)
                                                             .tax +
-                                                        " " +
+                                                        " (" +
                                                         cartItem['taxInfo']
                                                             ['taxName'] +
-                                                        " (" +
+                                                        " " +
                                                         cartItem['taxInfo']
                                                                 ['amount']
                                                             .toString() +
-                                                        ")",
+                                                        "%)",
                                                     style:
                                                         textBarlowRegularBlack(),
                                                   ),

@@ -752,6 +752,84 @@ class _MyCartState extends State<MyCart> {
                                 ),
                               ),
                               SizedBox(height: 4),
+                              cartItem['tax'] == 0
+                                  ? Container()
+                                  : Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 20.0, right: 20.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          Row(
+                                            children: <Widget>[
+                                              Image.asset(
+                                                  'lib/assets/icons/sale.png'),
+                                              SizedBox(width: 5),
+                                              cartItem['taxInfo'] == null
+                                                  ? new Text(
+                                                      MyLocalizations.of(
+                                                              context)
+                                                          .tax,
+                                                      style:
+                                                          textBarlowRegularBlack(),
+                                                    )
+                                                  : new Text(
+                                                      MyLocalizations.of(
+                                                                  context)
+                                                              .tax +
+                                                          " (" +
+                                                          cartItem['taxInfo']
+                                                              ['taxName'] +
+                                                          " " +
+                                                          cartItem['taxInfo']
+                                                                  ['amount']
+                                                              .toString() +
+                                                          "%)",
+                                                      style:
+                                                          textBarlowRegularBlack(),
+                                                    ),
+                                            ],
+                                          ),
+                                          new Text(
+                                            '$currency${cartItem['tax'].toDouble().toStringAsFixed(2)}',
+                                            style: textbarlowBoldsmBlack(),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                              SizedBox(height: 6),
+                              cartItem['couponInfo'] == null
+                                  ? Container()
+                                  : Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 20.0, right: 20.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          new Text(
+                                            MyLocalizations.of(context)
+                                                    .couponApplied +
+                                                " (" +
+                                                "${MyLocalizations.of(context).discount}"
+                                                    ")",
+                                            style: textBarlowRegularBlack(),
+                                          ),
+                                          new Text(
+                                            '$currency${cartItem['couponInfo']['couponDiscountAmount'].toDouble().toStringAsFixed(2)}',
+                                            style: textbarlowBoldsmBlack(),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                              cartItem['couponInfo'] == null
+                                  ? Container()
+                                  : SizedBox(height: 6),
                               cartItem['deliveryCharges'] == 0 &&
                                       cartItem['deliveryAddress'] != null
                                   ? Padding(
@@ -798,85 +876,6 @@ class _MyCartState extends State<MyCart> {
                                             ],
                                           ),
                                         ),
-                              SizedBox(height: 6),
-                              cartItem['tax'] == 0
-                                  ? Container()
-                                  : Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 20.0, right: 20.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: <Widget>[
-                                          Row(
-                                            children: <Widget>[
-                                              Image.asset(
-                                                  'lib/assets/icons/sale.png'),
-                                              SizedBox(width: 5),
-                                              cartItem['taxInfo'] == null
-                                                  ? new Text(
-                                                      MyLocalizations.of(
-                                                              context)
-                                                          .tax,
-                                                      style:
-                                                          textBarlowRegularBlack(),
-                                                    )
-                                                  : new Text(
-                                                      MyLocalizations.of(
-                                                                  context)
-                                                              .tax +
-                                                          " " +
-                                                          cartItem['taxInfo']
-                                                              ['taxName'] +
-                                                          " (" +
-                                                          cartItem['taxInfo']
-                                                                  ['amount']
-                                                              .toString() +
-                                                          ")",
-                                                      style:
-                                                          textBarlowRegularBlack(),
-                                                    ),
-                                            ],
-                                          ),
-                                          new Text(
-                                            '$currency${cartItem['tax'].toDouble().toStringAsFixed(2)}',
-                                            style: textbarlowBoldsmBlack(),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                              SizedBox(height: 6),
-                              cartItem['couponInfo'] == null
-                                  ? Container()
-                                  : Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 20.0, right: 20.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: <Widget>[
-                                          new Text(
-                                            MyLocalizations.of(context)
-                                                    .couponApplied +
-                                                " (" +
-                                                "${MyLocalizations.of(context).discount}"
-                                                    ")",
-                                            style: textBarlowRegularBlack(),
-                                          ),
-                                          new Text(
-                                            '$currency${cartItem['couponInfo']['couponDiscountAmount'].toDouble().toStringAsFixed(2)}',
-                                            style: textbarlowBoldsmBlack(),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                              cartItem['couponInfo'] == null
-                                  ? Container()
-                                  : SizedBox(height: 6),
                               SizedBox(height: 10),
                               Container(
                                 height: 55,
