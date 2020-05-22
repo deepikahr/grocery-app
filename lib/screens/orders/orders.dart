@@ -279,13 +279,13 @@ class _OrdersState extends State<Orders> {
                                                     "Pending"
                                             ? orderTrack(orderList[i])
                                             : Container(),
-                                        orderList[i]['orderStatus'] ==
-                                                "DELIVERED"
-                                            ? reorder(orderList[i])
-                                            : Container(),
-                                        SizedBox(
-                                          height: 20,
-                                        )
+                                        // orderList[i]['orderStatus'] ==
+                                        //         "DELIVERED"
+                                        //     ? reorder(orderList[i])
+                                        //     : Container(),
+                                        // SizedBox(
+                                        //   height: 20,
+                                        // )
                                       ],
                                     ),
                                   );

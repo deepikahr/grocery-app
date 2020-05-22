@@ -322,47 +322,51 @@ class _PaymentState extends State<Payment> {
             ? SquareLoader()
             : ListView(
                 children: <Widget>[
-                  Container(
-                    color: Colors.grey[100],
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          top: 8.0, bottom: 8.0, left: 20, right: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Column(
-                            children: <Widget>[
-                              Text(
-                                MyLocalizations.of(context).deliveryCharges,
-                                style: textbarlowMediumBlack(),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 0.0),
-                                    child: Text(
-                                      currency,
-                                      style: textbarlowBoldBlack(),
+                  deliveryCharges == 0 || deliveryCharges == "0"
+                      ? Container()
+                      : Container(
+                          color: Colors.grey[100],
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 8.0, bottom: 8.0, left: 20, right: 20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Column(
+                                  children: <Widget>[
+                                    Text(
+                                      MyLocalizations.of(context)
+                                          .deliveryCharges,
+                                      style: textbarlowMediumBlack(),
                                     ),
-                                  ),
-                                  Text(
-                                    deliveryCharges
-                                        .toDouble()
-                                        .toStringAsFixed(2),
-                                    style: textbarlowBoldBlack(),
-                                  ),
-                                ],
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
+                                  ],
+                                ),
+                                Column(
+                                  children: <Widget>[
+                                    Row(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 0.0),
+                                          child: Text(
+                                            currency,
+                                            style: textbarlowBoldBlack(),
+                                          ),
+                                        ),
+                                        Text(
+                                          deliveryCharges
+                                              .toDouble()
+                                              .toStringAsFixed(2),
+                                          style: textbarlowBoldBlack(),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
                   Container(
                     color: Colors.grey[100],
                     child: Padding(
