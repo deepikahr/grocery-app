@@ -307,7 +307,7 @@ class _SavedItemsState extends State<SavedItems> {
                                 style: textBarlowRegularWhite(),
                               ),
                               new Text(
-                                "$currency${cartData['grandTotal']}",
+                                "$currency${cartData['subTotal'].toStringAsFixed(2)}",
                                 style: textbarlowBoldWhite(),
                               ),
                             ],

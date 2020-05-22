@@ -65,7 +65,8 @@ class _CheckoutState extends State<Checkout> {
       couponApplied = false,
       deliverySlot = false,
       isLoadingCart = false,
-      isDeliveryChargeLoading = false;
+      isDeliveryChargeLoading = false,
+      isDeliveryChargeFree = false;
   LocationData currentLocation;
   Location _location = new Location();
   RefreshController _refreshController =
@@ -142,6 +143,18 @@ class _CheckoutState extends State<Checkout> {
               value['response_data']['deliveryDetails']['deliveryCharges'];
           cartItem['grandTotal'] =
               value['response_data']['cartData']['grandTotal'];
+          cartItem['deliveryAddress'] =
+              value['response_data']['cartData']['deliveryAddress'];
+          if (cartItem['deliveryCharges'] == 0 &&
+              cartItem['deliveryAddress'] != null) {
+            setState(() {
+              isDeliveryChargeFree = true;
+            });
+          } else {
+            setState(() {
+              isDeliveryChargeFree = false;
+            });
+          }
           isDeliveryChargeLoading = false;
         });
       });
@@ -609,10 +622,27 @@ class _CheckoutState extends State<Checkout> {
                                             SizedBox(
                                               width: 5,
                                             ),
-                                            Text(
-                                              MyLocalizations.of(context).tax,
-                                              style: textBarlowRegularBlack(),
-                                            ),
+                                            cartItem['taxInfo'] == null
+                                                ? Text(
+                                                    MyLocalizations.of(context)
+                                                        .tax,
+                                                    style:
+                                                        textBarlowRegularBlack(),
+                                                  )
+                                                : Text(
+                                                    MyLocalizations.of(context)
+                                                            .tax +
+                                                        " (" +
+                                                        cartItem['taxInfo']
+                                                            ['taxName'] +
+                                                        " " +
+                                                        cartItem['taxInfo']
+                                                                ['amount']
+                                                            .toString() +
+                                                        "%)",
+                                                    style:
+                                                        textBarlowRegularBlack(),
+                                                  ),
                                           ],
                                         ),
                                         Row(
@@ -801,14 +831,9 @@ class _CheckoutState extends State<Checkout> {
                                 color: Color(0xFF707070).withOpacity(0.20),
                                 thickness: 1,
                               ),
-                              cartItem['deliveryCharges'] == 0 ||
-                                      cartItem['deliveryCharges'] == '0'
-                                  ? Container()
-                                  : SizedBox(height: 10),
-                              cartItem['deliveryCharges'] == 0 ||
-                                      cartItem['deliveryCharges'] == '0'
-                                  ? Container()
-                                  : Row(
+                              SizedBox(height: 10),
+                              isDeliveryChargeFree == true
+                                  ? Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
@@ -817,27 +842,51 @@ class _CheckoutState extends State<Checkout> {
                                               .deliveryCharges,
                                           style: textBarlowRegularBlack(),
                                         ),
-                                        isDeliveryChargeLoading
-                                            ? SquareLoader()
-                                            : Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                children: <Widget>[
-                                                  Text(
-                                                    currency,
-                                                    style:
-                                                        textbarlowBoldsmBlack(),
-                                                  ),
-                                                  Text(
-                                                    '${cartItem['deliveryCharges'].toDouble().toStringAsFixed(2)}'
-                                                        .toString(),
-                                                    style:
-                                                        textbarlowBoldsmBlack(),
-                                                  )
-                                                ],
-                                              ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: <Widget>[
+                                            Text(
+                                              "FREE",
+                                              style: textbarlowBoldsmBlack(),
+                                            )
+                                          ],
+                                        ),
                                       ],
-                                    ),
+                                    )
+                                  : cartItem['deliveryCharges'] == 0 ||
+                                          cartItem['deliveryCharges'] == '0'
+                                      ? Container()
+                                      : Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Text(
+                                              MyLocalizations.of(context)
+                                                  .deliveryCharges,
+                                              style: textBarlowRegularBlack(),
+                                            ),
+                                            isDeliveryChargeLoading
+                                                ? SquareLoader()
+                                                : Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
+                                                    children: <Widget>[
+                                                      Text(
+                                                        currency,
+                                                        style:
+                                                            textbarlowBoldsmBlack(),
+                                                      ),
+                                                      Text(
+                                                        '${cartItem['deliveryCharges'].toDouble().toStringAsFixed(2)}'
+                                                            .toString(),
+                                                        style:
+                                                            textbarlowBoldsmBlack(),
+                                                      )
+                                                    ],
+                                                  ),
+                                          ],
+                                        ),
                               SizedBox(height: 10),
                               Row(
                                 mainAxisAlignment:

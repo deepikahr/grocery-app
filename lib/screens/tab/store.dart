@@ -288,9 +288,15 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       autoPlay: true,
       pagination: true,
       viewportFraction: 1.0,
-      activeIndicator: Colors.transparent,
+      activeIndicator: primary,
+      passiveIndicator: primaryLight,
       height: 150,
       aspectRatio: 2,
+      onPageChanged: (_) {
+        setState(() {
+          //do not remove this setstate
+        });
+      },
       items: bannerList.map((url) {
         return InkWell(
           onTap: () {

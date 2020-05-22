@@ -811,7 +811,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                 style: textBarlowRegularWhite(),
                               ),
                               new Text(
-                                "$currency${cartData['grandTotal']}",
+                                "$currency${cartData['subTotal'].toStringAsFixed(2)}",
                                 style: textbarlowBoldWhite(),
                               ),
                             ],
