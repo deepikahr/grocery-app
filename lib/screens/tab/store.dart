@@ -209,9 +209,11 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text(
-                    MyLocalizations.of(context).explorebyCategories,
-                    style: textBarlowMediumBlack(),
+                  Expanded(
+                    child: Text(
+                      MyLocalizations.of(context).explorebyCategories,
+                      style: textBarlowMediumBlack(),
+                    ),
                   ),
                   InkWell(
                     onTap: () {
