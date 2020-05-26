@@ -452,5 +452,6 @@
   "oops": "Oops !",
   "outOfStock": "Esaurito",
   "and": "e",
-  "moreitems": "più articoli"
+  "moreitems": "più articoli",
+  "amountshouldbegreterthenorequalminamount": "金额应大于或等于最小金额"
 }

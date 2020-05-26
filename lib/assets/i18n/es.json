@@ -452,5 +452,6 @@
     "oops": "¡Uy!",
     "outOfStock": "Agotado",
     "and": "y",
-    "moreitems": "mas cosas"
+    "moreitems": "mas cosas",
+    "amountshouldbegreterthenorequalminamount": "La cantidad debe ser mayor o igual a la cantidad mínima"
 }

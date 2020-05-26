@@ -452,5 +452,6 @@
     "oops": "Ой!",
     "outOfStock": "Нет на складе",
     "and": "а также",
-    "moreitems": "больше предметов"
+    "moreitems": "больше предметов",
+    "amountshouldbegreterthenorequalminamount": "Сумма должна быть больше или равна минимальной сумме"
 }

@@ -93,4 +93,17 @@ class CartService {
         });
     return json.decode(response.body);
   }
+
+  static Future<Map<String, dynamic>> minOrderAmoutCheckApi() async {
+    String token;
+    await Common.getToken().then((onValue) {
+      token = onValue;
+    });
+    final response = await client
+        .get(Constants.baseURL + "delivery/tax/settings/info", headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'bearer $token'
+    });
+    return json.decode(response.body);
+  }
 }

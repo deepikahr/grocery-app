@@ -1869,6 +1869,11 @@ class MyLocalizations {
     return localizedValues[locale.languageCode]['moreitems'];
   }
 
+  String get amountshouldbegreterthenorequalminamount {
+    return localizedValues[locale.languageCode]
+        ['amountshouldbegreterthenorequalminamount'];
+  }
+
   greetTo(name) {
     return localizedValues[locale.languageCode]['greetTo']
         .replaceAll('{{name}}', name);

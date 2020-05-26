@@ -551,15 +551,7 @@ class _SignupState extends State<Signup> {
   Widget buildLoginButton() {
     return InkWell(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => Login(
-                locale: widget.locale,
-                localizedValues: widget.localizedValues,
-              ),
-            ),
-          );
+          Navigator.pop(context);
         },
         child: Padding(
           padding: const EdgeInsets.only(bottom: 20.0),

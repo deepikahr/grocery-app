@@ -451,6 +451,7 @@
     "ordernow": "今すぐ注文",
     "oops": "おっとっと ！",
     "outOfStock": "在庫切れ",
-    "and": "et",
-    "moreitems": "Plus d'articles"
+    "and": "そして",
+    "moreitems": "その他のアイテム",
+    "amountshouldbegreterthenorequalminamount": "金額は最小金額以上にする必要があります"
 }
