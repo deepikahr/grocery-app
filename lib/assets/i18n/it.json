@@ -452,5 +452,6 @@
     "oops": "Oops !",
     "outOfStock": "Esaurito",
     "and": "e",
-    "moreitems": "più articoli"
+    "moreitems": "più articoli",
+    "amountshouldbegreterthenorequalminamount": "L'importo deve essere maggiore o uguale all'importo minimo"
 }

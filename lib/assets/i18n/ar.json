@@ -452,5 +452,6 @@
     "oops": "وجه الفتاة!",
     "outOfStock": "إنتهى من المخزن",
     "and": "و",
-    "moreitems": "المزيد من العناصر"
+    "moreitems": "المزيد من العناصر",
+    "amountshouldbegreterthenorequalminamount": "يجب أن يكون المبلغ أكبر من أو يساوي الحد الأدنى للمبلغ"
 }

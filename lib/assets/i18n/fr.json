@@ -452,5 +452,6 @@
   "oops": "Oops !",
   "outOfStock": "En rupture de stock",
   "and": "et",
-  "moreitems": "Plus d'articles"
+  "moreitems": "Plus d'articles",
+  "amountshouldbegreterthenorequalminamount": "Le montant doit être supérieur ou égal au montant minimum"
 }
