@@ -452,5 +452,6 @@
   "oops": "Oops !",
   "outOfStock": "Out Of Stock",
   "and": "and",
-  "moreitems": "more items"
+  "moreitems": "more items",
+  "amountshouldbegreterthenorequalminamount": "Amount should be greater than or equal min amount"
 }

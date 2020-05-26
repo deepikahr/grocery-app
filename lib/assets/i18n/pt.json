@@ -451,6 +451,7 @@
     "ordernow": "Peça agora",
     "oops": "Opa !",
     "outOfStock": "Fora de estoque",
-    "and": "and",
-    "moreitems": "more items"
+    "and": "e",
+    "moreitems": "mais itens",
+    "amountshouldbegreterthenorequalminamount": "O valor deve ser maior ou igual ao valor mínimo"
 }

@@ -34,7 +34,8 @@ class _MyCartState extends State<MyCart> {
       isDecrementLoading = false,
       isUpdating = false,
       isLoading = false,
-      favSelected = false;
+      favSelected = false,
+      isMinAmountCheckLoading = false;
   String token, currency;
   String quantityUpdateType = '+';
   Map<String, dynamic> cartItem;
@@ -42,15 +43,52 @@ class _MyCartState extends State<MyCart> {
   double bottomBarHeight = 124;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
+  var minAmout;
   @override
   void initState() {
     getToken();
+    checkMinOrderAmount();
     super.initState();
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  checkMinOrderAmount() async {
+    if (mounted) {
+      setState(() {
+        isMinAmountCheckLoading = true;
+      });
+    }
+    await CartService.minOrderAmoutCheckApi().then((onValue) {
+      print(onValue);
+      try {
+        if (mounted) {
+          if (onValue['response_code'] == 200) {
+            minAmout = onValue['response_data'];
+          }
+          setState(() {
+            isMinAmountCheckLoading = false;
+          });
+        }
+      } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isMinAmountCheckLoading = false;
+          });
+        }
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isMinAmountCheckLoading = false;
+        });
+      }
+      sentryError.reportError(error, null);
+    });
   }
 
   getToken() async {
@@ -392,12 +430,70 @@ class _MyCartState extends State<MyCart> {
     });
   }
 
+  checkMinOrderAmountCondition() async {
+    if (cartItem['grandTotal'] >= minAmout['minimumOrderAmountToPlaceOrder']) {
+      print("true");
+      var result = Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Checkout(
+            locale: widget.locale,
+            localizedValues: widget.localizedValues,
+            cartItem: cartItem,
+            buy: 'cart',
+            quantity: cartItem['cart'].length.toString(),
+            id: cartItem['_id'].toString(),
+          ),
+        ),
+      );
+      result.then((value) {
+        getCartItems();
+      });
+    } else {
+      print("false");
+      showDialog<Null>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Container(
+            width: 270.0,
+            child: new AlertDialog(
+              content: new SingleChildScrollView(
+                child: new ListBody(
+                  children: <Widget>[
+                    new Text(
+                      MyLocalizations.of(context)
+                              .amountshouldbegreterthenorequalminamount +
+                          "($currency${minAmout['minimumOrderAmountToPlaceOrder']})",
+                      style: hintSfsemiboldred(),
+                    ),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text(
+                    MyLocalizations.of(context).ok,
+                    style: textbarlowRegularaPrimary(),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFFDFDFD),
       key: _scaffoldkey,
-      appBar: isGetTokenLoading
+      appBar: isGetTokenLoading || isMinAmountCheckLoading
           ? null
           : token == null
               ? null
@@ -410,7 +506,7 @@ class _MyCartState extends State<MyCart> {
                   backgroundColor: Colors.white,
                   elevation: 0,
                 ),
-      body: isGetTokenLoading
+      body: isGetTokenLoading || isMinAmountCheckLoading
           ? SquareLoader()
           : token == null
               ? Login(
@@ -716,7 +812,7 @@ class _MyCartState extends State<MyCart> {
                         ],
                       ),
                     ),
-      bottomNavigationBar: isGetTokenLoading
+      bottomNavigationBar: isGetTokenLoading || isMinAmountCheckLoading
           ? SquareLoader()
           : token == null
               ? Container(
@@ -922,27 +1018,7 @@ class _MyCartState extends State<MyCart> {
                                     ),
                                     Container(
                                       child: RawMaterialButton(
-                                        onPressed: () {
-                                          var result = Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => Checkout(
-                                                locale: widget.locale,
-                                                localizedValues:
-                                                    widget.localizedValues,
-                                                cartItem: cartItem,
-                                                buy: 'cart',
-                                                quantity: cartItem['cart']
-                                                    .length
-                                                    .toString(),
-                                                id: cartItem['_id'].toString(),
-                                              ),
-                                            ),
-                                          );
-                                          result.then((value) {
-                                            getCartItems();
-                                          });
-                                        },
+                                        onPressed: checkMinOrderAmountCondition,
                                         child: Container(
                                           width: MediaQuery.of(context)
                                                   .size
@@ -952,11 +1028,17 @@ class _MyCartState extends State<MyCart> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.end,
                                             children: <Widget>[
-                                              Text(
-                                                MyLocalizations.of(context)
-                                                    .checkOut,
-                                                style: textBarlowRegularBlack(),
-                                              ),
+                                              isMinAmountCheckLoading
+                                                  ? GFLoader(
+                                                      type: GFLoaderType.ios,
+                                                    )
+                                                  : Text(
+                                                      MyLocalizations.of(
+                                                              context)
+                                                          .checkOut,
+                                                      style:
+                                                          textBarlowRegularBlack(),
+                                                    ),
                                               Icon(Icons.arrow_forward),
                                               SizedBox(width: 10)
                                             ],
