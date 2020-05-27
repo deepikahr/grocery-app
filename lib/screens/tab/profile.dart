@@ -180,7 +180,7 @@ class _ProfileState extends State<Profile> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          MyApp("en", localizedValues, true),
+                                          MyApp("en", localizedValues, null),
                                     ),
                                     (Route<dynamic> route) => false);
                               } else if (newValue == 'Chinese') {
@@ -191,7 +191,7 @@ class _ProfileState extends State<Profile> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          MyApp("zh", localizedValues, true),
+                                          MyApp("zh", localizedValues, null),
                                     ),
                                     (Route<dynamic> route) => false);
                               } else if (newValue == 'Arabic') {
@@ -202,7 +202,7 @@ class _ProfileState extends State<Profile> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          MyApp("ar", localizedValues, true),
+                                          MyApp("ar", localizedValues, null),
                                     ),
                                     (Route<dynamic> route) => false);
                               } else if (newValue == 'Japanese') {
@@ -213,7 +213,7 @@ class _ProfileState extends State<Profile> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          MyApp("ja", localizedValues, true),
+                                          MyApp("ja", localizedValues, null),
                                     ),
                                     (Route<dynamic> route) => false);
                               } else if (newValue == 'Russian') {
@@ -224,7 +224,7 @@ class _ProfileState extends State<Profile> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          MyApp("ru", localizedValues, true),
+                                          MyApp("ru", localizedValues, null),
                                     ),
                                     (Route<dynamic> route) => false);
                               } else if (newValue == 'Italian') {
@@ -235,7 +235,7 @@ class _ProfileState extends State<Profile> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          MyApp("it", localizedValues, true),
+                                          MyApp("it", localizedValues, null),
                                     ),
                                     (Route<dynamic> route) => false);
                               } else if (newValue == 'Spanish') {
@@ -246,7 +246,7 @@ class _ProfileState extends State<Profile> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          MyApp("es", localizedValues, true),
+                                          MyApp("es", localizedValues, null),
                                     ),
                                     (Route<dynamic> route) => false);
                               } else if (newValue == 'Portuguese') {
@@ -257,7 +257,7 @@ class _ProfileState extends State<Profile> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          MyApp("pt", localizedValues, true),
+                                          MyApp("pt", localizedValues, null),
                                     ),
                                     (Route<dynamic> route) => false);
                               } else {
@@ -268,7 +268,7 @@ class _ProfileState extends State<Profile> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          MyApp("fr", localizedValues, true),
+                                          MyApp("fr", localizedValues, null),
                                     ),
                                     (Route<dynamic> route) => false);
                               }

@@ -168,4 +168,14 @@ class LoginService {
     });
     return json.decode(response.body);
   }
+
+  static Future<Map<String, dynamic>> getLanguageJson(languageCode) async {
+    final response = await client.get(
+        Constants.baseURL +
+            "language/user/info?req_from=mobAppJson&language_code=$languageCode",
+        headers: {
+          'Content-Type': 'application/json',
+        });
+    return json.decode(response.body);
+  }
 }
