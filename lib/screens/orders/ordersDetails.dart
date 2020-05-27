@@ -282,6 +282,33 @@ class _OrderDetailsState extends State<OrderDetails> {
                                   ],
                                 ),
                                 SizedBox(height: 10),
+                                orderHistory['paymentType'] == "CARD"
+                                    ? Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text(
+                                              MyLocalizations.of(context)
+                                                      .payment +
+                                                  MyLocalizations.of(context)
+                                                      .status +
+                                                  ' :',
+                                              style: textBarlowMediumBlack()),
+                                          SizedBox(width: 5),
+                                          Expanded(
+                                            child: Text(
+                                                orderHistory[
+                                                            'transactionDetails']
+                                                        ['transactionStatus'] ??
+                                                    "",
+                                                style: textBarlowMediumBlack()),
+                                          )
+                                        ],
+                                      )
+                                    : Container(),
+                                orderHistory['paymentType'] == "CARD"
+                                    ? SizedBox(height: 10)
+                                    : Container(),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: <Widget>[

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -25,6 +26,7 @@ bool get isInDebugMode {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Map<String, Map<String, String>> localizedValues = await initializeI18n();
+  // print(localizedValues);
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String locale = prefs.getString('selectedLanguage') ?? "en";
 
@@ -40,7 +42,7 @@ void main() async {
   };
   getToken();
   runZoned<Future<Null>>(() async {
-    runApp(new MyApp(locale, localizedValues, false));
+    runApp(new MyApp(null, null, null));
   }, onError: (error, stackTrace) async {
     await sentryError.reportError(error, stackTrace);
   });
@@ -88,7 +90,7 @@ userInfoMethod() async {
 class MyApp extends StatefulWidget {
   final Map<String, Map<String, String>> localizedValues;
   final String locale;
-  final bool languagesSelection;
+  final List languagesSelection;
   MyApp(this.locale, this.localizedValues, this.languagesSelection);
   @override
   _MyAppState createState() => new _MyAppState();
@@ -100,73 +102,137 @@ class _MyAppState extends State<MyApp> {
   LocationData currentLocation;
   Location _location = new Location();
   var addressData;
+  Map languagesJson;
+  String languageCode;
+  List languagesList;
   void initState() {
     getGlobalSettingsData();
-
-    // getResult();
     super.initState();
   }
 
+  loadJsonFromAsset(language) async {
+    print(language);
+    return await rootBundle.loadString(language);
+  }
+
+  Map<String, String> convertValueToString(obj) {
+    print("obj");
+    print(obj);
+    Map<String, String> result = {};
+    obj.forEach((key, value) {
+      result[key] = value.toString();
+      print(result);
+    });
+    return result;
+  }
+
+  Future<Map<String, Map<String, String>>> initializeI18nFindJson(json) async {
+    print(json);
+    Map<String, Map<String, String>> values = {};
+
+    Map<String, String> translation =
+        json.decode(await loadJsonFromAsset(json));
+    print(translation);
+    values[language] = convertValueToString(translation);
+    print(values);
+    return values;
+  }
+
   getGlobalSettingsData() async {
+    if (mounted) {
+      setState(() {
+        isloading = true;
+      });
+    }
     currentLocation = await _location.getLocation();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (prefs.getString('selectedLanguage') == null) {
-      if (mounted) {
-        setState(() {
-          isloading = true;
-        });
-      }
-      getGlobalSettings().then((onValue) {
-        try {
-          if (onValue['response_data']['languageCode'] == null) {
-            prefs.setString('selectedLanguage', 'en');
-            language = prefs.getString("selectedLanguage");
-          } else {
-            prefs.setString('selectedLanguage',
-                '${onValue['response_data']['languageCode']}');
-            language = prefs.getString("selectedLanguage");
-          }
-          if (language != null) {
+    Common.getLanguage().then((value) {
+      print("lk$value");
+      if (value != null && value['languageCode'] != null) {
+        LoginService.getLanguageJson(value['languageCode'])
+            .then((languageResponse) {
+          print(languageResponse);
+          if (languageResponse['response_code'] == 200) {
+            Common.setLanguage(
+                languageResponse['response_data']['defaultCode']);
+            Common.setLanguageList(
+                languageResponse['response_data']['langCode']);
+
             if (mounted) {
-              setState(() {
+              setState(() async {
+                Map<String, Map<String, String>> localizedValues =
+                    await initializeI18nFindJson(
+                        languageResponse['response_data']['json']);
+                print(languagesJson);
+                languageCode = languageResponse['response_data']['defaultCode']
+                    ['languageCode'];
+                print(languageCode);
+                languagesList = languageResponse['response_data']['langCode'];
+                print(languagesList);
+                languagesJson = localizedValues;
                 isloading = false;
               });
             }
           }
-        } catch (error, stackTrace) {
-          sentryError.reportError(error, stackTrace);
-        }
-      }).catchError((error) {
-        sentryError.reportError(error, null);
-      });
-    }
+        });
+      } else {
+        LoginService.getLanguageJson("").then((languageResponse) {
+          print(languageResponse);
+          if (languageResponse['response_code'] == 200) {
+            Common.setLanguage(
+                languageResponse['response_data']['defaultCode']);
+            Common.setLanguageList(
+                languageResponse['response_data']['langCode']);
+            if (mounted) {
+              setState(() async {
+                Map<String, Map<String, String>> localizedValues =
+                    await initializeI18nFindJson(
+                        languageResponse['response_data']['json']);
+                languageCode = languageResponse['response_data']['defaultCode']
+                    ['languageCode'];
+                print(languageCode);
+                languagesList = languageResponse['response_data']['langCode'];
+                print(languagesList);
+                languagesJson = localizedValues;
+                print(languagesJson);
+                isloading = false;
+              });
+            }
+          }
+        });
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      locale: Locale(language != null ? language : widget.locale),
-      localizationsDelegates: [
-        MyLocalizationsDelegate(widget.localizedValues),
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
-      supportedLocales:
-          Constants.LANGUAGES.map((language) => Locale(language, '')),
-      debugShowCheckedModeBanner: false,
-      title: Constants.APP_NAME,
-      theme: ThemeData(primaryColor: primary, accentColor: primary),
-      home: isloading
-          ? AnimatedScreen(
+    return languagesJson == null ||
+            languagesList == null ||
+            languageCode == null
+        ? MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: Constants.APP_NAME,
+            theme: ThemeData(primaryColor: primary, accentColor: primary),
+            home: AnimatedScreen(
               locale: language != null ? language : widget.locale,
               localizedValues: widget.localizedValues,
-            )
-          : Home(
+            ))
+        : MaterialApp(
+            locale: Locale(languageCode),
+            localizationsDelegates: [
+              MyLocalizationsDelegate(languagesJson),
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+            ],
+            supportedLocales:
+                languagesList.map((language) => Locale(language, '')),
+            debugShowCheckedModeBanner: false,
+            title: Constants.APP_NAME,
+            theme: ThemeData(primaryColor: primary, accentColor: primary),
+            home: Home(
               locale: language != null ? language : widget.locale,
               localizedValues: widget.localizedValues,
-              languagesSelection: widget.languagesSelection,
             ),
-    );
+          );
   }
 }
 

@@ -162,7 +162,7 @@ class _DrawerPageState extends State<DrawerPage> {
             context,
             MaterialPageRoute(
               builder: (BuildContext context) =>
-                  MyApp(widget.locale, widget.localizedValues, true),
+                  MyApp(widget.locale, widget.localizedValues, null),
             ),
             (Route<dynamic> route) => false);
       }
