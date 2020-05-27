@@ -19,7 +19,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 SentryError sentryError = new SentryError();
 
 class MyCart extends StatefulWidget {
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   final String locale;
   MyCart({Key key, this.locale, this.localizedValues}) : super(key: key);
   @override
@@ -63,7 +63,6 @@ class _MyCartState extends State<MyCart> {
       });
     }
     await CartService.minOrderAmoutCheckApi().then((onValue) {
-      print(onValue);
       try {
         if (mounted) {
           if (onValue['response_code'] == 200) {
@@ -432,7 +431,6 @@ class _MyCartState extends State<MyCart> {
 
   checkMinOrderAmountCondition() async {
     if (cartItem['grandTotal'] >= minAmout['minimumOrderAmountToPlaceOrder']) {
-      print("true");
       var result = Navigator.push(
         context,
         MaterialPageRoute(
@@ -450,7 +448,6 @@ class _MyCartState extends State<MyCart> {
         getCartItems();
       });
     } else {
-      print("false");
       showDialog<Null>(
         context: context,
         barrierDismissible: false,

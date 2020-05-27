@@ -15,7 +15,7 @@ SentryError sentryError = new SentryError();
 
 class ResetPassword extends StatefulWidget {
   final String token, locale;
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   ResetPassword({Key key, this.token, this.localizedValues, this.locale})
       : super(key: key);
 

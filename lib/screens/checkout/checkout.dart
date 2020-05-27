@@ -28,7 +28,7 @@ SentryError sentryError = new SentryError();
 class Checkout extends StatefulWidget {
   final Map<String, dynamic> cartItem;
   final String buy, quantity, locale, id;
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
 
   Checkout(
       {Key key,

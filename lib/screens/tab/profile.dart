@@ -21,7 +21,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 SentryError sentryError = new SentryError();
 
 class Profile extends StatefulWidget {
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   final String locale;
   Profile({Key key, this.locale, this.localizedValues}) : super(key: key);
 
@@ -48,7 +48,7 @@ class _ProfileState extends State<Profile> {
     'Spanish',
     'Portuguese'
   ];
-  Map<String, Map<String, String>> localizedValues;
+  Map localizedValues;
   var userData;
 
   @override
@@ -180,95 +180,9 @@ class _ProfileState extends State<Profile> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          MyApp("en", localizedValues, null),
-                                    ),
-                                    (Route<dynamic> route) => false);
-                              } else if (newValue == 'Chinese') {
-                                SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                prefs.setString('selectedLanguage', 'zh');
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          MyApp("zh", localizedValues, null),
-                                    ),
-                                    (Route<dynamic> route) => false);
-                              } else if (newValue == 'Arabic') {
-                                SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                prefs.setString('selectedLanguage', 'ar');
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          MyApp("ar", localizedValues, null),
-                                    ),
-                                    (Route<dynamic> route) => false);
-                              } else if (newValue == 'Japanese') {
-                                SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                prefs.setString('selectedLanguage', 'ja');
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          MyApp("ja", localizedValues, null),
-                                    ),
-                                    (Route<dynamic> route) => false);
-                              } else if (newValue == 'Russian') {
-                                SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                prefs.setString('selectedLanguage', 'ru');
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          MyApp("ru", localizedValues, null),
-                                    ),
-                                    (Route<dynamic> route) => false);
-                              } else if (newValue == 'Italian') {
-                                SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                prefs.setString('selectedLanguage', 'it');
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          MyApp("it", localizedValues, null),
-                                    ),
-                                    (Route<dynamic> route) => false);
-                              } else if (newValue == 'Spanish') {
-                                SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                prefs.setString('selectedLanguage', 'es');
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          MyApp("es", localizedValues, null),
-                                    ),
-                                    (Route<dynamic> route) => false);
-                              } else if (newValue == 'Portuguese') {
-                                SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                prefs.setString('selectedLanguage', 'pt');
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          MyApp("pt", localizedValues, null),
-                                    ),
-                                    (Route<dynamic> route) => false);
-                              } else {
-                                SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                prefs.setString('selectedLanguage', 'fr');
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          MyApp("fr", localizedValues, null),
+                                          MainScreen(
+                                              locale: widget.locale,
+                                              localizedValues: localizedValues),
                                     ),
                                     (Route<dynamic> route) => false);
                               }

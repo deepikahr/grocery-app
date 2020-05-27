@@ -18,7 +18,7 @@ import 'package:flutter_map_picker/flutter_map_picker.dart';
 SentryError sentryError = new SentryError();
 
 class Address extends StatefulWidget {
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   final String locale;
   Address({Key key, this.locale, this.localizedValues});
 

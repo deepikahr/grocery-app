@@ -17,7 +17,7 @@ class SearchItem extends StatefulWidget {
   final List productsList, favProductList;
   final String currency, locale;
   final bool token;
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   SearchItem(
       {Key key,
       this.productsList,
@@ -448,7 +448,6 @@ class _SearchItemState extends State<SearchItem> {
                     builder: (BuildContext context) => Home(
                       locale: widget.locale,
                       localizedValues: widget.localizedValues,
-                      languagesSelection: false,
                       currentIndex: 2,
                     ),
                   ),

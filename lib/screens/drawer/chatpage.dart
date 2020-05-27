@@ -12,7 +12,7 @@ import 'package:socket_io_client/socket_io_client.dart' as io;
 SentryError sentryError = new SentryError();
 
 class Chat extends StatefulWidget {
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   final String locale;
   Chat({Key key, this.locale, this.localizedValues});
 

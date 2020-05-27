@@ -17,7 +17,7 @@ SentryError sentryError = new SentryError();
 
 class OrderDetails extends StatefulWidget {
   final String orderId, locale;
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   OrderDetails({Key key, this.orderId, this.locale, this.localizedValues})
       : super(key: key);
   @override

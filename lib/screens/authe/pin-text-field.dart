@@ -94,7 +94,7 @@ class PinCodeTextField extends StatefulWidget {
   final Duration pinTextAnimatedSwitcherDuration;
   final WrapAlignment wrapAlignment;
   final PinCodeTextFieldLayoutType pinCodeTextFieldLayoutType;
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   final String locale;
   const PinCodeTextField(
       {Key key,

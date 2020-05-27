@@ -11,7 +11,7 @@ import 'package:intl/intl.dart';
 SentryError sentryError = new SentryError();
 
 class AddCard extends StatefulWidget {
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   final String locale;
   AddCard({Key key, this.locale, this.localizedValues});
 

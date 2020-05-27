@@ -11,7 +11,7 @@ class ProductCard extends StatelessWidget {
   final Map productList;
   final List variantList;
   final String locale;
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   ProductCard(
       {Key key,
       this.unit,

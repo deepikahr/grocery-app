@@ -26,7 +26,7 @@ class Variants {
 class ProductDetails extends StatefulWidget {
   final int currentIndex;
   final List favProductList;
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   final String locale, productID;
   ProductDetails(
       {Key key,

@@ -20,7 +20,7 @@ SentryError sentryError = new SentryError();
 
 class EditProfile extends StatefulWidget {
   final Map<String, dynamic> userInfo;
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   final String locale;
   EditProfile({Key key, this.userInfo, this.locale, this.localizedValues})
       : super(key: key);

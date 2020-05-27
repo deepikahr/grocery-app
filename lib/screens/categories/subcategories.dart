@@ -21,7 +21,7 @@ SentryError sentryError = new SentryError();
 class SubCategories extends StatefulWidget {
   final String catTitle, locale, catId;
   final bool token, isSubCategoryAvailable;
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
 
   SubCategories(
       {Key key,
@@ -780,7 +780,6 @@ class _SubCategoriesState extends State<SubCategories> {
                     builder: (BuildContext context) => Home(
                       locale: widget.locale,
                       localizedValues: widget.localizedValues,
-                      languagesSelection: false,
                       currentIndex: 2,
                     ),
                   ),

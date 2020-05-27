@@ -16,7 +16,7 @@ class DrawerPage extends StatefulWidget {
   DrawerPage({Key key, this.locale, this.localizedValues, this.addressData})
       : super(key: key);
 
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   final String locale, addressData;
   @override
   _DrawerPageState createState() => _DrawerPageState();
@@ -81,7 +81,6 @@ class _DrawerPageState extends State<DrawerPage> {
                       route: Home(
                         locale: widget.locale,
                         localizedValues: widget.localizedValues,
-                        languagesSelection: false,
                         currentIndex: 0,
                       )),
                 ),
@@ -98,7 +97,6 @@ class _DrawerPageState extends State<DrawerPage> {
                         route: Home(
                           locale: widget.locale,
                           localizedValues: widget.localizedValues,
-                          languagesSelection: false,
                           currentIndex: 3,
                         ))
                     : Container(),
@@ -116,7 +114,6 @@ class _DrawerPageState extends State<DrawerPage> {
                         route: Home(
                           locale: widget.locale,
                           localizedValues: widget.localizedValues,
-                          languagesSelection: false,
                           currentIndex: 1,
                         ))
                     : Container(),
@@ -161,8 +158,9 @@ class _DrawerPageState extends State<DrawerPage> {
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-              builder: (BuildContext context) =>
-                  MyApp(widget.locale, widget.localizedValues, null),
+              builder: (BuildContext context) => MainScreen(
+                  locale: widget.locale,
+                  localizedValues: widget.localizedValues),
             ),
             (Route<dynamic> route) => false);
       }

@@ -28,7 +28,7 @@ class Login extends StatefulWidget {
       this.isBottomSheet})
       : super(key: key);
   final bool isProfile, isCart, isSaveItem, isProductDetails, isBottomSheet;
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   final String locale;
 
   @override
@@ -94,7 +94,6 @@ class _LoginState extends State<Login> {
                     builder: (BuildContext context) => Home(
                       locale: widget.locale,
                       localizedValues: widget.localizedValues,
-                      languagesSelection: true,
                       currentIndex: 2,
                     ),
                   ),
@@ -106,7 +105,6 @@ class _LoginState extends State<Login> {
                     builder: (BuildContext context) => Home(
                       locale: widget.locale,
                       localizedValues: widget.localizedValues,
-                      languagesSelection: true,
                       currentIndex: 3,
                     ),
                   ),
@@ -118,7 +116,6 @@ class _LoginState extends State<Login> {
                     builder: (BuildContext context) => Home(
                       locale: widget.locale,
                       localizedValues: widget.localizedValues,
-                      languagesSelection: true,
                       currentIndex: 1,
                     ),
                   ),
@@ -132,7 +129,6 @@ class _LoginState extends State<Login> {
                     builder: (BuildContext context) => Home(
                       locale: widget.locale,
                       localizedValues: widget.localizedValues,
-                      languagesSelection: true,
                       currentIndex: 0,
                     ),
                   ),

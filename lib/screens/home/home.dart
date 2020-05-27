@@ -25,16 +25,14 @@ SentryError sentryError = new SentryError();
 
 class Home extends StatefulWidget {
   final int currentIndex;
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   final String locale;
-  final bool languagesSelection;
-  Home(
-      {Key key,
-      this.currentIndex,
-      this.locale,
-      this.localizedValues,
-      this.languagesSelection})
-      : super(key: key);
+  Home({
+    Key key,
+    this.currentIndex,
+    this.locale,
+    this.localizedValues,
+  }) : super(key: key);
 
   @override
   _HomeState createState() => _HomeState();
@@ -231,26 +229,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       prefs.setString("playerId", playerId);
     }
   }
-
-  // tabIcon(icon, title) {
-  //   return Padding(
-  //     padding: const EdgeInsets.only(top: 8),
-  //     child: Column(
-  //       children: <Widget>[
-  //         Icon(
-  //           IconData(
-  //             icon,
-  //             fontFamily: 'icomoon',
-  //           ),
-  //         ),
-  //         SizedBox(
-  //           height: 5,
-  //         ),
-  //         Text(title)
-  //       ],
-  //     ),
-  //   );
-  // }
 
   deliveryAddress() {
     return Row(

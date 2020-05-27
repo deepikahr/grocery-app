@@ -24,7 +24,7 @@ import 'package:readymadeGroceryApp/widgets/cardOverlay.dart';
 SentryError sentryError = new SentryError();
 
 class Store extends StatefulWidget {
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   final String locale, currentLocation;
   Store({Key key, this.currentLocation, this.locale, this.localizedValues})
       : super(key: key);

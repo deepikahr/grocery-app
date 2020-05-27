@@ -118,8 +118,6 @@ class LoginService {
     return json.decode(response.body);
   }
 
-  // set token
-
   // check token
   static Future<Map<String, dynamic>> checkToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -138,7 +136,6 @@ class LoginService {
   }
 
   // notification list
-
   static Future<Map<String, dynamic>> getOrderHistory(orderId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token');

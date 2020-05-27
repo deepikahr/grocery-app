@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 
 class MyLocalizations {
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   MyLocalizations(this.locale, this.localizedValues);
   final Locale locale;
 
@@ -1881,7 +1881,7 @@ class MyLocalizations {
 }
 
 class MyLocalizationsDelegate extends LocalizationsDelegate<MyLocalizations> {
-  Map<String, Map<String, String>> localizedValues;
+  Map localizedValues;
 
   MyLocalizationsDelegate(this.localizedValues);
 

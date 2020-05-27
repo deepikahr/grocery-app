@@ -22,7 +22,7 @@ class Payment extends StatefulWidget {
   final grandTotals, deliveryCharges;
 
   final Map<String, dynamic> data;
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
 
   Payment(
       {Key key,
