@@ -29,18 +29,13 @@ class MyCart extends StatefulWidget {
 class _MyCartState extends State<MyCart> {
   final _scaffoldkey = new GlobalKey<ScaffoldState>();
   bool isLoadingCart = false,
-      isIncrementLoading = false,
       isGetTokenLoading = false,
-      isDecrementLoading = false,
       isUpdating = false,
-      isLoading = false,
-      favSelected = false,
       isMinAmountCheckLoading = false;
   String token, currency;
   String quantityUpdateType = '+';
   Map<String, dynamic> cartItem;
-  int count = 1;
-  double bottomBarHeight = 124;
+  double bottomBarHeight = 150;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   var minAmout;
@@ -261,7 +256,7 @@ class _MyCartState extends State<MyCart> {
             setState(() {
               cartItem = onValue['response_data'];
               if (cartItem['grandTotal'] != null) {
-                bottomBarHeight = 124;
+                bottomBarHeight = 150;
                 if (cartItem['deliveryCharges'] != 0) {
                   bottomBarHeight = bottomBarHeight + 20;
                 }
@@ -940,7 +935,7 @@ class _MyCartState extends State<MyCart> {
                                             style: textBarlowRegularBlack(),
                                           ),
                                           new Text(
-                                            "FREE",
+                                            MyLocalizations.of(context).free,
                                             style: textbarlowBoldsmBlack(),
                                           ),
                                         ],

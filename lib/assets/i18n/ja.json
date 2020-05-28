@@ -453,5 +453,8 @@
     "outOfStock": "在庫切れ",
     "and": "そして",
     "moreitems": "その他のアイテム",
-    "amountshouldbegreterthenorequalminamount": "金額は最小金額以上にする必要があります"
+    "amountshouldbegreterthenorequalminamount": "金額は最小金額以上にする必要があります",
+    "enableTogetlocation": "位置を取得できるようにします！",
+    "gPSsettings": "デバイスの場所の使用に問題があります。 GPS設定を確認してください",
+    "free": "自由"
 }

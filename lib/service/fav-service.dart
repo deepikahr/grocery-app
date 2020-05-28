@@ -33,8 +33,6 @@ class FavouriteService {
           'Content-Type': 'application/json',
           'Authorization': 'bearer $token'
         });
-    Common.setFavList(json.decode(response.body));
-
     return json.decode(response.body);
   }
 

@@ -847,7 +847,7 @@ class _CheckoutState extends State<Checkout> {
                                               MainAxisAlignment.end,
                                           children: <Widget>[
                                             Text(
-                                              "FREE",
+                                              MyLocalizations.of(context).free,
                                               style: textbarlowBoldsmBlack(),
                                             )
                                           ],
@@ -1111,8 +1111,11 @@ class _CheckoutState extends State<Checkout> {
                                         });
                                       }
                                     } else {
-                                      showError('Enable To get location!',
-                                          'There is problem using your device location. Please check your GPS settings');
+                                      showError(
+                                          MyLocalizations.of(context)
+                                              .enableTogetlocation,
+                                          MyLocalizations.of(context)
+                                              .thereisproblemusingyourdevicelocationPleasecheckyourGPSsettings);
                                     }
                                   },
                                   type: GFButtonType.transparent,

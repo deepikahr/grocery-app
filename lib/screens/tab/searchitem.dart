@@ -36,13 +36,11 @@ class _SearchItemState extends State<SearchItem> {
   final TextEditingController _controller = new TextEditingController();
   bool isSearching = false,
       isFirstTime = true,
-      cardAdded = false,
       getTokenValue = false,
       isTokenGetLoading = false;
   List searchresult = new List();
-  int quanity = 1;
   String cartId, searchTerm;
-  var variantPrice, cartData;
+  var  cartData;
   String currency;
 
   @override

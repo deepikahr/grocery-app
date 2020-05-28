@@ -453,5 +453,8 @@
     "outOfStock": "Fora de estoque",
     "and": "e",
     "moreitems": "mais itens",
-    "amountshouldbegreterthenorequalminamount": "O valor deve ser maior ou igual ao valor mínimo"
+    "amountshouldbegreterthenorequalminamount": "O valor deve ser maior ou igual ao valor mínimo",
+    "enableTogetlocation": "Ativar Para obter localização!",
+    "gPSsettings": "Ocorreu um problema ao usar a localização do seu dispositivo. Por favor, verifique suas configurações de GPS",
+    "free": "LIVRE"
 }

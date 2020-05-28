@@ -453,5 +453,8 @@
     "outOfStock": "إنتهى من المخزن",
     "and": "و",
     "moreitems": "المزيد من العناصر",
-    "amountshouldbegreterthenorequalminamount": "يجب أن يكون المبلغ أكبر من أو يساوي الحد الأدنى للمبلغ"
+    "amountshouldbegreterthenorequalminamount": "يجب أن يكون المبلغ أكبر من أو يساوي الحد الأدنى للمبلغ",
+    "enableTogetlocation": "تمكين للحصول على الموقع!",
+    "thereisproblemusingyourdevicelocationPleasecheckyourGPSsettings": "هناك مشكلة في استخدام موقع جهازك. يرجى التحقق من إعدادات GPS الخاصة بك",
+    "free": "مجانا"
 }

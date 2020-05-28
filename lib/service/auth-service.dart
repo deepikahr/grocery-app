@@ -51,19 +51,6 @@ class LoginService {
     return json.decode(response.body);
   }
 
-  static Future<Map<String, dynamic>> changePassword(body) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token = prefs.getString('token');
-    final response = await client.post(
-        Constants.baseURL + "users/change-password",
-        body: json.encode(body),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'bearer $token'
-        });
-    return json.decode(response.body);
-  }
-
   // get user info
   static Future<Map<String, dynamic>> getUserInfo() async {
     String token;
@@ -74,7 +61,6 @@ class LoginService {
       'Content-Type': 'application/json',
       'Authorization': 'bearer $token'
     });
-    Common.setUserInfo(json.decode(response.body));
     return json.decode(response.body);
   }
 

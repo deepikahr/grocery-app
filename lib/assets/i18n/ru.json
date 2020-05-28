@@ -453,5 +453,8 @@
     "outOfStock": "Нет на складе",
     "and": "а также",
     "moreitems": "больше предметов",
-    "amountshouldbegreterthenorequalminamount": "Сумма должна быть больше или равна минимальной сумме"
+    "amountshouldbegreterthenorequalminamount": "Сумма должна быть больше или равна минимальной сумме",
+    "enableTogetlocation": "Включить, чтобы получить местоположение!",
+    "gPSsettings": "Проблема с использованием местоположения вашего устройства. Пожалуйста, проверьте ваши настройки GPS",
+    "free": "БЕСПЛАТНО"
 }
