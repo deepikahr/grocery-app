@@ -8,9 +8,12 @@ class AddressService {
 
   // add address
   static Future<Map<String, dynamic>> addAddress(body) async {
-    String token;
+    String token, languageCode;
     await Common.getToken().then((onValue) {
       token = onValue;
+    });
+    await Common.getToken().then((code) {
+      languageCode = code;
     });
     final response = await client.post(Constants.baseURL + "address",
         body: json.encode(body),
@@ -32,7 +35,6 @@ class AddressService {
           'Content-Type': 'application/json',
           'Authorization': 'bearer $token'
         });
-    Common.setAddressList(json.decode(response.body));
     return json.decode(response.body);
   }
 

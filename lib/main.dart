@@ -1,8 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:getflutter/getflutter.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
@@ -10,7 +11,6 @@ import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -22,6 +22,7 @@ bool get isInDebugMode {
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  configLocalNotification();
   runZoned<Future<Null>>(() {
     runApp(MaterialApp(
       home: AnimatedScreen(),
@@ -31,10 +32,10 @@ void main() {
   }, onError: (error, stackTrace) {
     sentryError.reportError(error, stackTrace);
   });
-  SharedPreferences.getInstance().then((prefs) {
+  Common.getSelectedLanguage().then((selectedLocale) {
     Map localizedValues;
     String defaultLocale = '';
-    String locale = prefs.getString('selectedLanguage') ?? defaultLocale;
+    String locale = selectedLocale ?? defaultLocale;
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarBrightness: Brightness.dark,
         statusBarIconBrightness: Brightness.dark));
@@ -46,19 +47,20 @@ void main() {
       }
     };
     getToken();
-    LoginService.getLanguageJson(locale).then((value) {
+    LoginService.getLanguageJson(locale).then((value) async {
       localizedValues = value['response_data']['json'];
       if (locale == '') {
         defaultLocale = value['response_data']['defaultCode']['languageCode'];
         locale = defaultLocale;
       }
-      prefs.setString('selectedLanguage', locale);
-      prefs.setString(
-          'alllanguageNames', json.encode(value['response_data']['langName']));
-      prefs.setString(
-          'alllanguageCodes', json.encode(value['response_data']['langCode']));
+      await Common.setSelectedLanguage(locale);
+      await Common.setAllLanguageNames(value['response_data']['langName']);
+      await Common.setAllLanguageCodes(value['response_data']['langCode']);
       runZoned<Future<Null>>(() {
-        runApp(MainScreen(locale: locale, localizedValues: localizedValues));
+        runApp(MainScreen(
+          locale: locale,
+          localizedValues: localizedValues,
+        ));
         return Future.value(null);
       }, onError: (error, stackTrace) {
         sentryError.reportError(error, stackTrace);
@@ -67,8 +69,8 @@ void main() {
   });
 }
 
-getToken() async {
-  Common.getToken().then((onValue) {
+void getToken() async {
+  await Common.getToken().then((onValue) {
     if (onValue != null) {
       checkToken(onValue);
     } else {}
@@ -77,11 +79,11 @@ getToken() async {
   });
 }
 
-checkToken(token) async {
-  LoginService.checkToken().then((onValue) {
+void checkToken(token) async {
+  LoginService.checkToken().then((onValue) async {
     try {
       if (onValue['response_data']['tokenVerify'] == false) {
-        Common.setToken(null);
+        await Common.setToken(null);
       } else {
         userInfoMethod();
       }
@@ -93,11 +95,10 @@ checkToken(token) async {
   });
 }
 
-userInfoMethod() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  await LoginService.getUserInfo().then((onValue) {
+void userInfoMethod() async {
+  await LoginService.getUserInfo().then((onValue) async {
     try {
-      prefs.setString('userID', onValue['response_data']['userInfo']['_id']);
+      await Common.setUserID(onValue['response_data']['userInfo']['_id']);
     } catch (error, stackTrace) {
       sentryError.reportError(error, stackTrace);
     }
@@ -106,10 +107,39 @@ userInfoMethod() async {
   });
 }
 
+Future<void> configLocalNotification() async {
+  var settings = {
+    OSiOSSettings.autoPrompt: true,
+    OSiOSSettings.promptBeforeOpeningPushUrl: true
+  };
+  OneSignal.shared
+      .setNotificationReceivedHandler((OSNotification notification) {});
+  OneSignal.shared
+      .setNotificationOpenedHandler((OSNotificationOpenedResult result) {});
+  await OneSignal.shared.init(Constants.ONE_SIGNAL_KEY, iOSSettings: settings);
+  OneSignal.shared
+      .promptUserForPushNotificationPermission(fallbackToSettings: true);
+  OneSignal.shared
+      .setInFocusDisplayType(OSNotificationDisplayType.notification);
+  var status = await OneSignal.shared.getPermissionSubscriptionState();
+  String playerId = status.subscriptionStatus.userId;
+  if (playerId == null) {
+    configLocalNotification();
+  } else {
+    await Common.setPlayerID(playerId);
+  }
+}
+
 class MainScreen extends StatelessWidget {
   final String locale;
   final Map localizedValues;
-  MainScreen({Key key, this.locale, this.localizedValues});
+
+  MainScreen({
+    Key key,
+    this.locale,
+    this.localizedValues,
+  });
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -136,15 +166,20 @@ class AnimatedScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: Colors.white,
+        color: primary,
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        child: Image.asset(
-          'lib/assets/splash.png',
-          fit: BoxFit.cover,
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-        ),
+        child: Constants.APP_NAME.contains('Readymade Grocery App')
+            ? Image.asset(
+                'lib/assets/splash.png',
+                fit: BoxFit.cover,
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+              )
+            : GFLoader(
+                type: GFLoaderType.ios,
+                size: 40,
+              ),
       ),
     );
   }

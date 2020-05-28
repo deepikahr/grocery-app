@@ -12,7 +12,6 @@ import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -61,8 +60,6 @@ class _LoginState extends State<Login> {
   }
 
   userLogin() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
     final form = _formKeyForLogin.currentState;
     if (form.validate()) {
       form.save();
@@ -71,89 +68,90 @@ class _LoginState extends State<Login> {
           isUserLoaginLoading = true;
         });
       }
-      Map<String, dynamic> body = {
-        "email": email.toLowerCase(),
-        "password": password,
-        "playerId": prefs.getString("playerId")
-      };
-      await LoginService.signIn(body).then((onValue) {
-        try {
-          if (mounted) {
-            setState(() {
-              isUserLoaginLoading = false;
-            });
-          }
-          if (onValue['response_code'] == 200) {
-            Common.setToken(onValue['response_data']['token']);
-
-            prefs.setString("userID", onValue['response_data']['_id']);
-            if (widget.isCart == true) {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => Home(
-                      locale: widget.locale,
-                      localizedValues: widget.localizedValues,
-                      currentIndex: 2,
-                    ),
-                  ),
-                  (Route<dynamic> route) => false);
-            } else if (widget.isProfile == true) {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => Home(
-                      locale: widget.locale,
-                      localizedValues: widget.localizedValues,
-                      currentIndex: 3,
-                    ),
-                  ),
-                  (Route<dynamic> route) => false);
-            } else if (widget.isSaveItem == true) {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => Home(
-                      locale: widget.locale,
-                      localizedValues: widget.localizedValues,
-                      currentIndex: 1,
-                    ),
-                  ),
-                  (Route<dynamic> route) => false);
-            } else if (widget.isProductDetails == true) {
-              Navigator.pop(context);
-            } else {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => Home(
-                      locale: widget.locale,
-                      localizedValues: widget.localizedValues,
-                      currentIndex: 0,
-                    ),
-                  ),
-                  (Route<dynamic> route) => false);
+      await Common.getPlayerID().then((playerID) async {
+        Map<String, dynamic> body = {
+          "email": email.toLowerCase(),
+          "password": password,
+          "playerId": playerID
+        };
+        await LoginService.signIn(body).then((onValue) async {
+          try {
+            if (mounted) {
+              setState(() {
+                isUserLoaginLoading = false;
+              });
             }
-          } else if (onValue['response_code'] == 401) {
-            showSnackbar(onValue['response_data']);
-          } else {
-            showSnackbar(onValue['response_data']);
+            if (onValue['response_code'] == 200) {
+              await Common.setToken(onValue['response_data']['token']);
+              await Common.setUserID(onValue['response_data']['_id']);
+              if (widget.isCart == true) {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Home(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                        currentIndex: 2,
+                      ),
+                    ),
+                    (Route<dynamic> route) => false);
+              } else if (widget.isProfile == true) {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Home(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                        currentIndex: 3,
+                      ),
+                    ),
+                    (Route<dynamic> route) => false);
+              } else if (widget.isSaveItem == true) {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Home(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                        currentIndex: 1,
+                      ),
+                    ),
+                    (Route<dynamic> route) => false);
+              } else if (widget.isProductDetails == true) {
+                Navigator.pop(context);
+              } else {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Home(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                        currentIndex: 0,
+                      ),
+                    ),
+                    (Route<dynamic> route) => false);
+              }
+            } else if (onValue['response_code'] == 401) {
+              showSnackbar(onValue['response_data']);
+            } else {
+              showSnackbar(onValue['response_data']);
+            }
+          } catch (error, stackTrace) {
+            if (mounted) {
+              setState(() {
+                isUserLoaginLoading = false;
+              });
+            }
+            sentryError.reportError(error, stackTrace);
           }
-        } catch (error, stackTrace) {
+        }).catchError((error) {
           if (mounted) {
             setState(() {
               isUserLoaginLoading = false;
             });
           }
-          sentryError.reportError(error, stackTrace);
-        }
-      }).catchError((error) {
-        if (mounted) {
-          setState(() {
-            isUserLoaginLoading = false;
-          });
-        }
-        sentryError.reportError(error, null);
+          sentryError.reportError(error, null);
+        });
       });
     } else {
       if (mounted) {

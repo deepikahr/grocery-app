@@ -261,8 +261,10 @@ class _AddressState extends State<Address> {
                   });
                 }
               } else {
-                showError('Enable To get location!',
-                    'There is problem using your device location. Please check your GPS settings');
+                showError(
+                    MyLocalizations.of(context).enableTogetlocation,
+                    MyLocalizations.of(context)
+                        .thereisproblemusingyourdevicelocationPleasecheckyourGPSsettings);
               }
             },
             text: MyLocalizations.of(context).addNewAddress,

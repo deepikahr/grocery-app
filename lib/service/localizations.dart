@@ -765,6 +765,19 @@ class MyLocalizations {
     return localizedValues[locale.languageCode]
         ['amountshouldbegreterthenorequalminamount'];
   }
+
+  String get enableTogetlocation {
+    return localizedValues[locale.languageCode]['enableTogetlocation'];
+  }
+
+  String get thereisproblemusingyourdevicelocationPleasecheckyourGPSsettings {
+    return localizedValues[locale.languageCode]
+        ['thereisproblemusingyourdevicelocationPleasecheckyourGPSsettings'];
+  }
+
+  String get free {
+    return localizedValues[locale.languageCode]['free'];
+  }
 }
 
 class MyLocalizationsDelegate extends LocalizationsDelegate<MyLocalizations> {

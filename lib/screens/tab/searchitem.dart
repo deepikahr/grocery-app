@@ -9,7 +9,6 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/subCategoryProductCart.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -36,13 +35,11 @@ class _SearchItemState extends State<SearchItem> {
   final TextEditingController _controller = new TextEditingController();
   bool isSearching = false,
       isFirstTime = true,
-      cardAdded = false,
       getTokenValue = false,
       isTokenGetLoading = false;
   List searchresult = new List();
-  int quanity = 1;
   String cartId, searchTerm;
-  var variantPrice, cartData;
+  var  cartData;
   String currency;
 
   @override
@@ -57,10 +54,9 @@ class _SearchItemState extends State<SearchItem> {
         isTokenGetLoading = true;
       });
     }
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    currency = prefs.getString('currency');
-
+    await Common.getCurrency().then((value) {
+    currency = value;
+    });
     await Common.getToken().then((onValue) {
       if (onValue != null) {
         if (mounted) {

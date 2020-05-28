@@ -5,13 +5,13 @@ import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:intl/intl.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -42,8 +42,9 @@ class _OrderDetailsState extends State<OrderDetails> {
         isLoading = true;
       });
     }
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    currency = prefs.getString('currency');
+    await Common.getCurrency().then((value) {
+      currency = value;
+    });
     await LoginService.getOrderHistory(widget.orderId).then((onValue) {
       try {
         if (onValue['response_code'] == 200) {
@@ -565,11 +566,16 @@ class _OrderDetailsState extends State<OrderDetails> {
                                     currency,
                                     style: textBarlowBoldBlack(),
                                   ),
-                                  Text(
-                                    orderHistory['deliveryCharges']
-                                        .toStringAsFixed(2),
-                                    style: textBarlowBoldBlack(),
-                                  )
+                                  orderHistory['deliveryCharges'] == 0
+                                      ? Text(
+                                          MyLocalizations.of(context).free,
+                                          style: textBarlowBoldBlack(),
+                                        )
+                                      : Text(
+                                          orderHistory['deliveryCharges']
+                                              .toStringAsFixed(2),
+                                          style: textBarlowBoldBlack(),
+                                        )
                                 ],
                               ),
                             ),

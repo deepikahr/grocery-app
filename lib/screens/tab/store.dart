@@ -16,7 +16,6 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:readymadeGroceryApp/widgets/categoryBlock.dart';
 import 'package:readymadeGroceryApp/widgets/productCard.dart';
 import 'package:readymadeGroceryApp/widgets/cardOverlay.dart';
@@ -75,25 +74,28 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   }
 
   getToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    currency = prefs.getString('currency');
-    locale = prefs.getString('selectedLanguage') ?? 'en';
-    await Common.getToken().then((onValue) {
-      if (onValue != null) {
-        if (mounted) {
-          setState(() {
-            getTokenValue = true;
-          });
+    await Common.getCurrency().then((value) {
+      currency = value;
+    });
+    await Common.getSelectedLanguage().then((value) async {
+      locale = value;
+      await Common.getToken().then((onValue) {
+        if (onValue != null) {
+          if (mounted) {
+            setState(() {
+              getTokenValue = true;
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              getTokenValue = false;
+            });
+          }
         }
-      } else {
-        if (mounted) {
-          setState(() {
-            getTokenValue = false;
-          });
-        }
-      }
-    }).catchError((error) {
-      sentryError.reportError(error, null);
+      }).catchError((error) {
+        sentryError.reportError(error, null);
+      });
     });
   }
 
@@ -103,7 +105,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
         isBannerLoading = true;
       });
     }
-    Common.getBanner().then((value) {
+    await Common.getBanner().then((value) {
       if (value == null || value['response_data'] == null) {
         if (mounted) {
           setState(() {
@@ -146,7 +148,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
         isLoadingAllData = true;
       });
     }
-    Common.getAllData().then((value) {
+    await Common.getAllData().then((value) {
       if (value == null || value['response_data'] == null) {
         if (mounted) {
           setState(() {

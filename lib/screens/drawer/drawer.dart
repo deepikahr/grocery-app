@@ -8,7 +8,6 @@ import 'package:readymadeGroceryApp/screens/product/all_products.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../main.dart';
 import '../../style/style.dart';
 
@@ -33,8 +32,9 @@ class _DrawerPageState extends State<DrawerPage> {
   }
 
   getToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    currency = prefs.getString('currency');
+    await Common.getCurrency().then((value) {
+      currency = value;
+    });
     await Common.getToken().then((onValue) {
       if (onValue != null) {
         if (mounted) {
@@ -150,10 +150,8 @@ class _DrawerPageState extends State<DrawerPage> {
   }
 
   logout() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    Common.setToken(null).then((value) {
-      prefs.setString("userID", null);
-      Common.setUserInfo(null);
+    await Common.setToken(null).then((value) async {
+      await Common.setUserID(null);
       if (value == true) {
         Navigator.pushAndRemoveUntil(
             context,

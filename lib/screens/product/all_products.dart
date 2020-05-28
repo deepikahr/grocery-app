@@ -13,7 +13,6 @@ import 'package:readymadeGroceryApp/widgets/cardOverlay.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/subCategoryProductCart.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -75,8 +74,9 @@ class _AllProductsState extends State<AllProducts> {
   }
 
   getTokenValueMethod() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    currency = prefs.getString('currency');
+    await Common.getCurrency().then((value) {
+    currency = value;
+    });
     await Common.getToken().then((onValue) {
       try {
         if (onValue != null) {
