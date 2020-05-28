@@ -565,11 +565,16 @@ class _OrderDetailsState extends State<OrderDetails> {
                                     currency,
                                     style: textBarlowBoldBlack(),
                                   ),
-                                  Text(
-                                    orderHistory['deliveryCharges']
-                                        .toStringAsFixed(2),
-                                    style: textBarlowBoldBlack(),
-                                  )
+                                  orderHistory['deliveryCharges'] == 0
+                                      ? Text(
+                                          MyLocalizations.of(context).free,
+                                          style: textBarlowBoldBlack(),
+                                        )
+                                      : Text(
+                                          orderHistory['deliveryCharges']
+                                              .toStringAsFixed(2),
+                                          style: textBarlowBoldBlack(),
+                                        )
                                 ],
                               ),
                             ),

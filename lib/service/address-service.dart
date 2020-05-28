@@ -32,7 +32,6 @@ class AddressService {
           'Content-Type': 'application/json',
           'Authorization': 'bearer $token'
         });
-    Common.setAddressList(json.decode(response.body));
     return json.decode(response.body);
   }
 

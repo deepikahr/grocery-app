@@ -453,5 +453,8 @@
   "outOfStock": "En rupture de stock",
   "and": "et",
   "moreitems": "Plus d'articles",
-  "amountshouldbegreterthenorequalminamount": "Le montant doit être supérieur ou égal au montant minimum"
+  "amountshouldbegreterthenorequalminamount": "Le montant doit être supérieur ou égal au montant minimum",
+  "enableTogetlocation": "Activer pour obtenir l'emplacement!",
+  "gPSsettings": "Un problème est survenu lors de l'utilisation de l'emplacement de votre appareil. Veuillez vérifier vos paramètres GPS",
+  "free": "GRATUIT"
 }

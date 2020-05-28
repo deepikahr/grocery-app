@@ -453,5 +453,8 @@
     "outOfStock": "Esaurito",
     "and": "e",
     "moreitems": "più articoli",
-    "amountshouldbegreterthenorequalminamount": "L'importo deve essere maggiore o uguale all'importo minimo"
+    "amountshouldbegreterthenorequalminamount": "L'importo deve essere maggiore o uguale all'importo minimo",
+    "enableTogetlocation": "Abilita per ottenere la posizione!",
+    "gPSsettings": "Si è verificato un problema durante l'utilizzo della posizione del dispositivo. Si prega di controllare le impostazioni GPS",
+    "free": "GRATUITO"
 }

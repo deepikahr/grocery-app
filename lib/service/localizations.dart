@@ -1,7 +1,6 @@
 import 'dart:async' show Future;
 import 'package:flutter/foundation.dart' show SynchronousFuture;
 import 'package:flutter/material.dart';
-import 'package:readymadeGroceryApp/service/constants.dart';
 
 class MyLocalizations {
   final Map localizedValues;
@@ -1874,6 +1873,19 @@ class MyLocalizations {
         ['amountshouldbegreterthenorequalminamount'];
   }
 
+  String get enableTogetlocation {
+    return localizedValues[locale.languageCode]['enableTogetlocation'];
+  }
+
+  String get thereisproblemusingyourdevicelocationPleasecheckyourGPSsettings {
+    return localizedValues[locale.languageCode]
+        ['thereisproblemusingyourdevicelocationPleasecheckyourGPSsettings'];
+  }
+
+  String get free {
+    return localizedValues[locale.languageCode]['free'];
+  }
+
   greetTo(name) {
     return localizedValues[locale.languageCode]['greetTo']
         .replaceAll('{{name}}', name);
@@ -1882,12 +1894,13 @@ class MyLocalizations {
 
 class MyLocalizationsDelegate extends LocalizationsDelegate<MyLocalizations> {
   Map localizedValues;
+  List languagesList;
 
-  MyLocalizationsDelegate(this.localizedValues);
+  MyLocalizationsDelegate(this.localizedValues, this.languagesList);
 
   @override
   bool isSupported(Locale locale) =>
-      Constants.LANGUAGES.contains(locale.languageCode);
+      languagesList.contains(locale.languageCode);
 
   @override
   Future<MyLocalizations> load(Locale locale) {

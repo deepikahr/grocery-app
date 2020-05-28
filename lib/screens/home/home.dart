@@ -9,7 +9,6 @@ import 'package:readymadeGroceryApp/screens/tab/saveditems.dart';
 import 'package:readymadeGroceryApp/screens/tab/searchitem.dart';
 import 'package:readymadeGroceryApp/screens/tab/store.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/fav-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
@@ -17,7 +16,6 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/settings/globalSettings.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:location/location.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 
@@ -40,19 +38,15 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> with TickerProviderStateMixin {
   TabController tabController;
-  bool isGetTokenLoading = true,
-      currencyLoading = false,
+  bool currencyLoading = false,
       isCurrentLoactionLoading = false,
-      isLocationLoading = false,
-      languagesSelection = false,
       getTokenValue = false;
   int currentIndex = 0;
-  var language;
   List searchProductList, favProductList;
   LocationData currentLocation;
   Location _location = new Location();
   String currency = "";
-  var addressData, cartData;
+  var addressData;
   void initState() {
     if (widget.currentIndex != null) {
       if (mounted) {
@@ -63,7 +57,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     }
     getResult();
     getGlobalSettingsData();
-    configLocalNotification();
     tabController = TabController(length: 4, vsync: this);
     super.initState();
   }
@@ -202,32 +195,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   void dispose() {
     tabController.dispose();
     super.dispose();
-  }
-
-  Future<void> configLocalNotification() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    var settings = {
-      OSiOSSettings.autoPrompt: true,
-      OSiOSSettings.promptBeforeOpeningPushUrl: true
-    };
-    OneSignal.shared
-        .setNotificationReceivedHandler((OSNotification notification) {});
-    OneSignal.shared
-        .setNotificationOpenedHandler((OSNotificationOpenedResult result) {});
-    await OneSignal.shared
-        .init(Constants.ONE_SIGNAL_KEY, iOSSettings: settings);
-    OneSignal.shared
-        .promptUserForPushNotificationPermission(fallbackToSettings: true);
-    OneSignal.shared
-        .setInFocusDisplayType(OSNotificationDisplayType.notification);
-    var status = await OneSignal.shared.getPermissionSubscriptionState();
-    String playerId = status.subscriptionStatus.userId;
-    if (playerId == null) {
-      configLocalNotification();
-    } else {
-      prefs.setString("playerId", playerId);
-    }
   }
 
   deliveryAddress() {

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -8,7 +9,6 @@ import 'package:readymadeGroceryApp/screens/drawer/address.dart';
 import 'package:readymadeGroceryApp/screens/orders/orders.dart';
 import 'package:readymadeGroceryApp/screens/tab/editprofile.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
-import 'package:readymadeGroceryApp/service/initialize_i18n.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
@@ -31,25 +31,11 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   Map<String, dynamic> userInfo;
-  bool isProfile = true, isGetTokenLoading = false;
-  List orderList = List();
-  String token, selectedLanguages, userID;
+  bool isGetTokenLoading = false, isLanguageSeclectLoading = false;
+  String token, userID;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  String newValue;
-  List<String> languages = [
-    'English',
-    'French',
-    'Chinese',
-    'Arabic',
-    'Japanese',
-    'Russian',
-    'Italian',
-    'Spanish',
-    'Portuguese'
-  ];
-  Map localizedValues;
-  var userData;
+  List languages, languagesCodes;
 
   @override
   void initState() {
@@ -68,37 +54,46 @@ class _ProfileState extends State<Profile> {
         isGetTokenLoading = true;
       });
     }
-    await Common.getToken().then((onValue) {
-      try {
-        if (onValue != null) {
-          if (mounted) {
-            setState(() {
-              token = onValue;
-              userInfoMethod();
-            });
+    print("kk");
+    SharedPreferences.getInstance().then((prefs) async {
+      print("kk");
+
+      languages = json.decode(prefs.getString('alllanguageNames'));
+      print(languages);
+      languagesCodes = json.decode(prefs.getString('alllanguageCodes'));
+      print(languagesCodes);
+      await Common.getToken().then((onValue) {
+        try {
+          if (onValue != null) {
+            if (mounted) {
+              setState(() {
+                token = onValue;
+                userInfoMethod();
+              });
+            }
+          } else {
+            if (mounted) {
+              setState(() {
+                isGetTokenLoading = false;
+              });
+            }
           }
-        } else {
+        } catch (error, stackTrace) {
           if (mounted) {
             setState(() {
               isGetTokenLoading = false;
             });
           }
+          sentryError.reportError(error, stackTrace);
         }
-      } catch (error, stackTrace) {
+      }).catchError((error) {
         if (mounted) {
           setState(() {
             isGetTokenLoading = false;
           });
         }
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          isGetTokenLoading = false;
-        });
-      }
-      sentryError.reportError(error, null);
+        sentryError.reportError(error, null);
+      });
     });
   }
 
@@ -165,27 +160,54 @@ class _ProfileState extends State<Profile> {
                       itemBuilder: (BuildContext context, int i) {
                         return GFButton(
                           onPressed: () async {
-                            await initializeI18n().then((value) async {
-                              localizedValues = value;
-                              if (mounted) {
-                                setState(() {
-                                  newValue = languages[i];
-                                });
-                              }
-                              if (newValue == 'English') {
-                                SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                prefs.setString('selectedLanguage', 'en');
+                            if (mounted) {
+                              setState(() {
+                                isLanguageSeclectLoading = true;
+                              });
+                            }
+                            SharedPreferences.getInstance().then((prefs) {
+                              prefs.setString(
+                                  'selectedLanguage', languagesCodes[i]);
+                              Map localizedValues;
+                              String defaultLocale = '';
+                              String locale =
+                                  prefs.getString('selectedLanguage') ??
+                                      defaultLocale;
+                              LoginService.getLanguageJson(locale)
+                                  .then((value) {
+                                print(value);
+                                localizedValues =
+                                    value['response_data']['json'];
+                                if (locale == '') {
+                                  defaultLocale = value['response_data']
+                                      ['defaultCode']['languageCode'];
+                                  locale = defaultLocale;
+                                }
+                                prefs.setString('selectedLanguage', locale);
+                                prefs.setString(
+                                    'alllanguageNames',
+                                    json.encode(
+                                        value['response_data']['langName']));
+                                prefs.setString(
+                                    'alllanguageCodes',
+                                    json.encode(
+                                        value['response_data']['langCode']));
+                                if (mounted) {
+                                  setState(() {
+                                    isLanguageSeclectLoading = false;
+                                  });
+                                }
                                 Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
                                       builder: (BuildContext context) =>
                                           MainScreen(
-                                              locale: widget.locale,
-                                              localizedValues: localizedValues),
+                                        locale: locale,
+                                        localizedValues: localizedValues,
+                                      ),
                                     ),
                                     (Route<dynamic> route) => false);
-                              }
+                              });
                             });
                           },
                           type: GFButtonType.transparent,
@@ -196,6 +218,11 @@ class _ProfileState extends State<Profile> {
                                 languages[i],
                                 style: hintSfboldBig(),
                               ),
+                              isLanguageSeclectLoading
+                                  ? GFLoader(
+                                      type: GFLoaderType.ios,
+                                    )
+                                  : Text("")
                             ],
                           ),
                         );

@@ -44,15 +44,11 @@ class _ProductDetailsState extends State<ProductDetails>
     with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  TabController tabController;
-  var dropdownValue, variants;
   Map<String, dynamic> productDetail;
   String variantUnit, variantId, favId, currency;
-  List<Variants> variantList;
   List favProductList;
   String currentCardId;
 
-  int value;
   int groupValue = 0;
   bool sizeSelect = false,
       getTokenValue = false,
@@ -85,9 +81,7 @@ class _ProductDetailsState extends State<ProductDetails>
   @override
   void initState() {
     getTokenValueMethod();
-
     _checkFavourite();
-
     super.initState();
   }
 

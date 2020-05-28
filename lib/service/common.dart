@@ -19,26 +19,6 @@ class Common {
     return prefs.setString('currentLocation', token);
   }
 
-  static Future<bool> setFavList(Map<String, dynamic> cartInfo) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setString('favList', json.encode(cartInfo));
-  }
-
-  static Future<bool> setAddressList(Map<String, dynamic> cartInfo) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setString('addressList', json.encode(cartInfo));
-  }
-
-  static Future<bool> setCardInfo(Map<String, dynamic> cartInfo) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setString('cardInfo', json.encode(cartInfo));
-  }
-
-  static Future<bool> setUserInfo(Map<String, dynamic> cartInfo) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setString('userInfo', json.encode(cartInfo));
-  }
-
   static Future<bool> setBanner(Map<String, dynamic> cartInfo) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.setString('bannerInfo', json.encode(cartInfo));
@@ -52,46 +32,6 @@ class Common {
   static Future<bool> setAllDataQuary(Map<String, dynamic> cartInfo) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.setString('allDataQuary', json.encode(cartInfo));
-  }
-
-  static Future<bool> setLanguage(Map<String, dynamic> cartInfo) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setString('language', json.encode(cartInfo));
-  }
-
-  static Future<bool> setLanguageList(List cartInfo) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setString('languageList', json.encode(cartInfo));
-  }
-
-  static Future<Map<String, dynamic>> getLanguage() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String cartStorage = prefs.getString('language');
-    try {
-      return json.decode(cartStorage) as Map<String, dynamic>;
-    } catch (err) {
-      return Future(() => null);
-    }
-  }
-
-  static Future<List> getLanguageList() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String cartStorage = prefs.getString('languageList');
-    try {
-      return json.decode(cartStorage) as List;
-    } catch (err) {
-      return Future(() => null);
-    }
-  }
-
-  static Future<Map<String, dynamic>> getAddressList() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String cartStorage = prefs.getString('addressList');
-    try {
-      return json.decode(cartStorage) as Map<String, dynamic>;
-    } catch (err) {
-      return Future(() => null);
-    }
   }
 
   static Future<Map<String, dynamic>> getBanner() async {
@@ -117,36 +57,6 @@ class Common {
   static Future<Map<String, dynamic>> getAllDataQuary() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String cartStorage = prefs.getString('allDataQuary');
-    try {
-      return json.decode(cartStorage) as Map<String, dynamic>;
-    } catch (err) {
-      return Future(() => null);
-    }
-  }
-
-  static Future<Map<String, dynamic>> getCardInfo() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String cartStorage = prefs.getString('cardInfo');
-    try {
-      return json.decode(cartStorage) as Map<String, dynamic>;
-    } catch (err) {
-      return Future(() => null);
-    }
-  }
-
-  static Future<Map<String, dynamic>> getUserInfo() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String cartStorage = prefs.getString('userInfo');
-    try {
-      return json.decode(cartStorage) as Map<String, dynamic>;
-    } catch (err) {
-      return Future(() => null);
-    }
-  }
-
-  static Future<Map<String, dynamic>> getFavList() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String cartStorage = prefs.getString('favList');
     try {
       return json.decode(cartStorage) as Map<String, dynamic>;
     } catch (err) {

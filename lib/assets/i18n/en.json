@@ -453,5 +453,8 @@
   "outOfStock": "Out Of Stock",
   "and": "and",
   "moreitems": "more items",
-  "amountshouldbegreterthenorequalminamount": "Amount should be greater than or equal min amount"
+  "amountshouldbegreterthenorequalminamount": "Amount should be greater than or equal min amount",
+  "enableTogetlocation": "Enable To get location!",
+  "thereisproblemusingyourdevicelocationPleasecheckyourGPSsettings": "There is problem using your device location. Please check your GPS settings",
+  "free": "FREE"
 }
