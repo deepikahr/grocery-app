@@ -14,7 +14,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 SentryError sentryError = new SentryError();
 
 class AllCategories extends StatefulWidget {
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   final String locale;
   final bool getTokenValue;
   AllCategories(

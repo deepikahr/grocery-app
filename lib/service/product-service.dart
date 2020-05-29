@@ -1,5 +1,4 @@
 import 'package:http/http.dart' show Client;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'constants.dart';
 import 'common.dart';
@@ -26,8 +25,10 @@ class ProductService {
   }
 
   static Future<Map<String, dynamic>> getProductListAllCartAdded(index) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String userId = "userId=" + prefs.getString("userID");
+    String userId;
+    await Common.getUserID().then((uid) {
+      userId = "userId=" + uid;
+    });
     String productIndex = "page=" + "$index";
     final response = await client.get(
         Constants.baseURL + "products/home/product?$userId&$productIndex",
@@ -74,8 +75,10 @@ class ProductService {
     await Common.getToken().then((onValue) {
       token = onValue;
     });
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String userId = "userId=" + prefs.getString("userID");
+    String userId;
+    await Common.getUserID().then((uid) {
+      userId = "userId=" + uid;
+    });
     final response = await client
         .get(Constants.baseURL + "products/by/category/$id?$userId", headers: {
       'Content-Type': 'application/json',
@@ -107,8 +110,10 @@ class ProductService {
     await Common.getToken().then((onValue) {
       token = onValue;
     });
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String userId = "userId=" + prefs.getString("userID");
+    String userId;
+    await Common.getUserID().then((uid) {
+      userId = "userId=" + uid;
+    });
     final response = await client.get(
         Constants.baseURL + "products/by/subcategory/$id?$userId",
         headers: {
@@ -152,7 +157,6 @@ class ProductService {
 
   static Future<Map<String, dynamic>> orderRating(body, orderId) async {
     String token;
-
     await Common.getToken().then((onValue) {
       token = onValue;
     });
@@ -191,8 +195,10 @@ class ProductService {
   }
 
   static Future<Map<String, dynamic>> productDetailsLogin(productId) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String userId = "userId=" + prefs.getString("userID");
+    String userId;
+    await Common.getUserID().then((uid) {
+      userId = "userId=" + uid;
+    });
     final response = await client
         .get(Constants.baseURL + "products/info/$productId?$userId", headers: {
       'Content-Type': 'application/json',
@@ -212,18 +218,19 @@ class ProductService {
   static Future<Map<String, dynamic>> getProdCatDealTopDeal() async {
     final response = await client.get(Constants.baseURL + "products/home/page",
         headers: {'Content-Type': 'application/json'});
-    Common.setAllData(json.decode(response.body));
+    await Common.setAllData(json.decode(response.body));
     return json.decode(response.body);
   }
 
   static Future<Map<String, dynamic>> getProdCatDealTopDealQuary() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    String userId = "userId=" + prefs.getString("userID");
+    String userId;
+    await Common.getUserID().then((uid) {
+      userId = "userId=" + uid;
+    });
     final response = await client.get(
         Constants.baseURL + "products/home/page?$userId",
         headers: {'Content-Type': 'application/json'});
-    Common.setAllDataQuary(json.decode(response.body));
+    await Common.setAllDataQuary(json.decode(response.body));
     return json.decode(response.body);
   }
 
@@ -237,8 +244,10 @@ class ProductService {
   }
 
   static Future<dynamic> getSearchListCartAdded(status) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String userId = "userId=" + prefs.getString("userID");
+    String userId;
+    await Common.getUserID().then((uid) {
+      userId = "userId=" + uid;
+    });
     final response = await client
         .get(Constants.baseURL + 'products/search/$status?$userId', headers: {
       'Content-Type': 'application/json',

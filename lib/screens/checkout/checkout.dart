@@ -7,6 +7,7 @@ import 'package:readymadeGroceryApp/screens/drawer/add-address.dart';
 import 'package:readymadeGroceryApp/screens/drawer/edit-address.dart';
 import 'package:readymadeGroceryApp/screens/payment/payment.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
+import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/coupon-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/payment-service.dart';
@@ -17,9 +18,7 @@ import 'package:readymadeGroceryApp/service/address-service.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dotted_border/dotted_border.dart';
-
 import '../../service/constants.dart';
 import 'package:flutter_map_picker/flutter_map_picker.dart';
 
@@ -28,7 +27,7 @@ SentryError sentryError = new SentryError();
 class Checkout extends StatefulWidget {
   final Map<String, dynamic> cartItem;
   final String buy, quantity, locale, id;
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
 
   Checkout(
       {Key key,
@@ -187,8 +186,9 @@ class _CheckoutState extends State<Checkout> {
         isLoading = true;
       });
     }
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    currency = prefs.getString('currency');
+    await Common.getCurrency().then((value) {
+      currency = value;
+    });
     await LoginService.getUserInfo().then((onValue) {
       _refreshController.refreshCompleted();
 
@@ -847,7 +847,7 @@ class _CheckoutState extends State<Checkout> {
                                               MainAxisAlignment.end,
                                           children: <Widget>[
                                             Text(
-                                              "FREE",
+                                              MyLocalizations.of(context).free,
                                               style: textbarlowBoldsmBlack(),
                                             )
                                           ],
@@ -1111,8 +1111,11 @@ class _CheckoutState extends State<Checkout> {
                                         });
                                       }
                                     } else {
-                                      showError('Enable To get location!',
-                                          'There is problem using your device location. Please check your GPS settings');
+                                      showError(
+                                          MyLocalizations.of(context)
+                                              .enableTogetlocation,
+                                          MyLocalizations.of(context)
+                                              .thereisproblemusingyourdevicelocationPleasecheckyourGPSsettings);
                                     }
                                   },
                                   type: GFButtonType.transparent,

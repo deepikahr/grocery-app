@@ -3,7 +3,7 @@ import 'package:readymadeGroceryApp/widgets/loader.dart';
 import '../../style/style.dart';
 
 class SpalshScreen extends StatefulWidget {
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   final String locale;
   SpalshScreen({Key key, this.locale, this.localizedValues}) : super(key: key);
 

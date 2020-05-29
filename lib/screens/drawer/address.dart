@@ -18,7 +18,7 @@ import 'package:flutter_map_picker/flutter_map_picker.dart';
 SentryError sentryError = new SentryError();
 
 class Address extends StatefulWidget {
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   final String locale;
   Address({Key key, this.locale, this.localizedValues});
 
@@ -261,8 +261,10 @@ class _AddressState extends State<Address> {
                   });
                 }
               } else {
-                showError('Enable To get location!',
-                    'There is problem using your device location. Please check your GPS settings');
+                showError(
+                    MyLocalizations.of(context).enableTogetlocation,
+                    MyLocalizations.of(context)
+                        .thereisproblemusingyourdevicelocationPleasecheckyourGPSsettings);
               }
             },
             text: MyLocalizations.of(context).addNewAddress,

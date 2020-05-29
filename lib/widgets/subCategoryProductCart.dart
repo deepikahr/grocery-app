@@ -33,7 +33,7 @@ class SubCategoryProductCard extends StatefulWidget {
   final Map productList;
   final List variantList;
   final String locale;
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   SubCategoryProductCard(
       {Key key,
       this.image,

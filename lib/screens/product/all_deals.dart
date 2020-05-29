@@ -14,7 +14,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 SentryError sentryError = new SentryError();
 
 class AllDealsList extends StatefulWidget {
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   final bool token;
   final List productsList, favProductList;
   final String dealType, title, locale, currency;

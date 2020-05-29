@@ -27,7 +27,7 @@ class EditAddress extends StatefulWidget {
   final bool isCheckout, isProfile;
   final Map<String, dynamic> updateAddressID;
   final LocationData currentLocation;
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   final String locale;
 
   @override

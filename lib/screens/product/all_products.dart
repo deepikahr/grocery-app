@@ -13,12 +13,11 @@ import 'package:readymadeGroceryApp/widgets/cardOverlay.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/subCategoryProductCart.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
 
 class AllProducts extends StatefulWidget {
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   final String locale, currency;
   final bool token;
   final List productsList, favProductList;
@@ -75,8 +74,9 @@ class _AllProductsState extends State<AllProducts> {
   }
 
   getTokenValueMethod() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    currency = prefs.getString('currency');
+    await Common.getCurrency().then((value) {
+    currency = value;
+    });
     await Common.getToken().then((onValue) {
       try {
         if (onValue != null) {
@@ -347,10 +347,13 @@ class _AllProductsState extends State<AllProducts> {
                                 child: Stack(
                                   children: <Widget>[
                                     SubCategoryProductCard(
-                                        image: productsList[i]['filePath'] ==null?
-                                            productsList[i]['imageUrl']:productsList[i]['filePath'],
-                                            isPath: productsList[i]['filePath']==null?false:true,
-                                            
+                                        image: productsList[i]['filePath'] == null
+                                            ? productsList[i]['imageUrl']
+                                            : productsList[i]['filePath'],
+                                        isPath:
+                                            productsList[i]['filePath'] == null
+                                                ? false
+                                                : true,
                                         title: productsList[i]['title'],
                                         currency: currency,
                                         category: productsList[i]['category'],
@@ -369,12 +372,10 @@ class _AllProductsState extends State<AllProducts> {
                                         rating: productsList[i]['averageRating']
                                             .toStringAsFixed(1),
                                         buttonName: "Add",
-                                        cartAdded: productsList[i]['cartAdded'] ??
-                                            false,
+                                        cartAdded:
+                                            productsList[i]['cartAdded'] ?? false,
                                         cartId: productsList[i]['cartId'],
-                                        productQuantity: productsList[i]
-                                                ['cartAddedQuantity'] ??
-                                            0,
+                                        productQuantity: productsList[i]['cartAddedQuantity'] ?? 0,
                                         token: widget.token,
                                         productList: productsList[i],
                                         variantList: productsList[i]['variant'],
@@ -411,9 +412,12 @@ class _AllProductsState extends State<AllProducts> {
                             : Stack(
                                 children: <Widget>[
                                   SubCategoryProductCard(
-                                      image: productsList[i]['filePath'] ==null?
-                                          productsList[i]['imageUrl']:productsList[i]['filePath'],
-                                          isPath: productsList[i]['filePath']==null?false:true,
+                                      image: productsList[i]['filePath'] == null
+                                          ? productsList[i]['imageUrl']
+                                          : productsList[i]['filePath'],
+                                      isPath: productsList[i]['filePath'] == null
+                                          ? false
+                                          : true,
                                       title: productsList[i]['title'],
                                       currency: currency,
                                       category: productsList[i]['category'],
@@ -464,7 +468,6 @@ class _AllProductsState extends State<AllProducts> {
                     builder: (BuildContext context) => Home(
                       locale: widget.locale,
                       localizedValues: widget.localizedValues,
-                      languagesSelection: false,
                       currentIndex: 2,
                     ),
                   ),

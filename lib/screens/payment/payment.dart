@@ -3,15 +3,14 @@ import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
+import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/service/payment-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stripe_payment/stripe_payment.dart';
 
 SentryError sentryError = new SentryError();
@@ -20,9 +19,8 @@ class Payment extends StatefulWidget {
   final int quantity, currentIndex;
   final String type, locale;
   final grandTotals, deliveryCharges;
-
   final Map<String, dynamic> data;
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
 
   Payment(
       {Key key,
@@ -43,23 +41,13 @@ class _PaymentState extends State<Payment> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  int selectedRadio,
-      cashOnDelivery = 0,
-      payByCard = 1,
-      groupValue,
-      cardValue = 0;
-  String paymentType, cvv, selectedPaymentType, cardID, currency;
+  int groupValue;
+  String currency;
   var grandTotal, deliveryCharges;
   bool isPlaceOrderLoading = false,
-      ispaymentMethodLoading = false,
-      isFirstTime = true,
       isCardDelete = false,
       isCardListLoading = false,
       isSelected = false;
-  var paymentMethodValue;
-  List cardList;
-  var cardDetails;
-  String paymentMethodId;
   List<Map<String, dynamic>> paymentTypes = [
     {
       'type': 'COD',
@@ -95,53 +83,14 @@ class _PaymentState extends State<Payment> {
         isCardListLoading = true;
       });
     }
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    currency = prefs.getString('currency');
-    await PaymentService.getCardList().then((onValue) {
-      try {
-        _refreshController.refreshCompleted();
-
-        if (mounted) {
-          setState(() {
-            cardList = onValue['response_data'];
-            isCardListLoading = false;
-          });
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            cardList = [];
-            isCardListLoading = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          cardList = [];
-          isCardListLoading = false;
-        });
-      }
-      sentryError.reportError(error, null);
+    await Common.getCurrency().then((value) {
+      currency = value;
     });
-  }
-
-  deleteCard(id) async {
     if (mounted) {
       setState(() {
-        isCardDelete = true;
+        isCardListLoading = false;
       });
     }
-    await PaymentService.deleteCard(id).then((onValue) {
-      if (mounted) {
-        setState(() {
-          fetchCardInfo();
-          isCardDelete = false;
-          Navigator.pop(context);
-        });
-      }
-    });
   }
 
   placeOrder() async {
@@ -291,11 +240,6 @@ class _PaymentState extends State<Payment> {
 
   @override
   Widget build(BuildContext context) {
-    if (isFirstTime) {
-      paymentMethodValue = 'COD';
-      isFirstTime = false;
-    }
-
     return Scaffold(
       key: _scaffoldKey,
       appBar: GFAppBar(

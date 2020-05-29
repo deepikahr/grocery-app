@@ -13,7 +13,6 @@ import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/fav-service.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -26,7 +25,7 @@ class Variants {
 class ProductDetails extends StatefulWidget {
   final int currentIndex;
   final List favProductList;
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   final String locale, productID;
   ProductDetails(
       {Key key,
@@ -44,15 +43,11 @@ class _ProductDetailsState extends State<ProductDetails>
     with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  TabController tabController;
-  var dropdownValue, variants;
   Map<String, dynamic> productDetail;
   String variantUnit, variantId, favId, currency;
-  List<Variants> variantList;
   List favProductList;
   String currentCardId;
 
-  int value;
   int groupValue = 0;
   bool sizeSelect = false,
       getTokenValue = false,
@@ -85,9 +80,7 @@ class _ProductDetailsState extends State<ProductDetails>
   @override
   void initState() {
     getTokenValueMethod();
-
     _checkFavourite();
-
     super.initState();
   }
 
@@ -97,8 +90,9 @@ class _ProductDetailsState extends State<ProductDetails>
         isProductDetails = true;
       });
     }
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    currency = prefs.getString('currency');
+    await Common.getCurrency().then((value) {
+      currency = value;
+    });
     await Common.getToken().then((onValue) {
       try {
         if (onValue != null) {

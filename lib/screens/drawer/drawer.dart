@@ -8,7 +8,6 @@ import 'package:readymadeGroceryApp/screens/product/all_products.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../main.dart';
 import '../../style/style.dart';
 
@@ -16,7 +15,7 @@ class DrawerPage extends StatefulWidget {
   DrawerPage({Key key, this.locale, this.localizedValues, this.addressData})
       : super(key: key);
 
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   final String locale, addressData;
   @override
   _DrawerPageState createState() => _DrawerPageState();
@@ -33,8 +32,9 @@ class _DrawerPageState extends State<DrawerPage> {
   }
 
   getToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    currency = prefs.getString('currency');
+    await Common.getCurrency().then((value) {
+      currency = value;
+    });
     await Common.getToken().then((onValue) {
       if (onValue != null) {
         if (mounted) {
@@ -81,7 +81,6 @@ class _DrawerPageState extends State<DrawerPage> {
                       route: Home(
                         locale: widget.locale,
                         localizedValues: widget.localizedValues,
-                        languagesSelection: false,
                         currentIndex: 0,
                       )),
                 ),
@@ -98,7 +97,6 @@ class _DrawerPageState extends State<DrawerPage> {
                         route: Home(
                           locale: widget.locale,
                           localizedValues: widget.localizedValues,
-                          languagesSelection: false,
                           currentIndex: 3,
                         ))
                     : Container(),
@@ -116,7 +114,6 @@ class _DrawerPageState extends State<DrawerPage> {
                         route: Home(
                           locale: widget.locale,
                           localizedValues: widget.localizedValues,
-                          languagesSelection: false,
                           currentIndex: 1,
                         ))
                     : Container(),
@@ -153,16 +150,15 @@ class _DrawerPageState extends State<DrawerPage> {
   }
 
   logout() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    Common.setToken(null).then((value) {
-      prefs.setString("userID", null);
-      Common.setUserInfo(null);
+    await Common.setToken(null).then((value) async {
+      await Common.setUserID(null);
       if (value == true) {
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-              builder: (BuildContext context) =>
-                  MyApp(widget.locale, widget.localizedValues, true),
+              builder: (BuildContext context) => MainScreen(
+                  locale: widget.locale,
+                  localizedValues: widget.localizedValues),
             ),
             (Route<dynamic> route) => false);
       }

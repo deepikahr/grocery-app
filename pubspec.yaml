@@ -79,73 +79,60 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - lib/assets/icons/Group.png
-    - lib/assets/icons/cross.png
-    - lib/assets/images/apple.png
-    - lib/assets/images/orange.png
-    - lib/assets/icons/rupee.png
-    - lib/assets/images/grape.png
-    - lib/assets/images/strawberry.png
-    - lib/assets/images/avocado.png
-    - lib/assets/images/cherry.png
-    - lib/assets/images/amul.png
+    # - lib/assets/icons/Group.png
+    # - lib/assets/icons/cross.png
+    # - lib/assets/images/apple.png
+    # - lib/assets/images/orange.png
+    # - lib/assets/icons/rupee.png
+    # - lib/assets/images/grape.png
+    # - lib/assets/images/strawberry.png
+    # - lib/assets/images/avocado.png
+    # - lib/assets/images/cherry.png
+    # - lib/assets/images/amul.png
     - lib/assets/images/profile.png
-    - lib/assets/icons/edit.svg
-    - lib/assets/images/creditcard.png
-    - lib/assets/images/white.png
+    # - lib/assets/icons/edit.svg
+    # - lib/assets/images/creditcard.png
+    # - lib/assets/images/white.png
     - lib/assets/images/product.png
-    - lib/assets/icons/logo.png
-    - lib/assets/images/mastercard.png
-    - lib/assets/icons/mastercard-logo.png
-    - lib/assets/images/visa.png
+    # - lib/assets/icons/logo.png
+    # - lib/assets/images/mastercard.png
+    # - lib/assets/icons/mastercard-logo.png
+    # - lib/assets/images/visa.png
     - lib/assets/images/thank-you.png
-    - lib/assets/images/spinner.gif
+    # - lib/assets/images/spinner.gif
     - lib/assets/images/badge.png
-
     - lib/assets/images/no-orders.png
-    - lib/assets/icons/addbtn.png
-    - lib/assets/icons/minus.png
-
+    # - lib/assets/icons/addbtn.png
+    # - lib/assets/icons/minus.png
     - lib/assets/icons/sale.png
-    - lib/assets/icons/edit.png
-    - lib/assets/icons/logout.png
-    - lib/assets/icons/menu.png
-    - lib/assets/icons/delete.png
-    - lib/assets/icons/add.png
+    # - lib/assets/icons/edit.png
+    # - lib/assets/icons/logout.png
+    # - lib/assets/icons/menu.png
+    # - lib/assets/icons/delete.png
+    # - lib/assets/icons/add.png
     - lib/assets/icons/minus.svg
     - lib/assets/icons/plus.svg
-    - lib/assets/icons/confirm.png
+    # - lib/assets/icons/confirm.png
     - lib/assets/icons/tick.svg
     - lib/assets/icons/editt.svg
-    - lib/assets/icons/lgout.svg
-    - lib/assets/images/banner.png
-    - lib/assets/icons/filter.png
+    # - lib/assets/icons/lgout.svg
+    # - lib/assets/images/banner.png
+    # - lib/assets/icons/filter.png
     - lib/assets/icons/Home.png
     - lib/assets/icons/products.png
-    - lib/assets/icons/orders.png
+    # - lib/assets/icons/orders.png
     - lib/assets/icons/location.png
     - lib/assets/icons/fav.png
     - lib/assets/icons/chat.png
-    - lib/assets/icons/help.png
+    # - lib/assets/icons/help.png
     - lib/assets/icons/about.png
     - lib/assets/icons/lg.png
-    - lib/assets/icons/app.png
-    - lib/assets/icons/mobile.png
-    - lib/assets/icons/mail.png
-    - lib/assets/images/languages.png
+    # - lib/assets/icons/app.png
+    # - lib/assets/icons/mobile.png
+    # - lib/assets/icons/mail.png
+    # - lib/assets/images/languages.png
     - lib/assets/images/profileIcon.png
-    - lib/assets/icons/plus.png
+    # - lib/assets/icons/plus.png
     - lib/assets/icons/add1.svg
     - lib/assets/icons/delete.svg
-
     - lib/assets/splash.png
-
-    - lib/assets/i18n/en.json
-    - lib/assets/i18n/fr.json
-    - lib/assets/i18n/ar.json
-    - lib/assets/i18n/es.json
-    - lib/assets/i18n/it.json
-    - lib/assets/i18n/ja.json
-    - lib/assets/i18n/pt.json
-    - lib/assets/i18n/ru.json
-    - lib/assets/i18n/zh.json

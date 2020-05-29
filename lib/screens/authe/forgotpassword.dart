@@ -17,7 +17,7 @@ class ForgotPassword extends StatefulWidget {
   ForgotPassword({Key key, this.title, this.locale, this.localizedValues})
       : super(key: key);
   final String title, locale;
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
 
   @override
   _ForgotPasswordState createState() => _ForgotPasswordState();
