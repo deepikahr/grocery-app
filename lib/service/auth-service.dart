@@ -14,10 +14,9 @@ class LoginService {
     final response = await client.post(Constants.baseURL + "users/register",
         body: json.encode(body),
         headers: {
-            'Content-Type': 'application/json',
-            'language': languageCode,
-          }
-        );
+          'Content-Type': 'application/json',
+          'language': languageCode,
+        });
     return json.decode(response.body);
   }
 
@@ -32,8 +31,7 @@ class LoginService {
         headers: {
           'Content-Type': 'application/json',
           'language': languageCode,
-        }
-    );
+        });
 
     return json.decode(response.body);
   }
@@ -49,8 +47,7 @@ class LoginService {
         headers: {
           'Content-Type': 'application/json',
           'language': languageCode,
-        }
-    );
+        });
     return json.decode(response.body);
   }
 
@@ -171,8 +168,12 @@ class LoginService {
     await Common.getSelectedLanguage().then((code) {
       languageCode = code;
     });
-    final response = await client.get(Constants.baseURL + "users/verify/token",
-        headers: {'Content-Type': 'application/json', 'Authorization': token, 'language': languageCode,});
+    final response =
+        await client.get(Constants.baseURL + "users/verify/token", headers: {
+      'Content-Type': 'application/json',
+      'Authorization': token,
+      'language': languageCode,
+    });
     return json.decode(response.body);
   }
 
@@ -181,8 +182,10 @@ class LoginService {
     await Common.getSelectedLanguage().then((code) {
       languageCode = code;
     });
-    final response = await client.get(Constants.baseURL + "banner",
-        headers: {'Content-Type': 'application/json', 'language': languageCode,});
+    final response = await client.get(Constants.baseURL + "banner", headers: {
+      'Content-Type': 'application/json',
+      'language': languageCode,
+    });
     await Common.setBanner(json.decode(response.body));
     return json.decode(response.body);
   }
@@ -196,8 +199,8 @@ class LoginService {
     await Common.getSelectedLanguage().then((code) {
       languageCode = code;
     });
-    final response = await client
-        .get(Constants.baseURL + "orders/info/$orderId", headers: {
+    final response =
+        await client.get(Constants.baseURL + "orders/info/$orderId", headers: {
       'Content-Type': 'application/json',
       'Authorization': 'bearer $token',
       'language': languageCode,
@@ -236,16 +239,11 @@ class LoginService {
   }
 
   static Future<Map<String, dynamic>> getLanguageJson(languageCode) async {
-    String languageCode;
-    await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
-    });
     final response = await client.get(
         Constants.baseURL +
             "language/user/info?req_from=mobAppJson&language_code=$languageCode",
         headers: {
           'Content-Type': 'application/json',
-          'language': languageCode,
         });
     return json.decode(response.body);
   }
@@ -255,8 +253,11 @@ class LoginService {
     await Common.getSelectedLanguage().then((code) {
       languageCode = code;
     });
-    final response = await client.get(Constants.baseURL + 'setting/user/App',
-        headers: {'Content-Type': 'application/json', 'language': languageCode,});
+    final response =
+        await client.get(Constants.baseURL + 'setting/user/App', headers: {
+      'Content-Type': 'application/json',
+      'language': languageCode,
+    });
     await Common.setSavedSettingsData(response.body);
     return json.decode(response.body);
   }

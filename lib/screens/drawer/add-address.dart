@@ -134,7 +134,7 @@ class _AddAddressState extends State<AddAddress> {
           color: Colors.black,
         ),
         title: Text(
-          MyLocalizations.of(context).addAddress,
+          MyLocalizations.of(context).addNewAddress,
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -156,7 +156,7 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).location + ' :',
+                        MyLocalizations.of(context).location,
                         style: textbarlowRegularBlack(),
                       ),
                     ],
@@ -176,7 +176,7 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).houseFlatBlocknumber + ' :',
+                        MyLocalizations.of(context).houseFlatBlocknumber + " :",
                         style: textbarlowRegularBlack(),
                       ),
                     ],
@@ -233,7 +233,7 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).apartmentName + ' :',
+                        MyLocalizations.of(context).apartmentName + " :",
                         style: textbarlowRegularBlack(),
                       ),
                     ],
@@ -291,7 +291,7 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).landMark + ' :',
+                        MyLocalizations.of(context).landMark + " :",
                         style: textbarlowRegularBlack(),
                       ),
                     ],
@@ -349,7 +349,7 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).postalCode + ' :',
+                        MyLocalizations.of(context).postalCode + " :",
                         style: textbarlowRegularBlack(),
                       ),
                     ],
@@ -408,7 +408,7 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).contactNumber + ' :',
+                        MyLocalizations.of(context).contactNumber + " :",
                         style: textbarlowRegularBlack(),
                       ),
                     ],
@@ -459,9 +459,7 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context)
-                                .addressTypeHomeWorkOthersetc +
-                            ' :',
+                        MyLocalizations.of(context).addressType + " :",
                         style: textbarlowRegularBlack(),
                       ),
                     ],

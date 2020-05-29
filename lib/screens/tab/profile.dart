@@ -80,6 +80,7 @@ class _ProfileState extends State<Profile> {
             isGetTokenLoading = false;
           });
         }
+
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {

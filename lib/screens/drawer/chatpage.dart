@@ -319,8 +319,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                                       onSubmitted: _submitMsg,
                                       decoration: new InputDecoration.collapsed(
                                           hintText: MyLocalizations.of(context)
-                                                  .enterTextHere +
-                                              "..."),
+                                              .enterTextHere),
                                     ),
                                   ),
                                   new Container(

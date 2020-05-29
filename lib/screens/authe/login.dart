@@ -83,7 +83,7 @@ class _LoginState extends State<Login> {
               });
             }
             if (onValue['response_code'] == 200) {
-              if(onValue['response_data']['role'] == 'User'){
+              if (onValue['response_data']['role'] == 'User') {
                 await Common.setToken(onValue['response_data']['token']);
                 await Common.setUserID(onValue['response_data']['_id']);
                 if (widget.isCart == true) {
@@ -96,7 +96,7 @@ class _LoginState extends State<Login> {
                           currentIndex: 2,
                         ),
                       ),
-                          (Route<dynamic> route) => false);
+                      (Route<dynamic> route) => false);
                 } else if (widget.isProfile == true) {
                   Navigator.pushAndRemoveUntil(
                       context,
@@ -107,7 +107,7 @@ class _LoginState extends State<Login> {
                           currentIndex: 3,
                         ),
                       ),
-                          (Route<dynamic> route) => false);
+                      (Route<dynamic> route) => false);
                 } else if (widget.isSaveItem == true) {
                   Navigator.pushAndRemoveUntil(
                       context,
@@ -118,7 +118,7 @@ class _LoginState extends State<Login> {
                           currentIndex: 1,
                         ),
                       ),
-                          (Route<dynamic> route) => false);
+                      (Route<dynamic> route) => false);
                 } else if (widget.isProductDetails == true) {
                   Navigator.pop(context);
                 } else {
@@ -131,9 +131,9 @@ class _LoginState extends State<Login> {
                           currentIndex: 0,
                         ),
                       ),
-                          (Route<dynamic> route) => false);
+                      (Route<dynamic> route) => false);
                 }
-              }else {
+              } else {
                 showSnackbar(MyLocalizations.of(context).invalidUser);
               }
             } else if (onValue['response_code'] == 401) {
@@ -423,7 +423,7 @@ class _LoginState extends State<Login> {
           text: TextSpan(
             children: <TextSpan>[
               TextSpan(
-                  text: MyLocalizations.of(context).forgotPassword + "?",
+                  text: MyLocalizations.of(context).forgotPasswordWithQuasMarks,
                   style: textbarlowRegularBlackd()),
               TextSpan(
                 text: '',
@@ -462,7 +462,7 @@ class _LoginState extends State<Login> {
           text: TextSpan(
             children: <TextSpan>[
               TextSpan(
-                text: MyLocalizations.of(context).register + "?",
+                text: MyLocalizations.of(context).registerWithQuasMarks,
                 style: textbarlowRegularaPrimary(),
               ),
               TextSpan(
