@@ -301,7 +301,7 @@ class _CheckoutState extends State<Checkout> {
         if (mounted) {
           setState(() {
             addressList = addressList;
-            showSnackbar("Address deleted successfully");
+            showSnackbar(onValue['response_data']);
           });
         }
       } catch (error, stackTrace) {

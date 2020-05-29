@@ -15,6 +15,14 @@ class MyLocalizations {
     return localizedValues[locale.languageCode]['welcome'];
   }
 
+  String get addressDeletedSuccessfully {
+    return localizedValues[locale.languageCode]['addressDeletedSuccessfully'];
+  }
+
+  String get invalidUser {
+    return localizedValues[locale.languageCode]['invalidUser'];
+  }
+
   String get signIn {
     return localizedValues[locale.languageCode]['signIn'];
   }
