@@ -75,6 +75,7 @@ class _LoginState extends State<Login> {
           "playerId": playerID
         };
         await LoginService.signIn(body).then((onValue) async {
+          print('log $onValue');
           try {
             if (mounted) {
               setState(() {
@@ -82,54 +83,58 @@ class _LoginState extends State<Login> {
               });
             }
             if (onValue['response_code'] == 200) {
-              await Common.setToken(onValue['response_data']['token']);
-              await Common.setUserID(onValue['response_data']['_id']);
-              if (widget.isCart == true) {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => Home(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
-                        currentIndex: 2,
+              if(onValue['response_data']['role'] == 'User'){
+                await Common.setToken(onValue['response_data']['token']);
+                await Common.setUserID(onValue['response_data']['_id']);
+                if (widget.isCart == true) {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => Home(
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                          currentIndex: 2,
+                        ),
                       ),
-                    ),
-                    (Route<dynamic> route) => false);
-              } else if (widget.isProfile == true) {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => Home(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
-                        currentIndex: 3,
+                          (Route<dynamic> route) => false);
+                } else if (widget.isProfile == true) {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => Home(
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                          currentIndex: 3,
+                        ),
                       ),
-                    ),
-                    (Route<dynamic> route) => false);
-              } else if (widget.isSaveItem == true) {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => Home(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
-                        currentIndex: 1,
+                          (Route<dynamic> route) => false);
+                } else if (widget.isSaveItem == true) {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => Home(
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                          currentIndex: 1,
+                        ),
                       ),
-                    ),
-                    (Route<dynamic> route) => false);
-              } else if (widget.isProductDetails == true) {
-                Navigator.pop(context);
-              } else {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => Home(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
-                        currentIndex: 0,
+                          (Route<dynamic> route) => false);
+                } else if (widget.isProductDetails == true) {
+                  Navigator.pop(context);
+                } else {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => Home(
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                          currentIndex: 0,
+                        ),
                       ),
-                    ),
-                    (Route<dynamic> route) => false);
+                          (Route<dynamic> route) => false);
+                }
+              }else {
+                showSnackbar(MyLocalizations.of(context).invalidUser);
               }
             } else if (onValue['response_code'] == 401) {
               showSnackbar(onValue['response_data']);
