@@ -241,8 +241,7 @@ class _SearchItemState extends State<SearchItem> {
                               new Icon(Icons.arrow_back, color: Colors.black),
                         ),
                         hintText:
-                            MyLocalizations.of(context).whatareyoubuyingtoday +
-                                "?",
+                            MyLocalizations.of(context).whatareyoubuyingtoday ,
                         fillColor: Color(0xFFF0F0F0),
                         filled: true,
                         focusColor: Colors.black,
@@ -311,7 +310,7 @@ class _SearchItemState extends State<SearchItem> {
                                         searchresult.length.toString() +
                                             " " +
                                             MyLocalizations.of(context)
-                                                .iteamsFounds,
+                                                .itemsFounds,
                                         style: textBarlowMediumBlack()),
                                   ],
                                 ),

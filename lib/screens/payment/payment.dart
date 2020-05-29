@@ -106,7 +106,7 @@ class _PaymentState extends State<Payment> {
           isPlaceOrderLoading = false;
         });
       }
-      showSnackbar(MyLocalizations.of(context).selectPaymentMethod);
+      showSnackbar(MyLocalizations.of(context).selectPaymentOption);
     } else {
       widget.data['paymentType'] = paymentTypes[groupValue]['type'];
 
@@ -207,7 +207,7 @@ class _PaymentState extends State<Payment> {
               },
             ),
             FlatButton(
-              child: Text(MyLocalizations.of(context).removeItem),
+              child: Text(MyLocalizations.of(context).remove),
               onPressed: () {
                 Map body = {
                   "cartId": cartId,

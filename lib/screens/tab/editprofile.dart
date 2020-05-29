@@ -157,8 +157,6 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   selectGallary() async {
-    Navigator.pop(context);
-
     image = await ImagePicker.pickImage(source: ImageSource.gallery);
     if (mounted) {
       setState(() {
@@ -169,7 +167,6 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   selectCamera() async {
-    Navigator.pop(context);
     image = await ImagePicker.pickImage(source: ImageSource.camera);
     if (mounted) {
       setState(() {
@@ -180,6 +177,8 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   imageUpload(_imageFile) async {
+    Navigator.pop(context);
+
     var stream =
         new http.ByteStream(DelegatingStream.typed(_imageFile.openRead()));
 

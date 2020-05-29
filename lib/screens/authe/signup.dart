@@ -559,7 +559,7 @@ class _SignupState extends State<Signup> {
             text: TextSpan(
               children: <TextSpan>[
                 TextSpan(
-                    text: MyLocalizations.of(context).havegotanaccount + " ?",
+                    text: MyLocalizations.of(context).havegotanaccount,
                     style: textbarlowRegularBlack()),
                 TextSpan(
                   text: MyLocalizations.of(context).login + '!',

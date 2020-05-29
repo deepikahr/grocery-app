@@ -69,7 +69,7 @@ class _SubCategoriesState extends State<SubCategories> {
 
   getProductToCategory(id) async {
     await Common.getCurrency().then((value) {
-       currency = value;
+      currency = value;
     });
     await ProductService.getProductToCategoryList(id).then((onValue) {
       try {
@@ -101,9 +101,9 @@ class _SubCategoriesState extends State<SubCategories> {
     });
   }
 
-  getProductToCategoryCartAdded(id) async {   
+  getProductToCategoryCartAdded(id) async {
     await Common.getCurrency().then((value) {
-       currency = value;
+      currency = value;
     });
     await ProductService.getProductToCategoryListCartAdded(id).then((onValue) {
       try {

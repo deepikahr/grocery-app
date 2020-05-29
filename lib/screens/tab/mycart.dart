@@ -1027,7 +1027,7 @@ class _MyCartState extends State<MyCart> {
                                                   : Text(
                                                       MyLocalizations.of(
                                                               context)
-                                                          .checkOut,
+                                                          .checkout,
                                                       style:
                                                           textBarlowRegularBlack(),
                                                     ),

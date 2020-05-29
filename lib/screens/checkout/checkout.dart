@@ -400,7 +400,6 @@ class _CheckoutState extends State<Checkout> {
       return;
     } else {
       _formKey.currentState.save();
-
       updateCoupons(couponCode, cartId);
     }
   }
@@ -431,9 +430,19 @@ class _CheckoutState extends State<Checkout> {
           });
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isCouponLoading = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isCouponLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -464,9 +473,19 @@ class _CheckoutState extends State<Checkout> {
           });
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isCouponLoading = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isCouponLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -1266,9 +1285,8 @@ class _CheckoutState extends State<Checkout> {
                                                                   .length ==
                                                               0
                                                           ? Text(MyLocalizations
-                                                                      .of(context)
-                                                                  .sorryNoSlotsAvailableToday +
-                                                              ' !!!')
+                                                                  .of(context)
+                                                              .sorryNoSlotsAvailableToday)
                                                           : Text(
                                                               '${deliverySlotList[_selectedIndex]['timeSchedule'][i]['slot']}',
                                                               style:
