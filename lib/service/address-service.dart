@@ -13,15 +13,14 @@ class AddressService {
       token = onValue;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
-    final response = await client.post(Constants.baseURL + "address",
-        body: json.encode(body),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'bearer $token',
-          'language': languageCode,
-        });
+    final response = await client
+        .post(Constants.baseURL + "address", body: json.encode(body), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'bearer $token',
+      'language': languageCode,
+    });
     return json.decode(response.body);
   }
 
@@ -32,14 +31,14 @@ class AddressService {
       token = onValue;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
-    final response = await client.get(Constants.baseURL + "address/user/all",
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'bearer $token',
-          'language': languageCode,
-        });
+    final response =
+        await client.get(Constants.baseURL + "address/user/all", headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'bearer $token',
+      'language': languageCode,
+    });
     return json.decode(response.body);
   }
 
@@ -50,7 +49,7 @@ class AddressService {
       token = onValue;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client.get(
         Constants.baseURL + "setting/working/time/user/$time/$timeStamp",
@@ -69,7 +68,7 @@ class AddressService {
       token = onValue;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client.put(
         Constants.baseURL + "address/update/$addressId",
@@ -89,7 +88,7 @@ class AddressService {
       token = onValue;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client
         .delete(Constants.baseURL + "address/delete/$addressId", headers: {

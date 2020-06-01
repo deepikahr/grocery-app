@@ -13,7 +13,7 @@ class FavouriteService {
       token = onValue;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client.post(Constants.baseURL + "favourites",
         body: json.encode(body),
@@ -32,14 +32,14 @@ class FavouriteService {
       token = onValue;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
-    final response = await client.get(Constants.baseURL + "favourites/user",
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'bearer $token',
-          'language': languageCode,
-        });
+    final response =
+        await client.get(Constants.baseURL + "favourites/user", headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'bearer $token',
+      'language': languageCode,
+    });
     return json.decode(response.body);
   }
 
@@ -50,14 +50,14 @@ class FavouriteService {
       token = onValue;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
-    final response = await client.delete(Constants.baseURL + "favourites/$id",
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'bearer $token',
-          'language': languageCode,
-        });
+    final response =
+        await client.delete(Constants.baseURL + "favourites/$id", headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'bearer $token',
+      'language': languageCode,
+    });
     return json.decode(response.body);
   }
 
@@ -67,14 +67,14 @@ class FavouriteService {
       token = onValue;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
-    final response = await client.get(Constants.baseURL + "favourites/$id",
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'bearer $token',
-          'language': languageCode,
-        });
+    final response =
+        await client.get(Constants.baseURL + "favourites/$id", headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'bearer $token',
+      'language': languageCode,
+    });
     return json.decode(response.body);
   }
 }

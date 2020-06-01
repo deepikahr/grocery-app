@@ -244,14 +244,13 @@ class _MyCartState extends State<MyCart> {
     await CartService.getProductToCart().then((onValue) {
       try {
         _refreshController.refreshCompleted();
-        if (onValue['response_data'] == 'You have not added items to cart') {
-          if (mounted) {
-            setState(() {
-              cartItem = null;
-              isLoadingCart = false;
-            });
-          }
-        } else {
+        if (mounted) {
+          setState(() {
+            isLoadingCart = false;
+          });
+        }
+        if (onValue['response_code'] == 200 &&
+            onValue['response_data'] is Map) {
           if (mounted) {
             setState(() {
               cartItem = onValue['response_data'];
@@ -266,8 +265,13 @@ class _MyCartState extends State<MyCart> {
                 if (cartItem['couponInfo'] != null) {
                   bottomBarHeight = bottomBarHeight + 20;
                 }
-                isLoadingCart = false;
               }
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              cartItem = null;
             });
           }
         }
@@ -355,18 +359,20 @@ class _MyCartState extends State<MyCart> {
       'productId': cartItem['cart'][i]['productId'],
     };
     await CartService.deleteDataFromCart(body).then((onValue) {
+      print(onValue);
       try {
-        if (onValue['response_data'] == 'You have not added items to cart') {
+        if (onValue['response_code'] == 200 &&
+            onValue['response_data'] is Map) {
           if (mounted) {
             setState(() {
-              cartItem = null;
+              cartItem = onValue['response_data'];
             });
           }
           getCartItems();
         } else {
           if (mounted) {
             setState(() {
-              cartItem = onValue['response_data'];
+              cartItem = null;
             });
           }
         }
@@ -392,34 +398,17 @@ class _MyCartState extends State<MyCart> {
   deleteAllCart(cartId) async {
     await CartService.deleteAllDataFromCart(cartId).then((onValue) {
       try {
-        if (onValue['response_data'] == 'Cart deleted successfully') {
+        if (onValue['response_code'] == 200) {
           if (mounted) {
             setState(() {
               cartItem = null;
             });
           }
-          getCartItems();
-        } else {
-          if (mounted) {
-            setState(() {
-              cartItem = onValue['response_data'];
-            });
-          }
         }
       } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            cartItem = null;
-          });
-        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          cartItem = null;
-        });
-      }
       sentryError.reportError(error, null);
     });
   }

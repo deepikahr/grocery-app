@@ -97,6 +97,7 @@ class _SignupState extends State<Signup> {
                         style: textbarlowRegularaPrimary(),
                       ),
                       onPressed: () {
+                        Navigator.pop(context);
                         Navigator.push(
                           context,
                           MaterialPageRoute(

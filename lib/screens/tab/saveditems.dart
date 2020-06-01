@@ -50,8 +50,20 @@ class _SavedItemsState extends State<SavedItems> {
         if (mounted) {
           setState(() {
             isFavListLoading = false;
-            favProductList = onValue['response_data'];
           });
+        }
+        if (onValue['response_code'] == 200) {
+          if (mounted) {
+            setState(() {
+              favProductList = onValue['response_data'];
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              favProductList = [];
+            });
+          }
         }
       } catch (error, stackTrace) {
         if (mounted) {

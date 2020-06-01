@@ -205,7 +205,9 @@ class _OrderDetailsState extends State<OrderDetails> {
                                     SizedBox(width: 5),
                                     Expanded(
                                       child: Text(
-                                          orderHistory['orderID'].toString(),
+                                          "#" +
+                                              orderHistory['orderID']
+                                                  .toString(),
                                           style: textBarlowMediumBlack()),
                                     )
                                   ],
@@ -409,7 +411,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                       style: textBarlowMediumBlack(),
                                     ),
                                     SizedBox(
-                                      width: 50,
+                                      width: 30,
                                     ),
                                     orderHistory['orderStatus'] == "DELIVERED"
                                         ? order['rating'] == null
@@ -423,9 +425,12 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                       order['productId']);
                                                 },
                                                 color: primary,
-                                                text:
-                                                    MyLocalizations.of(context)
-                                                        .rateNow,
+                                                child: Text(
+                                                  MyLocalizations.of(context)
+                                                      .rateNow,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
                                               )
                                             : RatingBar(
                                                 initialRating:

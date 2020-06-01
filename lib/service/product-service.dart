@@ -9,7 +9,7 @@ class ProductService {
   static Future<Map<String, dynamic>> getCategoryList() async {
     String languageCode;
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client
         .get(Constants.baseURL + "products/home/category", headers: {
@@ -24,12 +24,15 @@ class ProductService {
     String productIndex = "page=" + "$index";
     String languageCode;
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
 
     final response = await client.get(
         Constants.baseURL + "products/home/product?$productIndex",
-        headers: {'Content-Type': 'application/json',  'language': languageCode,});
+        headers: {
+          'Content-Type': 'application/json',
+          'language': languageCode,
+        });
     return json.decode(response.body);
   }
 
@@ -39,19 +42,22 @@ class ProductService {
       userId = "userId=" + uid;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     String productIndex = "page=" + "$index";
     final response = await client.get(
         Constants.baseURL + "products/home/product?$userId&$productIndex",
-        headers: {'Content-Type': 'application/json',  'language': languageCode,});
+        headers: {
+          'Content-Type': 'application/json',
+          'language': languageCode,
+        });
     return json.decode(response.body);
   }
 
   static Future<Map<String, dynamic>> getTopDealsListAll() async {
     String languageCode;
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client
         .get(Constants.baseURL + "products/home/top/deal", headers: {
@@ -64,7 +70,7 @@ class ProductService {
   static Future<Map<String, dynamic>> getTodayDealsListAll() async {
     String languageCode;
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client
         .get(Constants.baseURL + "products/home/deal/of/day", headers: {
@@ -81,7 +87,7 @@ class ProductService {
       token = onValue;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client
         .get(Constants.baseURL + "products/by/category/$id", headers: {
@@ -105,7 +111,7 @@ class ProductService {
       userId = "userId=" + uid;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client
         .get(Constants.baseURL + "products/by/category/$id?$userId", headers: {
@@ -123,7 +129,7 @@ class ProductService {
       token = onValue;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
 
     final response = await client
@@ -148,7 +154,7 @@ class ProductService {
       userId = "userId=" + uid;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client.get(
         Constants.baseURL + "products/by/subcategory/$id?$userId",
@@ -168,7 +174,7 @@ class ProductService {
       token = onValue;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client.post(Constants.baseURL + "orders/place/order",
         body: json.encode(body),
@@ -187,7 +193,7 @@ class ProductService {
       token = onValue;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
 
     final response = await client.get(
@@ -206,7 +212,7 @@ class ProductService {
       token = onValue;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client.post(
         Constants.baseURL + "orders/ratings/$orderId",
@@ -226,7 +232,7 @@ class ProductService {
       token = onValue;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client.post(
         Constants.baseURL + "rating/rate/product",
@@ -242,7 +248,7 @@ class ProductService {
   static Future<Map<String, dynamic>> productRating(productId) async {
     String languageCode;
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client
         .get(Constants.baseURL + "rating/get/product/$productId", headers: {
@@ -258,7 +264,7 @@ class ProductService {
       userId = "userId=" + uid;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client
         .get(Constants.baseURL + "products/info/$productId?$userId", headers: {
@@ -272,7 +278,7 @@ class ProductService {
       productId) async {
     String languageCode;
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client
         .get(Constants.baseURL + "products/info/$productId", headers: {
@@ -285,10 +291,13 @@ class ProductService {
   static Future<Map<String, dynamic>> getProdCatDealTopDeal() async {
     String languageCode;
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
-    final response = await client.get(Constants.baseURL + "products/home/page",
-        headers: {'Content-Type': 'application/json',  'language': languageCode,});
+    final response =
+        await client.get(Constants.baseURL + "products/home/page", headers: {
+      'Content-Type': 'application/json',
+      'language': languageCode,
+    });
     await Common.setAllData(json.decode(response.body));
     return json.decode(response.body);
   }
@@ -299,11 +308,13 @@ class ProductService {
       userId = "userId=" + uid;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
-    final response = await client.get(
-        Constants.baseURL + "products/home/page?$userId",
-        headers: {'Content-Type': 'application/json',  'language': languageCode,});
+    final response = await client
+        .get(Constants.baseURL + "products/home/page?$userId", headers: {
+      'Content-Type': 'application/json',
+      'language': languageCode,
+    });
     await Common.setAllDataQuary(json.decode(response.body));
     return json.decode(response.body);
   }
@@ -312,7 +323,7 @@ class ProductService {
   static Future<dynamic> getSearchList(status) async {
     String languageCode;
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client
         .get(Constants.baseURL + 'products/search/$status', headers: {
@@ -328,7 +339,7 @@ class ProductService {
       userId = "userId=" + uid;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client
         .get(Constants.baseURL + 'products/search/$status?$userId', headers: {

@@ -32,9 +32,7 @@ void main() {
   }, onError: (error, stackTrace) {
     sentryError.reportError(error, stackTrace);
   });
-
   Common.getSelectedLanguage().then((selectedLocale) {
-    print(selectedLocale);
     Map localizedValues;
     String defaultLocale = '';
     String locale = selectedLocale ?? defaultLocale;
@@ -48,9 +46,7 @@ void main() {
         Zone.current.handleUncaughtError(details.exception, details.stack);
       }
     };
-    getToken();
     LoginService.getLanguageJson(locale).then((value) async {
-      print(value);
       localizedValues = value['response_data']['json'];
       if (locale == '') {
         defaultLocale = value['response_data']['defaultCode']['languageCode'];
@@ -59,6 +55,7 @@ void main() {
       await Common.setSelectedLanguage(locale);
       await Common.setAllLanguageNames(value['response_data']['langName']);
       await Common.setAllLanguageCodes(value['response_data']['langCode']);
+      getToken();
       runZoned<Future<Null>>(() {
         runApp(MainScreen(
           locale: locale,
@@ -73,8 +70,9 @@ void main() {
 }
 
 void getToken() async {
-  await Common.getToken().then((onValue) {
+  await Common.getToken().then((onValue) async {
     if (onValue != null) {
+      await LoginService.setLanguageCodeToProfile();
       checkToken(onValue);
     } else {}
   }).catchError((error) {
@@ -172,7 +170,7 @@ class AnimatedScreen extends StatelessWidget {
         color: primary,
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        child: Constants.APP_NAME.contains('Readymade Grocery App')
+        child: Constants.APP_NAME.contains('Readymade')
             ? Image.asset(
                 'lib/assets/splash.png',
                 fit: BoxFit.cover,

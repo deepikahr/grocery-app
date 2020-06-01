@@ -73,14 +73,25 @@ class _SubCategoriesState extends State<SubCategories> {
     });
     await ProductService.getProductToCategoryList(id).then((onValue) {
       try {
-        if (mounted)
-          setState(() {
-            subProductsList = onValue['response_data']['products'];
-            subCategryList = onValue['response_data']['subCategory'];
-            isLoadingSubProductsList = false;
-            isLoadingSubCatProductsList = false;
-            _refreshController.refreshCompleted();
-          });
+        _refreshController.refreshCompleted();
+
+        if (onValue['response_code'] == 200) {
+          if (mounted)
+            setState(() {
+              subProductsList = onValue['response_data']['products'];
+              subCategryList = onValue['response_data']['subCategory'];
+              isLoadingSubProductsList = false;
+              isLoadingSubCatProductsList = false;
+            });
+        } else {
+          if (mounted)
+            setState(() {
+              subProductsList = [];
+              subCategryList = [];
+              isLoadingSubProductsList = false;
+              isLoadingSubCatProductsList = false;
+            });
+        }
       } catch (error, stackTrace) {
         if (mounted) {
           setState(() {
@@ -107,14 +118,25 @@ class _SubCategoriesState extends State<SubCategories> {
     });
     await ProductService.getProductToCategoryListCartAdded(id).then((onValue) {
       try {
-        if (mounted)
-          setState(() {
-            subProductsList = onValue['response_data']['products'];
-            subCategryList = onValue['response_data']['subCategory'];
+        _refreshController.refreshCompleted();
 
-            isLoadingSubProductsList = false;
-            isLoadingSubCatProductsList = false;
-          });
+        if (onValue['response_code'] == 200) {
+          if (mounted)
+            setState(() {
+              subProductsList = onValue['response_data']['products'];
+              subCategryList = onValue['response_data']['subCategory'];
+              isLoadingSubProductsList = false;
+              isLoadingSubCatProductsList = false;
+            });
+        } else {
+          if (mounted)
+            setState(() {
+              subProductsList = [];
+              subCategryList = [];
+              isLoadingSubProductsList = false;
+              isLoadingSubCatProductsList = false;
+            });
+        }
       } catch (error, stackTrace) {
         if (mounted) {
           setState(() {
@@ -138,11 +160,19 @@ class _SubCategoriesState extends State<SubCategories> {
   getProductToSubCategory(catId) async {
     await ProductService.getProductToSubCategoryList(catId).then((onValue) {
       try {
-        if (mounted)
-          setState(() {
-            subCategryByProduct = onValue['response_data'];
-            isLoadingSubCatProductsList = false;
-          });
+        if (onValue['response_code'] == 200) {
+          if (mounted)
+            setState(() {
+              subCategryByProduct = onValue['response_data'];
+              isLoadingSubCatProductsList = false;
+            });
+        } else {
+          if (mounted)
+            setState(() {
+              subCategryByProduct = [];
+              isLoadingSubCatProductsList = false;
+            });
+        }
       } catch (error, stackTrace) {
         if (mounted) {
           setState(() {
@@ -165,12 +195,19 @@ class _SubCategoriesState extends State<SubCategories> {
     await ProductService.getProductToSubCategoryListCartAdded(catId)
         .then((onValue) {
       try {
-        if (mounted)
-          setState(() {
-            subCategryByProduct = onValue['response_data'];
-
-            isLoadingSubCatProductsList = false;
-          });
+        if (onValue['response_code'] == 200) {
+          if (mounted)
+            setState(() {
+              subCategryByProduct = onValue['response_data'];
+              isLoadingSubCatProductsList = false;
+            });
+        } else {
+          if (mounted)
+            setState(() {
+              subCategryByProduct = [];
+              isLoadingSubCatProductsList = false;
+            });
+        }
       } catch (error, stackTrace) {
         if (mounted) {
           setState(() {
@@ -192,10 +229,18 @@ class _SubCategoriesState extends State<SubCategories> {
   getFavListApi() async {
     await FavouriteService.getFavList().then((onValue) {
       try {
-        if (mounted) {
-          setState(() {
-            favProductList = onValue['response_data'];
-          });
+        if (onValue['response_code'] == 200) {
+          if (mounted) {
+            setState(() {
+              favProductList = onValue['response_data'];
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              favProductList = [];
+            });
+          }
         }
       } catch (error, stackTrace) {
         sentryError.reportError(error, stackTrace);

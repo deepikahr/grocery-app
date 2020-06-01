@@ -55,9 +55,21 @@ class _AddressState extends State<Address> {
 
         if (mounted) {
           setState(() {
-            addressList = onValue['response_data'];
             addressLoading = false;
           });
+        }
+        if (onValue['response_code'] == 200) {
+          if (mounted) {
+            setState(() {
+              addressList = onValue['response_data'];
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              addressList = [];
+            });
+          }
         }
       } catch (error, stackTrace) {
         if (mounted) {
@@ -82,12 +94,14 @@ class _AddressState extends State<Address> {
   deleteAddress(body) async {
     await AddressService.deleteAddress(body).then((onValue) {
       try {
-        getAddress();
-        if (mounted) {
-          setState(() {
-            addressList = addressList;
-            showSnackbar(onValue['response_data']);
-          });
+        if (onValue['response_code'] == 200) {
+          if (mounted) {
+            setState(() {
+              getAddress();
+              addressList = addressList;
+              showSnackbar(onValue['response_data']);
+            });
+          }
         }
       } catch (error, stackTrace) {
         if (mounted) {
