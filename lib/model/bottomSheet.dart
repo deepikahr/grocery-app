@@ -14,7 +14,7 @@ class BottonSheetClassDryClean extends StatefulWidget {
   final int productQuantity;
   final double dealPercentage;
   final String currency, locale;
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   final Map<String, dynamic> productList;
 
   BottonSheetClassDryClean(

@@ -8,7 +8,6 @@ import 'package:readymadeGroceryApp/screens/drawer/address.dart';
 import 'package:readymadeGroceryApp/screens/orders/orders.dart';
 import 'package:readymadeGroceryApp/screens/tab/editprofile.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
-import 'package:readymadeGroceryApp/service/initialize_i18n.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
@@ -16,12 +15,11 @@ import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
 
 class Profile extends StatefulWidget {
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   final String locale;
   Profile({Key key, this.locale, this.localizedValues}) : super(key: key);
 
@@ -31,25 +29,11 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   Map<String, dynamic> userInfo;
-  bool isProfile = true, isGetTokenLoading = false;
-  List orderList = List();
-  String token, selectedLanguages, userID;
+  bool isGetTokenLoading = false, isLanguageSelecteLoading = false;
+  String token, userID;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  String newValue;
-  List<String> languages = [
-    'English',
-    'French',
-    'Chinese',
-    'Arabic',
-    'Japanese',
-    'Russian',
-    'Italian',
-    'Spanish',
-    'Portuguese'
-  ];
-  Map<String, Map<String, String>> localizedValues;
-  var userData;
+  List languages, languagesCodes;
 
   @override
   void initState() {
@@ -68,6 +52,12 @@ class _ProfileState extends State<Profile> {
         isGetTokenLoading = true;
       });
     }
+    await Common.getAllLanguageNames().then((value) {
+      languages = value;
+    });
+    await Common.getAllLanguageCodes().then((value) {
+      languagesCodes = value;
+    });
     await Common.getToken().then((onValue) {
       try {
         if (onValue != null) {
@@ -90,6 +80,7 @@ class _ProfileState extends State<Profile> {
             isGetTokenLoading = false;
           });
         }
+
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
@@ -104,22 +95,26 @@ class _ProfileState extends State<Profile> {
 
   userInfoMethod() async {
     await LoginService.getUserInfo().then((onValue) {
+      print(onValue);
       try {
-        _refreshController.refreshCompleted();
         if (mounted) {
           setState(() {
             isGetTokenLoading = false;
-
-            userInfo = onValue['response_data']['userInfo'];
-
-            userID = userInfo['_id'];
           });
+        }
+        _refreshController.refreshCompleted();
+        if (onValue['response_code'] == 200) {
+          if (mounted) {
+            setState(() {
+              userInfo = onValue['response_data']['userInfo'];
+              userID = userInfo['_id'];
+            });
+          }
         }
       } catch (error, stackTrace) {
         if (mounted) {
           setState(() {
             isGetTokenLoading = false;
-
             userInfo = null;
             userID = null;
           });
@@ -130,7 +125,6 @@ class _ProfileState extends State<Profile> {
       if (mounted) {
         setState(() {
           isGetTokenLoading = false;
-
           userInfo = null;
           userID = null;
         });
@@ -165,113 +159,47 @@ class _ProfileState extends State<Profile> {
                       itemBuilder: (BuildContext context, int i) {
                         return GFButton(
                           onPressed: () async {
-                            await initializeI18n().then((value) async {
-                              localizedValues = value;
-                              if (mounted) {
-                                setState(() {
-                                  newValue = languages[i];
-                                });
-                              }
-                              if (newValue == 'English') {
-                                SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                prefs.setString('selectedLanguage', 'en');
+                            if (mounted) {
+                              setState(() {
+                                isLanguageSelecteLoading = true;
+                              });
+                            }
+                            await Common.setSelectedLanguage(languagesCodes[i]);
+                            Map localizedValues;
+                            String defaultLocale = '';
+                            await Common.getSelectedLanguage().then((value) {
+                              String locale = value ?? defaultLocale;
+                              LoginService.getLanguageJson(locale)
+                                  .then((value) async {
+                                localizedValues =
+                                    value['response_data']['json'];
+                                if (locale == '') {
+                                  defaultLocale = value['response_data']
+                                      ['defaultCode']['languageCode'];
+                                  locale = defaultLocale;
+                                }
+                                await Common.setSelectedLanguage(locale);
+                                await Common.setAllLanguageCodes(
+                                    value['response_data']['langCode']);
+                                await Common.setAllLanguageNames(
+                                    value['response_data']['langName']);
+                                await LoginService.setLanguageCodeToProfile();
+                                if (mounted) {
+                                  setState(() {
+                                    isLanguageSelecteLoading = false;
+                                  });
+                                }
                                 Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          MyApp("en", localizedValues, true),
+                                          MainScreen(
+                                        locale: locale,
+                                        localizedValues: localizedValues,
+                                      ),
                                     ),
                                     (Route<dynamic> route) => false);
-                              } else if (newValue == 'Chinese') {
-                                SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                prefs.setString('selectedLanguage', 'zh');
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          MyApp("zh", localizedValues, true),
-                                    ),
-                                    (Route<dynamic> route) => false);
-                              } else if (newValue == 'Arabic') {
-                                SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                prefs.setString('selectedLanguage', 'ar');
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          MyApp("ar", localizedValues, true),
-                                    ),
-                                    (Route<dynamic> route) => false);
-                              } else if (newValue == 'Japanese') {
-                                SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                prefs.setString('selectedLanguage', 'ja');
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          MyApp("ja", localizedValues, true),
-                                    ),
-                                    (Route<dynamic> route) => false);
-                              } else if (newValue == 'Russian') {
-                                SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                prefs.setString('selectedLanguage', 'ru');
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          MyApp("ru", localizedValues, true),
-                                    ),
-                                    (Route<dynamic> route) => false);
-                              } else if (newValue == 'Italian') {
-                                SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                prefs.setString('selectedLanguage', 'it');
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          MyApp("it", localizedValues, true),
-                                    ),
-                                    (Route<dynamic> route) => false);
-                              } else if (newValue == 'Spanish') {
-                                SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                prefs.setString('selectedLanguage', 'es');
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          MyApp("es", localizedValues, true),
-                                    ),
-                                    (Route<dynamic> route) => false);
-                              } else if (newValue == 'Portuguese') {
-                                SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                prefs.setString('selectedLanguage', 'pt');
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          MyApp("pt", localizedValues, true),
-                                    ),
-                                    (Route<dynamic> route) => false);
-                              } else {
-                                SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                prefs.setString('selectedLanguage', 'fr');
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          MyApp("fr", localizedValues, true),
-                                    ),
-                                    (Route<dynamic> route) => false);
-                              }
+                              });
                             });
                           },
                           type: GFButtonType.transparent,
@@ -282,6 +210,7 @@ class _ProfileState extends State<Profile> {
                                 languages[i],
                                 style: hintSfboldBig(),
                               ),
+                              Container()
                             ],
                           ),
                         );

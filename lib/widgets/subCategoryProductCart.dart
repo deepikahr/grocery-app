@@ -33,7 +33,7 @@ class SubCategoryProductCard extends StatefulWidget {
   final Map productList;
   final List variantList;
   final String locale;
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   SubCategoryProductCard(
       {Key key,
       this.image,
@@ -109,6 +109,7 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
       'quantity': quanity
     };
     await CartService.updateProductToCart(body).then((onValue) {
+      print(onValue);
       if (mounted) {
         setState(() {
           isQuantityUpdating = false;

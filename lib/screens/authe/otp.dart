@@ -17,7 +17,7 @@ class Otp extends StatefulWidget {
   Otp({Key key, this.email, this.token, this.locale, this.localizedValues})
       : super(key: key);
   final String email, token, locale;
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
 
   @override
   _OtpState createState() => _OtpState();

@@ -7,6 +7,7 @@ import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/screens/orders/ordersDetails.dart';
 import 'package:readymadeGroceryApp/screens/tab/mycart.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
+import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
@@ -15,15 +16,13 @@ import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../style/style.dart';
 
 SentryError sentryError = new SentryError();
 
 class Orders extends StatefulWidget {
   final String userID, locale;
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
 
   Orders({Key key, this.userID, this.locale, this.localizedValues})
       : super(key: key);
@@ -56,8 +55,9 @@ class _OrdersState extends State<Orders> {
         isLoading = true;
       });
     }
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    currency = prefs.getString('currency');
+    await Common.getCurrency().then((value) {
+      currency = value;
+    });
     await ProductService.getOrderByUserID(widget.userID).then((onValue) {
       try {
         _refreshController.refreshCompleted();
@@ -279,13 +279,9 @@ class _OrdersState extends State<Orders> {
                                                     "Pending"
                                             ? orderTrack(orderList[i])
                                             : Container(),
-                                        // orderList[i]['orderStatus'] ==
-                                        //         "DELIVERED"
-                                        //     ? reorder(orderList[i])
-                                        //     : Container(),
-                                        // SizedBox(
-                                        //   height: 20,
-                                        // )
+                                        SizedBox(
+                                          height: 20,
+                                        )
                                       ],
                                     ),
                                   );

@@ -14,12 +14,11 @@ import 'package:readymadeGroceryApp/screens/checkout/checkout.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
 
 class MyCart extends StatefulWidget {
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   final String locale;
   MyCart({Key key, this.locale, this.localizedValues}) : super(key: key);
   @override
@@ -29,18 +28,13 @@ class MyCart extends StatefulWidget {
 class _MyCartState extends State<MyCart> {
   final _scaffoldkey = new GlobalKey<ScaffoldState>();
   bool isLoadingCart = false,
-      isIncrementLoading = false,
       isGetTokenLoading = false,
-      isDecrementLoading = false,
       isUpdating = false,
-      isLoading = false,
-      favSelected = false,
       isMinAmountCheckLoading = false;
   String token, currency;
   String quantityUpdateType = '+';
   Map<String, dynamic> cartItem;
-  int count = 1;
-  double bottomBarHeight = 124;
+  double bottomBarHeight = 150;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   var minAmout;
@@ -63,7 +57,6 @@ class _MyCartState extends State<MyCart> {
       });
     }
     await CartService.minOrderAmoutCheckApi().then((onValue) {
-      print(onValue);
       try {
         if (mounted) {
           if (onValue['response_code'] == 200) {
@@ -97,8 +90,9 @@ class _MyCartState extends State<MyCart> {
         isGetTokenLoading = true;
       });
     }
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    currency = prefs.getString('currency');
+    await Common.getCurrency().then((value) {
+      currency = value;
+    });
     await Common.getToken().then((onValue) {
       try {
         if (onValue != null) {
@@ -250,19 +244,18 @@ class _MyCartState extends State<MyCart> {
     await CartService.getProductToCart().then((onValue) {
       try {
         _refreshController.refreshCompleted();
-        if (onValue['response_data'] == 'You have not added items to cart') {
-          if (mounted) {
-            setState(() {
-              cartItem = null;
-              isLoadingCart = false;
-            });
-          }
-        } else {
+        if (mounted) {
+          setState(() {
+            isLoadingCart = false;
+          });
+        }
+        if (onValue['response_code'] == 200 &&
+            onValue['response_data'] is Map) {
           if (mounted) {
             setState(() {
               cartItem = onValue['response_data'];
               if (cartItem['grandTotal'] != null) {
-                bottomBarHeight = 124;
+                bottomBarHeight = 150;
                 if (cartItem['deliveryCharges'] != 0) {
                   bottomBarHeight = bottomBarHeight + 20;
                 }
@@ -272,8 +265,13 @@ class _MyCartState extends State<MyCart> {
                 if (cartItem['couponInfo'] != null) {
                   bottomBarHeight = bottomBarHeight + 20;
                 }
-                isLoadingCart = false;
               }
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              cartItem = null;
             });
           }
         }
@@ -361,18 +359,20 @@ class _MyCartState extends State<MyCart> {
       'productId': cartItem['cart'][i]['productId'],
     };
     await CartService.deleteDataFromCart(body).then((onValue) {
+      print(onValue);
       try {
-        if (onValue['response_data'] == 'You have not added items to cart') {
+        if (onValue['response_code'] == 200 &&
+            onValue['response_data'] is Map) {
           if (mounted) {
             setState(() {
-              cartItem = null;
+              cartItem = onValue['response_data'];
             });
           }
           getCartItems();
         } else {
           if (mounted) {
             setState(() {
-              cartItem = onValue['response_data'];
+              cartItem = null;
             });
           }
         }
@@ -398,41 +398,23 @@ class _MyCartState extends State<MyCart> {
   deleteAllCart(cartId) async {
     await CartService.deleteAllDataFromCart(cartId).then((onValue) {
       try {
-        if (onValue['response_data'] == 'Cart deleted successfully') {
+        if (onValue['response_code'] == 200) {
           if (mounted) {
             setState(() {
               cartItem = null;
             });
           }
-          getCartItems();
-        } else {
-          if (mounted) {
-            setState(() {
-              cartItem = onValue['response_data'];
-            });
-          }
         }
       } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            cartItem = null;
-          });
-        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          cartItem = null;
-        });
-      }
       sentryError.reportError(error, null);
     });
   }
 
   checkMinOrderAmountCondition() async {
     if (cartItem['grandTotal'] >= minAmout['minimumOrderAmountToPlaceOrder']) {
-      print("true");
       var result = Navigator.push(
         context,
         MaterialPageRoute(
@@ -450,7 +432,6 @@ class _MyCartState extends State<MyCart> {
         getCartItems();
       });
     } else {
-      print("false");
       showDialog<Null>(
         context: context,
         barrierDismissible: false,
@@ -943,7 +924,7 @@ class _MyCartState extends State<MyCart> {
                                             style: textBarlowRegularBlack(),
                                           ),
                                           new Text(
-                                            "FREE",
+                                            MyLocalizations.of(context).free,
                                             style: textbarlowBoldsmBlack(),
                                           ),
                                         ],
@@ -1035,7 +1016,7 @@ class _MyCartState extends State<MyCart> {
                                                   : Text(
                                                       MyLocalizations.of(
                                                               context)
-                                                          .checkOut,
+                                                          .checkout,
                                                       style:
                                                           textBarlowRegularBlack(),
                                                     ),

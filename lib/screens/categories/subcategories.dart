@@ -4,13 +4,13 @@ import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/model/counterModel.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/product/product-details.dart';
+import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/fav-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:readymadeGroceryApp/widgets/subCategoryProductCart.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 
@@ -21,7 +21,7 @@ SentryError sentryError = new SentryError();
 class SubCategories extends StatefulWidget {
   final String catTitle, locale, catId;
   final bool token, isSubCategoryAvailable;
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
 
   SubCategories(
       {Key key,
@@ -68,18 +68,30 @@ class _SubCategoriesState extends State<SubCategories> {
   }
 
   getProductToCategory(id) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    currency = prefs.getString('currency');
+    await Common.getCurrency().then((value) {
+      currency = value;
+    });
     await ProductService.getProductToCategoryList(id).then((onValue) {
       try {
-        if (mounted)
-          setState(() {
-            subProductsList = onValue['response_data']['products'];
-            subCategryList = onValue['response_data']['subCategory'];
-            isLoadingSubProductsList = false;
-            isLoadingSubCatProductsList = false;
-            _refreshController.refreshCompleted();
-          });
+        _refreshController.refreshCompleted();
+
+        if (onValue['response_code'] == 200) {
+          if (mounted)
+            setState(() {
+              subProductsList = onValue['response_data']['products'];
+              subCategryList = onValue['response_data']['subCategory'];
+              isLoadingSubProductsList = false;
+              isLoadingSubCatProductsList = false;
+            });
+        } else {
+          if (mounted)
+            setState(() {
+              subProductsList = [];
+              subCategryList = [];
+              isLoadingSubProductsList = false;
+              isLoadingSubCatProductsList = false;
+            });
+        }
       } catch (error, stackTrace) {
         if (mounted) {
           setState(() {
@@ -101,18 +113,30 @@ class _SubCategoriesState extends State<SubCategories> {
   }
 
   getProductToCategoryCartAdded(id) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    currency = prefs.getString('currency');
+    await Common.getCurrency().then((value) {
+      currency = value;
+    });
     await ProductService.getProductToCategoryListCartAdded(id).then((onValue) {
       try {
-        if (mounted)
-          setState(() {
-            subProductsList = onValue['response_data']['products'];
-            subCategryList = onValue['response_data']['subCategory'];
+        _refreshController.refreshCompleted();
 
-            isLoadingSubProductsList = false;
-            isLoadingSubCatProductsList = false;
-          });
+        if (onValue['response_code'] == 200) {
+          if (mounted)
+            setState(() {
+              subProductsList = onValue['response_data']['products'];
+              subCategryList = onValue['response_data']['subCategory'];
+              isLoadingSubProductsList = false;
+              isLoadingSubCatProductsList = false;
+            });
+        } else {
+          if (mounted)
+            setState(() {
+              subProductsList = [];
+              subCategryList = [];
+              isLoadingSubProductsList = false;
+              isLoadingSubCatProductsList = false;
+            });
+        }
       } catch (error, stackTrace) {
         if (mounted) {
           setState(() {
@@ -136,11 +160,19 @@ class _SubCategoriesState extends State<SubCategories> {
   getProductToSubCategory(catId) async {
     await ProductService.getProductToSubCategoryList(catId).then((onValue) {
       try {
-        if (mounted)
-          setState(() {
-            subCategryByProduct = onValue['response_data'];
-            isLoadingSubCatProductsList = false;
-          });
+        if (onValue['response_code'] == 200) {
+          if (mounted)
+            setState(() {
+              subCategryByProduct = onValue['response_data'];
+              isLoadingSubCatProductsList = false;
+            });
+        } else {
+          if (mounted)
+            setState(() {
+              subCategryByProduct = [];
+              isLoadingSubCatProductsList = false;
+            });
+        }
       } catch (error, stackTrace) {
         if (mounted) {
           setState(() {
@@ -163,12 +195,19 @@ class _SubCategoriesState extends State<SubCategories> {
     await ProductService.getProductToSubCategoryListCartAdded(catId)
         .then((onValue) {
       try {
-        if (mounted)
-          setState(() {
-            subCategryByProduct = onValue['response_data'];
-
-            isLoadingSubCatProductsList = false;
-          });
+        if (onValue['response_code'] == 200) {
+          if (mounted)
+            setState(() {
+              subCategryByProduct = onValue['response_data'];
+              isLoadingSubCatProductsList = false;
+            });
+        } else {
+          if (mounted)
+            setState(() {
+              subCategryByProduct = [];
+              isLoadingSubCatProductsList = false;
+            });
+        }
       } catch (error, stackTrace) {
         if (mounted) {
           setState(() {
@@ -190,10 +229,18 @@ class _SubCategoriesState extends State<SubCategories> {
   getFavListApi() async {
     await FavouriteService.getFavList().then((onValue) {
       try {
-        if (mounted) {
-          setState(() {
-            favProductList = onValue['response_data'];
-          });
+        if (onValue['response_code'] == 200) {
+          if (mounted) {
+            setState(() {
+              favProductList = onValue['response_data'];
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              favProductList = [];
+            });
+          }
         }
       } catch (error, stackTrace) {
         sentryError.reportError(error, stackTrace);
@@ -780,7 +827,6 @@ class _SubCategoriesState extends State<SubCategories> {
                     builder: (BuildContext context) => Home(
                       locale: widget.locale,
                       localizedValues: widget.localizedValues,
-                      languagesSelection: false,
                       currentIndex: 2,
                     ),
                   ),

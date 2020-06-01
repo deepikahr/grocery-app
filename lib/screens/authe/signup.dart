@@ -13,7 +13,7 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 SentryError sentryError = new SentryError();
 
 class Signup extends StatefulWidget {
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   final String locale;
   Signup({Key key, this.locale, this.localizedValues});
 
@@ -97,6 +97,7 @@ class _SignupState extends State<Signup> {
                         style: textbarlowRegularaPrimary(),
                       ),
                       onPressed: () {
+                        Navigator.pop(context);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -559,7 +560,7 @@ class _SignupState extends State<Signup> {
             text: TextSpan(
               children: <TextSpan>[
                 TextSpan(
-                    text: MyLocalizations.of(context).havegotanaccount + " ?",
+                    text: MyLocalizations.of(context).havegotanaccount,
                     style: textbarlowRegularBlack()),
                 TextSpan(
                   text: MyLocalizations.of(context).login + '!',

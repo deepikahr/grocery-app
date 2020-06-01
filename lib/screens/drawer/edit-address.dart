@@ -27,7 +27,7 @@ class EditAddress extends StatefulWidget {
   final bool isCheckout, isProfile;
   final Map<String, dynamic> updateAddressID;
   final LocationData currentLocation;
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   final String locale;
 
   @override
@@ -97,8 +97,14 @@ class _EditAddressState extends State<EditAddress> {
           if (mounted) {
             setState(() {
               isUpdateAddress = false;
-              Navigator.of(context).pop();
             });
+          }
+          if (onValue['response_code'] == 200) {
+            if (mounted) {
+              setState(() {
+                Navigator.pop(context);
+              });
+            }
           }
         } catch (error, stackTrace) {
           if (mounted) {
@@ -164,7 +170,7 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).location + ' :',
+                        MyLocalizations.of(context).location,
                         style: regular(),
                       ),
                     ],
@@ -233,7 +239,7 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).houseFlatBlocknumber + ' :',
+                        MyLocalizations.of(context).houseFlatBlocknumber + " :",
                         style: regular(),
                       ),
                     ],
@@ -284,7 +290,7 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).apartmentName + ' :',
+                        MyLocalizations.of(context).apartmentName + " :",
                         style: regular(),
                       ),
                     ],
@@ -334,7 +340,7 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).landMark + ' :',
+                        MyLocalizations.of(context).landMark + " :",
                         style: regular(),
                       ),
                     ],
@@ -384,7 +390,7 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).postalCode + ' :',
+                        MyLocalizations.of(context).postalCode + " :",
                         style: regular(),
                       ),
                     ],
@@ -435,7 +441,7 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).contactNumber + ' :',
+                        MyLocalizations.of(context).contactNumber + " :",
                         style: regular(),
                       ),
                     ],
@@ -487,9 +493,7 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context)
-                                .addressTypeHomeWorkOthersetc +
-                            ' :',
+                        MyLocalizations.of(context).addressType,
                         style: regular(),
                       ),
                     ],

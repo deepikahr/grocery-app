@@ -12,7 +12,7 @@ SentryError sentryError = new SentryError();
 class AboutUs extends StatefulWidget {
   AboutUs({Key key, this.locale, this.localizedValues}) : super(key: key);
 
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   final String locale;
   @override
   _AboutUsState createState() => _AboutUsState();
@@ -125,9 +125,9 @@ class _AboutUsState extends State<AboutUs> {
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.only(left: 15),
+                        margin: EdgeInsets.only(left: 15, right: 15.0),
                         child: Text(
-                          MyLocalizations.of(context).description + ':',
+                          MyLocalizations.of(context).description + " :",
                           style: textBarlowMediumBlack(),
                         ),
                       ),
@@ -144,9 +144,10 @@ class _AboutUsState extends State<AboutUs> {
                         ],
                       ),
                       Container(
-                        margin: EdgeInsets.only(left: 15, bottom: 15),
+                        margin:
+                            EdgeInsets.only(left: 15, bottom: 15, right: 15.0),
                         child: Text(
-                          MyLocalizations.of(context).addressInformation + ':',
+                          MyLocalizations.of(context).address + " :",
                           style: textBarlowMediumBlack(),
                         ),
                       ),
@@ -157,9 +158,10 @@ class _AboutUsState extends State<AboutUs> {
                       ),
 
                       Container(
-                        margin: EdgeInsets.only(left: 15, bottom: 15),
+                        margin:
+                            EdgeInsets.only(left: 15, bottom: 15, right: 15.0),
                         child: Text(
-                          MyLocalizations.of(context).contactInformation + ':',
+                          MyLocalizations.of(context).contactInformation + " :",
                           style: textBarlowMediumBlack(),
                         ),
                       ),
@@ -184,8 +186,8 @@ class _AboutUsState extends State<AboutUs> {
                           _launchURLEmail(aboutUsDatails['email']);
                         },
                         child: Padding(
-                          padding:
-                              const EdgeInsets.only(left: 15.0, bottom: 15),
+                          padding: const EdgeInsets.only(
+                              left: 15.0, bottom: 15, right: 15.0),
                           child: Row(
                             children: <Widget>[
                               Icon(Icons.email),

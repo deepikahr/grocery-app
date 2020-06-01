@@ -2,17 +2,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:getflutter/getflutter.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
-import 'package:readymadeGroceryApp/service/initialize_i18n.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
-import 'package:readymadeGroceryApp/service/settings/globalSettings.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
-import 'package:location/location.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -22,33 +20,59 @@ bool get isInDebugMode {
   return inDebugMode;
 }
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  Map<String, Map<String, String>> localizedValues = await initializeI18n();
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  String locale = prefs.getString('selectedLanguage') ?? "en";
-
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarBrightness: Brightness.dark,
-      statusBarIconBrightness: Brightness.dark));
-  FlutterError.onError = (FlutterErrorDetails details) async {
-    if (isInDebugMode) {
-      FlutterError.dumpErrorToConsole(details);
-    } else {
-      Zone.current.handleUncaughtError(details.exception, details.stack);
-    }
-  };
-  getToken();
-  runZoned<Future<Null>>(() async {
-    runApp(new MyApp(locale, localizedValues, false));
-  }, onError: (error, stackTrace) async {
-    await sentryError.reportError(error, stackTrace);
+  configLocalNotification();
+  runZoned<Future<Null>>(() {
+    runApp(MaterialApp(
+      home: AnimatedScreen(),
+      debugShowCheckedModeBanner: false,
+    ));
+    return Future.value(null);
+  }, onError: (error, stackTrace) {
+    sentryError.reportError(error, stackTrace);
+  });
+  Common.getSelectedLanguage().then((selectedLocale) {
+    Map localizedValues;
+    String defaultLocale = '';
+    String locale = selectedLocale ?? defaultLocale;
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarBrightness: Brightness.dark,
+        statusBarIconBrightness: Brightness.dark));
+    FlutterError.onError = (FlutterErrorDetails details) {
+      if (isInDebugMode) {
+        FlutterError.dumpErrorToConsole(details);
+      } else {
+        Zone.current.handleUncaughtError(details.exception, details.stack);
+      }
+    };
+    LoginService.getLanguageJson(locale).then((value) async {
+      localizedValues = value['response_data']['json'];
+      if (locale == '') {
+        defaultLocale = value['response_data']['defaultCode']['languageCode'];
+        locale = defaultLocale;
+      }
+      await Common.setSelectedLanguage(locale);
+      await Common.setAllLanguageNames(value['response_data']['langName']);
+      await Common.setAllLanguageCodes(value['response_data']['langCode']);
+      getToken();
+      runZoned<Future<Null>>(() {
+        runApp(MainScreen(
+          locale: locale,
+          localizedValues: localizedValues,
+        ));
+        return Future.value(null);
+      }, onError: (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      });
+    });
   });
 }
 
-getToken() async {
-  Common.getToken().then((onValue) {
+void getToken() async {
+  await Common.getToken().then((onValue) async {
     if (onValue != null) {
+      await LoginService.setLanguageCodeToProfile();
       checkToken(onValue);
     } else {}
   }).catchError((error) {
@@ -56,11 +80,11 @@ getToken() async {
   });
 }
 
-checkToken(token) async {
-  LoginService.checkToken().then((onValue) {
+void checkToken(token) async {
+  LoginService.checkToken().then((onValue) async {
     try {
       if (onValue['response_data']['tokenVerify'] == false) {
-        Common.setToken(null);
+        await Common.setToken(null);
       } else {
         userInfoMethod();
       }
@@ -72,11 +96,10 @@ checkToken(token) async {
   });
 }
 
-userInfoMethod() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  await LoginService.getUserInfo().then((onValue) {
+void userInfoMethod() async {
+  await LoginService.getUserInfo().then((onValue) async {
     try {
-      prefs.setString('userID', onValue['response_data']['userInfo']['_id']);
+      await Common.setUserID(onValue['response_data']['userInfo']['_id']);
     } catch (error, stackTrace) {
       sentryError.reportError(error, stackTrace);
     }
@@ -85,115 +108,79 @@ userInfoMethod() async {
   });
 }
 
-class MyApp extends StatefulWidget {
-  final Map<String, Map<String, String>> localizedValues;
-  final String locale;
-  final bool languagesSelection;
-  MyApp(this.locale, this.localizedValues, this.languagesSelection);
-  @override
-  _MyAppState createState() => new _MyAppState();
+Future<void> configLocalNotification() async {
+  var settings = {
+    OSiOSSettings.autoPrompt: true,
+    OSiOSSettings.promptBeforeOpeningPushUrl: true
+  };
+  OneSignal.shared
+      .setNotificationReceivedHandler((OSNotification notification) {});
+  OneSignal.shared
+      .setNotificationOpenedHandler((OSNotificationOpenedResult result) {});
+  await OneSignal.shared.init(Constants.ONE_SIGNAL_KEY, iOSSettings: settings);
+  OneSignal.shared
+      .promptUserForPushNotificationPermission(fallbackToSettings: true);
+  OneSignal.shared
+      .setInFocusDisplayType(OSNotificationDisplayType.notification);
+  var status = await OneSignal.shared.getPermissionSubscriptionState();
+  String playerId = status.subscriptionStatus.userId;
+  if (playerId == null) {
+    configLocalNotification();
+  } else {
+    await Common.setPlayerID(playerId);
+  }
 }
 
-class _MyAppState extends State<MyApp> {
-  var language;
-  bool isloading = false;
-  LocationData currentLocation;
-  Location _location = new Location();
-  var addressData;
-  void initState() {
-    getGlobalSettingsData();
+class MainScreen extends StatelessWidget {
+  final String locale;
+  final Map localizedValues;
 
-    // getResult();
-    super.initState();
-  }
-
-  getGlobalSettingsData() async {
-    currentLocation = await _location.getLocation();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (prefs.getString('selectedLanguage') == null) {
-      if (mounted) {
-        setState(() {
-          isloading = true;
-        });
-      }
-      getGlobalSettings().then((onValue) {
-        try {
-          if (onValue['response_data']['languageCode'] == null) {
-            prefs.setString('selectedLanguage', 'en');
-            language = prefs.getString("selectedLanguage");
-          } else {
-            prefs.setString('selectedLanguage',
-                '${onValue['response_data']['languageCode']}');
-            language = prefs.getString("selectedLanguage");
-          }
-          if (language != null) {
-            if (mounted) {
-              setState(() {
-                isloading = false;
-              });
-            }
-          }
-        } catch (error, stackTrace) {
-          sentryError.reportError(error, stackTrace);
-        }
-      }).catchError((error) {
-        sentryError.reportError(error, null);
-      });
-    }
-  }
+  MainScreen({
+    Key key,
+    this.locale,
+    this.localizedValues,
+  });
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      locale: Locale(language != null ? language : widget.locale),
+      locale: Locale(locale),
       localizationsDelegates: [
-        MyLocalizationsDelegate(widget.localizedValues),
+        MyLocalizationsDelegate(localizedValues),
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
       ],
-      supportedLocales:
-          Constants.LANGUAGES.map((language) => Locale(language, '')),
+      supportedLocales: [Locale(locale)],
       debugShowCheckedModeBanner: false,
       title: Constants.APP_NAME,
       theme: ThemeData(primaryColor: primary, accentColor: primary),
-      home: isloading
-          ? AnimatedScreen(
-              locale: language != null ? language : widget.locale,
-              localizedValues: widget.localizedValues,
-            )
-          : Home(
-              locale: language != null ? language : widget.locale,
-              localizedValues: widget.localizedValues,
-              languagesSelection: widget.languagesSelection,
-            ),
+      home: Home(
+        locale: locale,
+        localizedValues: localizedValues,
+      ),
     );
   }
 }
 
-class AnimatedScreen extends StatefulWidget {
-  final Map<String, Map<String, String>> localizedValues;
-  final String locale;
-  AnimatedScreen({Key key, this.locale, this.localizedValues})
-      : super(key: key);
-
-  @override
-  _AnimatedScreenState createState() => _AnimatedScreenState();
-}
-
-class _AnimatedScreenState extends State<AnimatedScreen> {
+class AnimatedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: Colors.white,
+        color: primary,
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        child: Image.asset(
-          'lib/assets/splash.png',
-          fit: BoxFit.cover,
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-        ),
+        child: Constants.APP_NAME.contains('Readymade')
+            ? Image.asset(
+                'lib/assets/splash.png',
+                fit: BoxFit.cover,
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+              )
+            : GFLoader(
+                type: GFLoaderType.ios,
+                size: 40,
+              ),
       ),
     );
   }

@@ -15,7 +15,7 @@ SentryError sentryError = new SentryError();
 
 class ResetPassword extends StatefulWidget {
   final String token, locale;
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   ResetPassword({Key key, this.token, this.localizedValues, this.locale})
       : super(key: key);
 
@@ -281,8 +281,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                         return MyLocalizations.of(context)
                             .pleaseEnterMin6DigitPassword;
                       } else if (_passwordTextController.text != value) {
-                        return MyLocalizations.of(context).passwordsdonotmatch +
-                            '..';
+                        return MyLocalizations.of(context).passwordsdonotmatch;
                       } else
                         return null;
                     },

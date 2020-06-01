@@ -6,7 +6,7 @@ import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 
 class Thankyou extends StatefulWidget {
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   final String locale;
   Thankyou({Key key, this.locale, this.localizedValues});
   @override
@@ -32,7 +32,7 @@ class _ThankyouState extends State<Thankyou> {
             ),
             SizedBox(height: 13.0),
             Text(
-              MyLocalizations.of(context).thankYou + '!',
+              MyLocalizations.of(context).thankYou,
               style: textbarlowMediumlgBlack(),
             ),
             SizedBox(height: 30.0),
@@ -45,7 +45,6 @@ class _ThankyouState extends State<Thankyou> {
                         locale: widget.locale,
                         localizedValues: widget.localizedValues,
                         currentIndex: 0,
-                        languagesSelection: true,
                       ),
                     ),
                     (Route<dynamic> route) => false);

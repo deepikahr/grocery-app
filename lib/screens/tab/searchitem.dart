@@ -9,7 +9,6 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/subCategoryProductCart.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -17,7 +16,7 @@ class SearchItem extends StatefulWidget {
   final List productsList, favProductList;
   final String currency, locale;
   final bool token;
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   SearchItem(
       {Key key,
       this.productsList,
@@ -36,13 +35,11 @@ class _SearchItemState extends State<SearchItem> {
   final TextEditingController _controller = new TextEditingController();
   bool isSearching = false,
       isFirstTime = true,
-      cardAdded = false,
       getTokenValue = false,
       isTokenGetLoading = false;
   List searchresult = new List();
-  int quanity = 1;
   String cartId, searchTerm;
-  var variantPrice, cartData;
+  var  cartData;
   String currency;
 
   @override
@@ -57,10 +54,9 @@ class _SearchItemState extends State<SearchItem> {
         isTokenGetLoading = true;
       });
     }
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    currency = prefs.getString('currency');
-
+    await Common.getCurrency().then((value) {
+    currency = value;
+    });
     await Common.getToken().then((onValue) {
       if (onValue != null) {
         if (mounted) {
@@ -245,8 +241,7 @@ class _SearchItemState extends State<SearchItem> {
                               new Icon(Icons.arrow_back, color: Colors.black),
                         ),
                         hintText:
-                            MyLocalizations.of(context).whatareyoubuyingtoday +
-                                "?",
+                            MyLocalizations.of(context).whatareyoubuyingtoday ,
                         fillColor: Color(0xFFF0F0F0),
                         filled: true,
                         focusColor: Colors.black,
@@ -315,7 +310,7 @@ class _SearchItemState extends State<SearchItem> {
                                         searchresult.length.toString() +
                                             " " +
                                             MyLocalizations.of(context)
-                                                .iteamsFounds,
+                                                .itemsFounds,
                                         style: textBarlowMediumBlack()),
                                   ],
                                 ),
@@ -448,7 +443,6 @@ class _SearchItemState extends State<SearchItem> {
                     builder: (BuildContext context) => Home(
                       locale: widget.locale,
                       localizedValues: widget.localizedValues,
-                      languagesSelection: false,
                       currentIndex: 2,
                     ),
                   ),

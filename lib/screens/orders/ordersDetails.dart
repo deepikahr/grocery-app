@@ -5,19 +5,19 @@ import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:intl/intl.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 SentryError sentryError = new SentryError();
 
 class OrderDetails extends StatefulWidget {
   final String orderId, locale;
-  final Map<String, Map<String, String>> localizedValues;
+  final Map localizedValues;
   OrderDetails({Key key, this.orderId, this.locale, this.localizedValues})
       : super(key: key);
   @override
@@ -42,8 +42,9 @@ class _OrderDetailsState extends State<OrderDetails> {
         isLoading = true;
       });
     }
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    currency = prefs.getString('currency');
+    await Common.getCurrency().then((value) {
+      currency = value;
+    });
     await LoginService.getOrderHistory(widget.orderId).then((onValue) {
       try {
         if (onValue['response_code'] == 200) {
@@ -199,12 +200,14 @@ class _OrderDetailsState extends State<OrderDetails> {
                                   children: <Widget>[
                                     Text(
                                         MyLocalizations.of(context).orderID +
-                                            ' :',
+                                            " :",
                                         style: textBarlowMediumBlack()),
                                     SizedBox(width: 5),
                                     Expanded(
                                       child: Text(
-                                          orderHistory['orderID'].toString(),
+                                          "#" +
+                                              orderHistory['orderID']
+                                                  .toString(),
                                           style: textBarlowMediumBlack()),
                                     )
                                   ],
@@ -214,7 +217,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: <Widget>[
                                     Text(
-                                        MyLocalizations.of(context).date + ' :',
+                                        MyLocalizations.of(context).date + " :",
                                         style: textBarlowMediumBlack()),
                                     SizedBox(width: 5),
                                     Expanded(
@@ -239,7 +242,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                     Text(
                                         MyLocalizations.of(context)
                                                 .deliveryDate +
-                                            ' :',
+                                            " :",
                                         style: textBarlowMediumBlack()),
                                     SizedBox(width: 5),
                                     Expanded(
@@ -256,7 +259,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: <Widget>[
                                     Text(
-                                        MyLocalizations.of(context).time + ' :',
+                                        MyLocalizations.of(context).time + " :",
                                         style: textBarlowMediumBlack()),
                                     SizedBox(width: 3),
                                     Expanded(
@@ -272,7 +275,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                     Text(
                                         MyLocalizations.of(context)
                                                 .paymentType +
-                                            ' :',
+                                            " :",
                                         style: textBarlowMediumBlack()),
                                     SizedBox(width: 5),
                                     Expanded(
@@ -282,6 +285,31 @@ class _OrderDetailsState extends State<OrderDetails> {
                                   ],
                                 ),
                                 SizedBox(height: 10),
+                                orderHistory['paymentType'] == "CARD"
+                                    ? Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text(
+                                              MyLocalizations.of(context)
+                                                      .paymentstatus +
+                                                  " :",
+                                              style: textBarlowMediumBlack()),
+                                          SizedBox(width: 5),
+                                          Expanded(
+                                            child: Text(
+                                                orderHistory[
+                                                            'transactionDetails']
+                                                        ['transactionStatus'] ??
+                                                    "",
+                                                style: textBarlowMediumBlack()),
+                                          )
+                                        ],
+                                      )
+                                    : Container(),
+                                orderHistory['paymentType'] == "CARD"
+                                    ? SizedBox(height: 10)
+                                    : Container(),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: <Widget>[
@@ -383,7 +411,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                       style: textBarlowMediumBlack(),
                                     ),
                                     SizedBox(
-                                      width: 50,
+                                      width: 30,
                                     ),
                                     orderHistory['orderStatus'] == "DELIVERED"
                                         ? order['rating'] == null
@@ -397,9 +425,12 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                       order['productId']);
                                                 },
                                                 color: primary,
-                                                text:
-                                                    MyLocalizations.of(context)
-                                                        .rateNow,
+                                                child: Text(
+                                                  MyLocalizations.of(context)
+                                                      .rateNow,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
                                               )
                                             : RatingBar(
                                                 initialRating:
@@ -538,11 +569,16 @@ class _OrderDetailsState extends State<OrderDetails> {
                                     currency,
                                     style: textBarlowBoldBlack(),
                                   ),
-                                  Text(
-                                    orderHistory['deliveryCharges']
-                                        .toStringAsFixed(2),
-                                    style: textBarlowBoldBlack(),
-                                  )
+                                  orderHistory['deliveryCharges'] == 0
+                                      ? Text(
+                                          MyLocalizations.of(context).free,
+                                          style: textBarlowBoldBlack(),
+                                        )
+                                      : Text(
+                                          orderHistory['deliveryCharges']
+                                              .toStringAsFixed(2),
+                                          style: textBarlowBoldBlack(),
+                                        )
                                 ],
                               ),
                             ),
@@ -604,7 +640,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text(MyLocalizations.of(context).grandTotal + ' :',
+                      Text(MyLocalizations.of(context).grandTotal + " :",
                           style: textBarlowMediumBlack()),
                       Container(
                         margin: EdgeInsets.only(left: 8),
