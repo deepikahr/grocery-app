@@ -13,7 +13,7 @@ class CartService {
       token = onValue;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client.post(Constants.baseURL + "cart/add/product",
         body: json.encode(body),
@@ -32,14 +32,14 @@ class CartService {
       token = onValue;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
-    final response = await client.get(Constants.baseURL + "cart/user/items",
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'bearer $token',
-          'language': languageCode,
-        });
+    final response =
+        await client.get(Constants.baseURL + "cart/user/items", headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'bearer $token',
+      'language': languageCode,
+    });
     return json.decode(response.body);
   }
 
@@ -50,7 +50,7 @@ class CartService {
       token = onValue;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client.put(Constants.baseURL + "cart/update/product",
         body: json.encode(body),
@@ -69,7 +69,7 @@ class CartService {
       token = onValue;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client.put(Constants.baseURL + "cart/delete/product",
         body: json.encode(body),
@@ -87,7 +87,7 @@ class CartService {
       token = onValue;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client
         .delete(Constants.baseURL + "cart/all/items/$cartId", headers: {
@@ -104,7 +104,7 @@ class CartService {
       token = onValue;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client.put(
         Constants.baseURL + "cart/remove/multi/product",
@@ -123,7 +123,7 @@ class CartService {
       token = onValue;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client
         .get(Constants.baseURL + "delivery/tax/settings/info", headers: {

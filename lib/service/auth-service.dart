@@ -9,7 +9,7 @@ class LoginService {
   static Future<Map<String, dynamic>> signUp(body) async {
     String languageCode;
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client.post(Constants.baseURL + "users/register",
         body: json.encode(body),
@@ -24,7 +24,7 @@ class LoginService {
   static Future<Map<String, dynamic>> signIn(body) async {
     String languageCode;
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client.post(Constants.baseURL + "users/login",
         body: json.encode(body),
@@ -40,7 +40,7 @@ class LoginService {
   static Future<Map<String, dynamic>> verifyEmail(body) async {
     String languageCode;
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client.post(Constants.baseURL + "users/verify/email",
         body: json.encode(body),
@@ -55,7 +55,7 @@ class LoginService {
   static Future<Map<String, dynamic>> verifyOtp(body, token) async {
     String languageCode;
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client.post(Constants.baseURL + "users/verify/OTP",
         body: json.encode(body),
@@ -71,7 +71,7 @@ class LoginService {
   static Future<Map<String, dynamic>> resetPassword(body, token) async {
     String languageCode;
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client.post(
         Constants.baseURL + "users/reset-password",
@@ -91,7 +91,7 @@ class LoginService {
       token = onValue;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client.get(Constants.baseURL + "users/me", headers: {
       'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ class LoginService {
       token = tkn;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client.post(
         Constants.baseURL + "utils/upload/profile/picture",
@@ -128,7 +128,7 @@ class LoginService {
       token = tkn;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client
         .delete(Constants.baseURL + "utils/imgaeKit/delete/$key", headers: {
@@ -146,7 +146,7 @@ class LoginService {
       token = tkn;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client.patch(
         Constants.baseURL + "users/update/profile",
@@ -166,7 +166,7 @@ class LoginService {
       token = tkn;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response =
         await client.get(Constants.baseURL + "users/verify/token", headers: {
@@ -180,7 +180,7 @@ class LoginService {
   static Future<Map<String, dynamic>> getBanner() async {
     String languageCode;
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client.get(Constants.baseURL + "banner", headers: {
       'Content-Type': 'application/json',
@@ -197,7 +197,7 @@ class LoginService {
       token = tkn;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response =
         await client.get(Constants.baseURL + "orders/info/$orderId", headers: {
@@ -214,7 +214,7 @@ class LoginService {
       token = tkn;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client
         .get(Constants.baseURL + "users/admin/infomation", headers: {
@@ -228,7 +228,7 @@ class LoginService {
   static Future<Map<String, dynamic>> aboutUs() async {
     String languageCode;
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client
         .get(Constants.baseURL + "business/business/about/us", headers: {
@@ -251,7 +251,7 @@ class LoginService {
   static Future<dynamic> getGlobalSettings() async {
     String languageCode;
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response =
         await client.get(Constants.baseURL + 'setting/user/App', headers: {
@@ -259,6 +259,25 @@ class LoginService {
       'language': languageCode,
     });
     await Common.setSavedSettingsData(response.body);
+    return json.decode(response.body);
+  }
+
+  static Future<dynamic> setLanguageCodeToProfile() async {
+    String languageCode, token;
+    await Common.getToken().then((tkn) {
+      token = tkn;
+    });
+    await Common.getSelectedLanguage().then((code) {
+      languageCode = code ?? "";
+    });
+    print(languageCode);
+    print(token);
+    final response =
+        await client.get(Constants.baseURL + 'users/language/set', headers: {
+      'Content-Type': 'application/json',
+      'language': languageCode,
+      'Authorization': 'bearer $token',
+    });
     return json.decode(response.body);
   }
 }

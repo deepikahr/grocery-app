@@ -14,7 +14,7 @@ class CouponService {
       token = onValue;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     var body = {"couponCode": couponCode.toString()};
     final response = await client.post(
@@ -34,7 +34,7 @@ class CouponService {
       token = onValue;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client
         .get(Constants.baseURL + "cart/remove/coupon/$cartId", headers: {

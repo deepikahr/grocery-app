@@ -5,6 +5,7 @@ import 'package:readymadeGroceryApp/screens/drawer/address.dart';
 import 'package:readymadeGroceryApp/screens/drawer/chatpage.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/product/all_products.dart';
+import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -150,18 +151,31 @@ class _DrawerPageState extends State<DrawerPage> {
   }
 
   logout() async {
-    await Common.setToken(null).then((value) async {
-      await Common.setUserID(null);
-      if (value == true) {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => MainScreen(
-                  locale: widget.locale,
-                  localizedValues: widget.localizedValues),
-            ),
-            (Route<dynamic> route) => false);
+    Map localizedValues;
+    String defaultLocale = '';
+    String locale = defaultLocale;
+    LoginService.getLanguageJson(locale).then((value) async {
+      print(value);
+      localizedValues = value['response_data']['json'];
+      if (locale == '') {
+        defaultLocale = value['response_data']['defaultCode']['languageCode'];
+        locale = defaultLocale;
       }
+      await Common.setSelectedLanguage(locale);
+      await Common.setAllLanguageCodes(value['response_data']['langCode']);
+      await Common.setAllLanguageNames(value['response_data']['langName']);
+      await LoginService.setLanguageCodeToProfile();
+      await Common.setToken(null);
+      await Common.setUserID(null);
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => MainScreen(
+              locale: locale,
+              localizedValues: localizedValues,
+            ),
+          ),
+          (Route<dynamic> route) => false);
     });
   }
 

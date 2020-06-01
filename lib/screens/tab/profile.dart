@@ -95,22 +95,26 @@ class _ProfileState extends State<Profile> {
 
   userInfoMethod() async {
     await LoginService.getUserInfo().then((onValue) {
+      print(onValue);
       try {
-        _refreshController.refreshCompleted();
         if (mounted) {
           setState(() {
             isGetTokenLoading = false;
-
-            userInfo = onValue['response_data']['userInfo'];
-
-            userID = userInfo['_id'];
           });
+        }
+        _refreshController.refreshCompleted();
+        if (onValue['response_code'] == 200) {
+          if (mounted) {
+            setState(() {
+              userInfo = onValue['response_data']['userInfo'];
+              userID = userInfo['_id'];
+            });
+          }
         }
       } catch (error, stackTrace) {
         if (mounted) {
           setState(() {
             isGetTokenLoading = false;
-
             userInfo = null;
             userID = null;
           });
@@ -121,7 +125,6 @@ class _ProfileState extends State<Profile> {
       if (mounted) {
         setState(() {
           isGetTokenLoading = false;
-
           userInfo = null;
           userID = null;
         });
@@ -180,6 +183,7 @@ class _ProfileState extends State<Profile> {
                                     value['response_data']['langCode']);
                                 await Common.setAllLanguageNames(
                                     value['response_data']['langName']);
+                                await LoginService.setLanguageCodeToProfile();
                                 if (mounted) {
                                   setState(() {
                                     isLanguageSelecteLoading = false;

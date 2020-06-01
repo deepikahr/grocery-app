@@ -8,6 +8,7 @@ import 'package:readymadeGroceryApp/screens/authe/forgotpassword.dart';
 import 'package:readymadeGroceryApp/screens/authe/signup.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
@@ -75,7 +76,6 @@ class _LoginState extends State<Login> {
           "playerId": playerID
         };
         await LoginService.signIn(body).then((onValue) async {
-          print('log $onValue');
           try {
             if (mounted) {
               setState(() {
@@ -86,6 +86,7 @@ class _LoginState extends State<Login> {
               if (onValue['response_data']['role'] == 'User') {
                 await Common.setToken(onValue['response_data']['token']);
                 await Common.setUserID(onValue['response_data']['_id']);
+                await LoginService.setLanguageCodeToProfile();
                 if (widget.isCart == true) {
                   Navigator.pushAndRemoveUntil(
                       context,
@@ -267,7 +268,9 @@ class _LoginState extends State<Login> {
       padding: const EdgeInsets.only(top: 5.0, bottom: 10.0),
       child: Container(
         child: TextFormField(
-          initialValue: "user@ionicfirebaseapp.com",
+          initialValue: Constants.APP_NAME.contains('Readymade')
+              ? "user@ionicfirebaseapp.com"
+              : null,
           onSaved: (String value) {
             email = value;
           },
@@ -323,7 +326,8 @@ class _LoginState extends State<Login> {
     return Container(
       margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
       child: TextFormField(
-        initialValue: "123456",
+        initialValue:
+            Constants.APP_NAME.contains('Readymade') ? "123456" : null,
         style: textBarlowRegularBlack(),
         keyboardType: TextInputType.text,
         onSaved: (String value) {

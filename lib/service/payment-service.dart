@@ -11,7 +11,7 @@ class PaymentService {
       token = onValue;
     });
     await Common.getSelectedLanguage().then((code) {
-      languageCode = code;
+      languageCode = code ?? "";
     });
     final response = await client.post(
         Constants.baseURL + "delivery/tax/settings/get/charges",

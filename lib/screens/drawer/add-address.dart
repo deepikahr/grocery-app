@@ -82,8 +82,14 @@ class _AddAddressState extends State<AddAddress> {
           if (mounted) {
             setState(() {
               isLoading = false;
-              Navigator.pop(context);
             });
+          }
+          if (onValue['response_code'] == 201) {
+            if (mounted) {
+              setState(() {
+                Navigator.pop(context);
+              });
+            }
           }
         } catch (error, stackTrace) {
           if (mounted) {

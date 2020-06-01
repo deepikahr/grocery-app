@@ -97,8 +97,14 @@ class _EditAddressState extends State<EditAddress> {
           if (mounted) {
             setState(() {
               isUpdateAddress = false;
-              Navigator.of(context).pop();
             });
+          }
+          if (onValue['response_code'] == 200) {
+            if (mounted) {
+              setState(() {
+                Navigator.pop(context);
+              });
+            }
           }
         } catch (error, stackTrace) {
           if (mounted) {
