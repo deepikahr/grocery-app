@@ -414,6 +414,9 @@ class _MyCartState extends State<MyCart> {
   }
 
   checkMinOrderAmountCondition() async {
+       if (minAmout['minimumOrderAmountToPlaceOrder'] == null) {
+      minAmout['minimumOrderAmountToPlaceOrder'] = 0.0;
+    }
     if (cartItem['grandTotal'] >= minAmout['minimumOrderAmountToPlaceOrder']) {
       var result = Navigator.push(
         context,
