@@ -215,6 +215,11 @@ class _PaymentState extends State<Payment> {
                 };
                 CartService.paymentTimeCarDataDelete(body).then((response) {
                   if (response['response_code'] == 200) {
+                    if (response['response_data'] is Map) {
+                      Common.setCartData(response['response_data']);
+                    } else {
+                      Common.setCartData(null);
+                    }
                     Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(

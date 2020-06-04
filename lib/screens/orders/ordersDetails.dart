@@ -562,25 +562,26 @@ class _OrderDetailsState extends State<OrderDetails> {
                                 top: 15.0,
                                 bottom: 5.0,
                               ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    currency,
-                                    style: textBarlowBoldBlack(),
-                                  ),
-                                  orderHistory['deliveryCharges'] == 0
-                                      ? Text(
-                                          MyLocalizations.of(context).free,
+                              child: orderHistory['deliveryCharges'] == 0
+                                  ? Text(
+                                      MyLocalizations.of(context).free,
+                                      style: textBarlowBoldBlack(),
+                                    )
+                                  : Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          currency,
                                           style: textBarlowBoldBlack(),
-                                        )
-                                      : Text(
+                                        ),
+                                        Text(
                                           orderHistory['deliveryCharges']
                                               .toStringAsFixed(2),
                                           style: textBarlowBoldBlack(),
                                         )
-                                ],
-                              ),
+                                      ],
+                                    ),
                             ),
                           ),
                         ],

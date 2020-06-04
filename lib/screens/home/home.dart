@@ -9,6 +9,7 @@ import 'package:readymadeGroceryApp/screens/tab/saveditems.dart';
 import 'package:readymadeGroceryApp/screens/tab/searchitem.dart';
 import 'package:readymadeGroceryApp/screens/tab/store.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/fav-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -54,6 +55,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         });
       }
     }
+    getToken();
     getResult();
     getGlobalSettingsData();
     tabController = TabController(length: 4, vsync: this);
@@ -108,6 +110,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         if (mounted) {
           setState(() {
             getTokenValue = true;
+            getFavListApi();
           });
         }
       } else {

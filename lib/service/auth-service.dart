@@ -270,8 +270,6 @@ class LoginService {
     await Common.getSelectedLanguage().then((code) {
       languageCode = code ?? "";
     });
-    print(languageCode);
-    print(token);
     final response =
         await client.get(Constants.baseURL + 'users/language/set', headers: {
       'Content-Type': 'application/json',

@@ -155,7 +155,6 @@ class _DrawerPageState extends State<DrawerPage> {
     String defaultLocale = '';
     String locale = defaultLocale;
     LoginService.getLanguageJson(locale).then((value) async {
-      print(value);
       localizedValues = value['response_data']['json'];
       if (locale == '') {
         defaultLocale = value['response_data']['defaultCode']['languageCode'];

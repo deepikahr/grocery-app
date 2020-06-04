@@ -104,6 +104,7 @@ class _CheckoutState extends State<Checkout> {
           if (mounted) {
             setState(() {
               cartItem = onValue['response_data'];
+              Common.setCartData(onValue['response_data']);
               isLoadingCart = false;
             });
           }
@@ -111,6 +112,7 @@ class _CheckoutState extends State<Checkout> {
           if (mounted) {
             setState(() {
               cartItem = null;
+              Common.setCartData(null);
               isLoadingCart = false;
             });
           }
