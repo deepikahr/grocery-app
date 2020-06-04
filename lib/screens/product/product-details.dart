@@ -80,7 +80,6 @@ class _ProductDetailsState extends State<ProductDetails>
   @override
   void initState() {
     getTokenValueMethod();
-    _checkFavourite();
     super.initState();
   }
 
@@ -106,7 +105,7 @@ class _ProductDetailsState extends State<ProductDetails>
           if (mounted) {
             setState(() {
               getTokenValue = false;
-              getProductDetailsWithLog();
+              getProductDetailsWithoutLog();
             });
           }
         }
@@ -114,7 +113,7 @@ class _ProductDetailsState extends State<ProductDetails>
         if (mounted) {
           setState(() {
             getTokenValue = false;
-            getProductDetailsWithLog();
+            getProductDetailsWithoutLog();
           });
         }
         sentryError.reportError(error, stackTrace);
@@ -123,7 +122,7 @@ class _ProductDetailsState extends State<ProductDetails>
       if (mounted) {
         setState(() {
           getTokenValue = false;
-          getProductDetailsWithLog();
+          getProductDetailsWithoutLog();
         });
       }
       sentryError.reportError(error, null);
@@ -138,6 +137,8 @@ class _ProductDetailsState extends State<ProductDetails>
             isProductDetails = false;
           });
         }
+        _checkFavourite();
+
         if (value['response_code'] == 200) {
           if (mounted) {
             setState(() {
@@ -176,7 +177,7 @@ class _ProductDetailsState extends State<ProductDetails>
     });
   }
 
-  getProductDetailsWithLog() {
+  getProductDetailsWithoutLog() {
     ProductService.productDetailsWithoutLogin(widget.productID).then((value) {
       try {
         if (mounted) {
@@ -422,19 +423,12 @@ class _ProductDetailsState extends State<ProductDetails>
           });
         }
         if (onValue['response_code'] == 200) {
-          var result = Navigator.push(
-            context,
-            new MaterialPageRoute(
-              builder: (BuildContext context) => new Home(
-                currentIndex: 2,
-                locale: widget.locale,
-                localizedValues: widget.localizedValues,
-              ),
-            ),
-          );
-          result.then((value) {
-            getTokenValueMethod();
-          });
+          if (onValue['response_data'] is Map) {
+            Common.setCartData(onValue['response_data']);
+          } else {
+            Common.setCartData(null);
+          }
+          Navigator.pop(context);
         }
       } catch (error, stackTrace) {
         if (mounted) {

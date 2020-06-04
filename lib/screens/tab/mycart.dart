@@ -208,6 +208,11 @@ class _MyCartState extends State<MyCart> {
             );
           } else {
             cartItem = onValue['response_data'];
+            if (onValue['response_data'] is Map) {
+              Common.setCartData(onValue['response_data']);
+            } else {
+              Common.setCartData(null);
+            }
           }
           setState(() {
             isUpdating = false;
@@ -251,6 +256,8 @@ class _MyCartState extends State<MyCart> {
         }
         if (onValue['response_code'] == 200 &&
             onValue['response_data'] is Map) {
+          Common.setCartData(onValue['response_data']);
+
           if (mounted) {
             setState(() {
               cartItem = onValue['response_data'];
@@ -272,6 +279,7 @@ class _MyCartState extends State<MyCart> {
           if (mounted) {
             setState(() {
               cartItem = null;
+              Common.setCartData(null);
             });
           }
         }
@@ -359,10 +367,10 @@ class _MyCartState extends State<MyCart> {
       'productId': cartItem['cart'][i]['productId'],
     };
     await CartService.deleteDataFromCart(body).then((onValue) {
-      print(onValue);
       try {
         if (onValue['response_code'] == 200 &&
             onValue['response_data'] is Map) {
+          Common.setCartData(onValue['response_data']);
           if (mounted) {
             setState(() {
               cartItem = onValue['response_data'];
@@ -372,6 +380,7 @@ class _MyCartState extends State<MyCart> {
         } else {
           if (mounted) {
             setState(() {
+              Common.setCartData(null);
               cartItem = null;
             });
           }
@@ -399,6 +408,7 @@ class _MyCartState extends State<MyCart> {
     await CartService.deleteAllDataFromCart(cartId).then((onValue) {
       try {
         if (onValue['response_code'] == 200) {
+          Common.setCartData(null);
           if (mounted) {
             setState(() {
               cartItem = null;
@@ -414,7 +424,7 @@ class _MyCartState extends State<MyCart> {
   }
 
   checkMinOrderAmountCondition() async {
-       if (minAmout['minimumOrderAmountToPlaceOrder'] == null) {
+    if (minAmout['minimumOrderAmountToPlaceOrder'] == null) {
       minAmout['minimumOrderAmountToPlaceOrder'] = 0.0;
     }
     if (cartItem['grandTotal'] >= minAmout['minimumOrderAmountToPlaceOrder']) {
