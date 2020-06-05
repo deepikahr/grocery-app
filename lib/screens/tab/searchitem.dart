@@ -39,7 +39,7 @@ class _SearchItemState extends State<SearchItem> {
       isTokenGetLoading = false;
   List searchresult = new List();
   String cartId, searchTerm;
-  var  cartData;
+  var cartData;
   String currency;
 
   @override
@@ -55,7 +55,7 @@ class _SearchItemState extends State<SearchItem> {
       });
     }
     await Common.getCurrency().then((value) {
-    currency = value;
+      currency = value;
     });
     await Common.getToken().then((onValue) {
       if (onValue != null) {
@@ -241,7 +241,7 @@ class _SearchItemState extends State<SearchItem> {
                               new Icon(Icons.arrow_back, color: Colors.black),
                         ),
                         hintText:
-                            MyLocalizations.of(context).whatareyoubuyingtoday ,
+                            MyLocalizations.of(context).whatareyoubuyingtoday,
                         fillColor: Color(0xFFF0F0F0),
                         filled: true,
                         focusColor: Colors.black,

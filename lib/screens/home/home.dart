@@ -281,6 +281,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           ? GFAppBar(
               backgroundColor: bg,
               elevation: 0,
+              iconTheme: IconThemeData(color: Colors.black),
               title: deliveryAddress(),
               actions: <Widget>[
                 InkWell(

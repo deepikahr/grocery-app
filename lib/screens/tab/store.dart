@@ -552,8 +552,21 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                           ? Positioned(
                                               child: Stack(
                                                 children: <Widget>[
-                                                  Image.asset(
-                                                      'lib/assets/images/badge.png'),
+                                                  Container(
+                                                    width: 61,
+                                                    height: 18,
+                                                    decoration: BoxDecoration(
+                                                        color:
+                                                            Color(0xFFFFAF72),
+                                                        borderRadius:
+                                                            BorderRadius.only(
+                                                                topLeft: Radius
+                                                                    .circular(
+                                                                        10),
+                                                                bottomRight: Radius
+                                                                    .circular(
+                                                                        10))),
+                                                  ),
                                                   Padding(
                                                     padding:
                                                         const EdgeInsets.all(

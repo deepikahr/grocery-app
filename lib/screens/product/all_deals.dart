@@ -164,6 +164,7 @@ class _AllDealsListState extends State<AllDealsList> {
       appBar: GFAppBar(
         backgroundColor: bg,
         elevation: 0,
+        iconTheme: IconThemeData(color: Colors.black),
         title: Text(
           widget.title,
           style: textbarlowSemiBoldBlack(),
