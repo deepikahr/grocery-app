@@ -971,7 +971,7 @@ class _MyCartState extends State<MyCart> {
                                 height: 55,
                                 margin: EdgeInsets.only(left: 15, right: 15),
                                 decoration: BoxDecoration(
-                                  color: Color(0xFFFFCF2D),
+                                  color: primary,
                                   boxShadow: [
                                     BoxShadow(
                                         color: Colors.black.withOpacity(0.29),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
+import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/model/counterModel.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/product/product-details.dart';
@@ -75,7 +76,7 @@ class _AllProductsState extends State<AllProducts> {
 
   getTokenValueMethod() async {
     await Common.getCurrency().then((value) {
-    currency = value;
+      currency = value;
     });
     await Common.getToken().then((onValue) {
       try {
@@ -237,6 +238,7 @@ class _AllProductsState extends State<AllProducts> {
       appBar: GFAppBar(
         backgroundColor: bg,
         elevation: 0,
+        iconTheme: IconThemeData(color: Colors.black),
         title: Text(
           MyLocalizations.of(context).products,
           style: textbarlowSemiBoldBlack(),
@@ -384,8 +386,20 @@ class _AllProductsState extends State<AllProducts> {
                                         ? Positioned(
                                             child: Stack(
                                               children: <Widget>[
-                                                Image.asset(
-                                                    'lib/assets/images/badge.png'),
+                                                Container(
+                                                  width: 61,
+                                                  height: 18,
+                                                  decoration: BoxDecoration(
+                                                      color: Color(0xFFFFAF72),
+                                                      borderRadius:
+                                                          BorderRadius.only(
+                                                              topLeft: Radius
+                                                                  .circular(10),
+                                                              bottomRight:
+                                                                  Radius
+                                                                      .circular(
+                                                                          10))),
+                                                ),
                                                 Padding(
                                                   padding:
                                                       const EdgeInsets.all(2.0),
