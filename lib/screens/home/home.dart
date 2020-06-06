@@ -9,7 +9,6 @@ import 'package:readymadeGroceryApp/screens/tab/saveditems.dart';
 import 'package:readymadeGroceryApp/screens/tab/searchitem.dart';
 import 'package:readymadeGroceryApp/screens/tab/store.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
-import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/fav-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
