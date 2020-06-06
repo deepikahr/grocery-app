@@ -109,7 +109,11 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
       'quantity': quanity
     };
     await CartService.updateProductToCart(body).then((onValue) {
-      print(onValue);
+      if (onValue['response_code'] == 200 && onValue['response_data'] is Map) {
+        Common.setCartData(onValue['response_data']);
+      } else {
+        Common.setCartData(null);
+      }
       if (mounted) {
         setState(() {
           isQuantityUpdating = false;
@@ -125,6 +129,11 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
     };
 
     await CartService.deleteDataFromCart(body).then((onValue) {
+      if (onValue['response_code'] == 200 && onValue['response_data'] is Map) {
+        Common.setCartData(onValue['response_data']);
+      } else {
+        Common.setCartData(null);
+      }
       if (mounted) {
         setState(() {
           cardAdded = false;
@@ -326,6 +335,15 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                                   .then((onValue) {
                                                 if (onValue['response_code'] ==
                                                     200) {
+                                                  if (onValue['response_code'] ==
+                                                          200 &&
+                                                      onValue['response_data']
+                                                          is Map) {
+                                                    Common.setCartData(onValue[
+                                                        'response_data']);
+                                                  } else {
+                                                    Common.setCartData(null);
+                                                  }
                                                   for (int i = 0;
                                                       i <
                                                           onValue['response_data']

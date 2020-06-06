@@ -8,6 +8,7 @@ import 'package:readymadeGroceryApp/screens/product/all_deals.dart';
 import 'package:readymadeGroceryApp/screens/product/all_products.dart';
 import 'package:readymadeGroceryApp/screens/product/product-details.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -84,6 +85,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
           if (mounted) {
             setState(() {
               getTokenValue = true;
+              getCartData();
             });
           }
         } else {
@@ -96,6 +98,16 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       }).catchError((error) {
         sentryError.reportError(error, null);
       });
+    });
+  }
+
+  getCartData() {
+    CartService.getProductToCart().then((value) {
+      if (value['response_code'] == 200 && value['response_data'] is Map) {
+        Common.setCartData(value['response_data']);
+      } else {
+        Common.setCartData(null);
+      }
     });
   }
 
@@ -335,9 +347,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                 color: bg,
               ),
               Container(
-                height: 115,
-                margin: EdgeInsets.only(top: 10),
-                padding: EdgeInsets.only(top: 5, left: 20, right: 20),
+                height: 122,
+                padding: EdgeInsets.only(left: 20, right: 20),
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                     color: primary,
@@ -541,8 +552,21 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                           ? Positioned(
                                               child: Stack(
                                                 children: <Widget>[
-                                                  Image.asset(
-                                                      'lib/assets/images/badge.png'),
+                                                  Container(
+                                                    width: 61,
+                                                    height: 18,
+                                                    decoration: BoxDecoration(
+                                                        color:
+                                                            Color(0xFFFFAF72),
+                                                        borderRadius:
+                                                            BorderRadius.only(
+                                                                topLeft: Radius
+                                                                    .circular(
+                                                                        10),
+                                                                bottomRight: Radius
+                                                                    .circular(
+                                                                        10))),
+                                                  ),
                                                   Padding(
                                                     padding:
                                                         const EdgeInsets.all(

@@ -136,6 +136,12 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
             });
           }
           if (onValue['response_code'] == 200) {
+            if (onValue['response_code'] == 200 &&
+                onValue['response_data'] is Map) {
+              Common.setCartData(onValue['response_data']);
+            } else {
+              Common.setCartData(null);
+            }
             Navigator.of(context).pop(onValue['response_data']);
           }
         } catch (error, stackTrace) {

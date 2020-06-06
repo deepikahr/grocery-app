@@ -349,7 +349,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                                   EdgeInsets.only(right: 15),
                                               decoration: BoxDecoration(
                                                 color: isSelected
-                                                    ? Color(0xFFFFCF2D)
+                                                    ? primary
                                                     : Color(0xFFf0F0F0),
                                                 borderRadius: BorderRadius.all(
                                                   Radius.circular(4),
@@ -394,7 +394,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                                   EdgeInsets.only(right: 15),
                                               decoration: BoxDecoration(
                                                 color: isSelectedIndexZero
-                                                    ? Color(0xFFFFCF2D)
+                                                    ? primary
                                                     : Color(0xFFf0F0F0),
                                                 border: Border.all(
                                                   color: Color(0xFFDFDFDF),
@@ -445,7 +445,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                           decoration: BoxDecoration(
                                             color: isSelectetedId ==
                                                     subCategryList[i]['_id']
-                                                ? Color(0xFFFFCF2D)
+                                                ? primary
                                                 : Color(0xFFf0F0F0),
                                             border: Border.all(
                                                 color: Color(0xFFDFDFDF)),
@@ -629,8 +629,17 @@ class _SubCategoriesState extends State<SubCategories> {
                                                               child: Stack(
                                                                 children: <
                                                                     Widget>[
-                                                                  Image.asset(
-                                                                      'lib/assets/images/badge.png'),
+                                                                  Container(
+                                                                    width: 61,
+                                                                    height: 18,
+                                                                    decoration: BoxDecoration(
+                                                                        color: Color(
+                                                                            0xFFFFAF72),
+                                                                        borderRadius: BorderRadius.only(
+                                                                            topLeft:
+                                                                                Radius.circular(10),
+                                                                            bottomRight: Radius.circular(10))),
+                                                                  ),
                                                                   Text(
                                                                     " " +
                                                                         subCategryByProduct[i]['delaPercent']
@@ -783,8 +792,17 @@ class _SubCategoriesState extends State<SubCategories> {
                                                               child: Stack(
                                                                 children: <
                                                                     Widget>[
-                                                                  Image.asset(
-                                                                      'lib/assets/images/badge.png'),
+                                                                  Container(
+                                                                    width: 61,
+                                                                    height: 18,
+                                                                    decoration: BoxDecoration(
+                                                                        color: Color(
+                                                                            0xFFFFAF72),
+                                                                        borderRadius: BorderRadius.only(
+                                                                            topLeft:
+                                                                                Radius.circular(10),
+                                                                            bottomRight: Radius.circular(10))),
+                                                                  ),
                                                                   Text(
                                                                     " " +
                                                                         subProductsList[i]['delaPercent']
