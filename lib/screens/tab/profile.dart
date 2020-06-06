@@ -159,48 +159,8 @@ class _ProfileState extends State<Profile> {
                       itemBuilder: (BuildContext context, int i) {
                         return GFButton(
                           onPressed: () async {
-                            if (mounted) {
-                              setState(() {
-                                isLanguageSelecteLoading = true;
-                              });
-                            }
                             await Common.setSelectedLanguage(languagesCodes[i]);
-                            Map localizedValues;
-                            String defaultLocale = '';
-                            await Common.getSelectedLanguage().then((value) {
-                              String locale = value ?? defaultLocale;
-                              LoginService.getLanguageJson(locale)
-                                  .then((value) async {
-                                localizedValues =
-                                    value['response_data']['json'];
-                                if (locale == '') {
-                                  defaultLocale = value['response_data']
-                                      ['defaultCode']['languageCode'];
-                                  locale = defaultLocale;
-                                }
-                                await Common.setSelectedLanguage(locale);
-                                await Common.setAllLanguageCodes(
-                                    value['response_data']['langCode']);
-                                await Common.setAllLanguageNames(
-                                    value['response_data']['langName']);
-                                await LoginService.setLanguageCodeToProfile();
-                                if (mounted) {
-                                  setState(() {
-                                    isLanguageSelecteLoading = false;
-                                  });
-                                }
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          MainScreen(
-                                        locale: locale,
-                                        localizedValues: localizedValues,
-                                      ),
-                                    ),
-                                    (Route<dynamic> route) => false);
-                              });
-                            });
+                            main();
                           },
                           type: GFButtonType.transparent,
                           child: Row(

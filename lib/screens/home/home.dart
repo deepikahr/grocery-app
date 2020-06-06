@@ -54,6 +54,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         });
       }
     }
+    getToken();
     getResult();
     getGlobalSettingsData();
     tabController = TabController(length: 4, vsync: this);
@@ -108,6 +109,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         if (mounted) {
           setState(() {
             getTokenValue = true;
+            getFavListApi();
           });
         }
       } else {
@@ -278,6 +280,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           ? GFAppBar(
               backgroundColor: bg,
               elevation: 0,
+              iconTheme: IconThemeData(color: Colors.black),
               title: deliveryAddress(),
               actions: <Widget>[
                 InkWell(
