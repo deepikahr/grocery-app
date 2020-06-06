@@ -9,9 +9,12 @@ class CouponService {
 
   static Future<Map<String, dynamic>> applyCouponsCode(
       cartId, couponCode) async {
-    String token;
+    String token, languageCode;
     await Common.getToken().then((onValue) {
       token = onValue;
+    });
+    await Common.getSelectedLanguage().then((code) {
+      languageCode = code ?? "";
     });
     var body = {"couponCode": couponCode.toString()};
     final response = await client.post(
@@ -19,20 +22,25 @@ class CouponService {
         body: json.encode(body),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'bearer $token'
+          'Authorization': 'bearer $token',
+          'language': languageCode,
         });
     return json.decode(response.body);
   }
 
   static Future<Map<String, dynamic>> removeCoupon(cartId) async {
-    String token;
+    String token, languageCode;
     await Common.getToken().then((onValue) {
       token = onValue;
+    });
+    await Common.getSelectedLanguage().then((code) {
+      languageCode = code ?? "";
     });
     final response = await client
         .get(Constants.baseURL + "cart/remove/coupon/$cartId", headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'bearer $token'
+      'Authorization': 'bearer $token',
+      'language': languageCode,
     });
     return json.decode(response.body);
   }

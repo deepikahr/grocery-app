@@ -281,8 +281,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                         return MyLocalizations.of(context)
                             .pleaseEnterMin6DigitPassword;
                       } else if (_passwordTextController.text != value) {
-                        return MyLocalizations.of(context).passwordsdonotmatch +
-                            '..';
+                        return MyLocalizations.of(context).passwordsdonotmatch;
                       } else
                         return null;
                     },

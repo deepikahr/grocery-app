@@ -32,7 +32,7 @@ class _ThankyouState extends State<Thankyou> {
             ),
             SizedBox(height: 13.0),
             Text(
-              MyLocalizations.of(context).thankYou + '!',
+              MyLocalizations.of(context).thankYou,
               style: textbarlowMediumlgBlack(),
             ),
             SizedBox(height: 30.0),

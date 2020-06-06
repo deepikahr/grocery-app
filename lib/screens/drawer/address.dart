@@ -29,7 +29,8 @@ class Address extends StatefulWidget {
 class _AddressState extends State<Address> {
   bool isProfile = false, addressLoading = false;
   List addressList = List();
-  // LocationResult _pickedLocation;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   PlacePickerResult pickedLocation;
   LocationData currentLocation;
   Location _location = new Location();
@@ -54,9 +55,21 @@ class _AddressState extends State<Address> {
 
         if (mounted) {
           setState(() {
-            addressList = onValue['response_data'];
             addressLoading = false;
           });
+        }
+        if (onValue['response_code'] == 200) {
+          if (mounted) {
+            setState(() {
+              addressList = onValue['response_data'];
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              addressList = [];
+            });
+          }
         }
       } catch (error, stackTrace) {
         if (mounted) {
@@ -81,16 +94,18 @@ class _AddressState extends State<Address> {
   deleteAddress(body) async {
     await AddressService.deleteAddress(body).then((onValue) {
       try {
-        getAddress();
-        if (mounted) {
-          setState(() {
-            addressList = addressList;
-          });
+        if (onValue['response_code'] == 200) {
+          if (mounted) {
+            setState(() {
+              getAddress();
+              addressList = addressList;
+              showSnackbar(onValue['response_data']);
+            });
+          }
         }
       } catch (error, stackTrace) {
         if (mounted) {
           setState(() {
-            addressList = [];
             addressLoading = false;
           });
         }
@@ -99,7 +114,6 @@ class _AddressState extends State<Address> {
     }).catchError((error) {
       if (mounted) {
         setState(() {
-          addressList = [];
           addressLoading = false;
         });
       }
@@ -107,9 +121,18 @@ class _AddressState extends State<Address> {
     });
   }
 
+  void showSnackbar(message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(milliseconds: 3000),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: GFAppBar(
         iconTheme: IconThemeData(
           color: Colors.black,

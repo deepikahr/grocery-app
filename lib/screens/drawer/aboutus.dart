@@ -127,7 +127,7 @@ class _AboutUsState extends State<AboutUs> {
                       Container(
                         margin: EdgeInsets.only(left: 15, right: 15.0),
                         child: Text(
-                          MyLocalizations.of(context).description + ':',
+                          MyLocalizations.of(context).description + " :",
                           style: textBarlowMediumBlack(),
                         ),
                       ),
@@ -147,7 +147,7 @@ class _AboutUsState extends State<AboutUs> {
                         margin:
                             EdgeInsets.only(left: 15, bottom: 15, right: 15.0),
                         child: Text(
-                          MyLocalizations.of(context).address + ':',
+                          MyLocalizations.of(context).address + " :",
                           style: textBarlowMediumBlack(),
                         ),
                       ),
@@ -161,7 +161,7 @@ class _AboutUsState extends State<AboutUs> {
                         margin:
                             EdgeInsets.only(left: 15, bottom: 15, right: 15.0),
                         child: Text(
-                          MyLocalizations.of(context).contactInformation + ':',
+                          MyLocalizations.of(context).contactInformation + " :",
                           style: textBarlowMediumBlack(),
                         ),
                       ),

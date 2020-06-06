@@ -200,12 +200,14 @@ class _OrderDetailsState extends State<OrderDetails> {
                                   children: <Widget>[
                                     Text(
                                         MyLocalizations.of(context).orderID +
-                                            ' :',
+                                            " :",
                                         style: textBarlowMediumBlack()),
                                     SizedBox(width: 5),
                                     Expanded(
                                       child: Text(
-                                          orderHistory['orderID'].toString(),
+                                          "#" +
+                                              orderHistory['orderID']
+                                                  .toString(),
                                           style: textBarlowMediumBlack()),
                                     )
                                   ],
@@ -215,7 +217,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: <Widget>[
                                     Text(
-                                        MyLocalizations.of(context).date + ' :',
+                                        MyLocalizations.of(context).date + " :",
                                         style: textBarlowMediumBlack()),
                                     SizedBox(width: 5),
                                     Expanded(
@@ -240,7 +242,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                     Text(
                                         MyLocalizations.of(context)
                                                 .deliveryDate +
-                                            ' :',
+                                            " :",
                                         style: textBarlowMediumBlack()),
                                     SizedBox(width: 5),
                                     Expanded(
@@ -257,7 +259,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: <Widget>[
                                     Text(
-                                        MyLocalizations.of(context).time + ' :',
+                                        MyLocalizations.of(context).time + " :",
                                         style: textBarlowMediumBlack()),
                                     SizedBox(width: 3),
                                     Expanded(
@@ -273,7 +275,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                     Text(
                                         MyLocalizations.of(context)
                                                 .paymentType +
-                                            ' :',
+                                            " :",
                                         style: textBarlowMediumBlack()),
                                     SizedBox(width: 5),
                                     Expanded(
@@ -290,10 +292,8 @@ class _OrderDetailsState extends State<OrderDetails> {
                                         children: <Widget>[
                                           Text(
                                               MyLocalizations.of(context)
-                                                      .payment +
-                                                  MyLocalizations.of(context)
-                                                      .status +
-                                                  ' :',
+                                                      .paymentstatus +
+                                                  " :",
                                               style: textBarlowMediumBlack()),
                                           SizedBox(width: 5),
                                           Expanded(
@@ -411,7 +411,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                       style: textBarlowMediumBlack(),
                                     ),
                                     SizedBox(
-                                      width: 50,
+                                      width: 30,
                                     ),
                                     orderHistory['orderStatus'] == "DELIVERED"
                                         ? order['rating'] == null
@@ -425,9 +425,12 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                       order['productId']);
                                                 },
                                                 color: primary,
-                                                text:
-                                                    MyLocalizations.of(context)
-                                                        .rateNow,
+                                                child: Text(
+                                                  MyLocalizations.of(context)
+                                                      .rateNow,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
                                               )
                                             : RatingBar(
                                                 initialRating:
@@ -637,7 +640,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text(MyLocalizations.of(context).grandTotal + ' :',
+                      Text(MyLocalizations.of(context).grandTotal + " :",
                           style: textBarlowMediumBlack()),
                       Container(
                         margin: EdgeInsets.only(left: 8),

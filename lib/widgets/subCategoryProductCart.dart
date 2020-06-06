@@ -109,6 +109,7 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
       'quantity': quanity
     };
     await CartService.updateProductToCart(body).then((onValue) {
+      print(onValue);
       if (mounted) {
         setState(() {
           isQuantityUpdating = false;

@@ -68,23 +68,20 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     }
     LoginService.getGlobalSettings().then((onValue) async {
       try {
-        if (onValue['response_data']['currencyCode'] == null) {
-          await Common.setCurrency('\$');
-          await Common.getCurrency().then((value) {
-            currency = value;
+        if (mounted) {
+          setState(() {
+            currencyLoading = false;
           });
-          if (mounted) {
-            setState(() {
-              currencyLoading = false;
+        }
+        if (onValue['response_code'] == 200) {
+          if (onValue['response_data']['currencyCode'] == null) {
+            await Common.setCurrency('\$');
+            await Common.getCurrency().then((value) {
+              currency = value;
             });
-          }
-        } else {
-          currency = onValue['response_data']['currencyCode'];
-          await Common.setCurrency(currency);
-          if (mounted) {
-            setState(() {
-              currencyLoading = false;
-            });
+          } else {
+            currency = onValue['response_data']['currencyCode'];
+            await Common.setCurrency(currency);
           }
         }
       } catch (error, stackTrace) {
@@ -133,10 +130,12 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   getFavListApi() async {
     await FavouriteService.getFavList().then((onValue) {
       try {
-        if (mounted) {
-          setState(() {
-            favProductList = onValue['response_data'];
-          });
+        if (onValue['response_code'] == 200) {
+          if (mounted) {
+            setState(() {
+              favProductList = onValue['response_data'];
+            });
+          }
         }
       } catch (error, stackTrace) {
         if (mounted) {

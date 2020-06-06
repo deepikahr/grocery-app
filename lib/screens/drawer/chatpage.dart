@@ -41,18 +41,20 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   Future getUserInfor() async {
     await LoginService.getUserInfo().then((onValue) {
       try {
-        if (mounted) {
-          setState(() {
-            name = onValue['response_data']['userInfo']['firstName'];
-            id = onValue['response_data']['userInfo']['_id'];
-            if (onValue['response_data']['userInfo']['profilePic'] == null) {
-              image =
-                  'https://res.cloudinary.com/ddboxana4/image/upload/v1564040195/User_tzzeri.png';
-            } else {
-              image = onValue['response_data']['userInfo']['profilePic'];
-            }
-            fetchRestaurantInfo();
-          });
+        if (onValue['response_code'] == 200) {
+          if (mounted) {
+            setState(() {
+              name = onValue['response_data']['userInfo']['firstName'];
+              id = onValue['response_data']['userInfo']['_id'];
+              if (onValue['response_data']['userInfo']['profilePic'] == null) {
+                image =
+                    'https://res.cloudinary.com/ddboxana4/image/upload/v1564040195/User_tzzeri.png';
+              } else {
+                image = onValue['response_data']['userInfo']['profilePic'];
+              }
+              fetchRestaurantInfo();
+            });
+          }
         }
       } catch (error, stackTrace) {
         sentryError.reportError(error, stackTrace);
@@ -141,12 +143,9 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   fetchRestaurantInfo() async {
     LoginService.restoInfo().then((response) {
       try {
-        resInfo = response['response_data'];
-        socketInt();
-        if (resInfo == null) {
-          Navigator.pop(context);
-          throw new Exception(MyLocalizations.of(context)
-              .somethingwentwrongpleaserestarttheapp);
+        if (response['response_code'] == 200) {
+          resInfo = response['response_data'];
+          socketInt();
         }
       } catch (error, stackTrace) {
         sentryError.reportError(error, stackTrace);
@@ -319,8 +318,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                                       onSubmitted: _submitMsg,
                                       decoration: new InputDecoration.collapsed(
                                           hintText: MyLocalizations.of(context)
-                                                  .enterTextHere +
-                                              "..."),
+                                              .enterTextHere),
                                     ),
                                   ),
                                   new Container(

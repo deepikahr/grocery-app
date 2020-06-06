@@ -9,10 +9,11 @@ class CounterModel with ChangeNotifier {
   getCartDataMethod() async {
     await CartService.getProductToCart().then((onValue) {
       try {
-        if (onValue['response_data'] == 'You have not added items to cart') {
-          cartData = null;
-        } else {
+        if (onValue['response_code'] == 200 &&
+            onValue['response_data'] is Map) {
           cartData = onValue['response_data'];
+        } else {
+          cartData = null;
         }
       } catch (error, stackTrace) {
         sentryError.reportError(error, stackTrace);
