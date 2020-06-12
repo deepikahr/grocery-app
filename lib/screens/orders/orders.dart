@@ -58,7 +58,7 @@ class _OrdersState extends State<Orders> {
     await Common.getCurrency().then((value) {
       currency = value;
     });
-    await ProductService.getOrderByUserID(widget.userID).then((onValue) {
+    await ProductService.getOrderByUserID().then((onValue) {
       try {
         _refreshController.refreshCompleted();
 
