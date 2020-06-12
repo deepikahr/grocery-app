@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/drawer/aboutus.dart';
 import 'package:readymadeGroceryApp/screens/drawer/address.dart';
-import 'package:readymadeGroceryApp/screens/drawer/chatpage.dart';
+import 'package:readymadeGroceryApp/screens/drawer/newChatPage.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/product/all_products.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
@@ -120,7 +120,7 @@ class _DrawerPageState extends State<DrawerPage> {
                 getTokenValue
                     ? _buildMenuTileList('lib/assets/icons/chat.png',
                         MyLocalizations.of(context).chat, 0,
-                        route: Chat(
+                        route: NewChatAndHistoryPage(
                           locale: widget.locale,
                           localizedValues: widget.localizedValues,
                         ))

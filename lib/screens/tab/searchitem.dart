@@ -13,14 +13,13 @@ import 'package:readymadeGroceryApp/widgets/subCategoryProductCart.dart';
 SentryError sentryError = new SentryError();
 
 class SearchItem extends StatefulWidget {
-  final List productsList, favProductList;
+  final List productsList;
   final String currency, locale;
   final bool token;
   final Map localizedValues;
   SearchItem(
       {Key key,
       this.productsList,
-      this.favProductList,
       this.currency,
       this.locale,
       this.token,
@@ -142,64 +141,6 @@ class _SearchItemState extends State<SearchItem> {
     }
   }
 
-  void _searchForProductsCartAdded(String query) async {
-    searchTerm = query;
-    if (query.length > 2) {
-      if (mounted) {
-        setState(() {
-          isFirstTime = false;
-          isSearching = true;
-        });
-      }
-      ProductService.getSearchListCartAdded(query).then((onValue) {
-        try {
-          if (onValue != null && onValue['response_data'] is List) {
-            if (mounted) {
-              setState(() {
-                searchresult = onValue['response_data'];
-              });
-            }
-          } else {
-            if (mounted) {
-              setState(() {
-                searchresult = [];
-              });
-            }
-          }
-          if (mounted) {
-            setState(() {
-              isSearching = false;
-            });
-          }
-        } catch (error, stackTrace) {
-          if (mounted) {
-            setState(() {
-              isSearching = false;
-              searchresult = [];
-            });
-          }
-          sentryError.reportError(error, stackTrace);
-        }
-      }).catchError((error) {
-        if (mounted) {
-          setState(() {
-            isSearching = false;
-            searchresult = [];
-          });
-        }
-        sentryError.reportError(error, null);
-      });
-    } else {
-      searchresult = [];
-      if (mounted) {
-        setState(() {
-          isFirstTime = true;
-          isSearching = false;
-        });
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     if (getTokenValue) {
@@ -260,15 +201,10 @@ class _SearchItemState extends State<SearchItem> {
                       ),
                       onSubmitted: (String term) {
                         searchTerm = term;
-                        if (getTokenValue) {
-                          _searchForProductsCartAdded(term);
-                        } else {
-                          _searchForProducts(term);
-                        }
+
+                        _searchForProducts(term);
                       },
-                      onChanged: getTokenValue
-                          ? _searchForProductsCartAdded
-                          : _searchForProducts,
+                      onChanged: _searchForProducts,
                     ),
                   ),
                 ),
@@ -347,19 +283,12 @@ class _SearchItemState extends State<SearchItem> {
                                                 widget.localizedValues,
                                             productID: searchresult[index]
                                                 ['_id'],
-                                            favProductList:
-                                                widget.favProductList,
                                           ),
                                         ),
                                       );
                                       result.then((value) {
                                         searchresult = [];
-                                        if (getTokenValue) {
-                                          _searchForProductsCartAdded(
-                                              searchTerm);
-                                        } else {
-                                          _searchForProducts(searchTerm);
-                                        }
+                                        _searchForProducts(searchTerm);
                                       });
                                     },
                                     child: Stack(
@@ -398,6 +327,64 @@ class _SearchItemState extends State<SearchItem> {
                                             productList: searchresult[index],
                                             variantList: searchresult[index]['variant'],
                                             subCategoryId: searchresult[index]['subcategory']),
+                                        searchresult[index]['isDealAvailable'] == true
+                                            ? Positioned(
+                                                child: Stack(
+                                                  children: <Widget>[
+                                                    Container(
+                                                      width: 61,
+                                                      height: 18,
+                                                      decoration: BoxDecoration(
+                                                          color:
+                                                              Color(0xFFFFAF72),
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                                  topLeft: Radius
+                                                                      .circular(
+                                                                          10),
+                                                                  bottomRight: Radius
+                                                                      .circular(
+                                                                          10))),
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              2.0),
+                                                      child: Text(
+                                                        " " +
+                                                            searchresult[index]['delaPercent']
+                                                                .toString() +
+                                                            "% " +
+                                                            MyLocalizations.of(
+                                                                    context)
+                                                                .off,
+                                                        style:
+                                                            hintSfboldwhitemed(),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              )
+                                            : Positioned(
+                                                child: Stack(
+                                                  children: <Widget>[
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              2.0),
+                                                      child: Text(
+                                                        " ",
+                                                        style:
+                                                            hintSfboldwhitemed(),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              )
                                       ],
                                     ),
                                   );

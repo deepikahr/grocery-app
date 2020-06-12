@@ -23,7 +23,7 @@ class Variants {
 
 class ProductDetails extends StatefulWidget {
   final int currentIndex;
-  final List favProductList;
+
   final Map localizedValues;
   final String locale, productID;
   ProductDetails(
@@ -31,7 +31,6 @@ class ProductDetails extends StatefulWidget {
       this.productID,
       this.currentIndex,
       this.localizedValues,
-      this.favProductList,
       this.locale})
       : super(key: key);
   @override
@@ -44,16 +43,13 @@ class _ProductDetailsState extends State<ProductDetails>
 
   Map<String, dynamic> productDetail;
   String variantUnit, variantId, favId, currency;
-  List favProductList;
   String currentCardId;
 
   int groupValue = 0;
   bool sizeSelect = false,
       getTokenValue = false,
       isFavProduct = false,
-      isFavListLoading = false,
       addProductTocart = false,
-      isGetProductRating = false,
       isProductDetails = false,
       isFavProductLoading = false,
       isProductAlredayInCart = false;
@@ -78,66 +74,42 @@ class _ProductDetailsState extends State<ProductDetails>
 
   @override
   void initState() {
+    getProductDetailsLog();
     getTokenValueMethod();
     super.initState();
   }
 
   getTokenValueMethod() async {
+    await Common.getCurrency().then((value) {
+      currency = value;
+    });
+    await Common.getToken().then((onValue) {
+      if (mounted) {
+        setState(() {
+          if (onValue != null) {
+            getTokenValue = true;
+            _checkFavourite();
+          } else {
+            getTokenValue = false;
+          }
+        });
+      }
+    });
+  }
+
+  getProductDetailsLog() {
     if (mounted) {
       setState(() {
         isProductDetails = true;
       });
     }
-    await Common.getCurrency().then((value) {
-      currency = value;
-    });
-    await Common.getToken().then((onValue) {
-      try {
-        if (onValue != null) {
-          if (mounted) {
-            setState(() {
-              getTokenValue = true;
-              getProductDetailsLog();
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              getTokenValue = false;
-              getProductDetailsWithoutLog();
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            getTokenValue = false;
-            getProductDetailsWithoutLog();
-          });
-        }
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          getTokenValue = false;
-          getProductDetailsWithoutLog();
-        });
-      }
-      sentryError.reportError(error, null);
-    });
-  }
-
-  getProductDetailsLog() {
-    ProductService.productDetailsLogin(widget.productID).then((value) {
+    ProductService.productDetails(widget.productID).then((value) {
       try {
         if (mounted) {
           setState(() {
             isProductDetails = false;
           });
         }
-        _checkFavourite();
-
         if (value['response_code'] == 200) {
           if (mounted) {
             setState(() {
@@ -176,100 +148,35 @@ class _ProductDetailsState extends State<ProductDetails>
     });
   }
 
-  getProductDetailsWithoutLog() {
-    ProductService.productDetailsWithoutLogin(widget.productID).then((value) {
-      try {
-        if (mounted) {
-          setState(() {
-            isProductDetails = false;
-          });
-        }
-        if (value['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              productDetail = value['response_data'];
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              productDetail = null;
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            isProductDetails = false;
-            productDetail = null;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          isProductDetails = false;
-          productDetail = null;
-        });
-      }
-      sentryError.reportError(error, null);
-    });
-  }
-
   void _checkFavourite() async {
     if (mounted) {
       setState(() {
-        isFavListLoading = true;
         isFavProductLoading = true;
       });
     }
-    await FavouriteService.getFavList().then((onValue) {
+    await FavouriteService.checkFavProduct(widget.productID).then((onValue) {
       try {
-        bool isProductFound = false;
         if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              favProductList = onValue['response_data'];
-              if (favProductList.length > 0) {
-                for (int i = 0; i < favProductList.length; i++) {
-                  if (favProductList[i]['product'] != null) {
-                    if (favProductList[i]['product']['_id'] ==
-                        productDetail['_id']) {
-                      if (mounted) {
-                        setState(() {
-                          isProductFound = true;
-                          isFavListLoading = false;
-                          isFavProduct = true;
-                          isFavProductLoading = false;
-                          favId = favProductList[i]['_id'];
-                        });
-                      }
-                    }
-                  }
-                }
-                if (mounted && !isProductFound) {
-                  setState(() {
-                    isFavProduct = false;
-                    isFavProductLoading = false;
-                    isFavListLoading = false;
-                  });
-                }
-              } else {
-                if (mounted) {
-                  setState(() {
-                    isFavListLoading = false;
-                    isFavProduct = false;
-                    isFavProductLoading = false;
-                  });
-                }
-              }
-            });
+          if (onValue['response_data'] == null) {
+            if (mounted) {
+              setState(() {
+                favId = null;
+                isFavProductLoading = false;
+              });
+            }
+          } else {
+            if (mounted) {
+              setState(() {
+                favId = onValue['response_data']["_id"];
+                isFavProductLoading = false;
+                isFavProduct = true;
+              });
+            }
           }
         } else {
           if (mounted) {
             setState(() {
-              isFavListLoading = false;
+              favId = null;
               isFavProductLoading = false;
             });
           }
@@ -277,8 +184,8 @@ class _ProductDetailsState extends State<ProductDetails>
       } catch (error, stackTrace) {
         if (mounted) {
           setState(() {
-            isFavListLoading = false;
-            isFavProduct = false;
+            favId = null;
+            isFavProductLoading = false;
           });
         }
         sentryError.reportError(error, stackTrace);
@@ -286,8 +193,8 @@ class _ProductDetailsState extends State<ProductDetails>
     }).catchError((error) {
       if (mounted) {
         setState(() {
-          isFavListLoading = false;
-          isFavProduct = false;
+          favId = null;
+          isFavProductLoading = false;
         });
       }
       sentryError.reportError(error, null);
@@ -428,6 +335,8 @@ class _ProductDetailsState extends State<ProductDetails>
             Common.setCartData(null);
           }
           Navigator.pop(context);
+        } else if (onValue['response_code'] == 403) {
+          cartClear(onValue['response_data']);
         }
       } catch (error, stackTrace) {
         if (mounted) {
@@ -445,6 +354,46 @@ class _ProductDetailsState extends State<ProductDetails>
       }
       sentryError.reportError(error, null);
     });
+  }
+
+  cartClear(responseData) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title:
+              Text(responseData['message'], style: textBarlowRegularrBlack()),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(MyLocalizations.of(context).cancel),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text(MyLocalizations.of(context).clearCart),
+              onPressed: () {
+                Navigator.pop(context);
+
+                CartService.deleteAllDataFromCart(responseData['cartId'])
+                    .then((response) {
+                  if (response['response_code'] == 200) {
+                    if (response['response_data'] is Map) {
+                      Common.setCartData(response['response_data']);
+                    } else {
+                      Common.setCartData(null);
+                    }
+                  } else {
+                    showSnackbar("${response['response_data']}");
+                  }
+                });
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -726,6 +675,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                             value: i,
                                             groupValue: groupValue,
                                             selected: sizeSelect,
+                                            activeColor: primary,
                                             onChanged: (int value) {
                                               if (mounted) {
                                                 setState(() {
@@ -810,6 +760,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                             if (!isFavProductLoading) {
                                               if (isFavProduct == true) {
                                                 isFavProduct = false;
+
                                                 addToFavApi(favId);
                                               } else {
                                                 isFavProduct = true;

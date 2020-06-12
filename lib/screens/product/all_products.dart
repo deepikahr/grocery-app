@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
-import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/model/counterModel.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/product/product-details.dart';
@@ -21,13 +20,12 @@ class AllProducts extends StatefulWidget {
   final Map localizedValues;
   final String locale, currency;
   final bool token;
-  final List productsList, favProductList;
+  final List productsList;
 
   AllProducts(
       {Key key,
       this.locale,
       this.localizedValues,
-      this.favProductList,
       this.productsList,
       this.currency,
       this.token});
@@ -36,35 +34,27 @@ class AllProducts extends StatefulWidget {
 }
 
 class _AllProductsState extends State<AllProducts> {
-  List productsList = [], favProductList;
+  List productsList = [], subCategryByProduct, subCategryList;
   String currency;
-  bool getTokenValue = false, isLoadingProductsList = false;
+  bool getTokenValue = false,
+      isLoadingProductsList = false,
+      isSelected = true,
+      isSelectedIndexZero = false;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   ScrollController controller;
-  ScrollController _scrollController = new ScrollController();
+  ScrollController _scrollController = ScrollController();
   int index = 0, totalIndex = 1;
-  bool productListApiCall = false, isNewProductsLoading = false;
+  bool productListApiCall = false,
+      isNewProductsLoading = false,
+      isLoadingSubCatProductsList = false,
+      lastApiCall = true;
   var cartData;
+  String isSelectetedId;
   @override
   void initState() {
-    favProductList = widget.favProductList;
-    if (mounted) {
-      setState(() {
-        isLoadingProductsList = true;
-      });
-    }
     getTokenValueMethod();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        if (mounted) {
-          setState(() {
-            getTokenValueMethod();
-          });
-        }
-      }
-    });
+
     super.initState();
   }
 
@@ -74,7 +64,48 @@ class _AllProductsState extends State<AllProducts> {
     super.dispose();
   }
 
+  getSubCatList() async {
+    if (mounted) {
+      setState(() {
+        isLoadingProductsList = true;
+      });
+    }
+    await ProductService.getSubCatList().then((onValue) {
+      print(onValue);
+      try {
+        _refreshController.refreshCompleted();
+
+        if (onValue['response_code'] == 200) {
+          if (mounted)
+            setState(() {
+              subCategryList = onValue['response_data'];
+            });
+        } else {
+          if (mounted)
+            setState(() {
+              subCategryList = [];
+            });
+        }
+      } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isLoadingSubCatProductsList = false;
+          });
+        }
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isLoadingSubCatProductsList = false;
+        });
+      }
+      sentryError.reportError(error, null);
+    });
+  }
+
   getTokenValueMethod() async {
+    getSubCatList();
     await Common.getCurrency().then((value) {
       currency = value;
     });
@@ -101,13 +132,8 @@ class _AllProductsState extends State<AllProducts> {
         }
         sentryError.reportError(error, stackTrace);
       }
-      if (index < totalIndex) {
-        if (getTokenValue) {
-          getProductListMethodCardAdded(index);
-        } else {
-          getProductListMethod(index);
-        }
-      }
+
+      getProductListMethod(index);
     }).catchError((error) {
       if (mounted) {
         setState(() {
@@ -122,7 +148,10 @@ class _AllProductsState extends State<AllProducts> {
     setState(() {
       isNewProductsLoading = true;
     });
+    print(productIndex);
+
     await ProductService.getProductListAll(productIndex).then((onValue) {
+      print(onValue['response_data']["total"]);
       try {
         _refreshController.refreshCompleted();
         if (onValue['response_code'] == 200) {
@@ -131,6 +160,18 @@ class _AllProductsState extends State<AllProducts> {
               productsList.addAll(onValue['response_data']['products']);
               index = productsList.length;
               totalIndex = onValue['response_data']["total"];
+              if (lastApiCall == true) {
+                if (index < totalIndex) {
+                  getProductListMethod(index);
+                } else {
+                  if (index == totalIndex) {
+                    if (mounted) {
+                      lastApiCall = false;
+                      getProductListMethod(index);
+                    }
+                  }
+                }
+              }
               isLoadingProductsList = false;
               isNewProductsLoading = false;
             });
@@ -166,39 +207,32 @@ class _AllProductsState extends State<AllProducts> {
     });
   }
 
-  getProductListMethodCardAdded(productIndex) async {
-    setState(() {
-      isNewProductsLoading = true;
-    });
-    await ProductService.getProductListAllCartAdded(productIndex)
-        .then((onValue) {
+  getProductToSubCategory(catId) async {
+    print("ll");
+    if (mounted) {
+      setState(() {
+        isLoadingSubCatProductsList = true;
+      });
+    }
+    await ProductService.getProductToSubCategoryList(catId).then((onValue) {
       try {
-        _refreshController.refreshCompleted();
         if (onValue['response_code'] == 200) {
-          if (mounted) {
+          if (mounted)
             setState(() {
-              productsList.addAll(onValue['response_data']['products']);
-              index = productsList.length;
-              totalIndex = onValue['response_data']["total"];
-              isLoadingProductsList = false;
-              isNewProductsLoading = false;
+              subCategryByProduct = onValue['response_data'];
+              isLoadingSubCatProductsList = false;
             });
-          }
         } else {
-          if (mounted) {
+          if (mounted)
             setState(() {
-              productsList = [];
-              isLoadingProductsList = false;
-              isNewProductsLoading = false;
+              subCategryByProduct = [];
+              isLoadingSubCatProductsList = false;
             });
-          }
         }
       } catch (error, stackTrace) {
         if (mounted) {
           setState(() {
-            productsList = [];
-            isLoadingProductsList = false;
-            isNewProductsLoading = false;
+            isLoadingSubCatProductsList = false;
           });
         }
         sentryError.reportError(error, stackTrace);
@@ -206,9 +240,7 @@ class _AllProductsState extends State<AllProducts> {
     }).catchError((error) {
       if (mounted) {
         setState(() {
-          productsList = [];
-          isLoadingProductsList = false;
-          isNewProductsLoading = false;
+          isLoadingSubCatProductsList = false;
         });
       }
       sentryError.reportError(error, null);
@@ -238,7 +270,6 @@ class _AllProductsState extends State<AllProducts> {
       appBar: GFAppBar(
         backgroundColor: bg,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black),
         title: Text(
           MyLocalizations.of(context).products,
           style: textbarlowSemiBoldBlack(),
@@ -255,8 +286,7 @@ class _AllProductsState extends State<AllProducts> {
                       localizedValues: widget.localizedValues,
                       productsList: productsList,
                       currency: currency,
-                      token: getTokenValue,
-                      favProductList: getTokenValue ? favProductList : null),
+                      token: getTokenValue),
                 ),
               );
               result.then((value) {
@@ -282,193 +312,537 @@ class _AllProductsState extends State<AllProducts> {
         enablePullUp: false,
         controller: _refreshController,
         onRefresh: () {
-          if (index < totalIndex) {
-            productsList = [];
-            index = productsList.length;
-
-            if (getTokenValue) {
-              getProductListMethodCardAdded(index);
-            } else {
-              getProductListMethod(index);
-            }
-          }
+          print("jj");
+          productsList = [];
+          index = productsList.length;
+          getTokenValueMethod();
         },
         child: isLoadingProductsList
             ? SquareLoader()
-            : Container(
-                margin: EdgeInsets.only(left: 15, right: 15, top: 15),
-                child: ListView(
-                  controller: _scrollController,
-                  children: <Widget>[
-                    GridView.builder(
-                      padding: EdgeInsets.only(bottom: 25),
-                      physics: ScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount:
-                          productsList.length == null ? 0 : productsList.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio:
-                              MediaQuery.of(context).size.width / 520,
-                          crossAxisSpacing: 16,
-                          mainAxisSpacing: 16),
-                      itemBuilder: (BuildContext context, int i) {
-                        if (productsList[i]['averageRating'] == null) {
-                          productsList[i]['averageRating'] = 0;
-                        }
+            : ListView(children: <Widget>[
+                subCategryList.length > 0
+                    ? Container(
+                        height: 70,
+                        child: Container(
+                          margin: EdgeInsets.only(left: 20, right: 20),
+                          height: 35,
+                          child: ListView.builder(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 16),
+                            physics: ScrollPhysics(),
+                            scrollDirection: Axis.horizontal,
+                            shrinkWrap: true,
+                            itemCount: subCategryList.length == null
+                                ? 0
+                                : subCategryList.length,
+                            itemBuilder: (BuildContext context, int i) {
+                              if (subCategryList[i]['isSelected'] == null) {
+                                subCategryList[i]['isSelected'] = false;
+                              }
+                              return i == 0
+                                  ? Row(
+                                      children: <Widget>[
+                                        InkWell(
+                                          onTap: () {
+                                            subCategryByProduct = null;
+                                            if (mounted) {
+                                              setState(() {
+                                                isSelected = true;
+                                                isSelectedIndexZero = false;
+                                                isSelectetedId = null;
+                                                lastApiCall = true;
+                                              });
+                                            }
 
-                        return productsList[i]['outOfStock'] != null ||
-                                productsList[i]['outOfStock'] != false
-                            ? InkWell(
-                                onTap: () {
-                                  var result = Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ProductDetails(
-                                          locale: widget.locale,
-                                          localizedValues:
-                                              widget.localizedValues,
-                                          productID: productsList[i]['_id'],
-                                          favProductList: getTokenValue
-                                              ? favProductList
-                                              : null),
-                                    ),
-                                  );
-                                  result.then((value) {
-                                    if (mounted) {
-                                      setState(() {
-                                        isLoadingProductsList = true;
-                                      });
-                                    }
-                                    index = 0;
-                                    totalIndex = 1;
-                                    productsList = [];
-                                    getTokenValueMethod();
-                                  });
-                                },
-                                child: Stack(
+                                            productsList = [];
+                                            index = productsList.length;
+
+                                            getTokenValueMethod();
+                                          },
+                                          child: Container(
+                                            height: 35,
+                                            padding: EdgeInsets.only(
+                                                left: 25, right: 25, top: 8),
+                                            margin: EdgeInsets.only(right: 15),
+                                            decoration: BoxDecoration(
+                                              color: isSelected
+                                                  ? primary
+                                                  : Color(0xFFf0F0F0),
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(4),
+                                              ),
+                                            ),
+                                            child: Text(
+                                              'All',
+                                              textAlign: TextAlign.center,
+                                              style: textbarlowMediumBlackm(),
+                                            ),
+                                          ),
+                                        ),
+                                        InkWell(
+                                          onTap: () {
+                                            if (mounted) {
+                                              setState(() {
+                                                isLoadingSubCatProductsList =
+                                                    true;
+                                                isSelected = false;
+                                                isSelectedIndexZero = true;
+                                                isSelectetedId = null;
+                                              });
+                                            }
+
+                                            getProductToSubCategory(
+                                                subCategryList[0]['_id']
+                                                    .toString());
+                                          },
+                                          child: Container(
+                                            height: 35,
+                                            padding: EdgeInsets.only(
+                                                left: 15, right: 15, top: 8),
+                                            margin: EdgeInsets.only(right: 15),
+                                            decoration: BoxDecoration(
+                                              color: isSelectedIndexZero
+                                                  ? primary
+                                                  : Color(0xFFf0F0F0),
+                                              border: Border.all(
+                                                color: Color(0xFFDFDFDF),
+                                              ),
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(4),
+                                              ),
+                                            ),
+                                            child: Text(
+                                              subCategryList[0]['title'],
+                                              textAlign: TextAlign.center,
+                                              style: textbarlowMediumBlackm(),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    )
+                                  : InkWell(
+                                      onTap: () {
+                                        if (mounted) {
+                                          setState(() {
+                                            isSelected = false;
+                                            isSelectedIndexZero = false;
+                                            isLoadingSubCatProductsList = true;
+                                            isSelectetedId =
+                                                subCategryList[i]['_id'];
+                                          });
+                                        }
+
+                                        getProductToSubCategory(
+                                            subCategryList[i]['_id']
+                                                .toString());
+                                      },
+                                      child: Container(
+                                        height: 35,
+                                        padding: EdgeInsets.only(
+                                            left: 15, right: 15, top: 8),
+                                        margin: EdgeInsets.only(right: 15),
+                                        decoration: BoxDecoration(
+                                          color: isSelectetedId ==
+                                                  subCategryList[i]['_id']
+                                              ? primary
+                                              : Color(0xFFf0F0F0),
+                                          border: Border.all(
+                                              color: Color(0xFFDFDFDF)),
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(4),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          subCategryList[i]['title'],
+                                          textAlign: TextAlign.center,
+                                          style: textbarlowMediumBlackm(),
+                                        ),
+                                      ),
+                                    );
+                            },
+                          ),
+                        ),
+                      )
+                    : Container(),
+                isLoadingSubCatProductsList
+                    ? SquareLoader()
+                    : subCategryByProduct != null
+                        ? Container(
+                            height: MediaQuery.of(context).size.height - 201,
+                            child: ListView(
+                              children: <Widget>[
+                                Stack(
                                   children: <Widget>[
-                                    SubCategoryProductCard(
-                                        image: productsList[i]['filePath'] == null
-                                            ? productsList[i]['imageUrl']
-                                            : productsList[i]['filePath'],
-                                        isPath:
-                                            productsList[i]['filePath'] == null
-                                                ? false
-                                                : true,
-                                        title: productsList[i]['title'],
-                                        currency: currency,
-                                        category: productsList[i]['category'],
-                                        price: productsList[i]['variant'][0]
-                                            ['price'],
-                                        dealPercentage: productsList[i]
-                                                ['isDealAvailable']
-                                            ? double.parse(productsList[i]
-                                                    ['delaPercent']
-                                                .toStringAsFixed(1))
-                                            : null,
-                                        variantStock: productsList[i]['variant']
-                                            [0]['productstock'],
-                                        unit: productsList[i]['variant'][0]
-                                            ['unit'],
-                                        rating: productsList[i]['averageRating']
-                                            .toStringAsFixed(1),
-                                        buttonName: "Add",
-                                        cartAdded:
-                                            productsList[i]['cartAdded'] ?? false,
-                                        cartId: productsList[i]['cartId'],
-                                        productQuantity: productsList[i]['cartAddedQuantity'] ?? 0,
-                                        token: widget.token,
-                                        productList: productsList[i],
-                                        variantList: productsList[i]['variant'],
-                                        subCategoryId: productsList[i]['subcategory']),
-                                    productsList[i]['isDealAvailable'] == true
-                                        ? Positioned(
-                                            child: Stack(
-                                              children: <Widget>[
-                                                Container(
-                                                  width: 61,
-                                                  height: 18,
-                                                  decoration: BoxDecoration(
-                                                      color: Color(0xFFFFAF72),
-                                                      borderRadius:
-                                                          BorderRadius.only(
-                                                              topLeft: Radius
-                                                                  .circular(10),
-                                                              bottomRight:
-                                                                  Radius
+                                    subCategryByProduct.length == 0
+                                        ? Center(
+                                            child: Image.asset(
+                                                'lib/assets/images/no-orders.png'),
+                                          )
+                                        : GridView.builder(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 16, vertical: 16),
+                                            physics: ScrollPhysics(),
+                                            shrinkWrap: true,
+                                            itemCount: subCategryByProduct
+                                                        .length ==
+                                                    null
+                                                ? 0
+                                                : subCategryByProduct.length,
+                                            gridDelegate:
+                                                SliverGridDelegateWithFixedCrossAxisCount(
+                                                    crossAxisCount: 2,
+                                                    childAspectRatio:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            520,
+                                                    crossAxisSpacing: 16,
+                                                    mainAxisSpacing: 16),
+                                            itemBuilder:
+                                                (BuildContext context, int i) {
+                                              if (subCategryByProduct[i]
+                                                      ['averageRating'] ==
+                                                  null) {
+                                                subCategryByProduct[i]
+                                                    ['averageRating'] = 0;
+                                              }
+
+                                              return InkWell(
+                                                onTap: () {
+                                                  var result = Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          ProductDetails(
+                                                        locale: widget.locale,
+                                                        localizedValues: widget
+                                                            .localizedValues,
+                                                        productID:
+                                                            subCategryByProduct[
+                                                                i]['_id'],
+                                                      ),
+                                                    ),
+                                                  );
+                                                  result.then((value) {
+                                                    if (mounted) {
+                                                      setState(() {
+                                                        isLoadingSubCatProductsList =
+                                                            true;
+                                                      });
+                                                    }
+                                                    getProductToSubCategory(
+                                                        subCategryByProduct[i]
+                                                            ['_id']);
+                                                  });
+                                                },
+                                                child: Stack(
+                                                  children: <Widget>[
+                                                    SubCategoryProductCard(
+                                                      image: subCategryByProduct[
+                                                                      i][
+                                                                  'filePath'] ==
+                                                              null
+                                                          ? subCategryByProduct[
+                                                              i]['imageUrl']
+                                                          : subCategryByProduct[
+                                                              i]['filePath'],
+                                                      isPath: subCategryByProduct[
+                                                                      i][
+                                                                  'filePath'] ==
+                                                              null
+                                                          ? false
+                                                          : true,
+                                                      title:
+                                                          subCategryByProduct[i]
+                                                              ['title'],
+                                                      currency: currency,
+                                                      category:
+                                                          subCategryByProduct[i]
+                                                              ['category'],
+                                                      price:
+                                                          subCategryByProduct[i]
+                                                                  ['variant'][0]
+                                                              ['price'],
+                                                      dealPercentage: subCategryByProduct[
+                                                                  i][
+                                                              'isDealAvailable']
+                                                          ? double.parse(
+                                                              subCategryByProduct[
+                                                                          i][
+                                                                      'delaPercent']
+                                                                  .toStringAsFixed(
+                                                                      1))
+                                                          : null,
+                                                      variantStock:
+                                                          subCategryByProduct[i]
+                                                                  ['variant'][0]
+                                                              ['productstock'],
+                                                      unit:
+                                                          subCategryByProduct[i]
+                                                                  ['variant'][0]
+                                                              ['unit'],
+                                                      rating: subCategryByProduct[
+                                                                  i]
+                                                              ['averageRating']
+                                                          .toStringAsFixed(1),
+                                                      buttonName:
+                                                          MyLocalizations.of(
+                                                                  context)
+                                                              .add,
+                                                      cartAdded:
+                                                          subCategryByProduct[i]
+                                                                  [
+                                                                  'cartAdded'] ??
+                                                              false,
+                                                      cartId:
+                                                          subCategryByProduct[i]
+                                                              ['cartId'],
+                                                      productQuantity:
+                                                          subCategryByProduct[i]
+                                                                  [
+                                                                  'cartAddedQuantity'] ??
+                                                              0,
+                                                      token: widget.token,
+                                                      productList:
+                                                          subCategryByProduct[
+                                                              i],
+                                                      variantList:
+                                                          subCategryByProduct[i]
+                                                              ['variant'],
+                                                      subCategoryId:
+                                                          subCategryByProduct[i]
+                                                              ['subcategory'],
+                                                    ),
+                                                    subCategryByProduct[i][
+                                                                'isDealAvailable'] ==
+                                                            true
+                                                        ? Positioned(
+                                                            child: Stack(
+                                                              children: <
+                                                                  Widget>[
+                                                                  Container(
+                                                      width: 61,
+                                                      height: 18,
+                                                      decoration: BoxDecoration(
+                                                          color:
+                                                              Color(0xFFFFAF72),
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                                  topLeft: Radius
+                                                                      .circular(
+                                                                          10),
+                                                                  bottomRight: Radius
                                                                       .circular(
                                                                           10))),
+                                                    ),
+                                                                Text(
+                                                                  " " +
+                                                                      subCategryByProduct[i]
+                                                                              [
+                                                                              'delaPercent']
+                                                                          .toString() +
+                                                                      "% " +
+                                                                      MyLocalizations.of(
+                                                                              context)
+                                                                          .off,
+                                                                  style:
+                                                                      hintSfboldwhitemed(),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .center,
+                                                                )
+                                                              ],
+                                                            ),
+                                                          )
+                                                        : Container()
+                                                  ],
                                                 ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(2.0),
-                                                  child: Text(
-                                                    " " +
-                                                        productsList[i]
-                                                                ['delaPercent']
-                                                            .toString() +
-                                                        "% " +
-                                                        MyLocalizations.of(
-                                                                context)
-                                                            .off,
-                                                    style: hintSfboldwhitemed(),
-                                                    textAlign: TextAlign.center,
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          )
-                                        : Container()
+                                              );
+                                            },
+                                          ),
                                   ],
                                 ),
-                              )
-                            : Stack(
-                                children: <Widget>[
-                                  SubCategoryProductCard(
-                                      image: productsList[i]['filePath'] == null
-                                          ? productsList[i]['imageUrl']
-                                          : productsList[i]['filePath'],
-                                      isPath: productsList[i]['filePath'] == null
-                                          ? false
-                                          : true,
-                                      title: productsList[i]['title'],
-                                      currency: currency,
-                                      category: productsList[i]['category'],
-                                      price: productsList[i]['variant'][0]
-                                          ['price'],
-                                      dealPercentage: productsList[i]
-                                              ['isDealAvailable']
-                                          ? double.parse(productsList[i]
-                                                  ['delaPercent']
-                                              .toStringAsFixed(1))
-                                          : null,
-                                      unit: productsList[i]['variant'][0]
-                                          ['unit'],
-                                      rating: productsList[i]['averageRating']
-                                          .toStringAsFixed(1),
-                                      buttonName:
-                                          MyLocalizations.of(context).add,
-                                      cartAdded:
-                                          productsList[i]['cartAdded'] ?? false,
-                                      cartId: productsList[i]['cartId'],
-                                      productQuantity: productsList[i]
-                                              ['cartAddedQuantity'] ??
-                                          0,
-                                      token: widget.token,
-                                      productList: productsList[i],
-                                      variantList: productsList[i]['variant'],
-                                      subCategoryId: productsList[i]
-                                          ['subcategory']),
-                                  CardOverlay()
-                                ],
-                              );
-                      },
-                    ),
-                    isNewProductsLoading ? SquareLoader() : Container()
-                  ],
-                ),
-              ),
+                              ],
+                            ),
+                          )
+                        : Padding(
+                            padding:
+                                EdgeInsets.only(left: 15, right: 15, top: 15),
+                            child: GridView.builder(
+                              padding: EdgeInsets.only(bottom: 25),
+                              physics: ScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: productsList.length == null
+                                  ? 0
+                                  : productsList.length,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      childAspectRatio:
+                                          MediaQuery.of(context).size.width /
+                                              520,
+                                      crossAxisSpacing: 16,
+                                      mainAxisSpacing: 16),
+                              itemBuilder: (BuildContext context, int i) {
+                                if (productsList[i]['averageRating'] == null) {
+                                  productsList[i]['averageRating'] = 0;
+                                }
+
+                                return productsList[i]['outOfStock'] != null ||
+                                        productsList[i]['outOfStock'] != false
+                                    ? InkWell(
+                                        onTap: () {
+                                          var result = Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ProductDetails(
+                                                locale: widget.locale,
+                                                localizedValues:
+                                                    widget.localizedValues,
+                                                productID: productsList[i]
+                                                    ['_id'],
+                                              ),
+                                            ),
+                                          );
+                                          result.then((value) {
+                                            if (mounted) {
+                                              setState(() {
+                                                isLoadingProductsList = true;
+                                              });
+                                            }
+                                            index = 0;
+                                            totalIndex = 1;
+                                            productsList = [];
+                                            getTokenValueMethod();
+                                          });
+                                        },
+                                        child: Stack(
+                                          children: <Widget>[
+                                            SubCategoryProductCard(
+                                                image: productsList[i]['filePath'] == null
+                                                    ? productsList[i]
+                                                        ['imageUrl']
+                                                    : productsList[i]
+                                                        ['filePath'],
+                                                isPath: productsList[i]['filePath'] == null
+                                                    ? false
+                                                    : true,
+                                                title: productsList[i]['title'],
+                                                currency: currency,
+                                                category: productsList[i]
+                                                    ['category'],
+                                                price: productsList[i]
+                                                    ['variant'][0]['price'],
+                                                dealPercentage: productsList[i]
+                                                        ['isDealAvailable']
+                                                    ? double.parse(productsList[i]
+                                                            ['delaPercent']
+                                                        .toStringAsFixed(1))
+                                                    : null,
+                                                variantStock: productsList[i]
+                                                        ['variant'][0]
+                                                    ['productstock'],
+                                                unit: productsList[i]['variant']
+                                                    [0]['unit'],
+                                                rating: productsList[i]['averageRating'].toStringAsFixed(1),
+                                                buttonName: "Add",
+                                                cartAdded: productsList[i]['cartAdded'] ?? false,
+                                                cartId: productsList[i]['cartId'],
+                                                productQuantity: productsList[i]['cartAddedQuantity'] ?? 0,
+                                                token: widget.token,
+                                                productList: productsList[i],
+                                                variantList: productsList[i]['variant'],
+                                                subCategoryId: productsList[i]['subcategory']),
+                                            productsList[i]
+                                                        ['isDealAvailable'] ==
+                                                    true
+                                                ? Positioned(
+                                                    child: Stack(
+                                                      children: <Widget>[
+                                                         Container(
+                                                      width: 61,
+                                                      height: 18,
+                                                      decoration: BoxDecoration(
+                                                          color:
+                                                              Color(0xFFFFAF72),
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                                  topLeft: Radius
+                                                                      .circular(
+                                                                          10),
+                                                                  bottomRight: Radius
+                                                                      .circular(
+                                                                          10))),
+                                                    ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(2.0),
+                                                          child: Text(
+                                                            " " +
+                                                                productsList[i][
+                                                                        'delaPercent']
+                                                                    .toString() +
+                                                                "% " +
+                                                                MyLocalizations.of(
+                                                                        context)
+                                                                    .off,
+                                                            style:
+                                                                hintSfboldwhitemed(),
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  )
+                                                : Container()
+                                          ],
+                                        ),
+                                      )
+                                    : Stack(
+                                        children: <Widget>[
+                                          SubCategoryProductCard(
+                                              image: productsList[i]['filePath'] == null
+                                                  ? productsList[i]['imageUrl']
+                                                  : productsList[i]['filePath'],
+                                              isPath:
+                                                  productsList[i]['filePath'] == null
+                                                      ? false
+                                                      : true,
+                                              title: productsList[i]['title'],
+                                              currency: currency,
+                                              category: productsList[i]
+                                                  ['category'],
+                                              price: productsList[i]['variant']
+                                                  [0]['price'],
+                                              dealPercentage: productsList[i]
+                                                      ['isDealAvailable']
+                                                  ? double.parse(productsList[i]
+                                                          ['delaPercent']
+                                                      .toStringAsFixed(1))
+                                                  : null,
+                                              unit: productsList[i]['variant']
+                                                  [0]['unit'],
+                                              rating: productsList[i]
+                                                      ['averageRating']
+                                                  .toStringAsFixed(1),
+                                              buttonName: MyLocalizations.of(context).add,
+                                              cartAdded: productsList[i]['cartAdded'] ?? false,
+                                              cartId: productsList[i]['cartId'],
+                                              productQuantity: productsList[i]['cartAddedQuantity'] ?? 0,
+                                              token: widget.token,
+                                              productList: productsList[i],
+                                              variantList: productsList[i]['variant'],
+                                              subCategoryId: productsList[i]['subcategory']),
+                                          CardOverlay()
+                                        ],
+                                      );
+                              },
+                            ),
+                          ),
+              ]),
       ),
       bottomNavigationBar: cartData == null
           ? Container(

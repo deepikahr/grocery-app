@@ -12,9 +12,14 @@ import 'package:socket_io_client/socket_io_client.dart' as io;
 SentryError sentryError = new SentryError();
 
 class Chat extends StatefulWidget {
-  final Map localizedValues;
+  final Map localizedValues, userDetail, chatDetails;
   final String locale;
-  Chat({Key key, this.locale, this.localizedValues});
+  Chat(
+      {Key key,
+      this.locale,
+      this.localizedValues,
+      this.userDetail,
+      this.chatDetails});
 
   @override
   _ChatState createState() => _ChatState();
@@ -25,36 +30,34 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   final ScrollController _scrollController = new ScrollController();
   final TextEditingController _textController = new TextEditingController();
   bool _isWriting = false, isChatLoading = false;
-  var resInfo;
-  var chatInfo;
-  String name, id, image, chatID;
+
+  var chatInfo, resInfo;
+  String chatID, id, name;
   Timer chatTimer;
-  var socket = io.io(Constants.baseURL, <String, dynamic>{
+  var socket = io.io(Constants.socketUrl, <String, dynamic>{
     'transports': ['websocket']
   });
   @override
   void initState() {
-    getUserInfor();
+    chatID = widget.chatDetails['chatId'];
+    id = widget.userDetail['_id'];
+    name = widget.userDetail['firstName'];
+    fetchRestaurantInfo();
     super.initState();
   }
 
-  Future getUserInfor() async {
-    await LoginService.getUserInfo().then((onValue) {
+//fetchres info
+  fetchRestaurantInfo() async {
+    if (mounted) {
+      setState(() {
+        isChatLoading = true;
+      });
+    }
+    LoginService.restoInfo().then((response) {
       try {
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              name = onValue['response_data']['userInfo']['firstName'];
-              id = onValue['response_data']['userInfo']['_id'];
-              if (onValue['response_data']['userInfo']['profilePic'] == null) {
-                image =
-                    'https://res.cloudinary.com/ddboxana4/image/upload/v1564040195/User_tzzeri.png';
-              } else {
-                image = onValue['response_data']['userInfo']['profilePic'];
-              }
-              fetchRestaurantInfo();
-            });
-          }
+        if (response['response_code'] == 200) {
+          resInfo = response['response_data'];
+          socketInt();
         }
       } catch (error, stackTrace) {
         sentryError.reportError(error, stackTrace);
@@ -68,90 +71,43 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
     socket.on('connect', (data) {
       print('connect ');
     });
-    socket.emit('user-chat-list', {"id": id});
 
     socket.on('disconnect', (_) {
       print('disconnect');
     });
+    if (widget.chatDetails['chatId'] != null) {
+      socket.emit('user-chat-info', {"id": chatID});
 
-    socket.on('chat-list$id', (data) {
-      if (data.length > 0) {
+      socket.on('chat-info-user-listen$id', (data) {
+        isChatLoading = false;
         if (mounted) {
           setState(() {
-            isChatLoading = false;
-            if (data['response_data'] != null) {
-              if (mounted) {
-                setState(() {
-                  chatList = data['response_data']['messages'];
-                  chatID = data['response_data']['_id'];
-                });
-              }
-            } else {
-              if (mounted) {
-                setState(() {
-                  chatID = null;
-                });
-              }
-            }
-          });
-        }
-      }
-    });
-    if (chatID == null) {
-      var chatInfo = {
-        "message": "hi",
-        "sentBy": 'User',
-        "user": id,
-        "store": resInfo['_id'],
-        "createdAt": DateTime.now().millisecondsSinceEpoch,
-        "chatId": ""
-      };
-      socket.emit('initialize-chat', chatInfo);
-      socket.on('chat-list$id', (data) {
-        if (mounted) {
-          setState(() {
-            isChatLoading = false;
-            chatList = data['response_data']['messages'];
-
-            if (data['response_data']['_id'] == null) {
-              chatID = "";
-            } else {
-              if (mounted) {
-                setState(() {
-                  chatID = data['response_data']['_id'];
-                });
-              }
-            }
+            chatList = data['messages'];
+            chatID = data['_id'];
           });
         }
       });
+    } else {
+      if (mounted) {
+        setState(() {
+          isChatLoading = false;
+        });
+      }
     }
-    socket.on("listen-new-messages$id", (data) {
+
+    socket.on("user-new-chat-listen$id", (data) {
       chatList.add(data);
       if (data.length > 0) {
         if (mounted) {
           setState(() {
-            isChatLoading = false;
             chatList = chatList;
+            _scrollController.animateTo(
+                _scrollController.position.maxScrollExtent,
+                duration: Duration(milliseconds: 100),
+                curve: Curves.easeOut);
           });
         }
       }
-    });
-  }
-
-//fetchres info
-  fetchRestaurantInfo() async {
-    LoginService.restoInfo().then((response) {
-      try {
-        if (response['response_code'] == 200) {
-          resInfo = response['response_data'];
-          socketInt();
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      sentryError.reportError(error, null);
     });
   }
 
@@ -193,11 +149,14 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                 style: textbarlowRegularaPrimary(),
               ),
               onPressed: () {
-                socket.emit(
-                    "close-chat", {"chatId": chatID, "store": resInfo['_id']});
-
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
+                socket.emit("chat-closed", {"id": chatID});
+                socket.on('chat-closed-user-listen$id', (data) {
+                  if (mounted) {
+                    setState(() {
+                      Navigator.of(context).pop();
+                    });
+                  }
+                });
               },
             ),
           ],
@@ -206,44 +165,15 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
     );
   }
 
-  Future<bool> _onWillPop() {
-    return showDialog(
-          context: context,
-          builder: (context) => new AlertDialog(
-            content: new Text(MyLocalizations.of(context).areyousureclosechat),
-            actions: <Widget>[
-              new FlatButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: new Text(
-                  MyLocalizations.of(context).no,
-                ),
-              ),
-              new FlatButton(
-                onPressed: () {
-                  socket.emit("close-chat",
-                      {"chatId": chatID, "store": resInfo['_id']});
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
-                },
-                child: new Text(
-                  MyLocalizations.of(context).yes,
-                ),
-              ),
-            ],
-          ),
-        ) ??
-        false;
-  }
-
   @override
-  Widget build(BuildContext ctx) {
+  Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: _onWillPop,
+      onWillPop: null,
       child: new Scaffold(
         appBar: new AppBar(
           leading: InkWell(
             onTap: () {
-              showAlert(MyLocalizations.of(context).areyousureclosechat);
+              Navigator.pop(context);
             },
             child: Icon(
               Icons.arrow_back,
@@ -260,6 +190,25 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
           ),
           centerTitle: true,
           backgroundColor: primary,
+          actions: [
+            chatID == null
+                ? Container()
+                : InkWell(
+                    onTap: () {
+                      socket.emit("chat-closed", {"id": chatID});
+                      socket.on('chat-closed-user-listen$id', (data) {
+                        if (mounted) {
+                          setState(() {
+                            Navigator.of(context).pop();
+                          });
+                        }
+                      });
+                    },
+                    child: Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                        child: Icon(Icons.close)),
+                  ),
+          ],
         ),
         body: isChatLoading
             ? SquareLoader()
@@ -315,10 +264,13 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                                           });
                                         }
                                       },
-                                      onSubmitted: _submitMsg,
+                                      onSubmitted: chatID == null
+                                          ? intialChat
+                                          : _submitMsg,
                                       decoration: new InputDecoration.collapsed(
                                           hintText: MyLocalizations.of(context)
-                                              .enterTextHere),
+                                                  .enterTextHere ??
+                                              ""),
                                     ),
                                   ),
                                   new Container(
@@ -332,8 +284,9 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                                         size: 30,
                                       ),
                                       onPressed: _isWriting
-                                          ? () =>
-                                              _submitMsg(_textController.text)
+                                          ? () => chatID == null
+                                              ? intialChat(_textController.text)
+                                              : _submitMsg(_textController.text)
                                           : null,
                                     ),
                                   ),
@@ -381,7 +334,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                           bottomRight: Radius.circular(40),
                           bottomLeft: Radius.circular(40),
                         ),
-                        color: Color(0xFFFFECAC).withOpacity(0.60)),
+                        color: primary.withOpacity(0.60)),
                     child: Text(
                       message,
                       textAlign: TextAlign.left,
@@ -441,85 +394,61 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
 
   void _submitMsg(String txt) async {
     _scrollController.animateTo(_scrollController.position.maxScrollExtent,
-        duration: Duration(milliseconds: 1000), curve: Curves.easeOut);
+        duration: Duration(milliseconds: 100), curve: Curves.easeOut);
     _textController.clear();
     if (mounted) {
       setState(() {
         _isWriting = false;
       });
     }
-    Msg msg = new Msg(
-      name: name,
-      txt: txt,
-      animationController: new AnimationController(
-          vsync: this, duration: new Duration(milliseconds: 800)),
-    );
     var chatInfo = {
       "message": txt,
       "sentBy": 'User',
-      "user": id,
-      "store": resInfo['_id'],
-      "createdAt": DateTime.now().millisecondsSinceEpoch,
-      "chatId": chatID
+      "senderName": name,
+      "receiverName": "Manager",
+      "senderId": id,
+      "receiverId": resInfo['_id']
     };
 
-    socket.emit('send-message', chatInfo);
-    socket.on('chat-list$id', (data) {
-      chatList.add(chatInfo);
+    socket.emit('regular-chat', chatInfo);
+    socket.on('regular-user-chat-listen$id', (data) {
+      if (chatInfo != null) {
+        chatList.add(data);
+        if (mounted) {
+          setState(() {
+            chatList = chatList;
+            chatInfo = null;
+          });
+        }
+      }
+    });
+  }
+
+  void intialChat(String txt) async {
+    _scrollController.animateTo(_scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 100), curve: Curves.easeOut);
+    _textController.clear();
+    if (mounted) {
+      setState(() {
+        _isWriting = false;
+      });
+    }
+    var chatInfo = {
+      "message": txt.toString(),
+      "sentBy": 'User',
+      "senderName": name,
+      "receiverName": "Manager",
+      "senderId": id,
+      "receiverId": resInfo['_id']
+    };
+    socket.emit('initialize-chat', chatInfo);
+    socket.on('chat-info-user-listen$id', (data) {
       if (mounted) {
         setState(() {
-          isChatLoading = false;
-          chatList = chatList;
+          chatList = data['messages'];
+          chatID = data['_id'];
         });
       }
     });
-
-    msg.animationController.forward();
-  }
-}
-
-class Msg extends StatelessWidget {
-  Msg({this.txt, this.animationController, this.name});
-  final String txt, name;
-  final AnimationController animationController;
-  @override
-  Widget build(BuildContext ctx) {
-    return new SizeTransition(
-      sizeFactor: new CurvedAnimation(
-          parent: animationController, curve: Curves.easeOut),
-      axisAlignment: 0.0,
-      child: new Container(
-        color: Colors.transparent,
-        margin: const EdgeInsets.symmetric(vertical: 8.0),
-        child: new Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            new Container(
-              margin: const EdgeInsets.only(right: 18.0),
-              child: new CircleAvatar(
-                child: new Text('${name[0]}'),
-                backgroundColor: primary,
-              ),
-            ),
-            new Expanded(
-              child: new Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  new Text(
-                    '${name[0]}',
-                  ),
-                  new Container(
-                    margin: const EdgeInsets.only(top: 6.0),
-                    child: new Text(
-                      txt,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

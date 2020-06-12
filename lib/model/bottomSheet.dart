@@ -309,12 +309,10 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                         SizedBox(width: 3),
                         Padding(
                           padding: const EdgeInsets.only(top: 5.0),
-                          child: widget.dealPercentage != null
-                              ? Text(
-                                  '${widget.variantsList[index]['unit']} ',
-                                  style: textbarlowBoldGreen(),
-                                )
-                              : Container(),
+                          child: Text(
+                            '${widget.variantsList[index]['unit']} ',
+                            style: textbarlowBoldGreen(),
+                          ),
                         ),
                       ],
                     ),
