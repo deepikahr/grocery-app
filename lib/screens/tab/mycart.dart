@@ -427,7 +427,7 @@ class _MyCartState extends State<MyCart> {
     if (minAmout['minimumOrderAmountToPlaceOrder'] == null) {
       minAmout['minimumOrderAmountToPlaceOrder'] = 0.0;
     }
-    if (cartItem['grandTotal'] >= minAmout['minimumOrderAmountToPlaceOrder']) {
+    if (cartItem['subTotal'] >= minAmout['minimumOrderAmountToPlaceOrder']) {
       var result = Navigator.push(
         context,
         MaterialPageRoute(
