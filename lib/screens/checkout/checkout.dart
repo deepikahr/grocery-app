@@ -1109,7 +1109,7 @@ class _CheckoutState extends State<Checkout> {
                                                       ),
                                                       type:
                                                           GFButtonType.outline,
-                                                      color: GFColors.WARNING,
+                                                      color: primary,
                                                       size: GFSize.MEDIUM,
                                                     ),
                                                     Padding(
@@ -1137,7 +1137,7 @@ class _CheckoutState extends State<Checkout> {
                                                                 textbarlowRegularaPrimar(),
                                                           ),
                                                         ),
-                                                        color: GFColors.WARNING,
+                                                        color: primary,
                                                         type: GFButtonType
                                                             .outline,
                                                       ),
