@@ -36,6 +36,7 @@ class EditAddress extends StatefulWidget {
 
 class _EditAddressState extends State<EditAddress> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   var addressData;
   LocationData currentLocation;
@@ -105,6 +106,8 @@ class _EditAddressState extends State<EditAddress> {
                 Navigator.pop(context);
               });
             }
+          } else {
+            showSnackbar(onValue['response_data']);
           }
         } catch (error, stackTrace) {
           if (mounted) {
@@ -132,6 +135,14 @@ class _EditAddressState extends State<EditAddress> {
     }
   }
 
+  void showSnackbar(message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(milliseconds: 3000),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+
   @override
   void dispose() {
     if (locationSubscription != null && locationSubscription is Stream)
@@ -142,6 +153,7 @@ class _EditAddressState extends State<EditAddress> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: GFAppBar(
         iconTheme: IconThemeData(
           color: Colors.black,
