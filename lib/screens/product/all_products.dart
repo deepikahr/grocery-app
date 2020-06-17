@@ -35,7 +35,7 @@ class AllProducts extends StatefulWidget {
 
 class _AllProductsState extends State<AllProducts> {
   List productsList = [], subCategryByProduct, subCategryList;
-  String currency;
+  String currency,currentSubCategoryId;
   bool getTokenValue = false,
       isLoadingProductsList = false,
       isSelected = true,
@@ -385,6 +385,9 @@ class _AllProductsState extends State<AllProducts> {
                                                 isSelectetedId = null;
                                               });
                                             }
+  currentSubCategoryId =
+                                              subCategryList[0]['_id']
+                                                  .toString();
 
                                             getProductToSubCategory(
                                                 subCategryList[0]['_id']
@@ -426,6 +429,9 @@ class _AllProductsState extends State<AllProducts> {
                                                 subCategryList[i]['_id'];
                                           });
                                         }
+  currentSubCategoryId =
+                                              subCategryList[i]['_id']
+                                                  .toString();
 
                                         getProductToSubCategory(
                                             subCategryList[i]['_id']
@@ -519,15 +525,15 @@ class _AllProductsState extends State<AllProducts> {
                                                     ),
                                                   );
                                                   result.then((value) {
-                                                    if (mounted) {
-                                                      setState(() {
-                                                        isLoadingSubCatProductsList =
-                                                            true;
-                                                      });
-                                                    }
+                                                    print(subCategryByProduct[i]
+                                                        ['_id']);
+                                                         if (mounted) {
+      setState(() {
+        isLoadingSubCatProductsList = true;
+      });
+    }
                                                     getProductToSubCategory(
-                                                        subCategryByProduct[i]
-                                                            ['_id']);
+                                                        currentSubCategoryId);
                                                   });
                                                 },
                                                 child: Stack(
