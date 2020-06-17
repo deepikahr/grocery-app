@@ -734,6 +734,11 @@ class MyLocalizations {
   String get chatDetail {
     return localizedValues[locale.languageCode]['chatDetail'] ?? "Chat Detail";
   }
+
+  String get sendVerificationlink {
+    return localizedValues[locale.languageCode]['sendVerificationlink'] ??
+        "Send Verification link";
+  }
 }
 
 class MyLocalizationsDelegate extends LocalizationsDelegate<MyLocalizations> {

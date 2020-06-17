@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
+import 'package:readymadeGroceryApp/screens/categories/allcategories.dart';
 import 'package:readymadeGroceryApp/screens/drawer/aboutus.dart';
 import 'package:readymadeGroceryApp/screens/drawer/address.dart';
 import 'package:readymadeGroceryApp/screens/drawer/newChatPage.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
+import 'package:readymadeGroceryApp/screens/orders/orders.dart';
+import 'package:readymadeGroceryApp/screens/product/all_deals.dart';
 import 'package:readymadeGroceryApp/screens/product/all_products.dart';
+import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import '../../main.dart';
 import '../../style/style.dart';
+
+SentryError sentryError = new SentryError();
 
 class DrawerPage extends StatefulWidget {
   DrawerPage({Key key, this.locale, this.localizedValues, this.addressData})
@@ -22,11 +29,12 @@ class DrawerPage extends StatefulWidget {
 }
 
 class _DrawerPageState extends State<DrawerPage> {
-  bool getTokenValue = true;
-  String currency = "", newValue;
+  bool getTokenValue = true, isLogoGetLoading = false;
+  String currency = "", logo;
 
   @override
   void initState() {
+    getLogo();
     getToken();
     super.initState();
   }
@@ -52,6 +60,36 @@ class _DrawerPageState extends State<DrawerPage> {
     });
   }
 
+  getLogo() {
+    if (mounted) {
+      setState(() {
+        isLogoGetLoading = true;
+      });
+    }
+    LoginService.aboutUs().then((onValue) {
+      try {
+        if (onValue['response_code'] == 200) {
+          if (mounted) {
+            setState(() {
+              isLogoGetLoading = false;
+              if (onValue['response_data'][0]['userApp']['filePath'] == null) {
+                logo = onValue['response_data'][0]['userApp']['imageUrl'];
+              } else {
+                logo = Constants.IMAGE_URL_PATH +
+                    "tr:dpr-auto,tr:w-500" +
+                    onValue['response_data'][0]['userApp']['filePath'];
+              }
+            });
+          }
+        }
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -63,19 +101,31 @@ class _DrawerPageState extends State<DrawerPage> {
             child: ListView(
               children: <Widget>[
                 SizedBox(height: 40),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      Constants.APP_NAME.split(' ').join('\n'),
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                      style: textbarlowBoldWhitebig(),
-                    ),
-                  ],
-                ),
+                isLogoGetLoading
+                    ? Container(height: 100)
+                    : logo == null
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                Constants.APP_NAME.split(' ').join('\n'),
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis,
+                                style: textbarlowBoldWhitebig(),
+                              ),
+                            ],
+                          )
+                        : Container(
+                            margin: EdgeInsets.all(10),
+                            child: Center(
+                              child: Image.network(
+                                logo,
+                                height: 80,
+                              ),
+                            ),
+                          ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 40.0),
+                  padding: const EdgeInsets.only(top: 20.0),
                   child: _buildMenuTileList('lib/assets/icons/Home.png',
                       MyLocalizations.of(context).home, 0,
                       route: Home(
@@ -91,6 +141,25 @@ class _DrawerPageState extends State<DrawerPage> {
                       localizedValues: widget.localizedValues,
                       currency: currency,
                     )),
+                _buildMenuTileList(
+                  'lib/assets/icons/categories.png',
+                  MyLocalizations.of(context).allCategories,
+                  0,
+                  route: AllCategories(
+                    locale: widget.locale,
+                    localizedValues: widget.localizedValues,
+                    getTokenValue: getTokenValue,
+                  ),
+                ),
+                _buildMenuTileList('lib/assets/icons/deals.png',
+                    MyLocalizations.of(context).topDeals, 0,
+                    route: AllDealsList(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                        currency: currency,
+                        token: getTokenValue,
+                        dealType: "TopDeals",
+                        title: MyLocalizations.of(context).topDeals)),
                 getTokenValue
                     ? _buildMenuTileList('lib/assets/images/profileIcon.png',
                         MyLocalizations.of(context).profile, 0,
@@ -98,6 +167,14 @@ class _DrawerPageState extends State<DrawerPage> {
                           locale: widget.locale,
                           localizedValues: widget.localizedValues,
                           currentIndex: 3,
+                        ))
+                    : Container(),
+                getTokenValue
+                    ? _buildMenuTileList('lib/assets/icons/history.png',
+                        MyLocalizations.of(context).myOrders, 0,
+                        route: Orders(
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
                         ))
                     : Container(),
                 getTokenValue

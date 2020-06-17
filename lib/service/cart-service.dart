@@ -133,4 +133,21 @@ class CartService {
     });
     return json.decode(response.body);
   }
+
+  static Future<Map<String, dynamic>> checkCartVerifyOrNot() async {
+    String token, languageCode;
+    await Common.getToken().then((onValue) {
+      token = onValue;
+    });
+    await Common.getSelectedLanguage().then((code) {
+      languageCode = code ?? "";
+    });
+    final response =
+        await client.get(Constants.baseURL + "orders/cart/verify", headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'bearer $token',
+      'language': languageCode,
+    });
+    return json.decode(response.body);
+  }
 }

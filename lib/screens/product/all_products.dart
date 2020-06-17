@@ -71,7 +71,6 @@ class _AllProductsState extends State<AllProducts> {
       });
     }
     await ProductService.getSubCatList().then((onValue) {
-      print(onValue);
       try {
         _refreshController.refreshCompleted();
 
@@ -148,10 +147,8 @@ class _AllProductsState extends State<AllProducts> {
     setState(() {
       isNewProductsLoading = true;
     });
-    print(productIndex);
 
     await ProductService.getProductListAll(productIndex).then((onValue) {
-      print(onValue['response_data']["total"]);
       try {
         _refreshController.refreshCompleted();
         if (onValue['response_code'] == 200) {
@@ -208,7 +205,6 @@ class _AllProductsState extends State<AllProducts> {
   }
 
   getProductToSubCategory(catId) async {
-    print("ll");
     if (mounted) {
       setState(() {
         isLoadingSubCatProductsList = true;
@@ -312,7 +308,6 @@ class _AllProductsState extends State<AllProducts> {
         enablePullUp: false,
         controller: _refreshController,
         onRefresh: () {
-          print("jj");
           productsList = [];
           index = productsList.length;
           getTokenValueMethod();
@@ -620,21 +615,18 @@ class _AllProductsState extends State<AllProducts> {
                                                             child: Stack(
                                                               children: <
                                                                   Widget>[
-                                                                  Container(
-                                                      width: 61,
-                                                      height: 18,
-                                                      decoration: BoxDecoration(
-                                                          color:
-                                                              Color(0xFFFFAF72),
-                                                          borderRadius:
-                                                              BorderRadius.only(
-                                                                  topLeft: Radius
-                                                                      .circular(
-                                                                          10),
-                                                                  bottomRight: Radius
-                                                                      .circular(
-                                                                          10))),
-                                                    ),
+                                                                Container(
+                                                                  width: 61,
+                                                                  height: 18,
+                                                                  decoration: BoxDecoration(
+                                                                      color: Color(
+                                                                          0xFFFFAF72),
+                                                                      borderRadius: BorderRadius.only(
+                                                                          topLeft: Radius.circular(
+                                                                              10),
+                                                                          bottomRight:
+                                                                              Radius.circular(10))),
+                                                                ),
                                                                 Text(
                                                                   " " +
                                                                       subCategryByProduct[i]
@@ -760,21 +752,20 @@ class _AllProductsState extends State<AllProducts> {
                                                 ? Positioned(
                                                     child: Stack(
                                                       children: <Widget>[
-                                                         Container(
-                                                      width: 61,
-                                                      height: 18,
-                                                      decoration: BoxDecoration(
-                                                          color:
-                                                              Color(0xFFFFAF72),
-                                                          borderRadius:
-                                                              BorderRadius.only(
+                                                        Container(
+                                                          width: 61,
+                                                          height: 18,
+                                                          decoration: BoxDecoration(
+                                                              color: Color(
+                                                                  0xFFFFAF72),
+                                                              borderRadius: BorderRadius.only(
                                                                   topLeft: Radius
                                                                       .circular(
                                                                           10),
                                                                   bottomRight: Radius
                                                                       .circular(
                                                                           10))),
-                                                    ),
+                                                        ),
                                                         Padding(
                                                           padding:
                                                               const EdgeInsets
