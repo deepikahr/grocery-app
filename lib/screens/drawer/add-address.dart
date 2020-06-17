@@ -37,6 +37,7 @@ class AddAddress extends StatefulWidget {
 
 class _AddAddressState extends State<AddAddress> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   var addressData;
   LocationData currentLocation;
@@ -78,6 +79,7 @@ class _AddAddressState extends State<AddAddress> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       AddressService.addAddress(address).then((onValue) {
+        print(onValue);
         try {
           if (mounted) {
             setState(() {
@@ -90,6 +92,8 @@ class _AddAddressState extends State<AddAddress> {
                 Navigator.pop(context);
               });
             }
+          } else {
+            showSnackbar(onValue['response_data']);
           }
         } catch (error, stackTrace) {
           if (mounted) {
@@ -125,6 +129,14 @@ class _AddAddressState extends State<AddAddress> {
     }
   }
 
+  void showSnackbar(message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(milliseconds: 3000),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+
   @override
   void dispose() {
     if (locationSubscription != null && locationSubscription is Stream)
@@ -135,6 +147,7 @@ class _AddAddressState extends State<AddAddress> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: GFAppBar(
         iconTheme: IconThemeData(
           color: Colors.black,
