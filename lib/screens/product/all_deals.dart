@@ -222,12 +222,10 @@ class _AllDealsListState extends State<AllDealsList> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => ProductDetails(
-                                      locale: widget.locale,
-                                      localizedValues: widget.localizedValues,
-                                      productID: dealsList[i]['product'],
-                                      favProductList: getTokenValue
-                                          ? favProductList
-                                          : null),
+                                    locale: widget.locale,
+                                    localizedValues: widget.localizedValues,
+                                    productID: dealsList[i]['product'],
+                                  ),
                                 ),
                               );
                               result.then((value) {

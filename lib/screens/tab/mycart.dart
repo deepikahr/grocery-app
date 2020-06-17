@@ -30,7 +30,8 @@ class _MyCartState extends State<MyCart> {
   bool isLoadingCart = false,
       isGetTokenLoading = false,
       isUpdating = false,
-      isMinAmountCheckLoading = false;
+      isMinAmountCheckLoading = false,
+      isCheckProductAvailableOrNot = false;
   String token, currency;
   String quantityUpdateType = '+';
   Map<String, dynamic> cartItem;
@@ -427,59 +428,132 @@ class _MyCartState extends State<MyCart> {
     if (minAmout['minimumOrderAmountToPlaceOrder'] == null) {
       minAmout['minimumOrderAmountToPlaceOrder'] = 0.0;
     }
-    if (cartItem['grandTotal'] >= minAmout['minimumOrderAmountToPlaceOrder']) {
-      var result = Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Checkout(
-            locale: widget.locale,
-            localizedValues: widget.localizedValues,
-            cartItem: cartItem,
-            buy: 'cart',
-            quantity: cartItem['cart'].length.toString(),
-            id: cartItem['_id'].toString(),
-          ),
-        ),
-      );
-      result.then((value) {
-        getCartItems();
-      });
+    if (cartItem['subTotal'] >= minAmout['minimumOrderAmountToPlaceOrder']) {
+      checkProductAvailableOrNot(cartItem['_id']);
     } else {
-      showDialog<Null>(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return Container(
-            width: 270.0,
-            child: new AlertDialog(
-              content: new SingleChildScrollView(
-                child: new ListBody(
-                  children: <Widget>[
-                    new Text(
-                      MyLocalizations.of(context)
-                              .amountshouldbegreterthenorequalminamount +
-                          "($currency${minAmout['minimumOrderAmountToPlaceOrder']})",
-                      style: hintSfsemiboldred(),
-                    ),
-                  ],
-                ),
-              ),
-              actions: <Widget>[
-                new FlatButton(
-                  child: new Text(
-                    MyLocalizations.of(context).ok,
-                    style: textbarlowRegularaPrimary(),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            ),
-          );
-        },
-      );
+      showError(MyLocalizations.of(context)
+              .amountshouldbegreterthenorequalminamount +
+          "($currency${minAmout['minimumOrderAmountToPlaceOrder'].toString()})");
     }
+  }
+
+  checkProductAvailableOrNot(cartId) async {
+    if (mounted) {
+      setState(() {
+        isCheckProductAvailableOrNot = true;
+      });
+    }
+    CartService.checkCartVerifyOrNot().then((response) {
+      if (mounted) {
+        setState(() {
+          isCheckProductAvailableOrNot = false;
+        });
+      }
+      if (response['response_code'] == 200) {
+        var result = Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Checkout(
+              locale: widget.locale,
+              localizedValues: widget.localizedValues,
+              cartItem: cartItem,
+              buy: 'cart',
+              quantity: cartItem['cart'].length.toString(),
+              id: cartItem['_id'].toString(),
+            ),
+          ),
+        );
+        result.then((value) {
+          getCartItems();
+        });
+      } else if (response['response_code'] == 400) {
+        showError("${response['response_data']}");
+      } else if (response['response_code'] == 205) {
+        verifyTokenAlert(response['response_data'], cartId);
+      } else {
+        showError("${response['response_data']}");
+      }
+    });
+  }
+
+  verifyTokenAlert(responseData, cartId) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            responseData['message'] ?? "",
+          ),
+          content: SingleChildScrollView(
+            child: responseData['cartVerifyData']['cartArr'].length > 0
+                ? ListView.builder(
+                    physics: ScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: responseData['cartVerifyData']['cartArr'].length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Text(
+                        responseData['cartVerifyData']['cartArr'][index]
+                                ['title']
+                            .toString(),
+                      );
+                    })
+                : Text(""),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(MyLocalizations.of(context).cancel),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text(MyLocalizations.of(context).remove),
+              onPressed: () {
+                Map body = {
+                  "cartId": cartId,
+                  "cart": responseData['cartVerifyData']['cartArr']
+                };
+                CartService.paymentTimeCarDataDelete(body).then((response) {
+                  Navigator.pop(context);
+                  if (response['response_code'] == 200) {
+                    if (response['response_data'] is Map) {
+                      Common.setCartData(response['response_data']);
+                    } else {
+                      Common.setCartData(null);
+                    }
+                    getToken();
+                    checkMinOrderAmount();
+                  }
+                });
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  showError(responseData) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            responseData,
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(MyLocalizations.of(context).ok),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -1022,17 +1096,16 @@ class _MyCartState extends State<MyCart> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.end,
                                             children: <Widget>[
-                                              isMinAmountCheckLoading
+                                              isCheckProductAvailableOrNot
                                                   ? GFLoader(
                                                       type: GFLoaderType.ios,
                                                     )
-                                                  : Text(
-                                                      MyLocalizations.of(
-                                                              context)
-                                                          .checkout,
-                                                      style:
-                                                          textBarlowRegularBlack(),
-                                                    ),
+                                                  : Text(""),
+                                              Text(
+                                                MyLocalizations.of(context)
+                                                    .checkout,
+                                                style: textBarlowRegularBlack(),
+                                              ),
                                               Icon(Icons.arrow_forward),
                                               SizedBox(width: 10)
                                             ],

@@ -32,6 +32,7 @@ dependencies:
   url_launcher: ^5.4.5
   flutter_map_picker: ^0.1.2
   stripe_payment: ^1.0.7
+ 
   flutter_localizations:
     sdk: flutter
 
@@ -102,5 +103,8 @@ flutter:
     - lib/assets/icons/chat.png
     - lib/assets/icons/about.png
     - lib/assets/icons/lg.png
+    - lib/assets/icons/categories.png
+    - lib/assets/icons/deals.png
+    - lib/assets/icons/history.png
 
     - lib/assets/splash.png

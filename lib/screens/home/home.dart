@@ -289,13 +289,12 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                       context,
                       MaterialPageRoute(
                         builder: (context) => SearchItem(
-                            locale: widget.locale,
-                            localizedValues: widget.localizedValues,
-                            productsList: searchProductList,
-                            currency: currency,
-                            token: getTokenValue,
-                            favProductList:
-                                getTokenValue ? favProductList : null),
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                          productsList: searchProductList,
+                          currency: currency,
+                          token: getTokenValue,
+                        ),
                       ),
                     );
                   },

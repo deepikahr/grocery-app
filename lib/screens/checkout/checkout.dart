@@ -171,6 +171,8 @@ class _CheckoutState extends State<Checkout> {
               isDeliveryChargeLoading = false;
             });
           }
+        } else {
+          showSnackbar("${value['response_data']}");
         }
       });
     }
@@ -424,6 +426,8 @@ class _CheckoutState extends State<Checkout> {
             result.then((value) {
               getCartItems();
             });
+          } else {
+            showSnackbar("${value['response_data']}");
           }
         } catch (error, stackTrace) {
           if (mounted) {
@@ -1109,7 +1113,7 @@ class _CheckoutState extends State<Checkout> {
                                                       ),
                                                       type:
                                                           GFButtonType.outline,
-                                                      color: GFColors.WARNING,
+                                                      color: primary,
                                                       size: GFSize.MEDIUM,
                                                     ),
                                                     Padding(
@@ -1137,7 +1141,7 @@ class _CheckoutState extends State<Checkout> {
                                                                 textbarlowRegularaPrimar(),
                                                           ),
                                                         ),
-                                                        color: GFColors.WARNING,
+                                                        color: primary,
                                                         type: GFButtonType
                                                             .outline,
                                                       ),
