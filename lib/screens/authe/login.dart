@@ -137,8 +137,8 @@ class _LoginState extends State<Login> {
               } else {
                 showSnackbar(MyLocalizations.of(context).invalidUser);
               }
-            } else if (onValue['response_code'] == 401) {
-              showSnackbar(onValue['response_data']);
+            } else if (onValue['response_code'] == 205) {
+              showAlert(onValue['response_data'], email.toLowerCase());
             } else {
               showSnackbar(onValue['response_data']);
             }
@@ -167,6 +167,49 @@ class _LoginState extends State<Login> {
       }
       return;
     }
+  }
+
+  showAlert(message, email) {
+    return showDialog<Null>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return new AlertDialog(
+          title: new Text(
+            message,
+            style: hintSfMediumredsmall(),
+          ),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text(
+                MyLocalizations.of(context).cancel,
+                style: textbarlowRegularaPrimary(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              child: new Text(
+                MyLocalizations.of(context).sendVerificationlink,
+                style: textbarlowRegularaPrimary(),
+              ),
+              onPressed: () {
+                Map body = {
+                  "email": email,
+                };
+                LoginService.verificationMailSendApi(body).then((response) {
+                  Navigator.of(context).pop();
+                  if (response['response_code'] == 200) {
+                    showSnackbar(response['response_data']);
+                  }
+                });
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override

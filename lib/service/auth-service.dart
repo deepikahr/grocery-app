@@ -278,4 +278,22 @@ class LoginService {
     });
     return json.decode(response.body);
   }
+
+  static Future<dynamic> verificationMailSendApi(body) async {
+    String languageCode, token;
+    await Common.getToken().then((tkn) {
+      token = tkn;
+    });
+    await Common.getSelectedLanguage().then((code) {
+      languageCode = code ?? "";
+    });
+    final response = await client.put(Constants.baseURL + 'users/verify/link',
+        body: json.encode(body),
+        headers: {
+          'Content-Type': 'application/json',
+          'language': languageCode,
+          'Authorization': 'bearer $token',
+        });
+    return json.decode(response.body);
+  }
 }

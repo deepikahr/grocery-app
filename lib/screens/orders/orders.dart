@@ -61,7 +61,6 @@ class _OrdersState extends State<Orders> {
     await ProductService.getOrderByUserID().then((onValue) {
       try {
         _refreshController.refreshCompleted();
-
         if (onValue['response_code'] == 200) {
           if (mounted) {
             setState(() {

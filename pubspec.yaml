@@ -103,5 +103,8 @@ flutter:
     - lib/assets/icons/chat.png
     - lib/assets/icons/about.png
     - lib/assets/icons/lg.png
+    - lib/assets/icons/categories.png
+    - lib/assets/icons/deals.png
+    - lib/assets/icons/history.png
 
     - lib/assets/splash.png

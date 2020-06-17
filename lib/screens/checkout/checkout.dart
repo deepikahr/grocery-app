@@ -171,6 +171,8 @@ class _CheckoutState extends State<Checkout> {
               isDeliveryChargeLoading = false;
             });
           }
+        } else {
+          showSnackbar("${value['response_data']}");
         }
       });
     }
@@ -424,6 +426,8 @@ class _CheckoutState extends State<Checkout> {
             result.then((value) {
               getCartItems();
             });
+          } else {
+            showSnackbar("${value['response_data']}");
           }
         } catch (error, stackTrace) {
           if (mounted) {

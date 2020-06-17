@@ -4,7 +4,6 @@ import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/screens/chat/chatpage.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
-import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
