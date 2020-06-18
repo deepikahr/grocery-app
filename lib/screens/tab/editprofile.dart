@@ -484,9 +484,6 @@ class _EditProfileState extends State<EditProfile> {
                       validator: (String value) {
                         if (value.isEmpty) {
                           return MyLocalizations.of(context).enterFullName;
-                        } else if (!RegExp(r'^[A-Za-z ]+$').hasMatch(value)) {
-                          return MyLocalizations.of(context)
-                              .pleaseEnterValidFullName;
                         } else
                           return null;
                       },
