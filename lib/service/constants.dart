@@ -18,7 +18,7 @@ class Constants {
   static const ONE_SIGNAL_KEY = "a76b6867-bf12-440f-8bc2-30946c652af8";
 
   // googleapikey
-  static const GOOGLE_API_KEY = "AIzaSyD6Q4UgAYOL203nuwNeBr4j_-yAd1U1gko";
+  static const GOOGLE_API_KEY = "AIzaSyBAwPGO0nO-z1aXVgEJg5G_XRAo6RnepSw";
 
   // stripe key
   static const STRIPE_KEY = "pk_test_RBdAu6jIbEByY3KaBQFbH4N100nMkViv6g";
