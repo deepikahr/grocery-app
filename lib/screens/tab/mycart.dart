@@ -884,13 +884,13 @@ class _MyCartState extends State<MyCart> {
           ? SquareLoader()
           : token == null
               ? Container(
-                  height: 165,
+                  height: 5,
                 )
               : isLoadingCart
                   ? SquareLoader()
                   : cartItem == null
                       ? Container(
-                          height: 175.0,
+                          height: 5.0,
                         )
                       : Container(
                           height: bottomBarHeight,
