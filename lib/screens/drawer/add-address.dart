@@ -38,12 +38,11 @@ class AddAddress extends StatefulWidget {
 class _AddAddressState extends State<AddAddress> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
   var addressData;
   LocationData currentLocation;
-  bool chooseAddress = false, isLoading = false;
+  bool isAddAddressLoading = false;
   StreamSubscription<LocationData> locationSubscription;
-  int selectedRadio = 0, selectedRadioFirst;
+  int selectedAddressType = 0;
   @override
   void initState() {
     super.initState();
@@ -65,7 +64,7 @@ class _AddAddressState extends State<AddAddress> {
       _formKey.currentState.save();
       if (mounted) {
         setState(() {
-          isLoading = true;
+          isAddAddressLoading = true;
         });
       }
 
@@ -74,14 +73,12 @@ class _AddAddressState extends State<AddAddress> {
         "long": widget.pickedLocation.latLng.longitude
       };
       address['location'] = location;
-      address['addressType'] = addressType[
-          selectedRadioFirst == null ? selectedRadio : selectedRadioFirst];
-      print(address);
+      address['addressType'] = addressType[selectedAddressType];
       AddressService.addAddress(address).then((onValue) {
         try {
           if (mounted) {
             setState(() {
-              isLoading = false;
+              isAddAddressLoading = false;
             });
           }
           if (onValue['response_code'] == 201) {
@@ -96,7 +93,7 @@ class _AddAddressState extends State<AddAddress> {
         } catch (error, stackTrace) {
           if (mounted) {
             setState(() {
-              isLoading = false;
+              isAddAddressLoading = false;
             });
           }
           sentryError.reportError(error, stackTrace);
@@ -104,7 +101,7 @@ class _AddAddressState extends State<AddAddress> {
       }).catchError((onError) {
         if (mounted) {
           setState(() {
-            isLoading = false;
+            isAddAddressLoading = false;
           });
         }
         sentryError.reportError(onError, null);
@@ -112,7 +109,7 @@ class _AddAddressState extends State<AddAddress> {
     } else {
       if (mounted) {
         setState(() {
-          isLoading = false;
+          isAddAddressLoading = false;
         });
       }
       return;
@@ -122,7 +119,7 @@ class _AddAddressState extends State<AddAddress> {
   setSelectedRadio(int val) async {
     if (mounted) {
       setState(() {
-        selectedRadioFirst = val;
+        selectedAddressType = val;
       });
     }
   }
@@ -529,6 +526,17 @@ class _AddAddressState extends State<AddAddress> {
                   itemCount:
                       addressType.length == null ? 0 : addressType.length,
                   itemBuilder: (BuildContext context, int i) {
+                    String type;
+                    if (addressType[i] == 'Home') {
+                      type = MyLocalizations.of(context).home;
+                    } else if (addressType[i] == 'Work') {
+                      type = MyLocalizations.of(context).work;
+                    } else if (addressType[i] == 'Others') {
+                      type = MyLocalizations.of(context).others;
+                    } else {
+                      type = addressType[i];
+                    }
+
                     return Padding(
                       padding: const EdgeInsets.only(left: 10.0),
                       child: Row(
@@ -537,15 +545,13 @@ class _AddAddressState extends State<AddAddress> {
                         children: <Widget>[
                           Radio(
                             value: i,
-                            groupValue: selectedRadioFirst == null
-                                ? selectedRadio
-                                : selectedRadioFirst,
-                            activeColor: Colors.green,
+                            groupValue: selectedAddressType,
+                            activeColor: primary,
                             onChanged: (value) {
                               setSelectedRadio(value);
                             },
                           ),
-                          Text('${addressType[i]}'),
+                          Text(type),
                         ],
                       ),
                     );
@@ -580,7 +586,7 @@ class _AddAddressState extends State<AddAddress> {
                           SizedBox(
                             height: 10,
                           ),
-                          isLoading
+                          isAddAddressLoading
                               ? GFLoader(
                                   type: GFLoaderType.ios,
                                 )

@@ -227,14 +227,13 @@ class _DrawerPageState extends State<DrawerPage> {
   }
 
   logout() async {
-    LoginService.getLanguageJson("").then((value) async {
-      await Common.setSelectedLanguage(null);
-      await Common.setAllLanguageNames(value['response_data']['langName']);
-      await Common.setAllLanguageCodes(value['response_data']['langCode']);
-      await LoginService.setLanguageCodeToProfile();
-      await Common.setToken(null);
-      await Common.setUserID(null);
-      main();
+    Common.getSelectedLanguage().then((selectedLocale) async {
+      await LoginService.setLanguageCodeToProfileDefult(selectedLocale)
+          .then((value) async {
+        await Common.setToken(null);
+        await Common.setUserID(null);
+        main();
+      });
     });
   }
 

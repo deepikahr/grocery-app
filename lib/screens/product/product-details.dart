@@ -242,7 +242,10 @@ class _ProductDetailsState extends State<ProductDetails>
             showSnackbar(onValue['response_data']);
             _checkFavourite();
           } else {
-            showSnackbar(onValue['response_data']);
+            setState(() {
+              isFavProductLoading = false;
+              showSnackbar(onValue['response_data']);
+            });
           }
         } catch (error, stackTrace) {
           sentryError.reportError(error, stackTrace);
@@ -257,7 +260,10 @@ class _ProductDetailsState extends State<ProductDetails>
             showSnackbar(onValue['response_data']);
             _checkFavourite();
           } else {
-            showSnackbar(onValue['response_data']);
+            setState(() {
+              isFavProductLoading = false;
+              showSnackbar(onValue['response_data']);
+            });
           }
         } catch (error, stackTrace) {
           sentryError.reportError(error, stackTrace);

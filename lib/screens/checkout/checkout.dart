@@ -48,7 +48,7 @@ class _CheckoutState extends State<Checkout> {
   // Declare this variable
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  Map<String, dynamic> userInfo, address, cartItem;
+  Map userInfo, address, cartItem, locationInfo;
 
   List addressList, deliverySlotList;
   int selectedRadio, groupValue, groupValue1, _selectedIndex = 0;
@@ -65,13 +65,13 @@ class _CheckoutState extends State<Checkout> {
       deliverySlot = false,
       isLoadingCart = false,
       isDeliveryChargeLoading = false,
-      isDeliveryChargeFree = false;
+      isDeliveryChargeFree = false,
+      _serviceEnabled;
   LocationData currentLocation;
   Location _location = new Location();
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  Map locationInfo;
-  bool _serviceEnabled;
+
   PermissionStatus _permissionGranted;
   @override
   void initState() {
@@ -413,7 +413,7 @@ class _CheckoutState extends State<Checkout> {
 
   placeOrder() async {
     if (selectedDate == null) {
-      selectedDate = DateFormat("dd-MM-yyyy").format(DateTime.now());
+      selectedDate = deliverySlotList[0]['date'];
     }
     if (groupValue1 == null) {
       showSnackbar(MyLocalizations.of(context).pleaseselectaddressfirst);
@@ -1449,8 +1449,7 @@ class _CheckoutState extends State<Checkout> {
                                                           value: i,
                                                           groupValue:
                                                               selectedRadio,
-                                                          activeColor:
-                                                              Colors.green,
+                                                          activeColor: primary,
                                                           onChanged: (value) {
                                                             setSelectedRadio(
                                                                 value);

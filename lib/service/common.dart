@@ -154,8 +154,6 @@ class Common {
     return Future(() => prefs.getString('currency'));
   }
 
-  // SentryError sentryError = new SentryError();
-
   static Future<bool> setSavedSettingsData(data) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.setString('globalSettings', json.encode(data));

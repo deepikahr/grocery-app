@@ -28,7 +28,7 @@ class Address extends StatefulWidget {
 }
 
 class _AddressState extends State<Address> {
-  bool isProfile = false, addressLoading = false;
+  bool addressLoading = false;
   List addressList = List();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -98,7 +98,6 @@ class _AddressState extends State<Address> {
 
   getAdminLocationInfo() async {
     await LoginService.getLocationformation().then((onValue) {
-      print(onValue);
       try {
         if (onValue['response_code'] == 200) {
           if (mounted) {

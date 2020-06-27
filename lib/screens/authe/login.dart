@@ -44,9 +44,9 @@ class _LoginState extends State<Login> {
   bool isUserLoaginLoading = false,
       registerationLoading = false,
       value = false,
-      passwordVisible = true;
+      passwordVisible = true,
+      _obscureText = true;
   String email, password;
-  bool _obscureText = true;
 
   // Toggles the password
   void _toggle() {

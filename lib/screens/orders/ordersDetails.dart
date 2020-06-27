@@ -279,7 +279,15 @@ class _OrderDetailsState extends State<OrderDetails> {
                                         style: textBarlowMediumBlack()),
                                     SizedBox(width: 5),
                                     Expanded(
-                                      child: Text(orderHistory['paymentType'],
+                                      child: Text(
+                                          orderHistory['paymentType'] == 'COD'
+                                              ? MyLocalizations.of(context)
+                                                  .cashOnDelivery
+                                              : orderHistory['paymentType'] ==
+                                                      "CARD"
+                                                  ? MyLocalizations.of(context)
+                                                      .payByCard
+                                                  : orderHistory['paymentType'],
                                           style: textBarlowMediumBlack()),
                                     )
                                   ],
@@ -298,10 +306,23 @@ class _OrderDetailsState extends State<OrderDetails> {
                                           SizedBox(width: 5),
                                           Expanded(
                                             child: Text(
-                                                orderHistory[
-                                                            'transactionDetails']
-                                                        ['transactionStatus'] ??
-                                                    "",
+                                                orderHistory['transactionDetails'][
+                                                            'transactionStatus'] ==
+                                                        "succeeded"
+                                                    ? MyLocalizations.of(context)
+                                                        .succeeded
+                                                    : orderHistory['transactionDetails'][
+                                                                    'transactionStatus'] ==
+                                                                "Pending" ||
+                                                            orderHistory['transactionDetails'][
+                                                                    'transactionStatus'] ==
+                                                                "pending"
+                                                        ? MyLocalizations.of(
+                                                                context)
+                                                            .pending
+                                                        : orderHistory[
+                                                                'transactionDetails']
+                                                            ['transactionStatus'],
                                                 style: textBarlowMediumBlack()),
                                           )
                                         ],
@@ -320,7 +341,30 @@ class _OrderDetailsState extends State<OrderDetails> {
                                         style: textBarlowMediumBlack()),
                                     SizedBox(width: 5),
                                     Expanded(
-                                      child: Text(orderHistory['orderStatus'],
+                                      child: Text(
+                                          orderHistory['orderStatus'] ==
+                                                  "DELIVERED"
+                                              ? MyLocalizations.of(context)
+                                                  .dELIVERED
+                                              : orderHistory['orderStatus'] == "Cancelled"
+                                                  ? MyLocalizations.of(context)
+                                                      .cancelled
+                                                  : orderHistory['orderStatus'] ==
+                                                          "Out for delivery"
+                                                      ? MyLocalizations.of(context)
+                                                          .outfordelivery
+                                                      : orderHistory['orderStatus'] ==
+                                                              "Confirmed"
+                                                          ? MyLocalizations.of(
+                                                                  context)
+                                                              .confirmed
+                                                          : orderHistory['orderStatus'] ==
+                                                                  "Pending"
+                                                              ? MyLocalizations.of(
+                                                                      context)
+                                                                  .pending
+                                                              : orderHistory[
+                                                                  'orderStatus'],
                                           style: textBarlowMediumGreen()),
                                     )
                                   ],

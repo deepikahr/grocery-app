@@ -368,7 +368,7 @@ class _AllProductsState extends State<AllProducts> {
                                               ),
                                             ),
                                             child: Text(
-                                              'All',
+                                              MyLocalizations.of(context).all,
                                               textAlign: TextAlign.center,
                                               style: textbarlowMediumBlackm(),
                                             ),
@@ -524,12 +524,12 @@ class _AllProductsState extends State<AllProducts> {
                                                     ),
                                                   );
                                                   result.then((value) {
-                                                    if (mounted) {
-                                                      setState(() {
-                                                        isLoadingSubCatProductsList =
-                                                            true;
-                                                      });
-                                                    }
+                                                   
+                                                         if (mounted) {
+      setState(() {
+        isLoadingSubCatProductsList = true;
+      });
+    }
                                                     getProductToSubCategory(
                                                         currentSubCategoryId);
                                                   });
@@ -742,7 +742,7 @@ class _AllProductsState extends State<AllProducts> {
                                                 unit: productsList[i]['variant']
                                                     [0]['unit'],
                                                 rating: productsList[i]['averageRating'].toStringAsFixed(1),
-                                                buttonName: "Add",
+                                                buttonName: MyLocalizations.of(context).add,
                                                 cartAdded: productsList[i]['cartAdded'] ?? false,
                                                 cartId: productsList[i]['cartId'],
                                                 productQuantity: productsList[i]['cartAddedQuantity'] ?? 0,

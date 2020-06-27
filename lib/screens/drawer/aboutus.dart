@@ -137,7 +137,7 @@ class _AboutUsState extends State<AboutUs> {
                             margin: EdgeInsets.all(15),
                             width: MediaQuery.of(context).size.width * 0.82,
                             child: Text(
-                              aboutUsDatails['aboutUs'],
+                              aboutUsDatails['aboutUs'] ?? "",
                               style: textbarlowRegularBlackd(),
                             ),
                           )
@@ -154,7 +154,7 @@ class _AboutUsState extends State<AboutUs> {
                       Padding(
                         padding: const EdgeInsets.only(
                             left: 15.0, right: 15.0, bottom: 15),
-                        child: Text(aboutUsDatails['address']),
+                        child: Text(aboutUsDatails['address'] ?? ""),
                       ),
 
                       Container(
@@ -167,7 +167,7 @@ class _AboutUsState extends State<AboutUs> {
                       ),
                       InkWell(
                         onTap: () {
-                          _launchURLCall(aboutUsDatails['phoneNumber']);
+                          _launchURLCall(aboutUsDatails['phoneNumber'] ?? "");
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(
@@ -183,7 +183,7 @@ class _AboutUsState extends State<AboutUs> {
                       ),
                       InkWell(
                         onTap: () {
-                          _launchURLEmail(aboutUsDatails['email']);
+                          _launchURLEmail(aboutUsDatails['email'] ?? "");
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(

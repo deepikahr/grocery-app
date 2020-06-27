@@ -423,7 +423,7 @@ class _SearchItemState extends State<SearchItem> {
             ),
       bottomNavigationBar: cartData == null
           ? Container(
-              height: 10.0,
+              height: 1
             )
           : InkWell(
               onTap: () {

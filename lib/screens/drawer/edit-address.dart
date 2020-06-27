@@ -40,10 +40,10 @@ class _EditAddressState extends State<EditAddress> {
   TextEditingController addressController = TextEditingController();
   var addressData;
   LocationData currentLocation;
-  bool chooseAddress = false, isUpdateAddress = false;
+  bool isUpdateAddressLoading = false;
   StreamSubscription<LocationData> locationSubscription;
   PlacePickerResult _pickedLocation;
-  int selectedRadio = 0, selectedRadioFirst;
+  int selectedAddressType;
   String fullAddress;
   @override
   void initState() {
@@ -63,7 +63,7 @@ class _EditAddressState extends State<EditAddress> {
   setSelectedRadio(int val) async {
     if (mounted) {
       setState(() {
-        selectedRadioFirst = val;
+        selectedAddressType = val;
       });
     }
   }
@@ -82,7 +82,7 @@ class _EditAddressState extends State<EditAddress> {
     if (_formKey.currentState.validate()) {
       if (mounted) {
         setState(() {
-          isUpdateAddress = true;
+          isUpdateAddressLoading = true;
         });
       }
       _formKey.currentState.save();
@@ -97,15 +97,13 @@ class _EditAddressState extends State<EditAddress> {
         };
         address['location'] = location;
       }
-      address['addressType'] = addressType[
-          selectedRadioFirst == null ? selectedRadio : selectedRadioFirst];
-      print(address);
+      address['addressType'] = addressType[selectedAddressType];
       AddressService.updateAddress(address, widget.updateAddressID['_id'])
           .then((onValue) {
         try {
           if (mounted) {
             setState(() {
-              isUpdateAddress = false;
+              isUpdateAddressLoading = false;
             });
           }
           if (onValue['response_code'] == 200) {
@@ -122,7 +120,7 @@ class _EditAddressState extends State<EditAddress> {
         } catch (error, stackTrace) {
           if (mounted) {
             setState(() {
-              isUpdateAddress = false;
+              isUpdateAddressLoading = false;
             });
           }
           sentryError.reportError(error, stackTrace);
@@ -130,7 +128,7 @@ class _EditAddressState extends State<EditAddress> {
       }).catchError((onError) {
         if (mounted) {
           setState(() {
-            isUpdateAddress = false;
+            isUpdateAddressLoading = false;
           });
         }
         sentryError.reportError(onError, null);
@@ -138,7 +136,7 @@ class _EditAddressState extends State<EditAddress> {
     } else {
       if (mounted) {
         setState(() {
-          isUpdateAddress = false;
+          isUpdateAddressLoading = false;
         });
       }
       return;
@@ -567,6 +565,16 @@ class _EditAddressState extends State<EditAddress> {
                   itemCount:
                       addressType.length == null ? 0 : addressType.length,
                   itemBuilder: (BuildContext context, int i) {
+                    String type;
+                    if (addressType[i] == 'Home') {
+                      type = MyLocalizations.of(context).home;
+                    } else if (addressType[i] == 'Work') {
+                      type = MyLocalizations.of(context).work;
+                    } else if (addressType[i] == 'Others') {
+                      type = MyLocalizations.of(context).others;
+                    } else {
+                      type = addressType[i];
+                    }
                     return Padding(
                       padding: const EdgeInsets.only(left: 10.0),
                       child: Row(
@@ -575,15 +583,13 @@ class _EditAddressState extends State<EditAddress> {
                         children: <Widget>[
                           Radio(
                             value: i,
-                            groupValue: selectedRadioFirst == null
-                                ? selectedRadio
-                                : selectedRadioFirst,
-                            activeColor: Colors.green,
+                            groupValue: selectedAddressType,
+                            activeColor: primary,
                             onChanged: (value) {
                               setSelectedRadio(value);
                             },
                           ),
-                          Text('${addressType[i]}'),
+                          Text(type),
                         ],
                       ),
                     );
@@ -612,7 +618,7 @@ class _EditAddressState extends State<EditAddress> {
                           SizedBox(
                             height: 10,
                           ),
-                          isUpdateAddress
+                          isUpdateAddressLoading
                               ? GFLoader(
                                   type: GFLoaderType.ios,
                                 )
