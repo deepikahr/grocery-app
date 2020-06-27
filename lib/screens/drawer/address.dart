@@ -28,7 +28,7 @@ class Address extends StatefulWidget {
 }
 
 class _AddressState extends State<Address> {
-  bool addressLoading = false;
+  bool addressLoading = false, isLocationLoading = false;
   List addressList = List();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -38,7 +38,6 @@ class _AddressState extends State<Address> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   Map locationInfo;
-  bool _serviceEnabled;
   PermissionStatus _permissionGranted;
   @override
   void initState() {
@@ -97,18 +96,25 @@ class _AddressState extends State<Address> {
   }
 
   getAdminLocationInfo() async {
+    if (mounted) {
+      setState(() {
+        isLocationLoading = true;
+      });
+    }
     await LoginService.getLocationformation().then((onValue) {
       try {
         if (onValue['response_code'] == 200) {
           if (mounted) {
             setState(() {
               locationInfo = onValue['response_data'];
+              isLocationLoading = false;
             });
           }
         } else {
           if (mounted) {
             setState(() {
               locationInfo = null;
+              isLocationLoading = false;
             });
           }
         }
@@ -116,6 +122,7 @@ class _AddressState extends State<Address> {
         if (mounted) {
           setState(() {
             locationInfo = null;
+            isLocationLoading = false;
           });
         }
         sentryError.reportError(error, stackTrace);
@@ -124,6 +131,7 @@ class _AddressState extends State<Address> {
       if (mounted) {
         setState(() {
           locationInfo = null;
+          isLocationLoading = false;
         });
       }
       sentryError.reportError(error, null);
@@ -183,7 +191,7 @@ class _AddressState extends State<Address> {
         centerTitle: true,
         backgroundColor: primary,
       ),
-      body: addressLoading
+      body: addressLoading || isLocationLoading
           ? SquareLoader()
           : ListView(
               children: <Widget>[
@@ -281,41 +289,27 @@ class _AddressState extends State<Address> {
             color: primary,
             blockButton: true,
             onPressed: () async {
-              _serviceEnabled = await _location.serviceEnabled();
-              if (!_serviceEnabled) {
-                _serviceEnabled = await _location.requestService();
-                if (!_serviceEnabled) {
-                  return;
-                }
-              }
-
               _permissionGranted = await _location.hasPermission();
               if (_permissionGranted == PermissionStatus.denied) {
                 _permissionGranted = await _location.requestPermission();
                 if (_permissionGranted != PermissionStatus.granted) {
-                  if (locationInfo != null) {
-                    Map locationLatLong = {
-                      "latitude": locationInfo['location']['lat'],
-                      "longitude": locationInfo['location']['lng']
-                    };
-                    addAddressPageMethod(locationLatLong);
-                  }
+                  Map locationLatLong = {
+                    "latitude": locationInfo['location']['lat'],
+                    "longitude": locationInfo['location']['lng']
+                  };
+
+                  addAddressPageMethod(locationLatLong);
                   return;
-                } else {
-                  currentLocation = await _location.getLocation();
-                  if (currentLocation != null) {
-                    Map locationLatLong = {
-                      "latitude": currentLocation.latitude,
-                      "longitude": currentLocation.longitude
-                    };
-                    addAddressPageMethod(locationLatLong);
-                  } else {
-                    showError(
-                        MyLocalizations.of(context).enableTogetlocation,
-                        MyLocalizations.of(context)
-                            .thereisproblemusingyourdevicelocationPleasecheckyourGPSsettings);
-                  }
                 }
+              }
+              currentLocation = await _location.getLocation();
+
+              if (currentLocation != null) {
+                Map locationLatLong = {
+                  "latitude": currentLocation.latitude,
+                  "longitude": currentLocation.longitude
+                };
+                addAddressPageMethod(locationLatLong);
               }
             },
             text: MyLocalizations.of(context).addNewAddress,

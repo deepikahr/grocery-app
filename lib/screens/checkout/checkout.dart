@@ -1244,16 +1244,6 @@ class _CheckoutState extends State<Checkout> {
                                         EdgeInsets.only(left: 10, right: 10),
                                     child: GFButton(
                                       onPressed: () async {
-                                        _serviceEnabled =
-                                            await _location.serviceEnabled();
-                                        if (!_serviceEnabled) {
-                                          _serviceEnabled =
-                                              await _location.requestService();
-                                          if (!_serviceEnabled) {
-                                            return;
-                                          }
-                                        }
-
                                         _permissionGranted =
                                             await _location.hasPermission();
                                         if (_permissionGranted ==
@@ -1262,39 +1252,31 @@ class _CheckoutState extends State<Checkout> {
                                               .requestPermission();
                                           if (_permissionGranted !=
                                               PermissionStatus.granted) {
-                                            if (locationInfo != null) {
-                                              Map locationLatLong = {
-                                                "latitude":
-                                                    locationInfo['location']
-                                                        ['lat'],
-                                                "longitude":
-                                                    locationInfo['location']
-                                                        ['lng']
-                                              };
-                                              addAddressPageMethod(
-                                                  locationLatLong);
-                                            }
+                                            Map locationLatLong = {
+                                              "latitude":
+                                                  locationInfo['location']
+                                                      ['lat'],
+                                              "longitude":
+                                                  locationInfo['location']
+                                                      ['lng']
+                                            };
+
+                                            addAddressPageMethod(
+                                                locationLatLong);
                                             return;
-                                          } else {
-                                            currentLocation =
-                                                await _location.getLocation();
-                                            if (currentLocation != null) {
-                                              Map locationLatLong = {
-                                                "latitude":
-                                                    currentLocation.latitude,
-                                                "longitude":
-                                                    currentLocation.longitude
-                                              };
-                                              addAddressPageMethod(
-                                                  locationLatLong);
-                                            } else {
-                                              showError(
-                                                  MyLocalizations.of(context)
-                                                      .enableTogetlocation,
-                                                  MyLocalizations.of(context)
-                                                      .thereisproblemusingyourdevicelocationPleasecheckyourGPSsettings);
-                                            }
                                           }
+                                        }
+                                        currentLocation =
+                                            await _location.getLocation();
+
+                                        if (currentLocation != null) {
+                                          Map locationLatLong = {
+                                            "latitude":
+                                                currentLocation.latitude,
+                                            "longitude":
+                                                currentLocation.longitude
+                                          };
+                                          addAddressPageMethod(locationLatLong);
                                         }
                                       },
                                       type: GFButtonType.transparent,
