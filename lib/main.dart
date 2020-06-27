@@ -32,7 +32,9 @@ void main() {
   }, onError: (error, stackTrace) {
     sentryError.reportError(error, stackTrace);
   });
+
   Common.getSelectedLanguage().then((selectedLocale) {
+    print(selectedLocale);
     Map localizedValues;
     String defaultLocale = '';
     String locale = selectedLocale ?? defaultLocale;
@@ -46,7 +48,9 @@ void main() {
         Zone.current.handleUncaughtError(details.exception, details.stack);
       }
     };
+    print(locale);
     LoginService.getLanguageJson(locale).then((value) async {
+      print(value);
       localizedValues = value['response_data']['json'];
       if (locale == '') {
         defaultLocale = value['response_data']['defaultCode']['languageCode'];

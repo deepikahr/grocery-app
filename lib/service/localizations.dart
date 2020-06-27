@@ -739,6 +739,14 @@ class MyLocalizations {
     return localizedValues[locale.languageCode]['sendVerificationlink'] ??
         "Send Verification link";
   }
+
+  String get all {
+    return localizedValues[locale.languageCode]['all'] ?? "All";
+  }
+
+  String get dealAmount {
+    return localizedValues[locale.languageCode]['dealAmount'] ?? "Deal Amount";
+  }
 }
 
 class MyLocalizationsDelegate extends LocalizationsDelegate<MyLocalizations> {

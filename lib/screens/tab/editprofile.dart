@@ -484,7 +484,7 @@ class _EditProfileState extends State<EditProfile> {
                       validator: (String value) {
                         if (value.isEmpty) {
                           return MyLocalizations.of(context).enterFullName;
-                        }else
+                        } else
                           return null;
                       },
                     ),

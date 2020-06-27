@@ -327,7 +327,9 @@ class _SearchItemState extends State<SearchItem> {
                                             productList: searchresult[index],
                                             variantList: searchresult[index]['variant'],
                                             subCategoryId: searchresult[index]['subcategory']),
-                                        searchresult[index]['isDealAvailable'] == true
+                                        searchresult[index]
+                                                    ['isDealAvailable'] ==
+                                                true
                                             ? Positioned(
                                                 child: Stack(
                                                   children: <Widget>[
@@ -352,7 +354,8 @@ class _SearchItemState extends State<SearchItem> {
                                                               2.0),
                                                       child: Text(
                                                         " " +
-                                                            searchresult[index]['delaPercent']
+                                                            searchresult[index][
+                                                                    'delaPercent']
                                                                 .toString() +
                                                             "% " +
                                                             MyLocalizations.of(

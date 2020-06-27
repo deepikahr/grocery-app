@@ -199,287 +199,274 @@ class _ProfileState extends State<Profile> {
                   backgroundColor: primary,
                   automaticallyImplyLeading: false,
                 ),
-      body: SmartRefresher(
-        enablePullDown: true,
-        enablePullUp: false,
-        controller: _refreshController,
-        onRefresh: () {
-          setState(() {
-            getToken();
-          });
-        },
-        child: isGetTokenLoading
-            ? SquareLoader()
-            : token == null
-                ? Login(
-                    locale: widget.locale,
-                    localizedValues: widget.localizedValues,
-                    isProfile: true)
-                : userInfo == null
-                    ? Container()
-                    : ListView(
-                        children: <Widget>[
-                          InkWell(
-                            onTap: () {
-                              var result = Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => EditProfile(
-                                      locale: widget.locale,
-                                      localizedValues: widget.localizedValues,
-                                      userInfo: userInfo),
-                                ),
-                              );
-                              result.then((value) => getToken());
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.only(left: 10.0),
-                              margin: EdgeInsets.only(
-                                top: 20,
+      body: isGetTokenLoading
+          ? SquareLoader()
+          : token == null
+              ? Login(
+                  locale: widget.locale,
+                  localizedValues: widget.localizedValues,
+                  isProfile: true)
+              : userInfo == null
+                  ? Container()
+                  : ListView(
+                      children: <Widget>[
+                        InkWell(
+                          onTap: () {
+                            var result = Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditProfile(
+                                    locale: widget.locale,
+                                    localizedValues: widget.localizedValues,
+                                    userInfo: userInfo),
                               ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5.0),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Flexible(
-                                    flex: 2,
-                                    fit: FlexFit.tight,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(27)),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: Colors.black
-                                                      .withOpacity(0.29),
-                                                  blurRadius: 6)
-                                            ]),
-                                        height: 90.0,
-                                        width: 91.0,
-                                        child: userInfo == null ||
-                                                (userInfo['filePath'] == null &&
-                                                    userInfo['profilePic'] ==
-                                                        null)
-                                            ? Center(
-                                                child: new Container(
-                                                  width: 200.0,
-                                                  height: 200.0,
-                                                  decoration: new BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            27.0),
-                                                    image: new DecorationImage(
-                                                      fit: BoxFit.cover,
-                                                      image: new AssetImage(
-                                                          'lib/assets/images/profile.png'),
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                            : Center(
-                                                child: new Container(
-                                                  width: 200.0,
-                                                  height: 200.0,
-                                                  decoration: new BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20.0),
-                                                    image: new DecorationImage(
-                                                      fit: BoxFit.cover,
-                                                      image: new NetworkImage(userInfo[
-                                                                  'filePath'] ==
-                                                              null
-                                                          ? userInfo[
-                                                              'profilePic']
-                                                          : Constants
-                                                                  .IMAGE_URL_PATH +
-                                                              "tr:dpr-auto,tr:w-500" +
-                                                              userInfo[
-                                                                  'filePath']),
-                                                    ),
+                            );
+                            result.then((value) => getToken());
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.only(left: 10.0),
+                            margin: EdgeInsets.only(
+                              top: 20,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5.0),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Flexible(
+                                  flex: 2,
+                                  fit: FlexFit.tight,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(27)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black
+                                                    .withOpacity(0.29),
+                                                blurRadius: 6)
+                                          ]),
+                                      height: 90.0,
+                                      width: 91.0,
+                                      child: userInfo == null ||
+                                              (userInfo['filePath'] == null &&
+                                                  userInfo['profilePic'] ==
+                                                      null)
+                                          ? Center(
+                                              child: new Container(
+                                                width: 200.0,
+                                                height: 200.0,
+                                                decoration: new BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          27.0),
+                                                  image: new DecorationImage(
+                                                    fit: BoxFit.cover,
+                                                    image: new AssetImage(
+                                                        'lib/assets/images/profile.png'),
                                                   ),
                                                 ),
                                               ),
-                                      ),
+                                            )
+                                          : Center(
+                                              child: new Container(
+                                                width: 200.0,
+                                                height: 200.0,
+                                                decoration: new BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20.0),
+                                                  image: new DecorationImage(
+                                                    fit: BoxFit.cover,
+                                                    image: new NetworkImage(userInfo[
+                                                                'filePath'] ==
+                                                            null
+                                                        ? userInfo['profilePic']
+                                                        : Constants
+                                                                .IMAGE_URL_PATH +
+                                                            "tr:dpr-auto,tr:w-500" +
+                                                            userInfo[
+                                                                'filePath']),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
                                     ),
                                   ),
-                                  Flexible(
-                                    flex: 4,
-                                    fit: FlexFit.tight,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              right: .0, bottom: 6.0),
-                                          child: Text(
-                                            '${userInfo['firstName'] ?? ""} ${userInfo['lastName'] ?? ""}',
-                                            style: textBarlowMediumBlack(),
-                                          ),
+                                ),
+                                Flexible(
+                                  flex: 4,
+                                  fit: FlexFit.tight,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            right: .0, bottom: 6.0),
+                                        child: Text(
+                                          '${userInfo['firstName'] ?? ""} ${userInfo['lastName'] ?? ""}',
+                                          style: textBarlowMediumBlack(),
                                         ),
-                                        SizedBox(height: 6),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: <Widget>[
-                                            Text(
-                                              '${userInfo['email'] ?? ""}',
-                                              style: textbarlowmedium(),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 6),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0, right: .0),
-                                          child: Text(
-                                            '${userInfo['mobileNumber'] ?? ""}',
+                                      ),
+                                      SizedBox(height: 6),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text(
+                                            '${userInfo['email'] ?? ""}',
                                             style: textbarlowmedium(),
                                           ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 6),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 5.0, right: .0),
+                                        child: Text(
+                                          '${userInfo['mobileNumber'] ?? ""}',
+                                          style: textbarlowmedium(),
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                  Flexible(
-                                    child: Row(
-                                      children: <Widget>[
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          children: <Widget>[
-                                            Padding(
-                                              padding: EdgeInsets.only(top: 45),
-                                              child: SvgPicture.asset(
-                                                  'lib/assets/icons/editt.svg'),
-                                            )
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 15),
-                          InkWell(
-                            onTap: () {
-                              var result = Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => Address(
-                                    locale: widget.locale,
-                                    localizedValues: widget.localizedValues,
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              );
-                              result.then((value) => getToken());
-                            },
-                            child: Container(
-                              height: 55,
-                              decoration: BoxDecoration(
-                                color: Color(0xFFF7F7F7),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 10.0,
-                                        bottom: 10.0,
-                                        left: 20.0,
-                                        right: 20.0),
-                                    child: Text(
-                                      MyLocalizations.of(context).address,
-                                      style: textBarlowMediumBlack(),
-                                    ),
+                                Flexible(
+                                  child: Row(
+                                    children: <Widget>[
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: <Widget>[
+                                          Padding(
+                                            padding: EdgeInsets.only(top: 45),
+                                            child: SvgPicture.asset(
+                                                'lib/assets/icons/editt.svg'),
+                                          )
+                                        ],
+                                      )
+                                    ],
                                   ),
-                                ],
-                              ),
+                                )
+                              ],
                             ),
                           ),
-                          SizedBox(height: 15),
-                          InkWell(
-                            onTap: () {
-                              selectLanguagesMethod();
-                            },
-                            child: Container(
-                              height: 55,
-                              decoration: BoxDecoration(
-                                color: Color(0xFFF7F7F7),
+                        ),
+                        SizedBox(height: 15),
+                        InkWell(
+                          onTap: () {
+                            var result = Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Address(
+                                  locale: widget.locale,
+                                  localizedValues: widget.localizedValues,
+                                ),
                               ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 10.0,
-                                        bottom: 10.0,
-                                        left: 20.0,
-                                        right: 20.0),
-                                    child: Text(
-                                      MyLocalizations.of(context)
-                                          .selectLanguage,
-                                      style: textBarlowMediumBlack(),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            );
+                            result.then((value) => getToken());
+                          },
+                          child: Container(
+                            height: 55,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFF7F7F7),
                             ),
-                          ),
-                          SizedBox(
-                            height: 20.0,
-                          ),
-                          InkWell(
-                            onTap: () {
-                              var result = Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => Orders(
-                                    locale: widget.locale,
-                                    localizedValues: widget.localizedValues,
-                                    userID: userID,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 10.0,
+                                      bottom: 10.0,
+                                      left: 20.0,
+                                      right: 20.0),
+                                  child: Text(
+                                    MyLocalizations.of(context).address,
+                                    style: textBarlowMediumBlack(),
                                   ),
                                 ),
-                              );
-                              result.then((value) => getToken());
-                            },
-                            child: Container(
-                              height: 55,
-                              decoration: BoxDecoration(
-                                color: Color(0xFFF7F7F7),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 10.0,
-                                        bottom: 10.0,
-                                        left: 20.0,
-                                        right: 20.0),
-                                    child: Text(
-                                      MyLocalizations.of(context).orderHistory,
-                                      style: textBarlowMediumBlack(),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              ],
                             ),
                           ),
-                          SizedBox(
-                            height: 20.0,
+                        ),
+                        SizedBox(height: 15),
+                        InkWell(
+                          onTap: () {
+                            selectLanguagesMethod();
+                          },
+                          child: Container(
+                            height: 55,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFF7F7F7),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 10.0,
+                                      bottom: 10.0,
+                                      left: 20.0,
+                                      right: 20.0),
+                                  child: Text(
+                                    MyLocalizations.of(context).selectLanguage,
+                                    style: textBarlowMediumBlack(),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ],
-                      ),
-      ),
+                        ),
+                        SizedBox(
+                          height: 20.0,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            var result = Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Orders(
+                                  locale: widget.locale,
+                                  localizedValues: widget.localizedValues,
+                                  userID: userID,
+                                ),
+                              ),
+                            );
+                            result.then((value) => getToken());
+                          },
+                          child: Container(
+                            height: 55,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFF7F7F7),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 10.0,
+                                      bottom: 10.0,
+                                      left: 20.0,
+                                      right: 20.0),
+                                  child: Text(
+                                    MyLocalizations.of(context).orderHistory,
+                                    style: textBarlowMediumBlack(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20.0,
+                        ),
+                      ],
+                    ),
     );
   }
 }

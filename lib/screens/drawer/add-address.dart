@@ -61,25 +61,23 @@ class _AddAddressState extends State<AddAddress> {
     "addressType": null
   };
   addAddress() async {
-    if (mounted) {
-      setState(() {
-        isLoading = true;
-      });
-    }
-    if (widget.pickedLocation.address != null) {
-      address['address'] = widget.pickedLocation.address;
-    }
-    var location = {
-      "lat": widget.pickedLocation.latLng.latitude,
-      "long": widget.pickedLocation.latLng.longitude
-    };
-    address['location'] = location;
-    address['addressType'] = addressType[
-        selectedRadioFirst == null ? selectedRadio : selectedRadioFirst];
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
+      if (mounted) {
+        setState(() {
+          isLoading = true;
+        });
+      }
+
+      var location = {
+        "lat": widget.pickedLocation.latLng.latitude,
+        "long": widget.pickedLocation.latLng.longitude
+      };
+      address['location'] = location;
+      address['addressType'] = addressType[
+          selectedRadioFirst == null ? selectedRadio : selectedRadioFirst];
+      print(address);
       AddressService.addAddress(address).then((onValue) {
-        print(onValue);
         try {
           if (mounted) {
             setState(() {
@@ -182,12 +180,53 @@ class _AddAddressState extends State<AddAddress> {
                   ),
                 ),
                 Padding(
-                    padding: const EdgeInsets.only(
-                        left: 20.0, right: 15.0, bottom: 5.0),
-                    child: Text(
-                      widget.pickedLocation.address,
+                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                  child: TextFormField(
+                      maxLines: 3,
+                      initialValue: widget.pickedLocation.address,
                       style: textBarlowRegularBlack(),
-                    )),
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
+                        counterText: "",
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 0,
+                            color: Color(0xFFF44242),
+                          ),
+                        ),
+                        errorStyle: TextStyle(
+                          color: Color(0xFFF44242),
+                        ),
+                        fillColor: Colors.black,
+                        focusColor: Colors.black,
+                        contentPadding: EdgeInsets.only(
+                          left: 15.0,
+                          right: 15.0,
+                          top: 10.0,
+                          bottom: 10.0,
+                        ),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.grey, width: 0.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: primary),
+                        ),
+                      ),
+                      validator: (String value) {
+                        if (value.isEmpty) {
+                          return MyLocalizations.of(context)
+                              .pleaseenterpostalcode;
+                        } else
+                          return null;
+                      },
+                      onSaved: (String value) {
+                        address['address'] = value;
+                      }),
+                ),
+                SizedBox(
+                  height: 25,
+                ),
                 Padding(
                   padding: const EdgeInsets.only(
                       left: 20.0, bottom: 5.0, right: 20.0),

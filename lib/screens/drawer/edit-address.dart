@@ -37,7 +37,7 @@ class EditAddress extends StatefulWidget {
 class _EditAddressState extends State<EditAddress> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
+  TextEditingController addressController = TextEditingController();
   var addressData;
   LocationData currentLocation;
   bool chooseAddress = false, isUpdateAddress = false;
@@ -47,6 +47,15 @@ class _EditAddressState extends State<EditAddress> {
   String fullAddress;
   @override
   void initState() {
+    if (widget.updateAddressID['addressType'] != null) {
+      addressController.text = widget.updateAddressID['address'];
+
+      for (int i = 0; i < addressType.length; i++) {
+        if (addressType[i] == widget.updateAddressID['addressType']) {
+          setSelectedRadio(i);
+        }
+      }
+    }
     super.initState();
   }
 
@@ -77,13 +86,11 @@ class _EditAddressState extends State<EditAddress> {
         });
       }
       _formKey.currentState.save();
+      address['address'] = addressController.text;
+
       if (_pickedLocation == null) {
-        address['address'] = fullAddress == null
-            ? widget.updateAddressID['address']
-            : fullAddress;
         address['location'] = widget.updateAddressID['location'];
       } else {
-        address['address'] = _pickedLocation.address;
         var location = {
           "lat": _pickedLocation.latLng.latitude,
           "long": _pickedLocation.latLng.longitude
@@ -92,6 +99,7 @@ class _EditAddressState extends State<EditAddress> {
       }
       address['addressType'] = addressType[
           selectedRadioFirst == null ? selectedRadio : selectedRadioFirst];
+      print(address);
       AddressService.updateAddress(address, widget.updateAddressID['_id'])
           .then((onValue) {
         try {
@@ -101,6 +109,8 @@ class _EditAddressState extends State<EditAddress> {
             });
           }
           if (onValue['response_code'] == 200) {
+            addressController.clear();
+
             if (mounted) {
               setState(() {
                 Navigator.pop(context);
@@ -147,6 +157,7 @@ class _EditAddressState extends State<EditAddress> {
   void dispose() {
     if (locationSubscription != null && locationSubscription is Stream)
       locationSubscription.cancel();
+    addressController.clear();
     super.dispose();
   }
 
@@ -189,14 +200,52 @@ class _EditAddressState extends State<EditAddress> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(
-                      left: 15.0, right: 15.0, bottom: 5.0),
-                  child: Text(
-                    fullAddress == null
-                        ? widget.updateAddressID['address'].toString()
-                        : fullAddress,
-                    style: labelStyle(),
-                  ),
+                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                  child: TextFormField(
+                      maxLines: 3,
+                      controller: addressController,
+                      style: textBarlowRegularBlack(),
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
+                        counterText: "",
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 0,
+                            color: Color(0xFFF44242),
+                          ),
+                        ),
+                        errorStyle: TextStyle(
+                          color: Color(0xFFF44242),
+                        ),
+                        fillColor: Colors.black,
+                        focusColor: Colors.black,
+                        contentPadding: EdgeInsets.only(
+                          left: 15.0,
+                          right: 15.0,
+                          top: 10.0,
+                          bottom: 10.0,
+                        ),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.grey, width: 0.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: primary),
+                        ),
+                      ),
+                      validator: (String value) {
+                        if (value.isEmpty) {
+                          return MyLocalizations.of(context)
+                              .pleaseenterpostalcode;
+                        } else
+                          return null;
+                      },
+                      onSaved: (String value) {
+                        address['address'] = addressController.text;
+                      }),
+                ),
+                SizedBox(
+                  height: 25,
                 ),
                 Container(
                   height: 45,
@@ -237,7 +286,8 @@ class _EditAddressState extends State<EditAddress> {
                                       )));
                           setState(() {
                             _pickedLocation = pickerResult;
-                            fullAddress = pickerResult.address.toString();
+                            addressController.text =
+                                pickerResult.address.toString();
                           });
                         },
                         text: MyLocalizations.of(context).updateAddress,

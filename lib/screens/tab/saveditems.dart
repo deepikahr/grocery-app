@@ -250,21 +250,19 @@ class _SavedItemsState extends State<SavedItems> {
                                       ? Positioned(
                                           child: Stack(
                                             children: <Widget>[
-                                                Container(
-                                                      width: 61,
-                                                      height: 18,
-                                                      decoration: BoxDecoration(
-                                                          color:
-                                                              Color(0xFFFFAF72),
-                                                          borderRadius:
-                                                              BorderRadius.only(
-                                                                  topLeft: Radius
-                                                                      .circular(
-                                                                          10),
-                                                                  bottomRight: Radius
-                                                                      .circular(
-                                                                          10))),
-                                                    ),
+                                              Container(
+                                                width: 61,
+                                                height: 18,
+                                                decoration: BoxDecoration(
+                                                    color: Color(0xFFFFAF72),
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                            topLeft: Radius
+                                                                .circular(10),
+                                                            bottomRight:
+                                                                Radius.circular(
+                                                                    10))),
+                                              ),
                                               Text(
                                                 " " +
                                                     favProductList[i]

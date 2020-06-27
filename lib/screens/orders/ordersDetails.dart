@@ -398,7 +398,8 @@ class _OrderDetailsState extends State<OrderDetails> {
                                 order['dealTotalAmount'] == 0
                                     ? Container()
                                     : Text(
-                                        'Deal Amount : $currency${order['dealTotalAmount'].toStringAsFixed(2)}',
+                                        MyLocalizations.of(context).dealAmount +
+                                            ' : $currency${order['dealTotalAmount'].toStringAsFixed(2)}',
                                         style: textSMBarlowRegularrBlack(),
                                       ),
                                 SizedBox(height: 10),
