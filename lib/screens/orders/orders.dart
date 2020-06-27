@@ -32,8 +32,8 @@ class Orders extends StatefulWidget {
 }
 
 class _OrdersState extends State<Orders> {
-  bool isLoading = false,
-      isLoadingSubProductsList = false,
+  bool isOrderListLoading = false,
+      isOrderListLoadingSubProductsList = false,
       showRating = false,
       showblur = false;
   List subProductsList = List();
@@ -52,7 +52,7 @@ class _OrdersState extends State<Orders> {
   getOrderByUserID() async {
     if (mounted) {
       setState(() {
-        isLoading = true;
+        isOrderListLoading = true;
       });
     }
     await Common.getCurrency().then((value) {
@@ -65,7 +65,7 @@ class _OrdersState extends State<Orders> {
           if (mounted) {
             setState(() {
               orderList = onValue['response_data'];
-              isLoading = false;
+              isOrderListLoading = false;
             });
           }
         }
@@ -73,7 +73,7 @@ class _OrdersState extends State<Orders> {
         if (mounted) {
           setState(() {
             orderList = [];
-            isLoading = false;
+            isOrderListLoading = false;
           });
         }
         sentryError.reportError(error, stackTrace);
@@ -82,7 +82,7 @@ class _OrdersState extends State<Orders> {
       if (mounted) {
         setState(() {
           orderList = [];
-          isLoading = false;
+          isOrderListLoading = false;
         });
       }
       sentryError.reportError(error, null);
@@ -235,7 +235,7 @@ class _OrdersState extends State<Orders> {
         onRefresh: () {
           getOrderByUserID();
         },
-        child: isLoading
+        child: isOrderListLoading
             ? SquareLoader()
             : orderList.length == 0
                 ? Center(

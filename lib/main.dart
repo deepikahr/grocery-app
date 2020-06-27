@@ -29,9 +29,12 @@ void main() {
       debugShowCheckedModeBanner: false,
     ));
     return Future.value(null);
-  }, onError: (error, stackTrace) {
+  },
+      // ignore: deprecated_member_use
+      onError: (error, stackTrace) {
     sentryError.reportError(error, stackTrace);
   });
+
   Common.getSelectedLanguage().then((selectedLocale) {
     Map localizedValues;
     String defaultLocale = '';
@@ -62,7 +65,9 @@ void main() {
           localizedValues: localizedValues,
         ));
         return Future.value(null);
-      }, onError: (error, stackTrace) {
+      },
+          // ignore: deprecated_member_use
+          onError: (error, stackTrace) {
         sentryError.reportError(error, stackTrace);
       });
     });

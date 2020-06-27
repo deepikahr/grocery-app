@@ -30,52 +30,6 @@ class _OtpState extends State<Otp> {
 
   String enteredOtp;
   bool isOtpVerifyLoading = false, isEmailLoading = false;
-  verifyEmail() async {
-    final form = _formKey.currentState;
-    if (form.validate()) {
-      form.save();
-      if (mounted) {
-        setState(() {
-          isEmailLoading = true;
-        });
-      }
-      Map<String, dynamic> body = {"email": widget.email};
-      await LoginService.verifyEmail(body).then((onValue) {
-        try {
-          if (mounted) {
-            setState(() {
-              isEmailLoading = false;
-            });
-          }
-          if (onValue['response_code'] == 200) {
-          } else if (onValue['response_code'] == 400) {
-            showAlert('${onValue['response_data']}');
-          }
-        } catch (error, stackTrace) {
-          if (mounted) {
-            setState(() {
-              isEmailLoading = false;
-            });
-          }
-          sentryError.reportError(error, stackTrace);
-        }
-      }).catchError((error) {
-        if (mounted) {
-          setState(() {
-            isEmailLoading = false;
-          });
-        }
-        sentryError.reportError(error, null);
-      });
-    } else {
-      if (mounted) {
-        setState(() {
-          isEmailLoading = false;
-        });
-      }
-      return;
-    }
-  }
 
   verifyOTP() async {
     if (enteredOtp != null) {

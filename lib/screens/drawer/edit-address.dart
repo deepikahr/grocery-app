@@ -37,16 +37,25 @@ class EditAddress extends StatefulWidget {
 class _EditAddressState extends State<EditAddress> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
+  TextEditingController addressController = TextEditingController();
   var addressData;
   LocationData currentLocation;
-  bool chooseAddress = false, isUpdateAddress = false;
+  bool isUpdateAddressLoading = false;
   StreamSubscription<LocationData> locationSubscription;
   PlacePickerResult _pickedLocation;
-  int selectedRadio = 0, selectedRadioFirst;
+  int selectedAddressType;
   String fullAddress;
   @override
   void initState() {
+    if (widget.updateAddressID['addressType'] != null) {
+      addressController.text = widget.updateAddressID['address'];
+
+      for (int i = 0; i < addressType.length; i++) {
+        if (addressType[i] == widget.updateAddressID['addressType']) {
+          setSelectedRadio(i);
+        }
+      }
+    }
     super.initState();
   }
 
@@ -54,7 +63,7 @@ class _EditAddressState extends State<EditAddress> {
   setSelectedRadio(int val) async {
     if (mounted) {
       setState(() {
-        selectedRadioFirst = val;
+        selectedAddressType = val;
       });
     }
   }
@@ -73,34 +82,33 @@ class _EditAddressState extends State<EditAddress> {
     if (_formKey.currentState.validate()) {
       if (mounted) {
         setState(() {
-          isUpdateAddress = true;
+          isUpdateAddressLoading = true;
         });
       }
       _formKey.currentState.save();
+      address['address'] = addressController.text;
+
       if (_pickedLocation == null) {
-        address['address'] = fullAddress == null
-            ? widget.updateAddressID['address']
-            : fullAddress;
         address['location'] = widget.updateAddressID['location'];
       } else {
-        address['address'] = _pickedLocation.address;
         var location = {
           "lat": _pickedLocation.latLng.latitude,
           "long": _pickedLocation.latLng.longitude
         };
         address['location'] = location;
       }
-      address['addressType'] = addressType[
-          selectedRadioFirst == null ? selectedRadio : selectedRadioFirst];
+      address['addressType'] = addressType[selectedAddressType];
       AddressService.updateAddress(address, widget.updateAddressID['_id'])
           .then((onValue) {
         try {
           if (mounted) {
             setState(() {
-              isUpdateAddress = false;
+              isUpdateAddressLoading = false;
             });
           }
           if (onValue['response_code'] == 200) {
+            addressController.clear();
+
             if (mounted) {
               setState(() {
                 Navigator.pop(context);
@@ -112,7 +120,7 @@ class _EditAddressState extends State<EditAddress> {
         } catch (error, stackTrace) {
           if (mounted) {
             setState(() {
-              isUpdateAddress = false;
+              isUpdateAddressLoading = false;
             });
           }
           sentryError.reportError(error, stackTrace);
@@ -120,7 +128,7 @@ class _EditAddressState extends State<EditAddress> {
       }).catchError((onError) {
         if (mounted) {
           setState(() {
-            isUpdateAddress = false;
+            isUpdateAddressLoading = false;
           });
         }
         sentryError.reportError(onError, null);
@@ -128,7 +136,7 @@ class _EditAddressState extends State<EditAddress> {
     } else {
       if (mounted) {
         setState(() {
-          isUpdateAddress = false;
+          isUpdateAddressLoading = false;
         });
       }
       return;
@@ -147,6 +155,7 @@ class _EditAddressState extends State<EditAddress> {
   void dispose() {
     if (locationSubscription != null && locationSubscription is Stream)
       locationSubscription.cancel();
+    addressController.clear();
     super.dispose();
   }
 
@@ -189,14 +198,52 @@ class _EditAddressState extends State<EditAddress> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(
-                      left: 15.0, right: 15.0, bottom: 5.0),
-                  child: Text(
-                    fullAddress == null
-                        ? widget.updateAddressID['address'].toString()
-                        : fullAddress,
-                    style: labelStyle(),
-                  ),
+                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                  child: TextFormField(
+                      maxLines: 3,
+                      controller: addressController,
+                      style: textBarlowRegularBlack(),
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
+                        counterText: "",
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 0,
+                            color: Color(0xFFF44242),
+                          ),
+                        ),
+                        errorStyle: TextStyle(
+                          color: Color(0xFFF44242),
+                        ),
+                        fillColor: Colors.black,
+                        focusColor: Colors.black,
+                        contentPadding: EdgeInsets.only(
+                          left: 15.0,
+                          right: 15.0,
+                          top: 10.0,
+                          bottom: 10.0,
+                        ),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.grey, width: 0.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: primary),
+                        ),
+                      ),
+                      validator: (String value) {
+                        if (value.isEmpty) {
+                          return MyLocalizations.of(context)
+                              .pleaseenterpostalcode;
+                        } else
+                          return null;
+                      },
+                      onSaved: (String value) {
+                        address['address'] = addressController.text;
+                      }),
+                ),
+                SizedBox(
+                  height: 25,
                 ),
                 Container(
                   height: 45,
@@ -237,7 +284,8 @@ class _EditAddressState extends State<EditAddress> {
                                       )));
                           setState(() {
                             _pickedLocation = pickerResult;
-                            fullAddress = pickerResult.address.toString();
+                            addressController.text =
+                                pickerResult.address.toString();
                           });
                         },
                         text: MyLocalizations.of(context).updateAddress,
@@ -517,6 +565,16 @@ class _EditAddressState extends State<EditAddress> {
                   itemCount:
                       addressType.length == null ? 0 : addressType.length,
                   itemBuilder: (BuildContext context, int i) {
+                    String type;
+                    if (addressType[i] == 'Home') {
+                      type = MyLocalizations.of(context).home;
+                    } else if (addressType[i] == 'Work') {
+                      type = MyLocalizations.of(context).work;
+                    } else if (addressType[i] == 'Others') {
+                      type = MyLocalizations.of(context).others;
+                    } else {
+                      type = addressType[i];
+                    }
                     return Padding(
                       padding: const EdgeInsets.only(left: 10.0),
                       child: Row(
@@ -525,15 +583,13 @@ class _EditAddressState extends State<EditAddress> {
                         children: <Widget>[
                           Radio(
                             value: i,
-                            groupValue: selectedRadioFirst == null
-                                ? selectedRadio
-                                : selectedRadioFirst,
-                            activeColor: Colors.green,
+                            groupValue: selectedAddressType,
+                            activeColor: primary,
                             onChanged: (value) {
                               setSelectedRadio(value);
                             },
                           ),
-                          Text('${addressType[i]}'),
+                          Text(type),
                         ],
                       ),
                     );
@@ -562,7 +618,7 @@ class _EditAddressState extends State<EditAddress> {
                           SizedBox(
                             height: 10,
                           ),
-                          isUpdateAddress
+                          isUpdateAddressLoading
                               ? GFLoader(
                                   type: GFLoaderType.ios,
                                 )

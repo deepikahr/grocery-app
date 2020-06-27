@@ -227,10 +227,14 @@ class _DrawerPageState extends State<DrawerPage> {
   }
 
   logout() async {
-    await Common.setSelectedLanguage(null);
-    await Common.setToken(null);
-    await Common.setUserID(null);
-    main();
+    Common.getSelectedLanguage().then((selectedLocale) async {
+      await LoginService.setLanguageCodeToProfileDefult(selectedLocale)
+          .then((value) async {
+        await Common.setToken(null);
+        await Common.setUserID(null);
+        main();
+      });
+    });
   }
 
   Widget _buildMenuTileList(String icon, String name, int count,

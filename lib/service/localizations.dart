@@ -739,6 +739,42 @@ class MyLocalizations {
     return localizedValues[locale.languageCode]['sendVerificationlink'] ??
         "Send Verification link";
   }
+
+  String get all {
+    return localizedValues[locale.languageCode]['all'] ?? "All";
+  }
+
+  String get dealAmount {
+    return localizedValues[locale.languageCode]['dealAmount'] ?? "Deal Amount";
+  }
+
+  String get dELIVERED {
+    return localizedValues[locale.languageCode]['dELIVERED'] ?? "DELIVERED";
+  }
+
+  String get cancelled {
+    return localizedValues[locale.languageCode]['cancelled'] ?? "Cancelled";
+  }
+
+  String get confirmed {
+    return localizedValues[locale.languageCode]['confirmed'] ?? "Confirmed";
+  }
+
+  String get pending {
+    return localizedValues[locale.languageCode]['pending'] ?? "Pending";
+  }
+
+  String get succeeded {
+    return localizedValues[locale.languageCode]['succeeded'] ?? "Succeeded";
+  }
+
+  String get work {
+    return localizedValues[locale.languageCode]['work'] ?? "Work";
+  }
+
+  String get others {
+    return localizedValues[locale.languageCode]['others'] ?? "Others";
+  }
 }
 
 class MyLocalizationsDelegate extends LocalizationsDelegate<MyLocalizations> {

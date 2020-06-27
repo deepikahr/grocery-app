@@ -279,6 +279,38 @@ class LoginService {
     return json.decode(response.body);
   }
 
+  static Future<dynamic> setLanguageCodeToProfileDefult(languageCode) async {
+    String token;
+    await Common.getToken().then((tkn) {
+      token = tkn;
+    });
+
+    final response =
+        await client.get(Constants.baseURL + 'users/language/set', headers: {
+      'Content-Type': 'application/json',
+      'language': languageCode,
+      'Authorization': 'bearer $token',
+    });
+    return json.decode(response.body);
+  }
+
+  static Future<Map<String, dynamic>> getLocationformation() async {
+    String token, languageCode;
+    await Common.getSelectedLanguage().then((code) {
+      languageCode = code ?? "";
+    });
+    await Common.getToken().then((onValue) {
+      token = onValue;
+    });
+    final response = await client
+        .get(Constants.baseURL + 'delivery/tax/settings/details', headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'bearer $token',
+      'language': languageCode
+    });
+    return json.decode(response.body);
+  }
+
   static Future<dynamic> verificationMailSendApi(body) async {
     String languageCode, token;
     await Common.getToken().then((tkn) {
