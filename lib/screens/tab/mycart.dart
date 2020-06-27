@@ -883,15 +883,11 @@ class _MyCartState extends State<MyCart> {
       bottomNavigationBar: isGetTokenLoading || isMinAmountCheckLoading
           ? SquareLoader()
           : token == null
-              ? Container(
-                  height: 165,
-                )
+              ? Container(height: 1)
               : isLoadingCart
                   ? SquareLoader()
                   : cartItem == null
-                      ? Container(
-                          height: 175.0,
-                        )
+                      ? Container(height: 1)
                       : Container(
                           height: bottomBarHeight,
                           child: Column(

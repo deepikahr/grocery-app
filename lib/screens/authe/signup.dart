@@ -303,7 +303,7 @@ class _SignupState extends State<Signup> {
           validator: (String value) {
             if (value.isEmpty) {
               return MyLocalizations.of(context).enterFullName;
-            }else
+            } else
               return null;
           },
           onSaved: (String value) {
