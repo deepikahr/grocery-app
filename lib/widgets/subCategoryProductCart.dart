@@ -171,7 +171,7 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                       const BorderRadius.vertical(top: Radius.circular(12)),
                   child: Image.network(
                     widget.isPath
-                        ? Constants.IMAGE_URL_PATH +
+                        ? Constants.imageUrlPath +
                             "tr:dpr-auto,tr:w-500" +
                             widget.image
                         : widget.image,

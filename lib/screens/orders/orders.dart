@@ -315,7 +315,7 @@ class _OrdersState extends State<Orders> {
                       : NetworkImage(
                           orderDetails['cart']['cart'][0]['filePath'] == null
                               ? orderDetails['cart']['cart'][0]['imageUrl']
-                              : Constants.IMAGE_URL_PATH +
+                              : Constants.imageUrlPath +
                                   "tr:dpr-auto,tr:w-500" +
                                   orderDetails['cart']['cart'][0]['filePath'],
                         ),

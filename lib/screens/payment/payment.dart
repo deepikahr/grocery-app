@@ -64,7 +64,7 @@ class _PaymentState extends State<Payment> {
   void initState() {
     fetchCardInfo();
     StripePayment.setOptions(StripeOptions(
-        publishableKey: Constants.STRIPE_KEY,
+        publishableKey: Constants.stripKey,
         merchantId: "Test",
         androidPayMode: 'test'));
 

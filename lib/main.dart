@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:getflutter/getflutter.dart';
@@ -20,7 +21,8 @@ bool get isInDebugMode {
   return inDebugMode;
 }
 
-void main() {
+void main() async {
+  await DotEnv().load('.env');
   WidgetsFlutterBinding.ensureInitialized();
   configLocalNotification();
   runZoned<Future<Null>>(() {
@@ -122,7 +124,7 @@ Future<void> configLocalNotification() async {
       .setNotificationReceivedHandler((OSNotification notification) {});
   OneSignal.shared
       .setNotificationOpenedHandler((OSNotificationOpenedResult result) {});
-  await OneSignal.shared.init(Constants.ONE_SIGNAL_KEY, iOSSettings: settings);
+  await OneSignal.shared.init(Constants.oneSignalKey, iOSSettings: settings);
   OneSignal.shared
       .promptUserForPushNotificationPermission(fallbackToSettings: true);
   OneSignal.shared

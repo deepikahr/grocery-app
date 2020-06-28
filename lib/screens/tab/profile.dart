@@ -286,7 +286,7 @@ class _ProfileState extends State<Profile> {
                                                             null
                                                         ? userInfo['profilePic']
                                                         : Constants
-                                                                .IMAGE_URL_PATH +
+                                                                .imageUrlPath +
                                                             "tr:dpr-auto,tr:w-500" +
                                                             userInfo[
                                                                 'filePath']),

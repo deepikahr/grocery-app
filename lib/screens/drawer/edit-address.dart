@@ -276,7 +276,7 @@ class _EditAddressState extends State<EditAddress> {
                               MaterialPageRoute(
                                   builder: (context) => PlacePickerScreen(
                                         googlePlacesApiKey:
-                                            Constants.GOOGLE_API_KEY,
+                                            Constants.googleMapApiKey,
                                         initialPosition: LatLng(lat, long),
                                         mainColor: primary,
                                         mapStrings: MapPickerStrings.english(),

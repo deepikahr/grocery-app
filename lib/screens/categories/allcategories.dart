@@ -157,7 +157,7 @@ class _AllCategoriesState extends State<AllCategories>
                                 child: Image.network(
                                   categoryList[index]['filePath'] == null
                                       ? categoryList[index]['imageUrl']
-                                      : Constants.IMAGE_URL_PATH +
+                                      : Constants.imageUrlPath +
                                           "tr:dpr-auto,tr:w-500" +
                                           categoryList[index]['filePath'],
                                   scale: 5,

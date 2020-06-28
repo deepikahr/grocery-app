@@ -675,7 +675,7 @@ class _MyCartState extends State<MyCart> {
                                                                       [i]
                                                                   ['imageUrl']
                                                               : Constants
-                                                                      .IMAGE_URL_PATH +
+                                                                      .imageUrlPath +
                                                                   "tr:dpr-auto,tr:w-500" +
                                                                   cartItem['cart']
                                                                           [i][

@@ -32,6 +32,7 @@ dependencies:
   url_launcher: ^5.4.5
   flutter_map_picker: ^0.1.2
   stripe_payment: ^1.0.7
+  flutter_dotenv: ^2.1.0
  
   flutter_localizations:
     sdk: flutter
@@ -80,6 +81,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - .env
     - lib/assets/images/profile.png
     - lib/assets/images/product.png
     - lib/assets/images/thank-you.png

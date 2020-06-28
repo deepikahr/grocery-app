@@ -394,7 +394,7 @@ class _EditProfileState extends State<EditProfile> {
                                           image: new NetworkImage(
                                               userInfo['filePath'] == null
                                                   ? userInfo['profilePic']
-                                                  : Constants.IMAGE_URL_PATH +
+                                                  : Constants.imageUrlPath +
                                                       "tr:dpr-auto,tr:w-500" +
                                                       userInfo['filePath']),
                                         ),

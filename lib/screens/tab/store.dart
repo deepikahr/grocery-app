@@ -420,7 +420,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                           image: DecorationImage(
                             image: NetworkImage((url['filePath'] == null
                                 ? url['imageURL']
-                                : Constants.IMAGE_URL_PATH +
+                                : Constants.imageUrlPath +
                                     "tr:dpr-auto,tr:w-500" +
                                     url['filePath'])),
                             fit: BoxFit.cover,
@@ -679,7 +679,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                   child: GFImageOverlay(
                     image: NetworkImage(list[i]['filePath'] == null
                         ? list[i]['imageUrl']
-                        : Constants.IMAGE_URL_PATH +
+                        : Constants.imageUrlPath +
                             "tr:dpr-auto,tr:w-500" +
                             list[i]['filePath']),
                     boxFit: BoxFit.cover,
@@ -796,7 +796,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                     image: NetworkImage(
                       list[i]['filePath'] == null
                           ? list[i]['imageUrl']
-                          : Constants.IMAGE_URL_PATH +
+                          : Constants.imageUrlPath +
                               "tr:dpr-auto,tr:w-500" +
                               list[i]['filePath'],
                     ),

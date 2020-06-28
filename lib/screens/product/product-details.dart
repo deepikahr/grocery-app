@@ -442,7 +442,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                   image: new NetworkImage(
                                     productDetail['filePath'] == null
                                         ? productDetail['imageUrl']
-                                        : Constants.IMAGE_URL_PATH +
+                                        : Constants.imageUrlPath +
                                             "tr:dpr-auto,tr:w-1000" +
                                             productDetail['filePath'],
                                   ),

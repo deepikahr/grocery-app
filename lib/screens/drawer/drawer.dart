@@ -75,7 +75,7 @@ class _DrawerPageState extends State<DrawerPage> {
               if (onValue['response_data'][0]['userApp']['filePath'] == null) {
                 logo = onValue['response_data'][0]['userApp']['imageUrl'];
               } else {
-                logo = Constants.IMAGE_URL_PATH +
+                logo = Constants.imageUrlPath +
                     "tr:dpr-auto,tr:w-500" +
                     onValue['response_data'][0]['userApp']['filePath'];
               }

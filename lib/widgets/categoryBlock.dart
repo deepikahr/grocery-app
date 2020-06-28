@@ -27,7 +27,7 @@ class CategoryBlock extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(8)),
               child: Image.network(
                 isPath
-                    ? Constants.IMAGE_URL_PATH + "tr:dpr-auto,tr:w-500" + image
+                    ? Constants.imageUrlPath + "tr:dpr-auto,tr:w-500" + image
                     : image,
                 scale: 8,
                 fit: BoxFit.cover,

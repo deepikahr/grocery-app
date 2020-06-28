@@ -118,7 +118,7 @@ class _AboutUsState extends State<AboutUs> {
                           child: Image.network(
                             aboutUsDatails['userApp']['filePath'] == null
                                 ? aboutUsDatails['userApp']['imageUrl']
-                                : Constants.IMAGE_URL_PATH +
+                                : Constants.imageUrlPath +
                                     "tr:dpr-auto,tr:w-500" +
                                     aboutUsDatails['userApp']['filePath'],
                           ),

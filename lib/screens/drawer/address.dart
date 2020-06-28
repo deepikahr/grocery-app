@@ -325,7 +325,7 @@ class _AddressState extends State<Address> {
         context,
         MaterialPageRoute(
             builder: (context) => PlacePickerScreen(
-                  googlePlacesApiKey: Constants.GOOGLE_API_KEY,
+                  googlePlacesApiKey: Constants.googleMapApiKey,
                   initialPosition: LatLng(locationlatlong['latitude'],
                       locationlatlong['longitude']),
                   mainColor: primary,

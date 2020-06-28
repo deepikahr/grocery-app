@@ -411,7 +411,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                       : NetworkImage(
                                           order['filePath'] == null
                                               ? order['imageUrl']
-                                              : Constants.IMAGE_URL_PATH +
+                                              : Constants.imageUrlPath +
                                                   "tr:dpr-auto,tr:w-500" +
                                                   order['filePath'],
                                         ),
