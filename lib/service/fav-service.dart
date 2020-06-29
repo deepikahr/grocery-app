@@ -69,8 +69,9 @@ class FavouriteService {
     await Common.getSelectedLanguage().then((code) {
       languageCode = code ?? "";
     });
+
     final response =
-        await client.get(Constants.baseURL + "favourites/$id", headers: {
+        await client.get(Constants.baseURL + "favourites/check/$id", headers: {
       'Content-Type': 'application/json',
       'Authorization': 'bearer $token',
       'language': languageCode,
