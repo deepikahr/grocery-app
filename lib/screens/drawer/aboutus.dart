@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:readymadeGroceryApp/screens/drawer/t&cAndPP.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -211,6 +212,51 @@ class _AboutUsState extends State<AboutUs> {
                       //     ),
                       //   ),
                       // ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          TermsAndCondition(
+                                              locale: widget.locale,
+                                              localizedValues:
+                                                  widget.localizedValues,
+                                              title: MyLocalizations.of(context)
+                                                  .termsAndConditions,
+                                              text: aboutUsDatails[
+                                                  'termsAndConditions'])));
+                            },
+                            child: Text(
+                              MyLocalizations.of(context).termsAndConditions,
+                              style: textBarlowmediumLink(),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          TermsAndCondition(
+                                              locale: widget.locale,
+                                              localizedValues:
+                                                  widget.localizedValues,
+                                              title: MyLocalizations.of(context)
+                                                  .privacyPolicy,
+                                              text: aboutUsDatails[
+                                                  'privacyPolicy'])));
+                            },
+                            child: Text(
+                              MyLocalizations.of(context).privacyPolicy,
+                              style: textBarlowmediumLink(),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                   // Positioned(
@@ -221,7 +267,7 @@ class _AboutUsState extends State<AboutUs> {
                   //       _launchURL(aboutUsDatails['tearmsAndConditionUrl']);
                   //     },
                   //     child: Text(
-                  //       'Terms & Conditions',
+                  //       MyLocalizations.of(context).termsAndConditions,
                   //       style: textBarlowmediumLink(),
                   //     ),
                   //   ),
@@ -234,7 +280,7 @@ class _AboutUsState extends State<AboutUs> {
                   //       _launchURL(aboutUsDatails['privacyPolicyUrl']);
                   //     },
                   //     child: Text(
-                  //       'Privacy policy',
+                  //       MyLocalizations.of(context).privacyPolicy,
                   //       style: textBarlowmediumLink(),
                   //     ),
                   //   ),

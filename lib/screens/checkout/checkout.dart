@@ -51,7 +51,7 @@ class _CheckoutState extends State<Checkout> {
   Map userInfo, address, cartItem, locationInfo;
 
   List addressList, deliverySlotList;
-  int selectedRadio, groupValue, groupValue1, _selectedIndex = 0;
+  int selectedRadio, groupValue, selecteAddressValue, _selectedIndex = 0;
   String selectedDeliveryType, locationNotFound, name, currency, couponCode;
 
   var selectedAddress, selectedTime, selectedDate;
@@ -65,8 +65,7 @@ class _CheckoutState extends State<Checkout> {
       deliverySlot = false,
       isLoadingCart = false,
       isDeliveryChargeLoading = false,
-      isDeliveryChargeFree = false,
-      _serviceEnabled;
+      isDeliveryChargeFree = false;
   LocationData currentLocation;
   Location _location = new Location();
   RefreshController _refreshController =
@@ -176,7 +175,7 @@ class _CheckoutState extends State<Checkout> {
   addressRadioValueChanged(int value) async {
     if (mounted) {
       setState(() {
-        groupValue1 = value;
+        selecteAddressValue = value;
         selectedAddress = addressList[value];
         isDeliveryChargeLoading = true;
       });
@@ -415,7 +414,7 @@ class _CheckoutState extends State<Checkout> {
     if (selectedDate == null) {
       selectedDate = deliverySlotList[0]['date'];
     }
-    if (groupValue1 == null) {
+    if (selecteAddressValue == null) {
       showSnackbar(MyLocalizations.of(context).pleaseselectaddressfirst);
     } else if (selectedTime == null) {
       showSnackbar(MyLocalizations.of(context).pleaseselecttimeslotfirst);
@@ -423,11 +422,12 @@ class _CheckoutState extends State<Checkout> {
       Map<String, dynamic> data = {
         "deliveryType": "Home_Delivery",
         "paymentType": 'COD',
+        "deliveryAddress": selectedAddress['_id'].toString(),
+        "deliveryDate": selectedDate.toString(),
+        "deliveryTime": selectedTime.toString(),
+        "cart": widget.id
       };
-      data['deliveryAddress'] = selectedAddress['_id'].toString();
-      data['deliveryDate'] = selectedDate.toString();
-      data['deliveryTime'] = selectedTime.toString();
-      data['cart'] = widget.id;
+
       var body = {
         "latitude": selectedAddress['location']['lat'],
         "longitude": selectedAddress['location']['long'],
@@ -451,14 +451,15 @@ class _CheckoutState extends State<Checkout> {
               context,
               MaterialPageRoute(
                 builder: (context) => Payment(
-                  locale: widget.locale,
-                  localizedValues: widget.localizedValues,
-                  data: data,
-                  type: widget.buy,
-                  grandTotals: value['response_data']['cartData']['grandTotal'],
-                  deliveryCharges: value['response_data']['deliveryDetails']
-                      ['deliveryCharges'],
-                ),
+                    locale: widget.locale,
+                    localizedValues: widget.localizedValues,
+                    data: data,
+                    type: widget.buy,
+                    grandTotals: value['response_data']['cartData']
+                        ['grandTotal'],
+                    deliveryCharges: value['response_data']['deliveryDetails']
+                        ['deliveryCharges'],
+                    locationInfo: locationInfo),
               ),
             );
             result.then((value) {
@@ -1112,7 +1113,7 @@ class _CheckoutState extends State<Checkout> {
                                             MainAxisAlignment.start,
                                         children: <Widget>[
                                           RadioListTile(
-                                            groupValue: groupValue1,
+                                            groupValue: selecteAddressValue,
                                             activeColor: primary,
                                             value: i,
                                             title: Column(

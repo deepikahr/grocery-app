@@ -775,6 +775,16 @@ class MyLocalizations {
   String get others {
     return localizedValues[locale.languageCode]['others'] ?? "Others";
   }
+
+  String get termsAndConditions {
+    return localizedValues[locale.languageCode]['termsAndConditions'] ??
+        "Terms & Conditions";
+  }
+
+  String get privacyPolicy {
+    return localizedValues[locale.languageCode]['privacyPolicy'] ??
+        "Privacy Policy";
+  }
 }
 
 class MyLocalizationsDelegate extends LocalizationsDelegate<MyLocalizations> {

@@ -18,7 +18,7 @@ class Payment extends StatefulWidget {
   final int quantity, currentIndex;
   final String type, locale;
   final grandTotals, deliveryCharges;
-  final Map<String, dynamic> data;
+  final Map<String, dynamic> data, locationInfo;
   final Map localizedValues;
 
   Payment(
@@ -30,7 +30,8 @@ class Payment extends StatefulWidget {
       this.deliveryCharges,
       this.grandTotals,
       this.locale,
-      this.localizedValues})
+      this.localizedValues,
+      this.locationInfo})
       : super(key: key);
   @override
   _PaymentState createState() => _PaymentState();
@@ -356,6 +357,17 @@ class _PaymentState extends State<Payment> {
                         } else {
                           paymentTypes[0]['isSelected'] = true;
                           paymentTypes[1]['isSelected'] = false;
+                        }
+                        if (widget.locationInfo['paymentMethod'] == 'COD') {
+                          paymentTypes[0]['isSelected'] = true;
+                          paymentTypes[1]['isSelected'] = false;
+                        } else if (widget.locationInfo['paymentMethod'] ==
+                            'CARD') {
+                          paymentTypes[0]['isSelected'] = false;
+                          paymentTypes[1]['isSelected'] = true;
+                        } else {
+                          paymentTypes[0]['isSelected'] = true;
+                          paymentTypes[1]['isSelected'] = true;
                         }
                         return paymentTypes[index]['isSelected'] == true
                             ? Container(
