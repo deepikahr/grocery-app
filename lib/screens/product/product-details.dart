@@ -341,6 +341,7 @@ class _ProductDetailsState extends State<ProductDetails>
           } else {
             Common.setCartData(null);
           }
+
           Navigator.of(context).pop();
         } else if (onValue['response_code'] == 403) {
           cartClear(onValue['response_data']);
