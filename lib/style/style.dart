@@ -1154,7 +1154,7 @@ TextStyle textbarlowRegularBlackb() {
 
 TextStyle textbarlowRegularBlackd() {
   return TextStyle(
-    fontSize: 16.0,
+    fontSize: 12.0,
     fontFamily: 'BarlowRegular',
     color: Colors.black.withOpacity(0.60),
   );

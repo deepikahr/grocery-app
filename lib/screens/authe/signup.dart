@@ -5,6 +5,7 @@ import 'package:getflutter/components/typography/gf_typography.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:getflutter/size/gf_size.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
+import 'package:readymadeGroceryApp/screens/drawer/t&cAndPP.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -31,10 +32,10 @@ class _SignupState extends State<Signup> {
       registerationLoading = false,
       rememberMe = false,
       value = false,
-      passwordVisible = true;
+      passwordVisible = true,
+      isChecked = false,
+      _obscureText = true;
   String userName, email, password, mobileNumber, firstName, lastName;
-
-  bool _obscureText = true;
 
   // Toggles the password
   void _toggle() {
@@ -51,89 +52,93 @@ class _SignupState extends State<Signup> {
   userSignup() async {
     final form = _formKey.currentState;
     if (form.validate()) {
-      form.save();
-      if (mounted) {
-        setState(() {
-          registerationLoading = true;
-        });
-      }
-      Map<String, dynamic> body = {
-        "firstName": firstName,
-        "lastName": lastName,
-        "email": email.toLowerCase(),
-        "password": password,
-        "role": "User",
-        "mobileNumber": mobileNumber
-      };
+      if (isChecked == true) {
+        form.save();
+        if (mounted) {
+          setState(() {
+            registerationLoading = true;
+          });
+        }
+        Map<String, dynamic> body = {
+          "firstName": firstName,
+          "email": email.toLowerCase(),
+          "password": password,
+          "role": "User",
+          "mobileNumber": mobileNumber
+        };
 
-      await LoginService.signUp(body).then((onValue) {
-        try {
-          if (mounted) {
-            setState(() {
-              registerationLoading = false;
-            });
-          }
+        await LoginService.signUp(body).then((onValue) {
+          try {
+            if (mounted) {
+              setState(() {
+                registerationLoading = false;
+              });
+            }
 
-          if (onValue['response_code'] == 201) {
-            showDialog<Null>(
-              context: context,
-              barrierDismissible: false, // user must tap button!
-              builder: (BuildContext context) {
-                return new AlertDialog(
-                  content: new SingleChildScrollView(
-                    child: new ListBody(
-                      children: <Widget>[
-                        new Text(
-                          onValue['response_data'],
-                          style: textBarlowRegularBlack(),
-                        ),
-                      ],
-                    ),
-                  ),
-                  actions: <Widget>[
-                    new FlatButton(
-                      child: new Text(
-                        MyLocalizations.of(context).ok,
-                        style: textbarlowRegularaPrimary(),
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => Login(
-                              locale: widget.locale,
-                              localizedValues: widget.localizedValues,
-                            ),
+            if (onValue['response_code'] == 201) {
+              showDialog<Null>(
+                context: context,
+                barrierDismissible: false, // user must tap button!
+                builder: (BuildContext context) {
+                  return new AlertDialog(
+                    content: new SingleChildScrollView(
+                      child: new ListBody(
+                        children: <Widget>[
+                          new Text(
+                            onValue['response_data'],
+                            style: textBarlowRegularBlack(),
                           ),
-                        );
-                      },
+                        ],
+                      ),
                     ),
-                  ],
-                );
-              },
-            );
-          } else if (onValue['statusCode'] == 401) {
-            showSnackbar('${onValue['response_data']}');
-          } else {
-            showSnackbar('${onValue['response_data']}');
+                    actions: <Widget>[
+                      new FlatButton(
+                        child: new Text(
+                          MyLocalizations.of(context).ok,
+                          style: textbarlowRegularaPrimary(),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => Login(
+                                locale: widget.locale,
+                                localizedValues: widget.localizedValues,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            } else if (onValue['statusCode'] == 401) {
+              showSnackbar('${onValue['response_data']}');
+            } else {
+              showSnackbar('${onValue['response_data']}');
+            }
+          } catch (error) {
+            if (mounted) {
+              setState(() {
+                registerationLoading = false;
+              });
+            }
+            sentryError.reportError(error, null);
           }
-        } catch (error) {
+        }).catchError((error) {
           if (mounted) {
             setState(() {
               registerationLoading = false;
             });
           }
           sentryError.reportError(error, null);
-        }
-      }).catchError((error) {
-        if (mounted) {
-          setState(() {
-            registerationLoading = false;
-          });
-        }
-        sentryError.reportError(error, null);
-      });
+        });
+      } else {
+        showSnackbar(MyLocalizations.of(context)
+            .pleaseAcceptprivacypoliciesandTermsAndConditions);
+      }
     } else {
       if (mounted) {
         setState(() {
@@ -249,6 +254,7 @@ class _SignupState extends State<Signup> {
               buildMobileNumberTextField(),
               buildPasswordText(),
               buildPasswordTextField(),
+              buildTermsAndCondiField(),
               buildsignuplink(),
               buildLoginButton(),
             ],
@@ -543,6 +549,63 @@ class _SignupState extends State<Signup> {
                 : Text("")
           ],
         ),
+      ),
+    );
+  }
+
+  Widget buildTermsAndCondiField() {
+    return Padding(
+      padding: EdgeInsets.all(10),
+      child: Row(
+        children: <Widget>[
+          Container(
+            decoration: BoxDecoration(
+                border: Border.all(color: Colors.black, width: 2),
+                borderRadius: BorderRadius.all(Radius.circular(2))),
+            width: 20,
+            height: 20,
+            child: new Checkbox(
+              checkColor: Colors.yellowAccent, // color of tick Mark
+              activeColor: primary,
+              value: isChecked,
+              onChanged: (bool value) {
+                if (mounted) {
+                  setState(() {
+                    isChecked = value;
+                  });
+                }
+              },
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 10, right: 10),
+            child: new InkWell(
+              child: Row(
+                children: [
+                  new Text(
+                    MyLocalizations.of(context).iaccept + " ",
+                  ),
+                  new Text(
+                    MyLocalizations.of(context)
+                        .privacypoliciesandTermsAndConditions,
+                    style: textBarlowRegularGreen(),
+                  ),
+                ],
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TermsAndCondition(
+                      locale: widget.locale,
+                      localizedValues: widget.localizedValues,
+                    ),
+                  ),
+                );
+              },
+            ),
+          )
+        ],
       ),
     );
   }

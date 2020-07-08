@@ -524,12 +524,12 @@ class _AllProductsState extends State<AllProducts> {
                                                     ),
                                                   );
                                                   result.then((value) {
-                                                   
-                                                         if (mounted) {
-      setState(() {
-        isLoadingSubCatProductsList = true;
-      });
-    }
+                                                    if (mounted) {
+                                                      setState(() {
+                                                        isLoadingSubCatProductsList =
+                                                            true;
+                                                      });
+                                                    }
                                                     getProductToSubCategory(
                                                         currentSubCategoryId);
                                                   });
@@ -702,6 +702,7 @@ class _AllProductsState extends State<AllProducts> {
                                             ),
                                           );
                                           result.then((value) {
+                                           
                                             if (mounted) {
                                               setState(() {
                                                 isLoadingProductsList = true;

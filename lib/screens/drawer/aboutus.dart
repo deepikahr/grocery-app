@@ -211,6 +211,51 @@ class _AboutUsState extends State<AboutUs> {
                       //     ),
                       //   ),
                       // ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          TermsAndConditionAboutUs(
+                                              locale: widget.locale,
+                                              localizedValues:
+                                                  widget.localizedValues,
+                                              title: MyLocalizations.of(context)
+                                                  .termsAndConditions,
+                                              text: aboutUsDatails[
+                                                  'termsAndConditions'])));
+                            },
+                            child: Text(
+                              MyLocalizations.of(context).termsAndConditions,
+                              style: textBarlowmediumLink(),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          TermsAndConditionAboutUs(
+                                              locale: widget.locale,
+                                              localizedValues:
+                                                  widget.localizedValues,
+                                              title: MyLocalizations.of(context)
+                                                  .privacyPolicy,
+                                              text: aboutUsDatails[
+                                                  'privacyPolicy'])));
+                            },
+                            child: Text(
+                              MyLocalizations.of(context).privacyPolicy,
+                              style: textBarlowmediumLink(),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                   // Positioned(
@@ -221,7 +266,7 @@ class _AboutUsState extends State<AboutUs> {
                   //       _launchURL(aboutUsDatails['tearmsAndConditionUrl']);
                   //     },
                   //     child: Text(
-                  //       'Terms & Conditions',
+                  //       MyLocalizations.of(context).termsAndConditions,
                   //       style: textBarlowmediumLink(),
                   //     ),
                   //   ),
@@ -234,7 +279,7 @@ class _AboutUsState extends State<AboutUs> {
                   //       _launchURL(aboutUsDatails['privacyPolicyUrl']);
                   //     },
                   //     child: Text(
-                  //       'Privacy policy',
+                  //       MyLocalizations.of(context).privacyPolicy,
                   //       style: textBarlowmediumLink(),
                   //     ),
                   //   ),
@@ -242,6 +287,44 @@ class _AboutUsState extends State<AboutUs> {
                 ],
               ),
             ),
+    );
+  }
+}
+
+class TermsAndConditionAboutUs extends StatelessWidget {
+  TermsAndConditionAboutUs(
+      {Key key, this.locale, this.localizedValues, this.text, this.title})
+      : super(key: key);
+  final Map localizedValues;
+  final String locale, title, text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(
+          title,
+          style: textbarlowSemiBoldBlack(),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        centerTitle: true,
+        iconTheme: IconThemeData(color: Colors.black),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.all(10),
+          child: Container(
+            margin: EdgeInsets.all(15),
+            width: MediaQuery.of(context).size.width * 0.82,
+            child: Text(
+              text,
+              style: textbarlowRegularBlackd(),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
