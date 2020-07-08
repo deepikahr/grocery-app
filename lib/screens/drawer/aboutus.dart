@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:readymadeGroceryApp/screens/drawer/t&cAndPP.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -221,7 +220,7 @@ class _AboutUsState extends State<AboutUs> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          TermsAndCondition(
+                                          TermsAndConditionAboutUs(
                                               locale: widget.locale,
                                               localizedValues:
                                                   widget.localizedValues,
@@ -241,7 +240,7 @@ class _AboutUsState extends State<AboutUs> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          TermsAndCondition(
+                                          TermsAndConditionAboutUs(
                                               locale: widget.locale,
                                               localizedValues:
                                                   widget.localizedValues,
@@ -288,6 +287,44 @@ class _AboutUsState extends State<AboutUs> {
                 ],
               ),
             ),
+    );
+  }
+}
+
+class TermsAndConditionAboutUs extends StatelessWidget {
+  TermsAndConditionAboutUs(
+      {Key key, this.locale, this.localizedValues, this.text, this.title})
+      : super(key: key);
+  final Map localizedValues;
+  final String locale, title, text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(
+          title,
+          style: textbarlowSemiBoldBlack(),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        centerTitle: true,
+        iconTheme: IconThemeData(color: Colors.black),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.all(10),
+          child: Container(
+            margin: EdgeInsets.all(15),
+            width: MediaQuery.of(context).size.width * 0.82,
+            child: Text(
+              text,
+              style: textbarlowRegularBlackd(),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

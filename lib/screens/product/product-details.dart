@@ -327,6 +327,7 @@ class _ProductDetailsState extends State<ProductDetails>
           : variantUnit.toString()
     };
     AddToCart.addToCartMethod(buyNowProduct).then((onValue) {
+      print(onValue);
       try {
         if (mounted) {
           setState(() {
@@ -340,7 +341,7 @@ class _ProductDetailsState extends State<ProductDetails>
           } else {
             Common.setCartData(null);
           }
-          Navigator.pop(context);
+          Navigator.of(context).pop();
         } else if (onValue['response_code'] == 403) {
           cartClear(onValue['response_data']);
         }

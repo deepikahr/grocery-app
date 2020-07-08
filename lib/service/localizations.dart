@@ -785,6 +785,22 @@ class MyLocalizations {
     return localizedValues[locale.languageCode]['privacyPolicy'] ??
         "Privacy Policy";
   }
+
+  String get iaccept {
+    return localizedValues[locale.languageCode]['iaccept'] ?? "I accept";
+  }
+
+  String get privacypoliciesandTermsAndConditions {
+    return localizedValues[locale.languageCode]
+            ['privacypoliciesandTermsAndConditions'] ??
+        "Privacy policies and Terms & Conditions";
+  }
+
+  String get pleaseAcceptprivacypoliciesandTermsAndConditions {
+    return localizedValues[locale.languageCode]
+            ['privacypoliciesandTermsAndConditions'] ??
+        "Please Accept Privacy policies and Terms & Conditions";
+  }
 }
 
 class MyLocalizationsDelegate extends LocalizationsDelegate<MyLocalizations> {
