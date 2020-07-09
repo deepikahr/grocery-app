@@ -51,7 +51,6 @@ class AddressService {
     await Common.getSelectedLanguage().then((code) {
       languageCode = code ?? "";
     });
-    print(token);
     final response = await client.get(
         Constants.baseURL + "setting/working/time/user/$time/$timeStamp",
         headers: {

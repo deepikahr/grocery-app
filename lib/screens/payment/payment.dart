@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
+import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
@@ -41,11 +42,14 @@ class _PaymentState extends State<Payment> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   int groupValue;
+  var walletAmount, usedWalletAmount = 0.0;
   String currency;
-  var grandTotal, deliveryCharges;
+  var grandTotal, deliveryCharges, remaingWalletPoints, grandTotalCalulation;
   bool isPlaceOrderLoading = false,
       isCardListLoading = false,
-      isSelected = false;
+      isSelected = false,
+      walletUsedOrNotValue = false,
+      showPaymantOptions = false;
   List<Map<String, dynamic>> paymentTypes = [
     {
       'type': 'COD',
@@ -81,14 +85,27 @@ class _PaymentState extends State<Payment> {
         isCardListLoading = true;
       });
     }
+    getUserInfo();
     await Common.getCurrency().then((value) {
       currency = value;
     });
-    if (mounted) {
-      setState(() {
-        isCardListLoading = false;
-      });
-    }
+  }
+
+  getUserInfo() async {
+    await LoginService.getUserInfo().then((onValue) {
+      try {
+        if (mounted) {
+          setState(() {
+            walletAmount = onValue['response_data']['walletAmount'] ?? 0;
+            isCardListLoading = false;
+          });
+        }
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
   }
 
   placeOrder() async {
@@ -98,35 +115,47 @@ class _PaymentState extends State<Payment> {
       });
     }
 
-    if (groupValue == null) {
-      if (mounted) {
-        setState(() {
-          isPlaceOrderLoading = false;
-        });
-      }
-      showSnackbar(MyLocalizations.of(context).selectPaymentOption);
-    } else {
-      widget.data['paymentType'] = paymentTypes[groupValue]['type'];
-
-      if (widget.data['paymentType'] == "CARD") {
-        StripePayment.paymentRequestWithCardForm(CardFormPaymentRequest())
-            .then((pm) {
+    if (showPaymantOptions == false) {
+      if (groupValue == null) {
+        if (mounted) {
           setState(() {
-            Map transactionDetails = {"paymentMethodId": pm.id.toString()};
-            widget.data['transactionDetails'] = transactionDetails;
-            palceOrderMethod(widget.data);
+            isPlaceOrderLoading = false;
           });
-        }).catchError((e) {
-          if (mounted) {
-            setState(() {
-              isPlaceOrderLoading = false;
-            });
-          }
-          showSnackbar(e.toString());
-        });
+        }
+        showSnackbar(MyLocalizations.of(context).selectPaymentOption);
       } else {
-        palceOrderMethod(widget.data);
+        widget.data['paymentType'] = paymentTypes[groupValue]['type'];
+        widget.data['usedWalletAmount'] =
+            usedWalletAmount.toDouble().toStringAsFixed(2);
+        widget.data['isWalletUsed'] = walletUsedOrNotValue;
+
+        if (widget.data['paymentType'] == "CARD") {
+          StripePayment.paymentRequestWithCardForm(CardFormPaymentRequest())
+              .then((pm) {
+            setState(() {
+              Map transactionDetails = {"paymentMethodId": pm.id.toString()};
+              widget.data['transactionDetails'] = transactionDetails;
+
+              palceOrderMethod(widget.data);
+            });
+          }).catchError((e) {
+            if (mounted) {
+              setState(() {
+                isPlaceOrderLoading = false;
+              });
+            }
+            showSnackbar(e.toString());
+          });
+        } else {
+          palceOrderMethod(widget.data);
+        }
       }
+    } else {
+      widget.data['paymentType'] = "WALLET";
+      widget.data['usedWalletAmount'] =
+          usedWalletAmount.toDouble().toStringAsFixed(2);
+      widget.data['isWalletUsed'] = walletUsedOrNotValue;
+      palceOrderMethod(widget.data);
     }
   }
 
@@ -242,6 +271,13 @@ class _PaymentState extends State<Payment> {
   }
 
   @override
+  void dispose() {
+    grandTotalCalulation = null;
+    remaingWalletPoints = null;
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
@@ -331,7 +367,13 @@ class _PaymentState extends State<Payment> {
                                   ),
                                 ),
                                 Text(
-                                  grandTotal.toDouble().toStringAsFixed(2),
+                                  grandTotalCalulation != null
+                                      ? grandTotalCalulation
+                                          .toDouble()
+                                          .toStringAsFixed(2)
+                                      : grandTotal
+                                          .toDouble()
+                                          .toStringAsFixed(2),
                                   style: textbarlowBoldBlack(),
                                 ),
                               ],
@@ -342,74 +384,202 @@ class _PaymentState extends State<Payment> {
                     ),
                   ),
                 ),
-                SizedBox(height: 10),
-                Column(
-                  children: [
-                    ListView.builder(
-                      physics: ScrollPhysics(),
-                      shrinkWrap: true,
-                      padding: EdgeInsets.only(right: 0.0),
-                      itemCount: paymentTypes.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        if (grandTotal >= 0.5) {
-                          paymentTypes[0]['isSelected'] = true;
-                          paymentTypes[1]['isSelected'] = true;
-                        } else {
-                          paymentTypes[0]['isSelected'] = true;
-                          paymentTypes[1]['isSelected'] = false;
-                        }
-                        if (widget.locationInfo['paymentMethod'] == 'COD') {
-                          paymentTypes[0]['isSelected'] = true;
-                          paymentTypes[1]['isSelected'] = false;
-                        } else if (widget.locationInfo['paymentMethod'] ==
-                            'CARD') {
-                          paymentTypes[0]['isSelected'] = false;
-                          paymentTypes[1]['isSelected'] = true;
-                        } else {
-                          paymentTypes[0]['isSelected'] = true;
-                          paymentTypes[1]['isSelected'] = true;
-                        }
-                        return paymentTypes[index]['isSelected'] == true
-                            ? Container(
-                                margin: EdgeInsets.all(8.0),
-                                color: Colors.white,
-                                child: RadioListTile(
-                                  value: index,
-                                  groupValue: groupValue,
-                                  selected: isSelected,
-                                  activeColor: primary,
-                                  title: Text(
-                                    paymentTypes[index]['type'] == 'COD'
-                                        ? MyLocalizations.of(context)
-                                            .cashOnDelivery
-                                        : MyLocalizations.of(context).payByCard,
-                                    style: TextStyle(color: primary),
+                walletAmount == null || walletAmount == 0
+                    ? Container()
+                    : Column(
+                        children: [
+                          Container(
+                            color: Colors.grey[100],
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 8.0, bottom: 8.0, left: 20, right: 20),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Column(
+                                    children: <Widget>[
+                                      Text(
+                                        MyLocalizations.of(context)
+                                            .totalWalletAmount,
+                                        style: textbarlowMediumBlack(),
+                                      ),
+                                    ],
                                   ),
-                                  onChanged: (int selected) {
-                                    if (mounted) {
-                                      setState(() {
-                                        groupValue = selected;
-                                      });
-                                    }
-                                  },
-                                  secondary:
-                                      paymentTypes[index]['type'] == "COD"
-                                          ? Text(
+                                  Column(
+                                    children: <Widget>[
+                                      Row(
+                                        children: <Widget>[
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 0.0),
+                                            child: Text(
                                               currency,
-                                              style: TextStyle(color: primary),
-                                            )
-                                          : Icon(
-                                              Icons.credit_card,
-                                              color: primary,
-                                              size: 16.0,
+                                              style: textbarlowBoldBlack(),
                                             ),
-                                ),
-                              )
-                            : Container();
-                      },
-                    ),
-                  ],
-                ),
+                                          ),
+                                          Text(
+                                            remaingWalletPoints != null
+                                                ? remaingWalletPoints
+                                                    .toDouble()
+                                                    .toStringAsFixed(2)
+                                                : walletAmount
+                                                    .toDouble()
+                                                    .toStringAsFixed(2),
+                                            style: textbarlowBoldBlack(),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          Container(
+                            color: Colors.grey[100],
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 8.0, bottom: 8.0, left: 20, right: 20),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Column(
+                                    children: <Widget>[
+                                      Text(
+                                        MyLocalizations.of(context)
+                                            .useWalletAmount,
+                                        style: textbarlowMediumBlack(),
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: <Widget>[
+                                      Row(
+                                        children: <Widget>[
+                                          new Checkbox(
+                                              value: walletUsedOrNotValue,
+                                              activeColor: Colors.green,
+                                              onChanged: (bool newValue) {
+                                                setState(() {
+                                                  walletUsedOrNotValue =
+                                                      newValue;
+                                                  if (walletUsedOrNotValue ==
+                                                      true) {
+                                                    if (walletAmount >=
+                                                        grandTotal) {
+                                                      remaingWalletPoints =
+                                                          walletAmount -
+                                                              grandTotal;
+                                                      grandTotalCalulation =
+                                                          0.0;
+                                                      showPaymantOptions = true;
+                                                    } else {
+                                                      grandTotalCalulation =
+                                                          grandTotal -
+                                                              walletAmount;
+                                                      remaingWalletPoints = 0.0;
+                                                      showPaymantOptions =
+                                                          false;
+                                                    }
+                                                    usedWalletAmount =
+                                                        walletAmount -
+                                                            remaingWalletPoints;
+                                                  } else {
+                                                    remaingWalletPoints =
+                                                        walletAmount;
+                                                    grandTotalCalulation =
+                                                        grandTotal;
+                                                    usedWalletAmount = 0.0;
+                                                    showPaymantOptions = false;
+                                                  }
+                                                });
+                                              }),
+                                        ],
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                SizedBox(height: 10),
+                showPaymantOptions == true
+                    ? Container()
+                    : Column(
+                        children: [
+                          ListView.builder(
+                            physics: ScrollPhysics(),
+                            shrinkWrap: true,
+                            padding: EdgeInsets.only(right: 0.0),
+                            itemCount: paymentTypes.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              if (grandTotal >= 0.5) {
+                                paymentTypes[0]['isSelected'] = true;
+                                paymentTypes[1]['isSelected'] = true;
+                              } else {
+                                paymentTypes[0]['isSelected'] = true;
+                                paymentTypes[1]['isSelected'] = false;
+                              }
+                              if (widget.locationInfo['paymentMethod'] ==
+                                  'COD') {
+                                paymentTypes[0]['isSelected'] = true;
+                                paymentTypes[1]['isSelected'] = false;
+                              } else if (widget.locationInfo['paymentMethod'] ==
+                                  'CARD') {
+                                paymentTypes[0]['isSelected'] = false;
+                                paymentTypes[1]['isSelected'] = true;
+                              } else {
+                                paymentTypes[0]['isSelected'] = true;
+                                paymentTypes[1]['isSelected'] = true;
+                              }
+                              return paymentTypes[index]['isSelected'] == true
+                                  ? Container(
+                                      margin: EdgeInsets.all(8.0),
+                                      color: Colors.white,
+                                      child: RadioListTile(
+                                        value: index,
+                                        groupValue: groupValue,
+                                        selected: isSelected,
+                                        activeColor: primary,
+                                        title: Text(
+                                          paymentTypes[index]['type'] == 'COD'
+                                              ? MyLocalizations.of(context)
+                                                  .cashOnDelivery
+                                              : MyLocalizations.of(context)
+                                                  .payByCard,
+                                          style: TextStyle(color: primary),
+                                        ),
+                                        onChanged: (int selected) {
+                                          if (mounted) {
+                                            setState(() {
+                                              groupValue = selected;
+                                            });
+                                          }
+                                        },
+                                        secondary: paymentTypes[index]
+                                                    ['type'] ==
+                                                "COD"
+                                            ? Text(
+                                                currency,
+                                                style:
+                                                    TextStyle(color: primary),
+                                              )
+                                            : Icon(
+                                                Icons.credit_card,
+                                                color: primary,
+                                                size: 16.0,
+                                              ),
+                                      ),
+                                    )
+                                  : Container();
+                            },
+                          ),
+                        ],
+                      ),
               ],
             ),
       bottomNavigationBar: Container(

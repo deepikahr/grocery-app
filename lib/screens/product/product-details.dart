@@ -327,7 +327,6 @@ class _ProductDetailsState extends State<ProductDetails>
           : variantUnit.toString()
     };
     AddToCart.addToCartMethod(buyNowProduct).then((onValue) {
-      print(onValue);
       try {
         if (mounted) {
           setState(() {

@@ -1144,6 +1144,15 @@ TextStyle textbarlowRegularBlack() {
   );
 }
 
+TextStyle textbarlowRegularBlackbold() {
+  return TextStyle(
+    fontSize: 15.0,
+    fontWeight: FontWeight.bold,
+    fontFamily: 'BarlowRegular',
+    color: Colors.black,
+  );
+}
+
 TextStyle textbarlowRegularBlackb() {
   return TextStyle(
     fontSize: 13.0,

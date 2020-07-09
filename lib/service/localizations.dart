@@ -810,6 +810,29 @@ class MyLocalizations {
     return localizedValues[locale.languageCode]['cancelorder'] ??
         "Cancel Order";
   }
+
+  String get wALLET {
+    return localizedValues[locale.languageCode]['wALLET'] ?? "WALLET";
+  }
+
+  String get totalWalletAmount {
+    return localizedValues[locale.languageCode]['totalWalletAmount'] ??
+        "Total Wallet Amount";
+  }
+
+  String get useWalletAmount {
+    return localizedValues[locale.languageCode]['useWalletAmount'] ??
+        "Use Wallet Amount";
+  }
+
+  String get usedWalletAmount {
+    return localizedValues[locale.languageCode]['usedWalletAmount'] ??
+        "Used Wallet Amount";
+  }
+
+  String get failed {
+    return localizedValues[locale.languageCode]['failed'] ?? "Failed";
+  }
 }
 
 class MyLocalizationsDelegate extends LocalizationsDelegate<MyLocalizations> {

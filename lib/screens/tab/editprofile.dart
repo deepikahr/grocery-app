@@ -35,7 +35,7 @@ class _EditProfileState extends State<EditProfile> {
   bool isLoading = false, isPicUploading = false, profileEdit = false;
   String firstName, lastName, mobileNumber;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  var image;
+  var image, walletAmount;
   @override
   void initState() {
     getUserInfo();
@@ -54,6 +54,7 @@ class _EditProfileState extends State<EditProfile> {
           setState(() {
             isLoading = false;
             userInfo = onValue['response_data']['userInfo'];
+            walletAmount = onValue['response_data']['walletAmount'] ?? 0;
           });
         }
       } catch (error, stackTrace) {
@@ -438,16 +439,39 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                   ),
                   Center(
-                      child: Text(
-                    userInfo['email'],
-                    style: textBarlowRegularBlack(),
-                  )),
+                    child: Text(
+                      userInfo['email'],
+                      style: textBarlowRegularBlack(),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 25,
+                  ),
+                  walletAmount == null
+                      ? Container()
+                      : Padding(
+                          padding:
+                              const EdgeInsets.only(left: 18.0, right: 18.0),
+                          child: Row(
+                            children: [
+                              Text(
+                                MyLocalizations.of(context).totalWalletAmount +
+                                    ' : ',
+                                style: textbarlowRegularBlack(),
+                              ),
+                              Text(
+                                walletAmount.toDouble().toStringAsFixed(2),
+                                style: textbarlowRegularBlackbold(),
+                              ),
+                            ],
+                          ),
+                        ),
                   SizedBox(
                     height: 25,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(
-                        left: 18.0, bottom: 5.0, right: 18.0),
+                        left: 18.0, right: 18.0, bottom: 5, top: 5),
                     child: Text(
                       MyLocalizations.of(context).fullName + ':',
                       style: textbarlowRegularBlack(),
