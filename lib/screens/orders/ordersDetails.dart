@@ -25,7 +25,11 @@ class OrderDetails extends StatefulWidget {
 }
 
 class _OrderDetailsState extends State<OrderDetails> {
-  bool isLoading = false, isRatingSubmitting = false;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  bool isLoading = false,
+      isRatingSubmitting = false,
+      isOrderCancleLoading = false;
   var orderHistory;
   String currency;
   double rating;
@@ -162,9 +166,56 @@ class _OrderDetailsState extends State<OrderDetails> {
     });
   }
 
+  orderCancleMethod() async {
+    if (mounted) {
+      setState(() {
+        isOrderCancleLoading = true;
+      });
+    }
+    Map body = {"orderId": widget.orderId, "status": "Cancelled"};
+
+    await LoginService.orderCancle(body).then((onValue) {
+      print(onValue);
+      try {
+        if (onValue['response_code'] == 200) {
+          if (mounted) {
+            setState(() {
+              getOrderHistory();
+              showSnackbar(onValue['response_data']);
+              isOrderCancleLoading = false;
+            });
+          }
+        }
+      } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isOrderCancleLoading = false;
+          });
+        }
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isOrderCancleLoading = false;
+        });
+      }
+      sentryError.reportError(error, null);
+    });
+  }
+
+  void showSnackbar(message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(milliseconds: 3000),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Color(0xFFFDFDFD),
       appBar: GFAppBar(
         title: Text(
@@ -713,6 +764,41 @@ class _OrderDetailsState extends State<OrderDetails> {
                     ],
                   ),
                 ),
+                orderHistory['orderStatus'] == "DELIVERED" ||
+                        orderHistory['orderStatus'] == "Cancelled"
+                    ? Container()
+                    : Container(
+                        height: 45,
+                        margin: EdgeInsets.all(10),
+                        decoration: BoxDecoration(boxShadow: [
+                          BoxShadow(
+                              color: Colors.black.withOpacity(0.29),
+                              blurRadius: 5)
+                        ]),
+                        child: GFButton(
+                          size: GFSize.LARGE,
+                          color: primary,
+                          blockButton: true,
+                          onPressed: orderCancleMethod,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                MyLocalizations.of(context).cancelorder,
+                                style: textBarlowRegularrBlack(),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              isOrderCancleLoading
+                                  ? GFLoader(
+                                      type: GFLoaderType.ios,
+                                    )
+                                  : Text("")
+                            ],
+                          ),
+                        ),
+                      ),
               ],
             ),
     );
