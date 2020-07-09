@@ -328,4 +328,23 @@ class LoginService {
         });
     return json.decode(response.body);
   }
+
+  static Future<dynamic> orderCancle(body) async {
+    String languageCode, token;
+    await Common.getToken().then((tkn) {
+      token = tkn;
+    });
+    await Common.getSelectedLanguage().then((code) {
+      languageCode = code ?? "";
+    });
+    final response = await client.put(
+        Constants.baseURL + 'orders/cancelled/by-user',
+        body: json.encode(body),
+        headers: {
+          'Content-Type': 'application/json',
+          'language': languageCode,
+          'Authorization': 'bearer $token',
+        });
+    return json.decode(response.body);
+  }
 }

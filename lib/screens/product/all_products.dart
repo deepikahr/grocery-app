@@ -688,6 +688,7 @@ class _AllProductsState extends State<AllProducts> {
                                         productsList[i]['outOfStock'] != false
                                     ? InkWell(
                                         onTap: () {
+                                         
                                           var result = Navigator.push(
                                             context,
                                             MaterialPageRoute(
@@ -702,7 +703,7 @@ class _AllProductsState extends State<AllProducts> {
                                             ),
                                           );
                                           result.then((value) {
-                                           
+                                          
                                             if (mounted) {
                                               setState(() {
                                                 isLoadingProductsList = true;

@@ -798,8 +798,17 @@ class MyLocalizations {
 
   String get pleaseAcceptprivacypoliciesandTermsAndConditions {
     return localizedValues[locale.languageCode]
-            ['privacypoliciesandTermsAndConditions'] ??
+            ['pleaseAcceptprivacypoliciesandTermsAndConditions'] ??
         "Please Accept Privacy policies and Terms & Conditions";
+  }
+
+  String get resentOTP {
+    return localizedValues[locale.languageCode]['resentOTP'] ?? "Resent OTP";
+  }
+
+  String get cancelorder {
+    return localizedValues[locale.languageCode]['cancelorder'] ??
+        "Cancel Order";
   }
 }
 

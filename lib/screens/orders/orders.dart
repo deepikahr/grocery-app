@@ -330,6 +330,13 @@ class _OrdersState extends State<Orders> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
+                  '${MyLocalizations.of(context).orderID} : #${orderDetails['orderID']}' ??
+                      "",
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: textBarlowRegularrdark(),
+                ),
+                Text(
                   '${orderDetails['cart']['cart'][0]['title']}' ?? "",
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,

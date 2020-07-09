@@ -10,6 +10,7 @@ import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:pin_entry_text_field/pin_entry_text_field.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -29,7 +30,9 @@ class _OtpState extends State<Otp> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   String enteredOtp;
-  bool isOtpVerifyLoading = false, isEmailLoading = false;
+  bool isOtpVerifyLoading = false,
+      isEmailLoading = false,
+      isResentOtpLoading = false;
 
   verifyOTP() async {
     if (enteredOtp != null) {
@@ -158,6 +161,43 @@ class _OtpState extends State<Otp> {
     );
   }
 
+  resentOTP() async {
+    if (mounted) {
+      setState(() {
+        isResentOtpLoading = true;
+      });
+    }
+    Map body = {
+      "email": widget.email.toLowerCase(),
+    };
+    await LoginService.verifyEmail(body).then((response) {
+      try {
+        if (mounted) {
+          setState(() {
+            isResentOtpLoading = false;
+          });
+        }
+        if (response['response_code'] == 200) {
+          showSnackbar(response['response_data']['message']);
+        } else {
+          showSnackbar(response['response_data']);
+        }
+      } catch (error) {
+        if (mounted) {
+          setState(() {
+            isResentOtpLoading = false;
+          });
+        }
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isResentOtpLoading = false;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -200,6 +240,26 @@ class _OtpState extends State<Otp> {
                   ),
                 ],
               ),
+            ),
+          ),
+          InkWell(
+            onTap: resentOTP,
+            child: Row(
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 20.0, top: 10.0, right: 20.0),
+                  child: Text(
+                    MyLocalizations.of(context).resentOTP,
+                    style: textBarlowRegularBlack(),
+                  ),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 20.0, top: 10.0, right: 20.0),
+                  child: isResentOtpLoading ? SquareLoader() : Container(),
+                ),
+              ],
             ),
           ),
           Padding(
