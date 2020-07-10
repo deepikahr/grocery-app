@@ -5,30 +5,19 @@ import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:flutter/cupertino.dart';
 
 class ProductCard extends StatelessWidget {
-  final image, title, currency, rating, category, offer, unit, buttonName;
-  final double price, dealPercentage;
-  final bool token, isPath;
-  final Map productList;
+  final currency;
+  final double dealPercentage;
+  final Map productData;
   final List variantList;
   final String locale;
   final Map localizedValues;
   ProductCard(
       {Key key,
-      this.unit,
-      this.image,
-      this.title,
-      this.price,
       this.currency,
-      this.isPath,
-      this.rating,
       this.dealPercentage,
-      this.category,
-      this.offer,
-      this.buttonName,
-      this.productList,
+      this.productData,
       this.variantList,
       this.locale,
-      this.token,
       this.localizedValues})
       : super(key: key);
 
@@ -57,9 +46,11 @@ class ProductCard extends StatelessWidget {
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(12)),
               child: Image.network(
-                isPath
-                    ? Constants.imageUrlPath + "tr:dpr-auto,tr:w-500" + image
-                    : image,
+                productData['filePath'] != null
+                    ? Constants.imageUrlPath +
+                        "tr:dpr-auto,tr:w-500" +
+                        productData['filePath']
+                    : productData['imageUrl'],
                 fit: BoxFit.cover,
                 height: 123,
               ),
@@ -74,13 +65,15 @@ class ProductCard extends StatelessWidget {
                     children: <Widget>[
                       Expanded(
                         child: Text(
-                          title,
+                          productData['title'],
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: textbarlowRegularBlackb(),
                         ),
                       ),
-                      rating == null || rating == 0 || rating == '0'
+                      productData['averageRating'] == null ||
+                              productData['averageRating'] == 0 ||
+                              productData['averageRating'] == '0'
                           ? Container()
                           : Container(
                               // height: 19,
@@ -93,7 +86,10 @@ class ProductCard extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
-                                  Text(rating, style: textBarlowregwhite()),
+                                  Text(
+                                      productData['averageRating']
+                                          .toStringAsFixed(1),
+                                      style: textBarlowregwhite()),
                                   Icon(
                                     Icons.star,
                                     color: Colors.white,
@@ -112,8 +108,8 @@ class ProductCard extends StatelessWidget {
                         children: <Widget>[
                           Text(
                             dealPercentage != null
-                                ? '$currency${(price - (price * dealPercentage) / 100).toDouble().toStringAsFixed(2)}'
-                                : '$currency${(price).toDouble().toStringAsFixed(2)}',
+                                ? '$currency${(productData['variant'][0]['price'] - (productData['variant'][0]['price'] * dealPercentage) / 100).toDouble().toStringAsFixed(2)}'
+                                : '$currency${(productData['variant'][0]['price']).toDouble().toStringAsFixed(2)}',
                             style: textbarlowBoldgreen(),
                           ),
                           SizedBox(width: 3),
@@ -122,7 +118,7 @@ class ProductCard extends StatelessWidget {
                               : Padding(
                                   padding: const EdgeInsets.only(top: 5.0),
                                   child: Text(
-                                    '$currency${price.toDouble().toStringAsFixed(2)}',
+                                    '$currency${productData['variant'][0]['price'].toDouble().toStringAsFixed(2)}',
                                     style: barlowregularlackstrike(),
                                   ),
                                 ),
@@ -132,7 +128,7 @@ class ProductCard extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(top: 5.0),
                         child: Text(
-                          '$unit',
+                          '${productData['variant'][0]['unit']}',
                           style: barlowregularlack(),
                         ),
                       ),

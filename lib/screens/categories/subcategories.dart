@@ -413,85 +413,24 @@ class _SubCategoriesState extends State<SubCategories> {
                                                   child: Stack(
                                                     children: <Widget>[
                                                       SubCategoryProductCard(
-                                                        image: subCategryByProduct[
-                                                                        i][
-                                                                    'filePath'] ==
-                                                                null
-                                                            ? subCategryByProduct[
-                                                                i]['imageUrl']
-                                                            : subCategryByProduct[
-                                                                i]['filePath'],
-                                                        isPath: subCategryByProduct[
-                                                                        i][
-                                                                    'filePath'] ==
-                                                                null
-                                                            ? false
-                                                            : true,
-                                                        title:
-                                                            subCategryByProduct[
-                                                                i]['title'],
                                                         currency: currency,
-                                                        category:
-                                                            subCategryByProduct[
-                                                                i]['category'],
                                                         price:
                                                             subCategryByProduct[
                                                                         i]
                                                                     ['variant']
                                                                 [0]['price'],
-                                                        dealPercentage: subCategryByProduct[
-                                                                    i][
-                                                                'isDealAvailable']
-                                                            ? double.parse(
-                                                                subCategryByProduct[
-                                                                            i][
-                                                                        'delaPercent']
-                                                                    .toStringAsFixed(
-                                                                        1))
-                                                            : null,
                                                         variantStock:
                                                             subCategryByProduct[
                                                                         i][
                                                                     'variant'][0]
                                                                 [
                                                                 'productstock'],
-                                                        unit:
-                                                            subCategryByProduct[
-                                                                        i]
-                                                                    ['variant']
-                                                                [0]['unit'],
-                                                        rating: subCategryByProduct[
-                                                                    i][
-                                                                'averageRating']
-                                                            .toStringAsFixed(1),
-                                                        buttonName:
-                                                            MyLocalizations.of(
-                                                                    context)
-                                                                .add,
-                                                        cartAdded:
-                                                            subCategryByProduct[
-                                                                        i][
-                                                                    'cartAdded'] ??
-                                                                false,
-                                                        cartId:
-                                                            subCategryByProduct[
-                                                                i]['cartId'],
-                                                        productQuantity:
-                                                            subCategryByProduct[
-                                                                        i][
-                                                                    'cartAddedQuantity'] ??
-                                                                0,
-                                                        token: widget.token,
-                                                        productList:
+                                                        productData:
                                                             subCategryByProduct[
                                                                 i],
                                                         variantList:
                                                             subCategryByProduct[
                                                                 i]['variant'],
-                                                        subCategoryId:
-                                                            subCategryByProduct[
-                                                                    i]
-                                                                ['subcategory'],
                                                       ),
                                                       subCategryByProduct[i][
                                                                   'isDealAvailable'] ==
@@ -609,44 +548,22 @@ class _SubCategoriesState extends State<SubCategories> {
                                                   child: Stack(
                                                     children: <Widget>[
                                                       SubCategoryProductCard(
-                                                          image: subProductsList[i]['filePath'] ==
-                                                                  null
-                                                              ? subProductsList[i]
-                                                                  ['imageUrl']
-                                                              : subProductsList[i]
-                                                                  ['filePath'],
-                                                          isPath:
-                                                              subProductsList[i]['filePath'] ==
-                                                                      null
-                                                                  ? false
-                                                                  : true,
-                                                          title:
-                                                              subProductsList[i]
-                                                                  ['title'],
-                                                          currency: currency,
-                                                          category:
-                                                              subProductsList[i]
-                                                                  ['category'],
-                                                          price:
-                                                              subProductsList[i]
-                                                                      ['variant']
-                                                                  [0]['price'],
-                                                          dealPercentage:
-                                                              subProductsList[i]
-                                                                      ['isDealAvailable']
-                                                                  ? double.parse(subProductsList[i]['delaPercent'].toStringAsFixed(1))
-                                                                  : null,
-                                                          variantStock: subProductsList[i]['variant'][0]['productstock'],
-                                                          unit: subProductsList[i]['variant'][0]['unit'],
-                                                          rating: subProductsList[i]['averageRating'].toStringAsFixed(1),
-                                                          buttonName: MyLocalizations.of(context).add,
-                                                          cartAdded: subProductsList[i]['cartAdded'] ?? false,
-                                                          cartId: subProductsList[i]['cartId'],
-                                                          productQuantity: subProductsList[i]['cartAddedQuantity'] ?? 0,
-                                                          token: widget.token,
-                                                          productList: subProductsList[i],
-                                                          variantList: subProductsList[i]['variant'],
-                                                          subCategoryId: subProductsList[i]['subcategory']),
+                                                        currency: currency,
+                                                        price:
+                                                            subProductsList[i]
+                                                                    ['variant']
+                                                                [0]['price'],
+                                                        variantStock:
+                                                            subProductsList[i][
+                                                                    'variant'][0]
+                                                                [
+                                                                'productstock'],
+                                                        productData:
+                                                            subProductsList[i],
+                                                        variantList:
+                                                            subProductsList[i]
+                                                                ['variant'],
+                                                      ),
                                                       subProductsList[i][
                                                                   'isDealAvailable'] ==
                                                               true

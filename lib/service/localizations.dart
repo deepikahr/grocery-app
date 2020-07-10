@@ -854,6 +854,11 @@ class MyLocalizations {
     return localizedValues[locale.languageCode]['enterconfirmpassword'] ??
         "Enter confirm password";
   }
+
+  String get orderAssigned {
+    return localizedValues[locale.languageCode]['orderAssigned'] ??
+        "Order Assigned";
+  }
 }
 
 class MyLocalizationsDelegate extends LocalizationsDelegate<MyLocalizations> {

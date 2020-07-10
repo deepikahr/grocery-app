@@ -15,12 +15,12 @@ class BottonSheetClassDryClean extends StatefulWidget {
   final double dealPercentage;
   final String currency, locale;
   final Map localizedValues;
-  final Map<String, dynamic> productList;
+  final Map<String, dynamic> productData;
 
   BottonSheetClassDryClean(
       {Key key,
       this.variantsList,
-      this.productList,
+      this.productData,
       this.currency,
       this.productQuantity,
       this.dealPercentage,
@@ -117,9 +117,9 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
             : variantStock) >=
         quantity) {
       Map<String, dynamic> productAddBody = {
-        "category": widget.productList['category'],
-        "subcategory": widget.productList['subcategory'],
-        'productId': widget.productList['_id'].toString(),
+        "category": widget.productData['category'],
+        "subcategory": widget.productData['subcategory'],
+        'productId': widget.productData['_id'].toString(),
         'quantity': quantity,
         "price": double.parse(variantPrice == null
             ? widget.variantsList[0]['price'].toString()

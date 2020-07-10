@@ -58,6 +58,7 @@ class _OrderDetailsState extends State<OrderDetails> {
               if (orderHistory['usedWalletAmount'] == null) {
                 orderHistory['usedWalletAmount'] = 0.0;
               }
+              print(orderHistory['assignedTo']);
               isLoading = false;
             });
           }
@@ -436,9 +437,68 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                               : orderHistory[
                                                                   'orderStatus'],
                                           style: textBarlowMediumGreen()),
-                                    )
+                                    ),
                                   ],
                                 ),
+                                orderHistory['assignedTo'] != null &&
+                                        orderHistory['assignedTo'] is Map
+                                    ? SizedBox(height: 10)
+                                    : Container(),
+                                orderHistory['assignedTo'] != null &&
+                                        orderHistory['assignedTo'] is Map
+                                    ? Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text( MyLocalizations.of(context)
+                                                      .orderAssigned + " :",
+                                              style: textBarlowMediumBlack()),
+                                        ],
+                                      )
+                                    : Container(),
+                                orderHistory['assignedTo'] != null &&
+                                        orderHistory['assignedTo'] is Map &&
+                                        orderHistory['assignedTo']
+                                                ['firstName'] !=
+                                            null
+                                    ? Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text(
+                                              MyLocalizations.of(context)
+                                                      .fullName +
+                                                  " :",
+                                              style: textBarlowMediumBlack()),
+                                          SizedBox(width: 5),
+                                          Expanded(
+                                            child: Text(
+                                                "${orderHistory['assignedTo']['firstName']} ${orderHistory['assignedTo']['lastName'] ?? ""}",
+                                                style: textBarlowMediumBlack()),
+                                          )
+                                        ],
+                                      )
+                                    : Container(),
+                                orderHistory['assignedTo'] != null &&
+                                        orderHistory['assignedTo'] is Map
+                                    ? Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text(
+                                              MyLocalizations.of(context)
+                                                      .contactNumber +
+                                                  " :",
+                                              style: textBarlowMediumBlack()),
+                                          SizedBox(width: 5),
+                                          Expanded(
+                                            child: Text(
+                                                "${orderHistory['assignedTo']['mobileNumber'].toString() ?? ""}",
+                                                style: textBarlowMediumBlack()),
+                                          )
+                                        ],
+                                      )
+                                    : Container(),
                               ],
                             ),
                           ),

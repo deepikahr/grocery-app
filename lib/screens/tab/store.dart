@@ -504,27 +504,12 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       child: Stack(
                         children: <Widget>[
                           ProductCard(
-                            image: list[i]['filePath'] == null
-                                ? list[i]['imageUrl']
-                                : list[i]['filePath'],
-                            isPath: list[i]['filePath'] == null ? false : true,
-                            title: list[i]['title'],
                             currency: currency,
-                            category: list[i]['category'],
-                            price: double.parse(list[i]['variant'][0]['price']
-                                .toStringAsFixed(2)),
-                            unit: list[i]['variant'][0]['unit'].toString(),
                             dealPercentage: list[i]['isDealAvailable'] == true
                                 ? double.parse(
                                     list[i]['delaPercent'].toStringAsFixed(1))
                                 : null,
-                            rating: list[i]['averageRating'] == null ||
-                                    list[i]['averageRating'] == '0.0' ||
-                                    list[i]['averageRating'] == 0.0
-                                ? null
-                                : list[i]['averageRating'].toStringAsFixed(1),
-                            buttonName: null,
-                            productList: list[i],
+                            productData: list[i],
                             variantList: list[i]['variant'],
                           ),
                           list[i]['isDealAvailable'] == true
@@ -577,19 +562,12 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                 : Stack(
                     children: <Widget>[
                       ProductCard(
-                        image: list[i]['filePath'] ?? list[i]['imageUrl'],
-                        title: list[i]['title'],
                         currency: currency,
-                        category: list[i]['category'],
-                        price: double.parse(
-                            list[i]['variant'][0]['price'].toStringAsFixed(2)),
-                        rating: list[i]['averageRating'].toStringAsFixed(1),
                         dealPercentage: list[i]['isDealAvailable'] == true
                             ? double.parse(
                                 list[i]['delaPercent'].toStringAsFixed(1))
                             : null,
-                        buttonName: null,
-                        productList: list[i],
+                        productData: list[i],
                         variantList: list[i]['variant'],
                       ),
                       CardOverlay()
