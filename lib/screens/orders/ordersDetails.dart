@@ -55,6 +55,9 @@ class _OrderDetailsState extends State<OrderDetails> {
           if (mounted) {
             setState(() {
               orderHistory = onValue['response_data'];
+              if (orderHistory['usedWalletAmount'] == null) {
+                orderHistory['usedWalletAmount'] = 0.0;
+              }
               isLoading = false;
             });
           }
@@ -175,7 +178,6 @@ class _OrderDetailsState extends State<OrderDetails> {
     Map body = {"orderId": widget.orderId, "status": "Cancelled"};
 
     await LoginService.orderCancle(body).then((onValue) {
-      print(onValue);
       try {
         if (onValue['response_code'] == 200) {
           if (mounted) {
@@ -338,13 +340,21 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                       "CARD"
                                                   ? MyLocalizations.of(context)
                                                       .payByCard
-                                                  : orderHistory['paymentType'],
+                                                  : orderHistory[
+                                                              'paymentType'] ==
+                                                          "WALLET"
+                                                      ? MyLocalizations.of(
+                                                              context)
+                                                          .wALLET
+                                                      : orderHistory[
+                                                          'paymentType'],
                                           style: textBarlowMediumBlack()),
                                     )
                                   ],
                                 ),
                                 SizedBox(height: 10),
-                                orderHistory['paymentType'] == "CARD"
+                                orderHistory['paymentType'] == "CARD" ||
+                                        orderHistory['paymentType'] == "WALLET"
                                     ? Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
@@ -357,29 +367,38 @@ class _OrderDetailsState extends State<OrderDetails> {
                                           SizedBox(width: 5),
                                           Expanded(
                                             child: Text(
-                                                orderHistory['transactionDetails'][
-                                                            'transactionStatus'] ==
-                                                        "succeeded"
+                                                orderHistory['transactionDetails']['transactionStatus'] == "succeeded" ||
+                                                        orderHistory['transactionDetails']['transactionStatus'] ==
+                                                            "Succeeded" ||
+                                                        orderHistory['transactionDetails']['transactionStatus'] ==
+                                                            "Succeed" ||
+                                                        orderHistory['transactionDetails']['transactionStatus'] ==
+                                                            "Succeed"
                                                     ? MyLocalizations.of(context)
                                                         .succeeded
-                                                    : orderHistory['transactionDetails'][
-                                                                    'transactionStatus'] ==
-                                                                "Pending" ||
-                                                            orderHistory['transactionDetails'][
-                                                                    'transactionStatus'] ==
+                                                    : orderHistory['transactionDetails']['transactionStatus'] == "Pending" ||
+                                                            orderHistory['transactionDetails']['transactionStatus'] ==
                                                                 "pending"
-                                                        ? MyLocalizations.of(
-                                                                context)
+                                                        ? MyLocalizations.of(context)
                                                             .pending
-                                                        : orderHistory[
-                                                                'transactionDetails']
-                                                            ['transactionStatus'],
+                                                        : orderHistory['transactionDetails']['transactionStatus'] == "Failed" ||
+                                                                orderHistory['transactionDetails']['transactionStatus'] ==
+                                                                    "failed" ||
+                                                                orderHistory['transactionDetails']['transactionStatus'] ==
+                                                                    "Fail" ||
+                                                                orderHistory['transactionDetails']['transactionStatus'] ==
+                                                                    "fail"
+                                                            ? MyLocalizations.of(context)
+                                                                .failed
+                                                            : orderHistory['transactionDetails']
+                                                                ['transactionStatus'],
                                                 style: textBarlowMediumBlack()),
                                           )
                                         ],
                                       )
                                     : Container(),
-                                orderHistory['paymentType'] == "CARD"
+                                orderHistory['paymentType'] == "CARD" ||
+                                        orderHistory['paymentType'] == "WALLET"
                                     ? SizedBox(height: 10)
                                     : Container(),
                                 Row(
@@ -683,6 +702,46 @@ class _OrderDetailsState extends State<OrderDetails> {
                         ],
                       ),
                     ),
+                    orderHistory['usedWalletAmount'] == 0 ||
+                            orderHistory['usedWalletAmount'] == 0.0
+                        ? Container()
+                        : Padding(
+                            padding:
+                                const EdgeInsets.only(left: 18.0, right: 18.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Text(
+                                    MyLocalizations.of(context)
+                                            .usedWalletAmount +
+                                        ' :',
+                                    style: textBarlowMediumBlack()),
+                                Container(
+                                  margin: EdgeInsets.only(left: 8),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                      top: 15.0,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          currency,
+                                          style: textBarlowBoldBlack(),
+                                        ),
+                                        Text(
+                                          orderHistory['usedWalletAmount']
+                                              .toStringAsFixed(2),
+                                          style: textBarlowBoldBlack(),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                     orderHistory['cart']['couponInfo'] == null
                         ? Container()
                         : Padding(
