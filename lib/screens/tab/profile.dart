@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/main.dart';
+import 'package:readymadeGroceryApp/screens/authe/changePassword.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/drawer/address.dart';
 import 'package:readymadeGroceryApp/screens/orders/orders.dart';
@@ -455,6 +456,45 @@ class _ProfileState extends State<Profile> {
                                       right: 20.0),
                                   child: Text(
                                     MyLocalizations.of(context).orderHistory,
+                                    style: textBarlowMediumBlack(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20.0,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            var result = Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ChangePassword(
+                                  locale: widget.locale,
+                                  localizedValues: widget.localizedValues,
+                                ),
+                              ),
+                            );
+                            result.then((value) => getToken());
+                          },
+                          child: Container(
+                            height: 55,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFF7F7F7),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 10.0,
+                                      bottom: 10.0,
+                                      left: 20.0,
+                                      right: 20.0),
+                                  child: Text(
+                                    MyLocalizations.of(context).changePassword,
                                     style: textBarlowMediumBlack(),
                                   ),
                                 ),
