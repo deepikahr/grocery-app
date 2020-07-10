@@ -833,6 +833,27 @@ class MyLocalizations {
   String get failed {
     return localizedValues[locale.languageCode]['failed'] ?? "Failed";
   }
+
+  String get donotentersameoldpasswordandnewpassword {
+    return localizedValues[locale.languageCode]
+            ['donotentersameoldpasswordandnewpassword'] ??
+        "Do not enter same old password and new password";
+  }
+
+  String get changePassword {
+    return localizedValues[locale.languageCode]['changePassword'] ??
+        "Change Password";
+  }
+
+  String get enterOldPassword {
+    return localizedValues[locale.languageCode]['enterOldPassword'] ??
+        "Enter old password";
+  }
+
+  String get enterconfirmpassword {
+    return localizedValues[locale.languageCode]['enterconfirmpassword'] ??
+        "Enter confirm password";
+  }
 }
 
 class MyLocalizationsDelegate extends LocalizationsDelegate<MyLocalizations> {
