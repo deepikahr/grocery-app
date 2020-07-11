@@ -294,39 +294,15 @@ class _SearchItemState extends State<SearchItem> {
                                     child: Stack(
                                       children: <Widget>[
                                         SubCategoryProductCard(
-                                            image: searchresult[index]['filePath'] == null
-                                                ? searchresult[index]
-                                                    ['imageUrl']
-                                                : searchresult[index]
-                                                    ['filePath'],
-                                            isPath: searchresult[index]['filePath'] == null
-                                                ? false
-                                                : true,
-                                            title: searchresult[index]['title'],
-                                            currency: currency,
-                                            category: searchresult[index]
-                                                ['category'],
-                                            price: searchresult[index]
-                                                ['variant'][0]['price'],
-                                            dealPercentage: searchresult[index]['isDealAvailable'] != null &&
-                                                    searchresult[index]
-                                                        ['isDealAvailable']
-                                                ? double.parse(searchresult[index]['delaPercent']
-                                                    .toStringAsFixed(1))
-                                                : null,
-                                            unit: searchresult[index]['variant']
-                                                [0]['unit'],
-                                            variantStock: searchresult[index]
-                                                ['variant'][0]['productstock'],
-                                            rating: searchresult[index]['averageRating'].toStringAsFixed(1),
-                                            buttonName: MyLocalizations.of(context).add,
-                                            cartAdded: searchresult[index]['cartAdded'] ?? false,
-                                            cartId: searchresult[index]['cartId'],
-                                            productQuantity: searchresult[index]['cartAddedQuantity'] ?? 0,
-                                            token: true,
-                                            productList: searchresult[index],
-                                            variantList: searchresult[index]['variant'],
-                                            subCategoryId: searchresult[index]['subcategory']),
+                                          currency: currency,
+                                          price: searchresult[index]['variant']
+                                              [0]['price'],
+                                          variantStock: searchresult[index]
+                                              ['variant'][0]['productstock'],
+                                          productData: searchresult[index],
+                                          variantList: searchresult[index]
+                                              ['variant'],
+                                        ),
                                         searchresult[index]
                                                     ['isDealAvailable'] ==
                                                 true
@@ -422,9 +398,7 @@ class _SearchItemState extends State<SearchItem> {
               ],
             ),
       bottomNavigationBar: cartData == null
-          ? Container(
-              height: 1
-            )
+          ? Container(height: 1)
           : InkWell(
               onTap: () {
                 Navigator.push(

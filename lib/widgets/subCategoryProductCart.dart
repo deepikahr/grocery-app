@@ -14,48 +14,19 @@ import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:flutter/cupertino.dart';
 
 class SubCategoryProductCard extends StatefulWidget {
-  final image,
-      title,
-      variantStock,
-      price,
-      currency,
-      isPath,
-      unit,
-      rating,
-      category,
-      offer,
-      productQuantity,
-      buttonName,
-      cartId,
-      subCategoryId;
-  final double dealPercentage;
-  final bool token, cartAdded;
-  final Map productList;
+  final variantStock, price, currency;
+  final Map productData;
   final List variantList;
   final String locale;
   final Map localizedValues;
   SubCategoryProductCard(
       {Key key,
-      this.image,
       this.variantStock,
-      this.subCategoryId,
-      this.title,
-      this.unit,
-      this.isPath,
       this.price,
       this.currency,
-      this.rating,
-      this.dealPercentage,
-      this.category,
-      this.offer,
-      this.productQuantity,
-      this.cartAdded,
-      this.buttonName,
-      this.productList,
+      this.productData,
       this.variantList,
       this.locale,
-      this.token,
-      this.cartId,
       this.localizedValues})
       : super(key: key);
   @override
@@ -65,22 +36,29 @@ class SubCategoryProductCard extends StatefulWidget {
 class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
   int quanity;
   bool cardAdded = false, isAddInProgress = false, isQuantityUpdating = false;
-  var variantPrice, variantStock, variantUnit;
+  var variantPrice, variantStock, variantUnit, dealPercentage;
   String cartId, quantityChangeType = '+';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
-    if (widget.cartAdded == true) {
-      cardAdded = widget.cartAdded;
+    if (widget.productData['cartAdded'] == true) {
+      cardAdded = widget.productData['cartAdded'];
     } else {
       cardAdded = false;
     }
     if (widget.variantStock != null) {
       variantStock = widget.variantStock;
     }
+    if (widget.productData['isDealAvailable'] != null &&
+        widget.productData['isDealAvailable'] == true) {
+      dealPercentage =
+          double.parse(widget.productData['delaPercent'].toStringAsFixed(1));
+    } else {
+      dealPercentage = null;
+    }
 
-    quanity = widget.productQuantity;
+    quanity = widget.productData['cartAddedQuantity'] ?? 0;
 
     super.initState();
   }
@@ -104,10 +82,11 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
 
   updateCart(quanity, id) async {
     Map<String, dynamic> body = {
-      'cartId': cartId == null ? widget.cartId : cartId,
+      'cartId': cartId == null ? widget.productData['cartId'] : cartId,
       'productId': id,
       'quantity': quanity
     };
+
     await CartService.updateProductToCart(body).then((onValue) {
       if (onValue['response_code'] == 200 && onValue['response_data'] is Map) {
         Common.setCartData(onValue['response_data']);
@@ -124,7 +103,7 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
 
   deleteCart(id) async {
     Map<String, dynamic> body = {
-      'cartId': cartId == null ? widget.cartId : cartId,
+      'cartId': cartId == null ? widget.productData['cartId'] : cartId,
       'productId': id,
     };
 
@@ -170,11 +149,11 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                   borderRadius:
                       const BorderRadius.vertical(top: Radius.circular(12)),
                   child: Image.network(
-                    widget.isPath
+                    widget.productData['filePath'] != null
                         ? Constants.imageUrlPath +
                             "tr:dpr-auto,tr:w-500" +
-                            widget.image
-                        : widget.image,
+                            widget.productData['filePath']
+                        : widget.productData['imageUrl'],
                     fit: BoxFit.cover,
                     height: 123,
                   ),
@@ -189,15 +168,15 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                         children: <Widget>[
                           Expanded(
                             child: Text(
-                              widget.title,
+                              widget.productData['title'],
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: textbarlowRegularBlackb(),
                             ),
                           ),
-                          widget.rating == null ||
-                                  widget.rating == 0.0 ||
-                                  widget.rating == '0.0'
+                          widget.productData['averageRating'] == null ||
+                                  widget.productData['averageRating'] == 0.0 ||
+                                  widget.productData['averageRating'] == '0.0'
                               ? Container()
                               : Container(
                                   height: 19,
@@ -210,7 +189,9 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: <Widget>[
-                                      Text(widget.rating,
+                                      Text(
+                                          widget.productData['averageRating']
+                                              .toStringAsFixed(1),
                                           style: textBarlowregwhite()),
                                       Icon(
                                         Icons.star,
@@ -229,13 +210,13 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Text(
-                                widget.dealPercentage == null
+                                dealPercentage == null
                                     ? '${widget.currency}${(variantPrice == null ? widget.price : variantPrice).toDouble().toStringAsFixed(2)}'
-                                    : '${widget.currency}${((variantPrice == null ? widget.price : variantPrice) - ((variantPrice == null ? widget.price : variantPrice) * (widget.dealPercentage / 100))).toDouble().toStringAsFixed(2)}',
+                                    : '${widget.currency}${((variantPrice == null ? widget.price : variantPrice) - ((variantPrice == null ? widget.price : variantPrice) * (dealPercentage / 100))).toDouble().toStringAsFixed(2)}',
                                 style: textbarlowBoldgreen(),
                               ),
                               SizedBox(width: 3),
-                              widget.dealPercentage == null
+                              dealPercentage == null
                                   ? Container()
                                   : Padding(
                                       padding: const EdgeInsets.only(
@@ -251,7 +232,7 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                           Padding(
                             padding: const EdgeInsets.only(top: 5.0),
                             child: Text(
-                              '${variantUnit == null ? widget.unit : variantUnit}',
+                              '${variantUnit == null ? widget.productData['variant'][0]['unit'] : variantUnit}',
                               style: barlowregularlack(),
                             ),
                           )
@@ -261,7 +242,7 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                           ? InkWell(
                               onTap: () async {
                                 if (widget.variantList.length > 1) {
-                                  if (widget.productList != null &&
+                                  if (widget.productData != null &&
                                       widget.variantList != null) {
                                     var bottomSheet = showModalBottomSheet(
                                         context: context,
@@ -271,19 +252,20 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                               localizedValues:
                                                   widget.localizedValues,
                                               currency: widget.currency,
-                                              productList: widget.productList,
-                                              dealPercentage:
-                                                  widget.dealPercentage,
+                                              productData: widget.productData,
+                                              dealPercentage: dealPercentage,
                                               variantsList: widget.variantList,
                                               productQuantity: quanity == null
-                                                  ? widget.productQuantity
+                                                  ? widget.productData[
+                                                          'cartAddedQuantity'] ??
+                                                      0
                                                   : quanity);
                                         });
                                     bottomSheet.then((onValue) {
                                       for (int i = 0;
                                           i < onValue['cart'].length;
                                           i++) {
-                                        if (widget.productList["_id"] ==
+                                        if (widget.productData["_id"] ==
                                             onValue['cart'][i]["productId"]) {
                                           if (mounted) {
                                             setState(() {
@@ -313,11 +295,11 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                               Map<String, dynamic>
                                                   productAddBody = {
                                                 "category": widget
-                                                    .productList['category'],
+                                                    .productData['category'],
                                                 "subcategory": widget
-                                                    .productList['subcategory'],
+                                                    .productData['subcategory'],
                                                 'productId': widget
-                                                    .productList['_id']
+                                                    .productData['_id']
                                                     .toString(),
                                                 'quantity': 1,
                                                 "price": double.parse(widget
@@ -350,7 +332,7 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                                                   ['cart']
                                                               .length;
                                                       i++) {
-                                                    if (widget.productList[
+                                                    if (widget.productData[
                                                             "_id"] ==
                                                         onValue['response_data']
                                                                 ['cart'][i]
@@ -429,7 +411,7 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                             MainAxisAlignment.center,
                                         children: <Widget>[
                                           Text(
-                                            widget.buttonName,
+                                            MyLocalizations.of(context).add,
                                             style: textbarlowMediumBlackm(),
                                           ),
                                         ],
@@ -466,7 +448,7 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                           quantityChangeType = '-';
                                           _changeProductQuantity(
                                             false,
-                                            widget.productList["_id"],
+                                            widget.productData["_id"],
                                           );
                                         }
                                       },
@@ -482,7 +464,8 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                     ),
                                   ),
                                   Text(quanity == null
-                                      ? widget.productQuantity.toString()
+                                      ? widget.productData['cartAddedQuantity']
+                                          .toString()
                                       : quanity.toString()),
                                   Container(
                                     height: 35,
@@ -502,7 +485,7 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                           if (variantStock > quanity) {
                                             _changeProductQuantity(
                                               true,
-                                              widget.productList["_id"],
+                                              widget.productData["_id"],
                                             );
                                           } else {
                                             showSnackbar(MyLocalizations.of(

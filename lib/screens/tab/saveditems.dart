@@ -213,39 +213,15 @@ class _SavedItemsState extends State<SavedItems> {
                               child: Stack(
                                 children: <Widget>[
                                   SubCategoryProductCard(
-                                      image: favProductList[i]['product']['filePath'] == null
-                                          ? favProductList[i]['product']
-                                              ['imageUrl']
-                                          : favProductList[i]['product']
-                                              ['filePath'],
-                                      isPath: favProductList[i]['product']['filePath'] == null
-                                          ? false
-                                          : true,
-                                      title: favProductList[i]['product']
-                                          ['title'],
-                                      currency: currency,
-                                      category: favProductList[i]['product']
-                                          ['category'],
-                                      price: favProductList[i]['product']
-                                          ['variant'][0]['price'],
-                                      dealPercentage: favProductList[i]
-                                              ['product']['isDealAvailable']
-                                          ? double.parse(favProductList[i]
-                                                  ['product']['delaPercent']
-                                              .toStringAsFixed(1))
-                                          : null,
-                                      unit: favProductList[i]['product']
-                                          ['variant'][0]['unit'],
-                                      rating: (favProductList[i]['product']['averageRating'] == null || favProductList[i]['product']['averageRating'] == '0.0' || favProductList[i]['product']['averageRating'] == 0.0) ? null : favProductList[i]['product']['averageRating'].toStringAsFixed(1),
-                                      buttonName: MyLocalizations.of(context).add,
-                                      cartAdded: favProductList[i]['cartAdded'] ?? false,
-                                      cartId: favProductList[i]['cartId'],
-                                      productQuantity: favProductList[i]['cartAddedQuantity'] ?? 0,
-                                      variantStock: favProductList[i]['product']['variant'][0]['productstock'],
-                                      token: true,
-                                      productList: favProductList[i]['product'],
-                                      variantList: favProductList[i]['product']['variant'],
-                                      subCategoryId: favProductList[i]['subcategory']),
+                                    currency: currency,
+                                    price: favProductList[i]['product']
+                                        ['variant'][0]['price'],
+                                    variantStock: favProductList[i]['product']
+                                        ['variant'][0]['productstock'],
+                                    productData: favProductList[i]['product'],
+                                    variantList: favProductList[i]['product']
+                                        ['variant'],
+                                  ),
                                   favProductList[i]['isDealAvailable'] == true
                                       ? Positioned(
                                           child: Stack(
@@ -287,9 +263,7 @@ class _SavedItemsState extends State<SavedItems> {
                           child: Image.asset('lib/assets/images/no-orders.png'),
                         ),
       bottomNavigationBar: cartData == null
-          ? Container(
-              height: 1
-            )
+          ? Container(height: 1)
           : InkWell(
               onTap: () {
                 Navigator.push(
