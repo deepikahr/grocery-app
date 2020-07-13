@@ -65,7 +65,7 @@ class _TermsAndConditionState extends State<TermsAndCondition> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
-          MyLocalizations.of(context).termsAndConditions,
+          MyLocalizations.of(context).getLocalizations("PP_AND_TAND_C"),
           style: textbarlowSemiBoldBlack(),
         ),
         backgroundColor: Colors.transparent,
@@ -81,7 +81,8 @@ class _TermsAndConditionState extends State<TermsAndCondition> {
                   padding: EdgeInsets.all(10),
                   child: Container(
                     child: Text(
-                      MyLocalizations.of(context).termsAndConditions + " :",
+                      MyLocalizations.of(context)
+                          .getLocalizations("TERMS_CONDITIONS", true),
                       style: textbarlowRegularBlackd(),
                     ),
                   ),
@@ -99,7 +100,8 @@ class _TermsAndConditionState extends State<TermsAndCondition> {
                   padding: EdgeInsets.all(10),
                   child: Container(
                     child: Text(
-                      MyLocalizations.of(context).privacyPolicy + " :",
+                      MyLocalizations.of(context)
+                          .getLocalizations("PRIVACY_POLICY", true),
                       style: textbarlowRegularBlackd(),
                     ),
                   ),

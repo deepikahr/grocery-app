@@ -66,12 +66,7 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   updateUserInfo(url, key, filePath) async {
-    var body = {
-      "profilePic": url,
-      "profilePicId": key,
-      "filePath": filePath,
-      "role": "User",
-    };
+    var body = {"profilePic": url, "profilePicId": key, "filePath": filePath};
 
     await LoginService.updateUserInfo(body).then((onValue) {
       try {
@@ -122,8 +117,7 @@ class _EditProfileState extends State<EditProfile> {
       Map<String, dynamic> body = {
         "firstName": firstName,
         "lastName": lastName,
-        "mobileNumber": mobileNumber,
-        "role": "User",
+        "mobileNumber": mobileNumber
       };
 
       await LoginService.updateUserInfo(body).then((onValue) {
@@ -213,10 +207,10 @@ class _EditProfileState extends State<EditProfile> {
         Map<String, dynamic> data;
         data = json.decode(value);
         updateUserInfo(
-            data['response_data'][0]['originalImage']['url'],
-            data['response_data'][0]['originalImage']['key'],
-            data['response_data'][0]['originalImage']['filePath'] ??
-                data['response_data'][0]['originalImage']['profilePic']);
+            data['response_data']['url'],
+            data['response_data']['key'],
+            data['response_data']['filePath'] ??
+                data['response_data']['profilePic']);
       });
     }).catchError((error) {
       if (mounted) {
@@ -248,7 +242,7 @@ class _EditProfileState extends State<EditProfile> {
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Text(
-                      MyLocalizations.of(context).select,
+                      MyLocalizations.of(context).getLocalizations("SELECT"),
                       style: TextStyle(
                           color: Colors.red,
                           fontSize: 20,
@@ -262,7 +256,8 @@ class _EditProfileState extends State<EditProfile> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text(
-                          MyLocalizations.of(context).takePhoto,
+                          MyLocalizations.of(context)
+                              .getLocalizations("TAKE_PHOTO"),
                           style: hintSfboldBig(),
                         ),
                         Icon(Icons.camera_alt),
@@ -276,7 +271,8 @@ class _EditProfileState extends State<EditProfile> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text(
-                          MyLocalizations.of(context).chooseFromPhotos,
+                          MyLocalizations.of(context)
+                              .getLocalizations("CHOOSE_FROM_PHOTOS"),
                           style: hintSfboldBig(),
                         ),
                         Icon(Icons.image),
@@ -291,7 +287,8 @@ class _EditProfileState extends State<EditProfile> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
-                                MyLocalizations.of(context).removePhoto,
+                                MyLocalizations.of(context)
+                                    .getLocalizations("REMOVE_PHOTO"),
                                 style: hintSfboldBig(),
                               ),
                               Icon(Icons.delete_forever),
@@ -348,7 +345,7 @@ class _EditProfileState extends State<EditProfile> {
       key: _scaffoldKey,
       appBar: GFAppBar(
         title: Text(
-          MyLocalizations.of(context).editProfile,
+          MyLocalizations.of(context).getLocalizations("EDIT_PROFILE"),
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -455,8 +452,8 @@ class _EditProfileState extends State<EditProfile> {
                           child: Row(
                             children: [
                               Text(
-                                MyLocalizations.of(context).totalWalletAmount +
-                                    ' : ',
+                                MyLocalizations.of(context)
+                                    .getLocalizations("TOTAL_WALLET_AMOUNT"),
                                 style: textbarlowRegularBlack(),
                               ),
                               Text(
@@ -466,14 +463,13 @@ class _EditProfileState extends State<EditProfile> {
                             ],
                           ),
                         ),
-                  SizedBox(
-                    height: 25,
-                  ),
+                  SizedBox(height: 25),
                   Padding(
                     padding: const EdgeInsets.only(
                         left: 18.0, right: 18.0, bottom: 5, top: 5),
                     child: Text(
-                      MyLocalizations.of(context).fullName + ':',
+                      MyLocalizations.of(context)
+                          .getLocalizations("FIRST_NAME", true),
                       style: textbarlowRegularBlack(),
                     ),
                   ),
@@ -509,20 +505,69 @@ class _EditProfileState extends State<EditProfile> {
                       },
                       validator: (String value) {
                         if (value.isEmpty) {
-                          return MyLocalizations.of(context).enterFullName;
+                          return MyLocalizations.of(context)
+                              .getLocalizations("ENTER_FIRST_NAME");
                         } else
                           return null;
                       },
                     ),
                   ),
-                  SizedBox(
-                    height: 25,
+                  SizedBox(height: 25),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 18.0, right: 18.0, bottom: 5, top: 5),
+                    child: Text(
+                      MyLocalizations.of(context)
+                          .getLocalizations("LAST_NAME", true),
+                      style: textbarlowRegularBlack(),
+                    ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                    child: TextFormField(
+                      initialValue: userInfo['lastName'] ?? "",
+                      style: textBarlowRegularBlack(),
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
+                        errorBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 0, color: Color(0xFFF44242))),
+                        errorStyle: TextStyle(color: Color(0xFFF44242)),
+                        fillColor: Colors.black,
+                        focusColor: Colors.black,
+                        contentPadding: EdgeInsets.only(
+                          left: 15.0,
+                          right: 15.0,
+                          top: 10.0,
+                          bottom: 10.0,
+                        ),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.grey, width: 0.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: primary),
+                        ),
+                      ),
+                      onSaved: (String value) {
+                        firstName = value;
+                      },
+                      validator: (String value) {
+                        if (value.isEmpty) {
+                          return MyLocalizations.of(context)
+                              .getLocalizations("ENTER_LAST_NAME");
+                        } else
+                          return null;
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 25),
                   Padding(
                     padding: const EdgeInsets.only(
                         left: 18.0, bottom: 5.0, right: 18.0),
                     child: Text(
-                      MyLocalizations.of(context).contactNumber + ' :',
+                      MyLocalizations.of(context)
+                          .getLocalizations("CONTACT_NUMBER", true),
                       style: textbarlowRegularBlack(),
                     ),
                   ),
@@ -559,7 +604,7 @@ class _EditProfileState extends State<EditProfile> {
                       validator: (String value) {
                         if (value.isEmpty) {
                           return MyLocalizations.of(context)
-                              .enterYourContactNumber;
+                              .getLocalizations("ENTER_CONTACT_NUMBER");
                         } else
                           return null;
                       },
@@ -586,7 +631,7 @@ class _EditProfileState extends State<EditProfile> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  MyLocalizations.of(context).save,
+                  MyLocalizations.of(context).getLocalizations("SUBMIT"),
                   style: textBarlowRegularrBlack(),
                 ),
                 profileEdit

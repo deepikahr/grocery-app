@@ -415,9 +415,11 @@ class _CheckoutState extends State<Checkout> {
       selectedDate = deliverySlotList[0]['date'];
     }
     if (selecteAddressValue == null) {
-      showSnackbar(MyLocalizations.of(context).pleaseselectaddressfirst);
+      showSnackbar(
+          MyLocalizations.of(context).getLocalizations("SELECT_ADDESS_MSG"));
     } else if (selectedTime == null) {
-      showSnackbar(MyLocalizations.of(context).pleaseselecttimeslotfirst);
+      showSnackbar(
+          MyLocalizations.of(context).getLocalizations("SELECT_TIME_MSG"));
     } else {
       Map<String, dynamic> data = {
         "deliveryType": "Home_Delivery",
@@ -626,7 +628,8 @@ class _CheckoutState extends State<Checkout> {
                                 height: 30.0,
                                 decoration: BoxDecoration(),
                                 child: Text(
-                                  MyLocalizations.of(context).ok,
+                                  MyLocalizations.of(context)
+                                      .getLocalizations("OK"),
                                   style: hintSfLightbig(),
                                 ),
                               ),
@@ -684,7 +687,7 @@ class _CheckoutState extends State<Checkout> {
       key: _scaffoldKey,
       appBar: GFAppBar(
         title: Text(
-          MyLocalizations.of(context).checkout,
+          MyLocalizations.of(context).getLocalizations("CHEKCOUT"),
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -724,7 +727,9 @@ class _CheckoutState extends State<Checkout> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text(MyLocalizations.of(context).cartsummary,
+                                  Text(
+                                      MyLocalizations.of(context)
+                                          .getLocalizations("CART_SUMMARY"),
                                       style: textBarlowSemiBoldBlackbigg()),
                                   SizedBox(height: 10),
                                   Row(
@@ -732,9 +737,11 @@ class _CheckoutState extends State<Checkout> {
                                         MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
                                       Text(
-                                        MyLocalizations.of(context).subTotal +
+                                        MyLocalizations.of(context)
+                                                .getLocalizations("SUB_TOTAL") +
                                             ' ( ${widget.quantity} ' +
-                                            MyLocalizations.of(context).items +
+                                            MyLocalizations.of(context)
+                                                .getLocalizations("ITEMS") +
                                             ')',
                                         style: textBarlowRegularBlack(),
                                       ),
@@ -774,14 +781,16 @@ class _CheckoutState extends State<Checkout> {
                                                     ? Text(
                                                         MyLocalizations.of(
                                                                 context)
-                                                            .tax,
+                                                            .getLocalizations(
+                                                                "TAX"),
                                                         style:
                                                             textBarlowRegularBlack(),
                                                       )
                                                     : Text(
                                                         MyLocalizations.of(
                                                                     context)
-                                                                .tax +
+                                                                .getLocalizations(
+                                                                    "TAX") +
                                                             " (" +
                                                             cartItem['taxInfo']
                                                                 ['taxName'] +
@@ -828,7 +837,8 @@ class _CheckoutState extends State<Checkout> {
                                                     Text(
                                                       MyLocalizations.of(
                                                                   context)
-                                                              .couponApplied +
+                                                              .getLocalizations(
+                                                                  "COUPON_APPLIED") +
                                                           " (" +
                                                           "${cartItem['couponInfo']['couponCode']}"
                                                               ")",
@@ -863,7 +873,8 @@ class _CheckoutState extends State<Checkout> {
                                                     Text(
                                                       MyLocalizations.of(
                                                               context)
-                                                          .discount,
+                                                          .getLocalizations(
+                                                              "DISCOUNT"),
                                                       style:
                                                           textBarlowRegularBlack(),
                                                     ),
@@ -913,10 +924,10 @@ class _CheckoutState extends State<Checkout> {
                                                         TextCapitalization
                                                             .words,
                                                     decoration: InputDecoration(
-                                                        hintText:
-                                                            MyLocalizations.of(
-                                                                    context)
-                                                                .enterCouponCode,
+                                                        hintText: MyLocalizations
+                                                                .of(context)
+                                                            .getLocalizations(
+                                                                "ENTER_COUPON_CODE"),
                                                         hintStyle:
                                                             textBarlowRegularBlacklight(),
                                                         labelStyle: TextStyle(
@@ -929,7 +940,8 @@ class _CheckoutState extends State<Checkout> {
                                                       if (value.isEmpty) {
                                                         return MyLocalizations
                                                                 .of(context)
-                                                            .enterCouponCode;
+                                                            .getLocalizations(
+                                                                "ENTER_COUPON_CODE");
                                                       } else {
                                                         return null;
                                                       }
@@ -969,7 +981,7 @@ class _CheckoutState extends State<Checkout> {
                                                                 ? SquareLoader()
                                                                 : Text(
                                                                     MyLocalizations.of(context)
-                                                                            .apply +
+                                                                            .getLocalizations("APPLY") +
                                                                         " ",
                                                                     style:
                                                                         textBarlowRegularBlack(),
@@ -998,7 +1010,8 @@ class _CheckoutState extends State<Checkout> {
                                           children: <Widget>[
                                             Text(
                                               MyLocalizations.of(context)
-                                                  .deliveryCharges,
+                                                  .getLocalizations(
+                                                      "DELIVERY_CHARGES"),
                                               style: textBarlowRegularBlack(),
                                             ),
                                             Row(
@@ -1007,7 +1020,7 @@ class _CheckoutState extends State<Checkout> {
                                               children: <Widget>[
                                                 Text(
                                                   MyLocalizations.of(context)
-                                                      .free,
+                                                      .getLocalizations("FREE"),
                                                   style:
                                                       textbarlowBoldsmBlack(),
                                                 )
@@ -1025,7 +1038,8 @@ class _CheckoutState extends State<Checkout> {
                                               children: <Widget>[
                                                 Text(
                                                   MyLocalizations.of(context)
-                                                      .deliveryCharges,
+                                                      .getLocalizations(
+                                                          "DELIVERY_CHARGES"),
                                                   style:
                                                       textBarlowRegularBlack(),
                                                 ),
@@ -1057,7 +1071,8 @@ class _CheckoutState extends State<Checkout> {
                                         MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
                                       Text(
-                                        MyLocalizations.of(context).total,
+                                        MyLocalizations.of(context)
+                                            .getLocalizations("TOTAL"),
                                         style: textbarlowMediumBlack(),
                                       ),
                                       Row(
@@ -1079,7 +1094,7 @@ class _CheckoutState extends State<Checkout> {
                                   SizedBox(height: 20),
                                   Text(
                                       MyLocalizations.of(context)
-                                          .deliveryAddress,
+                                          .getLocalizations("DELIVERY_ADDESS"),
                                       style: textBarlowSemiBoldBlackbigg()),
                                 ],
                               ),
@@ -1093,7 +1108,7 @@ class _CheckoutState extends State<Checkout> {
                               titleChild: Text(
                                 selectedAddress == null
                                     ? MyLocalizations.of(context)
-                                        .youhavenotselectedanyaddressyet
+                                        .getLocalizations("ADDRESS_MSG")
                                     : '${selectedAddress['flatNo']}, ${selectedAddress['apartmentName']},${selectedAddress['address']}',
                                 overflow: TextOverflow.clip,
                                 maxLines: 1,
@@ -1178,7 +1193,8 @@ class _CheckoutState extends State<Checkout> {
                                                         child: Text(
                                                           MyLocalizations.of(
                                                                   context)
-                                                              .edit,
+                                                              .getLocalizations(
+                                                                  "EDIT"),
                                                           style:
                                                               textbarlowRegularaPrimar(),
                                                         ),
@@ -1208,7 +1224,8 @@ class _CheckoutState extends State<Checkout> {
                                                           child: Text(
                                                             MyLocalizations.of(
                                                                     context)
-                                                                .delete,
+                                                                .getLocalizations(
+                                                                    "DELETE"),
                                                             style:
                                                                 textbarlowRegularaPrimar(),
                                                           ),
@@ -1284,7 +1301,8 @@ class _CheckoutState extends State<Checkout> {
                                       color: GFColors.LIGHT,
                                       child: Text(
                                         MyLocalizations.of(context)
-                                            .addNewAddress,
+                                            .getLocalizations(
+                                                "ADD_NEW_ADDRESS"),
                                         style: textBarlowRegularBb(),
                                       ),
                                     ),
@@ -1303,7 +1321,7 @@ class _CheckoutState extends State<Checkout> {
                                   left: 15, right: 15, bottom: 10),
                               child: Text(
                                 MyLocalizations.of(context)
-                                    .chooseDeliveryDateandTimeSlot,
+                                    .getLocalizations("CHOOSE_DATE_TIME"),
                                 style: textbarlowRegularadd(),
                               ),
                             ),
@@ -1441,8 +1459,10 @@ class _CheckoutState extends State<Checkout> {
                                                                       .length ==
                                                                   0
                                                               ? Text(MyLocalizations
-                                                                      .of(context)
-                                                                  .sorryNoSlotsAvailableToday)
+                                                                      .of(
+                                                                          context)
+                                                                  .getLocalizations(
+                                                                      "NO_SLOTS"))
                                                               : Text(
                                                                   '${deliverySlotList[_selectedIndex]['timeSchedule'][i]['slot']}',
                                                                   style:
@@ -1485,7 +1505,8 @@ class _CheckoutState extends State<Checkout> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Text(
-                                    MyLocalizations.of(context).proceed,
+                                    MyLocalizations.of(context)
+                                        .getLocalizations("PROCEE"),
                                     style: textBarlowRegularBlack(),
                                   ),
                                   isPlaceOrderLoading

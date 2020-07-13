@@ -185,7 +185,7 @@ class _AddressState extends State<Address> {
           color: Colors.black,
         ),
         title: Text(
-          MyLocalizations.of(context).address,
+          MyLocalizations.of(context).getLocalizations("ADDRESS"),
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -202,7 +202,8 @@ class _AddressState extends State<Address> {
                       padding: const EdgeInsets.only(
                           top: 10.0, bottom: 10.0, left: 20.0, right: 20.0),
                       child: Text(
-                        MyLocalizations.of(context).savedAddress,
+                        MyLocalizations.of(context)
+                            .getLocalizations("SAVED_ADDRESS"),
                         style: textbarlowSemiBoldBlack(),
                       ),
                     ),
@@ -312,7 +313,8 @@ class _AddressState extends State<Address> {
                 addAddressPageMethod(locationLatLong);
               }
             },
-            text: MyLocalizations.of(context).addNewAddress,
+            text:
+                MyLocalizations.of(context).getLocalizations("ADD_NEW_ADDRESS"),
             textStyle: textBarlowRegularBlack(),
           ),
         ),
@@ -379,7 +381,7 @@ class _AddressState extends State<Address> {
             child: Padding(
               padding: const EdgeInsets.only(left: 3.0, right: 3.0),
               child: Text(
-                MyLocalizations.of(context).edit,
+                MyLocalizations.of(context).getLocalizations("EDIT"),
                 style: textbarlowRegularaPrimar(),
               ),
             ),
@@ -396,7 +398,7 @@ class _AddressState extends State<Address> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 3.0, right: 3.0),
                 child: Text(
-                  MyLocalizations.of(context).delete,
+                  MyLocalizations.of(context).getLocalizations("DELETE"),
                   style: textbarlowRegularaPrimar(),
                 ),
               ),
@@ -454,7 +456,8 @@ class _AddressState extends State<Address> {
                                 height: 30.0,
                                 decoration: BoxDecoration(),
                                 child: Text(
-                                  MyLocalizations.of(context).ok,
+                                  MyLocalizations.of(context)
+                                      .getLocalizations("OK"),
                                   style: hintSfLightbig(),
                                 ),
                               ),

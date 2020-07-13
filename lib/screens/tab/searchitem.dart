@@ -181,8 +181,8 @@ class _SearchItemState extends State<SearchItem> {
                           child:
                               new Icon(Icons.arrow_back, color: Colors.black),
                         ),
-                        hintText:
-                            MyLocalizations.of(context).whatareyoubuyingtoday,
+                        hintText: MyLocalizations.of(context)
+                            .getLocalizations("WHAT_ARE_YOU_BUING_TODAY"),
                         fillColor: Color(0xFFF0F0F0),
                         filled: true,
                         focusColor: Colors.black,
@@ -215,7 +215,8 @@ class _SearchItemState extends State<SearchItem> {
                           Padding(
                             padding: const EdgeInsets.only(top: 100.0),
                             child: Text(
-                              MyLocalizations.of(context).typeToSearch,
+                              MyLocalizations.of(context)
+                                  .getLocalizations("TYPE_TO_SEARCH"),
                               textAlign: TextAlign.center,
                               style: hintSfMediumprimary(),
                             ),
@@ -246,7 +247,8 @@ class _SearchItemState extends State<SearchItem> {
                                         searchresult.length.toString() +
                                             " " +
                                             MyLocalizations.of(context)
-                                                .itemsFounds,
+                                                .getLocalizations(
+                                                    "ITEMS_FOUNDS"),
                                         style: textBarlowMediumBlack()),
                                   ],
                                 ),
@@ -336,7 +338,8 @@ class _SearchItemState extends State<SearchItem> {
                                                             "% " +
                                                             MyLocalizations.of(
                                                                     context)
-                                                                .off,
+                                                                .getLocalizations(
+                                                                    "OFF"),
                                                         style:
                                                             hintSfboldwhitemed(),
                                                         textAlign:
@@ -382,7 +385,7 @@ class _SearchItemState extends State<SearchItem> {
                                     padding: const EdgeInsets.only(top: 100.0),
                                     child: Text(
                                       MyLocalizations.of(context)
-                                          .noResultsFound,
+                                          .getLocalizations("NO_RESULT_FOUNDS"),
                                       textAlign: TextAlign.center,
                                       style: hintSfMediumprimary(),
                                     ),
@@ -433,7 +436,8 @@ class _SearchItemState extends State<SearchItem> {
                               SizedBox(height: 7),
                               new Text(
                                 '(${cartData['cart'].length})  ' +
-                                    MyLocalizations.of(context).items,
+                                    MyLocalizations.of(context)
+                                        .getLocalizations("ITEMS"),
                                 style: textBarlowRegularWhite(),
                               ),
                               new Text(
@@ -446,7 +450,8 @@ class _SearchItemState extends State<SearchItem> {
                         Row(
                           children: <Widget>[
                             new Text(
-                              MyLocalizations.of(context).goToCart,
+                              MyLocalizations.of(context)
+                                  .getLocalizations("GO_TO_CART"),
                               style: textBarlowRegularBlack(),
                             ),
                             SizedBox(width: 4),

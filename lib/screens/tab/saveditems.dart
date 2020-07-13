@@ -153,7 +153,7 @@ class _SavedItemsState extends State<SavedItems> {
               ? null
               : GFAppBar(
                   title: Text(
-                    MyLocalizations.of(context).savedItems,
+                    MyLocalizations.of(context).getLocalizations("SAVED_ITEMS"),
                     style: textbarlowSemiBoldBlack(),
                   ),
                   centerTitle: true,
@@ -246,7 +246,8 @@ class _SavedItemsState extends State<SavedItems> {
                                                         .toString() +
                                                     "% " +
                                                     MyLocalizations.of(context)
-                                                        .off,
+                                                        .getLocalizations(
+                                                            "OFF"),
                                                 style: hintSfboldwhitemed(),
                                                 textAlign: TextAlign.center,
                                               )
@@ -298,7 +299,8 @@ class _SavedItemsState extends State<SavedItems> {
                               SizedBox(height: 7),
                               new Text(
                                 '(${cartData['cart'].length})  ' +
-                                    MyLocalizations.of(context).items,
+                                    MyLocalizations.of(context)
+                                        .getLocalizations("ITEMS"),
                                 style: textBarlowRegularWhite(),
                               ),
                               new Text(
@@ -311,7 +313,8 @@ class _SavedItemsState extends State<SavedItems> {
                         Row(
                           children: <Widget>[
                             new Text(
-                              MyLocalizations.of(context).goToCart,
+                              MyLocalizations.of(context)
+                                  .getLocalizations("GO_TO_CART"),
                               style: textBarlowRegularBlack(),
                             ),
                             SizedBox(width: 4),

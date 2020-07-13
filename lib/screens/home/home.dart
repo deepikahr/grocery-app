@@ -207,7 +207,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                MyLocalizations.of(context).yourLocation,
+                MyLocalizations.of(context)
+                    .getLocalizations("YOUR_LOCATION", true),
                 style: textBarlowRegularrBlacksm(),
               ),
               Text(
@@ -325,7 +326,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         onTap: _onTapped,
         items: [
           BottomNavigationBarItem(
-            title: Text(MyLocalizations.of(context).store),
+            title: Text(MyLocalizations.of(context).getLocalizations("STORE")),
             icon: Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: Icon(
@@ -337,7 +338,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
             ),
           ),
           BottomNavigationBarItem(
-            title: Text(MyLocalizations.of(context).savedItems),
+            title: Text(
+                MyLocalizations.of(context).getLocalizations("SAVED_ITEMS")),
             icon: Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: Icon(
@@ -349,7 +351,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
             ),
           ),
           BottomNavigationBarItem(
-            title: Text(MyLocalizations.of(context).myCart),
+            title:
+                Text(MyLocalizations.of(context).getLocalizations("MY_CART")),
             icon: Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: Icon(
@@ -361,7 +364,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
             ),
           ),
           BottomNavigationBarItem(
-            title: Text(MyLocalizations.of(context).profile),
+            title:
+                Text(MyLocalizations.of(context).getLocalizations("PROFILE")),
             icon: Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: Icon(

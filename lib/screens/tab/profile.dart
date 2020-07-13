@@ -193,7 +193,7 @@ class _ProfileState extends State<Profile> {
               : GFAppBar(
                   elevation: 0,
                   title: Text(
-                    MyLocalizations.of(context).profile,
+                    MyLocalizations.of(context).getLocalizations("PROFILE"),
                     style: textbarlowSemiBoldBlack(),
                   ),
                   centerTitle: true,
@@ -387,7 +387,8 @@ class _ProfileState extends State<Profile> {
                                       left: 20.0,
                                       right: 20.0),
                                   child: Text(
-                                    MyLocalizations.of(context).address,
+                                    MyLocalizations.of(context)
+                                        .getLocalizations("ADDRESS"),
                                     style: textBarlowMediumBlack(),
                                   ),
                                 ),
@@ -415,7 +416,8 @@ class _ProfileState extends State<Profile> {
                                       left: 20.0,
                                       right: 20.0),
                                   child: Text(
-                                    MyLocalizations.of(context).selectLanguage,
+                                    MyLocalizations.of(context)
+                                        .getLocalizations("SELECT_LANGUAGE"),
                                     style: textBarlowMediumBlack(),
                                   ),
                                 ),
@@ -455,7 +457,8 @@ class _ProfileState extends State<Profile> {
                                       left: 20.0,
                                       right: 20.0),
                                   child: Text(
-                                    MyLocalizations.of(context).orderHistory,
+                                    MyLocalizations.of(context)
+                                        .getLocalizations("MY_ORDERS"),
                                     style: textBarlowMediumBlack(),
                                   ),
                                 ),
@@ -494,7 +497,8 @@ class _ProfileState extends State<Profile> {
                                       left: 20.0,
                                       right: 20.0),
                                   child: Text(
-                                    MyLocalizations.of(context).changePassword,
+                                    MyLocalizations.of(context)
+                                        .getLocalizations("CHANGE_PASSWORD"),
                                     style: textBarlowMediumBlack(),
                                   ),
                                 ),
