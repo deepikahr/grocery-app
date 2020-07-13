@@ -307,9 +307,9 @@ class _ProductDetailsState extends State<ProductDetails>
         });
       }
       showSnackbar(MyLocalizations.of(context)
-              .limitedquantityavailableyoucantaddmorethan +
+              .getLocalizations("LIMITED_STOCK") +
           " ${variantStock == null ? productDetail['variant'][0]['productstock'] : variantStock} " +
-          MyLocalizations.of(context).ofthisitem);
+          MyLocalizations.of(context).getLocalizations("OF_THIS_ITEM"));
     }
   }
 
@@ -373,13 +373,15 @@ class _ProductDetailsState extends State<ProductDetails>
               Text(responseData['message'], style: textBarlowRegularrBlack()),
           actions: <Widget>[
             FlatButton(
-              child: Text(MyLocalizations.of(context).cancel),
+              child:
+                  Text(MyLocalizations.of(context).getLocalizations("CANCEL")),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             FlatButton(
-              child: Text(MyLocalizations.of(context).clearCart),
+              child: Text(
+                  MyLocalizations.of(context).getLocalizations("CLEAR_CART")),
               onPressed: () {
                 Navigator.pop(context);
 
@@ -586,8 +588,8 @@ class _ProductDetailsState extends State<ProductDetails>
                                       productDetail['variant'].length > 1
                                           ? Text(
                                               MyLocalizations.of(context)
-                                                      .quantity +
-                                                  ':',
+                                                  .getLocalizations(
+                                                      "QUANTITY", true),
                                               style: textBarlowMediumBlack(),
                                             )
                                           : Container(),
@@ -650,11 +652,13 @@ class _ProductDetailsState extends State<ProductDetails>
                                                     } else {
                                                       showSnackbar(MyLocalizations
                                                                   .of(context)
-                                                              .limitedquantityavailableyoucantaddmorethan +
+                                                              .getLocalizations(
+                                                                  "LIMITED_STOCK") +
                                                           " ${variantStock == null ? productDetail['variant'][0]['productstock'] : variantStock} " +
                                                           MyLocalizations.of(
                                                                   context)
-                                                              .ofthisitem);
+                                                              .getLocalizations(
+                                                                  "OF_THIS_ITEM"));
                                                     }
                                                   },
                                                   child: Icon(Icons.add),
@@ -861,7 +865,8 @@ class _ProductDetailsState extends State<ProductDetails>
                                       style: textBarlowRegularWhite(),
                                     ),
                                     TextSpan(
-                                        text: MyLocalizations.of(context).items,
+                                        text: MyLocalizations.of(context)
+                                            .getLocalizations("ITEMS"),
                                         style: textBarlowRegularWhite()),
                                   ],
                                 ),
@@ -887,7 +892,8 @@ class _ProductDetailsState extends State<ProductDetails>
                       Padding(
                         padding: const EdgeInsets.only(left: 0.0),
                         child: new Text(
-                          MyLocalizations.of(context).addToCart,
+                          MyLocalizations.of(context)
+                              .getLocalizations("ADD_TO_CART"),
                           style: textBarlowRegularBlack(),
                         ),
                       ),

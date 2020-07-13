@@ -258,12 +258,11 @@ class LoginService {
   }
 
   static Future<Map<String, dynamic>> getLanguageJson(languageCode) async {
-    final response = await client.get(
-        Constants.baseURL +
-            "language/user/info?req_from=mobAppJson&language_code=$languageCode",
-        headers: {
-          'Content-Type': 'application/json',
-        });
+    final response = await client
+        .get(Constants.baseURL + "languages/user?code=$languageCode", headers: {
+      'Content-Type': 'application/json',
+    });
+    print(json.decode(response.body));
     return json.decode(response.body);
   }
 

@@ -267,7 +267,7 @@ class _AllProductsState extends State<AllProducts> {
         backgroundColor: bg,
         elevation: 0,
         title: Text(
-          MyLocalizations.of(context).products,
+          MyLocalizations.of(context).getLocalizations("PRODUCTS"),
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -368,7 +368,8 @@ class _AllProductsState extends State<AllProducts> {
                                               ),
                                             ),
                                             child: Text(
-                                              MyLocalizations.of(context).all,
+                                              MyLocalizations.of(context)
+                                                  .getLocalizations("ALL"),
                                               textAlign: TextAlign.center,
                                               style: textbarlowMediumBlackm(),
                                             ),
@@ -581,7 +582,8 @@ class _AllProductsState extends State<AllProducts> {
                                                                       "% " +
                                                                       MyLocalizations.of(
                                                                               context)
-                                                                          .off,
+                                                                          .getLocalizations(
+                                                                              "OFF"),
                                                                   style:
                                                                       hintSfboldwhitemed(),
                                                                   textAlign:
@@ -699,7 +701,8 @@ class _AllProductsState extends State<AllProducts> {
                                                                 "% " +
                                                                 MyLocalizations.of(
                                                                         context)
-                                                                    .off,
+                                                                    .getLocalizations(
+                                                                        "OFF"),
                                                             style:
                                                                 hintSfboldwhitemed(),
                                                             textAlign: TextAlign
@@ -769,7 +772,8 @@ class _AllProductsState extends State<AllProducts> {
                               SizedBox(height: 7),
                               new Text(
                                 '(${cartData['cart'].length})  ' +
-                                    MyLocalizations.of(context).items,
+                                    MyLocalizations.of(context)
+                                        .getLocalizations("ITEMS"),
                                 style: textBarlowRegularWhite(),
                               ),
                               new Text(
@@ -782,7 +786,8 @@ class _AllProductsState extends State<AllProducts> {
                         Row(
                           children: <Widget>[
                             new Text(
-                              MyLocalizations.of(context).goToCart,
+                              MyLocalizations.of(context)
+                                  .getLocalizations("GO_TO_CART"),
                               style: textBarlowRegularBlack(),
                             ),
                             SizedBox(width: 4),

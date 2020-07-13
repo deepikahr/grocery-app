@@ -148,7 +148,7 @@ class _AddAddressState extends State<AddAddress> {
           color: Colors.black,
         ),
         title: Text(
-          MyLocalizations.of(context).addNewAddress,
+          MyLocalizations.of(context).getLocalizations("ADD_NEW_ADDRESS"),
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -170,7 +170,8 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).location,
+                        MyLocalizations.of(context)
+                            .getLocalizations("LOCATION", true),
                         style: textbarlowRegularBlack(),
                       ),
                     ],
@@ -213,7 +214,7 @@ class _AddAddressState extends State<AddAddress> {
                       validator: (String value) {
                         if (value.isEmpty) {
                           return MyLocalizations.of(context)
-                              .pleaseenterpostalcode;
+                              .getLocalizations("ENTER_LOCATION");
                         } else
                           return null;
                       },
@@ -231,7 +232,8 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).houseFlatBlocknumber + " :",
+                        MyLocalizations.of(context)
+                            .getLocalizations("HOUSE_FLAT_BLOCK_NUMBER", true),
                         style: textbarlowRegularBlack(),
                       ),
                     ],
@@ -269,7 +271,7 @@ class _AddAddressState extends State<AddAddress> {
                     validator: (String value) {
                       if (value.isEmpty) {
                         return MyLocalizations.of(context)
-                            .pleaseenterhouseflatblocknumber;
+                            .getLocalizations("ENTER_HOUSE_FLAT_BLOCK_NUMBER");
                       } else
                         return null;
                     },
@@ -288,7 +290,8 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).apartmentName + " :",
+                        MyLocalizations.of(context)
+                            .getLocalizations("APARTMENT_NAME", true),
                         style: textbarlowRegularBlack(),
                       ),
                     ],
@@ -328,7 +331,7 @@ class _AddAddressState extends State<AddAddress> {
                       validator: (String value) {
                         if (value.isEmpty) {
                           return MyLocalizations.of(context)
-                              .pleaseenterapartmentname;
+                              .getLocalizations("ENTER_APARTMENT_NAME");
                         } else
                           return null;
                       },
@@ -346,7 +349,8 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).landMark + " :",
+                        MyLocalizations.of(context)
+                            .getLocalizations("LANDMARK", true),
                         style: textbarlowRegularBlack(),
                       ),
                     ],
@@ -386,7 +390,7 @@ class _AddAddressState extends State<AddAddress> {
                       validator: (String value) {
                         if (value.isEmpty) {
                           return MyLocalizations.of(context)
-                              .pleaseenterlandmark;
+                              .getLocalizations("ENTER_LANDMARK");
                         } else
                           return null;
                       },
@@ -404,7 +408,8 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).postalCode + " :",
+                        MyLocalizations.of(context)
+                            .getLocalizations("POSTEL_CODE", true),
                         style: textbarlowRegularBlack(),
                       ),
                     ],
@@ -445,7 +450,7 @@ class _AddAddressState extends State<AddAddress> {
                       validator: (String value) {
                         if (value.isEmpty) {
                           return MyLocalizations.of(context)
-                              .pleaseenterpostalcode;
+                              .getLocalizations("ENTER_POSTEL_CODE");
                         } else
                           return null;
                       },
@@ -463,7 +468,9 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).contactNumber + " :",
+                        MyLocalizations.of(context)
+                                .getLocalizations("CONTACT_NUMBER", true) +
+                            " :",
                         style: textbarlowRegularBlack(),
                       ),
                     ],
@@ -495,7 +502,7 @@ class _AddAddressState extends State<AddAddress> {
                     validator: (String value) {
                       if (value.isEmpty) {
                         return MyLocalizations.of(context)
-                            .pleaseentercontactnumber;
+                            .getLocalizations("ENTER_CONTACT_NUMBER");
                       } else
                         return null;
                     },
@@ -514,7 +521,8 @@ class _AddAddressState extends State<AddAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).addressType + " :",
+                        MyLocalizations.of(context)
+                            .getLocalizations("ADDRESS_TYPE", true),
                         style: textbarlowRegularBlack(),
                       ),
                     ],
@@ -528,11 +536,14 @@ class _AddAddressState extends State<AddAddress> {
                   itemBuilder: (BuildContext context, int i) {
                     String type;
                     if (addressType[i] == 'Home') {
-                      type = MyLocalizations.of(context).home;
+                      type =
+                          MyLocalizations.of(context).getLocalizations("HOME");
                     } else if (addressType[i] == 'Work') {
-                      type = MyLocalizations.of(context).work;
+                      type =
+                          MyLocalizations.of(context).getLocalizations("WORK");
                     } else if (addressType[i] == 'Others') {
-                      type = MyLocalizations.of(context).others;
+                      type = MyLocalizations.of(context)
+                          .getLocalizations("OTHERS");
                     } else {
                       type = addressType[i];
                     }
@@ -580,7 +591,8 @@ class _AddAddressState extends State<AddAddress> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Text(
-                            MyLocalizations.of(context).save,
+                            MyLocalizations.of(context)
+                                .getLocalizations("SUBMIT"),
                             style: textBarlowRegularrBlack(),
                           ),
                           SizedBox(

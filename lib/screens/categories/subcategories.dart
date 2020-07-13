@@ -240,7 +240,8 @@ class _SubCategoriesState extends State<SubCategories> {
                                                 ),
                                               ),
                                               child: Text(
-                                                MyLocalizations.of(context).all,
+                                                MyLocalizations.of(context)
+                                                    .getLocalizations("ALL"),
                                                 textAlign: TextAlign.center,
                                                 style: textbarlowMediumBlackm(),
                                               ),
@@ -456,7 +457,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                                                             .toString() +
                                                                         "% " +
                                                                         MyLocalizations.of(context)
-                                                                            .off,
+                                                                            .getLocalizations("OFF"),
                                                                     style:
                                                                         hintSfboldwhitemed(),
                                                                     textAlign:
@@ -588,7 +589,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                                                             .toString() +
                                                                         "% " +
                                                                         MyLocalizations.of(context)
-                                                                            .off,
+                                                                            .getLocalizations("OFF"),
                                                                     style:
                                                                         hintSfboldwhitemed(),
                                                                     textAlign:
@@ -650,7 +651,8 @@ class _SubCategoriesState extends State<SubCategories> {
                               SizedBox(height: 7),
                               new Text(
                                 '(${cartData['cart'].length})  ' +
-                                    MyLocalizations.of(context).items,
+                                    MyLocalizations.of(context)
+                                        .getLocalizations("ITEMS"),
                                 style: textBarlowRegularWhite(),
                               ),
                               new Text(
@@ -665,7 +667,8 @@ class _SubCategoriesState extends State<SubCategories> {
                             Row(
                               children: <Widget>[
                                 new Text(
-                                  MyLocalizations.of(context).goToCart,
+                                  MyLocalizations.of(context)
+                                      .getLocalizations("GO_TO_CART"),
                                   style: textBarlowRegularBlack(),
                                 ),
                                 SizedBox(width: 4),

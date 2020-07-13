@@ -121,7 +121,7 @@ class _OtpState extends State<Otp> {
           isOtpVerifyLoading = false;
         });
       }
-      showSnackbar(MyLocalizations.of(context).pleaseEnter4DigitOTP);
+      showSnackbar(MyLocalizations.of(context).getLocalizations("OTP_MSG"));
     }
   }
 
@@ -132,7 +132,7 @@ class _OtpState extends State<Otp> {
       builder: (BuildContext context) {
         return new AlertDialog(
           title: new Text(
-            MyLocalizations.of(context).error,
+            MyLocalizations.of(context).getLocalizations("ERROR"),
             style: hintSfMediumredsmall(),
           ),
           content: new SingleChildScrollView(
@@ -148,7 +148,7 @@ class _OtpState extends State<Otp> {
           actions: <Widget>[
             new FlatButton(
               child: new Text(
-                MyLocalizations.of(context).ok,
+                MyLocalizations.of(context).getLocalizations("OK"),
                 style: textbarlowRegularaPrimary(),
               ),
               onPressed: () {
@@ -210,7 +210,7 @@ class _OtpState extends State<Otp> {
           ),
         ),
         title: Text(
-          MyLocalizations.of(context).welcome,
+          MyLocalizations.of(context).getLocalizations("WELCOME"),
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -222,7 +222,7 @@ class _OtpState extends State<Otp> {
           Padding(
             padding: const EdgeInsets.only(top: 40.0, left: 15.0, right: 20.0),
             child: Text(
-              MyLocalizations.of(context).verifyOtp,
+              MyLocalizations.of(context).getLocalizations("VERIFY_OTP"),
               style: textbarlowMediumBlack(),
             ),
           ),
@@ -232,7 +232,8 @@ class _OtpState extends State<Otp> {
               text: TextSpan(
                 children: <TextSpan>[
                   TextSpan(
-                      text: MyLocalizations.of(context).wehavesenta4digitcodeto,
+                      text: MyLocalizations.of(context)
+                          .getLocalizations("CODE_MSG"),
                       style: textBarlowRegularBlack()),
                   TextSpan(
                     text: ' ${widget.email}',
@@ -250,7 +251,7 @@ class _OtpState extends State<Otp> {
                   padding:
                       const EdgeInsets.only(left: 20.0, top: 10.0, right: 20.0),
                   child: Text(
-                    MyLocalizations.of(context).resentOTP,
+                    MyLocalizations.of(context).getLocalizations("RESENT_OTP"),
                     style: textBarlowRegularBlack(),
                   ),
                 ),
@@ -268,7 +269,8 @@ class _OtpState extends State<Otp> {
             child: GFTypography(
               showDivider: false,
               child: Text(
-                MyLocalizations.of(context).enterVerificationcode,
+                MyLocalizations.of(context)
+                    .getLocalizations("ENTER_VERIFICATION_CODE", true),
                 style: textBarlowRegularBlack(),
               ),
             ),
@@ -309,7 +311,7 @@ class _OtpState extends State<Otp> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      MyLocalizations.of(context).submitOTP,
+                      MyLocalizations.of(context).getLocalizations("SUBMIT"),
                       style: textbarlowMediumBlack(),
                     ),
                     SizedBox(

@@ -136,7 +136,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
           actions: <Widget>[
             new FlatButton(
               child: new Text(
-                MyLocalizations.of(context).no,
+                MyLocalizations.of(context).getLocalizations("NO"),
                 style: TextStyle(color: red),
               ),
               onPressed: () {
@@ -145,7 +145,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
             ),
             new FlatButton(
               child: new Text(
-                MyLocalizations.of(context).yes,
+                MyLocalizations.of(context).getLocalizations("YES"),
                 style: textbarlowRegularaPrimary(),
               ),
               onPressed: () {
@@ -185,7 +185,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                   bottomLeft: Radius.circular(20),
                   bottomRight: Radius.circular(20))),
           title: new Text(
-            MyLocalizations.of(context).chat,
+            MyLocalizations.of(context).getLocalizations("CHAT"),
             style: textbarlowSemiBoldBlack(),
           ),
           centerTitle: true,
@@ -269,8 +269,8 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                                           : _submitMsg,
                                       decoration: new InputDecoration.collapsed(
                                           hintText: MyLocalizations.of(context)
-                                                  .enterTextHere ??
-                                              ""),
+                                              .getLocalizations(
+                                                  "ENTER_TEXT_HERE")),
                                     ),
                                   ),
                                   new Container(

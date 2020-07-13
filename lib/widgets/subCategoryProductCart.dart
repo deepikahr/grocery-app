@@ -364,10 +364,12 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                           } else {
                                             showSnackbar(MyLocalizations.of(
                                                         context)
-                                                    .limitedquantityavailableyoucantaddmorethan +
+                                                    .getLocalizations(
+                                                        "LIMITED_STOCK") +
                                                 " ${widget.variantList[0]['productstock']} " +
                                                 MyLocalizations.of(context)
-                                                    .ofthisitem);
+                                                    .getLocalizations(
+                                                        "OF_THIS_ITEM"));
                                           }
                                         });
                                       }
@@ -411,7 +413,8 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                             MainAxisAlignment.center,
                                         children: <Widget>[
                                           Text(
-                                            MyLocalizations.of(context).add,
+                                            MyLocalizations.of(context)
+                                                .getLocalizations("ADD"),
                                             style: textbarlowMediumBlackm(),
                                           ),
                                         ],
@@ -488,12 +491,14 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                               widget.productData["_id"],
                                             );
                                           } else {
-                                            showSnackbar(MyLocalizations.of(
-                                                        context)
-                                                    .limitedquantityavailableyoucantaddmorethan +
-                                                " $variantStock " +
+                                            showSnackbar(
                                                 MyLocalizations.of(context)
-                                                    .ofthisitem);
+                                                        .getLocalizations(
+                                                            "LIMITED_STOCK") +
+                                                    " $variantStock " +
+                                                    MyLocalizations.of(context)
+                                                        .getLocalizations(
+                                                            "OF_THIS_ITEM"));
                                           }
                                         }
                                       },

@@ -97,7 +97,7 @@ class _ChatDetailsState extends State<ChatDetails>
           actions: <Widget>[
             new FlatButton(
               child: new Text(
-                MyLocalizations.of(context).no,
+                MyLocalizations.of(context).getLocalizations("NO"),
                 style: TextStyle(color: red),
               ),
               onPressed: () {
@@ -106,7 +106,7 @@ class _ChatDetailsState extends State<ChatDetails>
             ),
             new FlatButton(
               child: new Text(
-                MyLocalizations.of(context).yes,
+                MyLocalizations.of(context).getLocalizations("YES"),
                 style: textbarlowRegularaPrimary(),
               ),
               onPressed: () {
@@ -146,7 +146,7 @@ class _ChatDetailsState extends State<ChatDetails>
                   bottomLeft: Radius.circular(20),
                   bottomRight: Radius.circular(20))),
           title: new Text(
-            MyLocalizations.of(context).chatDetail ?? "chatDetail",
+            MyLocalizations.of(context).getLocalizations("CHAT_DETAIL"),
             style: textbarlowSemiBoldBlack(),
           ),
           centerTitle: true,

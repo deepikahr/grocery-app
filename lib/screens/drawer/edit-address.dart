@@ -168,7 +168,7 @@ class _EditAddressState extends State<EditAddress> {
           color: Colors.black,
         ),
         title: Text(
-          MyLocalizations.of(context).editAddress,
+          MyLocalizations.of(context).getLocalizations("EDIT_ADDRESS"),
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -191,7 +191,8 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).location,
+                        MyLocalizations.of(context)
+                            .getLocalizations("LOCATION", true),
                         style: regular(),
                       ),
                     ],
@@ -234,7 +235,7 @@ class _EditAddressState extends State<EditAddress> {
                       validator: (String value) {
                         if (value.isEmpty) {
                           return MyLocalizations.of(context)
-                              .pleaseenterpostalcode;
+                              .getLocalizations("ENTER_LOCATION");
                         } else
                           return null;
                       },
@@ -288,7 +289,8 @@ class _EditAddressState extends State<EditAddress> {
                                 pickerResult.address.toString();
                           });
                         },
-                        text: MyLocalizations.of(context).updateAddress,
+                        text: MyLocalizations.of(context)
+                            .getLocalizations("CHANGE"),
                         textStyle: textBarlowRegularBlack()),
                   ),
                 ),
@@ -299,7 +301,8 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).houseFlatBlocknumber + " :",
+                        MyLocalizations.of(context)
+                            .getLocalizations("HOUSE_FLAT_BLOCK_NUMBER", true),
                         style: regular(),
                       ),
                     ],
@@ -331,7 +334,7 @@ class _EditAddressState extends State<EditAddress> {
                     validator: (String value) {
                       if (value.isEmpty) {
                         return MyLocalizations.of(context)
-                            .pleaseenterhouseflatblocknumber;
+                            .getLocalizations("ENTER_HOUSE_FLAT_BLOCK_NUMBER");
                       } else
                         return null;
                     },
@@ -350,7 +353,8 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).apartmentName + " :",
+                        MyLocalizations.of(context)
+                            .getLocalizations("APARTMENT_NAME", true),
                         style: regular(),
                       ),
                     ],
@@ -382,7 +386,7 @@ class _EditAddressState extends State<EditAddress> {
                       validator: (String value) {
                         if (value.isEmpty) {
                           return MyLocalizations.of(context)
-                              .pleaseenterapartmentname;
+                              .getLocalizations("ENTER_APARTMENT_NAME");
                         } else
                           return null;
                       },
@@ -400,7 +404,8 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).landMark + " :",
+                        MyLocalizations.of(context)
+                            .getLocalizations("LANDMARK", true),
                         style: regular(),
                       ),
                     ],
@@ -432,7 +437,7 @@ class _EditAddressState extends State<EditAddress> {
                       validator: (String value) {
                         if (value.isEmpty) {
                           return MyLocalizations.of(context)
-                              .pleaseenterlandmark;
+                              .getLocalizations("ENTER_LANDMARK");
                         } else
                           return null;
                       },
@@ -450,7 +455,8 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).postalCode + " :",
+                        MyLocalizations.of(context)
+                            .getLocalizations("POSTEL_CODE", true),
                         style: regular(),
                       ),
                     ],
@@ -483,7 +489,7 @@ class _EditAddressState extends State<EditAddress> {
                       validator: (String value) {
                         if (value.isEmpty) {
                           return MyLocalizations.of(context)
-                              .pleaseenterpostalcode;
+                              .getLocalizations("ENTER_POSTEL_CODE");
                         } else
                           return null;
                       },
@@ -501,7 +507,8 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).contactNumber + " :",
+                        MyLocalizations.of(context)
+                            .getLocalizations("CONTACT_NUMBER", true),
                         style: regular(),
                       ),
                     ],
@@ -534,7 +541,7 @@ class _EditAddressState extends State<EditAddress> {
                     validator: (String value) {
                       if (value.isEmpty) {
                         return MyLocalizations.of(context)
-                            .pleaseentercontactnumber;
+                            .getLocalizations("ENTER_CONTACT_NUMBER");
                       } else
                         return null;
                     },
@@ -553,7 +560,8 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).addressType,
+                        MyLocalizations.of(context)
+                            .getLocalizations("ADDRESS_TYPE", true),
                         style: regular(),
                       ),
                     ],
@@ -567,11 +575,14 @@ class _EditAddressState extends State<EditAddress> {
                   itemBuilder: (BuildContext context, int i) {
                     String type;
                     if (addressType[i] == 'Home') {
-                      type = MyLocalizations.of(context).home;
+                      type =
+                          MyLocalizations.of(context).getLocalizations("HOME");
                     } else if (addressType[i] == 'Work') {
-                      type = MyLocalizations.of(context).work;
+                      type =
+                          MyLocalizations.of(context).getLocalizations("WORK");
                     } else if (addressType[i] == 'Others') {
-                      type = MyLocalizations.of(context).others;
+                      type = MyLocalizations.of(context)
+                          .getLocalizations("OTHERS");
                     } else {
                       type = addressType[i];
                     }
@@ -614,7 +625,8 @@ class _EditAddressState extends State<EditAddress> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text(MyLocalizations.of(context).update),
+                          Text(MyLocalizations.of(context)
+                              .getLocalizations("UPDATE")),
                           SizedBox(
                             height: 10,
                           ),

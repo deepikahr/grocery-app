@@ -157,7 +157,8 @@ class _OrdersState extends State<Orders> {
                 Padding(
                   padding: const EdgeInsets.only(top: 25.0),
                   child: Text(
-                    MyLocalizations.of(context).rateProduct,
+                    MyLocalizations.of(context)
+                        .getLocalizations("RATE_PRODUCT"),
                     style: TextStyle(
                         color: Colors.red,
                         fontSize: 20,
@@ -199,7 +200,8 @@ class _OrdersState extends State<Orders> {
                       }
                       orderRating(orderId, rating);
                     },
-                    text: MyLocalizations.of(context).submit,
+                    text:
+                        MyLocalizations.of(context).getLocalizations("SUBMIT"),
                     textColor: Colors.black,
                     color: primary,
                   ),
@@ -218,7 +220,7 @@ class _OrdersState extends State<Orders> {
       backgroundColor: Color(0xFFFDFDFD),
       appBar: GFAppBar(
         title: Text(
-          MyLocalizations.of(context).myOrders,
+          MyLocalizations.of(context).getLocalizations("MY_ORDERS"),
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -330,7 +332,7 @@ class _OrdersState extends State<Orders> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  '${MyLocalizations.of(context).orderID} : #${orderDetails['orderID']}' ??
+                  '${MyLocalizations.of(context).getLocalizations("ORDER_ID", true)}  #${orderDetails['orderID']}' ??
                       "",
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
@@ -348,9 +350,10 @@ class _OrdersState extends State<Orders> {
                 orderDetails['cart']['cart'].length == 1
                     ? Container()
                     : Text(
-                        MyLocalizations.of(context).and +
+                        MyLocalizations.of(context).getLocalizations("AND") +
                             ' ${(orderDetails['cart']['cart'].length - 1)} ' +
-                            MyLocalizations.of(context).moreitems,
+                            MyLocalizations.of(context)
+                                .getLocalizations("MORE_ITEMS"),
                         style: textSMBarlowRegularrBlack(),
                       ),
                 SizedBox(height: 10),
@@ -360,8 +363,8 @@ class _OrdersState extends State<Orders> {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  MyLocalizations.of(context).ordered +
-                          ' : ' +
+                  MyLocalizations.of(context)
+                              .getLocalizations("ORDERED", true) +
                           DateFormat('dd/MM/yyyy, hh:mm a').format(
                             DateTime.fromMillisecondsSinceEpoch(
                                 orderDetails['appTimestamp']),
@@ -401,7 +404,7 @@ class _OrdersState extends State<Orders> {
               ],
             ),
             title: Text(
-              MyLocalizations.of(context).orderConfirmed,
+              MyLocalizations.of(context).getLocalizations("ORDER_CONFIRMED"),
               style: orderDetails['orderStatus'] == "Confirmed" ||
                       orderDetails['orderStatus'] == "Out for delivery"
                   ? titleSegoeGreen()
@@ -433,7 +436,7 @@ class _OrdersState extends State<Orders> {
               ],
             ),
             title: Text(
-              MyLocalizations.of(context).outfordelivery,
+              MyLocalizations.of(context).getLocalizations("OUT_FOR_DELIVERY"),
               style: orderDetails['orderStatus'] == "Out for delivery"
                   ? titleSegoeGreen()
                   : titleSegoeGrey(),
@@ -462,7 +465,7 @@ class _OrdersState extends State<Orders> {
               ],
             ),
             title: Text(
-              MyLocalizations.of(context).orderdelivered,
+              MyLocalizations.of(context).getLocalizations("ORDER_DELIVERED"),
               style: titleSegoeGrey(),
             ),
             icon: orderDetails['orderStatus'] == "DELIVERED"
@@ -498,7 +501,7 @@ class _OrdersState extends State<Orders> {
                       orderDetails['cart']['cart'].length, j);
                 }
               },
-              text: MyLocalizations.of(context).reorder,
+              text: MyLocalizations.of(context).getLocalizations("RE_ORDER"),
               color: primary,
               textStyle: textbarlowmediumwblack(),
             ),
@@ -520,7 +523,7 @@ class _OrdersState extends State<Orders> {
                   ),
                 );
               },
-              text: MyLocalizations.of(context).view,
+              text: MyLocalizations.of(context).getLocalizations("VIEW"),
               type: GFButtonType.outline,
               color: primary,
               textStyle: textbarlowmediumwprimary(),

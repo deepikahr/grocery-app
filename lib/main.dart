@@ -36,8 +36,8 @@ void main() async {
       onError: (error, stackTrace) {
     sentryError.reportError(error, stackTrace);
   });
-
   Common.getSelectedLanguage().then((selectedLocale) {
+    print(selectedLocale);
     Map localizedValues;
     String defaultLocale = '';
     String locale = selectedLocale ?? defaultLocale;
@@ -52,14 +52,14 @@ void main() async {
       }
     };
     LoginService.getLanguageJson(locale).then((value) async {
-      localizedValues = value['response_data']['json'];
-      if (locale == '') {
-        defaultLocale = value['response_data']['defaultCode']['languageCode'];
-        locale = defaultLocale;
-      }
+      localizedValues = {locale: value['response_data']};
+      // if (locale == '') {
+      //   defaultLocale = value['response_data']['defaultCode']['languageCode'];
+      //   locale = defaultLocale;
+      // }
       await Common.setSelectedLanguage(locale);
-      await Common.setAllLanguageNames(value['response_data']['langName']);
-      await Common.setAllLanguageCodes(value['response_data']['langCode']);
+      // await Common.setAllLanguageNames(value['response_data']['langName']);
+      // await Common.setAllLanguageCodes(value['response_data']['langCode']);
       getToken();
       runZoned<Future<Null>>(() {
         runApp(MainScreen(
@@ -153,7 +153,7 @@ class MainScreen extends StatelessWidget {
     return MaterialApp(
       locale: Locale(locale),
       localizationsDelegates: [
-        MyLocalizationsDelegate(localizedValues),
+        MyLocalizationsDelegate(localizedValues, [locale]),
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
       ],

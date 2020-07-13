@@ -96,7 +96,7 @@ class _AboutUsState extends State<AboutUs> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
-          MyLocalizations.of(context).aboutUs,
+          MyLocalizations.of(context).getLocalizations("ABOUT_US"),
           style: textbarlowSemiBoldBlack(),
         ),
         backgroundColor: Colors.transparent,
@@ -127,7 +127,8 @@ class _AboutUsState extends State<AboutUs> {
                       Container(
                         margin: EdgeInsets.only(left: 15, right: 15.0),
                         child: Text(
-                          MyLocalizations.of(context).description + " :",
+                          MyLocalizations.of(context)
+                              .getLocalizations("DESCRIPTION", true),
                           style: textBarlowMediumBlack(),
                         ),
                       ),
@@ -147,7 +148,8 @@ class _AboutUsState extends State<AboutUs> {
                         margin:
                             EdgeInsets.only(left: 15, bottom: 15, right: 15.0),
                         child: Text(
-                          MyLocalizations.of(context).address + " :",
+                          MyLocalizations.of(context)
+                              .getLocalizations("ADDRESS", true),
                           style: textBarlowMediumBlack(),
                         ),
                       ),
@@ -161,7 +163,8 @@ class _AboutUsState extends State<AboutUs> {
                         margin:
                             EdgeInsets.only(left: 15, bottom: 15, right: 15.0),
                         child: Text(
-                          MyLocalizations.of(context).contactInformation + " :",
+                          MyLocalizations.of(context)
+                              .getLocalizations("CONTACT_INFO", true),
                           style: textBarlowMediumBlack(),
                         ),
                       ),
@@ -175,7 +178,10 @@ class _AboutUsState extends State<AboutUs> {
                           child: Row(
                             children: <Widget>[
                               Icon(Icons.phone),
-                              Text(" " + MyLocalizations.of(context).callUs,
+                              Text(
+                                  " " +
+                                      MyLocalizations.of(context)
+                                          .getLocalizations("CALL_US"),
                                   style: textbarlowRegularBlackd())
                             ],
                           ),
@@ -191,7 +197,10 @@ class _AboutUsState extends State<AboutUs> {
                           child: Row(
                             children: <Widget>[
                               Icon(Icons.email),
-                              Text(' ' + MyLocalizations.of(context).mailUs,
+                              Text(
+                                  ' ' +
+                                      MyLocalizations.of(context)
+                                          .getLocalizations("MAIL_US"),
                                   style: textbarlowRegularBlackd())
                             ],
                           ),
@@ -225,12 +234,14 @@ class _AboutUsState extends State<AboutUs> {
                                               localizedValues:
                                                   widget.localizedValues,
                                               title: MyLocalizations.of(context)
-                                                  .termsAndConditions,
+                                                  .getLocalizations(
+                                                      "TERMS_CONDITIONS"),
                                               text: aboutUsDatails[
                                                   'termsAndConditions'])));
                             },
                             child: Text(
-                              MyLocalizations.of(context).termsAndConditions,
+                              MyLocalizations.of(context)
+                                  .getLocalizations("TERMS_CONDITIONS"),
                               style: textBarlowmediumLink(),
                             ),
                           ),
@@ -245,12 +256,14 @@ class _AboutUsState extends State<AboutUs> {
                                               localizedValues:
                                                   widget.localizedValues,
                                               title: MyLocalizations.of(context)
-                                                  .privacyPolicy,
+                                                  .getLocalizations(
+                                                      "PRIVACY_POLICY"),
                                               text: aboutUsDatails[
                                                   'privacyPolicy'])));
                             },
                             child: Text(
-                              MyLocalizations.of(context).privacyPolicy,
+                              MyLocalizations.of(context)
+                                  .getLocalizations("PRIVACY_POLICY"),
                               style: textBarlowmediumLink(),
                             ),
                           ),

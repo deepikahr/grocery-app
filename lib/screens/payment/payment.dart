@@ -122,7 +122,8 @@ class _PaymentState extends State<Payment> {
             isPlaceOrderLoading = false;
           });
         }
-        showSnackbar(MyLocalizations.of(context).selectPaymentOption);
+        showSnackbar(MyLocalizations.of(context)
+            .getLocalizations("SELECT_PAYMENT_FIRST"));
       } else {
         widget.data['paymentType'] = paymentTypes[groupValue]['type'];
         widget.data['usedWalletAmount'] =
@@ -228,13 +229,15 @@ class _PaymentState extends State<Payment> {
           ),
           actions: <Widget>[
             FlatButton(
-              child: Text(MyLocalizations.of(context).cancel),
+              child:
+                  Text(MyLocalizations.of(context).getLocalizations("CANCEL")),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             FlatButton(
-              child: Text(MyLocalizations.of(context).remove),
+              child: Text(
+                  MyLocalizations.of(context).getLocalizations("REMOVE_ITEMS")),
               onPressed: () {
                 Map body = {
                   "cartId": cartId,
@@ -283,7 +286,7 @@ class _PaymentState extends State<Payment> {
       key: _scaffoldKey,
       appBar: GFAppBar(
         title: Text(
-          MyLocalizations.of(context).payment,
+          MyLocalizations.of(context).getLocalizations("PAYMENT"),
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -308,7 +311,9 @@ class _PaymentState extends State<Payment> {
                               Column(
                                 children: <Widget>[
                                   Text(
-                                    MyLocalizations.of(context).deliveryCharges,
+                                    MyLocalizations.of(context)
+                                        .getLocalizations(
+                                            "DELIVERY_CHARGES", true),
                                     style: textbarlowMediumBlack(),
                                   ),
                                 ],
@@ -350,7 +355,8 @@ class _PaymentState extends State<Payment> {
                         Column(
                           children: <Widget>[
                             Text(
-                              MyLocalizations.of(context).grandTotal,
+                              MyLocalizations.of(context)
+                                  .getLocalizations("TOTAL", true),
                               style: textbarlowMediumBlack(),
                             ),
                           ],
@@ -401,7 +407,8 @@ class _PaymentState extends State<Payment> {
                                     children: <Widget>[
                                       Text(
                                         MyLocalizations.of(context)
-                                            .totalWalletAmount,
+                                            .getLocalizations(
+                                                "TOTAL_WALLET_AMOUNT"),
                                         style: textbarlowMediumBlack(),
                                       ),
                                     ],
@@ -449,7 +456,8 @@ class _PaymentState extends State<Payment> {
                                     children: <Widget>[
                                       Text(
                                         MyLocalizations.of(context)
-                                            .useWalletAmount,
+                                            .getLocalizations(
+                                                "USE_WALLET_AMOUNT"),
                                         style: textbarlowMediumBlack(),
                                       ),
                                     ],
@@ -548,9 +556,11 @@ class _PaymentState extends State<Payment> {
                                         title: Text(
                                           paymentTypes[index]['type'] == 'COD'
                                               ? MyLocalizations.of(context)
-                                                  .cashOnDelivery
+                                                  .getLocalizations(
+                                                      "CASH_ON_DELIVERY")
                                               : MyLocalizations.of(context)
-                                                  .payByCard,
+                                                  .getLocalizations(
+                                                      "PAY_BY_CARD"),
                                           style: TextStyle(color: primary),
                                         ),
                                         onChanged: (int selected) {
@@ -601,7 +611,7 @@ class _PaymentState extends State<Payment> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  MyLocalizations.of(context).payNow,
+                  MyLocalizations.of(context).getLocalizations("PAY_NOW"),
                   style: textBarlowRegularBlack(),
                 ),
                 isPlaceOrderLoading

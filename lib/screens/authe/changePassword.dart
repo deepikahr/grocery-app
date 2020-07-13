@@ -43,7 +43,7 @@ class _ChangePasswordState extends State<ChangePassword> {
       print(confirmPassword);
       if (newPassword == oldPassword) {
         showSnackbar(MyLocalizations.of(context)
-            .donotentersameoldpasswordandnewpassword);
+            .getLocalizations("DO_NOT_ENTER_SAME_PASS"));
       } else {
         if (mounted) {
           setState(() {
@@ -81,7 +81,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     actions: <Widget>[
                       new FlatButton(
                         child: new Text(
-                          MyLocalizations.of(context).ok,
+                          MyLocalizations.of(context).getLocalizations("OK"),
                           style: textbarlowRegularaPrimary(),
                         ),
                         onPressed: () {
@@ -137,7 +137,7 @@ class _ChangePasswordState extends State<ChangePassword> {
           ),
         ),
         title: Text(
-          MyLocalizations.of(context).changePassword,
+          MyLocalizations.of(context).getLocalizations("CHANGE_PASSWORD"),
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -160,8 +160,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                       text: TextSpan(
                         children: <TextSpan>[
                           TextSpan(
-                              text:
-                                  MyLocalizations.of(context).enterOldPassword,
+                              text: MyLocalizations.of(context)
+                                  .getLocalizations("ENTER_OLD_PASSWORD", true),
                               style: textBarlowRegularBlack()),
                           TextSpan(
                             text: ' ',
@@ -208,10 +208,11 @@ class _ChangePasswordState extends State<ChangePassword> {
                     ),
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return MyLocalizations.of(context).enterOldPassword;
+                        return MyLocalizations.of(context)
+                            .getLocalizations("ENTER_OLD_PASSWORD");
                       } else if (value.length < 6) {
                         return MyLocalizations.of(context)
-                            .pleaseEnterMin6DigitPassword;
+                            .getLocalizations("ERROR_PASS");
                       } else
                         return null;
                     },
@@ -231,7 +232,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                     text: TextSpan(
                       children: <TextSpan>[
                         TextSpan(
-                            text: MyLocalizations.of(context).enternewpassword,
+                            text: MyLocalizations.of(context)
+                                .getLocalizations("ENTER_NEW_PASSWORD", true),
                             style: textBarlowRegularBlack()),
                         TextSpan(
                           text: ' ',
@@ -277,10 +279,11 @@ class _ChangePasswordState extends State<ChangePassword> {
                     ),
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return MyLocalizations.of(context).enternewpassword;
+                        return MyLocalizations.of(context)
+                            .getLocalizations("ENTER_NEW_PASSWORD");
                       } else if (value.length < 6) {
                         return MyLocalizations.of(context)
-                            .pleaseEnterMin6DigitPassword;
+                            .getLocalizations("ERROR_PASS");
                       } else
                         return null;
                     },
@@ -301,8 +304,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                     text: TextSpan(
                       children: <TextSpan>[
                         TextSpan(
-                            text: MyLocalizations.of(context)
-                                .enterconfirmpassword,
+                            text: MyLocalizations.of(context).getLocalizations(
+                                "ENTER_CONFIRM_PASSWORD", true),
                             style: textBarlowRegularBlack()),
                         TextSpan(
                           text: ' ',
@@ -350,12 +353,14 @@ class _ChangePasswordState extends State<ChangePassword> {
                     ),
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return MyLocalizations.of(context).enterconfirmpassword;
+                        return MyLocalizations.of(context)
+                            .getLocalizations("ENTER_CONFIRM_PASSWORD");
                       } else if (value.length < 6) {
                         return MyLocalizations.of(context)
-                            .pleaseEnterMin6DigitPassword;
+                            .getLocalizations("ERROR_PASS");
                       } else if (_passwordTextController.text != value) {
-                        return MyLocalizations.of(context).passwordsdonotmatch;
+                        return MyLocalizations.of(context)
+                            .getLocalizations("PASS_NOT_MATCH");
                       } else
                         return null;
                     },
@@ -387,7 +392,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          MyLocalizations.of(context).submit,
+                          MyLocalizations.of(context)
+                              .getLocalizations("SUBMIT"),
                           style: textbarlowMediumBlack(),
                         ),
                         SizedBox(

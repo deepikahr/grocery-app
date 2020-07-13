@@ -63,7 +63,6 @@ class _SignupState extends State<Signup> {
           "firstName": firstName,
           "email": email.toLowerCase(),
           "password": password,
-          "role": "User",
           "mobileNumber": mobileNumber
         };
 
@@ -94,7 +93,7 @@ class _SignupState extends State<Signup> {
                     actions: <Widget>[
                       new FlatButton(
                         child: new Text(
-                          MyLocalizations.of(context).ok,
+                          MyLocalizations.of(context).getLocalizations("OK"),
                           style: textbarlowRegularaPrimary(),
                         ),
                         onPressed: () {
@@ -136,8 +135,8 @@ class _SignupState extends State<Signup> {
           sentryError.reportError(error, null);
         });
       } else {
-        showSnackbar(MyLocalizations.of(context)
-            .pleaseAcceptprivacypoliciesandTermsAndConditions);
+        showSnackbar(
+            MyLocalizations.of(context).getLocalizations("ACCEPT_MSG"));
       }
     } else {
       if (mounted) {
@@ -158,7 +157,7 @@ class _SignupState extends State<Signup> {
             top: 10.0,
           ),
           title: new Text(
-            MyLocalizations.of(context).error,
+            MyLocalizations.of(context).getLocalizations("ERROR"),
             style: textBarlowRegularBlack(),
             textAlign: TextAlign.center,
           ),
@@ -187,7 +186,8 @@ class _SignupState extends State<Signup> {
                             alignment: Alignment.center,
                             decoration: BoxDecoration(),
                             child: Text(
-                              MyLocalizations.of(context).ok,
+                              MyLocalizations.of(context)
+                                  .getLocalizations("OK"),
                               style: textbarlowRegularaPrimary(),
                             ),
                           ),
@@ -215,7 +215,7 @@ class _SignupState extends State<Signup> {
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20))),
         title: Text(
-          MyLocalizations.of(context).signUp,
+          MyLocalizations.of(context).getLocalizations("SIGNUP"),
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -248,6 +248,8 @@ class _SignupState extends State<Signup> {
               buildwelcometext(),
               buildUserFirstName(),
               buildUserFirstNameField(),
+              buildUserLastName(),
+              buildUserLastNameField(),
               buildEmailText(),
               buildEmailTextField(),
               buildMobileNumberText(),
@@ -270,7 +272,8 @@ class _SignupState extends State<Signup> {
       child: GFTypography(
         showDivider: false,
         child: Text(
-          MyLocalizations.of(context).letsgetstarted + " !",
+          MyLocalizations.of(context).getLocalizations("LETS_GET_STARTED") +
+              " !",
           style: textbarlowMediumBlack(),
         ),
       ),
@@ -286,7 +289,8 @@ class _SignupState extends State<Signup> {
           text: TextSpan(
             children: <TextSpan>[
               TextSpan(
-                  text: MyLocalizations.of(context).fullName,
+                  text: MyLocalizations.of(context)
+                      .getLocalizations("FIRST_NAME"),
                   style: textbarlowRegularBlackdull()),
               TextSpan(
                 text: ' *',
@@ -308,7 +312,65 @@ class _SignupState extends State<Signup> {
           keyboardType: TextInputType.emailAddress,
           validator: (String value) {
             if (value.isEmpty) {
-              return MyLocalizations.of(context).enterFullName;
+              return MyLocalizations.of(context)
+                  .getLocalizations("ENTER_FIRST_NAME");
+            } else
+              return null;
+          },
+          onSaved: (String value) {
+            firstName = value;
+          },
+          decoration: InputDecoration(
+            errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
+            errorStyle: TextStyle(color: Color(0xFFF44242)),
+            contentPadding: EdgeInsets.all(10),
+            enabledBorder: const OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: primary),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildUserLastName() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 20.0),
+      child: GFTypography(
+        showDivider: false,
+        child: RichText(
+          text: TextSpan(
+            children: <TextSpan>[
+              TextSpan(
+                  text:
+                      MyLocalizations.of(context).getLocalizations("LAST_NAME"),
+                  style: textbarlowRegularBlackdull()),
+              TextSpan(
+                text: ' *',
+                style: TextStyle(color: Colors.red),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildUserLastNameField() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 5.0, bottom: 10.0),
+      child: Container(
+        child: TextFormField(
+          style: textBarlowRegularBlack(),
+          keyboardType: TextInputType.emailAddress,
+          validator: (String value) {
+            if (value.isEmpty) {
+              return MyLocalizations.of(context)
+                  .getLocalizations("ENTER_LAST_NAME");
             } else
               return null;
           },
@@ -341,7 +403,7 @@ class _SignupState extends State<Signup> {
           text: TextSpan(
             children: <TextSpan>[
               TextSpan(
-                  text: MyLocalizations.of(context).email,
+                  text: MyLocalizations.of(context).getLocalizations("EMAIL"),
                   style: textbarlowRegularBlackdull()),
               TextSpan(
                 text: ' *',
@@ -363,11 +425,12 @@ class _SignupState extends State<Signup> {
           keyboardType: TextInputType.emailAddress,
           validator: (String value) {
             if (value.isEmpty) {
-              return MyLocalizations.of(context).enterYourEmail;
+              return MyLocalizations.of(context)
+                  .getLocalizations("ENTER_YOUR_EMAIL");
             } else if (!RegExp(
                     r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
                 .hasMatch(value)) {
-              return MyLocalizations.of(context).pleaseEnterValidEmail;
+              return MyLocalizations.of(context).getLocalizations("ERROR_MAIL");
             } else
               return null;
           },
@@ -398,7 +461,7 @@ class _SignupState extends State<Signup> {
         text: TextSpan(
           children: <TextSpan>[
             TextSpan(
-                text: MyLocalizations.of(context).password,
+                text: MyLocalizations.of(context).getLocalizations("PASSWORD"),
                 style: textbarlowRegularBlackdull()),
             TextSpan(
               text: ' *',
@@ -418,9 +481,10 @@ class _SignupState extends State<Signup> {
         keyboardType: TextInputType.text,
         validator: (String value) {
           if (value.isEmpty) {
-            return MyLocalizations.of(context).enterPassword;
+            return MyLocalizations.of(context)
+                .getLocalizations("ENTER_PASSWORD");
           } else if (value.length < 6) {
-            return MyLocalizations.of(context).pleaseEnterMin6DigitPassword;
+            return MyLocalizations.of(context).getLocalizations("ERROR_PASS");
           } else
             return null;
         },
@@ -468,7 +532,8 @@ class _SignupState extends State<Signup> {
         text: TextSpan(
           children: <TextSpan>[
             TextSpan(
-                text: MyLocalizations.of(context).contactNumber,
+                text: MyLocalizations.of(context)
+                    .getLocalizations("CONTACT_NUMBER"),
                 style: textbarlowRegularBlack()),
             TextSpan(
               text: ' *',
@@ -489,7 +554,8 @@ class _SignupState extends State<Signup> {
         keyboardType: TextInputType.number,
         validator: (String value) {
           if (value.isEmpty) {
-            return MyLocalizations.of(context).enterYourContactNumber;
+            return MyLocalizations.of(context)
+                .getLocalizations("ENTER_YOUR_CONTACT_NUMBER");
           } else
             return null;
         },
@@ -536,7 +602,7 @@ class _SignupState extends State<Signup> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              MyLocalizations.of(context).signUp,
+              MyLocalizations.of(context).getLocalizations("SIGNUP"),
               style: textBarlowRegularrBlack(),
             ),
             SizedBox(
@@ -583,11 +649,12 @@ class _SignupState extends State<Signup> {
               child: Row(
                 children: [
                   new Text(
-                    MyLocalizations.of(context).iaccept + " ",
+                    MyLocalizations.of(context).getLocalizations("I_ACCEPT") +
+                        " ",
                   ),
                   new Text(
                     MyLocalizations.of(context)
-                        .privacypoliciesandTermsAndConditions,
+                        .getLocalizations("PP_AND_TAND_C"),
                     style: textBarlowRegularGreen(),
                   ),
                 ],
@@ -621,10 +688,11 @@ class _SignupState extends State<Signup> {
             text: TextSpan(
               children: <TextSpan>[
                 TextSpan(
-                    text: MyLocalizations.of(context).havegotanaccount,
+                    text: MyLocalizations.of(context)
+                        .getLocalizations("HAVE_GOT_AN_ACCOUNT"),
                     style: textbarlowRegularBlack()),
                 TextSpan(
-                  text: MyLocalizations.of(context).login + '!',
+                  text: MyLocalizations.of(context).getLocalizations("LOGIN"),
                   style: textbarlowRegularaPrimary(),
                 ),
               ],
@@ -635,7 +703,7 @@ class _SignupState extends State<Signup> {
 
   Widget buildcontinuetext() {
     return Text(
-      MyLocalizations.of(context).or,
+      MyLocalizations.of(context).getLocalizations("OR"),
       textAlign: TextAlign.center,
       style: textBarlowRegularBlack(),
     );

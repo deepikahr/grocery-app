@@ -225,7 +225,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
           children: <Widget>[
             Expanded(
               child: Text(
-                MyLocalizations.of(context).explorebyCategories,
+                MyLocalizations.of(context)
+                    .getLocalizations("EXPLORE_BY_CATEGORIES"),
                 style: textBarlowMediumBlack(),
               ),
             ),
@@ -243,7 +244,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                 );
               },
               child: Text(
-                MyLocalizations.of(context).viewAll,
+                MyLocalizations.of(context).getLocalizations("VIEW_ALL"),
                 style: textBarlowMediumPrimary(),
               ),
             )
@@ -394,7 +395,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       },
                       child: Row(
                         children: <Widget>[
-                          Text(MyLocalizations.of(context).ordernow),
+                          Text(MyLocalizations.of(context)
+                              .getLocalizations("ORDER_NOW")),
                           Icon(Icons.arrow_right)
                         ],
                       ),
@@ -461,7 +463,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                 );
               },
               child: Text(
-                MyLocalizations.of(context).viewAll,
+                MyLocalizations.of(context).getLocalizations("VIEW_ALL"),
                 style: textBarlowMediumPrimary(),
               ),
             )
@@ -533,7 +535,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                               list[i]['delaPercent']
                                                   .toString() +
                                               "% " +
-                                              MyLocalizations.of(context).off,
+                                              MyLocalizations.of(context)
+                                                  .getLocalizations("OFF"),
                                           style: hintSfboldwhitemed(),
                                           textAlign: TextAlign.center,
                                         ),
@@ -606,7 +609,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                 );
               },
               child: Text(
-                MyLocalizations.of(context).viewAll,
+                MyLocalizations.of(context).getLocalizations("VIEW_ALL"),
                 style: textBarlowMediumPrimary(),
               ),
             )
@@ -679,7 +682,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                           Text(
                             list[i]['delaPercent'].toString() +
                                 "% " +
-                                MyLocalizations.of(context).off,
+                                MyLocalizations.of(context)
+                                    .getLocalizations("OFF"),
                             style: textBarlowRegularrwhsm(),
                           )
                         ],
@@ -722,7 +726,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                 );
               },
               child: Text(
-                MyLocalizations.of(context).viewAll,
+                MyLocalizations.of(context).getLocalizations("VIEW_ALL"),
                 style: textBarlowMediumPrimary(),
               ),
             )
@@ -793,7 +797,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                           Text(
                               list[i]['delaPercent'].toString() +
                                   "% " +
-                                  MyLocalizations.of(context).off,
+                                  MyLocalizations.of(context)
+                                      .getLocalizations("OFF"),
                               style: textoswaldboldwhite()),
                           SizedBox(
                             height: 5,
@@ -867,7 +872,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                           topDealList.length == 0
                               ? Container()
                               : topDealsRow(
-                                  MyLocalizations.of(context).topDeals,
+                                  MyLocalizations.of(context)
+                                      .getLocalizations("TOP_DEALS"),
                                   topDealList,
                                   "TopDeals"),
                           topDealList.length == 0
@@ -877,7 +883,9 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                           topDealList.length == 0
                               ? Container()
                               : SizedBox(height: 10),
-                          productRow(MyLocalizations.of(context).products,
+                          productRow(
+                              MyLocalizations.of(context)
+                                  .getLocalizations("PRODUCTS"),
                               productsList),
                           productsList.length == 0
                               ? Container()
@@ -889,7 +897,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                           dealList.length == 0
                               ? Container()
                               : todayDealsRow(
-                                  MyLocalizations.of(context).dealsoftheday,
+                                  MyLocalizations.of(context)
+                                      .getLocalizations("DEALS_OF_THE_DAYS"),
                                   dealList,
                                   "TodayDeals"),
                           dealList.length == 0

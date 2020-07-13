@@ -40,7 +40,7 @@ class _NewChatAndHistoryPageState extends State<NewChatAndHistoryPage>
           backgroundColor: primary,
           centerTitle: true,
           title: Text(
-            MyLocalizations.of(context).chat,
+            MyLocalizations.of(context).getLocalizations("CHAT"),
             style: textbarlowSemiBoldBlack(),
           ),
         ),
