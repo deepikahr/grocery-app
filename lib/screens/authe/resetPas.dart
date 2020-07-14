@@ -156,7 +156,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                         children: <TextSpan>[
                           TextSpan(
                               text: MyLocalizations.of(context)
-                                  .getLocalizations("PASSWORD"),
+                                  .getLocalizations("ENTER_PASSWORD", true),
                               style: textBarlowRegularBlack()),
                           TextSpan(
                             text: ' ',
@@ -228,8 +228,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                     text: TextSpan(
                       children: <TextSpan>[
                         TextSpan(
-                            text: MyLocalizations.of(context)
-                                .getLocalizations("RE_ENTER_NEW_PASSWORD"),
+                            text: MyLocalizations.of(context).getLocalizations(
+                                "RE_ENTER_NEW_PASSWORD", true),
                             style: textBarlowRegularBlack()),
                         TextSpan(
                           text: ' ',

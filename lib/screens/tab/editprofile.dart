@@ -452,8 +452,8 @@ class _EditProfileState extends State<EditProfile> {
                           child: Row(
                             children: [
                               Text(
-                                MyLocalizations.of(context)
-                                    .getLocalizations("TOTAL_WALLET_AMOUNT"),
+                                MyLocalizations.of(context).getLocalizations(
+                                    "TOTAL_WALLET_AMOUNT", true),
                                 style: textbarlowRegularBlack(),
                               ),
                               Text(

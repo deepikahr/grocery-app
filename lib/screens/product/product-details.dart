@@ -237,6 +237,7 @@ class _ProductDetailsState extends State<ProductDetails>
     if (isFavProduct) {
       Map<String, dynamic> body = {"product": id};
       await FavouriteService.addToFav(body).then((onValue) {
+        print(onValue);
         try {
           if (onValue['response_code'] == 201) {
             showSnackbar(onValue['response_data']);
@@ -244,17 +245,26 @@ class _ProductDetailsState extends State<ProductDetails>
           } else {
             setState(() {
               isFavProductLoading = false;
+              isFavProduct = false;
               showSnackbar(onValue['response_data']);
             });
           }
         } catch (error, stackTrace) {
+          setState(() {
+            isFavProductLoading = false;
+            isFavProduct = false;
+          });
           sentryError.reportError(error, stackTrace);
         }
       }).catchError((error) {
+        setState(() {
+          isFavProductLoading = false;
+        });
         sentryError.reportError(error, null);
       });
     } else {
       await FavouriteService.deleteToFav(id).then((onValue) {
+        print(onValue);
         try {
           if (onValue['response_code'] == 200) {
             showSnackbar(onValue['response_data']);
@@ -263,12 +273,21 @@ class _ProductDetailsState extends State<ProductDetails>
             setState(() {
               isFavProductLoading = false;
               showSnackbar(onValue['response_data']);
+              isFavProduct = true;
             });
           }
         } catch (error, stackTrace) {
+          setState(() {
+            isFavProductLoading = false;
+            isFavProduct = true;
+          });
           sentryError.reportError(error, stackTrace);
         }
       }).catchError((error) {
+        setState(() {
+          isFavProduct = true;
+          isFavProductLoading = false;
+        });
         sentryError.reportError(error, null);
       });
     }

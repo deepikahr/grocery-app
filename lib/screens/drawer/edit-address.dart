@@ -98,8 +98,11 @@ class _EditAddressState extends State<EditAddress> {
         address['location'] = location;
       }
       address['addressType'] = addressType[selectedAddressType];
+      print(address);
+      print(widget.updateAddressID['_id']);
       AddressService.updateAddress(address, widget.updateAddressID['_id'])
           .then((onValue) {
+        print(onValue);
         try {
           if (mounted) {
             setState(() {
