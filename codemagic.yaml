@@ -28,7 +28,7 @@ workflows:
       - flutter build appbundle --target-platform android-arm,android-arm64,android-x64
       - find . -name "Podfile" -execdir pod install \;
       - keychain initialize
-      - app-store-connect fetch-signing-files "com.grocery.userapp" --type IOS_APP_STORE
+      - app-store-connect fetch-signing-files "com.ionicfirebaseapp.readymadegroceryuserapp" --type IOS_APP_STORE
         --create
       - keychain add-certificates
       - flutter build ios --release --no-codesign
