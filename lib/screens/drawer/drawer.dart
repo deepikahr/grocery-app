@@ -67,6 +67,7 @@ class _DrawerPageState extends State<DrawerPage> {
       });
     }
     LoginService.aboutUs().then((onValue) {
+      print(onValue);
       try {
         if (onValue['response_code'] == 200) {
           if (mounted) {

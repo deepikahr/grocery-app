@@ -34,7 +34,7 @@ class AddressService {
       languageCode = code ?? "";
     });
     final response =
-        await client.get(Constants.baseURL + "address/user/all", headers: {
+        await client.get(Constants.baseURL + "address/list", headers: {
       'Content-Type': 'application/json',
       'Authorization': 'bearer $token',
       'language': languageCode,
@@ -72,6 +72,7 @@ class AddressService {
     await Common.getSelectedLanguage().then((code) {
       languageCode = code ?? "";
     });
+    print(token);
     final response = await client.put(
         Constants.baseURL + "address/update/$addressId",
         body: json.encode(body),

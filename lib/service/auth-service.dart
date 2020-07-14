@@ -251,7 +251,7 @@ class LoginService {
       languageCode = code ?? "";
     });
     final response =
-        await client.get(Constants.baseURL + "business/user/detail", headers: {
+        await client.get(Constants.baseURL + "business/detail", headers: {
       'Content-Type': 'application/json',
       'language': languageCode,
     });

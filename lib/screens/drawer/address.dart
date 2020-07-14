@@ -54,6 +54,7 @@ class _AddressState extends State<Address> {
     }
 
     await AddressService.getAddress().then((onValue) {
+      print(onValue);
       try {
         _refreshController.refreshCompleted();
 

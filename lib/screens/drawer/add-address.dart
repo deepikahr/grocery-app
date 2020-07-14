@@ -75,6 +75,8 @@ class _AddAddressState extends State<AddAddress> {
       address['location'] = location;
       address['addressType'] = addressType[selectedAddressType];
       AddressService.addAddress(address).then((onValue) {
+        print(address);
+        print(onValue);
         try {
           if (mounted) {
             setState(() {
