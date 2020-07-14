@@ -36,7 +36,7 @@ class _TermsAndConditionState extends State<TermsAndCondition> {
         if (value['response_code'] == 200) {
           if (mounted) {
             setState(() {
-              aboutUsDatails = value['response_data'][0];
+              aboutUsDatails = value['response_data'];
               isAboutUsData = false;
             });
           }

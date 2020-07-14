@@ -61,11 +61,11 @@ class _SignupState extends State<Signup> {
         }
         Map<String, dynamic> body = {
           "firstName": firstName,
+          "lastName": lastName,
           "email": email.toLowerCase(),
           "password": password,
           "mobileNumber": mobileNumber
         };
-
         await LoginService.signUp(body).then((onValue) {
           try {
             if (mounted) {
@@ -313,7 +313,7 @@ class _SignupState extends State<Signup> {
           validator: (String value) {
             if (value.isEmpty) {
               return MyLocalizations.of(context)
-                  .getLocalizations("ENTER_FIRST_NAME");
+                  .getLocalizations("ENTER_FIRST_NAME", true);
             } else
               return null;
           },
@@ -346,8 +346,8 @@ class _SignupState extends State<Signup> {
           text: TextSpan(
             children: <TextSpan>[
               TextSpan(
-                  text:
-                      MyLocalizations.of(context).getLocalizations("LAST_NAME"),
+                  text: MyLocalizations.of(context)
+                      .getLocalizations("LAST_NAME", true),
                   style: textbarlowRegularBlackdull()),
               TextSpan(
                 text: ' *',
@@ -375,7 +375,7 @@ class _SignupState extends State<Signup> {
               return null;
           },
           onSaved: (String value) {
-            firstName = value;
+            lastName = value;
           },
           decoration: InputDecoration(
             errorBorder: OutlineInputBorder(
@@ -403,7 +403,8 @@ class _SignupState extends State<Signup> {
           text: TextSpan(
             children: <TextSpan>[
               TextSpan(
-                  text: MyLocalizations.of(context).getLocalizations("EMAIL"),
+                  text: MyLocalizations.of(context)
+                      .getLocalizations("EMAIL", true),
                   style: textbarlowRegularBlackdull()),
               TextSpan(
                 text: ' *',
@@ -461,7 +462,8 @@ class _SignupState extends State<Signup> {
         text: TextSpan(
           children: <TextSpan>[
             TextSpan(
-                text: MyLocalizations.of(context).getLocalizations("PASSWORD"),
+                text: MyLocalizations.of(context)
+                    .getLocalizations("PASSWORD", true),
                 style: textbarlowRegularBlackdull()),
             TextSpan(
               text: ' *',
@@ -533,7 +535,7 @@ class _SignupState extends State<Signup> {
           children: <TextSpan>[
             TextSpan(
                 text: MyLocalizations.of(context)
-                    .getLocalizations("CONTACT_NUMBER"),
+                    .getLocalizations("CONTACT_NUMBER", true),
                 style: textbarlowRegularBlack()),
             TextSpan(
               text: ' *',

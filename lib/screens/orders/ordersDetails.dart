@@ -58,7 +58,6 @@ class _OrderDetailsState extends State<OrderDetails> {
               if (orderHistory['usedWalletAmount'] == null) {
                 orderHistory['usedWalletAmount'] = 0.0;
               }
-              print(orderHistory['assignedTo']);
               isLoading = false;
             });
           }

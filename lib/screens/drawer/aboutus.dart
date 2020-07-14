@@ -38,7 +38,7 @@ class _AboutUsState extends State<AboutUs> {
         if (value['response_code'] == 200) {
           if (mounted) {
             setState(() {
-              aboutUsDatails = value['response_data'][0];
+              aboutUsDatails = value['response_data'];
               isAboutUsData = false;
             });
           }
@@ -46,6 +46,7 @@ class _AboutUsState extends State<AboutUs> {
       } catch (error, stackTrace) {
         if (mounted) {
           setState(() {
+            aboutUsDatails = null;
             isAboutUsData = false;
           });
         }
@@ -82,14 +83,6 @@ class _AboutUsState extends State<AboutUs> {
     }
   }
 
-  // _launchURL(location) async {
-  //   if (await canLaunch(location)) {
-  //     await launch(location);
-  //   } else {
-  //     throw 'Could not launch $location';
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,200 +99,166 @@ class _AboutUsState extends State<AboutUs> {
       ),
       body: isAboutUsData
           ? SquareLoader()
-          : Container(
-              padding: EdgeInsets.all(10),
-              child: Stack(
-                children: <Widget>[
-                  ListView(
+          : aboutUsDatails == null
+              ? Center(
+                  child: Image.asset('lib/assets/images/no-orders.png'),
+                )
+              : Container(
+                  padding: EdgeInsets.all(10),
+                  child: Stack(
                     children: <Widget>[
-                      Container(
-                        margin: EdgeInsets.all(20),
-                        child: Center(
-                          child: Image.network(
-                            aboutUsDatails['userApp']['filePath'] == null
-                                ? aboutUsDatails['userApp']['imageUrl']
-                                : Constants.imageUrlPath +
-                                    "tr:dpr-auto,tr:w-500" +
-                                    aboutUsDatails['userApp']['filePath'],
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(left: 15, right: 15.0),
-                        child: Text(
-                          MyLocalizations.of(context)
-                              .getLocalizations("DESCRIPTION", true),
-                          style: textBarlowMediumBlack(),
-                        ),
-                      ),
-                      Row(
+                      ListView(
                         children: <Widget>[
                           Container(
-                            margin: EdgeInsets.all(15),
-                            width: MediaQuery.of(context).size.width * 0.82,
-                            child: Text(
-                              aboutUsDatails['aboutUs'] ?? "",
-                              style: textbarlowRegularBlackd(),
+                            margin: EdgeInsets.all(20),
+                            child: Center(
+                              child: Image.network(
+                                aboutUsDatails['userApp']['filePath'] == null
+                                    ? aboutUsDatails['userApp']['imageUrl']
+                                    : Constants.imageUrlPath +
+                                        "tr:dpr-auto,tr:w-500" +
+                                        aboutUsDatails['userApp']['filePath'],
+                              ),
                             ),
-                          )
-                        ],
-                      ),
-                      Container(
-                        margin:
-                            EdgeInsets.only(left: 15, bottom: 15, right: 15.0),
-                        child: Text(
-                          MyLocalizations.of(context)
-                              .getLocalizations("ADDRESS", true),
-                          style: textBarlowMediumBlack(),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 15.0, right: 15.0, bottom: 15),
-                        child: Text(aboutUsDatails['address'] ?? ""),
-                      ),
-
-                      Container(
-                        margin:
-                            EdgeInsets.only(left: 15, bottom: 15, right: 15.0),
-                        child: Text(
-                          MyLocalizations.of(context)
-                              .getLocalizations("CONTACT_INFO", true),
-                          style: textBarlowMediumBlack(),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          _launchURLCall(aboutUsDatails['phoneNumber'] ?? "");
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              left: 15.0, right: 15.0, bottom: 15),
-                          child: Row(
-                            children: <Widget>[
-                              Icon(Icons.phone),
-                              Text(
-                                  " " +
-                                      MyLocalizations.of(context)
-                                          .getLocalizations("CALL_US"),
-                                  style: textbarlowRegularBlackd())
-                            ],
                           ),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          _launchURLEmail(aboutUsDatails['email'] ?? "");
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              left: 15.0, bottom: 15, right: 15.0),
-                          child: Row(
-                            children: <Widget>[
-                              Icon(Icons.email),
-                              Text(
-                                  ' ' +
-                                      MyLocalizations.of(context)
-                                          .getLocalizations("MAIL_US"),
-                                  style: textbarlowRegularBlackd())
-                            ],
-                          ),
-                        ),
-                      ),
-                      // InkWell(
-                      //   onTap: () {
-                      //     _launchURL(aboutUsDatails['googleUrl']);
-                      //   },
-                      //   child: Padding(
-                      //     padding: const EdgeInsets.only(left: 15.0, bottom: 15),
-                      //     child: Row(
-                      //       children: <Widget>[
-                      //         Icon(Icons.location_searching),
-                      //         Text(' Locate Us', style: textbarlowRegularBlackd())
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          TermsAndConditionAboutUs(
-                                              locale: widget.locale,
-                                              localizedValues:
-                                                  widget.localizedValues,
-                                              title: MyLocalizations.of(context)
-                                                  .getLocalizations(
-                                                      "TERMS_CONDITIONS"),
-                                              text: aboutUsDatails[
-                                                  'termsAndConditions'])));
-                            },
+                          Container(
+                            margin: EdgeInsets.only(left: 15, right: 15.0),
                             child: Text(
                               MyLocalizations.of(context)
-                                  .getLocalizations("TERMS_CONDITIONS"),
-                              style: textBarlowmediumLink(),
+                                  .getLocalizations("DESCRIPTION", true),
+                              style: textBarlowMediumBlack(),
+                            ),
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                margin: EdgeInsets.all(15),
+                                width: MediaQuery.of(context).size.width * 0.82,
+                                child: Text(
+                                  aboutUsDatails['aboutUs'] ?? "",
+                                  style: textbarlowRegularBlackd(),
+                                ),
+                              )
+                            ],
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(
+                                left: 15, bottom: 15, right: 15.0),
+                            child: Text(
+                              MyLocalizations.of(context)
+                                  .getLocalizations("ADDRESS", true),
+                              style: textBarlowMediumBlack(),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 15.0, right: 15.0, bottom: 15),
+                            child: Text(aboutUsDatails['address'] ?? ""),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(
+                                left: 15, bottom: 15, right: 15.0),
+                            child: Text(
+                              MyLocalizations.of(context)
+                                  .getLocalizations("CONTACT_INFO", true),
+                              style: textBarlowMediumBlack(),
                             ),
                           ),
                           InkWell(
                             onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          TermsAndConditionAboutUs(
-                                              locale: widget.locale,
-                                              localizedValues:
-                                                  widget.localizedValues,
-                                              title: MyLocalizations.of(context)
-                                                  .getLocalizations(
-                                                      "PRIVACY_POLICY"),
-                                              text: aboutUsDatails[
-                                                  'privacyPolicy'])));
+                              _launchURLCall(
+                                  aboutUsDatails['phoneNumber'] ?? "");
                             },
-                            child: Text(
-                              MyLocalizations.of(context)
-                                  .getLocalizations("PRIVACY_POLICY"),
-                              style: textBarlowmediumLink(),
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 15.0, right: 15.0, bottom: 15),
+                              child: Row(
+                                children: <Widget>[
+                                  Icon(Icons.phone),
+                                  Text(
+                                      " " +
+                                          MyLocalizations.of(context)
+                                              .getLocalizations("CALL_US"),
+                                      style: textbarlowRegularBlackd())
+                                ],
+                              ),
                             ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              _launchURLEmail(aboutUsDatails['email'] ?? "");
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 15.0, bottom: 15, right: 15.0),
+                              child: Row(
+                                children: <Widget>[
+                                  Icon(Icons.email),
+                                  Text(
+                                      ' ' +
+                                          MyLocalizations.of(context)
+                                              .getLocalizations("MAIL_US"),
+                                      style: textbarlowRegularBlackd())
+                                ],
+                              ),
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              TermsAndConditionAboutUs(
+                                                  locale: widget.locale,
+                                                  localizedValues:
+                                                      widget.localizedValues,
+                                                  title: MyLocalizations.of(
+                                                          context)
+                                                      .getLocalizations(
+                                                          "TERMS_CONDITIONS"),
+                                                  text: aboutUsDatails[
+                                                      'termsAndConditions'])));
+                                },
+                                child: Text(
+                                  MyLocalizations.of(context)
+                                      .getLocalizations("TERMS_CONDITIONS"),
+                                  style: textBarlowmediumLink(),
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              TermsAndConditionAboutUs(
+                                                  locale: widget.locale,
+                                                  localizedValues:
+                                                      widget.localizedValues,
+                                                  title: MyLocalizations.of(
+                                                          context)
+                                                      .getLocalizations(
+                                                          "PRIVACY_POLICY"),
+                                                  text: aboutUsDatails[
+                                                      'privacyPolicy'])));
+                                },
+                                child: Text(
+                                  MyLocalizations.of(context)
+                                      .getLocalizations("PRIVACY_POLICY"),
+                                  style: textBarlowmediumLink(),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
                     ],
                   ),
-                  // Positioned(
-                  //   bottom: 30,
-                  //   left: 15,
-                  //   child: InkWell(
-                  //     onTap: () {
-                  //       _launchURL(aboutUsDatails['tearmsAndConditionUrl']);
-                  //     },
-                  //     child: Text(
-                  //       MyLocalizations.of(context).termsAndConditions,
-                  //       style: textBarlowmediumLink(),
-                  //     ),
-                  //   ),
-                  // ),
-                  // Positioned(
-                  //   bottom: 30,
-                  //   right: 15,
-                  //   child: InkWell(
-                  //     onTap: () {
-                  //       _launchURL(aboutUsDatails['privacyPolicyUrl']);
-                  //     },
-                  //     child: Text(
-                  //       MyLocalizations.of(context).privacyPolicy,
-                  //       style: textBarlowmediumLink(),
-                  //     ),
-                  //   ),
-                  // ),
-                ],
-              ),
-            ),
+                ),
     );
   }
 }

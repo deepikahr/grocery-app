@@ -289,6 +289,7 @@ class _CheckoutState extends State<Checkout> {
             DateFormat('HH:mm').format(DateTime.now()),
             DateTime.now().millisecondsSinceEpoch)
         .then((onValue) {
+      print(onValue);
       _refreshController.refreshCompleted();
       try {
         if (mounted) {

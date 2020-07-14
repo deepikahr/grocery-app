@@ -72,12 +72,12 @@ class _DrawerPageState extends State<DrawerPage> {
           if (mounted) {
             setState(() {
               isLogoGetLoading = false;
-              if (onValue['response_data'][0]['userApp']['filePath'] == null) {
-                logo = onValue['response_data'][0]['userApp']['imageUrl'];
+              if (onValue['response_data']['userApp']['filePath'] == null) {
+                logo = onValue['response_data']['userApp']['imageUrl'];
               } else {
                 logo = Constants.imageUrlPath +
                     "tr:dpr-auto,tr:w-500" +
-                    onValue['response_data'][0]['userApp']['filePath'];
+                    onValue['response_data']['userApp']['filePath'];
               }
             });
           }

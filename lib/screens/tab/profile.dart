@@ -15,7 +15,6 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -29,16 +28,17 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  Map<String, dynamic> userInfo;
-  bool isGetTokenLoading = false, isLanguageSelecteLoading = false;
+  Map userInfo;
+  bool isGetTokenLoading = false,
+      isLanguageSelecteLoading = false,
+      isGetLanguagesListLoading = false;
   String token, userID;
-  RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
-  List languages, languagesCodes;
+  List languagesList;
 
   @override
   void initState() {
     getToken();
+    getLanguagesListData();
     super.initState();
   }
 
@@ -53,12 +53,7 @@ class _ProfileState extends State<Profile> {
         isGetTokenLoading = true;
       });
     }
-    await Common.getAllLanguageNames().then((value) {
-      languages = value;
-    });
-    await Common.getAllLanguageCodes().then((value) {
-      languagesCodes = value;
-    });
+
     await Common.getToken().then((onValue) {
       try {
         if (onValue != null) {
@@ -102,7 +97,6 @@ class _ProfileState extends State<Profile> {
             isGetTokenLoading = false;
           });
         }
-        _refreshController.refreshCompleted();
         if (onValue['response_code'] == 200) {
           if (mounted) {
             setState(() {
@@ -125,8 +119,45 @@ class _ProfileState extends State<Profile> {
       if (mounted) {
         setState(() {
           isGetTokenLoading = false;
-          userInfo = null;
-          userID = null;
+        });
+      }
+      sentryError.reportError(error, null);
+    });
+  }
+
+  getLanguagesListData() async {
+    if (mounted) {
+      setState(() {
+        isGetLanguagesListLoading = true;
+      });
+    }
+    await LoginService.getLanguagesList().then((onValue) {
+      try {
+        if (mounted) {
+          setState(() {
+            isGetLanguagesListLoading = false;
+          });
+        }
+        if (onValue['response_code'] == 200) {
+          if (mounted) {
+            setState(() {
+              languagesList = onValue['response_data'];
+            });
+          }
+        }
+      } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            isGetLanguagesListLoading = false;
+            languagesList = [];
+          });
+        }
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isGetLanguagesListLoading = false;
         });
       }
       sentryError.reportError(error, null);
@@ -154,12 +185,14 @@ class _ProfileState extends State<Profile> {
                       padding: EdgeInsets.only(bottom: 25),
                       physics: ScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount:
-                          languages.length == null ? 0 : languages.length,
+                      itemCount: languagesList.length == null
+                          ? 0
+                          : languagesList.length,
                       itemBuilder: (BuildContext context, int i) {
                         return GFButton(
                           onPressed: () async {
-                            await Common.setSelectedLanguage(languagesCodes[i]);
+                            await Common.setSelectedLanguage(
+                                languagesList[i]['languageCode']);
                             main();
                           },
                           type: GFButtonType.transparent,
@@ -167,7 +200,7 @@ class _ProfileState extends State<Profile> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
                               Text(
-                                languages[i],
+                                languagesList[i]['languageName'],
                                 style: hintSfboldBig(),
                               ),
                               Container()
@@ -200,7 +233,7 @@ class _ProfileState extends State<Profile> {
                   backgroundColor: primary,
                   automaticallyImplyLeading: false,
                 ),
-      body: isGetTokenLoading
+      body: isGetTokenLoading || isGetLanguagesListLoading
           ? SquareLoader()
           : token == null
               ? Login(
@@ -396,38 +429,41 @@ class _ProfileState extends State<Profile> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 15),
-                        InkWell(
-                          onTap: () {
-                            selectLanguagesMethod();
-                          },
-                          child: Container(
-                            height: 55,
-                            decoration: BoxDecoration(
-                              color: Color(0xFFF7F7F7),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 10.0,
-                                      bottom: 10.0,
-                                      left: 20.0,
-                                      right: 20.0),
-                                  child: Text(
-                                    MyLocalizations.of(context)
-                                        .getLocalizations("SELECT_LANGUAGE"),
-                                    style: textBarlowMediumBlack(),
+                        languagesList.length > 0
+                            ? SizedBox(height: 15)
+                            : Container(),
+                        languagesList.length > 0
+                            ? InkWell(
+                                onTap: () {
+                                  selectLanguagesMethod();
+                                },
+                                child: Container(
+                                  height: 55,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFFF7F7F7),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 10.0,
+                                            bottom: 10.0,
+                                            left: 20.0,
+                                            right: 20.0),
+                                        child: Text(
+                                          MyLocalizations.of(context)
+                                              .getLocalizations(
+                                                  "SELECT_LANGUAGE"),
+                                          style: textBarlowMediumBlack(),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20.0,
-                        ),
+                              )
+                            : Container(),
+                        SizedBox(height: 20.0),
                         InkWell(
                           onTap: () {
                             var result = Navigator.push(
@@ -466,9 +502,7 @@ class _ProfileState extends State<Profile> {
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: 20.0,
-                        ),
+                        SizedBox(height: 20.0),
                         InkWell(
                           onTap: () {
                             var result = Navigator.push(
@@ -506,9 +540,7 @@ class _ProfileState extends State<Profile> {
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: 20.0,
-                        ),
+                        SizedBox(height: 20.0),
                       ],
                     ),
     );
