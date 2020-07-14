@@ -34,7 +34,6 @@ class _AboutUsState extends State<AboutUs> {
       });
     }
     LoginService.aboutUs().then((value) {
-      print(value);
       try {
         if (value['response_code'] == 200) {
           if (mounted) {

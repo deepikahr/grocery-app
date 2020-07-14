@@ -37,7 +37,6 @@ void main() async {
     sentryError.reportError(error, stackTrace);
   });
   Common.getSelectedLanguage().then((selectedLocale) {
-    print(selectedLocale);
     Map localizedValues;
     String defaultLocale = '';
     String locale = selectedLocale ?? defaultLocale;
@@ -52,14 +51,9 @@ void main() async {
       }
     };
     LoginService.getLanguageJson(locale).then((value) async {
-      localizedValues = {locale: value['response_data']};
-      // if (locale == '') {
-      //   defaultLocale = value['response_data']['defaultCode']['languageCode'];
-      //   locale = defaultLocale;
-      // }
+      print(value);
+      localizedValues = value['response_data'];
       await Common.setSelectedLanguage(locale);
-      // await Common.setAllLanguageNames(value['response_data']['langName']);
-      // await Common.setAllLanguageCodes(value['response_data']['langCode']);
       getToken();
       runZoned<Future<Null>>(() {
         runApp(MainScreen(

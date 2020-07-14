@@ -66,9 +66,7 @@ class _SignupState extends State<Signup> {
           "password": password,
           "mobileNumber": mobileNumber
         };
-        print(body);
         await LoginService.signUp(body).then((onValue) {
-          print(onValue);
           try {
             if (mounted) {
               setState(() {
