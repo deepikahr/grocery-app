@@ -10,7 +10,6 @@ import 'package:readymadeGroceryApp/screens/product/all_deals.dart';
 import 'package:readymadeGroceryApp/screens/product/all_products.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import '../../main.dart';
@@ -29,12 +28,11 @@ class DrawerPage extends StatefulWidget {
 }
 
 class _DrawerPageState extends State<DrawerPage> {
-  bool getTokenValue = true, isLogoGetLoading = false;
-  String currency = "", logo;
+  bool getTokenValue = true;
+  String currency = "";
 
   @override
   void initState() {
-    getLogo();
     getToken();
     super.initState();
   }
@@ -60,37 +58,6 @@ class _DrawerPageState extends State<DrawerPage> {
     });
   }
 
-  getLogo() {
-    if (mounted) {
-      setState(() {
-        isLogoGetLoading = true;
-      });
-    }
-    LoginService.aboutUs().then((onValue) {
-      print(onValue);
-      try {
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              isLogoGetLoading = false;
-              if (onValue['response_data']['userApp']['filePath'] == null) {
-                logo = onValue['response_data']['userApp']['imageUrl'];
-              } else {
-                logo = Constants.imageUrlPath +
-                    "tr:dpr-auto,tr:w-500" +
-                    onValue['response_data']['userApp']['filePath'];
-              }
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      sentryError.reportError(error, null);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -102,41 +69,35 @@ class _DrawerPageState extends State<DrawerPage> {
             child: ListView(
               children: <Widget>[
                 SizedBox(height: 40),
-                isLogoGetLoading
-                    ? Container(height: 100)
-                    : logo == null
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                Constants.APP_NAME.split(' ').join('\n'),
-                                textAlign: TextAlign.center,
-                                overflow: TextOverflow.ellipsis,
-                                style: textbarlowBoldWhitebig(),
-                              ),
-                            ],
-                          )
-                        : Container(
-                            margin: EdgeInsets.all(10),
-                            child: Center(
-                              child: Image.network(
-                                logo,
-                                height: 80,
-                              ),
-                            ),
-                          ),
+                Container(
+                  margin: EdgeInsets.all(10),
+                  child: Center(
+                    child: Image.asset(
+                      "lib/assets/logo.png",
+                      height: 80,
+                    ),
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0),
-                  child: _buildMenuTileList('lib/assets/icons/Home.png',
-                      MyLocalizations.of(context).getLocalizations("HOME"), 0,
+                  child: _buildMenuTileList(
+                      'lib/assets/icons/Home.png',
+                      MyLocalizations.of(context)
+                          .getLocalizations("HOME")
+                          .toUpperCase(),
+                      0,
                       route: Home(
                         locale: widget.locale,
                         localizedValues: widget.localizedValues,
                         currentIndex: 0,
                       )),
                 ),
-                _buildMenuTileList('lib/assets/icons/products.png',
-                    MyLocalizations.of(context).getLocalizations("PRODUCTS"), 0,
+                _buildMenuTileList(
+                    'lib/assets/icons/products.png',
+                    MyLocalizations.of(context)
+                        .getLocalizations("PRODUCTS")
+                        .toUpperCase(),
+                    0,
                     route: AllProducts(
                       locale: widget.locale,
                       localizedValues: widget.localizedValues,
@@ -145,7 +106,8 @@ class _DrawerPageState extends State<DrawerPage> {
                 _buildMenuTileList(
                   'lib/assets/icons/categories.png',
                   MyLocalizations.of(context)
-                      .getLocalizations("ALL_CATEGROIES"),
+                      .getLocalizations("ALL_CATEGROIES")
+                      .toUpperCase(),
                   0,
                   route: AllCategories(
                     locale: widget.locale,
@@ -155,7 +117,9 @@ class _DrawerPageState extends State<DrawerPage> {
                 ),
                 _buildMenuTileList(
                     'lib/assets/icons/deals.png',
-                    MyLocalizations.of(context).getLocalizations("TOP_DEALS"),
+                    MyLocalizations.of(context)
+                        .getLocalizations("TOP_DEALS")
+                        .toUpperCase(),
                     0,
                     route: AllDealsList(
                         locale: widget.locale,
@@ -168,7 +132,9 @@ class _DrawerPageState extends State<DrawerPage> {
                 getTokenValue
                     ? _buildMenuTileList(
                         'lib/assets/images/profileIcon.png',
-                        MyLocalizations.of(context).getLocalizations("PROFILE"),
+                        MyLocalizations.of(context)
+                            .getLocalizations("PROFILE")
+                            .toUpperCase(),
                         0,
                         route: Home(
                           locale: widget.locale,
@@ -180,7 +146,8 @@ class _DrawerPageState extends State<DrawerPage> {
                     ? _buildMenuTileList(
                         'lib/assets/icons/history.png',
                         MyLocalizations.of(context)
-                            .getLocalizations("MY_ORDERS"),
+                            .getLocalizations("MY_ORDERS")
+                            .toUpperCase(),
                         0,
                         route: Orders(
                           locale: widget.locale,
@@ -190,7 +157,9 @@ class _DrawerPageState extends State<DrawerPage> {
                 getTokenValue
                     ? _buildMenuTileList(
                         'lib/assets/icons/location.png',
-                        MyLocalizations.of(context).getLocalizations("ADDRESS"),
+                        MyLocalizations.of(context)
+                            .getLocalizations("ADDRESS")
+                            .toUpperCase(),
                         0,
                         route: Address(
                           locale: widget.locale,
@@ -201,7 +170,8 @@ class _DrawerPageState extends State<DrawerPage> {
                     ? _buildMenuTileList(
                         'lib/assets/icons/fav.png',
                         MyLocalizations.of(context)
-                            .getLocalizations("SAVED_ITEMS"),
+                            .getLocalizations("SAVED_ITEMS")
+                            .toUpperCase(),
                         0,
                         route: Home(
                           locale: widget.locale,
@@ -210,15 +180,23 @@ class _DrawerPageState extends State<DrawerPage> {
                         ))
                     : Container(),
                 getTokenValue
-                    ? _buildMenuTileList('lib/assets/icons/chat.png',
-                        MyLocalizations.of(context).getLocalizations("CHAT"), 0,
+                    ? _buildMenuTileList(
+                        'lib/assets/icons/chat.png',
+                        MyLocalizations.of(context)
+                            .getLocalizations("CHAT")
+                            .toUpperCase(),
+                        0,
                         route: NewChatAndHistoryPage(
                           locale: widget.locale,
                           localizedValues: widget.localizedValues,
                         ))
                     : Container(),
-                _buildMenuTileList('lib/assets/icons/about.png',
-                    MyLocalizations.of(context).getLocalizations("ABOUT_US"), 0,
+                _buildMenuTileList(
+                    'lib/assets/icons/about.png',
+                    MyLocalizations.of(context)
+                        .getLocalizations("ABOUT_US")
+                        .toUpperCase(),
+                    0,
                     route: AboutUs(
                       locale: widget.locale,
                       localizedValues: widget.localizedValues,
@@ -227,12 +205,16 @@ class _DrawerPageState extends State<DrawerPage> {
                 getTokenValue
                     ? _buildMenuTileList1(
                         'lib/assets/icons/lg.png',
-                        MyLocalizations.of(context).getLocalizations("LOGOUT"),
+                        MyLocalizations.of(context)
+                            .getLocalizations("LOGOUT")
+                            .toUpperCase(),
                         0,
                         route: null)
                     : _buildMenuTileList1(
                         'lib/assets/icons/lg.png',
-                        MyLocalizations.of(context).getLocalizations("LOGIN"),
+                        MyLocalizations.of(context)
+                            .getLocalizations("LOGIN")
+                            .toUpperCase(),
                         0,
                         route: Login(
                           locale: widget.locale,
@@ -248,11 +230,20 @@ class _DrawerPageState extends State<DrawerPage> {
 
   logout() async {
     Common.getSelectedLanguage().then((selectedLocale) async {
-      await LoginService.setLanguageCodeToProfileDefult(selectedLocale)
-          .then((value) async {
-        await Common.setToken(null);
-        await Common.setUserID(null);
-        main();
+      Map body = {"language": selectedLocale};
+      await LoginService.updateUserInfo(body).then((onValue) {
+        try {
+          Map body = {"playerId": null};
+          LoginService.updateUserInfo(body).then((value) async {
+            await Common.setToken(null);
+            await Common.setUserID(null);
+            main();
+          });
+        } catch (error, stackTrace) {
+          sentryError.reportError(error, stackTrace);
+        }
+      }).catchError((error) {
+        sentryError.reportError(error, null);
       });
     });
   }

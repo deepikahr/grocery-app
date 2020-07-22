@@ -22,6 +22,7 @@ class FavouriteService {
           'Authorization': 'bearer $token',
           'language': languageCode,
         });
+
     return json.decode(response.body);
   }
 
@@ -35,11 +36,12 @@ class FavouriteService {
       languageCode = code ?? "";
     });
     final response =
-        await client.get(Constants.baseURL + "favourites/user", headers: {
+        await client.get(Constants.baseURL + "favourites/list", headers: {
       'Content-Type': 'application/json',
       'Authorization': 'bearer $token',
       'language': languageCode,
     });
+
     return json.decode(response.body);
   }
 
@@ -58,6 +60,7 @@ class FavouriteService {
       'Authorization': 'bearer $token',
       'language': languageCode,
     });
+
     return json.decode(response.body);
   }
 
@@ -76,6 +79,7 @@ class FavouriteService {
       'Authorization': 'bearer $token',
       'language': languageCode,
     });
+
     return json.decode(response.body);
   }
 }

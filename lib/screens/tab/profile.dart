@@ -28,7 +28,7 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  Map userInfo;
+  var userInfo;
   bool isGetTokenLoading = false,
       isLanguageSelecteLoading = false,
       isGetLanguagesListLoading = false;
@@ -98,14 +98,18 @@ class _ProfileState extends State<Profile> {
           });
         }
         if (onValue['response_code'] == 200) {
+          print("kk");
           if (mounted) {
             setState(() {
-              userInfo = onValue['response_data']['userInfo'];
+              userInfo = onValue['response_data'];
               userID = userInfo['_id'];
+              Common.setUserID(userID);
             });
           }
         }
       } catch (error, stackTrace) {
+        print(error);
+
         if (mounted) {
           setState(() {
             isGetTokenLoading = false;
@@ -116,6 +120,8 @@ class _ProfileState extends State<Profile> {
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      print(error);
+
       if (mounted) {
         setState(() {
           isGetTokenLoading = false;
@@ -285,10 +291,8 @@ class _ProfileState extends State<Profile> {
                                           ]),
                                       height: 90.0,
                                       width: 91.0,
-                                      child: userInfo == null ||
-                                              (userInfo['filePath'] == null &&
-                                                  userInfo['profilePic'] ==
-                                                      null)
+                                      child: userInfo['filePath'] == null &&
+                                              userInfo['imageUrl'] == null
                                           ? Center(
                                               child: new Container(
                                                 width: 200.0,
@@ -318,7 +322,7 @@ class _ProfileState extends State<Profile> {
                                                     image: new NetworkImage(userInfo[
                                                                 'filePath'] ==
                                                             null
-                                                        ? userInfo['profilePic']
+                                                        ? userInfo['imageUrl']
                                                         : Constants
                                                                 .imageUrlPath +
                                                             "tr:dpr-auto,tr:w-500" +
@@ -421,7 +425,8 @@ class _ProfileState extends State<Profile> {
                                       right: 20.0),
                                   child: Text(
                                     MyLocalizations.of(context)
-                                        .getLocalizations("ADDRESS"),
+                                        .getLocalizations("ADDRESS")
+                                        .toUpperCase(),
                                     style: textBarlowMediumBlack(),
                                   ),
                                 ),

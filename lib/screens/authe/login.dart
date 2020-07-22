@@ -83,10 +83,9 @@ class _LoginState extends State<Login> {
               });
             }
             if (onValue['response_code'] == 200) {
-              if (onValue['response_data']['role'] == 'User') {
+              if (onValue['response_data']['role'] == 'USER') {
                 await Common.setToken(onValue['response_data']['token']);
-                await Common.setUserID(onValue['response_data']['_id']);
-                await LoginService.setLanguageCodeToProfile();
+
                 if (widget.isCart == true) {
                   Navigator.pushAndRemoveUntil(
                       context,

@@ -204,16 +204,16 @@ class _AllDealsListState extends State<AllDealsList> {
                       itemBuilder: (BuildContext context, int i) {
                         return InkWell(
                           onTap: () {
-                            if (dealsList[i]['delalType'] == 'Category') {
+                            if (dealsList[i]['delalType'] == 'CATEGORY') {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => SubCategories(
                                       locale: widget.locale,
                                       localizedValues: widget.localizedValues,
-                                      catId: dealsList[i]['category'],
+                                      catId: dealsList[i]['categoryId'],
                                       catTitle:
-                                          '${dealsList[i]['name'][0].toUpperCase()}${dealsList[i]['name'].substring(1)}',
+                                          '${dealsList[i]['title'][0].toUpperCase()}${dealsList[i]['title'].substring(1)}',
                                       token: getTokenValue),
                                 ),
                               );
@@ -224,7 +224,7 @@ class _AllDealsListState extends State<AllDealsList> {
                                   builder: (context) => ProductDetails(
                                     locale: widget.locale,
                                     localizedValues: widget.localizedValues,
-                                    productID: dealsList[i]['product'],
+                                    productID: dealsList[i]['productId'],
                                   ),
                                 ),
                               );
@@ -242,8 +242,8 @@ class _AllDealsListState extends State<AllDealsList> {
                                 dealsList[i]['imageUrl'],
                             isPath:
                                 dealsList[i]['filePath'] == null ? false : true,
-                            title: dealsList[i]['name'],
-                            price: dealsList[i]['delaPercent'].toString() +
+                            title: dealsList[i]['title'],
+                            price: dealsList[i]['dealPercent'].toString() +
                                 "% " +
                                 MyLocalizations.of(context)
                                     .getLocalizations("OFF"),

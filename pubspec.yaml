@@ -91,16 +91,12 @@ flutter:
     - lib/assets/images/no-orders.png
     - lib/assets/images/profileIcon.png
 
-    - lib/assets/icons/plus.svg
     - lib/assets/icons/tick.svg
     - lib/assets/icons/editt.svg
     - lib/assets/icons/add1.svg
-    - lib/assets/icons/delete.svg
-    - lib/assets/icons/minus.svg
 
     - lib/assets/icons/sale.png
     - lib/assets/icons/Home.png
-    - lib/assets/icons/minus.svg
     - lib/assets/icons/products.png
     - lib/assets/icons/location.png
     - lib/assets/icons/fav.png
@@ -112,3 +108,4 @@ flutter:
     - lib/assets/icons/history.png
 
     - lib/assets/splash.png
+    - lib/assets/logo.png

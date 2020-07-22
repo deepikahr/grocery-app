@@ -45,6 +45,7 @@ class _ResetPasswordState extends State<ResetPassword> {
       }
       Map<String, dynamic> body = {"password": password1};
       await LoginService.resetPassword(body, widget.token).then((onValue) {
+        print(onValue);
         try {
           if (mounted) {
             setState(() {

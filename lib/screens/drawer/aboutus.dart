@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
-import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -27,13 +26,13 @@ class _AboutUsState extends State<AboutUs> {
     super.initState();
   }
 
-  getAboutUsData() {
+  getAboutUsData() async {
     if (mounted) {
       setState(() {
         isAboutUsData = true;
       });
     }
-    LoginService.aboutUs().then((value) {
+    await LoginService.aboutUs().then((value) {
       try {
         if (value['response_code'] == 200) {
           if (mounted) {
@@ -112,13 +111,8 @@ class _AboutUsState extends State<AboutUs> {
                           Container(
                             margin: EdgeInsets.all(20),
                             child: Center(
-                              child: Image.network(
-                                aboutUsDatails['userApp']['filePath'] == null
-                                    ? aboutUsDatails['userApp']['imageUrl']
-                                    : Constants.imageUrlPath +
-                                        "tr:dpr-auto,tr:w-500" +
-                                        aboutUsDatails['userApp']['filePath'],
-                              ),
+                              child: Image.asset("lib/assets/logo.png",
+                                  height: 200),
                             ),
                           ),
                           Container(

@@ -46,6 +46,7 @@ class _OtpState extends State<Otp> {
         }
         Map<String, dynamic> body = {"otp": enteredOtp};
         await LoginService.verifyOtp(body, widget.token).then((onValue) {
+          print(onValue);
           try {
             if (mounted) {
               setState(() {
@@ -79,7 +80,7 @@ class _OtpState extends State<Otp> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => ResetPassword(
-                                token: onValue['response_data']['token'],
+                                token: onValue['response_data']['resData'],
                                 locale: widget.locale,
                                 localizedValues: widget.localizedValues,
                               ),

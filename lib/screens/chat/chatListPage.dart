@@ -46,8 +46,8 @@ class _ChatListPageState extends State<ChatListPage>
         if (onValue['response_code'] == 200) {
           if (mounted) {
             setState(() {
-              id = onValue['response_data']['userInfo']['_id'];
-              userData = onValue['response_data']['userInfo'];
+              id = onValue['response_data']['_id'];
+              userData = onValue['response_data'];
               socketInt();
             });
           }

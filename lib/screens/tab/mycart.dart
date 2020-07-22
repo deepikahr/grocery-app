@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
+import 'package:readymadeGroceryApp/model/addToCart.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
+import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -57,7 +58,7 @@ class _MyCartState extends State<MyCart> {
         isMinAmountCheckLoading = true;
       });
     }
-    await CartService.minOrderAmoutCheckApi().then((onValue) {
+    await LoginService.getLocationformation().then((onValue) {
       try {
         if (mounted) {
           if (onValue['response_code'] == 200) {
@@ -131,19 +132,20 @@ class _MyCartState extends State<MyCart> {
 
   void _incrementCount(i) {
     quantityUpdateType = '+';
+
     if (mounted)
       setState(() {
-        cartItem['cart'][i]['quantity']++;
+        cartItem['products'][i]['quantity']++;
+        updateCart(i);
       });
-    updateCart(i);
   }
 
   void _decrementCount(i) {
     quantityUpdateType = '-';
-    if (cartItem['cart'][i]['quantity'] > 1) {
+    if (cartItem['products'][i]['quantity'] > 1) {
       if (mounted) {
         setState(() {
-          cartItem['cart'][i]['quantity']--;
+          cartItem['products'][i]['quantity']--;
           updateCart(i);
         });
       }
@@ -158,23 +160,27 @@ class _MyCartState extends State<MyCart> {
 
   // update cart
   updateCart(i) async {
+    print(cartItem['products'][i]['quantity']);
     Map<String, dynamic> body = {
-      'cartId': cartItem['_id'],
-      'productId': cartItem['cart'][i]['productId'],
-      'quantity': cartItem['cart'][i]['quantity']
+      'unit': cartItem['products'][i]['unit'],
+      'productId': cartItem['products'][i]['productId'],
+      'quantity': cartItem['products'][i]['quantity']
     };
     if (mounted) {
       setState(() {
         isUpdating = true;
-        cartItem['cart'][i]['isQuantityUpdating'] = true;
+        cartItem['products'][i]['isQuantityUpdating'] = true;
       });
     }
-    await CartService.updateProductToCart(body).then((onValue) {
+    print(body);
+    await AddToCart.addAndUpdateProductMethod(body).then((onValue) {
       try {
         if (mounted) {
           if (onValue['response_code'] == 400) {
-            cartItem['cart'][i]['quantity']--;
-            cartItem['cart'][i]['isQuantityUpdating'] = false;
+            cartItem['products'][i]['quantity']--;
+            cartItem['products'][i]['quantity'] =
+                cartItem['products'][i]['quantity'];
+            cartItem['products'][i]['isQuantityUpdating'] = false;
             showDialog<Null>(
               context: context,
               barrierDismissible: false,
@@ -208,17 +214,19 @@ class _MyCartState extends State<MyCart> {
               },
             );
           } else {
-            cartItem = onValue['response_data'];
+            setState(() {
+              isUpdating = false;
+              cartItem = onValue['response_data'];
+              cartItem['products'][i]['quantity'] =
+                  cartItem['products'][i]['quantity'];
+              cartItem['products'][i]['isQuantityUpdating'] = false;
+            });
             if (onValue['response_data'] is Map) {
               Common.setCartData(onValue['response_data']);
             } else {
               Common.setCartData(null);
             }
           }
-          setState(() {
-            isUpdating = false;
-            cartItem['cart'][i]['isQuantityUpdating'] = false;
-          });
         }
       } catch (error, stackTrace) {
         if (mounted) {
@@ -306,11 +314,8 @@ class _MyCartState extends State<MyCart> {
 
   //delete from cart
   deleteCart(i) async {
-    Map<String, dynamic> body = {
-      'cartId': cartItem['_id'],
-      'productId': cartItem['cart'][i]['productId'],
-    };
-    await CartService.deleteDataFromCart(body).then((onValue) {
+    await CartService.deleteDataFromCart(cartItem['products'][i]['productId'])
+        .then((onValue) {
       try {
         if (onValue['response_code'] == 200 &&
             onValue['response_data'] is Map) {
@@ -348,8 +353,8 @@ class _MyCartState extends State<MyCart> {
     getCartItems();
   }
 
-  deleteAllCart(cartId) async {
-    await CartService.deleteAllDataFromCart(cartId).then((onValue) {
+  deleteAllCart() async {
+    await CartService.deleteAllDataFromCart().then((onValue) {
       try {
         if (onValue['response_code'] == 200) {
           Common.setCartData(null);
@@ -372,110 +377,23 @@ class _MyCartState extends State<MyCart> {
       minAmout['minimumOrderAmountToPlaceOrder'] = 0.0;
     }
     if (cartItem['subTotal'] >= minAmout['minimumOrderAmountToPlaceOrder']) {
-      checkProductAvailableOrNot(cartItem['_id']);
+      var result = Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Checkout(
+            locale: widget.locale,
+            localizedValues: widget.localizedValues,
+            id: cartItem['_id'].toString(),
+          ),
+        ),
+      );
+      result.then((value) {
+        getCartItems();
+      });
     } else {
       showError(MyLocalizations.of(context).getLocalizations("MIN_AMOUNT_MEG") +
           "($currency${minAmout['minimumOrderAmountToPlaceOrder'].toString()})");
     }
-  }
-
-  checkProductAvailableOrNot(cartId) async {
-    if (mounted) {
-      setState(() {
-        isCheckProductAvailableOrNot = true;
-      });
-    }
-    CartService.checkCartVerifyOrNot().then((response) {
-      if (mounted) {
-        setState(() {
-          isCheckProductAvailableOrNot = false;
-        });
-      }
-      if (response['response_code'] == 200) {
-        var result = Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => Checkout(
-              locale: widget.locale,
-              localizedValues: widget.localizedValues,
-              cartItem: cartItem,
-              buy: 'cart',
-              quantity: cartItem['cart'].length.toString(),
-              id: cartItem['_id'].toString(),
-            ),
-          ),
-        );
-        result.then((value) {
-          getCartItems();
-        });
-      } else if (response['response_code'] == 400) {
-        showError("${response['response_data']}");
-      } else if (response['response_code'] == 205) {
-        verifyTokenAlert(response['response_data'], cartId);
-      } else {
-        showError("${response['response_data']}");
-      }
-    });
-  }
-
-  verifyTokenAlert(responseData, cartId) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            responseData['message'] ?? "",
-          ),
-          content: SingleChildScrollView(
-            child: responseData['cartVerifyData']['cartArr'].length > 0
-                ? ListView.builder(
-                    physics: ScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: responseData['cartVerifyData']['cartArr'].length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Text(
-                        responseData['cartVerifyData']['cartArr'][index]
-                                ['title']
-                            .toString(),
-                      );
-                    })
-                : Text(""),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child:
-                  Text(MyLocalizations.of(context).getLocalizations("CANCEL")),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            FlatButton(
-              child: Text(
-                  MyLocalizations.of(context).getLocalizations("REMOVE_ITEMS")),
-              onPressed: () {
-                Map body = {
-                  "cartId": cartId,
-                  "cart": responseData['cartVerifyData']['cartArr']
-                };
-                CartService.paymentTimeCarDataDelete(body).then((response) {
-                  Navigator.pop(context);
-                  if (response['response_code'] == 200) {
-                    if (response['response_data'] is Map) {
-                      Common.setCartData(response['response_data']);
-                    } else {
-                      Common.setCartData(null);
-                    }
-                    getToken();
-                    checkMinOrderAmount();
-                  }
-                });
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   showError(responseData) async {
@@ -552,7 +470,7 @@ class _MyCartState extends State<MyCart> {
                                               style: textBarlowMediumBlack(),
                                             )
                                           : Text(
-                                              '(${cartItem['cart'].length}) ' +
+                                              '(${cartItem['products'].length}) ' +
                                                   MyLocalizations.of(context)
                                                       .getLocalizations(
                                                           "ITEMS"),
@@ -560,7 +478,7 @@ class _MyCartState extends State<MyCart> {
                                             ),
                                       InkWell(
                                         onTap: () {
-                                          deleteAllCart(cartItem['_id']);
+                                          deleteAllCart();
                                         },
                                         child: Text(
                                           MyLocalizations.of(context)
@@ -576,7 +494,7 @@ class _MyCartState extends State<MyCart> {
                                   shrinkWrap: true,
                                   itemCount: cartItem == null
                                       ? 0
-                                      : cartItem['cart'].length,
+                                      : cartItem['products'].length,
                                   itemBuilder: (BuildContext context, int i) {
                                     return Container(
                                       margin: EdgeInsets.only(bottom: 5),
@@ -605,25 +523,29 @@ class _MyCartState extends State<MyCart> {
                                                 ],
                                                 image: DecorationImage(
                                                   fit: BoxFit.cover,
-                                                  image: cartItem['cart'][i][
+                                                  image: cartItem['products'][i]
+                                                                  [
                                                                   'filePath'] ==
                                                               null &&
-                                                          cartItem['cart'][i][
+                                                          cartItem['products']
+                                                                      [i][
                                                                   'imageUrl'] ==
                                                               null
                                                       ? AssetImage(
                                                           'lib/assets/images/no-orders.png')
                                                       : NetworkImage(
-                                                          cartItem['cart'][i][
+                                                          cartItem['products']
+                                                                          [i][
                                                                       'filePath'] ==
                                                                   null
-                                                              ? cartItem['cart']
-                                                                      [i]
-                                                                  ['imageUrl']
+                                                              ? cartItem[
+                                                                      'products']
+                                                                  [
+                                                                  i]['imageUrl']
                                                               : Constants
                                                                       .imageUrlPath +
                                                                   "tr:dpr-auto,tr:w-500" +
-                                                                  cartItem['cart']
+                                                                  cartItem['products']
                                                                           [i][
                                                                       'filePath'],
                                                         ),
@@ -645,12 +567,9 @@ class _MyCartState extends State<MyCart> {
                                                       .spaceBetween,
                                               children: <Widget>[
                                                 Text(
-                                                  cartItem['cart'][i]
-                                                              ['title'] ==
-                                                          null
-                                                      ? " "
-                                                      : cartItem['cart'][i]
-                                                          ['title'],
+                                                  cartItem['products'][i]
+                                                          ['productName'] ??
+                                                      " ",
                                                   maxLines: 2,
                                                   overflow:
                                                       TextOverflow.ellipsis,
@@ -666,21 +585,18 @@ class _MyCartState extends State<MyCart> {
                                                           textbarlowBoldGreen(),
                                                     ),
                                                     Text(
-                                                      cartItem['cart'][i]
-                                                                  ['price'] ==
-                                                              null
-                                                          ? " "
-                                                          : cartItem['cart'][i][
+                                                      cartItem['products'][i][
                                                                   'productTotal']
                                                               .toDouble()
                                                               .toStringAsFixed(
                                                                   2)
-                                                              .toString(),
+                                                              .toString() ??
+                                                          "",
                                                       style:
                                                           textbarlowBoldGreen(),
                                                     ),
                                                     SizedBox(width: 3),
-                                                    cartItem['cart'][i]
+                                                    cartItem['products'][i]
                                                             ['isDealAvailable']
                                                         ? Padding(
                                                             padding:
@@ -688,7 +604,7 @@ class _MyCartState extends State<MyCart> {
                                                                         .only(
                                                                     top: 5.0),
                                                             child: Text(
-                                                              '$currency${((cartItem['cart'][i]['price']) * (cartItem['cart'][i]['quantity'])).toDouble().toStringAsFixed(2)}',
+                                                              '$currency${((cartItem['products'][i]['price']) * (cartItem['products'][i]['quantity'])).toDouble().toStringAsFixed(2)}',
                                                               style:
                                                                   barlowregularlackstrike(),
                                                             ),
@@ -700,8 +616,8 @@ class _MyCartState extends State<MyCart> {
                                                               top: 5.0),
                                                       child: Text(
                                                         " / " +
-                                                            cartItem['cart'][i]
-                                                                    ['unit']
+                                                            cartItem['products']
+                                                                    [i]['unit']
                                                                 .toString(),
                                                         style:
                                                             barlowregularlack(),
@@ -710,7 +626,7 @@ class _MyCartState extends State<MyCart> {
                                                   ],
                                                 ),
                                                 SizedBox(height: 10),
-                                                cartItem['cart'][i][
+                                                cartItem['products'][i][
                                                             'isDealAvailable'] ==
                                                         true
                                                     ? Text(
@@ -719,9 +635,9 @@ class _MyCartState extends State<MyCart> {
                                                                 .getLocalizations(
                                                                     "DEAL") +
                                                             " " +
-                                                            (cartItem['cart'][i]
-                                                                    [
-                                                                    'delaPercent'])
+                                                            (cartItem['products']
+                                                                        [i][
+                                                                    'dealPercent'])
                                                                 .toString() +
                                                             "% " +
                                                             MyLocalizations.of(
@@ -753,67 +669,103 @@ class _MyCartState extends State<MyCart> {
                                                     MainAxisAlignment
                                                         .spaceBetween,
                                                 children: <Widget>[
-                                                  InkWell(
-                                                    onTap: () {
-                                                      if (cartItem['cart'][i][
-                                                                  'isQuantityUpdating'] ==
-                                                              null ||
-                                                          cartItem['cart'][i][
-                                                                  'isQuantityUpdating'] ==
-                                                              false) {
-                                                        _incrementCount(i);
-                                                      }
-                                                    },
-                                                    child: cartItem['cart'][i][
+                                                  Container(
+                                                    width: 32,
+                                                    height: 32,
+                                                    decoration: BoxDecoration(
+                                                      color: primary,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20),
+                                                    ),
+                                                    child: InkWell(
+                                                      onTap: () {
+                                                        if (cartItem['products']
+                                                                        [i][
                                                                     'isQuantityUpdating'] ==
-                                                                true &&
-                                                            quantityUpdateType ==
-                                                                '+'
-                                                        ? GFLoader(
-                                                            type: GFLoaderType
-                                                                .ios,
-                                                            size: 34,
-                                                          )
-                                                        : SvgPicture.asset(
-                                                            'lib/assets/icons/plus.svg'),
+                                                                null ||
+                                                            cartItem['products']
+                                                                        [i][
+                                                                    'isQuantityUpdating'] ==
+                                                                false) {
+                                                          _incrementCount(i);
+                                                        }
+                                                      },
+                                                      child: cartItem['products']
+                                                                          [i][
+                                                                      'isQuantityUpdating'] ==
+                                                                  true &&
+                                                              quantityUpdateType ==
+                                                                  '+'
+                                                          ? GFLoader(
+                                                              type: GFLoaderType
+                                                                  .ios,
+                                                              size: 35,
+                                                            )
+                                                          : Icon(
+                                                              Icons.add,
+                                                            ),
+                                                    ),
                                                   ),
-                                                  cartItem['cart'][i]
+                                                  cartItem['products'][i]
                                                               ['quantity'] ==
                                                           null
                                                       ? Text('0')
                                                       : Text(
-                                                          '${cartItem['cart'][i]['quantity']}',
+                                                          '${cartItem['products'][i]['quantity']}',
                                                           style:
                                                               textBarlowRegularBlack(),
                                                         ),
-                                                  InkWell(
-                                                    onTap: () {
-                                                      if (cartItem['cart'][i][
-                                                                  'isQuantityUpdating'] ==
-                                                              null ||
-                                                          cartItem['cart'][i][
-                                                                  'isQuantityUpdating'] ==
-                                                              false) {
-                                                        _decrementCount(i);
-                                                      }
-                                                    },
-                                                    child: cartItem['cart'][i][
+                                                  Container(
+                                                    width: 32,
+                                                    height: 32,
+                                                    decoration: BoxDecoration(
+                                                      color: cartItem['products']
+                                                                          [i][
+                                                                      'isQuantityUpdating'] ==
+                                                                  true &&
+                                                              quantityUpdateType ==
+                                                                  '-'
+                                                          ? primary
+                                                          : Colors.black,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20),
+                                                    ),
+                                                    child: InkWell(
+                                                      onTap: () {
+                                                        if (cartItem['products']
+                                                                        [i][
                                                                     'isQuantityUpdating'] ==
-                                                                true &&
-                                                            quantityUpdateType ==
-                                                                '-'
-                                                        ? GFLoader(
-                                                            type: GFLoaderType
-                                                                .ios,
-                                                            size: 34,
-                                                          )
-                                                        : SvgPicture.asset(
-                                                            'lib/assets/icons/minus.svg'),
+                                                                null ||
+                                                            cartItem['products']
+                                                                        [i][
+                                                                    'isQuantityUpdating'] ==
+                                                                false) {
+                                                          _decrementCount(i);
+                                                        }
+                                                      },
+                                                      child: cartItem['products']
+                                                                          [i][
+                                                                      'isQuantityUpdating'] ==
+                                                                  true &&
+                                                              quantityUpdateType ==
+                                                                  '-'
+                                                          ? GFLoader(
+                                                              type: GFLoaderType
+                                                                  .ios,
+                                                              size: 35,
+                                                            )
+                                                          : Icon(
+                                                              Icons.remove,
+                                                              color: primary,
+                                                            ),
+                                                    ),
                                                   ),
                                                 ],
                                               ),
                                             ),
-                                          )
+                                          ),
                                         ],
                                       ),
                                     );

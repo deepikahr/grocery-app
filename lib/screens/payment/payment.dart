@@ -96,7 +96,7 @@ class _PaymentState extends State<Payment> {
       try {
         if (mounted) {
           setState(() {
-            walletAmount = onValue['response_data']['walletAmount'] ?? 0;
+            walletAmount = onValue['walletAmount'] ?? 0;
             isCardListLoading = false;
           });
         }
@@ -161,6 +161,7 @@ class _PaymentState extends State<Payment> {
   }
 
   palceOrderMethod(cartData) async {
+    print(cartData);
     await ProductService.placeOrder(cartData).then((onValue) {
       try {
         if (mounted) {

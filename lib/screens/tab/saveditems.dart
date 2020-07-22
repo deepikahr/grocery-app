@@ -46,6 +46,7 @@ class _SavedItemsState extends State<SavedItems> {
       });
     }
     await FavouriteService.getFavList().then((onValue) {
+      print(onValue);
       try {
         if (mounted) {
           setState(() {
@@ -298,7 +299,7 @@ class _SavedItemsState extends State<SavedItems> {
                             children: <Widget>[
                               SizedBox(height: 7),
                               new Text(
-                                '(${cartData['cart'].length})  ' +
+                                '(${cartData['products'].length})  ' +
                                     MyLocalizations.of(context)
                                         .getLocalizations("ITEMS"),
                                 style: textBarlowRegularWhite(),

@@ -5,8 +5,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/screens/orders/ordersDetails.dart';
-import 'package:readymadeGroceryApp/screens/tab/mycart.dart';
-import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -85,37 +83,6 @@ class _OrdersState extends State<Orders> {
           isOrderListLoading = false;
         });
       }
-      sentryError.reportError(error, null);
-    });
-  }
-
-  addToCart(data, length, loopIndex) async {
-    Map<String, dynamic> buyNowProduct = {
-      'productId': data['productId'].toString(),
-      'quantity': data['quantity'],
-      "price": data['price'],
-      "unit": data['unit']
-    };
-
-    await CartService.addProductToCart(buyNowProduct).then((onValue) {
-      try {
-        if (onValue['response_code'] == 200) {
-          if (length - 1 == loopIndex) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (BuildContext context) => MyCart(
-                  locale: widget.locale,
-                  localizedValues: widget.localizedValues,
-                ),
-              ),
-            );
-          }
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
       sentryError.reportError(error, null);
     });
   }
@@ -478,59 +445,6 @@ class _OrdersState extends State<Orders> {
               '',
               style: textSMBarlowRegularrGreyb(),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  reorder(orderDetails) {
-    return Container(
-      color: Color(0xFFF7F7F7),
-      padding: EdgeInsets.only(bottom: 20),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-              child: Container(
-            height: 48,
-            margin: EdgeInsets.only(left: 20, right: 15),
-            child: GFButton(
-              onPressed: () {
-                for (int j = 0; j < orderDetails['cart']['cart'].length; j++) {
-                  addToCart(orderDetails['cart']['cart'][j],
-                      orderDetails['cart']['cart'].length, j);
-                }
-              },
-              text: MyLocalizations.of(context).getLocalizations("RE_ORDER"),
-              color: primary,
-              textStyle: textbarlowmediumwblack(),
-            ),
-          )),
-          Expanded(
-              child: Container(
-            height: 48,
-            margin: EdgeInsets.only(right: 20, left: 20.0),
-            child: GFButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => OrderDetails(
-                      locale: widget.locale,
-                      localizedValues: widget.localizedValues,
-                      orderId: orderDetails["_id"],
-                    ),
-                  ),
-                );
-              },
-              text: MyLocalizations.of(context).getLocalizations("VIEW"),
-              type: GFButtonType.outline,
-              color: primary,
-              textStyle: textbarlowmediumwprimary(),
-            ),
-          )),
-          SizedBox(
-            height: 20.0,
           ),
         ],
       ),

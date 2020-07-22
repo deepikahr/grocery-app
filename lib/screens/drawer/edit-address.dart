@@ -59,7 +59,7 @@ class _EditAddressState extends State<EditAddress> {
     super.initState();
   }
 
-  List<String> addressType = ['Home', "Work", "Others"];
+  List<String> addressType = ['HOME', "WORK", "OTHERS"];
   setSelectedRadio(int val) async {
     if (mounted) {
       setState(() {
@@ -72,10 +72,10 @@ class _EditAddressState extends State<EditAddress> {
     "location": {},
     "address": null,
     "flatNo": null,
-    "apartmentame": null,
+    "apartmentName": null,
     "landmark": null,
     "postalCode": null,
-    "contactNumber": null,
+    "mobileNumber": null,
     "addressType": null
   };
   updateAddress() async {
@@ -92,17 +92,15 @@ class _EditAddressState extends State<EditAddress> {
         address['location'] = widget.updateAddressID['location'];
       } else {
         var location = {
-          "lat": _pickedLocation.latLng.latitude,
-          "long": _pickedLocation.latLng.longitude
+          "latitude": _pickedLocation.latLng.latitude,
+          "longitude": _pickedLocation.latLng.longitude
         };
         address['location'] = location;
       }
       address['addressType'] = addressType[selectedAddressType];
       print(address);
-      print(widget.updateAddressID['_id']);
       AddressService.updateAddress(address, widget.updateAddressID['_id'])
           .then((onValue) {
-        print(onValue);
         try {
           if (mounted) {
             setState(() {
@@ -121,6 +119,8 @@ class _EditAddressState extends State<EditAddress> {
             showSnackbar(onValue['response_data']);
           }
         } catch (error, stackTrace) {
+          print(error);
+
           if (mounted) {
             setState(() {
               isUpdateAddressLoading = false;
@@ -129,6 +129,8 @@ class _EditAddressState extends State<EditAddress> {
           sentryError.reportError(error, stackTrace);
         }
       }).catchError((onError) {
+        print(onError);
+
         if (mounted) {
           setState(() {
             isUpdateAddressLoading = false;
@@ -268,8 +270,10 @@ class _EditAddressState extends State<EditAddress> {
                         onPressed: () async {
                           var lat, long;
                           if (_pickedLocation == null) {
-                            lat = widget.updateAddressID['location']['lat'];
-                            long = widget.updateAddressID['location']['long'];
+                            lat =
+                                widget.updateAddressID['location']['latitude'];
+                            long =
+                                widget.updateAddressID['location']['longitude'];
                           } else {
                             lat = _pickedLocation.latLng.latitude;
                             long = _pickedLocation.latLng.longitude;
@@ -520,7 +524,7 @@ class _EditAddressState extends State<EditAddress> {
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
-                    initialValue: widget.updateAddressID['contactNumber'],
+                    initialValue: widget.updateAddressID['mobileNumber'],
                     maxLength: 15,
                     style: labelStyle(),
                     keyboardType: TextInputType.number,
@@ -549,7 +553,7 @@ class _EditAddressState extends State<EditAddress> {
                         return null;
                     },
                     onSaved: (String value) {
-                      address['contactNumber'] = value;
+                      address['mobileNumber'] = value;
                     },
                   ),
                 ),
@@ -577,13 +581,13 @@ class _EditAddressState extends State<EditAddress> {
                       addressType.length == null ? 0 : addressType.length,
                   itemBuilder: (BuildContext context, int i) {
                     String type;
-                    if (addressType[i] == 'Home') {
+                    if (addressType[i] == 'HOME') {
                       type =
                           MyLocalizations.of(context).getLocalizations("HOME");
-                    } else if (addressType[i] == 'Work') {
+                    } else if (addressType[i] == 'WORK') {
                       type =
                           MyLocalizations.of(context).getLocalizations("WORK");
-                    } else if (addressType[i] == 'Others') {
+                    } else if (addressType[i] == 'OTHERS') {
                       type = MyLocalizations.of(context)
                           .getLocalizations("OTHERS");
                     } else {
@@ -622,7 +626,10 @@ class _EditAddressState extends State<EditAddress> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 0.0, right: 0.0),
                     child: GFButton(
-                      onPressed: updateAddress,
+                      onPressed: () {
+                        print("update");
+                        updateAddress();
+                      },
                       textStyle: textBarlowRegularBlack(),
                       color: primary,
                       child: Row(

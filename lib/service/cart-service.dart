@@ -7,7 +7,7 @@ class CartService {
   static final Client client = Client();
 
   // add product in cart
-  static Future<Map<String, dynamic>> addProductToCart(body) async {
+  static Future<Map<String, dynamic>> addAndUpdateProduct(body) async {
     String token, languageCode;
     await Common.getToken().then((onValue) {
       token = onValue;
@@ -15,13 +15,14 @@ class CartService {
     await Common.getSelectedLanguage().then((code) {
       languageCode = code ?? "";
     });
-    final response = await client.post(Constants.baseURL + "cart/add/product",
+    final response = await client.post(Constants.baseURL + "carts/update",
         body: json.encode(body),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'bearer $token',
           'language': languageCode,
         });
+
     return json.decode(response.body);
   }
 
@@ -34,8 +35,7 @@ class CartService {
     await Common.getSelectedLanguage().then((code) {
       languageCode = code ?? "";
     });
-    final response =
-        await client.get(Constants.baseURL + "cart/user/items", headers: {
+    final response = await client.get(Constants.baseURL + "carts/my", headers: {
       'Content-Type': 'application/json',
       'Authorization': 'bearer $token',
       'language': languageCode,
@@ -43,45 +43,8 @@ class CartService {
     return json.decode(response.body);
   }
 
-  // update product in cart
-  static Future<Map<String, dynamic>> updateProductToCart(body) async {
-    String token, languageCode;
-    await Common.getToken().then((onValue) {
-      token = onValue;
-    });
-    await Common.getSelectedLanguage().then((code) {
-      languageCode = code ?? "";
-    });
-    final response = await client.put(Constants.baseURL + "cart/update/product",
-        body: json.encode(body),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'bearer $token',
-          'language': languageCode,
-        });
-    return json.decode(response.body);
-  }
-
   // delete form cart
-  static Future<Map<String, dynamic>> deleteDataFromCart(body) async {
-    String token, languageCode;
-    await Common.getToken().then((onValue) {
-      token = onValue;
-    });
-    await Common.getSelectedLanguage().then((code) {
-      languageCode = code ?? "";
-    });
-    final response = await client.put(Constants.baseURL + "cart/delete/product",
-        body: json.encode(body),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'bearer $token',
-          'language': languageCode,
-        });
-    return json.decode(response.body);
-  }
-
-  static Future<Map<String, dynamic>> deleteAllDataFromCart(cartId) async {
+  static Future<Map<String, dynamic>> deleteDataFromCart(productId) async {
     String token, languageCode;
     await Common.getToken().then((onValue) {
       token = onValue;
@@ -90,11 +53,30 @@ class CartService {
       languageCode = code ?? "";
     });
     final response = await client
-        .delete(Constants.baseURL + "cart/all/items/$cartId", headers: {
+        .put(Constants.baseURL + "carts/remove/$productId", headers: {
       'Content-Type': 'application/json',
       'Authorization': 'bearer $token',
       'language': languageCode,
     });
+
+    return json.decode(response.body);
+  }
+
+  static Future<Map<String, dynamic>> deleteAllDataFromCart() async {
+    String token, languageCode;
+    await Common.getToken().then((onValue) {
+      token = onValue;
+    });
+    await Common.getSelectedLanguage().then((code) {
+      languageCode = code ?? "";
+    });
+    final response =
+        await client.delete(Constants.baseURL + "carts/delete", headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'bearer $token',
+      'language': languageCode,
+    });
+
     return json.decode(response.body);
   }
 
@@ -114,10 +96,13 @@ class CartService {
           'Authorization': 'bearer $token',
           'language': languageCode,
         });
+    print("cart/remove/multi/product");
+    print(json.decode(response.body));
     return json.decode(response.body);
   }
 
-  static Future<Map<String, dynamic>> minOrderAmoutCheckApi() async {
+  static Future<Map<String, dynamic>> getDeliveryChargesAndSaveAddress(
+      body) async {
     String token, languageCode;
     await Common.getToken().then((onValue) {
       token = onValue;
@@ -125,29 +110,16 @@ class CartService {
     await Common.getSelectedLanguage().then((code) {
       languageCode = code ?? "";
     });
-    final response = await client
-        .get(Constants.baseURL + "delivery/tax/settings/info", headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'bearer $token',
-      'language': languageCode,
-    });
-    return json.decode(response.body);
-  }
-
-  static Future<Map<String, dynamic>> checkCartVerifyOrNot() async {
-    String token, languageCode;
-    await Common.getToken().then((onValue) {
-      token = onValue;
-    });
-    await Common.getSelectedLanguage().then((code) {
-      languageCode = code ?? "";
-    });
-    final response =
-        await client.get(Constants.baseURL + "orders/cart/verify", headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'bearer $token',
-      'language': languageCode,
-    });
+    final response = await client.post(
+        Constants.baseURL + "carts/update-address",
+        body: json.encode(body),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'bearer $token',
+          'language': languageCode,
+        });
+    print("carts/update-address");
+    print(json.decode(response.body));
     return json.decode(response.body);
   }
 }

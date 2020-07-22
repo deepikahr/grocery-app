@@ -44,13 +44,14 @@ class _AllProductsState extends State<AllProducts> {
       RefreshController(initialRefresh: false);
   ScrollController controller;
   ScrollController _scrollController = ScrollController();
-  int index = 0, totalIndex = 1;
+  // int index = 0, totalIndex = 1;
   bool productListApiCall = false,
       isNewProductsLoading = false,
       isLoadingSubCatProductsList = false,
       lastApiCall = true;
   var cartData;
   String isSelectetedId;
+  int productLimt = 10, productIndex = 0, totalProduct = 1;
   @override
   void initState() {
     getTokenValueMethod();
@@ -132,7 +133,7 @@ class _AllProductsState extends State<AllProducts> {
         sentryError.reportError(error, stackTrace);
       }
 
-      getProductListMethod(index);
+      getProductListMethod(productIndex);
     }).catchError((error) {
       if (mounted) {
         setState(() {
@@ -148,20 +149,22 @@ class _AllProductsState extends State<AllProducts> {
       isNewProductsLoading = true;
     });
 
-    await ProductService.getProductListAll(productIndex).then((onValue) {
+    await ProductService.getProductListAll(productIndex, productLimt)
+        .then((onValue) {
       try {
         _refreshController.refreshCompleted();
         if (onValue['response_code'] == 200) {
           if (mounted) {
             setState(() {
-              productsList.addAll(onValue['response_data']['products']);
-              index = productsList.length;
-              totalIndex = onValue['response_data']["total"];
+              productsList.addAll(onValue['response_data']);
+              totalProduct = onValue["total"];
+              int index = productsList.length;
               if (lastApiCall == true) {
-                if (index < totalIndex) {
+                productIndex++;
+                if (index < totalProduct) {
                   getProductListMethod(index);
                 } else {
-                  if (index == totalIndex) {
+                  if (index == totalProduct) {
                     if (mounted) {
                       lastApiCall = false;
                       getProductListMethod(index);
@@ -280,7 +283,6 @@ class _AllProductsState extends State<AllProducts> {
                   builder: (context) => SearchItem(
                       locale: widget.locale,
                       localizedValues: widget.localizedValues,
-                      productsList: productsList,
                       currency: currency,
                       token: getTokenValue),
                 ),
@@ -309,7 +311,7 @@ class _AllProductsState extends State<AllProducts> {
         controller: _refreshController,
         onRefresh: () {
           productsList = [];
-          index = productsList.length;
+          productIndex = productsList.length;
           getTokenValueMethod();
         },
         child: isLoadingProductsList
@@ -350,7 +352,7 @@ class _AllProductsState extends State<AllProducts> {
                                             }
 
                                             productsList = [];
-                                            index = productsList.length;
+                                            productIndex = productsList.length;
 
                                             getTokenValueMethod();
                                           },
@@ -650,8 +652,8 @@ class _AllProductsState extends State<AllProducts> {
                                                 isLoadingProductsList = true;
                                               });
                                             }
-                                            index = 0;
-                                            totalIndex = 1;
+                                            productIndex = 0;
+                                            // totalIndex = 1;
                                             productsList = [];
                                             getTokenValueMethod();
                                           });
@@ -771,7 +773,7 @@ class _AllProductsState extends State<AllProducts> {
                             children: <Widget>[
                               SizedBox(height: 7),
                               new Text(
-                                '(${cartData['cart'].length})  ' +
+                                '(${cartData['products'].length})  ' +
                                     MyLocalizations.of(context)
                                         .getLocalizations("ITEMS"),
                                 style: textBarlowRegularWhite(),

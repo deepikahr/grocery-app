@@ -50,6 +50,8 @@ class _SignupState extends State<Signup> {
   }
 
   userSignup() async {
+    print("body");
+
     final form = _formKey.currentState;
     if (form.validate()) {
       if (isChecked == true) {
@@ -59,6 +61,8 @@ class _SignupState extends State<Signup> {
             registerationLoading = true;
           });
         }
+        print("body");
+
         Map<String, dynamic> body = {
           "firstName": firstName,
           "lastName": lastName,
@@ -66,6 +70,7 @@ class _SignupState extends State<Signup> {
           "password": password,
           "mobileNumber": mobileNumber
         };
+        print(body);
         await LoginService.signUp(body).then((onValue) {
           try {
             if (mounted) {
@@ -74,7 +79,7 @@ class _SignupState extends State<Signup> {
               });
             }
 
-            if (onValue['response_code'] == 201) {
+            if (onValue['response_code'] == 200) {
               showDialog<Null>(
                 context: context,
                 barrierDismissible: false, // user must tap button!
@@ -124,6 +129,9 @@ class _SignupState extends State<Signup> {
                 registerationLoading = false;
               });
             }
+            print(error);
+            print("bodiiiiiy");
+
             sentryError.reportError(error, null);
           }
         }).catchError((error) {
@@ -132,6 +140,9 @@ class _SignupState extends State<Signup> {
               registerationLoading = false;
             });
           }
+          print("bodiiiy");
+
+          print(error);
           sentryError.reportError(error, null);
         });
       } else {
@@ -144,6 +155,8 @@ class _SignupState extends State<Signup> {
           registerationLoading = false;
         });
       }
+      print("body");
+
       return;
     }
   }

@@ -15,12 +15,16 @@ class AddressService {
     await Common.getSelectedLanguage().then((code) {
       languageCode = code ?? "";
     });
-    final response = await client
-        .post(Constants.baseURL + "address", body: json.encode(body), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'bearer $token',
-      'language': languageCode,
-    });
+    print(token);
+    final response = await client.post(Constants.baseURL + "address/create",
+        body: json.encode(body),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'bearer $token',
+          'language': languageCode,
+        });
+    print("/address/create");
+    print(json.decode(response.body));
     return json.decode(response.body);
   }
 
@@ -51,15 +55,14 @@ class AddressService {
     await Common.getSelectedLanguage().then((code) {
       languageCode = code ?? "";
     });
-    print(time);
-    print(timeStamp);
     final response = await client.get(
-        Constants.baseURL + "setting/working/time/user/$time/$timeStamp",
+        Constants.baseURL + "setting/user/working/time/$time/$timeStamp",
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'bearer $token',
           'language': languageCode,
         });
+
     return json.decode(response.body);
   }
 
@@ -73,6 +76,7 @@ class AddressService {
       languageCode = code ?? "";
     });
     print(token);
+
     final response = await client.put(
         Constants.baseURL + "address/update/$addressId",
         body: json.encode(body),
@@ -81,6 +85,9 @@ class AddressService {
           'Authorization': 'bearer $token',
           'language': languageCode,
         });
+
+    print("address/update/$addressId");
+    print(json.decode(response.body));
     return json.decode(response.body);
   }
 
@@ -99,6 +106,7 @@ class AddressService {
       'Authorization': 'bearer $token',
       'language': languageCode,
     });
+
     return json.decode(response.body);
   }
 }

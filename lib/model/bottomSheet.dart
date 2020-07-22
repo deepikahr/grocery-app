@@ -113,22 +113,17 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
 
   addToCartMethod() {
     if ((variantStock == null
-            ? widget.variantsList[0]['productstock']
+            ? widget.variantsList[0]['productStock']
             : variantStock) >=
         quantity) {
       Map<String, dynamic> productAddBody = {
-        "category": widget.productData['category'],
-        "subcategory": widget.productData['subcategory'],
         'productId': widget.productData['_id'].toString(),
         'quantity': quantity,
-        "price": double.parse(variantPrice == null
-            ? widget.variantsList[0]['price'].toString()
-            : variantPrice.toString()),
         "unit": variantUnit == null
             ? widget.variantsList[0]['unit'].toString()
             : variantUnit.toString()
       };
-      AddToCart.addToCartMethod(productAddBody).then((onValue) {
+      AddToCart.addAndUpdateProductMethod(productAddBody).then((onValue) {
         try {
           if (mounted) {
             setState(() {
@@ -169,7 +164,7 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
 
       showSnackbar(MyLocalizations.of(context)
               .getLocalizations("LIMITED_STOCK") +
-          " ${variantStock == null ? widget.variantsList[0]['productstock'] : variantStock} " +
+          " ${variantStock == null ? widget.variantsList[0]['productStock'] : variantStock} " +
           MyLocalizations.of(context).getLocalizations("OF_THIS_ITEM"));
     }
   }
