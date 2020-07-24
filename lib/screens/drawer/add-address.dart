@@ -43,12 +43,16 @@ class _AddAddressState extends State<AddAddress> {
   bool isAddAddressLoading = false;
   StreamSubscription<LocationData> locationSubscription;
   int selectedAddressType = 0;
+  TextEditingController addressController = TextEditingController();
+
   @override
   void initState() {
+    addressController.text = widget.pickedLocation.address;
+
     super.initState();
   }
 
-  List<String> addressType = ['Home', "Work", "Others"];
+  List<String> addressType = ['HOME', "WORK", "OTHERS"];
   Map<String, dynamic> address = {
     "location": {},
     "address": null,
@@ -56,7 +60,7 @@ class _AddAddressState extends State<AddAddress> {
     "apartmentName": null,
     "landmark": null,
     "postalCode": null,
-    "contactNumber": null,
+    "mobileNumber": null,
     "addressType": null
   };
   addAddress() async {
@@ -69,28 +73,30 @@ class _AddAddressState extends State<AddAddress> {
       }
 
       var location = {
-        "lat": widget.pickedLocation.latLng.latitude,
-        "long": widget.pickedLocation.latLng.longitude
+        "latitude": widget.pickedLocation.latLng.latitude,
+        "longitude": widget.pickedLocation.latLng.longitude
       };
+      address['address'] = addressController.text;
       address['location'] = location;
       address['addressType'] = addressType[selectedAddressType];
       AddressService.addAddress(address).then((onValue) {
-        print(address);
-        print(onValue);
         try {
-          if (mounted) {
+          if (onValue['response_code'] == 200 && mounted) {
             setState(() {
-              isAddAddressLoading = false;
-            });
-          }
-          if (onValue['response_code'] == 201) {
-            if (mounted) {
-              setState(() {
+              addressController.clear();
+              showSnackbar(onValue['response_data']);
+              Future.delayed(Duration(milliseconds: 1500), () {
                 Navigator.pop(context);
               });
-            }
+              isAddAddressLoading = false;
+            });
           } else {
-            showSnackbar(onValue['response_data']);
+            if (mounted) {
+              setState(() {
+                isAddAddressLoading = false;
+                showSnackbar(onValue['response_data']);
+              });
+            }
           }
         } catch (error, stackTrace) {
           if (mounted) {
@@ -108,13 +114,6 @@ class _AddAddressState extends State<AddAddress> {
         }
         sentryError.reportError(onError, null);
       });
-    } else {
-      if (mounted) {
-        setState(() {
-          isAddAddressLoading = false;
-        });
-      }
-      return;
     }
   }
 
@@ -183,7 +182,7 @@ class _AddAddressState extends State<AddAddress> {
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
                       maxLines: 3,
-                      initialValue: widget.pickedLocation.address,
+                      controller: addressController,
                       style: textBarlowRegularBlack(),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
@@ -221,7 +220,7 @@ class _AddAddressState extends State<AddAddress> {
                           return null;
                       },
                       onSaved: (String value) {
-                        address['address'] = value;
+                        address['address'] = addressController.text;
                       }),
                 ),
                 SizedBox(
@@ -471,8 +470,7 @@ class _AddAddressState extends State<AddAddress> {
                     children: <Widget>[
                       Text(
                         MyLocalizations.of(context)
-                                .getLocalizations("CONTACT_NUMBER", true) +
-                            " :",
+                            .getLocalizations("CONTACT_NUMBER", true),
                         style: textbarlowRegularBlack(),
                       ),
                     ],
@@ -509,7 +507,7 @@ class _AddAddressState extends State<AddAddress> {
                         return null;
                     },
                     onSaved: (String value) {
-                      address['contactNumber'] = value;
+                      address['mobileNumber'] = value;
                     },
                   ),
                 ),
@@ -537,13 +535,13 @@ class _AddAddressState extends State<AddAddress> {
                       addressType.length == null ? 0 : addressType.length,
                   itemBuilder: (BuildContext context, int i) {
                     String type;
-                    if (addressType[i] == 'Home') {
+                    if (addressType[i] == 'HOME') {
                       type =
                           MyLocalizations.of(context).getLocalizations("HOME");
-                    } else if (addressType[i] == 'Work') {
+                    } else if (addressType[i] == 'WORK') {
                       type =
                           MyLocalizations.of(context).getLocalizations("WORK");
-                    } else if (addressType[i] == 'Others') {
+                    } else if (addressType[i] == 'OTHERS') {
                       type = MyLocalizations.of(context)
                           .getLocalizations("OTHERS");
                     } else {
@@ -587,8 +585,9 @@ class _AddAddressState extends State<AddAddress> {
                     ),
                     child: GFButton(
                       color: primary,
-                      blockButton: true,
-                      onPressed: addAddress,
+                      onPressed: () {
+                        addAddress();
+                      },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[

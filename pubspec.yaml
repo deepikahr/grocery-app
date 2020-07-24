@@ -33,6 +33,7 @@ dependencies:
   flutter_map_picker: ^0.1.2
   stripe_payment: ^1.0.7
   flutter_dotenv: ^2.1.0
+  http_interceptor: ^0.3.2
  
   flutter_localizations:
     sdk: flutter
@@ -91,16 +92,12 @@ flutter:
     - lib/assets/images/no-orders.png
     - lib/assets/images/profileIcon.png
 
-    - lib/assets/icons/plus.svg
     - lib/assets/icons/tick.svg
     - lib/assets/icons/editt.svg
     - lib/assets/icons/add1.svg
-    - lib/assets/icons/delete.svg
-    - lib/assets/icons/minus.svg
 
     - lib/assets/icons/sale.png
     - lib/assets/icons/Home.png
-    - lib/assets/icons/minus.svg
     - lib/assets/icons/products.png
     - lib/assets/icons/location.png
     - lib/assets/icons/fav.png
@@ -112,3 +109,4 @@ flutter:
     - lib/assets/icons/history.png
 
     - lib/assets/splash.png
+    - lib/assets/logo.png

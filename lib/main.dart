@@ -51,8 +51,10 @@ void main() async {
       }
     };
     LoginService.getLanguageJson(locale).then((value) async {
-      print(value);
-      localizedValues = value['response_data'];
+      localizedValues = value['response_data']['json'];
+      defaultLocale = value['response_data']['languageCode'];
+      locale = defaultLocale;
+
       await Common.setSelectedLanguage(locale);
       getToken();
       runZoned<Future<Null>>(() {
@@ -73,24 +75,11 @@ void main() async {
 void getToken() async {
   await Common.getToken().then((onValue) async {
     if (onValue != null) {
-      await LoginService.setLanguageCodeToProfile();
-      checkToken(onValue);
-    } else {}
-  }).catchError((error) {
-    sentryError.reportError(error, null);
-  });
-}
-
-void checkToken(token) async {
-  LoginService.checkToken().then((onValue) async {
-    try {
-      if (onValue['response_data']['tokenVerify'] == false) {
-        await Common.setToken(null);
-      } else {
+      Common.getSelectedLanguage().then((selectedLocale) async {
+        Map body = {"language": selectedLocale};
+        await LoginService.updateUserInfo(body);
         userInfoMethod();
-      }
-    } catch (error, stackTrace) {
-      sentryError.reportError(error, stackTrace);
+      });
     }
   }).catchError((error) {
     sentryError.reportError(error, null);
@@ -100,7 +89,7 @@ void checkToken(token) async {
 void userInfoMethod() async {
   await LoginService.getUserInfo().then((onValue) async {
     try {
-      await Common.setUserID(onValue['response_data']['userInfo']['_id']);
+      await Common.setUserID(onValue['response_data']['_id']);
     } catch (error, stackTrace) {
       sentryError.reportError(error, stackTrace);
     }

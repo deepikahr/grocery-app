@@ -3,13 +3,13 @@ import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
-import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/orderSevice.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
-import 'package:readymadeGroceryApp/service/product-service.dart';
+
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:stripe_payment/stripe_payment.dart';
 
@@ -41,7 +41,7 @@ class Payment extends StatefulWidget {
 class _PaymentState extends State<Payment> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  int groupValue;
+  int groupValue = 0;
   var walletAmount, usedWalletAmount = 0.0;
   String currency;
   var grandTotal, deliveryCharges, remaingWalletPoints, grandTotalCalulation;
@@ -50,20 +50,8 @@ class _PaymentState extends State<Payment> {
       isSelected = false,
       walletUsedOrNotValue = false,
       showPaymantOptions = false;
-  List<Map<String, dynamic>> paymentTypes = [
-    {
-      'type': 'COD',
-      'icon': Icons.attach_money,
-      'gateway': 'COD',
-      'isSelected': true
-    },
-    {
-      'type': 'CARD',
-      'icon': Icons.credit_card,
-      'gateway': 'CARD',
-      'isSelected': false
-    },
-  ];
+
+  List paymentTypes = [];
 
   @override
   void initState() {
@@ -86,6 +74,11 @@ class _PaymentState extends State<Payment> {
       });
     }
     getUserInfo();
+    paymentTypes = widget.locationInfo["paymentMethod"];
+    if (paymentTypes.length > 0) {
+      widget.data['paymentType'] = paymentTypes[groupValue];
+    }
+
     await Common.getCurrency().then((value) {
       currency = value;
     });
@@ -114,7 +107,6 @@ class _PaymentState extends State<Payment> {
         isPlaceOrderLoading = true;
       });
     }
-
     if (showPaymantOptions == false) {
       if (groupValue == null) {
         if (mounted) {
@@ -125,17 +117,11 @@ class _PaymentState extends State<Payment> {
         showSnackbar(MyLocalizations.of(context)
             .getLocalizations("SELECT_PAYMENT_FIRST"));
       } else {
-        widget.data['paymentType'] = paymentTypes[groupValue]['type'];
-        widget.data['usedWalletAmount'] =
-            usedWalletAmount.toDouble().toStringAsFixed(2);
-        widget.data['isWalletUsed'] = walletUsedOrNotValue;
-
         if (widget.data['paymentType'] == "CARD") {
           StripePayment.paymentRequestWithCardForm(CardFormPaymentRequest())
               .then((pm) {
             setState(() {
-              Map transactionDetails = {"paymentMethodId": pm.id.toString()};
-              widget.data['transactionDetails'] = transactionDetails;
+              widget.data['paymentId'] = pm.id.toString();
 
               palceOrderMethod(widget.data);
             });
@@ -152,23 +138,19 @@ class _PaymentState extends State<Payment> {
         }
       }
     } else {
-      widget.data['paymentType'] = "WALLET";
-      widget.data['usedWalletAmount'] =
-          usedWalletAmount.toDouble().toStringAsFixed(2);
-      widget.data['isWalletUsed'] = walletUsedOrNotValue;
       palceOrderMethod(widget.data);
     }
   }
 
   palceOrderMethod(cartData) async {
-    await ProductService.placeOrder(cartData).then((onValue) {
+    await OrderService.placeOrder(cartData).then((onValue) {
       try {
         if (mounted) {
           setState(() {
             isPlaceOrderLoading = false;
           });
         }
-        if (onValue['response_code'] == 201) {
+        if (onValue['response_code'] == 200) {
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
@@ -178,12 +160,8 @@ class _PaymentState extends State<Payment> {
                 ),
               ),
               (Route<dynamic> route) => false);
-        } else if (onValue['response_code'] == 400) {
-          showSnackbar("${onValue['response_data']}");
-        } else if (onValue['response_code'] == 205) {
-          verifyTokenAlert(onValue['response_data'], cartData['cart']);
         } else {
-          showSnackbar("${onValue['response_data']}");
+          verifyTokenAlert(onValue['response_data']);
         }
       } catch (error, stackTrace) {
         if (mounted) {
@@ -203,68 +181,54 @@ class _PaymentState extends State<Payment> {
     });
   }
 
-  verifyTokenAlert(responseData, cartId) async {
+  verifyTokenAlert(responseData) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(
-            responseData['message'],
+            MyLocalizations.of(context).getLocalizations("OUT_OF_STOCK"),
           ),
           content: SingleChildScrollView(
-            child: responseData['cartVerifyData']['cartArr'].length > 0
+            child: responseData.length > 0
                 ? ListView.builder(
                     physics: ScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: responseData['cartVerifyData']['cartArr'].length,
+                    itemCount: responseData.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return Text(
-                        responseData['cartVerifyData']['cartArr'][index]
-                                ['title']
-                            .toString(),
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            responseData[index]['productName'].toString(),
+                          ),
+                          Text(
+                            responseData[index]['unit'].toString() +
+                                "*" +
+                                responseData[index]['quantity'].toString(),
+                          ),
+                        ],
                       );
                     })
                 : Text(""),
           ),
           actions: <Widget>[
             FlatButton(
-              child:
-                  Text(MyLocalizations.of(context).getLocalizations("CANCEL")),
+              child: Text(MyLocalizations.of(context).getLocalizations("OK")),
               onPressed: () {
                 Navigator.of(context).pop();
-              },
-            ),
-            FlatButton(
-              child: Text(
-                  MyLocalizations.of(context).getLocalizations("REMOVE_ITEMS")),
-              onPressed: () {
-                Map body = {
-                  "cartId": cartId,
-                  "cart": responseData['cartVerifyData']['cartArr']
-                };
-                CartService.paymentTimeCarDataDelete(body).then((response) {
-                  if (response['response_code'] == 200) {
-                    if (response['response_data'] is Map) {
-                      Common.setCartData(response['response_data']);
-                    } else {
-                      Common.setCartData(null);
-                    }
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => Home(
-                            locale: widget.locale,
-                            localizedValues: widget.localizedValues,
-                            currentIndex: 2,
-                          ),
-                        ),
-                        (Route<dynamic> route) => false);
-                  } else {
-                    showSnackbar("${response['response_data']}");
-                    Navigator.pop(context);
-                  }
-                });
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Home(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                        currentIndex: 2,
+                      ),
+                    ),
+                    (Route<dynamic> route) => false);
               },
             ),
           ],
@@ -277,6 +241,7 @@ class _PaymentState extends State<Payment> {
   void dispose() {
     grandTotalCalulation = null;
     remaingWalletPoints = null;
+    paymentTypes = [];
     super.dispose();
   }
 
@@ -517,114 +482,99 @@ class _PaymentState extends State<Payment> {
                 SizedBox(height: 10),
                 showPaymantOptions == true
                     ? Container()
-                    : Column(
-                        children: [
-                          ListView.builder(
-                            physics: ScrollPhysics(),
-                            shrinkWrap: true,
-                            padding: EdgeInsets.only(right: 0.0),
-                            itemCount: paymentTypes.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              if (grandTotal >= 0.5) {
-                                paymentTypes[0]['isSelected'] = true;
-                                paymentTypes[1]['isSelected'] = true;
-                              } else {
-                                paymentTypes[0]['isSelected'] = true;
-                                paymentTypes[1]['isSelected'] = false;
-                              }
-                              if (widget.locationInfo['paymentMethod'] ==
-                                  'COD') {
-                                paymentTypes[0]['isSelected'] = true;
-                                paymentTypes[1]['isSelected'] = false;
-                              } else if (widget.locationInfo['paymentMethod'] ==
-                                  'CARD') {
-                                paymentTypes[0]['isSelected'] = false;
-                                paymentTypes[1]['isSelected'] = true;
-                              } else {
-                                paymentTypes[0]['isSelected'] = true;
-                                paymentTypes[1]['isSelected'] = true;
-                              }
-                              return paymentTypes[index]['isSelected'] == true
-                                  ? Container(
-                                      margin: EdgeInsets.all(8.0),
-                                      color: Colors.white,
-                                      child: RadioListTile(
-                                        value: index,
-                                        groupValue: groupValue,
-                                        selected: isSelected,
-                                        activeColor: primary,
-                                        title: Text(
-                                          paymentTypes[index]['type'] == 'COD'
-                                              ? MyLocalizations.of(context)
-                                                  .getLocalizations(
-                                                      "CASH_ON_DELIVERY")
-                                              : MyLocalizations.of(context)
-                                                  .getLocalizations(
-                                                      "PAY_BY_CARD"),
-                                          style: TextStyle(color: primary),
-                                        ),
-                                        onChanged: (int selected) {
-                                          if (mounted) {
-                                            setState(() {
-                                              groupValue = selected;
-                                            });
-                                          }
-                                        },
-                                        secondary: paymentTypes[index]
-                                                    ['type'] ==
-                                                "COD"
-                                            ? Text(
-                                                currency,
-                                                style:
-                                                    TextStyle(color: primary),
-                                              )
-                                            : Icon(
-                                                Icons.credit_card,
-                                                color: primary,
-                                                size: 16.0,
-                                              ),
+                    : paymentTypes.length > 0
+                        ? Column(
+                            children: [
+                              ListView.builder(
+                                physics: ScrollPhysics(),
+                                shrinkWrap: true,
+                                padding: EdgeInsets.only(right: 0.0),
+                                itemCount: paymentTypes.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Container(
+                                    margin: EdgeInsets.all(8.0),
+                                    color: Colors.white,
+                                    child: RadioListTile(
+                                      value: index,
+                                      groupValue: groupValue,
+                                      selected: isSelected,
+                                      activeColor: primary,
+                                      title: Text(
+                                        paymentTypes[index] == 'COD'
+                                            ? MyLocalizations.of(context)
+                                                .getLocalizations(
+                                                    "CASH_ON_DELIVERY")
+                                            : MyLocalizations.of(context)
+                                                .getLocalizations(
+                                                    "PAY_BY_CARD"),
+                                        style: TextStyle(color: primary),
                                       ),
-                                    )
-                                  : Container();
-                            },
-                          ),
-                        ],
-                      ),
+                                      onChanged: (int selected) {
+                                        if (mounted) {
+                                          setState(() {
+                                            groupValue = selected;
+                                            widget.data['paymentType'] =
+                                                paymentTypes[groupValue];
+                                          });
+                                        }
+                                      },
+                                      secondary: paymentTypes[index] == "COD"
+                                          ? Text(
+                                              currency,
+                                              style: TextStyle(color: primary),
+                                            )
+                                          : Icon(
+                                              Icons.credit_card,
+                                              color: primary,
+                                              size: 16.0,
+                                            ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          )
+                        : Center(
+                            child:
+                                Image.asset('lib/assets/images/no-orders.png'),
+                          )
               ],
             ),
-      bottomNavigationBar: Container(
-        margin: EdgeInsets.only(left: 15, right: 15, bottom: 20),
-        height: 55,
-        decoration: BoxDecoration(boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.33), blurRadius: 6)
-        ]),
-        child: Padding(
-          padding: const EdgeInsets.only(
-            left: 0.0,
-            right: 0.0,
-          ),
-          child: GFButton(
-            color: primary,
-            blockButton: true,
-            onPressed: placeOrder,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  MyLocalizations.of(context).getLocalizations("PAY_NOW"),
-                  style: textBarlowRegularBlack(),
+      bottomNavigationBar: paymentTypes.length > 0
+          ? Container(
+              margin: EdgeInsets.only(left: 15, right: 15, bottom: 20),
+              height: 55,
+              decoration: BoxDecoration(boxShadow: [
+                BoxShadow(color: Colors.black.withOpacity(0.33), blurRadius: 6)
+              ]),
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  left: 0.0,
+                  right: 0.0,
                 ),
-                isPlaceOrderLoading
-                    ? GFLoader(
-                        type: GFLoaderType.ios,
-                      )
-                    : Text("")
-              ],
-            ),
-            textStyle: TextStyle(fontSize: 17.0, color: Colors.black),
-          ),
-        ),
-      ),
+                child: GFButton(
+                  color: primary,
+                  blockButton: true,
+                  onPressed: placeOrder,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        MyLocalizations.of(context).getLocalizations("PAY_NOW"),
+                        style: textBarlowRegularBlack(),
+                      ),
+                      isPlaceOrderLoading
+                          ? GFLoader(
+                              type: GFLoaderType.ios,
+                            )
+                          : Text("")
+                    ],
+                  ),
+                  textStyle: TextStyle(fontSize: 17.0, color: Colors.black),
+                ),
+              ),
+            )
+          : Container(height: 1),
     );
   }
 

@@ -12,7 +12,6 @@ import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/fav-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:location/location.dart';
@@ -41,7 +40,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       isCurrentLoactionLoading = false,
       getTokenValue = false;
   int currentIndex = 0;
-  List searchProductList, favProductList;
+  List favProductList;
   LocationData currentLocation;
   Location _location = new Location();
   String currency = "";
@@ -67,7 +66,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         currencyLoading = true;
       });
     }
-    LoginService.getGlobalSettings().then((onValue) async {
+    LoginService.getLocationformation().then((onValue) async {
       try {
         if (mounted) {
           setState(() {
@@ -151,40 +150,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       if (mounted) {
         setState(() {
           favProductList = [];
-        });
-      }
-      sentryError.reportError(error, null);
-    });
-  }
-
-  getProductListMethod() async {
-    await ProductService.getProductListAll(1).then((onValue) {
-      try {
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              searchProductList = onValue['response_data']['products'];
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              searchProductList = [];
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            searchProductList = [];
-          });
-        }
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          searchProductList = [];
         });
       }
       sentryError.reportError(error, null);
@@ -292,7 +257,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                         builder: (context) => SearchItem(
                           locale: widget.locale,
                           localizedValues: widget.localizedValues,
-                          productsList: searchProductList,
                           currency: currency,
                           token: getTokenValue,
                         ),

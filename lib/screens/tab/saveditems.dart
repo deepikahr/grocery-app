@@ -188,9 +188,8 @@ class _SavedItemsState extends State<SavedItems> {
                                   crossAxisSpacing: 16,
                                   mainAxisSpacing: 16),
                           itemBuilder: (BuildContext context, int i) {
-                            if (favProductList[i]['product']['averageRating'] ==
-                                null) {
-                              favProductList[i]['product']['averageRating'] = 0;
+                            if (favProductList[i]['averageRating'] == null) {
+                              favProductList[i]['averageRating'] = 0;
                             }
 
                             return InkWell(
@@ -201,8 +200,7 @@ class _SavedItemsState extends State<SavedItems> {
                                     builder: (context) => ProductDetails(
                                       locale: widget.locale,
                                       localizedValues: widget.localizedValues,
-                                      productID: favProductList[i]['product']
-                                          ['_id'],
+                                      productID: favProductList[i]['_id'],
                                     ),
                                   ),
                                 );
@@ -214,13 +212,12 @@ class _SavedItemsState extends State<SavedItems> {
                                 children: <Widget>[
                                   SubCategoryProductCard(
                                     currency: currency,
-                                    price: favProductList[i]['product']
-                                        ['variant'][0]['price'],
-                                    variantStock: favProductList[i]['product']
-                                        ['variant'][0]['productstock'],
-                                    productData: favProductList[i]['product'],
-                                    variantList: favProductList[i]['product']
-                                        ['variant'],
+                                    price: favProductList[i]['variant'][0]
+                                        ['price'],
+                                    variantStock: favProductList[i]['variant']
+                                        [0]['productstock'],
+                                    productData: favProductList[i],
+                                    variantList: favProductList[i]['variant'],
                                   ),
                                   favProductList[i]['isDealAvailable'] == true
                                       ? Positioned(
@@ -242,7 +239,7 @@ class _SavedItemsState extends State<SavedItems> {
                                               Text(
                                                 " " +
                                                     favProductList[i]
-                                                            ['delaPercent']
+                                                            ['dealPercent']
                                                         .toString() +
                                                     "% " +
                                                     MyLocalizations.of(context)
@@ -298,7 +295,7 @@ class _SavedItemsState extends State<SavedItems> {
                             children: <Widget>[
                               SizedBox(height: 7),
                               new Text(
-                                '(${cartData['cart'].length})  ' +
+                                '(${cartData['products'].length})  ' +
                                     MyLocalizations.of(context)
                                         .getLocalizations("ITEMS"),
                                 style: textBarlowRegularWhite(),

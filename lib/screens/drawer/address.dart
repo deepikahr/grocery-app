@@ -54,7 +54,6 @@ class _AddressState extends State<Address> {
     }
 
     await AddressService.getAddress().then((onValue) {
-      print(onValue);
       try {
         _refreshController.refreshCompleted();
 
@@ -259,7 +258,7 @@ class _AddressState extends State<Address> {
                                                 ', '
                                                     '${addressList[index]['postalCode'].toString()}' +
                                                 ', ' +
-                                                '${addressList[index]['contactNumber']}',
+                                                '${addressList[index]['mobileNumber']}',
                                             style: textBarlowRegularBlack(),
                                           ),
                                         ),
@@ -296,8 +295,8 @@ class _AddressState extends State<Address> {
                 _permissionGranted = await _location.requestPermission();
                 if (_permissionGranted != PermissionStatus.granted) {
                   Map locationLatLong = {
-                    "latitude": locationInfo['location']['lat'],
-                    "longitude": locationInfo['location']['lng']
+                    "latitude": locationInfo['location']['latitude'],
+                    "longitude": locationInfo['location']['longitude']
                   };
 
                   addAddressPageMethod(locationLatLong);

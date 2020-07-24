@@ -13,17 +13,11 @@ import 'package:readymadeGroceryApp/widgets/subCategoryProductCart.dart';
 SentryError sentryError = new SentryError();
 
 class SearchItem extends StatefulWidget {
-  final List productsList;
   final String currency, locale;
   final bool token;
   final Map localizedValues;
   SearchItem(
-      {Key key,
-      this.productsList,
-      this.currency,
-      this.locale,
-      this.token,
-      this.localizedValues})
+      {Key key, this.currency, this.locale, this.token, this.localizedValues})
       : super(key: key);
   @override
   _SearchItemState createState() => _SearchItemState();
@@ -300,7 +294,7 @@ class _SearchItemState extends State<SearchItem> {
                                           price: searchresult[index]['variant']
                                               [0]['price'],
                                           variantStock: searchresult[index]
-                                              ['variant'][0]['productstock'],
+                                              ['variant'][0]['productStock'],
                                           productData: searchresult[index],
                                           variantList: searchresult[index]
                                               ['variant'],
@@ -333,7 +327,7 @@ class _SearchItemState extends State<SearchItem> {
                                                       child: Text(
                                                         " " +
                                                             searchresult[index][
-                                                                    'delaPercent']
+                                                                    'dealPercent']
                                                                 .toString() +
                                                             "% " +
                                                             MyLocalizations.of(
@@ -435,7 +429,7 @@ class _SearchItemState extends State<SearchItem> {
                             children: <Widget>[
                               SizedBox(height: 7),
                               new Text(
-                                '(${cartData['cart'].length})  ' +
+                                '(${cartData['products'].length})  ' +
                                     MyLocalizations.of(context)
                                         .getLocalizations("ITEMS"),
                                 style: textBarlowRegularWhite(),

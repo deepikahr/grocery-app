@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:getflutter/types/gf_loader_type.dart';
 import 'package:readymadeGroceryApp/model/addToCart.dart';
@@ -42,8 +41,8 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
 
   @override
   void initState() {
-    if (widget.productData['cartAdded'] == true) {
-      cardAdded = widget.productData['cartAdded'];
+    if (widget.productData['isAddedToCart'] == true) {
+      cardAdded = widget.productData['isAddedToCart'];
     } else {
       cardAdded = false;
     }
@@ -53,12 +52,12 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
     if (widget.productData['isDealAvailable'] != null &&
         widget.productData['isDealAvailable'] == true) {
       dealPercentage =
-          double.parse(widget.productData['delaPercent'].toStringAsFixed(1));
+          double.parse(widget.productData['dealPercent'].toStringAsFixed(1));
     } else {
       dealPercentage = null;
     }
 
-    quanity = widget.productData['cartAddedQuantity'] ?? 0;
+    quanity = widget.productData['quantityToCart'] ?? 0;
 
     super.initState();
   }
@@ -82,12 +81,14 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
 
   updateCart(quanity, id) async {
     Map<String, dynamic> body = {
-      'cartId': cartId == null ? widget.productData['cartId'] : cartId,
+      'unit': variantUnit == null
+          ? widget.productData['variant'][0]['unit']
+          : variantUnit,
       'productId': id,
       'quantity': quanity
     };
 
-    await CartService.updateProductToCart(body).then((onValue) {
+    await AddToCart.addAndUpdateProductMethod(body).then((onValue) {
       if (onValue['response_code'] == 200 && onValue['response_data'] is Map) {
         Common.setCartData(onValue['response_data']);
       } else {
@@ -102,12 +103,7 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
   }
 
   deleteCart(id) async {
-    Map<String, dynamic> body = {
-      'cartId': cartId == null ? widget.productData['cartId'] : cartId,
-      'productId': id,
-    };
-
-    await CartService.deleteDataFromCart(body).then((onValue) {
+    await CartService.deleteDataFromCart(id).then((onValue) {
       if (onValue['response_code'] == 200 && onValue['response_data'] is Map) {
         Common.setCartData(onValue['response_data']);
       } else {
@@ -257,25 +253,28 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                               variantsList: widget.variantList,
                                               productQuantity: quanity == null
                                                   ? widget.productData[
-                                                          'cartAddedQuantity'] ??
+                                                          'quantityToCart'] ??
                                                       0
                                                   : quanity);
                                         });
                                     bottomSheet.then((onValue) {
                                       for (int i = 0;
-                                          i < onValue['cart'].length;
+                                          i < onValue['products'].length;
                                           i++) {
                                         if (widget.productData["_id"] ==
-                                            onValue['cart'][i]["productId"]) {
+                                            onValue['products'][i]
+                                                ["productId"]) {
                                           if (mounted) {
                                             setState(() {
-                                              quanity = onValue['cart'][i]
+                                              quanity = onValue['products'][i]
                                                   ['quantity'];
-                                              variantPrice =
-                                                  onValue['cart'][i]['price'];
+                                              variantPrice = onValue['products']
+                                                  [i]['price'];
                                               cartId = onValue['_id'];
-                                              variantUnit =
-                                                  onValue['cart'][i]['unit'];
+                                              variantStock = onValue['products']
+                                                  [i]['productStock'];
+                                              variantUnit = onValue['products']
+                                                  [i]['unit'];
                                               cardAdded = true;
                                             });
                                           }
@@ -289,22 +288,15 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                       if (mounted) {
                                         setState(() {
                                           if (widget.variantList[0]
-                                                  ['productstock'] >
+                                                  ['productStock'] >
                                               quanity) {
                                             if (!isAddInProgress) {
                                               Map<String, dynamic>
                                                   productAddBody = {
-                                                "category": widget
-                                                    .productData['category'],
-                                                "subcategory": widget
-                                                    .productData['subcategory'],
                                                 'productId': widget
                                                     .productData['_id']
                                                     .toString(),
                                                 'quantity': 1,
-                                                "price": double.parse(widget
-                                                    .variantList[0]['price']
-                                                    .toString()),
                                                 "unit": widget.variantList[0]
                                                         ['unit']
                                                     .toString()
@@ -312,8 +304,9 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                               setState(() {
                                                 isAddInProgress = true;
                                               });
-                                              AddToCart.addToCartMethod(
-                                                      productAddBody)
+                                              AddToCart
+                                                      .addAndUpdateProductMethod(
+                                                          productAddBody)
                                                   .then((onValue) {
                                                 if (onValue['response_code'] ==
                                                     200) {
@@ -329,26 +322,23 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                                   for (int i = 0;
                                                       i <
                                                           onValue['response_data']
-                                                                  ['cart']
+                                                                  ['products']
                                                               .length;
                                                       i++) {
                                                     if (widget.productData[
                                                             "_id"] ==
                                                         onValue['response_data']
-                                                                ['cart'][i]
+                                                                ['products'][i]
                                                             ["productId"]) {
                                                       if (mounted) {
                                                         setState(() {
                                                           quanity = onValue[
                                                                       'response_data']
-                                                                  ['cart'][i]
-                                                              ['quantity'];
+                                                                  ['products']
+                                                              [i]['quantity'];
                                                           cartId = onValue[
                                                                   'response_data']
                                                               ['_id'];
-                                                          variantStock = widget
-                                                                  .variantList[0]
-                                                              ['productstock'];
 
                                                           cardAdded = true;
                                                         });
@@ -366,7 +356,7 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                                         context)
                                                     .getLocalizations(
                                                         "LIMITED_STOCK") +
-                                                " ${widget.variantList[0]['productstock']} " +
+                                                " ${widget.variantList[0]['productStock']} " +
                                                 MyLocalizations.of(context)
                                                     .getLocalizations(
                                                         "OF_THIS_ITEM"));
@@ -435,18 +425,18 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                     MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Container(
-                                    height: 35,
-                                    width: 35,
-                                    padding: EdgeInsets.only(left: 8, right: 8),
+                                    width: 32,
+                                    height: 32,
                                     decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5)),
-                                        color: isQuantityUpdating &&
-                                                quantityChangeType == '-'
-                                            ? Colors.grey.shade100
-                                            : Colors.black),
+                                      color: isQuantityUpdating &&
+                                              quantityChangeType == '-'
+                                          ? Colors.grey.shade100
+                                          : Colors.black,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(5)),
+                                    ),
                                     child: InkWell(
-                                      onTap: () async {
+                                      onTap: () {
                                         if (!isQuantityUpdating) {
                                           quantityChangeType = '-';
                                           _changeProductQuantity(
@@ -461,28 +451,26 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                               type: GFLoaderType.ios,
                                               size: 35,
                                             )
-                                          : SvgPicture.asset(
-                                              'lib/assets/icons/delete.svg',
+                                          : Icon(
+                                              Icons.remove,
+                                              color: primary,
                                             ),
                                     ),
                                   ),
                                   Text(quanity == null
-                                      ? widget.productData['cartAddedQuantity']
+                                      ? widget.productData['quantityToCart']
                                           .toString()
                                       : quanity.toString()),
                                   Container(
-                                    height: 35,
-                                    width: 35,
-                                    padding: EdgeInsets.only(left: 8, right: 8),
+                                    width: 32,
+                                    height: 32,
                                     decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5)),
-                                        color: isQuantityUpdating &&
-                                                quantityChangeType == '+'
-                                            ? Colors.grey.shade100
-                                            : primary),
+                                      color: primary,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(5)),
+                                    ),
                                     child: InkWell(
-                                      onTap: () async {
+                                      onTap: () {
                                         if (!isQuantityUpdating) {
                                           quantityChangeType = '+';
                                           if (variantStock > quanity) {
@@ -506,8 +494,9 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                               quantityChangeType == '+'
                                           ? GFLoader(
                                               type: GFLoaderType.ios, size: 35)
-                                          : SvgPicture.asset(
-                                              'lib/assets/icons/add1.svg'),
+                                          : Icon(
+                                              Icons.add,
+                                            ),
                                     ),
                                   ),
                                 ],

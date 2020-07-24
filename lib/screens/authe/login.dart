@@ -83,10 +83,9 @@ class _LoginState extends State<Login> {
               });
             }
             if (onValue['response_code'] == 200) {
-              if (onValue['response_data']['role'] == 'User') {
+              if (onValue['response_data']['role'] == 'USER') {
                 await Common.setToken(onValue['response_data']['token']);
-                await Common.setUserID(onValue['response_data']['_id']);
-                await LoginService.setLanguageCodeToProfile();
+
                 if (widget.isCart == true) {
                   Navigator.pushAndRemoveUntil(
                       context,
@@ -196,10 +195,7 @@ class _LoginState extends State<Login> {
                 style: textbarlowRegularaPrimary(),
               ),
               onPressed: () {
-                Map body = {
-                  "email": email,
-                };
-                LoginService.verificationMailSendApi(body).then((response) {
+                LoginService.verificationMailSendApi(email).then((response) {
                   Navigator.of(context).pop();
                   if (response['response_code'] == 200) {
                     showSnackbar(response['response_data']);
@@ -478,7 +474,7 @@ class _LoginState extends State<Login> {
                   text: MyLocalizations.of(context)
                           .getLocalizations("FORGET_PASSWORD") +
                       "?",
-                  style: textbarlowRegularBlackd()),
+                  style: textbarlowRegularBlackFont()),
               TextSpan(
                 text: '',
                 style: TextStyle(color: primary),

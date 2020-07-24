@@ -53,8 +53,8 @@ class _EditProfileState extends State<EditProfile> {
         if (mounted) {
           setState(() {
             isLoading = false;
-            userInfo = onValue['response_data']['userInfo'];
-            walletAmount = onValue['response_data']['walletAmount'] ?? 0;
+            userInfo = onValue['response_data'];
+            walletAmount = onValue['response_data']['walletAmount'] ?? 0.00;
           });
         }
       } catch (error, stackTrace) {
@@ -66,7 +66,7 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   updateUserInfo(url, key, filePath) async {
-    var body = {"profilePic": url, "profilePicId": key, "filePath": filePath};
+    var body = {"imageUrl": url, "imageId": key, "filePath": filePath};
 
     await LoginService.updateUserInfo(body).then((onValue) {
       try {
@@ -180,7 +180,7 @@ class _EditProfileState extends State<EditProfile> {
         new http.ByteStream(DelegatingStream.typed(_imageFile.openRead()));
 
     int length = await _imageFile.length();
-    String uri = Constants.baseURL + 'utils/upload/file/imagekit';
+    String uri = Constants.baseURL + 'users/upload/image';
 
     dynamic request = new http.MultipartRequest("POST", Uri.parse(uri));
 
@@ -206,11 +206,8 @@ class _EditProfileState extends State<EditProfile> {
       await response.stream.transform(utf8.decoder).listen((value) async {
         Map<String, dynamic> data;
         data = json.decode(value);
-        updateUserInfo(
-            data['response_data']['url'],
-            data['response_data']['key'],
-            data['response_data']['filePath'] ??
-                data['response_data']['profilePic']);
+        updateUserInfo(data['response_data']['url'],
+            data['response_data']['key'], data['response_data']['filePath']);
       });
     }).catchError((error) {
       if (mounted) {
@@ -279,7 +276,7 @@ class _EditProfileState extends State<EditProfile> {
                       ],
                     ),
                   ),
-                  userInfo['filePath'] != null && userInfo['profilePic'] != null
+                  userInfo['filePath'] != null && userInfo['imageUrl'] != null
                       ? GFButton(
                           onPressed: removeImage,
                           type: GFButtonType.transparent,
@@ -309,7 +306,7 @@ class _EditProfileState extends State<EditProfile> {
         isPicUploading = true;
       });
     }
-    LoginService.imagedelete(userInfo['profilePicId'].toString()).then((value) {
+    LoginService.imagedelete().then((value) {
       try {
         if (value['response_code'] == 200) {
           if (mounted) {
@@ -364,7 +361,7 @@ class _EditProfileState extends State<EditProfile> {
                       children: <Widget>[
                         image == null
                             ? userInfo['filePath'] == null &&
-                                    userInfo['profilePic'] == null
+                                    userInfo['imageUrl'] == null
                                 ? Center(
                                     child: new Container(
                                       width: 200.0,
@@ -391,7 +388,7 @@ class _EditProfileState extends State<EditProfile> {
                                           fit: BoxFit.cover,
                                           image: new NetworkImage(
                                               userInfo['filePath'] == null
-                                                  ? userInfo['profilePic']
+                                                  ? userInfo['imageUrl']
                                                   : Constants.imageUrlPath +
                                                       "tr:dpr-auto,tr:w-500" +
                                                       userInfo['filePath']),
@@ -550,7 +547,7 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                       ),
                       onSaved: (String value) {
-                        firstName = value;
+                        lastName = value;
                       },
                       validator: (String value) {
                         if (value.isEmpty) {

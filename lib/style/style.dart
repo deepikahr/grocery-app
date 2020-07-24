@@ -1169,6 +1169,14 @@ TextStyle textbarlowRegularBlackd() {
   );
 }
 
+TextStyle textbarlowRegularBlackFont() {
+  return TextStyle(
+    fontSize: 15.0,
+    fontFamily: 'BarlowRegular',
+    color: Colors.black.withOpacity(0.60),
+  );
+}
+
 TextStyle textbarlowRegulardull() {
   return TextStyle(
       fontSize: 13.0, fontFamily: 'BarlowRegular', color: Color(0xFFBBBBBB));

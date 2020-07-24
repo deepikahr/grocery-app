@@ -59,6 +59,7 @@ class _SignupState extends State<Signup> {
             registerationLoading = true;
           });
         }
+
         Map<String, dynamic> body = {
           "firstName": firstName,
           "lastName": lastName,
@@ -74,7 +75,7 @@ class _SignupState extends State<Signup> {
               });
             }
 
-            if (onValue['response_code'] == 201) {
+            if (onValue['response_code'] == 200) {
               showDialog<Null>(
                 context: context,
                 barrierDismissible: false, // user must tap button!
@@ -124,6 +125,7 @@ class _SignupState extends State<Signup> {
                 registerationLoading = false;
               });
             }
+
             sentryError.reportError(error, null);
           }
         }).catchError((error) {
@@ -144,6 +146,7 @@ class _SignupState extends State<Signup> {
           registerationLoading = false;
         });
       }
+
       return;
     }
   }

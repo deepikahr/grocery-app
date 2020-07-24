@@ -74,7 +74,7 @@ class _SubCategoriesState extends State<SubCategories> {
           if (mounted)
             setState(() {
               subProductsList = onValue['response_data']['products'];
-              subCategryList = onValue['response_data']['subCategory'];
+              subCategryList = onValue['response_data']['subCategories'];
               isLoadingSubProductsList = false;
               isLoadingSubCatProductsList = false;
             });
@@ -425,7 +425,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                                                         i][
                                                                     'variant'][0]
                                                                 [
-                                                                'productstock'],
+                                                                'productStock'],
                                                         productData:
                                                             subCategryByProduct[
                                                                 i],
@@ -453,7 +453,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                                                   ),
                                                                   Text(
                                                                     " " +
-                                                                        subCategryByProduct[i]['delaPercent']
+                                                                        subCategryByProduct[i]['dealPercent']
                                                                             .toString() +
                                                                         "% " +
                                                                         MyLocalizations.of(context)
@@ -558,7 +558,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                                             subProductsList[i][
                                                                     'variant'][0]
                                                                 [
-                                                                'productstock'],
+                                                                'productStock'],
                                                         productData:
                                                             subProductsList[i],
                                                         variantList:
@@ -585,7 +585,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                                                   ),
                                                                   Text(
                                                                     " " +
-                                                                        subProductsList[i]['delaPercent']
+                                                                        subProductsList[i]['dealPercent']
                                                                             .toString() +
                                                                         "% " +
                                                                         MyLocalizations.of(context)
@@ -650,7 +650,7 @@ class _SubCategoriesState extends State<SubCategories> {
                             children: <Widget>[
                               SizedBox(height: 7),
                               new Text(
-                                '(${cartData['cart'].length})  ' +
+                                '(${cartData['products'].length})  ' +
                                     MyLocalizations.of(context)
                                         .getLocalizations("ITEMS"),
                                 style: textBarlowRegularWhite(),

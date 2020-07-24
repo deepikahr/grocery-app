@@ -37,8 +37,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           isVerfyEmailLoading = true;
         });
       }
-      Map<String, dynamic> body = {"email": email.toLowerCase()};
-      await LoginService.verifyEmail(body).then((onValue) {
+
+      await LoginService.forgetPassword(email.toLowerCase()).then((onValue) {
         try {
           if (mounted) {
             setState(() {
@@ -54,7 +54,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   content: new SingleChildScrollView(
                     child: new ListBody(
                       children: <Widget>[
-                        new Text('${onValue['response_data']['message']}',
+                        new Text('${onValue['response_data']}',
                             style: textBarlowRegularBlack()),
                       ],
                     ),
@@ -72,7 +72,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           MaterialPageRoute(
                             builder: (context) => Otp(
                               email: email.toLowerCase(),
-                              token: onValue['response_data']['token'],
                               locale: widget.locale,
                               localizedValues: widget.localizedValues,
                             ),
