@@ -66,7 +66,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         currencyLoading = true;
       });
     }
-    LoginService.getGlobalSettings().then((onValue) async {
+    LoginService.getLocationformation().then((onValue) async {
       try {
         if (mounted) {
           setState(() {

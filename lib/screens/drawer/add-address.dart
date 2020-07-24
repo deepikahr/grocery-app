@@ -64,7 +64,6 @@ class _AddAddressState extends State<AddAddress> {
     "addressType": null
   };
   addAddress() async {
-    print("lll");
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       if (mounted) {
@@ -80,26 +79,26 @@ class _AddAddressState extends State<AddAddress> {
       address['address'] = addressController.text;
       address['location'] = location;
       address['addressType'] = addressType[selectedAddressType];
-      print(address);
       AddressService.addAddress(address).then((onValue) {
         try {
-          if (mounted) {
+          if (onValue['response_code'] == 200 && mounted) {
             setState(() {
-              isAddAddressLoading = false;
-            });
-          }
-          if (onValue['response_code'] == 200) {
-            if (mounted) {
-              setState(() {
+              addressController.clear();
+              showSnackbar(onValue['response_data']);
+              Future.delayed(Duration(milliseconds: 1500), () {
                 Navigator.pop(context);
               });
-            }
+              isAddAddressLoading = false;
+            });
           } else {
-            showSnackbar(onValue['response_data']);
+            if (mounted) {
+              setState(() {
+                isAddAddressLoading = false;
+                showSnackbar(onValue['response_data']);
+              });
+            }
           }
         } catch (error, stackTrace) {
-          print(error);
-
           if (mounted) {
             setState(() {
               isAddAddressLoading = false;
@@ -108,7 +107,6 @@ class _AddAddressState extends State<AddAddress> {
           sentryError.reportError(error, stackTrace);
         }
       }).catchError((onError) {
-        print(onError);
         if (mounted) {
           setState(() {
             isAddAddressLoading = false;
@@ -472,8 +470,7 @@ class _AddAddressState extends State<AddAddress> {
                     children: <Widget>[
                       Text(
                         MyLocalizations.of(context)
-                                .getLocalizations("CONTACT_NUMBER", true) +
-                            " :",
+                            .getLocalizations("CONTACT_NUMBER", true),
                         style: textbarlowRegularBlack(),
                       ),
                     ],
@@ -589,8 +586,6 @@ class _AddAddressState extends State<AddAddress> {
                     child: GFButton(
                       color: primary,
                       onPressed: () {
-                        print("add");
-
                         addAddress();
                       },
                       child: Row(

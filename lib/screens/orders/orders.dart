@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
@@ -8,9 +8,10 @@ import 'package:readymadeGroceryApp/screens/orders/ordersDetails.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/orderSevice.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
-import 'package:readymadeGroceryApp/service/product-service.dart';
+
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -35,7 +36,7 @@ class _OrdersState extends State<Orders> {
       showRating = false,
       showblur = false;
   List subProductsList = List();
-  List<dynamic> orderList;
+  List orderList;
   double rating;
   var orderedTime;
   String currency;
@@ -56,7 +57,7 @@ class _OrdersState extends State<Orders> {
     await Common.getCurrency().then((value) {
       currency = value;
     });
-    await ProductService.getOrderByUserID().then((onValue) {
+    await OrderService.getOrderByUserID().then((onValue) {
       try {
         _refreshController.refreshCompleted();
         if (onValue['response_code'] == 200) {
@@ -87,100 +88,6 @@ class _OrdersState extends State<Orders> {
     });
   }
 
-  orderRating(orderId, rating) async {
-    var body = {"rating": rating};
-
-    await ProductService.orderRating(body, orderId).then((onValue) {
-      try {
-        if (onValue['response_code'] == 200) {
-          Navigator.pop(context);
-          getOrderByUserID();
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      sentryError.reportError(error, null);
-    });
-  }
-
-  ratingAlert(orderId) {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return Center(
-          child: Container(
-            margin: const EdgeInsets.only(
-                top: 250.0, bottom: 170.0, left: 20.0, right: 20.0),
-            decoration: new BoxDecoration(
-              color: Colors.white,
-              borderRadius: new BorderRadius.all(
-                new Radius.circular(32.0),
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 25.0),
-                  child: Text(
-                    MyLocalizations.of(context)
-                        .getLocalizations("RATE_PRODUCT"),
-                    style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 20,
-                        decoration: TextDecoration.none),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: RatingBar(
-                        initialRating: 3,
-                        minRating: 1,
-                        direction: Axis.horizontal,
-                        allowHalfRating: true,
-                        itemSize: 30.0,
-                        itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                        itemBuilder: (context, _) => Icon(
-                          Icons.star,
-                          color: Colors.red,
-                          size: 15.0,
-                        ),
-                        onRatingUpdate: (rate) {
-                          setState(() {
-                            rating = rate;
-                          });
-                        },
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(height: 50),
-                Center(
-                  child: GFButton(
-                    onPressed: () {
-                      if (rating == null) {
-                        rating = 3.0;
-                      }
-                      orderRating(orderId, rating);
-                    },
-                    text:
-                        MyLocalizations.of(context).getLocalizations("SUBMIT"),
-                    textColor: Colors.black,
-                    color: primary,
-                  ),
-                )
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -206,11 +113,8 @@ class _OrdersState extends State<Orders> {
         },
         child: isOrderListLoading
             ? SquareLoader()
-            : orderList.length == 0
-                ? Center(
-                    child: Image.asset('lib/assets/images/no-orders.png'),
-                  )
-                : ListView(
+            : orderList.length > 0
+                ? ListView(
                     children: <Widget>[
                       Container(
                         margin: EdgeInsets.only(top: 20, bottom: 10),
@@ -220,44 +124,43 @@ class _OrdersState extends State<Orders> {
                           itemCount:
                               orderList.length == null ? 0 : orderList.length,
                           itemBuilder: (BuildContext context, int i) {
-                            return orderList[i]['cart'] == null
-                                ? Container()
-                                : InkWell(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => OrderDetails(
-                                            locale: widget.locale,
-                                            localizedValues:
-                                                widget.localizedValues,
-                                            orderId: orderList[i]["_id"],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    child: Column(
-                                      children: <Widget>[
-                                        product(orderList[i]),
-                                        orderList[i]['orderStatus'] !=
-                                                    "Cancelled" &&
-                                                orderList[i]['orderStatus'] !=
-                                                    "DELIVERED" &&
-                                                orderList[i]['orderStatus'] !=
-                                                    "Pending"
-                                            ? orderTrack(orderList[i])
-                                            : Container(),
-                                        SizedBox(
-                                          height: 20,
-                                        )
-                                      ],
+                            return InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => OrderDetails(
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues,
+                                      orderId: orderList[i]["_id"],
                                     ),
-                                  );
+                                  ),
+                                );
+                              },
+                              child: Column(
+                                children: <Widget>[
+                                  product(orderList[i]),
+                                  orderList[i]['orderStatus'] != "CANCELLED" &&
+                                          orderList[i]['orderStatus'] !=
+                                              "DELIVERED" &&
+                                          orderList[i]['orderStatus'] !=
+                                              "PENDING"
+                                      ? orderTrack(orderList[i])
+                                      : Container(),
+                                  SizedBox(
+                                    height: 20,
+                                  )
+                                ],
+                              ),
+                            );
                           },
                         ),
                       ),
                       SizedBox(height: 30)
                     ],
+                  )
+                : Center(
+                    child: Image.asset('lib/assets/images/no-orders.png'),
                   ),
       ),
     );
@@ -278,15 +181,15 @@ class _OrdersState extends State<Orders> {
                 BoxShadow(color: Color(0xFF0000000A), blurRadius: 0.40)
               ],
               image: DecorationImage(
-                  image: orderDetails['cart']['cart'][0]['filePath'] == null &&
-                          orderDetails['cart']['cart'][0]['imageUrl'] == null
+                  image: orderDetails['product']['filePath'] == null &&
+                          orderDetails['product']['imageUrl'] == null
                       ? AssetImage('lib/assets/images/no-orders.png')
                       : NetworkImage(
-                          orderDetails['cart']['cart'][0]['filePath'] == null
-                              ? orderDetails['cart']['cart'][0]['imageUrl']
+                          orderDetails['product']['filePath'] == null
+                              ? orderDetails['product']['imageUrl']
                               : Constants.imageUrlPath +
                                   "tr:dpr-auto,tr:w-500" +
-                                  orderDetails['cart']['cart'][0]['filePath'],
+                                  orderDetails['product']['filePath'],
                         ),
                   fit: BoxFit.cover),
             ),
@@ -306,19 +209,19 @@ class _OrdersState extends State<Orders> {
                   style: textBarlowRegularrdark(),
                 ),
                 Text(
-                  '${orderDetails['cart']['cart'][0]['title']}' ?? "",
+                  '${orderDetails['product']['title']}' ?? "",
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                   style: textBarlowRegularrdark(),
                 ),
-                orderDetails['cart']['cart'].length == 1
+                orderDetails['totalProduct'] == "1"
                     ? Container()
                     : SizedBox(height: 5),
-                orderDetails['cart']['cart'].length == 1
+                orderDetails['totalProduct'] == "1"
                     ? Container()
                     : Text(
                         MyLocalizations.of(context).getLocalizations("AND") +
-                            ' ${(orderDetails['cart']['cart'].length - 1)} ' +
+                            ' ${orderDetails['totalProduct'].toString()} ' +
                             MyLocalizations.of(context)
                                 .getLocalizations("MORE_ITEMS"),
                         style: textSMBarlowRegularrBlack(),
@@ -333,8 +236,7 @@ class _OrdersState extends State<Orders> {
                   MyLocalizations.of(context)
                               .getLocalizations("ORDERED", true) +
                           DateFormat('dd/MM/yyyy, hh:mm a').format(
-                            DateTime.fromMillisecondsSinceEpoch(
-                                orderDetails['appTimestamp']),
+                            DateTime.parse(orderDetails['createdAt']),
                           ) ??
                       "",
                   style: textSMBarlowRegularrBlack(),
@@ -358,8 +260,8 @@ class _OrdersState extends State<Orders> {
               children: <Widget>[
                 GFAvatar(
                   backgroundColor:
-                      (orderDetails['orderStatus'] == "Confirmed" ||
-                              orderDetails['orderStatus'] == "Out for delivery")
+                      (orderDetails['orderStatus'] == "CONFIRMED" ||
+                              orderDetails['orderStatus'] == "OUT_FOR_DELIVERY")
                           ? green
                           : greyb.withOpacity(0.5),
                   radius: 6,
@@ -372,8 +274,8 @@ class _OrdersState extends State<Orders> {
             ),
             title: Text(
               MyLocalizations.of(context).getLocalizations("ORDER_CONFIRMED"),
-              style: orderDetails['orderStatus'] == "Confirmed" ||
-                      orderDetails['orderStatus'] == "Out for delivery"
+              style: orderDetails['orderStatus'] == "CONFIRMED" ||
+                      orderDetails['orderStatus'] == "OUT_FOR_DELIVERY"
                   ? titleSegoeGreen()
                   : titleSegoeGrey(),
             ),
@@ -391,7 +293,7 @@ class _OrdersState extends State<Orders> {
               children: <Widget>[
                 GFAvatar(
                   backgroundColor:
-                      orderDetails['orderStatus'] == "Out for delivery"
+                      orderDetails['orderStatus'] == "OUT_FOR_DELIVERY"
                           ? green
                           : greyb.withOpacity(0.5),
                   radius: 6,
@@ -404,11 +306,11 @@ class _OrdersState extends State<Orders> {
             ),
             title: Text(
               MyLocalizations.of(context).getLocalizations("OUT_FOR_DELIVERY"),
-              style: orderDetails['orderStatus'] == "Out for delivery"
+              style: orderDetails['orderStatus'] == "OUT_FOR_DELIVERY"
                   ? titleSegoeGreen()
                   : titleSegoeGrey(),
             ),
-            icon: orderDetails['orderStatus'] == "Out for delivery"
+            icon: orderDetails['orderStatus'] == "OUT_FOR_DELIVERY"
                 ? Padding(
                     padding: EdgeInsets.only(bottom: 20),
                     child: SvgPicture.asset('lib/assets/icons/tick.svg'),

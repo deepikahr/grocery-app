@@ -98,7 +98,6 @@ class _ProfileState extends State<Profile> {
           });
         }
         if (onValue['response_code'] == 200) {
-          print("kk");
           if (mounted) {
             setState(() {
               userInfo = onValue['response_data'];
@@ -108,8 +107,6 @@ class _ProfileState extends State<Profile> {
           }
         }
       } catch (error, stackTrace) {
-        print(error);
-
         if (mounted) {
           setState(() {
             isGetTokenLoading = false;
@@ -120,8 +117,6 @@ class _ProfileState extends State<Profile> {
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
-      print(error);
-
       if (mounted) {
         setState(() {
           isGetTokenLoading = false;

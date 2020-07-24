@@ -516,7 +516,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                             currency: currency,
                             dealPercentage: list[i]['isDealAvailable'] == true
                                 ? double.parse(
-                                    list[i]['delaPercent'].toStringAsFixed(1))
+                                    list[i]['dealPercent'].toStringAsFixed(1))
                                 : null,
                             productData: list[i],
                             variantList: list[i]['variant'],
@@ -539,7 +539,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                         padding: const EdgeInsets.all(2.0),
                                         child: Text(
                                           " " +
-                                              list[i]['delaPercent']
+                                              list[i]['dealPercent']
                                                   .toString() +
                                               "% " +
                                               MyLocalizations.of(context)
@@ -575,7 +575,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                         currency: currency,
                         dealPercentage: list[i]['isDealAvailable'] == true
                             ? double.parse(
-                                list[i]['delaPercent'].toStringAsFixed(1))
+                                list[i]['dealPercent'].toStringAsFixed(1))
                             : null,
                         productData: list[i],
                         variantList: list[i]['variant'],

@@ -14,9 +14,14 @@ import 'package:readymadeGroceryApp/style/style.dart';
 SentryError sentryError = new SentryError();
 
 class ResetPassword extends StatefulWidget {
-  final String token, locale;
+  final String verificationToken, locale, email;
   final Map localizedValues;
-  ResetPassword({Key key, this.token, this.localizedValues, this.locale})
+  ResetPassword(
+      {Key key,
+      this.verificationToken,
+      this.localizedValues,
+      this.locale,
+      this.email})
       : super(key: key);
 
   @override
@@ -43,9 +48,12 @@ class _ResetPasswordState extends State<ResetPassword> {
           isResetPasswordLoading = true;
         });
       }
-      Map<String, dynamic> body = {"password": password1};
-      await LoginService.resetPassword(body, widget.token).then((onValue) {
-        print(onValue);
+      Map<String, dynamic> body = {
+        "newPassword": password1,
+        "email": widget.email,
+        "verificationToken": widget.verificationToken
+      };
+      await LoginService.resetPassword(body).then((onValue) {
         try {
           if (mounted) {
             setState(() {

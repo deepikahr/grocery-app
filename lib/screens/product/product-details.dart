@@ -41,13 +41,11 @@ class _ProductDetailsState extends State<ProductDetails>
     with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var productDetail;
-  String variantUnit, variantId, favId, currency;
-  // String currentCardId;
+  String variantUnit, variantId, currency;
 
   int groupValue = 0;
   bool sizeSelect = false,
       getTokenValue = false,
-      isFavProduct = false,
       addProductTocart = false,
       isProductDetails = false,
       isFavProductLoading = false,
@@ -87,7 +85,6 @@ class _ProductDetailsState extends State<ProductDetails>
         setState(() {
           if (onValue != null) {
             getTokenValue = true;
-            _checkFavourite();
           } else {
             getTokenValue = false;
           }
@@ -147,59 +144,6 @@ class _ProductDetailsState extends State<ProductDetails>
     });
   }
 
-  void _checkFavourite() async {
-    if (mounted) {
-      setState(() {
-        isFavProductLoading = true;
-      });
-    }
-    await FavouriteService.checkFavProduct(widget.productID).then((onValue) {
-      try {
-        if (onValue['response_code'] == 200) {
-          if (onValue['response_data'] is String) {
-            if (mounted) {
-              setState(() {
-                favId = null;
-                isFavProductLoading = false;
-              });
-            }
-          } else {
-            if (mounted) {
-              setState(() {
-                favId = onValue['response_data']["_id"];
-                isFavProductLoading = false;
-                isFavProduct = true;
-              });
-            }
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              favId = null;
-              isFavProductLoading = false;
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            favId = null;
-            isFavProductLoading = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          favId = null;
-          isFavProductLoading = false;
-        });
-      }
-      sentryError.reportError(error, null);
-    });
-  }
-
   getToken(productDetail) async {
     await Common.getToken().then((onValue) {
       if (onValue != null) {
@@ -233,61 +177,70 @@ class _ProductDetailsState extends State<ProductDetails>
     setState(() {
       isFavProductLoading = true;
     });
-    if (isFavProduct) {
-      Map<String, dynamic> body = {"product": id};
-      await FavouriteService.addToFav(body).then((onValue) {
-        try {
-          if (onValue['response_code'] == 201) {
+    await FavouriteService.addToFav(id).then((onValue) {
+      try {
+        if (onValue['response_code'] == 200) {
+          setState(() {
+            productDetail['isFavourite'] = true;
+            isFavProductLoading = false;
             showSnackbar(onValue['response_data']);
-            _checkFavourite();
-          } else {
-            setState(() {
-              isFavProductLoading = false;
-              isFavProduct = false;
-              showSnackbar(onValue['response_data']);
-            });
-          }
-        } catch (error, stackTrace) {
+          });
+        } else {
           setState(() {
             isFavProductLoading = false;
-            isFavProduct = false;
+            productDetail['isFavourite'] = false;
+            showSnackbar(onValue['response_data']);
           });
-          sentryError.reportError(error, stackTrace);
         }
-      }).catchError((error) {
+      } catch (error, stackTrace) {
         setState(() {
           isFavProductLoading = false;
+          productDetail['isFavourite'] = false;
         });
-        sentryError.reportError(error, null);
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      setState(() {
+        isFavProductLoading = false;
       });
-    } else {
-      await FavouriteService.deleteToFav(id).then((onValue) {
-        try {
-          if (onValue['response_code'] == 200) {
-            showSnackbar(onValue['response_data']);
-            _checkFavourite();
-          } else {
-            setState(() {
-              isFavProductLoading = false;
-              showSnackbar(onValue['response_data']);
-              isFavProduct = true;
-            });
-          }
-        } catch (error, stackTrace) {
+      sentryError.reportError(error, null);
+    });
+  }
+
+  removeToFavApi(id) async {
+    setState(() {
+      isFavProductLoading = true;
+    });
+
+    await FavouriteService.deleteToFav(id).then((onValue) {
+      try {
+        if (onValue['response_code'] == 200) {
           setState(() {
             isFavProductLoading = false;
-            isFavProduct = true;
+            showSnackbar(onValue['response_data']);
+            productDetail['isFavourite'] = false;
           });
-          sentryError.reportError(error, stackTrace);
+        } else {
+          setState(() {
+            isFavProductLoading = false;
+            showSnackbar(onValue['response_data']);
+            productDetail['isFavourite'] = true;
+          });
         }
-      }).catchError((error) {
+      } catch (error, stackTrace) {
         setState(() {
-          isFavProduct = true;
           isFavProductLoading = false;
+          productDetail['isFavourite'] = true;
         });
-        sentryError.reportError(error, null);
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      setState(() {
+        productDetail['isFavourite'] = true;
+        isFavProductLoading = false;
       });
-    }
+      sentryError.reportError(error, null);
+    });
   }
 
   addToCart(data) async {
@@ -340,6 +293,8 @@ class _ProductDetailsState extends State<ProductDetails>
           Navigator.of(context).pop();
         } else if (onValue['response_code'] == 403) {
           cartClear(onValue['response_data']);
+        } else {
+          showSnackbar(onValue['response_data']);
         }
       } catch (error, stackTrace) {
         if (mounted) {
@@ -552,7 +507,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                                 Text(
                                                   productDetail[
                                                           'isDealAvailable']
-                                                      ? "$currency${((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * (productDetail['delaPercent'] / 100))).toDouble().toStringAsFixed(2)}"
+                                                      ? "$currency${((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * (productDetail['dealPercent'] / 100))).toDouble().toStringAsFixed(2)}"
                                                       : '$currency${(variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice).toDouble().toStringAsFixed(2)}',
                                                   style: textbarlowBoldGreen(),
                                                 ),
@@ -709,7 +664,6 @@ class _ProductDetailsState extends State<ProductDetails>
                                                                         'variant']
                                                                     [value][
                                                                 'productStock'];
-                                                        print(variantStock);
                                                       });
                                                     }
                                                   },
@@ -723,7 +677,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                                       Text(
                                                         productDetail[
                                                                 'isDealAvailable']
-                                                            ? "$currency${(productDetail['variant'][i]['price'] - (productDetail['variant'][i]['price'] * (productDetail['delaPercent'] / 100))).toDouble().toStringAsFixed(2)}"
+                                                            ? "$currency${(productDetail['variant'][i]['price'] - (productDetail['variant'][i]['price'] * (productDetail['dealPercent'] / 100))).toDouble().toStringAsFixed(2)}"
                                                             : '$currency${productDetail['variant'][i]['price'].toDouble().toStringAsFixed(2)}',
                                                         style:
                                                             textbarlowBoldGreen(),
@@ -777,12 +731,12 @@ class _ProductDetailsState extends State<ProductDetails>
                                         if (mounted) {
                                           setState(() {
                                             if (!isFavProductLoading) {
-                                              if (isFavProduct == true) {
-                                                isFavProduct = false;
-
-                                                addToFavApi(favId);
+                                              if (productDetail[
+                                                      'isFavourite'] ==
+                                                  true) {
+                                                removeToFavApi(
+                                                    productDetail['_id']);
                                               } else {
-                                                isFavProduct = true;
                                                 addToFavApi(
                                                     productDetail['_id']);
                                               }
@@ -793,7 +747,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                       child: isFavProductLoading
                                           ? GFLoader(
                                               type: GFLoaderType.ios, size: 27)
-                                          : isFavProduct
+                                          : productDetail['isFavourite'] == true
                                               ? Icon(
                                                   Icons.favorite,
                                                   color: Colors.red,
@@ -884,7 +838,7 @@ class _ProductDetailsState extends State<ProductDetails>
                               ),
                               new Text(
                                 productDetail['isDealAvailable']
-                                    ? "$currency${((((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * (productDetail['delaPercent'] / 100)))) * quantity).toDouble().toStringAsFixed(2)}"
+                                    ? "$currency${((((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * (productDetail['dealPercent'] / 100)))) * quantity).toDouble().toStringAsFixed(2)}"
                                     : '$currency${((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * quantity).toDouble().toStringAsFixed(2)}',
                                 style: textbarlowBoldWhite(),
                               ),
@@ -909,7 +863,6 @@ class _ProductDetailsState extends State<ProductDetails>
                     ],
                   ),
                   onPressed: () {
-                    print(getTokenValue);
                     if (getTokenValue == true) {
                       addToCart(productDetail);
                     } else {

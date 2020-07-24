@@ -98,29 +98,27 @@ class _EditAddressState extends State<EditAddress> {
         address['location'] = location;
       }
       address['addressType'] = addressType[selectedAddressType];
-      print(address);
       AddressService.updateAddress(address, widget.updateAddressID['_id'])
           .then((onValue) {
         try {
-          if (mounted) {
+          if (onValue['response_code'] == 200 && mounted) {
             setState(() {
-              isUpdateAddressLoading = false;
-            });
-          }
-          if (onValue['response_code'] == 200) {
-            addressController.clear();
-
-            if (mounted) {
-              setState(() {
+              addressController.clear();
+              showSnackbar(onValue['response_data']);
+              Future.delayed(Duration(milliseconds: 1500), () {
                 Navigator.pop(context);
               });
-            }
+              isUpdateAddressLoading = false;
+            });
           } else {
-            showSnackbar(onValue['response_data']);
+            if (mounted) {
+              setState(() {
+                isUpdateAddressLoading = false;
+                showSnackbar(onValue['response_data']);
+              });
+            }
           }
         } catch (error, stackTrace) {
-          print(error);
-
           if (mounted) {
             setState(() {
               isUpdateAddressLoading = false;
@@ -129,8 +127,6 @@ class _EditAddressState extends State<EditAddress> {
           sentryError.reportError(error, stackTrace);
         }
       }).catchError((onError) {
-        print(onError);
-
         if (mounted) {
           setState(() {
             isUpdateAddressLoading = false;
@@ -627,7 +623,6 @@ class _EditAddressState extends State<EditAddress> {
                     padding: const EdgeInsets.only(left: 0.0, right: 0.0),
                     child: GFButton(
                       onPressed: () {
-                        print("update");
                         updateAddress();
                       },
                       textStyle: textBarlowRegularBlack(),

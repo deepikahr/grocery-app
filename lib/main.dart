@@ -75,32 +75,11 @@ void main() async {
 void getToken() async {
   await Common.getToken().then((onValue) async {
     if (onValue != null) {
-      checkToken(onValue);
-
       Common.getSelectedLanguage().then((selectedLocale) async {
         Map body = {"language": selectedLocale};
         await LoginService.updateUserInfo(body);
-      });
-    }
-  }).catchError((error) {
-    sentryError.reportError(error, null);
-  });
-}
-
-void checkToken(token) async {
-  LoginService.checkToken().then((onValue) async {
-    try {
-      if (onValue['response_data']['tokenVerify'] == false) {
-        Map body = {"playerId": null};
-        LoginService.updateUserInfo(body).then((value) async {
-          await Common.setToken(null);
-          await Common.setUserID(null);
-        });
-      } else {
         userInfoMethod();
-      }
-    } catch (error, stackTrace) {
-      sentryError.reportError(error, stackTrace);
+      });
     }
   }).catchError((error) {
     sentryError.reportError(error, null);

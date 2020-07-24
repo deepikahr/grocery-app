@@ -54,7 +54,7 @@ class _EditProfileState extends State<EditProfile> {
           setState(() {
             isLoading = false;
             userInfo = onValue['response_data'];
-            walletAmount = onValue['walletAmount'] ?? 0;
+            walletAmount = onValue['response_data']['walletAmount'] ?? 0.00;
           });
         }
       } catch (error, stackTrace) {
@@ -119,7 +119,6 @@ class _EditProfileState extends State<EditProfile> {
         "lastName": lastName,
         "mobileNumber": mobileNumber
       };
-      print(body);
 
       await LoginService.updateUserInfo(body).then((onValue) {
         try {
@@ -207,7 +206,6 @@ class _EditProfileState extends State<EditProfile> {
       await response.stream.transform(utf8.decoder).listen((value) async {
         Map<String, dynamic> data;
         data = json.decode(value);
-        print(data);
         updateUserInfo(data['response_data']['url'],
             data['response_data']['key'], data['response_data']['filePath']);
       });

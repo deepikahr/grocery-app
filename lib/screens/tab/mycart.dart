@@ -160,7 +160,6 @@ class _MyCartState extends State<MyCart> {
 
   // update cart
   updateCart(i) async {
-    print(cartItem['products'][i]['quantity']);
     Map<String, dynamic> body = {
       'unit': cartItem['products'][i]['unit'],
       'productId': cartItem['products'][i]['productId'],
@@ -172,7 +171,6 @@ class _MyCartState extends State<MyCart> {
         cartItem['products'][i]['isQuantityUpdating'] = true;
       });
     }
-    print(body);
     await AddToCart.addAndUpdateProductMethod(body).then((onValue) {
       try {
         if (mounted) {
@@ -377,23 +375,89 @@ class _MyCartState extends State<MyCart> {
       minAmout['minimumOrderAmountToPlaceOrder'] = 0.0;
     }
     if (cartItem['subTotal'] >= minAmout['minimumOrderAmountToPlaceOrder']) {
-      var result = Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Checkout(
-            locale: widget.locale,
-            localizedValues: widget.localizedValues,
-            id: cartItem['_id'].toString(),
-          ),
-        ),
-      );
-      result.then((value) {
-        getCartItems();
-      });
+      checkProductAvailableOrNot();
     } else {
       showError(MyLocalizations.of(context).getLocalizations("MIN_AMOUNT_MEG") +
           "($currency${minAmout['minimumOrderAmountToPlaceOrder'].toString()})");
     }
+  }
+
+  checkProductAvailableOrNot() async {
+    if (mounted) {
+      setState(() {
+        isCheckProductAvailableOrNot = true;
+      });
+    }
+    CartService.checkCartVerifyOrNot().then((response) {
+      if (mounted) {
+        setState(() {
+          isCheckProductAvailableOrNot = false;
+        });
+      }
+      if (response['response_code'] == 200) {
+        var result = Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Checkout(
+              locale: widget.locale,
+              localizedValues: widget.localizedValues,
+              id: cartItem['_id'].toString(),
+            ),
+          ),
+        );
+        result.then((value) {
+          getCartItems();
+        });
+      } else {
+        verifyTokenAlert(response['response_data']);
+      }
+    });
+  }
+
+  verifyTokenAlert(responseData) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            MyLocalizations.of(context).getLocalizations("OUT_OF_STOCK"),
+          ),
+          content: SingleChildScrollView(
+            child: responseData.length > 0
+                ? ListView.builder(
+                    physics: ScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: responseData.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            responseData[index]['productName'].toString(),
+                          ),
+                          Text(
+                            responseData[index]['unit'].toString() +
+                                "*" +
+                                responseData[index]['quantity'].toString(),
+                          ),
+                        ],
+                      );
+                    })
+                : Text(""),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(MyLocalizations.of(context).getLocalizations("OK")),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   showError(responseData) async {
@@ -864,7 +928,7 @@ class _MyCartState extends State<MyCart> {
                                       ),
                                     ),
                               SizedBox(height: 6),
-                              cartItem['couponInfo'] == null
+                              cartItem['couponCode'] == null
                                   ? Container()
                                   : Padding(
                                       padding: const EdgeInsets.only(
@@ -885,13 +949,13 @@ class _MyCartState extends State<MyCart> {
                                             style: textBarlowRegularBlack(),
                                           ),
                                           new Text(
-                                            '$currency${cartItem['couponInfo']['couponDiscountAmount'].toDouble().toStringAsFixed(2)}',
+                                            '$currency${cartItem['couponAmount'].toDouble().toStringAsFixed(2)}',
                                             style: textbarlowBoldsmBlack(),
                                           ),
                                         ],
                                       ),
                                     ),
-                              cartItem['couponInfo'] == null
+                              cartItem['couponCode'] == null
                                   ? Container()
                                   : SizedBox(height: 6),
                               cartItem['deliveryCharges'] == 0 &&

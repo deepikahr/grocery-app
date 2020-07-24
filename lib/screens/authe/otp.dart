@@ -15,9 +15,9 @@ import 'package:readymadeGroceryApp/widgets/loader.dart';
 SentryError sentryError = new SentryError();
 
 class Otp extends StatefulWidget {
-  Otp({Key key, this.email, this.token, this.locale, this.localizedValues})
+  Otp({Key key, this.email, this.locale, this.localizedValues})
       : super(key: key);
-  final String email, token, locale;
+  final String email, locale;
   final Map localizedValues;
 
   @override
@@ -44,9 +44,7 @@ class _OtpState extends State<Otp> {
             isOtpVerifyLoading = true;
           });
         }
-        Map<String, dynamic> body = {"otp": enteredOtp};
-        await LoginService.verifyOtp(body, widget.token).then((onValue) {
-          print(onValue);
+        await LoginService.verifyOtp(enteredOtp, widget.email).then((onValue) {
           try {
             if (mounted) {
               setState(() {
@@ -63,7 +61,7 @@ class _OtpState extends State<Otp> {
                       child: new ListBody(
                         children: <Widget>[
                           new Text(
-                            '${onValue['response_data']['message']}',
+                            '${onValue['response_data']['message'] ?? ""}',
                             style: textBarlowMediumBlack(),
                           ),
                         ],
@@ -76,11 +74,14 @@ class _OtpState extends State<Otp> {
                           style: TextStyle(color: green),
                         ),
                         onPressed: () {
+                          Navigator.pop(context);
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => ResetPassword(
-                                token: onValue['response_data']['resData'],
+                                verificationToken: onValue['response_data']
+                                    ['verificationToken'],
+                                email: widget.email,
                                 locale: widget.locale,
                                 localizedValues: widget.localizedValues,
                               ),
@@ -168,10 +169,9 @@ class _OtpState extends State<Otp> {
         isResentOtpLoading = true;
       });
     }
-    Map body = {
-      "email": widget.email.toLowerCase(),
-    };
-    await LoginService.verifyEmail(body).then((response) {
+
+    await LoginService.forgetPassword(widget.email.toLowerCase())
+        .then((response) {
       try {
         if (mounted) {
           setState(() {
@@ -179,7 +179,7 @@ class _OtpState extends State<Otp> {
           });
         }
         if (response['response_code'] == 200) {
-          showSnackbar(response['response_data']['message']);
+          showSnackbar(response['response_data']);
         } else {
           showSnackbar(response['response_data']);
         }

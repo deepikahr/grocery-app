@@ -579,7 +579,7 @@ class _AllProductsState extends State<AllProducts> {
                                                                   " " +
                                                                       subCategryByProduct[i]
                                                                               [
-                                                                              'delaPercent']
+                                                                              'dealPercent']
                                                                           .toString() +
                                                                       "% " +
                                                                       MyLocalizations.of(
@@ -698,7 +698,7 @@ class _AllProductsState extends State<AllProducts> {
                                                           child: Text(
                                                             " " +
                                                                 productsList[i][
-                                                                        'delaPercent']
+                                                                        'dealPercent']
                                                                     .toString() +
                                                                 "% " +
                                                                 MyLocalizations.of(

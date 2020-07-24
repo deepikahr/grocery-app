@@ -327,7 +327,7 @@ class _SearchItemState extends State<SearchItem> {
                                                       child: Text(
                                                         " " +
                                                             searchresult[index][
-                                                                    'delaPercent']
+                                                                    'dealPercent']
                                                                 .toString() +
                                                             "% " +
                                                             MyLocalizations.of(

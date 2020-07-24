@@ -195,10 +195,7 @@ class _LoginState extends State<Login> {
                 style: textbarlowRegularaPrimary(),
               ),
               onPressed: () {
-                Map body = {
-                  "email": email,
-                };
-                LoginService.verificationMailSendApi(body).then((response) {
+                LoginService.verificationMailSendApi(email).then((response) {
                   Navigator.of(context).pop();
                   if (response['response_code'] == 200) {
                     showSnackbar(response['response_data']);
@@ -477,7 +474,7 @@ class _LoginState extends State<Login> {
                   text: MyLocalizations.of(context)
                           .getLocalizations("FORGET_PASSWORD") +
                       "?",
-                  style: textbarlowRegularBlackd()),
+                  style: textbarlowRegularBlackFont()),
               TextSpan(
                 text: '',
                 style: TextStyle(color: primary),
