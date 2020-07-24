@@ -83,13 +83,4 @@ class ProductService {
         await client.get(Constants.baseURL + 'sub-categories/list');
     return json.decode(response.body);
   }
-
-  //rate to product
-  static Future<Map<String, dynamic>> productRate(body) async {
-    final response =
-        await client.post(Constants.baseURL + "rating/rate/product");
-    print("rating/rate/product");
-    print(json.decode(response.body));
-    return json.decode(response.body);
-  }
 }
