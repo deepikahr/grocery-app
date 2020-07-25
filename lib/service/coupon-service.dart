@@ -12,13 +12,13 @@ class CouponService {
 
   static Future<Map<String, dynamic>> applyCouponsCode(couponName) async {
     final response =
-        await client.post(Constants.baseURL + "carts/apply-coupon/$couponName");
+        await client.post(Constants.apiUrl + "carts/apply-coupon/$couponName");
     return json.decode(response.body);
   }
 
   static Future<Map<String, dynamic>> removeCoupon(couponCode) async {
     final response = await client
-        .delete(Constants.baseURL + "carts/remove-coupon/$couponCode");
+        .delete(Constants.apiUrl + "carts/remove-coupon/$couponCode");
     return json.decode(response.body);
   }
 }

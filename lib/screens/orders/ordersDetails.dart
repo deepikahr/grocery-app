@@ -53,8 +53,8 @@ class _OrderDetailsState extends State<OrderDetails> {
           if (mounted) {
             setState(() {
               orderHistory = onValue['response_data'];
-              if (orderHistory['usedWalletAmount'] == null) {
-                orderHistory['usedWalletAmount'] = 0.0;
+              if (orderHistory['walletAmount'] == null) {
+                orderHistory['walletAmount'] = 0.0;
               }
               isLoading = false;
             });
@@ -535,48 +535,46 @@ class _OrderDetailsState extends State<OrderDetails> {
                         ],
                       ),
                     ),
-                    // orderHistory['cart']['usedWalletAmount'] == 0 ||
-                    //         orderHistory['cart']['usedWalletAmount'] == 0.0
-                    //     ? Container()
-                    //     : Padding(
-                    //         padding:
-                    //             const EdgeInsets.only(left: 18.0, right: 18.0),
-                    //         child: Row(
-                    //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //           children: <Widget>[
-                    //             Text(
-                    //                 MyLocalizations.of(context)
-                    //                     .getLocalizations(
-                    //                         "USED_WALLET_AMOUNT", true),
-                    //                 style: textBarlowMediumBlack()),
-                    //             Container(
-                    //               margin: EdgeInsets.only(left: 8),
-                    //               child: Padding(
-                    //                 padding: const EdgeInsets.only(
-                    //                   top: 15.0,
-                    //                 ),
-                    //                 child: Row(
-                    //                   mainAxisAlignment:
-                    //                       MainAxisAlignment.start,
-                    //                   children: <Widget>[
-                    //                     Text(
-                    //                       currency,
-                    //                       style: textBarlowBoldBlack(),
-                    //                     ),
-                    //                     Text(
-                    //                       orderHistory['cart']
-                    //                               ['usedWalletAmount']
-
-                    //                           .toStringAsFixed(2),
-                    //                       style: textBarlowBoldBlack(),
-                    //                     )
-                    //                   ],
-                    //                 ),
-                    //               ),
-                    //             ),
-                    //           ],
-                    //         ),
-                    //       ),
+                    orderHistory['cart']['walletAmount'] == 0 ||
+                            orderHistory['cart']['walletAmount'] == 0.0
+                        ? Container()
+                        : Padding(
+                            padding:
+                                const EdgeInsets.only(left: 18.0, right: 18.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Text(
+                                    MyLocalizations.of(context)
+                                        .getLocalizations(
+                                            "USED_WALLET_AMOUNT", true),
+                                    style: textBarlowMediumBlack()),
+                                Container(
+                                  margin: EdgeInsets.only(left: 8),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                      top: 15.0,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          currency,
+                                          style: textBarlowBoldBlack(),
+                                        ),
+                                        Text(
+                                          orderHistory['cart']['walletAmount']
+                                              .toStringAsFixed(2),
+                                          style: textBarlowBoldBlack(),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                     orderHistory['cart']['couponCode'] == null
                         ? Container()
                         : Column(

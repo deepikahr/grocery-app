@@ -52,94 +52,94 @@ class _SignupState extends State<Signup> {
   userSignup() async {
     final form = _formKey.currentState;
     if (form.validate()) {
-      if (isChecked == true) {
-        form.save();
-        if (mounted) {
-          setState(() {
-            registerationLoading = true;
-          });
-        }
+      // if (isChecked == true) {
+      form.save();
+      if (mounted) {
+        setState(() {
+          registerationLoading = true;
+        });
+      }
 
-        Map<String, dynamic> body = {
-          "firstName": firstName,
-          "lastName": lastName,
-          "email": email.toLowerCase(),
-          "password": password,
-          "mobileNumber": mobileNumber
-        };
-        await LoginService.signUp(body).then((onValue) {
-          try {
-            if (mounted) {
-              setState(() {
-                registerationLoading = false;
-              });
-            }
-
-            if (onValue['response_code'] == 200) {
-              showDialog<Null>(
-                context: context,
-                barrierDismissible: false, // user must tap button!
-                builder: (BuildContext context) {
-                  return new AlertDialog(
-                    content: new SingleChildScrollView(
-                      child: new ListBody(
-                        children: <Widget>[
-                          new Text(
-                            onValue['response_data'],
-                            style: textBarlowRegularBlack(),
-                          ),
-                        ],
-                      ),
-                    ),
-                    actions: <Widget>[
-                      new FlatButton(
-                        child: new Text(
-                          MyLocalizations.of(context).getLocalizations("OK"),
-                          style: textbarlowRegularaPrimary(),
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) => Login(
-                                locale: widget.locale,
-                                localizedValues: widget.localizedValues,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
-            } else if (onValue['statusCode'] == 401) {
-              showSnackbar('${onValue['response_data']}');
-            } else {
-              showSnackbar('${onValue['response_data']}');
-            }
-          } catch (error) {
-            if (mounted) {
-              setState(() {
-                registerationLoading = false;
-              });
-            }
-
-            sentryError.reportError(error, null);
-          }
-        }).catchError((error) {
+      Map<String, dynamic> body = {
+        "firstName": firstName,
+        "lastName": lastName,
+        "email": email.toLowerCase(),
+        "password": password,
+        "mobileNumber": mobileNumber
+      };
+      await LoginService.signUp(body).then((onValue) {
+        try {
           if (mounted) {
             setState(() {
               registerationLoading = false;
             });
           }
+
+          if (onValue['response_code'] == 200) {
+            showDialog<Null>(
+              context: context,
+              barrierDismissible: false, // user must tap button!
+              builder: (BuildContext context) {
+                return new AlertDialog(
+                  content: new SingleChildScrollView(
+                    child: new ListBody(
+                      children: <Widget>[
+                        new Text(
+                          onValue['response_data'],
+                          style: textBarlowRegularBlack(),
+                        ),
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    new FlatButton(
+                      child: new Text(
+                        MyLocalizations.of(context).getLocalizations("OK"),
+                        style: textbarlowRegularaPrimary(),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => Login(
+                              locale: widget.locale,
+                              localizedValues: widget.localizedValues,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          } else if (onValue['statusCode'] == 401) {
+            showSnackbar('${onValue['response_data']}');
+          } else {
+            showSnackbar('${onValue['response_data']}');
+          }
+        } catch (error) {
+          if (mounted) {
+            setState(() {
+              registerationLoading = false;
+            });
+          }
+
           sentryError.reportError(error, null);
-        });
-      } else {
-        showSnackbar(
-            MyLocalizations.of(context).getLocalizations("ACCEPT_MSG"));
-      }
+        }
+      }).catchError((error) {
+        if (mounted) {
+          setState(() {
+            registerationLoading = false;
+          });
+        }
+        sentryError.reportError(error, null);
+      });
+      // } else {
+      //   showSnackbar(
+      //       MyLocalizations.of(context).getLocalizations("ACCEPT_MSG"));
+      // }
     } else {
       if (mounted) {
         setState(() {
@@ -259,7 +259,7 @@ class _SignupState extends State<Signup> {
               buildMobileNumberTextField(),
               buildPasswordText(),
               buildPasswordTextField(),
-              buildTermsAndCondiField(),
+              // buildTermsAndCondiField(),
               buildsignuplink(),
               buildLoginButton(),
             ],

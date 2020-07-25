@@ -5,10 +5,10 @@ class Constants {
   static const APP_NAME = "Readymade Grocery App test";
 
   // delopy url production
-  static String baseURL = DotEnv().env['BASE_URL'];
+  static String apiUrl = DotEnv().env['API_URL'];
 
   // local socketUrl
-  static final String socketUrl = baseURL.substring(0, baseURL.length - 1);
+  static final String socketUrl = apiUrl.substring(0, apiUrl.length - 1);
 
   // ONE_SIGNAL_KEY
   static String oneSignalKey = DotEnv().env['ONE_SIGNAL_KEY'];
@@ -21,4 +21,7 @@ class Constants {
 
   // image url
   static String imageUrlPath = DotEnv().env['IMAGE_URL_PATH'];
+
+  // dashboard url
+  static String baseUrl = DotEnv().env['BASE_URL'];
 }

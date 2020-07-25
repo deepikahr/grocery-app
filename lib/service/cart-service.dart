@@ -10,26 +10,26 @@ Client client =
 class CartService {
   // add product in cart
   static Future<Map<String, dynamic>> addAndUpdateProduct(body) async {
-    final response = await client.post(Constants.baseURL + "carts/update",
+    final response = await client.post(Constants.apiUrl + "carts/update",
         body: json.encode(body));
     return json.decode(response.body);
   }
 
   // get product in cart
   static Future<Map<String, dynamic>> getProductToCart() async {
-    final response = await client.get(Constants.baseURL + "carts/my");
+    final response = await client.get(Constants.apiUrl + "carts/my");
     return json.decode(response.body);
   }
 
   // delete form cart
   static Future<Map<String, dynamic>> deleteDataFromCart(productId) async {
     final response =
-        await client.put(Constants.baseURL + "carts/remove/$productId");
+        await client.put(Constants.apiUrl + "carts/remove/$productId");
     return json.decode(response.body);
   }
 
   static Future<Map<String, dynamic>> deleteAllDataFromCart() async {
-    final response = await client.delete(Constants.baseURL + "carts/delete");
+    final response = await client.delete(Constants.apiUrl + "carts/delete");
 
     return json.decode(response.body);
   }
@@ -37,13 +37,24 @@ class CartService {
   static Future<Map<String, dynamic>> getDeliveryChargesAndSaveAddress(
       body) async {
     final response = await client.post(
-        Constants.baseURL + "carts/update-address",
+        Constants.apiUrl + "carts/update-address",
         body: json.encode(body));
     return json.decode(response.body);
   }
 
   static Future<Map<String, dynamic>> checkCartVerifyOrNot() async {
-    final response = await client.get(Constants.baseURL + "carts/verify");
+    final response = await client.get(Constants.apiUrl + "carts/verify");
+    return json.decode(response.body);
+  }
+
+  static Future<Map<String, dynamic>> walletApply() async {
+    final response = await client.post(Constants.apiUrl + "carts/apply-wallet");
+    return json.decode(response.body);
+  }
+
+  static Future<Map<String, dynamic>> walletRemove() async {
+    final response =
+        await client.delete(Constants.apiUrl + "carts/remove-wallet");
     return json.decode(response.body);
   }
 }

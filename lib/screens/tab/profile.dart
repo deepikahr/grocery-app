@@ -8,6 +8,7 @@ import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/drawer/address.dart';
 import 'package:readymadeGroceryApp/screens/orders/orders.dart';
 import 'package:readymadeGroceryApp/screens/tab/editprofile.dart';
+import 'package:readymadeGroceryApp/screens/webView/webView.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -543,6 +544,51 @@ class _ProfileState extends State<Profile> {
                         SizedBox(height: 20.0),
                       ],
                     ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => WebViewPage(
+                              locale: widget.locale,
+                              localizedValues: widget.localizedValues,
+                              title: MyLocalizations.of(context)
+                                  .getLocalizations("TERMS_CONDITIONS"),
+                              url: Constants.baseUrl + "terms-and-conditions",
+                            )));
+              },
+              child: Text(
+                MyLocalizations.of(context)
+                    .getLocalizations("TERMS_CONDITIONS"),
+                style: textBarlowmediumLink(),
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => WebViewPage(
+                              locale: widget.locale,
+                              localizedValues: widget.localizedValues,
+                              title: MyLocalizations.of(context)
+                                  .getLocalizations("PRIVACY_POLICY"),
+                              url: Constants.baseUrl + "privacy-policy",
+                            )));
+              },
+              child: Text(
+                MyLocalizations.of(context).getLocalizations("PRIVACY_POLICY"),
+                style: textBarlowmediumLink(),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

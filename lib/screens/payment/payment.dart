@@ -3,6 +3,7 @@ import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -16,23 +17,17 @@ import 'package:stripe_payment/stripe_payment.dart';
 SentryError sentryError = new SentryError();
 
 class Payment extends StatefulWidget {
-  final int quantity, currentIndex;
-  final String type, locale;
-  final grandTotals, deliveryCharges;
-  final Map<String, dynamic> data, locationInfo;
-  final Map localizedValues;
+  final String locale;
+
+  final Map data, locationInfo, localizedValues, cartItems;
 
   Payment(
       {Key key,
       this.data,
-      this.quantity,
-      this.currentIndex,
-      this.type,
-      this.deliveryCharges,
-      this.grandTotals,
       this.locale,
       this.localizedValues,
-      this.locationInfo})
+      this.locationInfo,
+      this.cartItems})
       : super(key: key);
   @override
   _PaymentState createState() => _PaymentState();
@@ -42,17 +37,16 @@ class _PaymentState extends State<Payment> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   int groupValue = 0;
-  var walletAmount, usedWalletAmount = 0.0;
   String currency;
-  var grandTotal, deliveryCharges, remaingWalletPoints, grandTotalCalulation;
   bool isPlaceOrderLoading = false,
       isCardListLoading = false,
       isSelected = false,
+      isWalletLoading = false,
       walletUsedOrNotValue = false,
-      showPaymantOptions = false;
+      fullWalletUsedOrNot = false;
 
   List paymentTypes = [];
-
+  var walletAmount, cartItem;
   @override
   void initState() {
     fetchCardInfo();
@@ -60,9 +54,7 @@ class _PaymentState extends State<Payment> {
         publishableKey: Constants.stripKey,
         merchantId: "Test",
         androidPayMode: 'test'));
-
-    deliveryCharges = widget.deliveryCharges;
-    grandTotal = widget.grandTotals;
+    cartItem = widget.cartItems;
 
     super.initState();
   }
@@ -107,38 +99,33 @@ class _PaymentState extends State<Payment> {
         isPlaceOrderLoading = true;
       });
     }
-    if (showPaymantOptions == false) {
-      if (groupValue == null) {
-        if (mounted) {
-          setState(() {
-            isPlaceOrderLoading = false;
-          });
-        }
-        showSnackbar(MyLocalizations.of(context)
-            .getLocalizations("SELECT_PAYMENT_FIRST"));
-      } else {
-        if (widget.data['paymentType'] == "CARD") {
-          StripePayment.paymentRequestWithCardForm(CardFormPaymentRequest())
-              .then((pm) {
-            setState(() {
-              widget.data['paymentId'] = pm.id.toString();
-
-              palceOrderMethod(widget.data);
-            });
-          }).catchError((e) {
-            if (mounted) {
-              setState(() {
-                isPlaceOrderLoading = false;
-              });
-            }
-            showSnackbar(e.toString());
-          });
-        } else {
-          palceOrderMethod(widget.data);
-        }
+    if (groupValue == null) {
+      if (mounted) {
+        setState(() {
+          isPlaceOrderLoading = false;
+        });
       }
+      showSnackbar(
+          MyLocalizations.of(context).getLocalizations("SELECT_PAYMENT_FIRST"));
     } else {
-      palceOrderMethod(widget.data);
+      if (widget.data['paymentType'] == "CARD") {
+        StripePayment.paymentRequestWithCardForm(CardFormPaymentRequest())
+            .then((pm) {
+          setState(() {
+            widget.data['paymentId'] = pm.id.toString();
+            palceOrderMethod(widget.data);
+          });
+        }).catchError((e) {
+          if (mounted) {
+            setState(() {
+              isPlaceOrderLoading = false;
+            });
+          }
+          showSnackbar(e.toString());
+        });
+      } else {
+        palceOrderMethod(widget.data);
+      }
     }
   }
 
@@ -161,7 +148,11 @@ class _PaymentState extends State<Payment> {
               ),
               (Route<dynamic> route) => false);
         } else {
-          verifyTokenAlert(onValue['response_data']);
+          if (onValue['response_data'] is List) {
+            verifyTokenAlert(onValue['response_data']);
+          } else {
+            showError(onValue['response_data']);
+          }
         }
       } catch (error, stackTrace) {
         if (mounted) {
@@ -177,6 +168,67 @@ class _PaymentState extends State<Payment> {
           isPlaceOrderLoading = false;
         });
       }
+      sentryError.reportError(error, null);
+    });
+  }
+
+  applyWallet(walleValue) async {
+    if (mounted) {
+      setState(() {
+        isWalletLoading = true;
+      });
+    }
+    await CartService.walletApply().then((onValue) {
+      try {
+        if (onValue['response_code'] == 200 && mounted) {
+          setState(() {
+            isWalletLoading = false;
+            cartItem = onValue['response_data'];
+            walletUsedOrNotValue = walleValue;
+            if (cartItem['grandTotal'] == 0) {
+              fullWalletUsedOrNot = true;
+            }
+          });
+        } else {
+          setState(() {
+            isWalletLoading = false;
+            walletUsedOrNotValue = false;
+            showSnackbar(onValue['response_data']);
+          });
+        }
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
+  }
+
+  removeWallet(walleValue) async {
+    if (mounted) {
+      setState(() {
+        isWalletLoading = true;
+      });
+    }
+    await CartService.walletRemove().then((onValue) {
+      try {
+        if (onValue['response_code'] == 200 && mounted) {
+          setState(() {
+            isWalletLoading = false;
+            cartItem = onValue['response_data'];
+            walletUsedOrNotValue = walleValue;
+          });
+        } else {
+          setState(() {
+            isWalletLoading = true;
+            walletUsedOrNotValue = false;
+            showSnackbar(onValue['response_data']);
+          });
+        }
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
       sentryError.reportError(error, null);
     });
   }
@@ -237,10 +289,30 @@ class _PaymentState extends State<Payment> {
     );
   }
 
+  showError(responseData) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            responseData,
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(MyLocalizations.of(context).getLocalizations("OK")),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void dispose() {
-    grandTotalCalulation = null;
-    remaingWalletPoints = null;
     paymentTypes = [];
     super.dispose();
   }
@@ -263,7 +335,8 @@ class _PaymentState extends State<Payment> {
           ? SquareLoader()
           : ListView(
               children: <Widget>[
-                deliveryCharges == 0 || deliveryCharges == "0"
+                cartItem['deliveryCharges'] == 0 ||
+                        cartItem['deliveryCharges'] == "0"
                     ? Container()
                     : Container(
                         color: Colors.grey[100],
@@ -296,7 +369,7 @@ class _PaymentState extends State<Payment> {
                                         ),
                                       ),
                                       Text(
-                                        deliveryCharges
+                                        cartItem['deliveryCharges']
                                             .toDouble()
                                             .toStringAsFixed(2),
                                         style: textbarlowBoldBlack(),
@@ -338,13 +411,9 @@ class _PaymentState extends State<Payment> {
                                   ),
                                 ),
                                 Text(
-                                  grandTotalCalulation != null
-                                      ? grandTotalCalulation
-                                          .toDouble()
-                                          .toStringAsFixed(2)
-                                      : grandTotal
-                                          .toDouble()
-                                          .toStringAsFixed(2),
+                                  cartItem['grandTotal']
+                                      .toDouble()
+                                      .toStringAsFixed(2),
                                   style: textbarlowBoldBlack(),
                                 ),
                               ],
@@ -391,13 +460,10 @@ class _PaymentState extends State<Payment> {
                                             ),
                                           ),
                                           Text(
-                                            remaingWalletPoints != null
-                                                ? remaingWalletPoints
-                                                    .toDouble()
-                                                    .toStringAsFixed(2)
-                                                : walletAmount
-                                                    .toDouble()
-                                                    .toStringAsFixed(2),
+                                            (walletAmount -
+                                                    cartItem['walletAmount'])
+                                                .toDouble()
+                                                .toStringAsFixed(2),
                                             style: textbarlowBoldBlack(),
                                           ),
                                         ],
@@ -417,62 +483,35 @@ class _PaymentState extends State<Payment> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
-                                  Column(
-                                    children: <Widget>[
-                                      Text(
-                                        MyLocalizations.of(context)
+                                  Text(
+                                    cartItem['walletAmount'] == 0
+                                        ? MyLocalizations.of(context)
                                             .getLocalizations(
-                                                "USE_WALLET_AMOUNT"),
-                                        style: textbarlowMediumBlack(),
-                                      ),
-                                    ],
+                                                "USE_WALLET_AMOUNT")
+                                        : MyLocalizations.of(context)
+                                            .getLocalizations(
+                                                "USED_WALLET_AMOUNT"),
+                                    style: textbarlowMediumBlack(),
                                   ),
-                                  Column(
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
                                     children: <Widget>[
-                                      Row(
-                                        children: <Widget>[
-                                          new Checkbox(
+                                      isWalletLoading == true
+                                          ? Container(child: SquareLoader())
+                                          : new Checkbox(
                                               value: walletUsedOrNotValue,
                                               activeColor: Colors.green,
-                                              onChanged: (bool newValue) {
+                                              onChanged: (bool walleValue) {
                                                 setState(() {
-                                                  walletUsedOrNotValue =
-                                                      newValue;
-                                                  if (walletUsedOrNotValue ==
-                                                      true) {
-                                                    if (walletAmount >=
-                                                        grandTotal) {
-                                                      remaingWalletPoints =
-                                                          walletAmount -
-                                                              grandTotal;
-                                                      grandTotalCalulation =
-                                                          0.0;
-                                                      showPaymantOptions = true;
-                                                    } else {
-                                                      grandTotalCalulation =
-                                                          grandTotal -
-                                                              walletAmount;
-                                                      remaingWalletPoints = 0.0;
-                                                      showPaymantOptions =
-                                                          false;
-                                                    }
-                                                    usedWalletAmount =
-                                                        walletAmount -
-                                                            remaingWalletPoints;
+                                                  if (walleValue == true) {
+                                                    applyWallet(walleValue);
                                                   } else {
-                                                    remaingWalletPoints =
-                                                        walletAmount;
-                                                    grandTotalCalulation =
-                                                        grandTotal;
-                                                    usedWalletAmount = 0.0;
-                                                    showPaymantOptions = false;
+                                                    removeWallet(walleValue);
                                                   }
                                                 });
                                               }),
-                                        ],
-                                      ),
                                     ],
-                                  )
+                                  ),
                                 ],
                               ),
                             ),
@@ -480,7 +519,7 @@ class _PaymentState extends State<Payment> {
                         ],
                       ),
                 SizedBox(height: 10),
-                showPaymantOptions == true
+                fullWalletUsedOrNot == true
                     ? Container()
                     : paymentTypes.length > 0
                         ? Column(

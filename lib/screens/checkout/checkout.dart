@@ -345,8 +345,7 @@ class _CheckoutState extends State<Checkout> {
               locale: widget.locale,
               localizedValues: widget.localizedValues,
               data: data,
-              grandTotals: cartItem['grandTotal'],
-              deliveryCharges: cartItem['deliveryCharges'],
+              cartItems: cartItem,
               locationInfo: locationInfo),
         ),
       );

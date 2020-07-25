@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -79,6 +80,14 @@ class _AboutUsState extends State<AboutUs> {
       await launch("tel:$phone");
     } else {
       throw 'Could not launch $phone';
+    }
+  }
+
+  _launchURL(url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
     }
   }
 
@@ -225,20 +234,21 @@ class _AboutUsState extends State<AboutUs> {
                               ),
                               InkWell(
                                 onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              TermsAndConditionAboutUs(
-                                                  locale: widget.locale,
-                                                  localizedValues:
-                                                      widget.localizedValues,
-                                                  title: MyLocalizations.of(
-                                                          context)
-                                                      .getLocalizations(
-                                                          "PRIVACY_POLICY"),
-                                                  text: aboutUsDatails[
-                                                      'privacyPolicy'])));
+                                  // Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //         builder: (BuildContext context) =>
+                                  //             TermsAndConditionAboutUs(
+                                  //                 locale: widget.locale,
+                                  //                 localizedValues:
+                                  //                     widget.localizedValues,
+                                  //                 title: MyLocalizations.of(
+                                  //                         context)
+                                  //                     .getLocalizations(
+                                  //                         "PRIVACY_POLICY"),
+                                  //                 text: aboutUsDatails[
+                                  //                     'privacyPolicy'])));
+                                  _launchURL(Constants.apiUrl);
                                 },
                                 child: Text(
                                   MyLocalizations.of(context)

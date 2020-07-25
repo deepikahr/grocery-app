@@ -103,10 +103,10 @@ class _EditAddressState extends State<EditAddress> {
         try {
           if (onValue['response_code'] == 200 && mounted) {
             setState(() {
-              addressController.clear();
               showSnackbar(onValue['response_data']);
               Future.delayed(Duration(milliseconds: 1500), () {
                 Navigator.pop(context);
+                addressController.clear();
               });
               isUpdateAddressLoading = false;
             });
