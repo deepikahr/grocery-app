@@ -22,7 +22,7 @@ bool get isInDebugMode {
   return inDebugMode;
 }
 
-var oneSignalTimer;
+Timer oneSignalTimer;
 
 void main() async {
   await DotEnv().load('.env');
