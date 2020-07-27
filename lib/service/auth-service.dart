@@ -90,8 +90,6 @@ class LoginService {
   // get location info
   static Future<Map<String, dynamic>> getLocationformation() async {
     final response = await client.get(Constants.apiUrl + 'settings/details');
-
-    print(json.decode(response.body));
     return json.decode(response.body);
   }
 
@@ -105,15 +103,6 @@ class LoginService {
   // get languages list api
   static Future<dynamic> getLanguagesList() async {
     final response = await client.get(Constants.apiUrl + 'languages/list');
-    return json.decode(response.body);
-  }
-
-  // get admin info
-  static Future<Map<String, dynamic>> restoInfo() async {
-    final response =
-        await client.get(Constants.apiUrl + "users/admin/infomation");
-    print("users/admin/infomation");
-    print(json.decode(response.body));
     return json.decode(response.body);
   }
 }
