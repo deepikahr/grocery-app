@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart';
@@ -98,6 +99,7 @@ void userInfoMethod() async {
   });
 }
 
+var oneSignalTimer;
 Future<void> configLocalNotification() async {
   var settings = {
     OSiOSSettings.autoPrompt: true,
@@ -114,10 +116,11 @@ Future<void> configLocalNotification() async {
       .setInFocusDisplayType(OSNotificationDisplayType.notification);
   var status = await OneSignal.shared.getPermissionSubscriptionState();
   String playerId = status.subscriptionStatus.userId;
-  if (playerId == null) {
-    configLocalNotification();
-  } else {
+  if (playerId != null) {
     await Common.setPlayerID(playerId);
+
+    if (oneSignalTimer != null && oneSignalTimer.isActive)
+      oneSignalTimer.cancel();
   }
 }
 
