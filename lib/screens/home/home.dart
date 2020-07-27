@@ -47,7 +47,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   LocationData currentLocation;
   Location _location = new Location();
   String currency = "";
-  Timer oneSignalTimer;
+
   var addressData;
   void initState() {
     if (widget.currentIndex != null) {
@@ -60,9 +60,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     getToken();
     getResult();
     getGlobalSettingsData();
-    oneSignalTimer = Timer.periodic(Duration(seconds: 4), (timer) {
-      configLocalNotification();
-    });
 
     tabController = TabController(length: 4, vsync: this);
     super.initState();
@@ -167,8 +164,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   @override
   void dispose() {
     tabController.dispose();
-    if (oneSignalTimer != null && oneSignalTimer.isActive)
-      oneSignalTimer.cancel();
+
     if (tabController != null) tabController.dispose();
     super.dispose();
   }

@@ -22,10 +22,14 @@ bool get isInDebugMode {
   return inDebugMode;
 }
 
+var oneSignalTimer;
+
 void main() async {
   await DotEnv().load('.env');
   WidgetsFlutterBinding.ensureInitialized();
-  configLocalNotification();
+  oneSignalTimer = Timer.periodic(Duration(seconds: 4), (timer) {
+    configLocalNotification();
+  });
   runZoned<Future<Null>>(() {
     runApp(MaterialApp(
       home: AnimatedScreen(),
@@ -99,7 +103,6 @@ void userInfoMethod() async {
   });
 }
 
-var oneSignalTimer;
 Future<void> configLocalNotification() async {
   var settings = {
     OSiOSSettings.autoPrompt: true,
@@ -118,7 +121,6 @@ Future<void> configLocalNotification() async {
   String playerId = status.subscriptionStatus.userId;
   if (playerId != null) {
     await Common.setPlayerID(playerId);
-
     if (oneSignalTimer != null && oneSignalTimer.isActive)
       oneSignalTimer.cancel();
   }
