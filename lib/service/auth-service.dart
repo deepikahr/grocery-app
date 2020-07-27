@@ -90,6 +90,8 @@ class LoginService {
   // get location info
   static Future<Map<String, dynamic>> getLocationformation() async {
     final response = await client.get(Constants.apiUrl + 'settings/details');
+
+    print(json.decode(response.body));
     return json.decode(response.body);
   }
 

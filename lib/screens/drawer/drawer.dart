@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/categories/allcategories.dart';
+import 'package:readymadeGroceryApp/screens/chat/chatpage.dart';
 import 'package:readymadeGroceryApp/screens/drawer/address.dart';
 import 'package:readymadeGroceryApp/screens/drawer/newChatPage.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
@@ -187,7 +188,7 @@ class _DrawerPageState extends State<DrawerPage> {
                             .getLocalizations("CHAT")
                             .toUpperCase(),
                         0,
-                        route: NewChatAndHistoryPage(
+                        route: Chat(
                           locale: widget.locale,
                           localizedValues: widget.localizedValues,
                         ))

@@ -61,6 +61,8 @@ class _ChatListPageState extends State<ChatListPage>
   }
 
   socketInt() {
+    print("data");
+
     socket.on('connect', (data) {
       print("connected.....");
     });
@@ -71,6 +73,7 @@ class _ChatListPageState extends State<ChatListPage>
     });
 
     socket.on('chat-list-user$id', (data) {
+      print(data);
       if (mounted) {
         setState(() {
           if (mounted) {
