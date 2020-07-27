@@ -152,8 +152,10 @@ class MainScreen extends StatelessWidget {
       locale: Locale(locale),
       localizationsDelegates: [
         MyLocalizationsDelegate(localizedValues),
-        GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        DefaultCupertinoLocalizations.delegate
       ],
       supportedLocales: [Locale(locale)],
       debugShowCheckedModeBanner: false,
