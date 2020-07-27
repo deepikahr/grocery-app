@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart';
@@ -21,10 +22,14 @@ bool get isInDebugMode {
   return inDebugMode;
 }
 
+Timer oneSignalTimer;
+
 void main() async {
   await DotEnv().load('.env');
   WidgetsFlutterBinding.ensureInitialized();
-  configLocalNotification();
+  oneSignalTimer = Timer.periodic(Duration(seconds: 4), (timer) {
+    configLocalNotification();
+  });
   runZoned<Future<Null>>(() {
     runApp(MaterialApp(
       home: AnimatedScreen(),
@@ -114,10 +119,10 @@ Future<void> configLocalNotification() async {
       .setInFocusDisplayType(OSNotificationDisplayType.notification);
   var status = await OneSignal.shared.getPermissionSubscriptionState();
   String playerId = status.subscriptionStatus.userId;
-  if (playerId == null) {
-    configLocalNotification();
-  } else {
+  if (playerId != null) {
     await Common.setPlayerID(playerId);
+    if (oneSignalTimer != null && oneSignalTimer.isActive)
+      oneSignalTimer.cancel();
   }
 }
 
