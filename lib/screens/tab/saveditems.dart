@@ -215,7 +215,7 @@ class _SavedItemsState extends State<SavedItems> {
                                     price: favProductList[i]['variant'][0]
                                         ['price'],
                                     variantStock: favProductList[i]['variant']
-                                        [0]['productstock'],
+                                        [0]['productStock'],
                                     productData: favProductList[i],
                                     variantList: favProductList[i]['variant'],
                                   ),

@@ -548,7 +548,7 @@ class _AllProductsState extends State<AllProducts> {
                                                       variantStock:
                                                           subCategryByProduct[i]
                                                                   ['variant'][0]
-                                                              ['productstock'],
+                                                              ['productStock'],
                                                       productData:
                                                           subCategryByProduct[
                                                               i],
@@ -666,7 +666,7 @@ class _AllProductsState extends State<AllProducts> {
                                                   [0]['price'],
                                               variantStock: productsList[i]
                                                       ['variant'][0]
-                                                  ['productstock'],
+                                                  ['productStock'],
                                               productData: productsList[i],
                                               variantList: productsList[i]
                                                   ['variant'],

@@ -41,7 +41,7 @@ class _ProductDetailsState extends State<ProductDetails>
     with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var productDetail;
-  String variantUnit, variantId, currency;
+  String variantUnit, variantId, currency, description;
 
   int groupValue = 0;
   bool sizeSelect = false,
@@ -51,6 +51,7 @@ class _ProductDetailsState extends State<ProductDetails>
       isFavProductLoading = false,
       isProductAlredayInCart = false;
   int quantity = 1, variantPrice, variantStock;
+  var rating;
   void _changeProductQuantity(bool increase) {
     if (increase) {
       if (mounted) {
@@ -257,7 +258,7 @@ class _ProductDetailsState extends State<ProductDetails>
       }
       showSnackbar(MyLocalizations.of(context)
               .getLocalizations("LIMITED_STOCK") +
-          " ${variantStock == null ? productDetail['variant'][0]['productstock'] : variantStock} " +
+          " ${variantStock == null ? productDetail['variant'][0]['productStock'] : variantStock} " +
           MyLocalizations.of(context).getLocalizations("OF_THIS_ITEM"));
     }
   }
@@ -355,6 +356,86 @@ class _ProductDetailsState extends State<ProductDetails>
     );
   }
 
+  ratingAlert(productID) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            MyLocalizations.of(context).getLocalizations("RATE_PRODUCT"),
+            style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                decoration: TextDecoration.none),
+          ),
+          actions: <Widget>[
+            Center(
+                child: Container(
+              child: GFButton(
+                onPressed: () {
+                  if (rating == null) {
+                    rating = 1.0;
+                  }
+                  orderRating(rating, productID);
+                },
+                text: MyLocalizations.of(context).getLocalizations("SUBMIT"),
+                color: primary,
+                textStyle: textBarlowRegularrWhite(),
+              ),
+            ))
+          ],
+          content: Container(
+            decoration: new BoxDecoration(
+              color: Colors.white,
+              borderRadius: new BorderRadius.all(
+                new Radius.circular(32.0),
+              ),
+            ),
+            child: RatingBar(
+              initialRating: 1,
+              minRating: 1,
+              direction: Axis.horizontal,
+              allowHalfRating: true,
+              itemSize: 30.0,
+              itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+              itemBuilder: (context, _) => Icon(
+                Icons.star,
+                color: primary,
+                size: 10.0,
+              ),
+              onRatingUpdate: (rate) {
+                setState(() {
+                  rating = rate;
+                });
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  orderRating(rating, productID) async {
+    var body = {"rate": rating, "description": "", "productId": productID};
+    await ProductService.productRating(body).then((onValue) {
+      try {
+        Navigator.pop(context);
+        if (onValue['response_code'] == 200) {
+          setState(() {
+            getProductDetailsLog();
+            getTokenValueMethod();
+          });
+        } else {
+          showSnackbar(onValue['response_data']);
+        }
+      } catch (error, stackTrace) {
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -425,13 +506,8 @@ class _ProductDetailsState extends State<ProductDetails>
                                         ),
                                       ),
                                     ),
-                                    productDetail['averageRating'] == null ||
-                                            productDetail['averageRating'] ==
-                                                0.0 ||
-                                            productDetail['averageRating'] ==
-                                                '0.0'
-                                        ? Container()
-                                        : Expanded(
+                                    productDetail['isRated'] == true
+                                        ? Expanded(
                                             flex: 3,
                                             child: Padding(
                                               padding: const EdgeInsets.only(
@@ -440,9 +516,11 @@ class _ProductDetailsState extends State<ProductDetails>
                                                   left: 5.0),
                                               child: RatingBar(
                                                 initialRating: double.parse(
-                                                    productDetail[
-                                                            'averageRating']
-                                                        .toStringAsFixed(1)),
+                                                        productDetail[
+                                                                'averageRating']
+                                                            .toStringAsFixed(
+                                                                1)) ??
+                                                    0.0,
                                                 minRating: 0,
                                                 direction: Axis.horizontal,
                                                 allowHalfRating: true,
@@ -460,7 +538,60 @@ class _ProductDetailsState extends State<ProductDetails>
                                                 onRatingUpdate: null,
                                               ),
                                             ),
-                                          ),
+                                          )
+                                        : !getTokenValue
+                                            ? Expanded(
+                                                flex: 3,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 0.0,
+                                                          right: 5.0,
+                                                          left: 5.0),
+                                                  child: RatingBar(
+                                                    initialRating: double.parse(
+                                                            productDetail[
+                                                                    'averageRating']
+                                                                .toStringAsFixed(
+                                                                    1)) ??
+                                                        0.0,
+                                                    minRating: 0,
+                                                    direction: Axis.horizontal,
+                                                    allowHalfRating: true,
+                                                    itemCount: 5,
+                                                    itemSize: 15.0,
+                                                    itemPadding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 1.0),
+                                                    itemBuilder: (context, _) =>
+                                                        Icon(
+                                                      Icons.star,
+                                                      color: Colors.red,
+                                                      size: 10.0,
+                                                    ),
+                                                    onRatingUpdate: null,
+                                                  ),
+                                                ),
+                                              )
+                                            : Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 8.0, right: 8.0),
+                                                child: GFButton(
+                                                  shape: GFButtonShape.pills,
+                                                  onPressed: () {
+                                                    ratingAlert(
+                                                        productDetail['_id']);
+                                                  },
+                                                  color: primary,
+                                                  child: Text(
+                                                    MyLocalizations.of(context)
+                                                        .getLocalizations(
+                                                            "RATE_PRODUCT"),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ),
+                                              ),
                                   ],
                                 ),
                                 Container(
@@ -492,7 +623,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                                                 .width -
                                                             30,
                                                     child: Text(
-                                                      '${productDetail['description'][0].toUpperCase()}${productDetail['description'].substring(1)}',
+                                                      '${productDetail['description']}',
                                                       style:
                                                           textbarlowRegularBlack(),
                                                     ),

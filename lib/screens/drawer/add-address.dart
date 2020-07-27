@@ -83,10 +83,10 @@ class _AddAddressState extends State<AddAddress> {
         try {
           if (onValue['response_code'] == 200 && mounted) {
             setState(() {
-              addressController.clear();
               showSnackbar(onValue['response_data']);
               Future.delayed(Duration(milliseconds: 1500), () {
                 Navigator.pop(context);
+                addressController.clear();
               });
               isAddAddressLoading = false;
             });

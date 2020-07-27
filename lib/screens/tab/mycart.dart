@@ -409,7 +409,11 @@ class _MyCartState extends State<MyCart> {
           getCartItems();
         });
       } else {
-        verifyTokenAlert(response['response_data']);
+        if (response['response_data'] is List) {
+          verifyTokenAlert(response['response_data']);
+        } else {
+          showError(response['response_data']);
+        }
       }
     });
   }

@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/categories/allcategories.dart';
-import 'package:readymadeGroceryApp/screens/drawer/aboutus.dart';
+import 'package:readymadeGroceryApp/screens/chat/chatpage.dart';
 import 'package:readymadeGroceryApp/screens/drawer/address.dart';
 import 'package:readymadeGroceryApp/screens/drawer/newChatPage.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/orders/orders.dart';
 import 'package:readymadeGroceryApp/screens/product/all_deals.dart';
 import 'package:readymadeGroceryApp/screens/product/all_products.dart';
+import 'package:readymadeGroceryApp/screens/webView/webView.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import '../../main.dart';
@@ -186,7 +188,7 @@ class _DrawerPageState extends State<DrawerPage> {
                             .getLocalizations("CHAT")
                             .toUpperCase(),
                         0,
-                        route: NewChatAndHistoryPage(
+                        route: Chat(
                           locale: widget.locale,
                           localizedValues: widget.localizedValues,
                         ))
@@ -197,10 +199,13 @@ class _DrawerPageState extends State<DrawerPage> {
                         .getLocalizations("ABOUT_US")
                         .toUpperCase(),
                     0,
-                    route: AboutUs(
-                      locale: widget.locale,
-                      localizedValues: widget.localizedValues,
-                    )),
+                    route: WebViewPage(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                        title: MyLocalizations.of(context)
+                            .getLocalizations("ABOUT_US")
+                            .toUpperCase(),
+                        url: Constants.baseUrl + "about-us")),
                 SizedBox(height: 20.0),
                 getTokenValue
                     ? _buildMenuTileList1(

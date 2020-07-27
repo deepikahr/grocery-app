@@ -229,14 +229,14 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                             child: InkWell(
                               onTap: () {
                                 if ((variantStock == null
-                                        ? widget.variantsList[0]['productstock']
+                                        ? widget.variantsList[0]['productStock']
                                         : variantStock) >
                                     quantity) {
                                   _changeProductQuantity(true);
                                 } else {
                                   showSnackbar(MyLocalizations.of(context)
                                           .getLocalizations("LIMITED_STOCK") +
-                                      " ${variantStock == null ? widget.variantsList[0]['productstock'] : variantStock} " +
+                                      " ${variantStock == null ? widget.variantsList[0]['productStock'] : variantStock} " +
                                       MyLocalizations.of(context)
                                           .getLocalizations("OF_THIS_ITEM"));
                                 }
@@ -274,7 +274,7 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                           variantId =
                               widget.variantsList[selected]['_id'].toString();
                           variantStock =
-                              widget.variantsList[selected]['productstock'];
+                              widget.variantsList[selected]['productStock'];
                         });
                       }
                     },

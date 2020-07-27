@@ -127,12 +127,12 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       } else {
         if (mounted) {
           setState(() {
-            getBannerData();
             if (value['response_data'] == []) {
               bannerList = [];
             } else {
               bannerList = value['response_data'];
             }
+            getBannerData();
             isBannerLoading = false;
           });
         }
@@ -846,7 +846,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
             getAllDataMethod();
           });
         },
-        child: isLoadingAllData
+        child: isLoadingAllData || isBannerLoading
             ? SquareLoader()
             : categoryList.length == 0 &&
                     productsList.length == 0 &&
