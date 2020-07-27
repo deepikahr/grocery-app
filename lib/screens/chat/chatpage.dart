@@ -27,15 +27,12 @@ class Chat extends StatefulWidget {
 }
 
 class _ChatState extends State<Chat> with TickerProviderStateMixin {
-  List chatList = [];
+  List chatList = List();
   final ScrollController _scrollController = new ScrollController();
   final TextEditingController _textController = new TextEditingController();
-  bool _isWriting = false,
-      isChatLoading = false,
-      getUserDataLoading = false,
-      getStoreDataLoading = false;
+  bool _isWriting = false, isChatLoading = false, getUserDataLoading = false;
 
-  var chatInfo, resInfo, userData, pageNumber = 0, chatDataLimit = 50;
+  var userData, pageNumber = 0, chatDataLimit = 50;
   Timer chatTimer;
   var socket = io.io(Constants.socketUrl, <String, dynamic>{
     'transports': ['websocket']
@@ -43,7 +40,8 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   @override
   void initState() {
     getUserData();
-    fetchRestaurantInfo();
+    getChatData();
+
     super.initState();
   }
 
@@ -68,46 +66,31 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
           }
         }
       } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      sentryError.reportError(error, null);
-    });
-  }
-
-//fetchres info
-  fetchRestaurantInfo() async {
-    LoginService.getLocationformation().then((response) {
-      try {
-        if (response['response_code'] == 200 && mounted) {
+        if (mounted) {
           setState(() {
-            resInfo = response['response_data'];
-            getChatData();
             getUserDataLoading = false;
           });
-        } else {
-          if (mounted) {
-            setState(() {
-              getUserDataLoading = false;
-            });
-          }
         }
-      } catch (error, stackTrace) {
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          getUserDataLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
 
   //fetchres info
   getChatData() async {
-    print("jj");
     if (mounted) {
       setState(() {
         isChatLoading = true;
       });
     }
+
     ChatService.chatDataMethod(pageNumber, chatDataLimit).then((response) {
       try {
         if (response['response_code'] == 200 && mounted) {
@@ -123,9 +106,19 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
           }
         }
       } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            getUserDataLoading = false;
+          });
+        }
         sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          getUserDataLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -133,19 +126,18 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   socketInt() {
     socket.on('connect', (data) {
       print('connect ');
-      setState(() {
-        getUserDataLoading = false;
-      });
     });
-
+    setState(() {
+      getUserDataLoading = false;
+    });
     socket.on('disconnect', (_) {
       print('disconnect');
     });
 
     socket.on('message-user-${userData['_id']}', (data) {
-      if (mounted) {
+      if (data != null && mounted) {
         setState(() {
-          chatList.addAll(data['messages']);
+          chatList.add(data);
         });
       }
     });
@@ -154,7 +146,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   @override
   void dispose() {
     if (_scrollController != null) _scrollController.dispose();
-    socket.destroy();
+
     super.dispose();
   }
 
@@ -181,7 +173,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
           ),
           centerTitle: true,
           backgroundColor: primary),
-      body: isChatLoading || getUserDataLoading || getStoreDataLoading
+      body: isChatLoading || getUserDataLoading
           ? SquareLoader()
           : Stack(
               fit: StackFit.expand,
@@ -371,10 +363,8 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
       "message": txt,
       "sentBy": 'USER',
       "userName": userData['firstName'],
-      "userId": userData['_id'],
-      "storeId": resInfo['_id']
+      "userId": userData['_id']
     };
-
     socket.emit('message-user-to-store', chatInfo);
 
     chatList.add(chatInfo);

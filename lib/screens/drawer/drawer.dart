@@ -3,7 +3,6 @@ import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/categories/allcategories.dart';
 import 'package:readymadeGroceryApp/screens/chat/chatpage.dart';
 import 'package:readymadeGroceryApp/screens/drawer/address.dart';
-import 'package:readymadeGroceryApp/screens/drawer/newChatPage.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/orders/orders.dart';
 import 'package:readymadeGroceryApp/screens/product/all_deals.dart';

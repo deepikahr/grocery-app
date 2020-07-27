@@ -12,7 +12,6 @@ class ChatService {
       pageNumber, chatDataLimit) async {
     final response = await client.get(
         Constants.apiUrl + "chats/list?page=$pageNumber&limit=$chatDataLimit");
-    print(json.decode(response.body));
     return json.decode(response.body);
   }
 }
