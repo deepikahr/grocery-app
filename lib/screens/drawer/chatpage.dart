@@ -34,7 +34,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
 
   var userData, pageNumber = 0, chatDataLimit = 50;
   Timer chatTimer;
-  var socket = io.io(Constants.socketUrl, <String, dynamic>{
+  var socket = io.io(Constants.apiUrl, <String, dynamic>{
     'transports': ['websocket']
   });
   @override
@@ -52,26 +52,11 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
       });
     }
     await LoginService.getUserInfo().then((onValue) {
-      try {
-        if (onValue['response_code'] == 200 && mounted) {
-          setState(() {
-            userData = onValue['response_data'];
-            socketInt();
-          });
-        } else {
-          if (mounted) {
-            setState(() {
-              getUserDataLoading = false;
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            getUserDataLoading = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      if (mounted) {
+        setState(() {
+          userData = onValue['response_data'];
+          socketInt();
+        });
       }
     }).catchError((error) {
       if (mounted) {
@@ -92,26 +77,11 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
     }
 
     ChatService.chatDataMethod(pageNumber, chatDataLimit).then((response) {
-      try {
-        if (response['response_code'] == 200 && mounted) {
-          setState(() {
-            chatList.addAll(response['response_data']);
-            isChatLoading = false;
-          });
-        } else {
-          if (mounted) {
-            setState(() {
-              isChatLoading = false;
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            getUserDataLoading = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      if (mounted) {
+        setState(() {
+          chatList.addAll(response['response_data']);
+          isChatLoading = false;
+        });
       }
     }).catchError((error) {
       if (mounted) {

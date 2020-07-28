@@ -11,14 +11,18 @@ class CouponService {
   // get coupons
 
   static Future<Map<String, dynamic>> applyCouponsCode(couponName) async {
-    final response =
-        await client.post(Constants.apiUrl + "carts/apply-coupon/$couponName");
-    return json.decode(response.body);
+    return client
+        .post(Constants.apiUrl + "/carts/apply-coupon/$couponName")
+        .then((response) {
+      return json.decode(response.body);
+    });
   }
 
   static Future<Map<String, dynamic>> removeCoupon(couponCode) async {
-    final response = await client
-        .delete(Constants.apiUrl + "carts/remove-coupon/$couponCode");
-    return json.decode(response.body);
+    return client
+        .delete(Constants.apiUrl + "/carts/remove-coupon/$couponCode")
+        .then((response) {
+      return json.decode(response.body);
+    });
   }
 }

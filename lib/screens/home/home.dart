@@ -10,7 +10,6 @@ import 'package:readymadeGroceryApp/screens/tab/searchitem.dart';
 import 'package:readymadeGroceryApp/screens/tab/store.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/fav-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -40,7 +39,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       isCurrentLoactionLoading = false,
       getTokenValue = false;
   int currentIndex = 0;
-  List favProductList;
   LocationData currentLocation;
   Location _location = new Location();
   String currency = "";
@@ -69,35 +67,25 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       });
     }
     LoginService.getLocationformation().then((onValue) async {
-      try {
-        if (mounted) {
-          setState(() {
-            currencyLoading = false;
-          });
-        }
-        if (onValue['response_code'] == 200) {
-          if (onValue['response_data']['currencyCode'] == null) {
-            await Common.setCurrency('\$');
-            await Common.getCurrency().then((value) {
-              currency = value;
-            });
-          } else {
-            currency = onValue['response_data']['currencyCode'];
-            await Common.setCurrency(currency);
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            currencyLoading = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      if (mounted) {
+        setState(() {
+          currencyLoading = false;
+        });
+      }
+      if (onValue['response_data']['currencyCode'] == null) {
+        await Common.setCurrency('\$');
+        await Common.getCurrency().then((value) {
+          currency = value;
+        });
+      } else {
+        currency = onValue['response_data']['currencyCode'];
+        await Common.setCurrency(currency);
       }
     }).catchError((error) {
       if (mounted) {
         setState(() {
           currencyLoading = false;
+          Common.setCurrency('\$');
         });
       }
       sentryError.reportError(error, null);
@@ -110,7 +98,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         if (mounted) {
           setState(() {
             getTokenValue = true;
-            getFavListApi();
           });
         }
       } else {
@@ -124,34 +111,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       if (mounted) {
         setState(() {
           getTokenValue = false;
-        });
-      }
-      sentryError.reportError(error, null);
-    });
-  }
-
-  getFavListApi() async {
-    await FavouriteService.getFavList().then((onValue) {
-      try {
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              favProductList = onValue['response_data'];
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            favProductList = [];
-          });
-        }
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          favProductList = [];
         });
       }
       sentryError.reportError(error, null);

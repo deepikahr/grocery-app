@@ -56,29 +56,19 @@ class _ProfileState extends State<Profile> {
     }
 
     await Common.getToken().then((onValue) {
-      try {
-        if (onValue != null) {
-          if (mounted) {
-            setState(() {
-              token = onValue;
-              userInfoMethod();
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              isGetTokenLoading = false;
-            });
-          }
+      if (onValue != null) {
+        if (mounted) {
+          setState(() {
+            token = onValue;
+            userInfoMethod();
+          });
         }
-      } catch (error, stackTrace) {
+      } else {
         if (mounted) {
           setState(() {
             isGetTokenLoading = false;
           });
         }
-
-        sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
       if (mounted) {
@@ -92,30 +82,15 @@ class _ProfileState extends State<Profile> {
 
   userInfoMethod() async {
     await LoginService.getUserInfo().then((onValue) {
-      try {
-        if (mounted) {
-          setState(() {
-            isGetTokenLoading = false;
-          });
-        }
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              userInfo = onValue['response_data'];
-              userID = userInfo['_id'];
-              Common.setUserID(userID);
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            isGetTokenLoading = false;
-            userInfo = null;
-            userID = null;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      print(onValue);
+
+      if (mounted) {
+        setState(() {
+          userInfo = onValue['response_data'];
+          userID = userInfo['_id'];
+          Common.setUserID(userID);
+          isGetTokenLoading = false;
+        });
       }
     }).catchError((error) {
       if (mounted) {
@@ -134,32 +109,17 @@ class _ProfileState extends State<Profile> {
       });
     }
     await LoginService.getLanguagesList().then((onValue) {
-      try {
-        if (mounted) {
-          setState(() {
-            isGetLanguagesListLoading = false;
-          });
-        }
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              languagesList = onValue['response_data'];
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            isGetLanguagesListLoading = false;
-            languagesList = [];
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      if (mounted) {
+        setState(() {
+          languagesList = onValue['response_data'];
+          isGetLanguagesListLoading = false;
+        });
       }
     }).catchError((error) {
       if (mounted) {
         setState(() {
           isGetLanguagesListLoading = false;
+          languagesList = [];
         });
       }
       sentryError.reportError(error, null);
@@ -321,7 +281,7 @@ class _ProfileState extends State<Profile> {
                                                         ? userInfo['imageUrl']
                                                         : Constants
                                                                 .imageUrlPath +
-                                                            "tr:dpr-auto,tr:w-500" +
+                                                            "/tr:dpr-auto,tr:w-500" +
                                                             userInfo[
                                                                 'filePath']),
                                                   ),
@@ -544,51 +504,58 @@ class _ProfileState extends State<Profile> {
                         SizedBox(height: 20.0),
                       ],
                     ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => WebViewPage(
-                              locale: widget.locale,
-                              localizedValues: widget.localizedValues,
-                              title: MyLocalizations.of(context)
-                                  .getLocalizations("TERMS_CONDITIONS"),
-                              url: Constants.baseUrl + "terms-and-conditions",
-                            )));
-              },
-              child: Text(
-                MyLocalizations.of(context)
-                    .getLocalizations("TERMS_CONDITIONS"),
-                style: textBarlowmediumLink(),
+      bottomNavigationBar: isGetTokenLoading ||
+              isGetLanguagesListLoading ||
+              token == null ||
+              userInfo == null
+          ? Container(height: 1)
+          : Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) => WebViewPage(
+                                    locale: widget.locale,
+                                    localizedValues: widget.localizedValues,
+                                    title: MyLocalizations.of(context)
+                                        .getLocalizations("TERMS_CONDITIONS"),
+                                    url: Constants.baseUrl +
+                                        "/terms-and-conditions",
+                                  )));
+                    },
+                    child: Text(
+                      MyLocalizations.of(context)
+                          .getLocalizations("TERMS_CONDITIONS"),
+                      style: textBarlowmediumLink(),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) => WebViewPage(
+                                    locale: widget.locale,
+                                    localizedValues: widget.localizedValues,
+                                    title: MyLocalizations.of(context)
+                                        .getLocalizations("PRIVACY_POLICY"),
+                                    url: Constants.baseUrl + "/privacy-policy",
+                                  )));
+                    },
+                    child: Text(
+                      MyLocalizations.of(context)
+                          .getLocalizations("PRIVACY_POLICY"),
+                      style: textBarlowmediumLink(),
+                    ),
+                  ),
+                ],
               ),
             ),
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => WebViewPage(
-                              locale: widget.locale,
-                              localizedValues: widget.localizedValues,
-                              title: MyLocalizations.of(context)
-                                  .getLocalizations("PRIVACY_POLICY"),
-                              url: Constants.baseUrl + "privacy-policy",
-                            )));
-              },
-              child: Text(
-                MyLocalizations.of(context).getLocalizations("PRIVACY_POLICY"),
-                style: textBarlowmediumLink(),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

@@ -10,8 +10,11 @@ Client client =
 class ChatService {
   static Future<Map<String, dynamic>> chatDataMethod(
       pageNumber, chatDataLimit) async {
-    final response = await client.get(
-        Constants.apiUrl + "chats/list?page=$pageNumber&limit=$chatDataLimit");
-    return json.decode(response.body);
+    return client
+        .get(Constants.apiUrl +
+            "/chats/list?page=$pageNumber&limit=$chatDataLimit")
+        .then((response) {
+      return json.decode(response.body);
+    });
   }
 }

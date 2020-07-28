@@ -67,35 +67,14 @@ class _SubCategoriesState extends State<SubCategories> {
       currency = value;
     });
     await ProductService.getProductToCategoryList(id).then((onValue) {
-      try {
-        _refreshController.refreshCompleted();
-
-        if (onValue['response_code'] == 200) {
-          if (mounted)
-            setState(() {
-              subProductsList = onValue['response_data']['products'];
-              subCategryList = onValue['response_data']['subCategories'];
-              isLoadingSubProductsList = false;
-              isLoadingSubCatProductsList = false;
-            });
-        } else {
-          if (mounted)
-            setState(() {
-              subProductsList = [];
-              subCategryList = [];
-              isLoadingSubProductsList = false;
-              isLoadingSubCatProductsList = false;
-            });
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            isLoadingSubProductsList = false;
-            isLoadingSubCatProductsList = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
-      }
+      _refreshController.refreshCompleted();
+      if (mounted)
+        setState(() {
+          subProductsList = onValue['response_data']['products'];
+          subCategryList = onValue['response_data']['subCategories'];
+          isLoadingSubProductsList = false;
+          isLoadingSubCatProductsList = false;
+        });
     }).catchError((error) {
       if (mounted) {
         setState(() {
@@ -109,28 +88,11 @@ class _SubCategoriesState extends State<SubCategories> {
 
   getProductToSubCategory(catId) async {
     await ProductService.getProductToSubCategoryList(catId).then((onValue) {
-      try {
-        if (onValue['response_code'] == 200) {
-          if (mounted)
-            setState(() {
-              subCategryByProduct = onValue['response_data'];
-              isLoadingSubCatProductsList = false;
-            });
-        } else {
-          if (mounted)
-            setState(() {
-              subCategryByProduct = [];
-              isLoadingSubCatProductsList = false;
-            });
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            isLoadingSubCatProductsList = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
-      }
+      if (mounted)
+        setState(() {
+          subCategryByProduct = onValue['response_data'];
+          isLoadingSubCatProductsList = false;
+        });
     }).catchError((error) {
       if (mounted) {
         setState(() {
@@ -420,12 +382,6 @@ class _SubCategoriesState extends State<SubCategories> {
                                                                         i]
                                                                     ['variant']
                                                                 [0]['price'],
-                                                        variantStock:
-                                                            subCategryByProduct[
-                                                                        i][
-                                                                    'variant'][0]
-                                                                [
-                                                                'productStock'],
                                                         productData:
                                                             subCategryByProduct[
                                                                 i],
@@ -554,11 +510,6 @@ class _SubCategoriesState extends State<SubCategories> {
                                                             subProductsList[i]
                                                                     ['variant']
                                                                 [0]['price'],
-                                                        variantStock:
-                                                            subProductsList[i][
-                                                                    'variant'][0]
-                                                                [
-                                                                'productStock'],
                                                         productData:
                                                             subProductsList[i],
                                                         variantList:

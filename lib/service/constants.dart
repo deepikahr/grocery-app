@@ -7,9 +7,6 @@ class Constants {
   // delopy url production
   static String apiUrl = DotEnv().env['API_URL'];
 
-  // local socketUrl
-  static final String socketUrl = apiUrl.substring(0, apiUrl.length - 1);
-
   // ONE_SIGNAL_KEY
   static String oneSignalKey = DotEnv().env['ONE_SIGNAL_KEY'];
 

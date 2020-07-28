@@ -39,63 +39,48 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       }
 
       await LoginService.forgetPassword(email.toLowerCase()).then((onValue) {
-        try {
-          if (mounted) {
-            setState(() {
-              isVerfyEmailLoading = false;
-            });
-          }
-          if (onValue['response_code'] == 200) {
-            showDialog<Null>(
-              context: context,
-              barrierDismissible: false, // user must tap button!
-              builder: (BuildContext context) {
-                return new AlertDialog(
-                  content: new SingleChildScrollView(
-                    child: new ListBody(
-                      children: <Widget>[
-                        new Text('${onValue['response_data']}',
-                            style: textBarlowRegularBlack()),
-                      ],
-                    ),
-                  ),
-                  actions: <Widget>[
-                    new FlatButton(
-                      child: new Text(
-                        MyLocalizations.of(context).getLocalizations("SUBMIT"),
-                        style: textbarlowRegularaPrimary(),
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Otp(
-                              email: email.toLowerCase(),
-                              locale: widget.locale,
-                              localizedValues: widget.localizedValues,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                );
-              },
-            );
-          } else if (onValue['response_code'] == 401) {
-            showSnackbar('${onValue['response_data']}');
-          } else {
-            showSnackbar('${onValue['response_data']}');
-          }
-        } catch (error, stackTrace) {
-          if (mounted) {
-            setState(() {
-              isVerfyEmailLoading = false;
-            });
-          }
-          sentryError.reportError(error, stackTrace);
+        if (mounted) {
+          setState(() {
+            isVerfyEmailLoading = false;
+          });
         }
+        showDialog<Null>(
+          context: context,
+          barrierDismissible: false, // user must tap button!
+          builder: (BuildContext context) {
+            return new AlertDialog(
+              content: new SingleChildScrollView(
+                child: new ListBody(
+                  children: <Widget>[
+                    new Text('${onValue['response_data']}',
+                        style: textBarlowRegularBlack()),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text(
+                    MyLocalizations.of(context).getLocalizations("SUBMIT"),
+                    style: textbarlowRegularaPrimary(),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Otp(
+                          email: email.toLowerCase(),
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            );
+          },
+        );
       }).catchError((error) {
         if (mounted) {
           setState(() {

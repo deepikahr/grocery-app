@@ -101,13 +101,6 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
           });
         }
       }
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          getTokenValue = false;
-        });
-      }
-      sentryError.reportError(error, null);
     });
   }
 
@@ -124,29 +117,17 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
             : variantUnit.toString()
       };
       AddToCart.addAndUpdateProductMethod(productAddBody).then((onValue) {
-        try {
-          if (mounted) {
-            setState(() {
-              addProductTocart = false;
-            });
-          }
-          if (onValue['response_code'] == 200) {
-            if (onValue['response_code'] == 200 &&
-                onValue['response_data'] is Map) {
-              Common.setCartData(onValue['response_data']);
-            } else {
-              Common.setCartData(null);
-            }
-            Navigator.of(context).pop(onValue['response_data']);
-          }
-        } catch (error, stackTrace) {
-          if (mounted) {
-            setState(() {
-              addProductTocart = false;
-            });
-          }
-          sentryError.reportError(error, stackTrace);
+        if (mounted) {
+          setState(() {
+            addProductTocart = false;
+          });
         }
+        if (onValue['response_data'] is Map) {
+          Common.setCartData(onValue['response_data']);
+        } else {
+          Common.setCartData(null);
+        }
+        Navigator.of(context).pop(onValue['response_data']);
       }).catchError((error) {
         if (mounted) {
           setState(() {

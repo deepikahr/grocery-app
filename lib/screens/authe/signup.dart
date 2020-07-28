@@ -5,7 +5,6 @@ import 'package:getflutter/components/typography/gf_typography.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:getflutter/size/gf_size.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
-import 'package:readymadeGroceryApp/screens/drawer/t&cAndPP.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -68,66 +67,50 @@ class _SignupState extends State<Signup> {
         "mobileNumber": mobileNumber
       };
       await LoginService.signUp(body).then((onValue) {
-        try {
-          if (mounted) {
-            setState(() {
-              registerationLoading = false;
-            });
-          }
+        if (mounted) {
+          setState(() {
+            registerationLoading = false;
+          });
+        }
 
-          if (onValue['response_code'] == 200) {
-            showDialog<Null>(
-              context: context,
-              barrierDismissible: false, // user must tap button!
-              builder: (BuildContext context) {
-                return new AlertDialog(
-                  content: new SingleChildScrollView(
-                    child: new ListBody(
-                      children: <Widget>[
-                        new Text(
-                          onValue['response_data'],
-                          style: textBarlowRegularBlack(),
-                        ),
-                      ],
-                    ),
-                  ),
-                  actions: <Widget>[
-                    new FlatButton(
-                      child: new Text(
-                        MyLocalizations.of(context).getLocalizations("OK"),
-                        style: textbarlowRegularaPrimary(),
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => Login(
-                              locale: widget.locale,
-                              localizedValues: widget.localizedValues,
-                            ),
-                          ),
-                        );
-                      },
+        showDialog<Null>(
+          context: context,
+          barrierDismissible: false, // user must tap button!
+          builder: (BuildContext context) {
+            return new AlertDialog(
+              content: new SingleChildScrollView(
+                child: new ListBody(
+                  children: <Widget>[
+                    new Text(
+                      onValue['response_data'],
+                      style: textBarlowRegularBlack(),
                     ),
                   ],
-                );
-              },
+                ),
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text(
+                    MyLocalizations.of(context).getLocalizations("OK"),
+                    style: textbarlowRegularaPrimary(),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => Login(
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
             );
-          } else if (onValue['statusCode'] == 401) {
-            showSnackbar('${onValue['response_data']}');
-          } else {
-            showSnackbar('${onValue['response_data']}');
-          }
-        } catch (error) {
-          if (mounted) {
-            setState(() {
-              registerationLoading = false;
-            });
-          }
-
-          sentryError.reportError(error, null);
-        }
+          },
+        );
       }).catchError((error) {
         if (mounted) {
           setState(() {
@@ -624,86 +607,29 @@ class _SignupState extends State<Signup> {
     );
   }
 
-  Widget buildTermsAndCondiField() {
-    return Padding(
-      padding: EdgeInsets.all(10),
-      child: Row(
-        children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.black, width: 2),
-                borderRadius: BorderRadius.all(Radius.circular(2))),
-            width: 20,
-            height: 20,
-            child: new Checkbox(
-              checkColor: Colors.yellowAccent, // color of tick Mark
-              activeColor: primary,
-              value: isChecked,
-              onChanged: (bool value) {
-                if (mounted) {
-                  setState(() {
-                    isChecked = value;
-                  });
-                }
-              },
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: 10, right: 10),
-            child: new InkWell(
-              child: Row(
-                children: [
-                  new Text(
-                    MyLocalizations.of(context).getLocalizations("I_ACCEPT") +
-                        " ",
-                  ),
-                  new Text(
-                    MyLocalizations.of(context)
-                        .getLocalizations("PP_AND_TAND_C"),
-                    style: textBarlowRegularGreen(),
-                  ),
-                ],
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => TermsAndCondition(
-                      locale: widget.locale,
-                      localizedValues: widget.localizedValues,
-                    ),
-                  ),
-                );
-              },
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
   Widget buildLoginButton() {
     return InkWell(
-        onTap: () {
-          Navigator.pop(context);
-        },
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 20.0),
-          child: RichText(
-            text: TextSpan(
-              children: <TextSpan>[
-                TextSpan(
-                    text: MyLocalizations.of(context)
-                        .getLocalizations("HAVE_GOT_AN_ACCOUNT"),
-                    style: textbarlowRegularBlack()),
-                TextSpan(
-                  text: MyLocalizations.of(context).getLocalizations("LOGIN"),
-                  style: textbarlowRegularaPrimary(),
-                ),
-              ],
-            ),
+      onTap: () {
+        Navigator.pop(context);
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 20.0),
+        child: RichText(
+          text: TextSpan(
+            children: <TextSpan>[
+              TextSpan(
+                  text: MyLocalizations.of(context)
+                      .getLocalizations("HAVE_GOT_AN_ACCOUNT"),
+                  style: textbarlowRegularBlack()),
+              TextSpan(
+                text: MyLocalizations.of(context).getLocalizations("LOGIN"),
+                style: textbarlowRegularaPrimary(),
+              ),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   Widget buildcontinuetext() {

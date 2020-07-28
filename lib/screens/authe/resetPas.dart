@@ -54,63 +54,48 @@ class _ResetPasswordState extends State<ResetPassword> {
         "verificationToken": widget.verificationToken
       };
       await LoginService.resetPassword(body).then((onValue) {
-        try {
-          if (mounted) {
-            setState(() {
-              isResetPasswordLoading = false;
-            });
-          }
-          if (onValue['response_code'] == 200) {
-            showDialog<Null>(
-              context: context,
-              barrierDismissible: false, // user must tap button!
-              builder: (BuildContext context) {
-                return new AlertDialog(
-                  content: new SingleChildScrollView(
-                    child: new ListBody(
-                      children: <Widget>[
-                        new Text(
-                          '${onValue['response_data']}',
-                          style: textBarlowRegularBlack(),
-                        ),
-                      ],
-                    ),
-                  ),
-                  actions: <Widget>[
-                    new FlatButton(
-                      child: new Text(
-                        MyLocalizations.of(context).getLocalizations("OK"),
-                        style: textbarlowRegularaPrimary(),
-                      ),
-                      onPressed: () {
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) => Login(
-                                locale: widget.locale,
-                                localizedValues: widget.localizedValues,
-                              ),
-                            ),
-                            (Route<dynamic> route) => false);
-                      },
+        if (mounted) {
+          setState(() {
+            isResetPasswordLoading = false;
+          });
+        }
+        showDialog<Null>(
+          context: context,
+          barrierDismissible: false, // user must tap button!
+          builder: (BuildContext context) {
+            return new AlertDialog(
+              content: new SingleChildScrollView(
+                child: new ListBody(
+                  children: <Widget>[
+                    new Text(
+                      '${onValue['response_data']}',
+                      style: textBarlowRegularBlack(),
                     ),
                   ],
-                );
-              },
+                ),
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text(
+                    MyLocalizations.of(context).getLocalizations("OK"),
+                    style: textbarlowRegularaPrimary(),
+                  ),
+                  onPressed: () {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => Login(
+                            locale: widget.locale,
+                            localizedValues: widget.localizedValues,
+                          ),
+                        ),
+                        (Route<dynamic> route) => false);
+                  },
+                ),
+              ],
             );
-          } else if (onValue['response_code'] == 401) {
-            showSnackbar('${onValue['response_data']}');
-          } else {
-            showSnackbar('${onValue['response_data']}');
-          }
-        } catch (error, stackTrace) {
-          if (mounted) {
-            setState(() {
-              isResetPasswordLoading = false;
-            });
-          }
-          sentryError.reportError(error, stackTrace);
-        }
+          },
+        );
       }).catchError((error) {
         if (mounted) {
           setState(() {

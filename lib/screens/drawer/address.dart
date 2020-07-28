@@ -54,35 +54,12 @@ class _AddressState extends State<Address> {
     }
 
     await AddressService.getAddress().then((onValue) {
-      try {
-        _refreshController.refreshCompleted();
-
-        if (mounted) {
-          setState(() {
-            addressLoading = false;
-          });
-        }
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              addressList = onValue['response_data'];
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              addressList = [];
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            addressList = [];
-            addressLoading = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      _refreshController.refreshCompleted();
+      if (mounted) {
+        setState(() {
+          addressList = onValue['response_data'];
+          addressLoading = false;
+        });
       }
     }).catchError((error) {
       if (mounted) {
@@ -102,30 +79,11 @@ class _AddressState extends State<Address> {
       });
     }
     await LoginService.getLocationformation().then((onValue) {
-      try {
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              locationInfo = onValue['response_data'];
-              isLocationLoading = false;
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              locationInfo = null;
-              isLocationLoading = false;
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            locationInfo = null;
-            isLocationLoading = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      if (mounted) {
+        setState(() {
+          locationInfo = onValue['response_data'];
+          isLocationLoading = false;
+        });
       }
     }).catchError((error) {
       if (mounted) {
@@ -140,23 +98,12 @@ class _AddressState extends State<Address> {
 
   deleteAddress(body) async {
     await AddressService.deleteAddress(body).then((onValue) {
-      try {
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              getAddress();
-              addressList = addressList;
-              showSnackbar(onValue['response_data']);
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            addressLoading = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      if (mounted) {
+        setState(() {
+          getAddress();
+          addressList = addressList;
+          showSnackbar(onValue['response_data']);
+        });
       }
     }).catchError((error) {
       if (mounted) {

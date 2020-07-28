@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
-import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
@@ -78,17 +77,19 @@ class _PaymentState extends State<Payment> {
 
   getUserInfo() async {
     await LoginService.getUserInfo().then((onValue) {
-      try {
-        if (mounted) {
-          setState(() {
-            walletAmount = onValue['response_data']['walletAmount'] ?? 0;
-            isCardListLoading = false;
-          });
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
+      if (mounted) {
+        setState(() {
+          walletAmount = onValue['response_data']['walletAmount'] ?? 0;
+          isCardListLoading = false;
+        });
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          walletAmount = 0;
+          isCardListLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -131,37 +132,20 @@ class _PaymentState extends State<Payment> {
 
   palceOrderMethod(cartData) async {
     await OrderService.placeOrder(cartData).then((onValue) {
-      try {
-        if (mounted) {
-          setState(() {
-            isPlaceOrderLoading = false;
-          });
-        }
-        if (onValue['response_code'] == 200) {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (BuildContext context) => Thankyou(
-                  locale: widget.locale,
-                  localizedValues: widget.localizedValues,
-                ),
-              ),
-              (Route<dynamic> route) => false);
-        } else {
-          if (onValue['response_data'] is List) {
-            verifyTokenAlert(onValue['response_data']);
-          } else {
-            showError(onValue['response_data']);
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            isPlaceOrderLoading = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      if (mounted) {
+        setState(() {
+          isPlaceOrderLoading = false;
+        });
       }
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => Thankyou(
+              locale: widget.locale,
+              localizedValues: widget.localizedValues,
+            ),
+          ),
+          (Route<dynamic> route) => false);
     }).catchError((error) {
       if (mounted) {
         setState(() {
@@ -179,27 +163,21 @@ class _PaymentState extends State<Payment> {
       });
     }
     await CartService.walletApply().then((onValue) {
-      try {
-        if (onValue['response_code'] == 200 && mounted) {
-          setState(() {
-            isWalletLoading = false;
-            cartItem = onValue['response_data'];
-            walletUsedOrNotValue = walleValue;
-            if (cartItem['grandTotal'] == 0) {
-              fullWalletUsedOrNot = true;
-            }
-          });
-        } else {
-          setState(() {
-            isWalletLoading = false;
-            walletUsedOrNotValue = false;
-            showSnackbar(onValue['response_data']);
-          });
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
+      if (mounted) {
+        setState(() {
+          isWalletLoading = false;
+          cartItem = onValue['response_data'];
+          walletUsedOrNotValue = walleValue;
+          if (cartItem['grandTotal'] == 0) {
+            fullWalletUsedOrNot = true;
+          }
+        });
       }
     }).catchError((error) {
+      setState(() {
+        isWalletLoading = false;
+        walletUsedOrNotValue = false;
+      });
       sentryError.reportError(error, null);
     });
   }
@@ -211,104 +189,20 @@ class _PaymentState extends State<Payment> {
       });
     }
     await CartService.walletRemove().then((onValue) {
-      try {
-        if (onValue['response_code'] == 200 && mounted) {
-          setState(() {
-            isWalletLoading = false;
-            cartItem = onValue['response_data'];
-            walletUsedOrNotValue = walleValue;
-          });
-        } else {
-          setState(() {
-            isWalletLoading = true;
-            walletUsedOrNotValue = false;
-            showSnackbar(onValue['response_data']);
-          });
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
+      if (mounted) {
+        setState(() {
+          isWalletLoading = false;
+          cartItem = onValue['response_data'];
+          walletUsedOrNotValue = walleValue;
+        });
       }
     }).catchError((error) {
+      setState(() {
+        isWalletLoading = true;
+        walletUsedOrNotValue = false;
+      });
       sentryError.reportError(error, null);
     });
-  }
-
-  verifyTokenAlert(responseData) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            MyLocalizations.of(context).getLocalizations("OUT_OF_STOCK"),
-          ),
-          content: SingleChildScrollView(
-            child: responseData.length > 0
-                ? ListView.builder(
-                    physics: ScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: responseData.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            responseData[index]['productName'].toString(),
-                          ),
-                          Text(
-                            responseData[index]['unit'].toString() +
-                                "*" +
-                                responseData[index]['quantity'].toString(),
-                          ),
-                        ],
-                      );
-                    })
-                : Text(""),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text(MyLocalizations.of(context).getLocalizations("OK")),
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => Home(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
-                        currentIndex: 2,
-                      ),
-                    ),
-                    (Route<dynamic> route) => false);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  showError(responseData) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            responseData,
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text(MyLocalizations.of(context).getLocalizations("OK")),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override

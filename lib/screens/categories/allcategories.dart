@@ -51,31 +51,12 @@ class _AllCategoriesState extends State<AllCategories>
       });
     }
     await ProductService.getCategoryList().then((onValue) {
-      try {
-        _refreshController.refreshCompleted();
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              categoryList = onValue['response_data'];
-              isLoadingcategoryList = false;
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              categoryList = [];
-              isLoadingcategoryList = false;
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            categoryList = [];
-            isLoadingcategoryList = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      _refreshController.refreshCompleted();
+      if (mounted) {
+        setState(() {
+          categoryList = onValue['response_data'];
+          isLoadingcategoryList = false;
+        });
       }
     }).catchError((error) {
       if (mounted) {
@@ -159,7 +140,7 @@ class _AllCategoriesState extends State<AllCategories>
                                   categoryList[index]['filePath'] == null
                                       ? categoryList[index]['imageUrl']
                                       : Constants.imageUrlPath +
-                                          "tr:dpr-auto,tr:w-500" +
+                                          "/tr:dpr-auto,tr:w-500" +
                                           categoryList[index]['filePath'],
                                   scale: 5,
                                   fit: BoxFit.cover,

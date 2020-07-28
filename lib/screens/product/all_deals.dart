@@ -61,31 +61,12 @@ class _AllDealsListState extends State<AllDealsList> {
       });
     }
     await ProductService.getTopDealsListAll().then((onValue) {
-      try {
-        _refreshController.refreshCompleted();
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              dealsList = onValue['response_data'];
-              isAllDealsLoadingList = false;
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              dealsList = [];
-              isAllDealsLoadingList = false;
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            dealsList = [];
-            isAllDealsLoadingList = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      _refreshController.refreshCompleted();
+      if (mounted) {
+        setState(() {
+          dealsList = onValue['response_data'];
+          isAllDealsLoadingList = false;
+        });
       }
     }).catchError((error) {
       if (mounted) {
@@ -105,31 +86,12 @@ class _AllDealsListState extends State<AllDealsList> {
       });
     }
     await ProductService.getTodayDealsListAll().then((onValue) {
-      try {
-        _refreshController.refreshCompleted();
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              dealsList = onValue['response_data'];
-              isAllDealsLoadingList = false;
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              dealsList = [];
-              isAllDealsLoadingList = false;
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            dealsList = [];
-            isAllDealsLoadingList = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      _refreshController.refreshCompleted();
+      if (mounted) {
+        setState(() {
+          dealsList = onValue['response_data'];
+          isAllDealsLoadingList = false;
+        });
       }
     }).catchError((error) {
       if (mounted) {

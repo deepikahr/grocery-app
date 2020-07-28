@@ -9,29 +9,40 @@ Client client =
 
 class OrderService {
   //order list
-  static Future<Map<String, dynamic>> getOrderByUserID() async {
-    final response = await client.get(Constants.apiUrl + "orders/list");
-    return json.decode(response.body);
+  static Future<Map<String, dynamic>> getOrderByUserID(
+      orderIndex, orderLimit) async {
+    return client
+        .get(Constants.apiUrl +
+            "/orders/list?limit=$orderLimit&page=$orderIndex")
+        .then((response) {
+      return json.decode(response.body);
+    });
   }
 
   // place order
   static Future<Map<String, dynamic>> placeOrder(body) async {
-    final response = await client.post(Constants.apiUrl + "orders/create",
-        body: json.encode(body));
-    return json.decode(response.body);
+    return client
+        .post(Constants.apiUrl + "/orders/create", body: json.encode(body))
+        .then((response) {
+      return json.decode(response.body);
+    });
   }
 
   // order detail
   static Future<Map<String, dynamic>> getOrderHistory(orderId) async {
-    final response =
-        await client.get(Constants.apiUrl + "orders/detail/$orderId");
-    return json.decode(response.body);
+    return client
+        .get(Constants.apiUrl + "/orders/detail/$orderId")
+        .then((response) {
+      return json.decode(response.body);
+    });
   }
 
   // order cancel
   static Future<dynamic> orderCancel(orderId) async {
-    final response =
-        await client.put(Constants.apiUrl + 'orders/cancel/$orderId');
-    return json.decode(response.body);
+    return client
+        .put(Constants.apiUrl + '/orders/cancel/$orderId')
+        .then((response) {
+      return json.decode(response.body);
+    });
   }
 }

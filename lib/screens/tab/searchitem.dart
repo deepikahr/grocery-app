@@ -87,33 +87,11 @@ class _SearchItemState extends State<SearchItem> {
         });
       }
       ProductService.getSearchList(query).then((onValue) {
-        try {
-          if (onValue != null && onValue['response_data'] is List) {
-            if (mounted) {
-              setState(() {
-                searchresult = onValue['response_data'];
-              });
-            }
-          } else {
-            if (mounted) {
-              setState(() {
-                searchresult = [];
-              });
-            }
-          }
-          if (mounted) {
-            setState(() {
-              isSearching = false;
-            });
-          }
-        } catch (error, stackTrace) {
-          searchresult = [];
-          if (mounted) {
-            setState(() {
-              isSearching = false;
-            });
-          }
-          sentryError.reportError(error, stackTrace);
+        if (mounted) {
+          setState(() {
+            searchresult = onValue['response_data'];
+            isSearching = false;
+          });
         }
       }).catchError((error) {
         searchresult = [];
@@ -293,8 +271,6 @@ class _SearchItemState extends State<SearchItem> {
                                           currency: currency,
                                           price: searchresult[index]['variant']
                                               [0]['price'],
-                                          variantStock: searchresult[index]
-                                              ['variant'][0]['productStock'],
                                           productData: searchresult[index],
                                           variantList: searchresult[index]
                                               ['variant'],

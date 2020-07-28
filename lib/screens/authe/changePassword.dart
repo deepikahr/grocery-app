@@ -53,56 +53,41 @@ class _ChangePasswordState extends State<ChangePassword> {
           "confirmPassword": confirmPassword
         };
         await LoginService.changePassword(body).then((onValue) {
-          try {
-            if (mounted) {
-              setState(() {
-                isChangePasswordLoading = false;
-              });
-            }
-            if (onValue['response_code'] == 200) {
-              showDialog<Null>(
-                context: context,
-                barrierDismissible: false, // user must tap button!
-                builder: (BuildContext context) {
-                  return new AlertDialog(
-                    content: new SingleChildScrollView(
-                      child: new ListBody(
-                        children: <Widget>[
-                          new Text(
-                            '${onValue['response_data']}',
-                            style: textBarlowRegularBlack(),
-                          ),
-                        ],
-                      ),
-                    ),
-                    actions: <Widget>[
-                      new FlatButton(
-                        child: new Text(
-                          MyLocalizations.of(context).getLocalizations("OK"),
-                          style: textbarlowRegularaPrimary(),
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                        },
+          if (mounted) {
+            setState(() {
+              isChangePasswordLoading = false;
+            });
+          }
+          showDialog<Null>(
+            context: context,
+            barrierDismissible: false, // user must tap button!
+            builder: (BuildContext context) {
+              return new AlertDialog(
+                content: new SingleChildScrollView(
+                  child: new ListBody(
+                    children: <Widget>[
+                      new Text(
+                        '${onValue['response_data']}',
+                        style: textBarlowRegularBlack(),
                       ),
                     ],
-                  );
-                },
+                  ),
+                ),
+                actions: <Widget>[
+                  new FlatButton(
+                    child: new Text(
+                      MyLocalizations.of(context).getLocalizations("OK"),
+                      style: textbarlowRegularaPrimary(),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
               );
-            } else if (onValue['response_code'] == 401) {
-              showSnackbar('${onValue['response_data']}');
-            } else {
-              showSnackbar('${onValue['response_data']}');
-            }
-          } catch (error, stackTrace) {
-            if (mounted) {
-              setState(() {
-                isChangePasswordLoading = false;
-              });
-            }
-            sentryError.reportError(error, stackTrace);
-          }
+            },
+          );
         }).catchError((error) {
           if (mounted) {
             setState(() {

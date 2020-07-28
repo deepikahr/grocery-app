@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/categories/allcategories.dart';
-import 'package:readymadeGroceryApp/screens/chat/chatpage.dart';
 import 'package:readymadeGroceryApp/screens/drawer/address.dart';
+import 'package:readymadeGroceryApp/screens/drawer/chatpage.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/orders/orders.dart';
 import 'package:readymadeGroceryApp/screens/product/all_deals.dart';
@@ -204,7 +204,7 @@ class _DrawerPageState extends State<DrawerPage> {
                         title: MyLocalizations.of(context)
                             .getLocalizations("ABOUT_US")
                             .toUpperCase(),
-                        url: Constants.baseUrl + "about-us")),
+                        url: Constants.baseUrl + "/about-us")),
                 SizedBox(height: 20.0),
                 getTokenValue
                     ? _buildMenuTileList1(
@@ -234,20 +234,11 @@ class _DrawerPageState extends State<DrawerPage> {
 
   logout() async {
     Common.getSelectedLanguage().then((selectedLocale) async {
-      Map body = {"language": selectedLocale};
-      await LoginService.updateUserInfo(body).then((onValue) {
-        try {
-          Map body = {"playerId": null};
-          LoginService.updateUserInfo(body).then((value) async {
-            await Common.setToken(null);
-            await Common.setUserID(null);
-            main();
-          });
-        } catch (error, stackTrace) {
-          sentryError.reportError(error, stackTrace);
-        }
-      }).catchError((error) {
-        sentryError.reportError(error, null);
+      Map body = {"language": selectedLocale, "playerId": null};
+      LoginService.updateUserInfo(body).then((value) async {
+        await Common.setToken(null);
+        await Common.setUserID(null);
+        main();
       });
     });
   }

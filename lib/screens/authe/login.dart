@@ -76,79 +76,68 @@ class _LoginState extends State<Login> {
           "playerId": playerID
         };
         await LoginService.signIn(body).then((onValue) async {
-          try {
-            if (mounted) {
-              setState(() {
-                isUserLoaginLoading = false;
-              });
-            }
-            if (onValue['response_code'] == 200) {
-              if (onValue['response_data']['role'] == 'USER') {
-                await Common.setToken(onValue['response_data']['token']);
+          if (mounted) {
+            setState(() {
+              isUserLoaginLoading = false;
+            });
+          }
+          if (onValue['response_code'] == 205) {
+            showAlert(onValue['response_data'], email.toLowerCase());
+          } else {
+            if (onValue['response_data']['role'] == 'USER') {
+              await Common.setToken(onValue['response_data']['token']);
 
-                if (widget.isCart == true) {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => Home(
-                          locale: widget.locale,
-                          localizedValues: widget.localizedValues,
-                          currentIndex: 2,
-                        ),
+              if (widget.isCart == true) {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Home(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                        currentIndex: 2,
                       ),
-                      (Route<dynamic> route) => false);
-                } else if (widget.isProfile == true) {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => Home(
-                          locale: widget.locale,
-                          localizedValues: widget.localizedValues,
-                          currentIndex: 3,
-                        ),
+                    ),
+                    (Route<dynamic> route) => false);
+              } else if (widget.isProfile == true) {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Home(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                        currentIndex: 3,
                       ),
-                      (Route<dynamic> route) => false);
-                } else if (widget.isSaveItem == true) {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => Home(
-                          locale: widget.locale,
-                          localizedValues: widget.localizedValues,
-                          currentIndex: 1,
-                        ),
+                    ),
+                    (Route<dynamic> route) => false);
+              } else if (widget.isSaveItem == true) {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Home(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                        currentIndex: 1,
                       ),
-                      (Route<dynamic> route) => false);
-                } else if (widget.isProductDetails == true) {
-                  Navigator.pop(context);
-                } else {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => Home(
-                          locale: widget.locale,
-                          localizedValues: widget.localizedValues,
-                          currentIndex: 0,
-                        ),
-                      ),
-                      (Route<dynamic> route) => false);
-                }
+                    ),
+                    (Route<dynamic> route) => false);
+              } else if (widget.isProductDetails == true) {
+                Navigator.pop(context);
               } else {
-                showSnackbar(MyLocalizations.of(context)
-                    .getLocalizations("INVAILD_USER"));
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Home(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                        currentIndex: 0,
+                      ),
+                    ),
+                    (Route<dynamic> route) => false);
               }
-            } else if (onValue['response_code'] == 205) {
-              showAlert(onValue['response_data'], email.toLowerCase());
             } else {
-              showSnackbar(onValue['response_data']);
+              showSnackbar(
+                  MyLocalizations.of(context).getLocalizations("INVAILD_USER"));
             }
-          } catch (error, stackTrace) {
-            if (mounted) {
-              setState(() {
-                isUserLoaginLoading = false;
-              });
-            }
-            sentryError.reportError(error, stackTrace);
           }
         }).catchError((error) {
           if (mounted) {
@@ -197,9 +186,7 @@ class _LoginState extends State<Login> {
               onPressed: () {
                 LoginService.verificationMailSendApi(email).then((response) {
                   Navigator.of(context).pop();
-                  if (response['response_code'] == 200) {
-                    showSnackbar(response['response_data']);
-                  }
+                  showSnackbar(response['response_data']);
                 });
               },
             ),

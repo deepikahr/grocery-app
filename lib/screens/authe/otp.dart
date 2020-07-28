@@ -45,66 +45,55 @@ class _OtpState extends State<Otp> {
           });
         }
         await LoginService.verifyOtp(enteredOtp, widget.email).then((onValue) {
-          try {
-            if (mounted) {
-              setState(() {
-                isOtpVerifyLoading = false;
-              });
-            }
-            if (onValue['response_code'] == 200) {
-              showDialog<Null>(
-                context: context,
-                barrierDismissible: false, // user must tap button!
-                builder: (BuildContext context) {
-                  return new AlertDialog(
-                    content: new SingleChildScrollView(
-                      child: new ListBody(
-                        children: <Widget>[
-                          new Text(
-                            '${onValue['response_data']['message'] ?? ""}',
-                            style: textBarlowMediumBlack(),
-                          ),
-                        ],
-                      ),
-                    ),
-                    actions: <Widget>[
-                      new FlatButton(
-                        child: new Text(
-                          'OK',
-                          style: TextStyle(color: green),
+          if (mounted) {
+            setState(() {
+              isOtpVerifyLoading = false;
+            });
+          }
+          if (onValue['response_data'] != null) {
+            showDialog<Null>(
+              context: context,
+              barrierDismissible: false, // user must tap button!
+              builder: (BuildContext context) {
+                return new AlertDialog(
+                  content: new SingleChildScrollView(
+                    child: new ListBody(
+                      children: <Widget>[
+                        new Text(
+                          '${onValue['response_data']['message'] ?? ""}',
+                          style: textBarlowMediumBlack(),
                         ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ResetPassword(
-                                verificationToken: onValue['response_data']
-                                    ['verificationToken'],
-                                email: widget.email,
-                                locale: widget.locale,
-                                localizedValues: widget.localizedValues,
-                              ),
-                            ),
-                          );
-                        },
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    new FlatButton(
+                      child: new Text(
+                        'OK',
+                        style: TextStyle(color: green),
                       ),
-                    ],
-                  );
-                },
-              );
-            } else if (onValue['response_code'] == 401) {
-              showSnackbar('${onValue['response_data']}');
-            } else {
-              showSnackbar('${onValue['response_data']}');
-            }
-          } catch (error, stackTrace) {
-            if (mounted) {
-              setState(() {
-                isOtpVerifyLoading = false;
-              });
-            }
-            sentryError.reportError(error, stackTrace);
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ResetPassword(
+                              verificationToken: onValue['response_data']
+                                  ['verificationToken'],
+                              email: widget.email,
+                              locale: widget.locale,
+                              localizedValues: widget.localizedValues,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          } else {
+            showSnackbar('${onValue['response_data']}');
           }
         }).catchError((error) {
           if (mounted) {
@@ -172,23 +161,11 @@ class _OtpState extends State<Otp> {
 
     await LoginService.forgetPassword(widget.email.toLowerCase())
         .then((response) {
-      try {
-        if (mounted) {
-          setState(() {
-            isResentOtpLoading = false;
-          });
-        }
-        if (response['response_code'] == 200) {
+      if (mounted) {
+        setState(() {
+          isResentOtpLoading = false;
           showSnackbar(response['response_data']);
-        } else {
-          showSnackbar(response['response_data']);
-        }
-      } catch (error) {
-        if (mounted) {
-          setState(() {
-            isResentOtpLoading = false;
-          });
-        }
+        });
       }
     }).catchError((error) {
       if (mounted) {
