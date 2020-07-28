@@ -101,13 +101,15 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
 
   getCartData() {
     CartService.getProductToCart().then((value) {
-      if (value['response_code'] == 200 && value['response_data'] is Map) {
+      if (value['response_data'] is Map) {
         Common.setCartData(value['response_data']);
       } else if (value['response_code'] == 403) {
         Common.setCartData(null);
       } else {
         Common.setCartData(null);
       }
+    }).catchError((error) {
+      sentryError.reportError(error, null);
     });
   }
 
@@ -142,22 +144,23 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
 
   getBannerData() async {
     await ProductService.getBanner().then((onValue) {
-      try {
-        _refreshController.refreshCompleted();
-        if (mounted) {
-          setState(() {
-            if (onValue['response_data'] == []) {
-              bannerList = [];
-            } else {
-              bannerList = onValue['response_data'];
-            }
-            isBannerLoading = false;
-          });
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
+      _refreshController.refreshCompleted();
+      if (mounted) {
+        setState(() {
+          if (onValue['response_data'] == []) {
+            bannerList = [];
+          } else {
+            bannerList = onValue['response_data'];
+          }
+          isBannerLoading = false;
+        });
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isBannerLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -193,33 +196,23 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
 
   getAllDataMethod() async {
     await ProductService.getProdCatDealTopDeal().then((onValue) {
-      try {
-        _refreshController.refreshCompleted();
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              productsList = onValue['response_data']['products'];
-              categoryList = onValue['response_data']['categories'];
-              dealList = onValue['response_data']['dealsOfDay'];
-              topDealList = onValue['response_data']['topDeals'];
-              isLoadingAllData = false;
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              categoryList = [];
-              productsList = [];
-              dealList = [];
-              topDealList = [];
-              isLoadingAllData = false;
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
+      _refreshController.refreshCompleted();
+
+      if (mounted) {
+        setState(() {
+          productsList = onValue['response_data']['products'];
+          categoryList = onValue['response_data']['categories'];
+          dealList = onValue['response_data']['dealsOfDay'];
+          topDealList = onValue['response_data']['topDeals'];
+          isLoadingAllData = false;
+        });
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isLoadingAllData = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -430,7 +423,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                             image: NetworkImage((url['filePath'] == null
                                 ? url['imageURL']
                                 : Constants.imageUrlPath +
-                                    "tr:dpr-auto,tr:w-500" +
+                                    "/tr:dpr-auto,tr:w-500" +
                                     url['filePath'])),
                             fit: BoxFit.cover,
                           ),
@@ -668,7 +661,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                     image: NetworkImage(list[i]['filePath'] == null
                         ? list[i]['imageUrl']
                         : Constants.imageUrlPath +
-                            "tr:dpr-auto,tr:w-500" +
+                            "/tr:dpr-auto,tr:w-500" +
                             list[i]['filePath']),
                     boxFit: BoxFit.cover,
                     color: Colors.black,
@@ -786,7 +779,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       list[i]['filePath'] == null
                           ? list[i]['imageUrl']
                           : Constants.imageUrlPath +
-                              "tr:dpr-auto,tr:w-500" +
+                              "/tr:dpr-auto,tr:w-500" +
                               list[i]['filePath'],
                     ),
                     boxFit: BoxFit.cover,

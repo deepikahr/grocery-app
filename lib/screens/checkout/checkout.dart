@@ -73,27 +73,10 @@ class _CheckoutState extends State<Checkout> {
 
   getAdminLocationInfo() async {
     await LoginService.getLocationformation().then((onValue) {
-      try {
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              locationInfo = onValue['response_data'];
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              locationInfo = null;
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            locationInfo = null;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      if (mounted) {
+        setState(() {
+          locationInfo = onValue['response_data'];
+        });
       }
     }).catchError((error) {
       if (mounted) {
@@ -114,32 +97,20 @@ class _CheckoutState extends State<Checkout> {
     await CartService.getProductToCart().then((onValue) {
       getAddress();
       _refreshController.refreshCompleted();
-      try {
-        if (onValue['response_code'] == 200 &&
-            onValue['response_data'] is Map) {
-          if (mounted) {
-            setState(() {
-              cartItem = onValue['response_data'];
-              Common.setCartData(onValue['response_data']);
-              isLoadingCart = false;
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              cartItem = null;
-              Common.setCartData(null);
-              isLoadingCart = false;
-            });
-          }
-        }
-      } catch (error, stackTrace) {
+      if (onValue['response_data'] is Map && mounted) {
+        setState(() {
+          cartItem = onValue['response_data'];
+          Common.setCartData(onValue['response_data']);
+          isLoadingCart = false;
+        });
+      } else {
         if (mounted) {
           setState(() {
+            cartItem = null;
+            Common.setCartData(null);
             isLoadingCart = false;
           });
         }
-        sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
       if (mounted) {
@@ -160,30 +131,36 @@ class _CheckoutState extends State<Checkout> {
       });
       var body = {"deliveryAddress": selectedAddress['_id'].toString()};
       await CartService.getDeliveryChargesAndSaveAddress(body).then((value) {
-        if (value['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              cartItem['deliveryCharges'] =
-                  value['response_data']['deliveryCharges'];
-              cartItem['grandTotal'] = value['response_data']['grandTotal'];
-              cartItem['deliveryAddress'] =
-                  value['response_data']['deliveryAddress'];
-              if (cartItem['deliveryCharges'] == 0 &&
-                  cartItem['deliveryAddress'] != null) {
-                setState(() {
-                  isDeliveryChargeFree = true;
-                });
-              } else {
-                setState(() {
-                  isDeliveryChargeFree = false;
-                });
-              }
-              isDeliveryChargeLoading = false;
-            });
-          }
-        } else {
-          showSnackbar("${value['response_data']}");
+        if (mounted) {
+          setState(() {
+            cartItem['deliveryCharges'] =
+                value['response_data']['deliveryCharges'];
+            cartItem['grandTotal'] = value['response_data']['grandTotal'];
+            cartItem['deliveryAddress'] =
+                value['response_data']['deliveryAddress'];
+            if (cartItem['deliveryCharges'] == 0 &&
+                cartItem['deliveryAddress'] != null) {
+              setState(() {
+                isDeliveryChargeFree = true;
+              });
+            } else {
+              setState(() {
+                isDeliveryChargeFree = false;
+              });
+            }
+            isDeliveryChargeLoading = false;
+          });
         }
+      }).catchError((error) {
+        if (mounted) {
+          setState(() {
+            selecteAddressValue = null;
+            selectedAddress = null;
+            isDeliveryChargeFree = false;
+            isDeliveryChargeLoading = true;
+          });
+        }
+        sentryError.reportError(error, null);
       });
     }
     return value;
@@ -198,32 +175,12 @@ class _CheckoutState extends State<Checkout> {
 
     await AddressService.deliverySlot().then((onValue) {
       _refreshController.refreshCompleted();
-      try {
-        if (mounted) {
-          setState(() {
-            deliverySlotsLoading = false;
-          });
-        }
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              deliverySlotList = onValue['response_data'];
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              deliverySlotList = [];
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            deliverySlotsLoading = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+
+      if (mounted) {
+        setState(() {
+          deliverySlotList = onValue['response_data'];
+          deliverySlotsLoading = false;
+        });
       }
     }).catchError((error) {
       if (mounted) {
@@ -260,40 +217,22 @@ class _CheckoutState extends State<Checkout> {
     }
     await AddressService.getAddress().then((onValue) {
       _refreshController.refreshCompleted();
-      try {
-        if (mounted) {
-          setState(() {
-            addressLoading = false;
-          });
-        }
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              addressList = onValue['response_data'];
-              if (addressList.length > 0 &&
-                  cartItem['deliveryAddress'] != null) {
-                for (int i = 0; i < addressList.length; i++) {
-                  if (addressList[i]['_id'] == cartItem['deliveryAddress']) {
-                    addressRadioValueChanged(i);
-                  }
-                }
+      if (mounted) {
+        setState(() {
+          addressLoading = false;
+        });
+      }
+      if (mounted) {
+        setState(() {
+          addressList = onValue['response_data'];
+          if (addressList.length > 0 && cartItem['deliveryAddress'] != null) {
+            for (int i = 0; i < addressList.length; i++) {
+              if (addressList[i]['_id'] == cartItem['deliveryAddress']) {
+                addressRadioValueChanged(i);
               }
-            });
+            }
           }
-        } else {
-          if (mounted) {
-            setState(() {
-              addressList = [];
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            addressLoading = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+        });
       }
     }).catchError((error) {
       if (mounted) {
@@ -307,18 +246,12 @@ class _CheckoutState extends State<Checkout> {
 
   deleteAddress(body) async {
     await AddressService.deleteAddress(body).then((onValue) {
-      try {
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              getAddress();
-              addressList = addressList;
-              showSnackbar(onValue['response_data']);
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
+      if (mounted) {
+        setState(() {
+          getAddress();
+          addressList = addressList;
+          showSnackbar(onValue['response_data']);
+        });
       }
     }).catchError((error) {
       sentryError.reportError(error, null);
@@ -366,36 +299,18 @@ class _CheckoutState extends State<Checkout> {
         });
       }
       await CouponService.applyCouponsCode(couponCode).then((onValue) {
-        try {
-          if (onValue['response_code'] == 200) {
-            if (mounted) {
-              setState(() {
-                cartItem = onValue['response_data'];
-                couponApplied = true;
-              });
-            }
-          } else if (onValue['response_code'] == 400) {
-            showSnackbar('${onValue['response_data']}');
-          } else {
-            showSnackbar('${onValue['response_data']}');
-          }
-          if (mounted) {
-            setState(() {
-              isCouponLoading = false;
-            });
-          }
-        } catch (error, stackTrace) {
-          if (mounted) {
-            setState(() {
-              isCouponLoading = false;
-            });
-          }
-          sentryError.reportError(error, stackTrace);
+        if (mounted) {
+          setState(() {
+            cartItem = onValue['response_data'];
+            couponApplied = true;
+            isCouponLoading = false;
+          });
         }
       }).catchError((error) {
         if (mounted) {
           setState(() {
             isCouponLoading = false;
+            couponApplied = false;
           });
         }
         sentryError.reportError(error, null);
@@ -410,30 +325,11 @@ class _CheckoutState extends State<Checkout> {
       });
     }
     await CouponService.removeCoupon(couponCode).then((onValue) {
-      try {
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              cartItem = onValue['response_data'];
-            });
-          }
-        } else if (onValue['response_code'] == 400) {
-          showSnackbar('${onValue['response_data']}');
-        } else {
-          showSnackbar('${onValue['response_data']}');
-        }
-        if (mounted) {
-          setState(() {
-            isCouponLoading = false;
-          });
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            isCouponLoading = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      if (mounted) {
+        setState(() {
+          cartItem = onValue['response_data'];
+          isCouponLoading = false;
+        });
       }
     }).catchError((error) {
       if (mounted) {

@@ -46,33 +46,15 @@ class _SavedItemsState extends State<SavedItems> {
       });
     }
     await FavouriteService.getFavList().then((onValue) {
-      try {
-        if (mounted) {
-          setState(() {
-            isFavListLoading = false;
-          });
-        }
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              favProductList = onValue['response_data'];
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              favProductList = [];
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            isFavListLoading = false;
-            favProductList = [];
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      if (mounted) {
+        setState(() {
+          isFavListLoading = false;
+        });
+      }
+      if (mounted) {
+        setState(() {
+          favProductList = onValue['response_data'];
+        });
       }
     }).catchError((error) {
       if (mounted) {
@@ -95,29 +77,20 @@ class _SavedItemsState extends State<SavedItems> {
       currency = value;
     });
     await Common.getToken().then((onValue) {
-      try {
-        if (onValue != null) {
-          if (mounted) {
-            setState(() {
-              isGetTokenLoading = false;
-              token = onValue;
-              getFavListMethod();
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              isGetTokenLoading = false;
-            });
-          }
+      if (onValue != null) {
+        if (mounted) {
+          setState(() {
+            isGetTokenLoading = false;
+            token = onValue;
+            getFavListMethod();
+          });
         }
-      } catch (error, stackTrace) {
+      } else {
         if (mounted) {
           setState(() {
             isGetTokenLoading = false;
           });
         }
-        sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
       if (mounted) {
@@ -214,8 +187,6 @@ class _SavedItemsState extends State<SavedItems> {
                                     currency: currency,
                                     price: favProductList[i]['variant'][0]
                                         ['price'],
-                                    variantStock: favProductList[i]['variant']
-                                        [0]['productStock'],
                                     productData: favProductList[i],
                                     variantList: favProductList[i]['variant'],
                                   ),
@@ -264,7 +235,7 @@ class _SavedItemsState extends State<SavedItems> {
           ? Container(height: 1)
           : InkWell(
               onTap: () {
-                Navigator.push(
+                var result = Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (BuildContext context) => Home(
@@ -274,6 +245,7 @@ class _SavedItemsState extends State<SavedItems> {
                     ),
                   ),
                 );
+                result.then((value) => getToken());
               },
               child: Container(
                 height: 55.0,

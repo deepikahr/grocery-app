@@ -49,18 +49,21 @@ class _EditProfileState extends State<EditProfile> {
       });
     }
     await LoginService.getUserInfo().then((onValue) {
-      try {
-        if (mounted) {
-          setState(() {
-            isLoading = false;
-            userInfo = onValue['response_data'];
-            walletAmount = onValue['response_data']['walletAmount'] ?? 0.00;
-          });
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+          userInfo = onValue['response_data'];
+          walletAmount = onValue['response_data']['walletAmount'] ?? 0.00;
+        });
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          userInfo = null;
+          walletAmount = 0;
+          isLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
@@ -69,27 +72,14 @@ class _EditProfileState extends State<EditProfile> {
     var body = {"imageUrl": url, "imageId": key, "filePath": filePath};
 
     await LoginService.updateUserInfo(body).then((onValue) {
-      try {
-        if (mounted) {
-          setState(() {
-            isPicUploading = false;
-          });
-        }
-        if (onValue['response_code'] == 200) {
-          showSnackbar(onValue['response_data']);
-          if (key == null) {
-            getUserInfo();
-          }
-        } else {
-          showSnackbar(onValue['response_data']);
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            isPicUploading = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      if (mounted) {
+        setState(() {
+          isPicUploading = false;
+        });
+      }
+      showSnackbar(onValue['response_data']);
+      if (key == null) {
+        getUserInfo();
       }
     }).catchError((error) {
       if (mounted) {
@@ -121,25 +111,12 @@ class _EditProfileState extends State<EditProfile> {
       };
 
       await LoginService.updateUserInfo(body).then((onValue) {
-        try {
-          if (mounted) {
-            setState(() {
-              profileEdit = false;
-            });
-          }
-          if (onValue['response_code'] == 200) {
-            showSnackbar(onValue['response_data']);
-          } else {
-            showSnackbar(onValue['response_data']);
-          }
-        } catch (error, stackTrace) {
-          if (mounted) {
-            setState(() {
-              profileEdit = false;
-            });
-          }
-          sentryError.reportError(error, stackTrace);
+        if (mounted) {
+          setState(() {
+            profileEdit = false;
+          });
         }
+        showSnackbar(onValue['response_data']);
       }).catchError((error) {
         if (mounted) {
           setState(() {
@@ -180,7 +157,7 @@ class _EditProfileState extends State<EditProfile> {
         new http.ByteStream(DelegatingStream.typed(_imageFile.openRead()));
 
     int length = await _imageFile.length();
-    String uri = Constants.apiUrl + 'users/upload/image';
+    String uri = Constants.apiUrl + '/users/upload/image';
 
     dynamic request = new http.MultipartRequest("POST", Uri.parse(uri));
 
@@ -307,24 +284,12 @@ class _EditProfileState extends State<EditProfile> {
       });
     }
     LoginService.imagedelete().then((value) {
-      try {
-        if (value['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              isPicUploading = false;
-              Navigator.pop(context);
-              updateUserInfo(null, null, null);
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            isPicUploading = false;
-            Navigator.pop(context);
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      if (mounted) {
+        setState(() {
+          isPicUploading = false;
+          Navigator.pop(context);
+          updateUserInfo(null, null, null);
+        });
       }
     }).catchError((error) {
       if (mounted) {
@@ -390,7 +355,7 @@ class _EditProfileState extends State<EditProfile> {
                                               userInfo['filePath'] == null
                                                   ? userInfo['imageUrl']
                                                   : Constants.imageUrlPath +
-                                                      "tr:dpr-auto,tr:w-500" +
+                                                      "/tr:dpr-auto,tr:w-500" +
                                                       userInfo['filePath']),
                                         ),
                                       ),

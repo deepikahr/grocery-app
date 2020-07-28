@@ -100,31 +100,15 @@ class _EditAddressState extends State<EditAddress> {
       address['addressType'] = addressType[selectedAddressType];
       AddressService.updateAddress(address, widget.updateAddressID['_id'])
           .then((onValue) {
-        try {
-          if (onValue['response_code'] == 200 && mounted) {
-            setState(() {
-              showSnackbar(onValue['response_data']);
-              Future.delayed(Duration(milliseconds: 1500), () {
-                Navigator.pop(context);
-                addressController.clear();
-              });
-              isUpdateAddressLoading = false;
+        if (mounted) {
+          setState(() {
+            showSnackbar(onValue['response_data']);
+            Future.delayed(Duration(milliseconds: 1500), () {
+              Navigator.pop(context);
+              addressController.clear();
             });
-          } else {
-            if (mounted) {
-              setState(() {
-                isUpdateAddressLoading = false;
-                showSnackbar(onValue['response_data']);
-              });
-            }
-          }
-        } catch (error, stackTrace) {
-          if (mounted) {
-            setState(() {
-              isUpdateAddressLoading = false;
-            });
-          }
-          sentryError.reportError(error, stackTrace);
+            isUpdateAddressLoading = false;
+          });
         }
       }).catchError((onError) {
         if (mounted) {

@@ -80,31 +80,15 @@ class _AddAddressState extends State<AddAddress> {
       address['location'] = location;
       address['addressType'] = addressType[selectedAddressType];
       AddressService.addAddress(address).then((onValue) {
-        try {
-          if (onValue['response_code'] == 200 && mounted) {
-            setState(() {
-              showSnackbar(onValue['response_data']);
-              Future.delayed(Duration(milliseconds: 1500), () {
-                Navigator.pop(context);
-                addressController.clear();
-              });
-              isAddAddressLoading = false;
+        if (mounted) {
+          setState(() {
+            showSnackbar(onValue['response_data']);
+            Future.delayed(Duration(milliseconds: 1500), () {
+              Navigator.pop(context);
+              addressController.clear();
             });
-          } else {
-            if (mounted) {
-              setState(() {
-                isAddAddressLoading = false;
-                showSnackbar(onValue['response_data']);
-              });
-            }
-          }
-        } catch (error, stackTrace) {
-          if (mounted) {
-            setState(() {
-              isAddAddressLoading = false;
-            });
-          }
-          sentryError.reportError(error, stackTrace);
+            isAddAddressLoading = false;
+          });
         }
       }).catchError((onError) {
         if (mounted) {

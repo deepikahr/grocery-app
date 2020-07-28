@@ -10,51 +10,64 @@ Client client =
 class CartService {
   // add product in cart
   static Future<Map<String, dynamic>> addAndUpdateProduct(body) async {
-    final response = await client.post(Constants.apiUrl + "carts/update",
-        body: json.encode(body));
-    return json.decode(response.body);
+    return client
+        .post(Constants.apiUrl + "/carts/update", body: json.encode(body))
+        .then((response) {
+      return json.decode(response.body);
+    });
   }
 
   // get product in cart
   static Future<Map<String, dynamic>> getProductToCart() async {
-    final response = await client.get(Constants.apiUrl + "carts/my");
-    return json.decode(response.body);
+    return client.get(Constants.apiUrl + "/carts/my").then((response) {
+      return json.decode(response.body);
+    });
   }
 
   // delete form cart
   static Future<Map<String, dynamic>> deleteDataFromCart(productId) async {
-    final response =
-        await client.put(Constants.apiUrl + "carts/remove/$productId");
-    return json.decode(response.body);
+    return client
+        .put(Constants.apiUrl + "/carts/remove/$productId")
+        .then((response) {
+      return json.decode(response.body);
+    });
   }
 
   static Future<Map<String, dynamic>> deleteAllDataFromCart() async {
-    final response = await client.delete(Constants.apiUrl + "carts/delete");
-
-    return json.decode(response.body);
+    return client.delete(Constants.apiUrl + "/carts/delete").then((response) {
+      return json.decode(response.body);
+    });
   }
 
   static Future<Map<String, dynamic>> getDeliveryChargesAndSaveAddress(
       body) async {
-    final response = await client.post(
-        Constants.apiUrl + "carts/update-address",
-        body: json.encode(body));
-    return json.decode(response.body);
+    return client
+        .post(Constants.apiUrl + "/carts/update-address",
+            body: json.encode(body))
+        .then((response) {
+      return json.decode(response.body);
+    });
   }
 
   static Future<Map<String, dynamic>> checkCartVerifyOrNot() async {
-    final response = await client.get(Constants.apiUrl + "carts/verify");
-    return json.decode(response.body);
+    return client.get(Constants.apiUrl + "/carts/verify").then((response) {
+      return json.decode(response.body);
+    });
   }
 
   static Future<Map<String, dynamic>> walletApply() async {
-    final response = await client.post(Constants.apiUrl + "carts/apply-wallet");
-    return json.decode(response.body);
+    return client
+        .post(Constants.apiUrl + "/carts/apply-wallet")
+        .then((response) {
+      return json.decode(response.body);
+    });
   }
 
   static Future<Map<String, dynamic>> walletRemove() async {
-    final response =
-        await client.delete(Constants.apiUrl + "carts/remove-wallet");
-    return json.decode(response.body);
+    return client
+        .delete(Constants.apiUrl + "/carts/remove-wallet")
+        .then((response) {
+      return json.decode(response.body);
+    });
   }
 }

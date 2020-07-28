@@ -48,7 +48,7 @@ class ProductCard extends StatelessWidget {
               child: Image.network(
                 productData['filePath'] != null
                     ? Constants.imageUrlPath +
-                        "tr:dpr-auto,tr:w-500" +
+                        "/tr:dpr-auto,tr:w-500" +
                         productData['filePath']
                     : productData['imageUrl'],
                 fit: BoxFit.cover,

@@ -93,11 +93,7 @@ void getToken() async {
 
 void userInfoMethod() async {
   await LoginService.getUserInfo().then((onValue) async {
-    try {
-      await Common.setUserID(onValue['response_data']['_id']);
-    } catch (error, stackTrace) {
-      sentryError.reportError(error, stackTrace);
-    }
+    await Common.setUserID(onValue['response_data']['_id']);
   }).catchError((error) {
     sentryError.reportError(error, null);
   });

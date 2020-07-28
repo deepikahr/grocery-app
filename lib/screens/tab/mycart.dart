@@ -35,7 +35,7 @@ class _MyCartState extends State<MyCart> {
       isCheckProductAvailableOrNot = false;
   String token, currency;
   String quantityUpdateType = '+';
-  Map<String, dynamic> cartItem;
+  Map cartItem;
   double bottomBarHeight = 150;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -59,26 +59,16 @@ class _MyCartState extends State<MyCart> {
       });
     }
     await LoginService.getLocationformation().then((onValue) {
-      try {
-        if (mounted) {
-          if (onValue['response_code'] == 200) {
-            minAmout = onValue['response_data'];
-          }
-          setState(() {
-            isMinAmountCheckLoading = false;
-          });
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            isMinAmountCheckLoading = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      if (mounted) {
+        setState(() {
+          minAmout = onValue['response_data'];
+          isMinAmountCheckLoading = false;
+        });
       }
     }).catchError((error) {
       if (mounted) {
         setState(() {
+          minAmout = null;
           isMinAmountCheckLoading = false;
         });
       }
@@ -96,29 +86,20 @@ class _MyCartState extends State<MyCart> {
       currency = value;
     });
     await Common.getToken().then((onValue) {
-      try {
-        if (onValue != null) {
-          if (mounted) {
-            setState(() {
-              isGetTokenLoading = false;
-              token = onValue;
-              getCartItems();
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              isGetTokenLoading = false;
-            });
-          }
+      if (onValue != null) {
+        if (mounted) {
+          setState(() {
+            isGetTokenLoading = false;
+            token = onValue;
+            getCartItems();
+          });
         }
-      } catch (error, stackTrace) {
+      } else {
         if (mounted) {
           setState(() {
             isGetTokenLoading = false;
           });
         }
-        sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
       if (mounted) {
@@ -172,74 +153,28 @@ class _MyCartState extends State<MyCart> {
       });
     }
     await AddToCart.addAndUpdateProductMethod(body).then((onValue) {
-      try {
-        if (mounted) {
-          if (onValue['response_code'] == 400) {
-            cartItem['products'][i]['quantity']--;
-            cartItem['products'][i]['quantity'] =
-                cartItem['products'][i]['quantity'];
-            cartItem['products'][i]['isQuantityUpdating'] = false;
-            showDialog<Null>(
-              context: context,
-              barrierDismissible: false,
-              builder: (BuildContext context) {
-                return Container(
-                  width: 270.0,
-                  child: new AlertDialog(
-                    content: new SingleChildScrollView(
-                      child: new ListBody(
-                        children: <Widget>[
-                          new Text(
-                            onValue['response_data'],
-                            style: hintSfsemiboldred(),
-                          ),
-                        ],
-                      ),
-                    ),
-                    actions: <Widget>[
-                      new FlatButton(
-                        child: new Text(
-                          MyLocalizations.of(context).getLocalizations("OK"),
-                          style: textbarlowRegularaPrimary(),
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              },
-            );
-          } else {
-            setState(() {
-              isUpdating = false;
-              cartItem = onValue['response_data'];
-              cartItem['products'][i]['quantity'] =
-                  cartItem['products'][i]['quantity'];
-              cartItem['products'][i]['isQuantityUpdating'] = false;
-            });
-            if (onValue['response_data'] is Map) {
-              Common.setCartData(onValue['response_data']);
-            } else {
-              Common.setCartData(null);
-            }
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            cartItem = null;
-            isUpdating = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      if (mounted) {
+        setState(() {
+          isUpdating = false;
+          cartItem = onValue['response_data'];
+          cartItem['products'][i]['quantity'] =
+              cartItem['products'][i]['quantity'];
+          cartItem['products'][i]['isQuantityUpdating'] = false;
+        });
+      }
+      if (onValue['response_data'] is Map) {
+        Common.setCartData(onValue['response_data']);
+      } else {
+        Common.setCartData(null);
       }
     }).catchError((error) {
       if (mounted) {
         setState(() {
-          cartItem = null;
           isUpdating = false;
+          cartItem['products'][i]['quantity']--;
+          cartItem['products'][i]['quantity'] =
+              cartItem['products'][i]['quantity'];
+          cartItem['products'][i]['isQuantityUpdating'] = false;
         });
       }
       sentryError.reportError(error, null);
@@ -254,50 +189,31 @@ class _MyCartState extends State<MyCart> {
       });
     }
     await CartService.getProductToCart().then((onValue) {
-      try {
-        _refreshController.refreshCompleted();
-        if (mounted) {
-          setState(() {
-            isLoadingCart = false;
-          });
-        }
-        if (onValue['response_code'] == 200 &&
-            onValue['response_data'] is Map) {
-          Common.setCartData(onValue['response_data']);
+      _refreshController.refreshCompleted();
+      if (mounted) {
+        setState(() {
+          isLoadingCart = false;
+        });
+      }
 
-          if (mounted) {
-            setState(() {
-              cartItem = onValue['response_data'];
-              if (cartItem['grandTotal'] != null) {
-                bottomBarHeight = 150;
-                if (cartItem['deliveryCharges'] != 0) {
-                  bottomBarHeight = bottomBarHeight + 20;
-                }
-                if (cartItem['tax'] != 0) {
-                  bottomBarHeight = bottomBarHeight + 20;
-                }
-                if (cartItem['couponInfo'] != null) {
-                  bottomBarHeight = bottomBarHeight + 20;
-                }
-              }
-            });
+      Common.setCartData(onValue['response_data']);
+
+      if (mounted) {
+        setState(() {
+          cartItem = onValue['response_data'];
+          if (cartItem['grandTotal'] != null) {
+            bottomBarHeight = 150;
+            if (cartItem['deliveryCharges'] != 0) {
+              bottomBarHeight = bottomBarHeight + 20;
+            }
+            if (cartItem['tax'] != 0) {
+              bottomBarHeight = bottomBarHeight + 20;
+            }
+            if (cartItem['couponInfo'] != null) {
+              bottomBarHeight = bottomBarHeight + 20;
+            }
           }
-        } else {
-          if (mounted) {
-            setState(() {
-              cartItem = null;
-              Common.setCartData(null);
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            cartItem = null;
-            isLoadingCart = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+        });
       }
     }).catchError((error) {
       if (mounted) {
@@ -314,32 +230,13 @@ class _MyCartState extends State<MyCart> {
   deleteCart(i) async {
     await CartService.deleteDataFromCart(cartItem['products'][i]['productId'])
         .then((onValue) {
-      try {
-        if (onValue['response_code'] == 200 &&
-            onValue['response_data'] is Map) {
-          Common.setCartData(onValue['response_data']);
-          if (mounted) {
-            setState(() {
-              cartItem = onValue['response_data'];
-            });
-          }
-          getCartItems();
-        } else {
-          if (mounted) {
-            setState(() {
-              Common.setCartData(null);
-              cartItem = null;
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            cartItem = null;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      Common.setCartData(onValue['response_data']);
+      if (mounted) {
+        setState(() {
+          cartItem = onValue['response_data'];
+        });
       }
+      getCartItems();
     }).catchError((error) {
       if (mounted) {
         setState(() {
@@ -353,17 +250,11 @@ class _MyCartState extends State<MyCart> {
 
   deleteAllCart() async {
     await CartService.deleteAllDataFromCart().then((onValue) {
-      try {
-        if (onValue['response_code'] == 200) {
-          Common.setCartData(null);
-          if (mounted) {
-            setState(() {
-              cartItem = null;
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
+      Common.setCartData(null);
+      if (mounted) {
+        setState(() {
+          cartItem = null;
+        });
       }
     }).catchError((error) {
       sentryError.reportError(error, null);
@@ -394,74 +285,27 @@ class _MyCartState extends State<MyCart> {
           isCheckProductAvailableOrNot = false;
         });
       }
-      if (response['response_code'] == 200) {
-        var result = Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => Checkout(
-              locale: widget.locale,
-              localizedValues: widget.localizedValues,
-              id: cartItem['_id'].toString(),
-            ),
+      var result = Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Checkout(
+            locale: widget.locale,
+            localizedValues: widget.localizedValues,
+            id: cartItem['_id'].toString(),
           ),
-        );
-        result.then((value) {
-          getCartItems();
+        ),
+      );
+      result.then((value) {
+        getCartItems();
+      });
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isCheckProductAvailableOrNot = false;
         });
-      } else {
-        if (response['response_data'] is List) {
-          verifyTokenAlert(response['response_data']);
-        } else {
-          showError(response['response_data']);
-        }
       }
+      sentryError.reportError(error, null);
     });
-  }
-
-  verifyTokenAlert(responseData) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            MyLocalizations.of(context).getLocalizations("OUT_OF_STOCK"),
-          ),
-          content: SingleChildScrollView(
-            child: responseData.length > 0
-                ? ListView.builder(
-                    physics: ScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: responseData.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            responseData[index]['productName'].toString(),
-                          ),
-                          Text(
-                            responseData[index]['unit'].toString() +
-                                "*" +
-                                responseData[index]['quantity'].toString(),
-                          ),
-                        ],
-                      );
-                    })
-                : Text(""),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text(MyLocalizations.of(context).getLocalizations("OK")),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   showError(responseData) async {
@@ -612,7 +456,7 @@ class _MyCartState extends State<MyCart> {
                                                                   i]['imageUrl']
                                                               : Constants
                                                                       .imageUrlPath +
-                                                                  "tr:dpr-auto,tr:w-500" +
+                                                                  "/tr:dpr-auto,tr:w-500" +
                                                                   cartItem['products']
                                                                           [i][
                                                                       'filePath'],

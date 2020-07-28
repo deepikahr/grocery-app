@@ -101,38 +101,15 @@ class _ProductDetailsState extends State<ProductDetails>
       });
     }
     ProductService.productDetails(widget.productID).then((value) {
-      try {
-        if (mounted) {
-          setState(() {
-            isProductDetails = false;
-          });
-        }
-        if (value['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              productDetail = value['response_data'];
-              if (productDetail['quantityToCart'] != null) {
-                quantity = productDetail['quantityToCart'];
-                isProductAlredayInCart = productDetail['isAddedToCart'];
-                // currentCardId = productDetail['cartId'];
-              }
-            });
+      if (mounted) {
+        setState(() {
+          productDetail = value['response_data'];
+          if (productDetail['quantityToCart'] != null) {
+            quantity = productDetail['quantityToCart'];
+            isProductAlredayInCart = productDetail['isAddedToCart'];
           }
-        } else {
-          if (mounted) {
-            setState(() {
-              productDetail = null;
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            isProductDetails = false;
-            productDetail = null;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+          isProductDetails = false;
+        });
       }
     }).catchError((error) {
       if (mounted) {
@@ -179,30 +156,15 @@ class _ProductDetailsState extends State<ProductDetails>
       isFavProductLoading = true;
     });
     await FavouriteService.addToFav(id).then((onValue) {
-      try {
-        if (onValue['response_code'] == 200) {
-          setState(() {
-            productDetail['isFavourite'] = true;
-            isFavProductLoading = false;
-            showSnackbar(onValue['response_data']);
-          });
-        } else {
-          setState(() {
-            isFavProductLoading = false;
-            productDetail['isFavourite'] = false;
-            showSnackbar(onValue['response_data']);
-          });
-        }
-      } catch (error, stackTrace) {
-        setState(() {
-          isFavProductLoading = false;
-          productDetail['isFavourite'] = false;
-        });
-        sentryError.reportError(error, stackTrace);
-      }
+      setState(() {
+        productDetail['isFavourite'] = true;
+        isFavProductLoading = false;
+        showSnackbar(onValue['response_data']);
+      });
     }).catchError((error) {
       setState(() {
         isFavProductLoading = false;
+        productDetail['isFavourite'] = false;
       });
       sentryError.reportError(error, null);
     });
@@ -214,27 +176,11 @@ class _ProductDetailsState extends State<ProductDetails>
     });
 
     await FavouriteService.deleteToFav(id).then((onValue) {
-      try {
-        if (onValue['response_code'] == 200) {
-          setState(() {
-            isFavProductLoading = false;
-            showSnackbar(onValue['response_data']);
-            productDetail['isFavourite'] = false;
-          });
-        } else {
-          setState(() {
-            isFavProductLoading = false;
-            showSnackbar(onValue['response_data']);
-            productDetail['isFavourite'] = true;
-          });
-        }
-      } catch (error, stackTrace) {
-        setState(() {
-          isFavProductLoading = false;
-          productDetail['isFavourite'] = true;
-        });
-        sentryError.reportError(error, stackTrace);
-      }
+      setState(() {
+        isFavProductLoading = false;
+        showSnackbar(onValue['response_data']);
+        productDetail['isFavourite'] = false;
+      });
     }).catchError((error) {
       setState(() {
         productDetail['isFavourite'] = true;
@@ -277,34 +223,19 @@ class _ProductDetailsState extends State<ProductDetails>
           : variantUnit.toString()
     };
     AddToCart.addAndUpdateProductMethod(buyNowProduct).then((onValue) {
-      try {
-        if (mounted) {
-          setState(() {
-            addProductTocart = false;
-            groupValue = 0;
-          });
-        }
-        if (onValue['response_code'] == 200) {
-          if (onValue['response_data'] is Map) {
-            Common.setCartData(onValue['response_data']);
-          } else {
-            Common.setCartData(null);
-          }
-
-          Navigator.of(context).pop();
-        } else if (onValue['response_code'] == 403) {
-          cartClear(onValue['response_data']);
-        } else {
-          showSnackbar(onValue['response_data']);
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            addProductTocart = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      if (mounted) {
+        setState(() {
+          addProductTocart = false;
+          groupValue = 0;
+        });
       }
+      if (onValue['response_data'] is Map) {
+        Common.setCartData(onValue['response_data']);
+      } else {
+        Common.setCartData(null);
+      }
+
+      Navigator.of(context).pop();
     }).catchError((error) {
       if (mounted) {
         setState(() {
@@ -338,14 +269,10 @@ class _ProductDetailsState extends State<ProductDetails>
                 Navigator.pop(context);
 
                 CartService.deleteAllDataFromCart().then((response) {
-                  if (response['response_code'] == 200) {
-                    if (response['response_data'] is Map) {
-                      Common.setCartData(response['response_data']);
-                    } else {
-                      Common.setCartData(null);
-                    }
+                  if (response['response_data'] is Map) {
+                    Common.setCartData(response['response_data']);
                   } else {
-                    showSnackbar("${response['response_data']}");
+                    Common.setCartData(null);
                   }
                 });
               },
@@ -418,19 +345,11 @@ class _ProductDetailsState extends State<ProductDetails>
   orderRating(rating, productID) async {
     var body = {"rate": rating, "description": "", "productId": productID};
     await ProductService.productRating(body).then((onValue) {
-      try {
-        Navigator.pop(context);
-        if (onValue['response_code'] == 200) {
-          setState(() {
-            getProductDetailsLog();
-            getTokenValueMethod();
-          });
-        } else {
-          showSnackbar(onValue['response_data']);
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
-      }
+      Navigator.pop(context);
+      setState(() {
+        getProductDetailsLog();
+        getTokenValueMethod();
+      });
     }).catchError((error) {
       sentryError.reportError(error, null);
     });
@@ -477,7 +396,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                     productDetail['filePath'] == null
                                         ? productDetail['imageUrl']
                                         : Constants.imageUrlPath +
-                                            "tr:dpr-auto,tr:w-1000" +
+                                            "/tr:dpr-auto,tr:w-1000" +
                                             productDetail['filePath'],
                                   ),
                                 ),

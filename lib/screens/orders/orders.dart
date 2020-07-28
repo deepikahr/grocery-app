@@ -34,9 +34,11 @@ class _OrdersState extends State<Orders> {
   bool isOrderListLoading = false,
       isOrderListLoadingSubProductsList = false,
       showRating = false,
-      showblur = false;
-  List subProductsList = List();
-  List orderList;
+      showblur = false,
+      lastApiCall = true;
+  int orderLimit = 10, orderIndex = 0, totalOrders = 1;
+
+  List orderList = [];
   double rating;
   var orderedTime;
   String currency;
@@ -44,38 +46,42 @@ class _OrdersState extends State<Orders> {
       RefreshController(initialRefresh: false);
   @override
   void initState() {
-    getOrderByUserID();
-    super.initState();
-  }
-
-  getOrderByUserID() async {
     if (mounted) {
       setState(() {
         isOrderListLoading = true;
       });
     }
+    getOrderByUserID(orderIndex);
+    super.initState();
+  }
+
+  getOrderByUserID(orderIndex) async {
     await Common.getCurrency().then((value) {
       currency = value;
     });
-    await OrderService.getOrderByUserID().then((onValue) {
-      try {
-        _refreshController.refreshCompleted();
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              orderList = onValue['response_data'];
-              isOrderListLoading = false;
-            });
+    await OrderService.getOrderByUserID(orderIndex, orderLimit).then((onValue) {
+      _refreshController.refreshCompleted();
+      if (mounted) {
+        setState(() {
+          orderList.addAll(onValue['response_data']);
+          totalOrders = onValue["total"];
+          int index = orderList.length;
+
+          if (lastApiCall == true) {
+            orderIndex++;
+            if (index < totalOrders) {
+              getOrderByUserID(orderIndex);
+            } else {
+              if (index == totalOrders) {
+                if (mounted) {
+                  lastApiCall = false;
+                  getOrderByUserID(orderIndex);
+                }
+              }
+            }
           }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            orderList = [];
-            isOrderListLoading = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+          isOrderListLoading = false;
+        });
       }
     }).catchError((error) {
       if (mounted) {
@@ -109,7 +115,14 @@ class _OrdersState extends State<Orders> {
         enablePullUp: false,
         controller: _refreshController,
         onRefresh: () {
-          getOrderByUserID();
+          if (mounted) {
+            setState(() {
+              isOrderListLoading = true;
+              orderList = [];
+              orderIndex = orderList.length;
+              getOrderByUserID(orderIndex);
+            });
+          }
         },
         child: isOrderListLoading
             ? SquareLoader()
@@ -188,7 +201,7 @@ class _OrdersState extends State<Orders> {
                           orderDetails['product']['filePath'] == null
                               ? orderDetails['product']['imageUrl']
                               : Constants.imageUrlPath +
-                                  "tr:dpr-auto,tr:w-500" +
+                                  "/tr:dpr-auto,tr:w-500" +
                                   orderDetails['product']['filePath'],
                         ),
                   fit: BoxFit.cover),
@@ -214,10 +227,10 @@ class _OrdersState extends State<Orders> {
                   maxLines: 1,
                   style: textBarlowRegularrdark(),
                 ),
-                orderDetails['totalProduct'] == "1"
+                orderDetails['totalProduct'] == 1
                     ? Container()
                     : SizedBox(height: 5),
-                orderDetails['totalProduct'] == "1"
+                orderDetails['totalProduct'] == 1
                     ? Container()
                     : Text(
                         MyLocalizations.of(context).getLocalizations("AND") +

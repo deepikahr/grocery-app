@@ -36,10 +36,7 @@ class AllProducts extends StatefulWidget {
 class _AllProductsState extends State<AllProducts> {
   List productsList = [], subCategryByProduct, subCategryList;
   String currency, currentSubCategoryId;
-  bool getTokenValue = false,
-      isLoadingProductsList = false,
-      isSelected = true,
-      isSelectedIndexZero = false;
+  bool getTokenValue = false, isSelected = true, isSelectedIndexZero = false;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   ScrollController controller;
@@ -55,6 +52,7 @@ class _AllProductsState extends State<AllProducts> {
   @override
   void initState() {
     getTokenValueMethod();
+    getSubCatList();
 
     super.initState();
   }
@@ -68,32 +66,17 @@ class _AllProductsState extends State<AllProducts> {
   getSubCatList() async {
     if (mounted) {
       setState(() {
-        isLoadingProductsList = true;
+        isLoadingSubCatProductsList = true;
       });
     }
     await ProductService.getSubCatList().then((onValue) {
-      try {
-        _refreshController.refreshCompleted();
+      _refreshController.refreshCompleted();
 
-        if (onValue['response_code'] == 200) {
-          if (mounted)
-            setState(() {
-              subCategryList = onValue['response_data'];
-            });
-        } else {
-          if (mounted)
-            setState(() {
-              subCategryList = [];
-            });
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            isLoadingSubCatProductsList = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
-      }
+      if (mounted)
+        setState(() {
+          subCategryList = onValue['response_data'];
+          isLoadingSubCatProductsList = false;
+        });
     }).catchError((error) {
       if (mounted) {
         setState(() {
@@ -105,34 +88,26 @@ class _AllProductsState extends State<AllProducts> {
   }
 
   getTokenValueMethod() async {
-    getSubCatList();
     await Common.getCurrency().then((value) {
       currency = value;
     });
     await Common.getToken().then((onValue) {
-      try {
-        if (onValue != null) {
-          if (mounted) {
-            setState(() {
-              getTokenValue = true;
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              getTokenValue = false;
-            });
-          }
+      if (onValue != null) {
+        if (mounted) {
+          setState(() {
+            getTokenValue = true;
+          });
         }
-      } catch (error, stackTrace) {
+      } else {
         if (mounted) {
           setState(() {
             getTokenValue = false;
           });
         }
-        sentryError.reportError(error, stackTrace);
       }
-
+      setState(() {
+        isNewProductsLoading = true;
+      });
       getProductListMethod(productIndex);
     }).catchError((error) {
       if (mounted) {
@@ -145,61 +120,34 @@ class _AllProductsState extends State<AllProducts> {
   }
 
   getProductListMethod(productIndex) async {
-    setState(() {
-      isNewProductsLoading = true;
-    });
-
     await ProductService.getProductListAll(productIndex, productLimt)
         .then((onValue) {
-      try {
-        _refreshController.refreshCompleted();
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              productsList.addAll(onValue['response_data']);
-              totalProduct = onValue["total"];
-              int index = productsList.length;
-              if (lastApiCall == true) {
-                productIndex++;
-                if (index < totalProduct) {
+      _refreshController.refreshCompleted();
+      if (mounted) {
+        setState(() {
+          productsList.addAll(onValue['response_data']);
+          totalProduct = onValue["total"];
+          int index = productsList.length;
+          if (lastApiCall == true) {
+            productIndex++;
+            if (index < totalProduct) {
+              getProductListMethod(index);
+            } else {
+              if (index == totalProduct) {
+                if (mounted) {
+                  lastApiCall = false;
                   getProductListMethod(index);
-                } else {
-                  if (index == totalProduct) {
-                    if (mounted) {
-                      lastApiCall = false;
-                      getProductListMethod(index);
-                    }
-                  }
                 }
               }
-              isLoadingProductsList = false;
-              isNewProductsLoading = false;
-            });
+            }
           }
-        } else {
-          if (mounted) {
-            setState(() {
-              productsList = [];
-              isLoadingProductsList = false;
-              isNewProductsLoading = false;
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            productsList = [];
-            isLoadingProductsList = false;
-            isNewProductsLoading = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+          isNewProductsLoading = false;
+        });
       }
     }).catchError((error) {
       if (mounted) {
         setState(() {
           productsList = [];
-          isLoadingProductsList = false;
           isNewProductsLoading = false;
         });
       }
@@ -214,28 +162,11 @@ class _AllProductsState extends State<AllProducts> {
       });
     }
     await ProductService.getProductToSubCategoryList(catId).then((onValue) {
-      try {
-        if (onValue['response_code'] == 200) {
-          if (mounted)
-            setState(() {
-              subCategryByProduct = onValue['response_data'];
-              isLoadingSubCatProductsList = false;
-            });
-        } else {
-          if (mounted)
-            setState(() {
-              subCategryByProduct = [];
-              isLoadingSubCatProductsList = false;
-            });
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            isLoadingSubCatProductsList = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
-      }
+      if (mounted)
+        setState(() {
+          subCategryByProduct = onValue['response_data'];
+          isLoadingSubCatProductsList = false;
+        });
     }).catchError((error) {
       if (mounted) {
         setState(() {
@@ -288,11 +219,8 @@ class _AllProductsState extends State<AllProducts> {
                 ),
               );
               result.then((value) {
-                if (mounted) {
-                  setState(() {
-                    isLoadingProductsList = true;
-                  });
-                }
+                productsList = [];
+                productIndex = productsList.length;
                 getTokenValueMethod();
               });
             },
@@ -314,7 +242,7 @@ class _AllProductsState extends State<AllProducts> {
           productIndex = productsList.length;
           getTokenValueMethod();
         },
-        child: isLoadingProductsList
+        child: isNewProductsLoading || isLoadingSubCatProductsList
             ? SquareLoader()
             : ListView(children: <Widget>[
                 subCategryList.length > 0
@@ -545,10 +473,6 @@ class _AllProductsState extends State<AllProducts> {
                                                           subCategryByProduct[i]
                                                                   ['variant'][0]
                                                               ['price'],
-                                                      variantStock:
-                                                          subCategryByProduct[i]
-                                                                  ['variant'][0]
-                                                              ['productStock'],
                                                       productData:
                                                           subCategryByProduct[
                                                               i],
@@ -649,11 +573,10 @@ class _AllProductsState extends State<AllProducts> {
                                           result.then((value) {
                                             if (mounted) {
                                               setState(() {
-                                                isLoadingProductsList = true;
+                                                isNewProductsLoading = true;
                                               });
                                             }
                                             productIndex = 0;
-                                            // totalIndex = 1;
                                             productsList = [];
                                             getTokenValueMethod();
                                           });
@@ -664,9 +587,6 @@ class _AllProductsState extends State<AllProducts> {
                                               currency: currency,
                                               price: productsList[i]['variant']
                                                   [0]['price'],
-                                              variantStock: productsList[i]
-                                                      ['variant'][0]
-                                                  ['productStock'],
                                               productData: productsList[i],
                                               variantList: productsList[i]
                                                   ['variant'],
@@ -742,7 +662,7 @@ class _AllProductsState extends State<AllProducts> {
             )
           : InkWell(
               onTap: () {
-                Navigator.push(
+                var result = Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (BuildContext context) => Home(
@@ -752,6 +672,11 @@ class _AllProductsState extends State<AllProducts> {
                     ),
                   ),
                 );
+                result.then((value) {
+                  productsList = [];
+                  productIndex = productsList.length;
+                  getTokenValueMethod();
+                });
               },
               child: Container(
                 height: 55.0,

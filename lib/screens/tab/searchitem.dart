@@ -87,33 +87,11 @@ class _SearchItemState extends State<SearchItem> {
         });
       }
       ProductService.getSearchList(query).then((onValue) {
-        try {
-          if (onValue != null && onValue['response_data'] is List) {
-            if (mounted) {
-              setState(() {
-                searchresult = onValue['response_data'];
-              });
-            }
-          } else {
-            if (mounted) {
-              setState(() {
-                searchresult = [];
-              });
-            }
-          }
-          if (mounted) {
-            setState(() {
-              isSearching = false;
-            });
-          }
-        } catch (error, stackTrace) {
-          searchresult = [];
-          if (mounted) {
-            setState(() {
-              isSearching = false;
-            });
-          }
-          sentryError.reportError(error, stackTrace);
+        if (mounted) {
+          setState(() {
+            searchresult = onValue['response_data'];
+            isSearching = false;
+          });
         }
       }).catchError((error) {
         searchresult = [];
@@ -293,8 +271,6 @@ class _SearchItemState extends State<SearchItem> {
                                           currency: currency,
                                           price: searchresult[index]['variant']
                                               [0]['price'],
-                                          variantStock: searchresult[index]
-                                              ['variant'][0]['productStock'],
                                           productData: searchresult[index],
                                           variantList: searchresult[index]
                                               ['variant'],
@@ -398,7 +374,7 @@ class _SearchItemState extends State<SearchItem> {
           ? Container(height: 1)
           : InkWell(
               onTap: () {
-                Navigator.push(
+                var result = Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (BuildContext context) => Home(
@@ -408,6 +384,14 @@ class _SearchItemState extends State<SearchItem> {
                     ),
                   ),
                 );
+                result.then((value) {
+                  if (searchTerm == null) {
+                    getCurrency();
+                  } else {
+                    searchresult = [];
+                    _searchForProducts(searchTerm);
+                  }
+                });
               },
               child: Container(
                 height: 55.0,
