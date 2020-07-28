@@ -619,7 +619,7 @@ class _SubCategoriesState extends State<SubCategories> {
             )
           : InkWell(
               onTap: () {
-                Navigator.push(
+                var result = Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (BuildContext context) => Home(
@@ -629,6 +629,14 @@ class _SubCategoriesState extends State<SubCategories> {
                     ),
                   ),
                 );
+                result.then((value) {
+                  if (mounted) {
+                    setState(() {
+                      isLoadingSubProductsList = true;
+                    });
+                  }
+                  getProductToCategory(widget.catId);
+                });
               },
               child: Container(
                 height: 55.0,

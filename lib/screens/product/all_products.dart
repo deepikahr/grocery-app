@@ -288,11 +288,8 @@ class _AllProductsState extends State<AllProducts> {
                 ),
               );
               result.then((value) {
-                if (mounted) {
-                  setState(() {
-                    isLoadingProductsList = true;
-                  });
-                }
+                productsList = [];
+                productIndex = productsList.length;
                 getTokenValueMethod();
               });
             },
@@ -742,7 +739,7 @@ class _AllProductsState extends State<AllProducts> {
             )
           : InkWell(
               onTap: () {
-                Navigator.push(
+                var result = Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (BuildContext context) => Home(
@@ -752,6 +749,11 @@ class _AllProductsState extends State<AllProducts> {
                     ),
                   ),
                 );
+                result.then((value) {
+                  productsList = [];
+                  productIndex = productsList.length;
+                  getTokenValueMethod();
+                });
               },
               child: Container(
                 height: 55.0,

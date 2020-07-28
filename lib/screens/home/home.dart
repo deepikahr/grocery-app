@@ -160,8 +160,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    tabController.dispose();
-
     if (tabController != null) tabController.dispose();
     super.dispose();
   }

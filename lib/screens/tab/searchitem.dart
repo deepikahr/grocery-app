@@ -398,7 +398,7 @@ class _SearchItemState extends State<SearchItem> {
           ? Container(height: 1)
           : InkWell(
               onTap: () {
-                Navigator.push(
+                var result = Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (BuildContext context) => Home(
@@ -408,6 +408,14 @@ class _SearchItemState extends State<SearchItem> {
                     ),
                   ),
                 );
+                result.then((value) {
+                  if (searchTerm == null) {
+                    getCurrency();
+                  } else {
+                    searchresult = [];
+                    _searchForProducts(searchTerm);
+                  }
+                });
               },
               child: Container(
                 height: 55.0,

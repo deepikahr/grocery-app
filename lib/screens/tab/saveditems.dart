@@ -264,7 +264,7 @@ class _SavedItemsState extends State<SavedItems> {
           ? Container(height: 1)
           : InkWell(
               onTap: () {
-                Navigator.push(
+                var result = Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (BuildContext context) => Home(
@@ -274,6 +274,7 @@ class _SavedItemsState extends State<SavedItems> {
                     ),
                   ),
                 );
+                result.then((value) => getToken());
               },
               child: Container(
                 height: 55.0,

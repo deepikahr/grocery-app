@@ -51,8 +51,12 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
     }
     if (widget.productData['isDealAvailable'] != null &&
         widget.productData['isDealAvailable'] == true) {
-      dealPercentage =
-          double.parse(widget.productData['dealPercent'].toStringAsFixed(1));
+      if (widget.productData['dealPercent'] != null) {
+        dealPercentage =
+            double.parse(widget.productData['dealPercent'].toStringAsFixed(1));
+      } else {
+        dealPercentage = null;
+      }
     } else {
       dealPercentage = null;
     }
