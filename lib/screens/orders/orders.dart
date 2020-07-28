@@ -227,14 +227,14 @@ class _OrdersState extends State<Orders> {
                   maxLines: 1,
                   style: textBarlowRegularrdark(),
                 ),
-                orderDetails['totalOrders'] == "1"
+                orderDetails['totalProduct'] == 1
                     ? Container()
                     : SizedBox(height: 5),
-                orderDetails['totalOrders'] == "1"
+                orderDetails['totalProduct'] == 1
                     ? Container()
                     : Text(
                         MyLocalizations.of(context).getLocalizations("AND") +
-                            ' ${orderDetails['totalOrders'].toString()} ' +
+                            ' ${orderDetails['totalProduct'].toString()} ' +
                             MyLocalizations.of(context)
                                 .getLocalizations("MORE_ITEMS"),
                         style: textSMBarlowRegularrBlack(),

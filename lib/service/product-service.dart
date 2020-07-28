@@ -57,6 +57,7 @@ class ProductService {
     return client
         .get(Constants.apiUrl + "/products/category/$id")
         .then((response) {
+      print("/products/category/$id");
       return json.decode(response.body);
     });
   }
