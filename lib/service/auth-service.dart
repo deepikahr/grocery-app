@@ -16,10 +16,8 @@ class LoginService {
   }
 
   // user login
-  static Future<Map<String, dynamic>> signIn(body) async {
-    final response = await client.post(Constants.apiUrl + "users/login",
-        body: json.encode(body));
-    return json.decode(response.body);
+  static Future signIn(body) async {
+    return client.post(Constants.apiUrl + "users/login",body: json.encode(body)).then((response) { return json.decode(response.body); });
   }
 
   // verify email
