@@ -46,33 +46,15 @@ class _SavedItemsState extends State<SavedItems> {
       });
     }
     await FavouriteService.getFavList().then((onValue) {
-      try {
-        if (mounted) {
-          setState(() {
-            isFavListLoading = false;
-          });
-        }
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              favProductList = onValue['response_data'];
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              favProductList = [];
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            isFavListLoading = false;
-            favProductList = [];
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      if (mounted) {
+        setState(() {
+          isFavListLoading = false;
+        });
+      }
+      if (mounted) {
+        setState(() {
+          favProductList = onValue['response_data'];
+        });
       }
     }).catchError((error) {
       if (mounted) {
@@ -95,29 +77,20 @@ class _SavedItemsState extends State<SavedItems> {
       currency = value;
     });
     await Common.getToken().then((onValue) {
-      try {
-        if (onValue != null) {
-          if (mounted) {
-            setState(() {
-              isGetTokenLoading = false;
-              token = onValue;
-              getFavListMethod();
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              isGetTokenLoading = false;
-            });
-          }
+      if (onValue != null) {
+        if (mounted) {
+          setState(() {
+            isGetTokenLoading = false;
+            token = onValue;
+            getFavListMethod();
+          });
         }
-      } catch (error, stackTrace) {
+      } else {
         if (mounted) {
           setState(() {
             isGetTokenLoading = false;
           });
         }
-        sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
       if (mounted) {
@@ -153,7 +126,7 @@ class _SavedItemsState extends State<SavedItems> {
               ? null
               : GFAppBar(
                   title: Text(
-                    MyLocalizations.of(context).savedItems,
+                    MyLocalizations.of(context).getLocalizations("SAVED_ITEMS"),
                     style: textbarlowSemiBoldBlack(),
                   ),
                   centerTitle: true,
@@ -188,9 +161,8 @@ class _SavedItemsState extends State<SavedItems> {
                                   crossAxisSpacing: 16,
                                   mainAxisSpacing: 16),
                           itemBuilder: (BuildContext context, int i) {
-                            if (favProductList[i]['product']['averageRating'] ==
-                                null) {
-                              favProductList[i]['product']['averageRating'] = 0;
+                            if (favProductList[i]['averageRating'] == null) {
+                              favProductList[i]['averageRating'] = 0;
                             }
 
                             return InkWell(
@@ -201,8 +173,7 @@ class _SavedItemsState extends State<SavedItems> {
                                     builder: (context) => ProductDetails(
                                       locale: widget.locale,
                                       localizedValues: widget.localizedValues,
-                                      productID: favProductList[i]['product']
-                                          ['_id'],
+                                      productID: favProductList[i]['_id'],
                                     ),
                                   ),
                                 );
@@ -213,39 +184,12 @@ class _SavedItemsState extends State<SavedItems> {
                               child: Stack(
                                 children: <Widget>[
                                   SubCategoryProductCard(
-                                      image: favProductList[i]['product']['filePath'] == null
-                                          ? favProductList[i]['product']
-                                              ['imageUrl']
-                                          : favProductList[i]['product']
-                                              ['filePath'],
-                                      isPath: favProductList[i]['product']['filePath'] == null
-                                          ? false
-                                          : true,
-                                      title: favProductList[i]['product']
-                                          ['title'],
-                                      currency: currency,
-                                      category: favProductList[i]['product']
-                                          ['category'],
-                                      price: favProductList[i]['product']
-                                          ['variant'][0]['price'],
-                                      dealPercentage: favProductList[i]
-                                              ['product']['isDealAvailable']
-                                          ? double.parse(favProductList[i]
-                                                  ['product']['delaPercent']
-                                              .toStringAsFixed(1))
-                                          : null,
-                                      unit: favProductList[i]['product']
-                                          ['variant'][0]['unit'],
-                                      rating: (favProductList[i]['product']['averageRating'] == null || favProductList[i]['product']['averageRating'] == '0.0' || favProductList[i]['product']['averageRating'] == 0.0) ? null : favProductList[i]['product']['averageRating'].toStringAsFixed(1),
-                                      buttonName: MyLocalizations.of(context).add,
-                                      cartAdded: favProductList[i]['cartAdded'] ?? false,
-                                      cartId: favProductList[i]['cartId'],
-                                      productQuantity: favProductList[i]['cartAddedQuantity'] ?? 0,
-                                      variantStock: favProductList[i]['product']['variant'][0]['productstock'],
-                                      token: true,
-                                      productList: favProductList[i]['product'],
-                                      variantList: favProductList[i]['product']['variant'],
-                                      subCategoryId: favProductList[i]['subcategory']),
+                                    currency: currency,
+                                    price: favProductList[i]['variant'][0]
+                                        ['price'],
+                                    productData: favProductList[i],
+                                    variantList: favProductList[i]['variant'],
+                                  ),
                                   favProductList[i]['isDealAvailable'] == true
                                       ? Positioned(
                                           child: Stack(
@@ -266,11 +210,12 @@ class _SavedItemsState extends State<SavedItems> {
                                               Text(
                                                 " " +
                                                     favProductList[i]
-                                                            ['delaPercent']
+                                                            ['dealPercent']
                                                         .toString() +
                                                     "% " +
                                                     MyLocalizations.of(context)
-                                                        .off,
+                                                        .getLocalizations(
+                                                            "OFF"),
                                                 style: hintSfboldwhitemed(),
                                                 textAlign: TextAlign.center,
                                               )
@@ -287,12 +232,10 @@ class _SavedItemsState extends State<SavedItems> {
                           child: Image.asset('lib/assets/images/no-orders.png'),
                         ),
       bottomNavigationBar: cartData == null
-          ? Container(
-              height: 1
-            )
+          ? Container(height: 1)
           : InkWell(
               onTap: () {
-                Navigator.push(
+                var result = Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (BuildContext context) => Home(
@@ -302,6 +245,7 @@ class _SavedItemsState extends State<SavedItems> {
                     ),
                   ),
                 );
+                result.then((value) => getToken());
               },
               child: Container(
                 height: 55.0,
@@ -323,8 +267,9 @@ class _SavedItemsState extends State<SavedItems> {
                             children: <Widget>[
                               SizedBox(height: 7),
                               new Text(
-                                '(${cartData['cart'].length})  ' +
-                                    MyLocalizations.of(context).items,
+                                '(${cartData['products'].length})  ' +
+                                    MyLocalizations.of(context)
+                                        .getLocalizations("ITEMS"),
                                 style: textBarlowRegularWhite(),
                               ),
                               new Text(
@@ -337,7 +282,8 @@ class _SavedItemsState extends State<SavedItems> {
                         Row(
                           children: <Widget>[
                             new Text(
-                              MyLocalizations.of(context).goToCart,
+                              MyLocalizations.of(context)
+                                  .getLocalizations("GO_TO_CART"),
                               style: textBarlowRegularBlack(),
                             ),
                             SizedBox(width: 4),

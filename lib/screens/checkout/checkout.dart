@@ -10,13 +10,11 @@ import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/coupon-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/service/payment-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/address-service.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
-import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:dotted_border/dotted_border.dart';
 import '../../service/constants.dart';
@@ -25,18 +23,10 @@ import 'package:flutter_map_picker/flutter_map_picker.dart';
 SentryError sentryError = new SentryError();
 
 class Checkout extends StatefulWidget {
-  final Map<String, dynamic> cartItem;
-  final String buy, quantity, locale, id;
+  final locale, id;
   final Map localizedValues;
 
-  Checkout(
-      {Key key,
-      this.id,
-      this.cartItem,
-      this.buy,
-      this.quantity,
-      this.locale,
-      this.localizedValues})
+  Checkout({Key key, this.id, this.locale, this.localizedValues})
       : super(key: key);
   @override
   _CheckoutState createState() => _CheckoutState();
@@ -51,22 +41,19 @@ class _CheckoutState extends State<Checkout> {
   Map userInfo, address, cartItem, locationInfo;
 
   List addressList, deliverySlotList;
-  int selectedRadio, groupValue, groupValue1, _selectedIndex = 0;
-  String selectedDeliveryType, locationNotFound, name, currency, couponCode;
-
-  var selectedAddress, selectedTime, selectedDate;
+  int selecteAddressValue, dateSelectedValue = 0, selectSlot;
+  String selectedDeliveryType, locationNotFound, currency, couponCode;
+  var selectedAddress;
   bool isLoading = false,
       addressLoading = false,
       deliverySlotsLoading = false,
-      isPlaceOrderLoading = false,
       isCouponLoading = false,
       isSelectSlot = false,
       couponApplied = false,
       deliverySlot = false,
       isLoadingCart = false,
       isDeliveryChargeLoading = false,
-      isDeliveryChargeFree = false,
-      _serviceEnabled;
+      isDeliveryChargeFree = false;
   LocationData currentLocation;
   Location _location = new Location();
   RefreshController _refreshController =
@@ -75,37 +62,21 @@ class _CheckoutState extends State<Checkout> {
   PermissionStatus _permissionGranted;
   @override
   void initState() {
-    cartItem = widget.cartItem;
+    Common.getCurrency().then((value) {
+      currency = value;
+    });
     super.initState();
     getAdminLocationInfo();
-    getUserInfo();
     getDeliverySlot();
     getCartItems();
   }
 
   getAdminLocationInfo() async {
     await LoginService.getLocationformation().then((onValue) {
-      try {
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              locationInfo = onValue['response_data'];
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              locationInfo = null;
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            locationInfo = null;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      if (mounted) {
+        setState(() {
+          locationInfo = onValue['response_data'];
+        });
       }
     }).catchError((error) {
       if (mounted) {
@@ -117,16 +88,6 @@ class _CheckoutState extends State<Checkout> {
     });
   }
 
-  proceed() {
-    if (mounted) {
-      setState(() {
-        name = '${userInfo['firstName']}';
-      });
-    }
-
-    placeOrder();
-  }
-
   getCartItems() async {
     if (mounted) {
       setState(() {
@@ -136,32 +97,20 @@ class _CheckoutState extends State<Checkout> {
     await CartService.getProductToCart().then((onValue) {
       getAddress();
       _refreshController.refreshCompleted();
-      try {
-        if (onValue['response_code'] == 200 &&
-            onValue['response_data'] is Map) {
-          if (mounted) {
-            setState(() {
-              cartItem = onValue['response_data'];
-              Common.setCartData(onValue['response_data']);
-              isLoadingCart = false;
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              cartItem = null;
-              Common.setCartData(null);
-              isLoadingCart = false;
-            });
-          }
-        }
-      } catch (error, stackTrace) {
+      if (onValue['response_data'] is Map && mounted) {
+        setState(() {
+          cartItem = onValue['response_data'];
+          Common.setCartData(onValue['response_data']);
+          isLoadingCart = false;
+        });
+      } else {
         if (mounted) {
           setState(() {
+            cartItem = null;
+            Common.setCartData(null);
             isLoadingCart = false;
           });
         }
-        sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
       if (mounted) {
@@ -176,107 +125,45 @@ class _CheckoutState extends State<Checkout> {
   addressRadioValueChanged(int value) async {
     if (mounted) {
       setState(() {
-        groupValue1 = value;
+        selecteAddressValue = value;
         selectedAddress = addressList[value];
         isDeliveryChargeLoading = true;
       });
-      var body = {
-        "latitude": selectedAddress['location']['lat'],
-        "longitude": selectedAddress['location']['long'],
-        "cartId": widget.id,
-        "deliveryAddress": selectedAddress['_id'].toString()
-      };
-      await PaymentService.getDeliveryCharges(body).then((value) {
-        if (value['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              cartItem['deliveryCharges'] =
-                  value['response_data']['deliveryDetails']['deliveryCharges'];
-              cartItem['grandTotal'] =
-                  value['response_data']['cartData']['grandTotal'];
-              cartItem['deliveryAddress'] =
-                  value['response_data']['cartData']['deliveryAddress'];
-              if (cartItem['deliveryCharges'] == 0 &&
-                  cartItem['deliveryAddress'] != null) {
-                setState(() {
-                  isDeliveryChargeFree = true;
-                });
-              } else {
-                setState(() {
-                  isDeliveryChargeFree = false;
-                });
-              }
-              isDeliveryChargeLoading = false;
-            });
-          }
-        } else {
-          showSnackbar("${value['response_data']}");
+      var body = {"deliveryAddress": selectedAddress['_id'].toString()};
+      await CartService.getDeliveryChargesAndSaveAddress(body).then((value) {
+        if (mounted) {
+          setState(() {
+            cartItem['deliveryCharges'] =
+                value['response_data']['deliveryCharges'];
+            cartItem['grandTotal'] = value['response_data']['grandTotal'];
+            cartItem['deliveryAddress'] =
+                value['response_data']['deliveryAddress'];
+            if (cartItem['deliveryCharges'] == 0 &&
+                cartItem['deliveryAddress'] != null) {
+              setState(() {
+                isDeliveryChargeFree = true;
+              });
+            } else {
+              setState(() {
+                isDeliveryChargeFree = false;
+              });
+            }
+            isDeliveryChargeLoading = false;
+          });
         }
+      }).catchError((error) {
+        if (mounted) {
+          setState(() {
+            selecteAddressValue = null;
+            selectedAddress = null;
+            isDeliveryChargeFree = false;
+            isDeliveryChargeLoading = true;
+          });
+        }
+        sentryError.reportError(error, null);
       });
     }
     return value;
-  }
-
-  setSelectedRadio(int val) async {
-    if (mounted) {
-      setState(() {
-        selectedRadio = val;
-        selectedTime = deliverySlotList[0]['timeSchedule'][val]['slot'];
-      });
-    }
-  }
-
-  deliveryTypeRadioValue(val) async {
-    if (mounted) {
-      setState(() {
-        groupValue = val;
-        selectedDeliveryType = val;
-      });
-    }
-    return val;
-  }
-
-  getUserInfo() async {
-    if (mounted) {
-      setState(() {
-        isLoading = true;
-      });
-    }
-    await Common.getCurrency().then((value) {
-      currency = value;
-    });
-    await LoginService.getUserInfo().then((onValue) {
-      _refreshController.refreshCompleted();
-
-      try {
-        if (mounted) {
-          setState(() {
-            isLoading = false;
-          });
-        }
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              userInfo = onValue['response_data']['userInfo'];
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            isLoading = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          isLoading = false;
-        });
-      }
-      sentryError.reportError(error, null);
-    });
   }
 
   getDeliverySlot() async {
@@ -286,37 +173,14 @@ class _CheckoutState extends State<Checkout> {
       });
     }
 
-    await AddressService.deliverySlot(
-            DateFormat('HH:mm').format(DateTime.now()),
-            DateTime.now().millisecondsSinceEpoch)
-        .then((onValue) {
+    await AddressService.deliverySlot().then((onValue) {
       _refreshController.refreshCompleted();
-      try {
-        if (mounted) {
-          setState(() {
-            deliverySlotsLoading = false;
-          });
-        }
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              deliverySlotList = onValue['response_data'];
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              deliverySlotList = [];
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            deliverySlotsLoading = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+
+      if (mounted) {
+        setState(() {
+          deliverySlotList = onValue['response_data'];
+          deliverySlotsLoading = false;
+        });
       }
     }).catchError((error) {
       if (mounted) {
@@ -328,6 +192,23 @@ class _CheckoutState extends State<Checkout> {
     });
   }
 
+  selectedSlotSelected(val) async {
+    if (mounted) {
+      setState(() {
+        selectSlot = val;
+      });
+    }
+  }
+
+  dateSelectMethod(int index) {
+    if (mounted) {
+      setState(() {
+        selectSlot = null;
+        dateSelectedValue = index;
+      });
+    }
+  }
+
   getAddress() async {
     if (mounted) {
       setState(() {
@@ -336,40 +217,22 @@ class _CheckoutState extends State<Checkout> {
     }
     await AddressService.getAddress().then((onValue) {
       _refreshController.refreshCompleted();
-      try {
-        if (mounted) {
-          setState(() {
-            addressLoading = false;
-          });
-        }
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              addressList = onValue['response_data'];
-              if (addressList.length > 0 &&
-                  cartItem['deliveryAddress'] != null) {
-                for (int i = 0; i < addressList.length; i++) {
-                  if (addressList[i]['_id'] == cartItem['deliveryAddress']) {
-                    addressRadioValueChanged(i);
-                  }
-                }
+      if (mounted) {
+        setState(() {
+          addressLoading = false;
+        });
+      }
+      if (mounted) {
+        setState(() {
+          addressList = onValue['response_data'];
+          if (addressList.length > 0 && cartItem['deliveryAddress'] != null) {
+            for (int i = 0; i < addressList.length; i++) {
+              if (addressList[i]['_id'] == cartItem['deliveryAddress']) {
+                addressRadioValueChanged(i);
               }
-            });
+            }
           }
-        } else {
-          if (mounted) {
-            setState(() {
-              addressList = [];
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            addressLoading = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+        });
       }
     }).catchError((error) {
       if (mounted) {
@@ -383,102 +246,71 @@ class _CheckoutState extends State<Checkout> {
 
   deleteAddress(body) async {
     await AddressService.deleteAddress(body).then((onValue) {
-      try {
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              getAddress();
-              addressList = addressList;
-              showSnackbar(onValue['response_data']);
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
+      if (mounted) {
+        setState(() {
+          getAddress();
+          addressList = addressList;
+          showSnackbar(onValue['response_data']);
+        });
       }
     }).catchError((error) {
       sentryError.reportError(error, null);
     });
   }
 
-// Changes the selected value on 'onChanged' click on each radio button
-  _onSelected(int index) {
-    selectedTime = null;
-    selectedRadio = null;
-    if (mounted) {
-      setState(() => _selectedIndex = index);
-    }
-    selectedDate = deliverySlotList[index]['date'];
-  }
-
   placeOrder() async {
-    if (selectedDate == null) {
-      selectedDate = deliverySlotList[0]['date'];
-    }
-    if (groupValue1 == null) {
-      showSnackbar(MyLocalizations.of(context).pleaseselectaddressfirst);
-    } else if (selectedTime == null) {
-      showSnackbar(MyLocalizations.of(context).pleaseselecttimeslotfirst);
+    if (selecteAddressValue == null) {
+      showSnackbar(
+          MyLocalizations.of(context).getLocalizations("SELECT_ADDESS_MSG"));
+    } else if (selectSlot == null) {
+      showSnackbar(
+          MyLocalizations.of(context).getLocalizations("SELECT_TIME_MSG"));
     } else {
       Map<String, dynamic> data = {
-        "deliveryType": "Home_Delivery",
-        "paymentType": 'COD',
+        "deliverySlotId": deliverySlotList[dateSelectedValue]['timings']
+            [selectSlot]['_id'],
+        "orderFrom": "USER_APP"
       };
-      data['deliveryAddress'] = selectedAddress['_id'].toString();
-      data['deliveryDate'] = selectedDate.toString();
-      data['deliveryTime'] = selectedTime.toString();
-      data['cart'] = widget.id;
-      var body = {
-        "latitude": selectedAddress['location']['lat'],
-        "longitude": selectedAddress['location']['long'],
-        "cartId": widget.id,
-        "deliveryAddress": selectedAddress['_id'].toString()
-      };
+      var result = Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Payment(
+              locale: widget.locale,
+              localizedValues: widget.localizedValues,
+              data: data,
+              cartItems: cartItem,
+              locationInfo: locationInfo),
+        ),
+      );
+      result.then((value) {
+        getCartItems();
+      });
+    }
+  }
+
+  couponCodeApply() async {
+    if (!_formKey.currentState.validate()) {
+      return;
+    } else {
+      _formKey.currentState.save();
       if (mounted) {
         setState(() {
-          isPlaceOrderLoading = true;
+          isCouponLoading = true;
         });
       }
-      PaymentService.getDeliveryCharges(body).then((value) {
-        try {
-          if (mounted) {
-            setState(() {
-              isPlaceOrderLoading = false;
-            });
-          }
-          if (value['response_code'] == 200) {
-            var result = Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Payment(
-                  locale: widget.locale,
-                  localizedValues: widget.localizedValues,
-                  data: data,
-                  type: widget.buy,
-                  grandTotals: value['response_data']['cartData']['grandTotal'],
-                  deliveryCharges: value['response_data']['deliveryDetails']
-                      ['deliveryCharges'],
-                ),
-              ),
-            );
-            result.then((value) {
-              getCartItems();
-            });
-          } else {
-            showSnackbar("${value['response_data']}");
-          }
-        } catch (error, stackTrace) {
-          if (mounted) {
-            setState(() {
-              isPlaceOrderLoading = false;
-            });
-          }
-          sentryError.reportError(error, stackTrace);
+      await CouponService.applyCouponsCode(couponCode).then((onValue) {
+        if (mounted) {
+          setState(() {
+            cartItem = onValue['response_data'];
+            couponApplied = true;
+            isCouponLoading = false;
+          });
         }
       }).catchError((error) {
         if (mounted) {
           setState(() {
-            isPlaceOrderLoading = false;
+            isCouponLoading = false;
+            couponApplied = false;
           });
         }
         sentryError.reportError(error, null);
@@ -486,89 +318,18 @@ class _CheckoutState extends State<Checkout> {
     }
   }
 
-  couponCodeApply(couponName, cartId) {
-    if (!_formKey.currentState.validate()) {
-      return;
-    } else {
-      _formKey.currentState.save();
-      updateCoupons(couponCode, cartId);
-    }
-  }
-
-  updateCoupons(data, cartId) async {
+  removeCoupons(couponCode) async {
     if (mounted) {
       setState(() {
         isCouponLoading = true;
       });
     }
-    await CouponService.applyCouponsCode(cartId, data).then((onValue) {
-      try {
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              cartItem = onValue['response_data'];
-              couponApplied = true;
-            });
-          }
-        } else if (onValue['response_code'] == 400) {
-          showSnackbar('${onValue['response_data']}');
-        } else {
-          showSnackbar('${onValue['response_data']}');
-        }
-        if (mounted) {
-          setState(() {
-            isCouponLoading = false;
-          });
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            isCouponLoading = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
+    await CouponService.removeCoupon(couponCode).then((onValue) {
       if (mounted) {
         setState(() {
+          cartItem = onValue['response_data'];
           isCouponLoading = false;
         });
-      }
-      sentryError.reportError(error, null);
-    });
-  }
-
-  removeCoupons(cartId) async {
-    if (mounted) {
-      setState(() {
-        isCouponLoading = true;
-      });
-    }
-    await CouponService.removeCoupon(cartId).then((onValue) {
-      try {
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              cartItem = onValue['response_data'];
-            });
-          }
-        } else if (onValue['response_code'] == 400) {
-          showSnackbar('${onValue['response_data']}');
-        } else {
-          showSnackbar('${onValue['response_data']}');
-        }
-        if (mounted) {
-          setState(() {
-            isCouponLoading = false;
-          });
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            isCouponLoading = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
       if (mounted) {
@@ -625,7 +386,8 @@ class _CheckoutState extends State<Checkout> {
                                 height: 30.0,
                                 decoration: BoxDecoration(),
                                 child: Text(
-                                  MyLocalizations.of(context).ok,
+                                  MyLocalizations.of(context)
+                                      .getLocalizations("OK"),
                                   style: hintSfLightbig(),
                                 ),
                               ),
@@ -649,7 +411,7 @@ class _CheckoutState extends State<Checkout> {
         context,
         MaterialPageRoute(
             builder: (context) => PlacePickerScreen(
-                  googlePlacesApiKey: Constants.GOOGLE_API_KEY,
+                  googlePlacesApiKey: Constants.googleMapApiKey,
                   initialPosition: LatLng(locationlatlong['latitude'],
                       locationlatlong['longitude']),
                   mainColor: primary,
@@ -683,7 +445,7 @@ class _CheckoutState extends State<Checkout> {
       key: _scaffoldKey,
       appBar: GFAppBar(
         title: Text(
-          MyLocalizations.of(context).checkout,
+          MyLocalizations.of(context).getLocalizations("CHEKCOUT"),
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -697,7 +459,6 @@ class _CheckoutState extends State<Checkout> {
         controller: _refreshController,
         onRefresh: () {
           getAdminLocationInfo();
-          getUserInfo();
           getDeliverySlot();
           getCartItems();
         },
@@ -723,7 +484,9 @@ class _CheckoutState extends State<Checkout> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text(MyLocalizations.of(context).cartsummary,
+                                  Text(
+                                      MyLocalizations.of(context)
+                                          .getLocalizations("CART_SUMMARY"),
                                       style: textBarlowSemiBoldBlackbigg()),
                                   SizedBox(height: 10),
                                   Row(
@@ -731,9 +494,11 @@ class _CheckoutState extends State<Checkout> {
                                         MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
                                       Text(
-                                        MyLocalizations.of(context).subTotal +
-                                            ' ( ${widget.quantity} ' +
-                                            MyLocalizations.of(context).items +
+                                        MyLocalizations.of(context)
+                                                .getLocalizations("SUB_TOTAL") +
+                                            ' ( ${cartItem['products'].length} ' +
+                                            MyLocalizations.of(context)
+                                                .getLocalizations("ITEMS") +
                                             ')',
                                         style: textBarlowRegularBlack(),
                                       ),
@@ -773,14 +538,16 @@ class _CheckoutState extends State<Checkout> {
                                                     ? Text(
                                                         MyLocalizations.of(
                                                                 context)
-                                                            .tax,
+                                                            .getLocalizations(
+                                                                "TAX"),
                                                         style:
                                                             textBarlowRegularBlack(),
                                                       )
                                                     : Text(
                                                         MyLocalizations.of(
                                                                     context)
-                                                                .tax +
+                                                                .getLocalizations(
+                                                                    "TAX") +
                                                             " (" +
                                                             cartItem['taxInfo']
                                                                 ['taxName'] +
@@ -816,7 +583,7 @@ class _CheckoutState extends State<Checkout> {
                                   Form(
                                     key: _formKey,
                                     child: Container(
-                                      child: cartItem['couponInfo'] != null
+                                      child: cartItem['couponCode'] != null
                                           ? Column(
                                               children: <Widget>[
                                                 Row(
@@ -827,9 +594,10 @@ class _CheckoutState extends State<Checkout> {
                                                     Text(
                                                       MyLocalizations.of(
                                                                   context)
-                                                              .couponApplied +
+                                                              .getLocalizations(
+                                                                  "COUPON_APPLIED") +
                                                           " (" +
-                                                          "${cartItem['couponInfo']['couponCode']}"
+                                                          "${cartItem['couponCode']}"
                                                               ")",
                                                       style:
                                                           textBarlowRegularBlack(),
@@ -844,7 +612,7 @@ class _CheckoutState extends State<Checkout> {
                                                                 onTap: () {
                                                                   removeCoupons(
                                                                       cartItem[
-                                                                          '_id']);
+                                                                          'couponCode']);
                                                                 },
                                                                 child: Icon(Icons
                                                                     .delete),
@@ -862,7 +630,8 @@ class _CheckoutState extends State<Checkout> {
                                                     Text(
                                                       MyLocalizations.of(
                                                               context)
-                                                          .discount,
+                                                          .getLocalizations(
+                                                              "DISCOUNT"),
                                                       style:
                                                           textBarlowRegularBlack(),
                                                     ),
@@ -876,7 +645,7 @@ class _CheckoutState extends State<Checkout> {
                                                               textbarlowBoldsmBlack(),
                                                         ),
                                                         Text(
-                                                          '${cartItem['couponInfo']['couponDiscountAmount'].toDouble().toStringAsFixed(2)}',
+                                                          '${cartItem['couponAmount'].toDouble().toStringAsFixed(2)}',
                                                           style:
                                                               textbarlowBoldsmBlack(),
                                                         )
@@ -912,10 +681,10 @@ class _CheckoutState extends State<Checkout> {
                                                         TextCapitalization
                                                             .words,
                                                     decoration: InputDecoration(
-                                                        hintText:
-                                                            MyLocalizations.of(
-                                                                    context)
-                                                                .enterCouponCode,
+                                                        hintText: MyLocalizations
+                                                                .of(context)
+                                                            .getLocalizations(
+                                                                "ENTER_COUPON_CODE"),
                                                         hintStyle:
                                                             textBarlowRegularBlacklight(),
                                                         labelStyle: TextStyle(
@@ -928,7 +697,8 @@ class _CheckoutState extends State<Checkout> {
                                                       if (value.isEmpty) {
                                                         return MyLocalizations
                                                                 .of(context)
-                                                            .enterCouponCode;
+                                                            .getLocalizations(
+                                                                "ENTER_COUPON_CODE");
                                                       } else {
                                                         return null;
                                                       }
@@ -945,9 +715,7 @@ class _CheckoutState extends State<Checkout> {
                                                   fit: FlexFit.tight,
                                                   child: InkWell(
                                                     onTap: () {
-                                                      couponCodeApply(
-                                                          couponCode,
-                                                          cartItem['_id']);
+                                                      couponCodeApply();
                                                     },
                                                     child: Padding(
                                                       padding:
@@ -968,7 +736,7 @@ class _CheckoutState extends State<Checkout> {
                                                                 ? SquareLoader()
                                                                 : Text(
                                                                     MyLocalizations.of(context)
-                                                                            .apply +
+                                                                            .getLocalizations("APPLY") +
                                                                         " ",
                                                                     style:
                                                                         textBarlowRegularBlack(),
@@ -997,7 +765,8 @@ class _CheckoutState extends State<Checkout> {
                                           children: <Widget>[
                                             Text(
                                               MyLocalizations.of(context)
-                                                  .deliveryCharges,
+                                                  .getLocalizations(
+                                                      "DELIVERY_CHARGES"),
                                               style: textBarlowRegularBlack(),
                                             ),
                                             Row(
@@ -1006,7 +775,7 @@ class _CheckoutState extends State<Checkout> {
                                               children: <Widget>[
                                                 Text(
                                                   MyLocalizations.of(context)
-                                                      .free,
+                                                      .getLocalizations("FREE"),
                                                   style:
                                                       textbarlowBoldsmBlack(),
                                                 )
@@ -1024,7 +793,8 @@ class _CheckoutState extends State<Checkout> {
                                               children: <Widget>[
                                                 Text(
                                                   MyLocalizations.of(context)
-                                                      .deliveryCharges,
+                                                      .getLocalizations(
+                                                          "DELIVERY_CHARGES"),
                                                   style:
                                                       textBarlowRegularBlack(),
                                                 ),
@@ -1056,7 +826,8 @@ class _CheckoutState extends State<Checkout> {
                                         MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
                                       Text(
-                                        MyLocalizations.of(context).total,
+                                        MyLocalizations.of(context)
+                                            .getLocalizations("TOTAL"),
                                         style: textbarlowMediumBlack(),
                                       ),
                                       Row(
@@ -1078,7 +849,7 @@ class _CheckoutState extends State<Checkout> {
                                   SizedBox(height: 20),
                                   Text(
                                       MyLocalizations.of(context)
-                                          .deliveryAddress,
+                                          .getLocalizations("DELIVERY_ADDESS"),
                                       style: textBarlowSemiBoldBlackbigg()),
                                 ],
                               ),
@@ -1092,7 +863,7 @@ class _CheckoutState extends State<Checkout> {
                               titleChild: Text(
                                 selectedAddress == null
                                     ? MyLocalizations.of(context)
-                                        .youhavenotselectedanyaddressyet
+                                        .getLocalizations("ADDRESS_MSG")
                                     : '${selectedAddress['flatNo']}, ${selectedAddress['apartmentName']},${selectedAddress['address']}',
                                 overflow: TextOverflow.clip,
                                 maxLines: 1,
@@ -1112,7 +883,7 @@ class _CheckoutState extends State<Checkout> {
                                             MainAxisAlignment.start,
                                         children: <Widget>[
                                           RadioListTile(
-                                            groupValue: groupValue1,
+                                            groupValue: selecteAddressValue,
                                             activeColor: primary,
                                             value: i,
                                             title: Column(
@@ -1128,7 +899,7 @@ class _CheckoutState extends State<Checkout> {
                                                   ),
                                                   Text(
                                                     "${addressList[i]['landmark']} ,"
-                                                    '${addressList[i]['postalCode']}, ${addressList[i]['contactNumber']}',
+                                                    '${addressList[i]['postalCode']}, ${addressList[i]['mobileNumber']}',
                                                     style:
                                                         textBarlowRegularBlackdl(),
                                                   ),
@@ -1177,7 +948,8 @@ class _CheckoutState extends State<Checkout> {
                                                         child: Text(
                                                           MyLocalizations.of(
                                                                   context)
-                                                              .edit,
+                                                              .getLocalizations(
+                                                                  "EDIT"),
                                                           style:
                                                               textbarlowRegularaPrimar(),
                                                         ),
@@ -1207,7 +979,8 @@ class _CheckoutState extends State<Checkout> {
                                                           child: Text(
                                                             MyLocalizations.of(
                                                                     context)
-                                                                .delete,
+                                                                .getLocalizations(
+                                                                    "DELETE"),
                                                             style:
                                                                 textbarlowRegularaPrimar(),
                                                           ),
@@ -1255,10 +1028,10 @@ class _CheckoutState extends State<Checkout> {
                                             Map locationLatLong = {
                                               "latitude":
                                                   locationInfo['location']
-                                                      ['lat'],
+                                                      ['latitude'],
                                               "longitude":
                                                   locationInfo['location']
-                                                      ['lng']
+                                                      ['longitude']
                                             };
 
                                             addAddressPageMethod(
@@ -1283,7 +1056,8 @@ class _CheckoutState extends State<Checkout> {
                                       color: GFColors.LIGHT,
                                       child: Text(
                                         MyLocalizations.of(context)
-                                            .addNewAddress,
+                                            .getLocalizations(
+                                                "ADD_NEW_ADDRESS"),
                                         style: textBarlowRegularBb(),
                                       ),
                                     ),
@@ -1302,161 +1076,138 @@ class _CheckoutState extends State<Checkout> {
                                   left: 15, right: 15, bottom: 10),
                               child: Text(
                                 MyLocalizations.of(context)
-                                    .chooseDeliveryDateandTimeSlot,
+                                    .getLocalizations("CHOOSE_DATE_TIME"),
                                 style: textbarlowRegularadd(),
                               ),
                             ),
                             SizedBox(
                               height: 15,
                             ),
-                            Row(
-                              children: <Widget>[
-                                Expanded(
-                                  child: Container(
-                                    height: 50,
-                                    width: MediaQuery.of(context).size.width,
-                                    child: ListView.builder(
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: deliverySlotList.length == null
-                                          ? 0
-                                          : deliverySlotList.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return Container(
-                                          color: Colors.grey[200],
-                                          width: 70,
-                                          child: Row(
-                                            children: <Widget>[
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 3, bottom: 3),
-                                                child: Container(
-                                                  width: 60,
-                                                  margin: EdgeInsets.only(
-                                                    left: 10,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    color: _selectedIndex !=
-                                                                null &&
-                                                            _selectedIndex ==
-                                                                index
-                                                        ? primary
-                                                        : Colors.transparent,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                  ),
-                                                  child: InkWell(
-                                                    onTap: () =>
-                                                        _onSelected(index),
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: <Widget>[
-                                                        Text(
-                                                          '${deliverySlotList[index]['day'].substring(0, 3)}',
-                                                          style:
-                                                              textBarlowMediumBlack(),
+                            deliverySlotList.length > 0
+                                ? Row(
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: Container(
+                                          height: 50,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: ListView.builder(
+                                            shrinkWrap: true,
+                                            scrollDirection: Axis.horizontal,
+                                            itemCount:
+                                                deliverySlotList.length == null
+                                                    ? 0
+                                                    : deliverySlotList.length,
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return Container(
+                                                color: Colors.grey[200],
+                                                width: 70,
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 3,
+                                                              bottom: 3),
+                                                      child: Container(
+                                                        width: 60,
+                                                        margin: EdgeInsets.only(
+                                                          left: 10,
                                                         ),
-                                                        Text(
-                                                          '${deliverySlotList[index]['date'][1] == "-" ? "0" + deliverySlotList[index]['date'].substring(0, 1) : deliverySlotList[index]['date'].substring(0, 2)}',
-                                                          style:
-                                                              textbarlowRegularBlack(),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: dateSelectedValue !=
+                                                                      null &&
+                                                                  dateSelectedValue ==
+                                                                      index
+                                                              ? primary
+                                                              : Colors
+                                                                  .transparent,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
                                                         ),
-                                                      ],
+                                                        child: InkWell(
+                                                          onTap: () =>
+                                                              dateSelectMethod(
+                                                                  index),
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: <Widget>[
+                                                              Text(
+                                                                '${deliverySlotList[index]['date'].split(' ').join('\n')}',
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                style:
+                                                                    textbarlowRegularBlack(),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
                                                     ),
-                                                  ),
+                                                  ],
                                                 ),
-                                              ),
-                                            ],
+                                              );
+                                            },
                                           ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                            Column(
-                              children: <Widget>[
-                                deliverySlotList[_selectedIndex]['timeSchedule']
-                                                [0]['isClosed'] ==
-                                            false &&
-                                        deliverySlotList[_selectedIndex]
-                                                    ['timeSchedule'][1]
-                                                ['isClosed'] ==
-                                            false &&
-                                        deliverySlotList[_selectedIndex]
-                                                    ['timeSchedule'][2]
-                                                ['isClosed'] ==
-                                            false &&
-                                        deliverySlotList[_selectedIndex]
-                                                    ['timeSchedule'][3]
-                                                ['isClosed'] ==
-                                            false
-                                    ? Center(
-                                        child: Image.asset(
-                                            'lib/assets/images/no-orders.png'),
+                                        ),
                                       )
-                                    : Container(
+                                    ],
+                                  )
+                                : Container(),
+                            deliverySlotList.length > 0
+                                ? Column(
+                                    children: <Widget>[
+                                      Container(
                                         color: Color(0xFFF7F7F7),
                                         child: ListView.builder(
                                           physics: ScrollPhysics(),
                                           shrinkWrap: true,
                                           itemCount: deliverySlotList[
-                                                              _selectedIndex]
-                                                          ['timeSchedule']
+                                                              dateSelectedValue]
+                                                          ['timings']
                                                       .length ==
                                                   null
                                               ? 0
-                                              : deliverySlotList[_selectedIndex]
-                                                      ['timeSchedule']
+                                              : deliverySlotList[
+                                                          dateSelectedValue]
+                                                      ['timings']
                                                   .length,
                                           itemBuilder:
                                               (BuildContext context, int i) {
-                                            return deliverySlotList[
-                                                                _selectedIndex]
-                                                            ['timeSchedule'][i]
-                                                        ['isClosed'] ==
-                                                    true
-                                                ? Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    children: <Widget>[
-                                                      Expanded(
-                                                        child: RadioListTile(
-                                                          value: i,
-                                                          groupValue:
-                                                              selectedRadio,
-                                                          activeColor: primary,
-                                                          onChanged: (value) {
-                                                            setSelectedRadio(
-                                                                value);
-                                                          },
-                                                          title: deliverySlotList
-                                                                      .length ==
-                                                                  0
-                                                              ? Text(MyLocalizations
-                                                                      .of(context)
-                                                                  .sorryNoSlotsAvailableToday)
-                                                              : Text(
-                                                                  '${deliverySlotList[_selectedIndex]['timeSchedule'][i]['slot']}',
-                                                                  style:
-                                                                      textBarlowRegularBlack(),
-                                                                ),
-                                                        ),
-                                                      )
-                                                    ],
-                                                  )
-                                                : Container();
+                                            return Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: <Widget>[
+                                                Expanded(
+                                                  child: RadioListTile(
+                                                    value: i,
+                                                    groupValue: selectSlot,
+                                                    activeColor: primary,
+                                                    onChanged: (value) {
+                                                      selectedSlotSelected(
+                                                          value);
+                                                    },
+                                                    title: Text(
+                                                      '${deliverySlotList[dateSelectedValue]['timings'][i]['slot']}',
+                                                      style:
+                                                          textBarlowRegularBlack(),
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            );
                                           },
                                         ),
                                       ),
-                              ],
-                            ),
+                                    ],
+                                  )
+                                : Container(),
                           ],
                         ),
                       ),
@@ -1479,19 +1230,15 @@ class _CheckoutState extends State<Checkout> {
                           child: GFButton(
                               color: primary,
                               blockButton: true,
-                              onPressed: proceed,
+                              onPressed: placeOrder,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Text(
-                                    MyLocalizations.of(context).proceed,
+                                    MyLocalizations.of(context)
+                                        .getLocalizations("PROCEE"),
                                     style: textBarlowRegularBlack(),
                                   ),
-                                  isPlaceOrderLoading
-                                      ? GFLoader(
-                                          type: GFLoaderType.ios,
-                                        )
-                                      : Text("")
                                 ],
                               ),
                               textStyle: textBarlowregbkck()),

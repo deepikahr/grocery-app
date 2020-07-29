@@ -54,35 +54,12 @@ class _AddressState extends State<Address> {
     }
 
     await AddressService.getAddress().then((onValue) {
-      try {
-        _refreshController.refreshCompleted();
-
-        if (mounted) {
-          setState(() {
-            addressLoading = false;
-          });
-        }
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              addressList = onValue['response_data'];
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              addressList = [];
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            addressList = [];
-            addressLoading = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      _refreshController.refreshCompleted();
+      if (mounted) {
+        setState(() {
+          addressList = onValue['response_data'];
+          addressLoading = false;
+        });
       }
     }).catchError((error) {
       if (mounted) {
@@ -102,30 +79,11 @@ class _AddressState extends State<Address> {
       });
     }
     await LoginService.getLocationformation().then((onValue) {
-      try {
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              locationInfo = onValue['response_data'];
-              isLocationLoading = false;
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              locationInfo = null;
-              isLocationLoading = false;
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            locationInfo = null;
-            isLocationLoading = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      if (mounted) {
+        setState(() {
+          locationInfo = onValue['response_data'];
+          isLocationLoading = false;
+        });
       }
     }).catchError((error) {
       if (mounted) {
@@ -140,23 +98,12 @@ class _AddressState extends State<Address> {
 
   deleteAddress(body) async {
     await AddressService.deleteAddress(body).then((onValue) {
-      try {
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              getAddress();
-              addressList = addressList;
-              showSnackbar(onValue['response_data']);
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            addressLoading = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      if (mounted) {
+        setState(() {
+          getAddress();
+          addressList = addressList;
+          showSnackbar(onValue['response_data']);
+        });
       }
     }).catchError((error) {
       if (mounted) {
@@ -185,7 +132,7 @@ class _AddressState extends State<Address> {
           color: Colors.black,
         ),
         title: Text(
-          MyLocalizations.of(context).address,
+          MyLocalizations.of(context).getLocalizations("ADDRESS"),
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -202,7 +149,8 @@ class _AddressState extends State<Address> {
                       padding: const EdgeInsets.only(
                           top: 10.0, bottom: 10.0, left: 20.0, right: 20.0),
                       child: Text(
-                        MyLocalizations.of(context).savedAddress,
+                        MyLocalizations.of(context)
+                            .getLocalizations("SAVED_ADDRESS"),
                         style: textbarlowSemiBoldBlack(),
                       ),
                     ),
@@ -257,7 +205,7 @@ class _AddressState extends State<Address> {
                                                 ', '
                                                     '${addressList[index]['postalCode'].toString()}' +
                                                 ', ' +
-                                                '${addressList[index]['contactNumber']}',
+                                                '${addressList[index]['mobileNumber']}',
                                             style: textBarlowRegularBlack(),
                                           ),
                                         ),
@@ -294,8 +242,8 @@ class _AddressState extends State<Address> {
                 _permissionGranted = await _location.requestPermission();
                 if (_permissionGranted != PermissionStatus.granted) {
                   Map locationLatLong = {
-                    "latitude": locationInfo['location']['lat'],
-                    "longitude": locationInfo['location']['lng']
+                    "latitude": locationInfo['location']['latitude'],
+                    "longitude": locationInfo['location']['longitude']
                   };
 
                   addAddressPageMethod(locationLatLong);
@@ -312,7 +260,8 @@ class _AddressState extends State<Address> {
                 addAddressPageMethod(locationLatLong);
               }
             },
-            text: MyLocalizations.of(context).addNewAddress,
+            text:
+                MyLocalizations.of(context).getLocalizations("ADD_NEW_ADDRESS"),
             textStyle: textBarlowRegularBlack(),
           ),
         ),
@@ -325,7 +274,7 @@ class _AddressState extends State<Address> {
         context,
         MaterialPageRoute(
             builder: (context) => PlacePickerScreen(
-                  googlePlacesApiKey: Constants.GOOGLE_API_KEY,
+                  googlePlacesApiKey: Constants.googleMapApiKey,
                   initialPosition: LatLng(locationlatlong['latitude'],
                       locationlatlong['longitude']),
                   mainColor: primary,
@@ -379,7 +328,7 @@ class _AddressState extends State<Address> {
             child: Padding(
               padding: const EdgeInsets.only(left: 3.0, right: 3.0),
               child: Text(
-                MyLocalizations.of(context).edit,
+                MyLocalizations.of(context).getLocalizations("EDIT"),
                 style: textbarlowRegularaPrimar(),
               ),
             ),
@@ -396,7 +345,7 @@ class _AddressState extends State<Address> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 3.0, right: 3.0),
                 child: Text(
-                  MyLocalizations.of(context).delete,
+                  MyLocalizations.of(context).getLocalizations("DELETE"),
                   style: textbarlowRegularaPrimar(),
                 ),
               ),
@@ -454,7 +403,8 @@ class _AddressState extends State<Address> {
                                 height: 30.0,
                                 decoration: BoxDecoration(),
                                 child: Text(
-                                  MyLocalizations.of(context).ok,
+                                  MyLocalizations.of(context)
+                                      .getLocalizations("OK"),
                                   style: hintSfLightbig(),
                                 ),
                               ),

@@ -5,7 +5,6 @@ import 'package:getflutter/components/button/gf_button.dart';
 import 'package:getflutter/components/loader/gf_loader.dart';
 import 'package:getflutter/components/typography/gf_typography.dart';
 import 'package:getflutter/getflutter.dart';
-import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
@@ -13,101 +12,95 @@ import 'package:readymadeGroceryApp/style/style.dart';
 
 SentryError sentryError = new SentryError();
 
-class ResetPassword extends StatefulWidget {
-  final String verificationToken, locale, email;
+class ChangePassword extends StatefulWidget {
+  final String token, locale;
   final Map localizedValues;
-  ResetPassword(
-      {Key key,
-      this.verificationToken,
-      this.localizedValues,
-      this.locale,
-      this.email})
+  ChangePassword({Key key, this.token, this.localizedValues, this.locale})
       : super(key: key);
 
   @override
-  _ResetPasswordState createState() => _ResetPasswordState();
+  _ChangePasswordState createState() => _ChangePasswordState();
 }
 
-class _ResetPasswordState extends State<ResetPassword> {
+class _ChangePasswordState extends State<ChangePassword> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _passwordTextController = TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final TextEditingController _passwordTextController = TextEditingController();
 
-  String password1;
-  String password2;
-  bool success = false, passwordVisible = true, passwordVisible1 = true;
+  String oldPassword, newPassword, confirmPassword;
+  bool oldPasswordVisible = true,
+      newPasswordVisible = true,
+      confirmPasswordVisible = true;
 
-  bool isResetPasswordLoading = false;
+  bool isChangePasswordLoading = false;
 
-  resetPassword() async {
+  changePassword() async {
     final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
-      if (mounted) {
-        setState(() {
-          isResetPasswordLoading = true;
+      if (newPassword == oldPassword) {
+        showSnackbar(MyLocalizations.of(context)
+            .getLocalizations("DO_NOT_ENTER_SAME_PASS"));
+      } else {
+        if (mounted) {
+          setState(() {
+            isChangePasswordLoading = true;
+          });
+        }
+        Map<String, dynamic> body = {
+          "currentPassword": oldPassword,
+          "newPassword": newPassword,
+          "confirmPassword": confirmPassword
+        };
+        await LoginService.changePassword(body).then((onValue) {
+          if (mounted) {
+            setState(() {
+              isChangePasswordLoading = false;
+            });
+          }
+          showDialog<Null>(
+            context: context,
+            barrierDismissible: false, // user must tap button!
+            builder: (BuildContext context) {
+              return new AlertDialog(
+                content: new SingleChildScrollView(
+                  child: new ListBody(
+                    children: <Widget>[
+                      new Text(
+                        '${onValue['response_data']}',
+                        style: textBarlowRegularBlack(),
+                      ),
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  new FlatButton(
+                    child: new Text(
+                      MyLocalizations.of(context).getLocalizations("OK"),
+                      style: textbarlowRegularaPrimary(),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        }).catchError((error) {
+          if (mounted) {
+            setState(() {
+              isChangePasswordLoading = false;
+            });
+          }
+          sentryError.reportError(error, null);
         });
       }
-      Map<String, dynamic> body = {
-        "newPassword": password1,
-        "email": widget.email,
-        "verificationToken": widget.verificationToken
-      };
-      await LoginService.resetPassword(body).then((onValue) {
-        if (mounted) {
-          setState(() {
-            isResetPasswordLoading = false;
-          });
-        }
-        showDialog<Null>(
-          context: context,
-          barrierDismissible: false, // user must tap button!
-          builder: (BuildContext context) {
-            return new AlertDialog(
-              content: new SingleChildScrollView(
-                child: new ListBody(
-                  children: <Widget>[
-                    new Text(
-                      '${onValue['response_data']}',
-                      style: textBarlowRegularBlack(),
-                    ),
-                  ],
-                ),
-              ),
-              actions: <Widget>[
-                new FlatButton(
-                  child: new Text(
-                    MyLocalizations.of(context).getLocalizations("OK"),
-                    style: textbarlowRegularaPrimary(),
-                  ),
-                  onPressed: () {
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => Login(
-                            locale: widget.locale,
-                            localizedValues: widget.localizedValues,
-                          ),
-                        ),
-                        (Route<dynamic> route) => false);
-                  },
-                ),
-              ],
-            );
-          },
-        );
-      }).catchError((error) {
-        if (mounted) {
-          setState(() {
-            isResetPasswordLoading = false;
-          });
-        }
-        sentryError.reportError(error, null);
-      });
     } else {
       if (mounted) {
         setState(() {
-          isResetPasswordLoading = false;
+          isChangePasswordLoading = false;
         });
       }
       return;
@@ -126,7 +119,7 @@ class _ResetPasswordState extends State<ResetPassword> {
           ),
         ),
         title: Text(
-          MyLocalizations.of(context).getLocalizations("RESET"),
+          MyLocalizations.of(context).getLocalizations("CHANGE_PASSWORD"),
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -150,7 +143,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                         children: <TextSpan>[
                           TextSpan(
                               text: MyLocalizations.of(context)
-                                  .getLocalizations("ENTER_PASSWORD", true),
+                                  .getLocalizations("ENTER_OLD_PASSWORD", true),
                               style: textBarlowRegularBlack()),
                           TextSpan(
                             text: ' ',
@@ -182,7 +175,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                         onTap: () {
                           if (mounted) {
                             setState(() {
-                              passwordVisible1 = !passwordVisible1;
+                              oldPasswordVisible = !oldPasswordVisible;
                             });
                           }
                         },
@@ -198,7 +191,78 @@ class _ResetPasswordState extends State<ResetPassword> {
                     validator: (String value) {
                       if (value.isEmpty) {
                         return MyLocalizations.of(context)
-                            .getLocalizations("ENTER_PASSWORD");
+                            .getLocalizations("ENTER_OLD_PASSWORD");
+                      } else if (value.length < 6) {
+                        return MyLocalizations.of(context)
+                            .getLocalizations("ERROR_PASS");
+                      } else
+                        return null;
+                    },
+                    onSaved: (String value) {
+                      oldPassword = value;
+                    },
+                    obscureText: oldPasswordVisible,
+                  ),
+                ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.only(left: 20.0, bottom: 5.0, right: 20.0),
+                child: GFTypography(
+                  showDivider: false,
+                  child: RichText(
+                    text: TextSpan(
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: MyLocalizations.of(context)
+                                .getLocalizations("ENTER_NEW_PASSWORD", true),
+                            style: textBarlowRegularBlack()),
+                        TextSpan(
+                          text: ' ',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      left: 20.0, right: 20.0, bottom: 20.0),
+                  child: TextFormField(
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      errorBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(width: 0, color: Color(0xFFF44242))),
+                      errorStyle: TextStyle(color: Color(0xFFF44242)),
+                      contentPadding: EdgeInsets.all(10),
+                      enabledBorder: const OutlineInputBorder(
+                        borderSide:
+                            const BorderSide(color: Colors.grey, width: 0.0),
+                      ),
+                      suffixIcon: InkWell(
+                        onTap: () {
+                          if (mounted) {
+                            setState(() {
+                              newPasswordVisible = !newPasswordVisible;
+                            });
+                          }
+                        },
+                        child: Icon(
+                          Icons.remove_red_eye,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: primary),
+                      ),
+                    ),
+                    validator: (String value) {
+                      if (value.isEmpty) {
+                        return MyLocalizations.of(context)
+                            .getLocalizations("ENTER_NEW_PASSWORD");
                       } else if (value.length < 6) {
                         return MyLocalizations.of(context)
                             .getLocalizations("ERROR_PASS");
@@ -207,9 +271,9 @@ class _ResetPasswordState extends State<ResetPassword> {
                     },
                     controller: _passwordTextController,
                     onSaved: (String value) {
-                      password1 = value;
+                      newPassword = value;
                     },
-                    obscureText: passwordVisible1,
+                    obscureText: newPasswordVisible,
                   ),
                 ),
               ),
@@ -223,7 +287,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                       children: <TextSpan>[
                         TextSpan(
                             text: MyLocalizations.of(context).getLocalizations(
-                                "RE_ENTER_NEW_PASSWORD", true),
+                                "ENTER_CONFIRM_PASSWORD", true),
                             style: textBarlowRegularBlack()),
                         TextSpan(
                           text: ' ',
@@ -256,7 +320,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                         onTap: () {
                           if (mounted) {
                             setState(() {
-                              passwordVisible = !passwordVisible;
+                              confirmPasswordVisible = !confirmPasswordVisible;
                             });
                           }
                         },
@@ -272,7 +336,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                     validator: (String value) {
                       if (value.isEmpty) {
                         return MyLocalizations.of(context)
-                            .getLocalizations("ENTER_PASSWORD");
+                            .getLocalizations("ENTER_CONFIRM_PASSWORD");
                       } else if (value.length < 6) {
                         return MyLocalizations.of(context)
                             .getLocalizations("ERROR_PASS");
@@ -283,9 +347,9 @@ class _ResetPasswordState extends State<ResetPassword> {
                         return null;
                     },
                     onSaved: (String value) {
-                      password2 = value;
+                      confirmPassword = value;
                     },
-                    obscureText: passwordVisible,
+                    obscureText: confirmPasswordVisible,
                   ),
                 ),
               ),
@@ -305,7 +369,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                   child: GFButton(
                     color: primary,
                     blockButton: true,
-                    onPressed: resetPassword,
+                    onPressed: changePassword,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
@@ -317,7 +381,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                         SizedBox(
                           height: 10,
                         ),
-                        isResetPasswordLoading
+                        isChangePasswordLoading
                             ? GFLoader(
                                 type: GFLoaderType.ios,
                               )

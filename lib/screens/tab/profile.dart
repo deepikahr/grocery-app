@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/main.dart';
+import 'package:readymadeGroceryApp/screens/authe/changePassword.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/drawer/address.dart';
 import 'package:readymadeGroceryApp/screens/orders/orders.dart';
 import 'package:readymadeGroceryApp/screens/tab/editprofile.dart';
+import 'package:readymadeGroceryApp/screens/webView/webView.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -14,7 +16,6 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -28,16 +29,17 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  Map<String, dynamic> userInfo;
-  bool isGetTokenLoading = false, isLanguageSelecteLoading = false;
+  var userInfo;
+  bool isGetTokenLoading = false,
+      isLanguageSelecteLoading = false,
+      isGetLanguagesListLoading = false;
   String token, userID;
-  RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
-  List languages, languagesCodes;
+  List languagesList;
 
   @override
   void initState() {
     getToken();
+    getLanguagesListData();
     super.initState();
   }
 
@@ -52,36 +54,21 @@ class _ProfileState extends State<Profile> {
         isGetTokenLoading = true;
       });
     }
-    await Common.getAllLanguageNames().then((value) {
-      languages = value;
-    });
-    await Common.getAllLanguageCodes().then((value) {
-      languagesCodes = value;
-    });
+
     await Common.getToken().then((onValue) {
-      try {
-        if (onValue != null) {
-          if (mounted) {
-            setState(() {
-              token = onValue;
-              userInfoMethod();
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              isGetTokenLoading = false;
-            });
-          }
+      if (onValue != null) {
+        if (mounted) {
+          setState(() {
+            token = onValue;
+            userInfoMethod();
+          });
         }
-      } catch (error, stackTrace) {
+      } else {
         if (mounted) {
           setState(() {
             isGetTokenLoading = false;
           });
         }
-
-        sentryError.reportError(error, stackTrace);
       }
     }).catchError((error) {
       if (mounted) {
@@ -95,37 +82,44 @@ class _ProfileState extends State<Profile> {
 
   userInfoMethod() async {
     await LoginService.getUserInfo().then((onValue) {
-      try {
-        if (mounted) {
-          setState(() {
-            isGetTokenLoading = false;
-          });
-        }
-        _refreshController.refreshCompleted();
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              userInfo = onValue['response_data']['userInfo'];
-              userID = userInfo['_id'];
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            isGetTokenLoading = false;
-            userInfo = null;
-            userID = null;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      print(onValue);
+
+      if (mounted) {
+        setState(() {
+          userInfo = onValue['response_data'];
+          userID = userInfo['_id'];
+          Common.setUserID(userID);
+          isGetTokenLoading = false;
+        });
       }
     }).catchError((error) {
       if (mounted) {
         setState(() {
           isGetTokenLoading = false;
-          userInfo = null;
-          userID = null;
+        });
+      }
+      sentryError.reportError(error, null);
+    });
+  }
+
+  getLanguagesListData() async {
+    if (mounted) {
+      setState(() {
+        isGetLanguagesListLoading = true;
+      });
+    }
+    await LoginService.getLanguagesList().then((onValue) {
+      if (mounted) {
+        setState(() {
+          languagesList = onValue['response_data'];
+          isGetLanguagesListLoading = false;
+        });
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isGetLanguagesListLoading = false;
+          languagesList = [];
         });
       }
       sentryError.reportError(error, null);
@@ -153,12 +147,14 @@ class _ProfileState extends State<Profile> {
                       padding: EdgeInsets.only(bottom: 25),
                       physics: ScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount:
-                          languages.length == null ? 0 : languages.length,
+                      itemCount: languagesList.length == null
+                          ? 0
+                          : languagesList.length,
                       itemBuilder: (BuildContext context, int i) {
                         return GFButton(
                           onPressed: () async {
-                            await Common.setSelectedLanguage(languagesCodes[i]);
+                            await Common.setSelectedLanguage(
+                                languagesList[i]['languageCode']);
                             main();
                           },
                           type: GFButtonType.transparent,
@@ -166,7 +162,7 @@ class _ProfileState extends State<Profile> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
                               Text(
-                                languages[i],
+                                languagesList[i]['languageName'],
                                 style: hintSfboldBig(),
                               ),
                               Container()
@@ -192,14 +188,14 @@ class _ProfileState extends State<Profile> {
               : GFAppBar(
                   elevation: 0,
                   title: Text(
-                    MyLocalizations.of(context).profile,
+                    MyLocalizations.of(context).getLocalizations("PROFILE"),
                     style: textbarlowSemiBoldBlack(),
                   ),
                   centerTitle: true,
                   backgroundColor: primary,
                   automaticallyImplyLeading: false,
                 ),
-      body: isGetTokenLoading
+      body: isGetTokenLoading || isGetLanguagesListLoading
           ? SquareLoader()
           : token == null
               ? Login(
@@ -251,10 +247,8 @@ class _ProfileState extends State<Profile> {
                                           ]),
                                       height: 90.0,
                                       width: 91.0,
-                                      child: userInfo == null ||
-                                              (userInfo['filePath'] == null &&
-                                                  userInfo['profilePic'] ==
-                                                      null)
+                                      child: userInfo['filePath'] == null &&
+                                              userInfo['imageUrl'] == null
                                           ? Center(
                                               child: new Container(
                                                 width: 200.0,
@@ -284,10 +278,10 @@ class _ProfileState extends State<Profile> {
                                                     image: new NetworkImage(userInfo[
                                                                 'filePath'] ==
                                                             null
-                                                        ? userInfo['profilePic']
+                                                        ? userInfo['imageUrl']
                                                         : Constants
-                                                                .IMAGE_URL_PATH +
-                                                            "tr:dpr-auto,tr:w-500" +
+                                                                .imageUrlPath +
+                                                            "/tr:dpr-auto,tr:w-500" +
                                                             userInfo[
                                                                 'filePath']),
                                                   ),
@@ -386,7 +380,9 @@ class _ProfileState extends State<Profile> {
                                       left: 20.0,
                                       right: 20.0),
                                   child: Text(
-                                    MyLocalizations.of(context).address,
+                                    MyLocalizations.of(context)
+                                        .getLocalizations("ADDRESS")
+                                        .toUpperCase(),
                                     style: textBarlowMediumBlack(),
                                   ),
                                 ),
@@ -394,37 +390,41 @@ class _ProfileState extends State<Profile> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 15),
-                        InkWell(
-                          onTap: () {
-                            selectLanguagesMethod();
-                          },
-                          child: Container(
-                            height: 55,
-                            decoration: BoxDecoration(
-                              color: Color(0xFFF7F7F7),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 10.0,
-                                      bottom: 10.0,
-                                      left: 20.0,
-                                      right: 20.0),
-                                  child: Text(
-                                    MyLocalizations.of(context).selectLanguage,
-                                    style: textBarlowMediumBlack(),
+                        languagesList.length > 0
+                            ? SizedBox(height: 15)
+                            : Container(),
+                        languagesList.length > 0
+                            ? InkWell(
+                                onTap: () {
+                                  selectLanguagesMethod();
+                                },
+                                child: Container(
+                                  height: 55,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFFF7F7F7),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 10.0,
+                                            bottom: 10.0,
+                                            left: 20.0,
+                                            right: 20.0),
+                                        child: Text(
+                                          MyLocalizations.of(context)
+                                              .getLocalizations(
+                                                  "SELECT_LANGUAGE"),
+                                          style: textBarlowMediumBlack(),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20.0,
-                        ),
+                              )
+                            : Container(),
+                        SizedBox(height: 20.0),
                         InkWell(
                           onTap: () {
                             var result = Navigator.push(
@@ -454,7 +454,8 @@ class _ProfileState extends State<Profile> {
                                       left: 20.0,
                                       right: 20.0),
                                   child: Text(
-                                    MyLocalizations.of(context).orderHistory,
+                                    MyLocalizations.of(context)
+                                        .getLocalizations("MY_ORDERS"),
                                     style: textBarlowMediumBlack(),
                                   ),
                                 ),
@@ -462,11 +463,99 @@ class _ProfileState extends State<Profile> {
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: 20.0,
+                        SizedBox(height: 20.0),
+                        InkWell(
+                          onTap: () {
+                            var result = Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ChangePassword(
+                                  locale: widget.locale,
+                                  localizedValues: widget.localizedValues,
+                                ),
+                              ),
+                            );
+                            result.then((value) => getToken());
+                          },
+                          child: Container(
+                            height: 55,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFF7F7F7),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 10.0,
+                                      bottom: 10.0,
+                                      left: 20.0,
+                                      right: 20.0),
+                                  child: Text(
+                                    MyLocalizations.of(context)
+                                        .getLocalizations("CHANGE_PASSWORD"),
+                                    style: textBarlowMediumBlack(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
+                        SizedBox(height: 20.0),
                       ],
                     ),
+      bottomNavigationBar: isGetTokenLoading ||
+              isGetLanguagesListLoading ||
+              token == null ||
+              userInfo == null
+          ? Container(height: 1)
+          : Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) => WebViewPage(
+                                    locale: widget.locale,
+                                    localizedValues: widget.localizedValues,
+                                    title: MyLocalizations.of(context)
+                                        .getLocalizations("TERMS_CONDITIONS"),
+                                    url: Constants.baseUrl +
+                                        "/terms-and-conditions",
+                                  )));
+                    },
+                    child: Text(
+                      MyLocalizations.of(context)
+                          .getLocalizations("TERMS_CONDITIONS"),
+                      style: textBarlowmediumLink(),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) => WebViewPage(
+                                    locale: widget.locale,
+                                    localizedValues: widget.localizedValues,
+                                    title: MyLocalizations.of(context)
+                                        .getLocalizations("PRIVACY_POLICY"),
+                                    url: Constants.baseUrl + "/privacy-policy",
+                                  )));
+                    },
+                    child: Text(
+                      MyLocalizations.of(context)
+                          .getLocalizations("PRIVACY_POLICY"),
+                      style: textBarlowmediumLink(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
     );
   }
 }

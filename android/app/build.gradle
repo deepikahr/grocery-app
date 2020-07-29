@@ -49,6 +49,7 @@ android {
         versionName flutterVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+        manifestPlaceholders = [googleMapApiKey: "$System.env.GOOGLE_MAP_API_KEY"]
     }
     signingConfigs {
        release {

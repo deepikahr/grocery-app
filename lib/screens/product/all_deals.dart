@@ -61,31 +61,12 @@ class _AllDealsListState extends State<AllDealsList> {
       });
     }
     await ProductService.getTopDealsListAll().then((onValue) {
-      try {
-        _refreshController.refreshCompleted();
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              dealsList = onValue['response_data'];
-              isAllDealsLoadingList = false;
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              dealsList = [];
-              isAllDealsLoadingList = false;
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            dealsList = [];
-            isAllDealsLoadingList = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      _refreshController.refreshCompleted();
+      if (mounted) {
+        setState(() {
+          dealsList = onValue['response_data'];
+          isAllDealsLoadingList = false;
+        });
       }
     }).catchError((error) {
       if (mounted) {
@@ -105,31 +86,12 @@ class _AllDealsListState extends State<AllDealsList> {
       });
     }
     await ProductService.getTodayDealsListAll().then((onValue) {
-      try {
-        _refreshController.refreshCompleted();
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              dealsList = onValue['response_data'];
-              isAllDealsLoadingList = false;
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              dealsList = [];
-              isAllDealsLoadingList = false;
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            dealsList = [];
-            isAllDealsLoadingList = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      _refreshController.refreshCompleted();
+      if (mounted) {
+        setState(() {
+          dealsList = onValue['response_data'];
+          isAllDealsLoadingList = false;
+        });
       }
     }).catchError((error) {
       if (mounted) {
@@ -184,78 +146,86 @@ class _AllDealsListState extends State<AllDealsList> {
         },
         child: isAllDealsLoadingList
             ? SquareLoader()
-            : Container(
-                margin:
-                    EdgeInsets.only(left: 15, right: 15, top: 15, bottom: 16),
-                child: ListView(
-                  children: <Widget>[
-                    GridView.builder(
-                      padding: EdgeInsets.only(bottom: 25),
-                      physics: ScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount:
-                          dealsList.length == null ? 0 : dealsList.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio:
-                              MediaQuery.of(context).size.width / 720,
-                          crossAxisSpacing: 16,
-                          mainAxisSpacing: 16),
-                      itemBuilder: (BuildContext context, int i) {
-                        return InkWell(
-                          onTap: () {
-                            if (dealsList[i]['delalType'] == 'Category') {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => SubCategories(
-                                      locale: widget.locale,
-                                      localizedValues: widget.localizedValues,
-                                      catId: dealsList[i]['category'],
-                                      catTitle:
-                                          '${dealsList[i]['name'][0].toUpperCase()}${dealsList[i]['name'].substring(1)}',
-                                      token: getTokenValue),
-                                ),
-                              );
-                            } else {
-                              var result = Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ProductDetails(
-                                    locale: widget.locale,
-                                    localizedValues: widget.localizedValues,
-                                    productID: dealsList[i]['product'],
-                                  ),
-                                ),
-                              );
-                              result.then((value) {
-                                if (widget.dealType == "TopDeals") {
-                                  getAllTopDealsListMethod();
+            : dealsList.length > 0
+                ? Container(
+                    margin: EdgeInsets.only(
+                        left: 15, right: 15, top: 15, bottom: 16),
+                    child: ListView(
+                      children: <Widget>[
+                        GridView.builder(
+                          padding: EdgeInsets.only(bottom: 25),
+                          physics: ScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount:
+                              dealsList.length == null ? 0 : dealsList.length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  childAspectRatio:
+                                      MediaQuery.of(context).size.width / 720,
+                                  crossAxisSpacing: 16,
+                                  mainAxisSpacing: 16),
+                          itemBuilder: (BuildContext context, int i) {
+                            return InkWell(
+                              onTap: () {
+                                if (dealsList[i]['delalType'] == 'CATEGORY') {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => SubCategories(
+                                          locale: widget.locale,
+                                          localizedValues:
+                                              widget.localizedValues,
+                                          catId: dealsList[i]['categoryId'],
+                                          catTitle:
+                                              '${dealsList[i]['title'][0].toUpperCase()}${dealsList[i]['title'].substring(1)}',
+                                          token: getTokenValue),
+                                    ),
+                                  );
                                 } else {
-                                  getAllTodayDealsListMethod();
+                                  var result = Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ProductDetails(
+                                        locale: widget.locale,
+                                        localizedValues: widget.localizedValues,
+                                        productID: dealsList[i]['productId'],
+                                      ),
+                                    ),
+                                  );
+                                  result.then((value) {
+                                    if (widget.dealType == "TopDeals") {
+                                      getAllTopDealsListMethod();
+                                    } else {
+                                      getAllTodayDealsListMethod();
+                                    }
+                                  });
                                 }
-                              });
-                            }
+                              },
+                              child: DealsCard(
+                                image: dealsList[i]['filePath'] ??
+                                    dealsList[i]['imageUrl'],
+                                isPath: dealsList[i]['filePath'] == null
+                                    ? false
+                                    : true,
+                                title: dealsList[i]['title'],
+                                price: dealsList[i]['dealPercent'].toString() +
+                                    "% " +
+                                    MyLocalizations.of(context)
+                                        .getLocalizations("OFF"),
+                              ),
+                            );
                           },
-                          child: DealsCard(
-                            image: dealsList[i]['filePath'] ??
-                                dealsList[i]['imageUrl'],
-                            isPath:
-                                dealsList[i]['filePath'] == null ? false : true,
-                            title: dealsList[i]['name'],
-                            price: dealsList[i]['delaPercent'].toString() +
-                                "% " +
-                                MyLocalizations.of(context).off,
-                          ),
-                        );
-                      },
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                      ],
                     ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                  ],
-                ),
-              ),
+                  )
+                : Center(
+                    child: Image.asset('lib/assets/images/no-orders.png'),
+                  ),
       ),
     );
   }

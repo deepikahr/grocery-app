@@ -15,12 +15,12 @@ class BottonSheetClassDryClean extends StatefulWidget {
   final double dealPercentage;
   final String currency, locale;
   final Map localizedValues;
-  final Map<String, dynamic> productList;
+  final Map<String, dynamic> productData;
 
   BottonSheetClassDryClean(
       {Key key,
       this.variantsList,
-      this.productList,
+      this.productData,
       this.currency,
       this.productQuantity,
       this.dealPercentage,
@@ -101,57 +101,33 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
           });
         }
       }
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          getTokenValue = false;
-        });
-      }
-      sentryError.reportError(error, null);
     });
   }
 
   addToCartMethod() {
     if ((variantStock == null
-            ? widget.variantsList[0]['productstock']
+            ? widget.variantsList[0]['productStock']
             : variantStock) >=
         quantity) {
       Map<String, dynamic> productAddBody = {
-        "category": widget.productList['category'],
-        "subcategory": widget.productList['subcategory'],
-        'productId': widget.productList['_id'].toString(),
+        'productId': widget.productData['_id'].toString(),
         'quantity': quantity,
-        "price": double.parse(variantPrice == null
-            ? widget.variantsList[0]['price'].toString()
-            : variantPrice.toString()),
         "unit": variantUnit == null
             ? widget.variantsList[0]['unit'].toString()
             : variantUnit.toString()
       };
-      AddToCart.addToCartMethod(productAddBody).then((onValue) {
-        try {
-          if (mounted) {
-            setState(() {
-              addProductTocart = false;
-            });
-          }
-          if (onValue['response_code'] == 200) {
-            if (onValue['response_code'] == 200 &&
-                onValue['response_data'] is Map) {
-              Common.setCartData(onValue['response_data']);
-            } else {
-              Common.setCartData(null);
-            }
-            Navigator.of(context).pop(onValue['response_data']);
-          }
-        } catch (error, stackTrace) {
-          if (mounted) {
-            setState(() {
-              addProductTocart = false;
-            });
-          }
-          sentryError.reportError(error, stackTrace);
+      AddToCart.addAndUpdateProductMethod(productAddBody).then((onValue) {
+        if (mounted) {
+          setState(() {
+            addProductTocart = false;
+          });
         }
+        if (onValue['response_data'] is Map) {
+          Common.setCartData(onValue['response_data']);
+        } else {
+          Common.setCartData(null);
+        }
+        Navigator.of(context).pop(onValue['response_data']);
       }).catchError((error) {
         if (mounted) {
           setState(() {
@@ -168,9 +144,9 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
       }
 
       showSnackbar(MyLocalizations.of(context)
-              .limitedquantityavailableyoucantaddmorethan +
-          " ${variantStock == null ? widget.variantsList[0]['productstock'] : variantStock} " +
-          MyLocalizations.of(context).ofthisitem);
+              .getLocalizations("LIMITED_STOCK") +
+          " ${variantStock == null ? widget.variantsList[0]['productStock'] : variantStock} " +
+          MyLocalizations.of(context).getLocalizations("OF_THIS_ITEM"));
     }
   }
 
@@ -189,7 +165,8 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    MyLocalizations.of(context).quantity + ':',
+                    MyLocalizations.of(context)
+                        .getLocalizations("QUANTITY", true),
                     style: textBarlowMediumBlack(),
                   ),
                   Container(
@@ -233,15 +210,16 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                             child: InkWell(
                               onTap: () {
                                 if ((variantStock == null
-                                        ? widget.variantsList[0]['productstock']
+                                        ? widget.variantsList[0]['productStock']
                                         : variantStock) >
                                     quantity) {
                                   _changeProductQuantity(true);
                                 } else {
                                   showSnackbar(MyLocalizations.of(context)
-                                          .limitedquantityavailableyoucantaddmorethan +
-                                      " ${variantStock == null ? widget.variantsList[0]['productstock'] : variantStock} " +
-                                      MyLocalizations.of(context).ofthisitem);
+                                          .getLocalizations("LIMITED_STOCK") +
+                                      " ${variantStock == null ? widget.variantsList[0]['productStock'] : variantStock} " +
+                                      MyLocalizations.of(context)
+                                          .getLocalizations("OF_THIS_ITEM"));
                                 }
                               },
                               child: Icon(Icons.add),
@@ -277,7 +255,7 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                           variantId =
                               widget.variantsList[selected]['_id'].toString();
                           variantStock =
-                              widget.variantsList[selected]['productstock'];
+                              widget.variantsList[selected]['productStock'];
                         });
                       }
                     },
@@ -358,7 +336,8 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                                 style: textBarlowRegularWhite(),
                               ),
                               TextSpan(
-                                  text: MyLocalizations.of(context).items,
+                                  text: MyLocalizations.of(context)
+                                      .getLocalizations("ITEMS"),
                                   style: textBarlowRegularWhite()),
                             ],
                           ),
@@ -384,7 +363,7 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                 Padding(
                   padding: const EdgeInsets.only(left: 0.0),
                   child: new Text(
-                    MyLocalizations.of(context).addToCart,
+                    MyLocalizations.of(context).getLocalizations("ADD_TO_CART"),
                     style: textBarlowRegularBlack(),
                   ),
                 ),

@@ -59,7 +59,7 @@ class _EditAddressState extends State<EditAddress> {
     super.initState();
   }
 
-  List<String> addressType = ['Home', "Work", "Others"];
+  List<String> addressType = ['HOME', "WORK", "OTHERS"];
   setSelectedRadio(int val) async {
     if (mounted) {
       setState(() {
@@ -72,10 +72,10 @@ class _EditAddressState extends State<EditAddress> {
     "location": {},
     "address": null,
     "flatNo": null,
-    "apartmentame": null,
+    "apartmentName": null,
     "landmark": null,
     "postalCode": null,
-    "contactNumber": null,
+    "mobileNumber": null,
     "addressType": null
   };
   updateAddress() async {
@@ -92,38 +92,23 @@ class _EditAddressState extends State<EditAddress> {
         address['location'] = widget.updateAddressID['location'];
       } else {
         var location = {
-          "lat": _pickedLocation.latLng.latitude,
-          "long": _pickedLocation.latLng.longitude
+          "latitude": _pickedLocation.latLng.latitude,
+          "longitude": _pickedLocation.latLng.longitude
         };
         address['location'] = location;
       }
       address['addressType'] = addressType[selectedAddressType];
       AddressService.updateAddress(address, widget.updateAddressID['_id'])
           .then((onValue) {
-        try {
-          if (mounted) {
-            setState(() {
-              isUpdateAddressLoading = false;
-            });
-          }
-          if (onValue['response_code'] == 200) {
-            addressController.clear();
-
-            if (mounted) {
-              setState(() {
-                Navigator.pop(context);
-              });
-            }
-          } else {
+        if (mounted) {
+          setState(() {
             showSnackbar(onValue['response_data']);
-          }
-        } catch (error, stackTrace) {
-          if (mounted) {
-            setState(() {
-              isUpdateAddressLoading = false;
+            Future.delayed(Duration(milliseconds: 1500), () {
+              Navigator.pop(context);
+              addressController.clear();
             });
-          }
-          sentryError.reportError(error, stackTrace);
+            isUpdateAddressLoading = false;
+          });
         }
       }).catchError((onError) {
         if (mounted) {
@@ -168,7 +153,7 @@ class _EditAddressState extends State<EditAddress> {
           color: Colors.black,
         ),
         title: Text(
-          MyLocalizations.of(context).editAddress,
+          MyLocalizations.of(context).getLocalizations("EDIT_ADDRESS"),
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -191,7 +176,8 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).location,
+                        MyLocalizations.of(context)
+                            .getLocalizations("LOCATION", true),
                         style: regular(),
                       ),
                     ],
@@ -234,7 +220,7 @@ class _EditAddressState extends State<EditAddress> {
                       validator: (String value) {
                         if (value.isEmpty) {
                           return MyLocalizations.of(context)
-                              .pleaseenterpostalcode;
+                              .getLocalizations("ENTER_LOCATION");
                         } else
                           return null;
                       },
@@ -264,8 +250,10 @@ class _EditAddressState extends State<EditAddress> {
                         onPressed: () async {
                           var lat, long;
                           if (_pickedLocation == null) {
-                            lat = widget.updateAddressID['location']['lat'];
-                            long = widget.updateAddressID['location']['long'];
+                            lat =
+                                widget.updateAddressID['location']['latitude'];
+                            long =
+                                widget.updateAddressID['location']['longitude'];
                           } else {
                             lat = _pickedLocation.latLng.latitude;
                             long = _pickedLocation.latLng.longitude;
@@ -276,7 +264,7 @@ class _EditAddressState extends State<EditAddress> {
                               MaterialPageRoute(
                                   builder: (context) => PlacePickerScreen(
                                         googlePlacesApiKey:
-                                            Constants.GOOGLE_API_KEY,
+                                            Constants.googleMapApiKey,
                                         initialPosition: LatLng(lat, long),
                                         mainColor: primary,
                                         mapStrings: MapPickerStrings.english(),
@@ -288,7 +276,8 @@ class _EditAddressState extends State<EditAddress> {
                                 pickerResult.address.toString();
                           });
                         },
-                        text: MyLocalizations.of(context).updateAddress,
+                        text: MyLocalizations.of(context)
+                            .getLocalizations("CHANGE"),
                         textStyle: textBarlowRegularBlack()),
                   ),
                 ),
@@ -299,7 +288,8 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).houseFlatBlocknumber + " :",
+                        MyLocalizations.of(context)
+                            .getLocalizations("HOUSE_FLAT_BLOCK_NUMBER", true),
                         style: regular(),
                       ),
                     ],
@@ -331,7 +321,7 @@ class _EditAddressState extends State<EditAddress> {
                     validator: (String value) {
                       if (value.isEmpty) {
                         return MyLocalizations.of(context)
-                            .pleaseenterhouseflatblocknumber;
+                            .getLocalizations("ENTER_HOUSE_FLAT_BLOCK_NUMBER");
                       } else
                         return null;
                     },
@@ -350,7 +340,8 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).apartmentName + " :",
+                        MyLocalizations.of(context)
+                            .getLocalizations("APARTMENT_NAME", true),
                         style: regular(),
                       ),
                     ],
@@ -382,7 +373,7 @@ class _EditAddressState extends State<EditAddress> {
                       validator: (String value) {
                         if (value.isEmpty) {
                           return MyLocalizations.of(context)
-                              .pleaseenterapartmentname;
+                              .getLocalizations("ENTER_APARTMENT_NAME");
                         } else
                           return null;
                       },
@@ -400,7 +391,8 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).landMark + " :",
+                        MyLocalizations.of(context)
+                            .getLocalizations("LANDMARK", true),
                         style: regular(),
                       ),
                     ],
@@ -432,7 +424,7 @@ class _EditAddressState extends State<EditAddress> {
                       validator: (String value) {
                         if (value.isEmpty) {
                           return MyLocalizations.of(context)
-                              .pleaseenterlandmark;
+                              .getLocalizations("ENTER_LANDMARK");
                         } else
                           return null;
                       },
@@ -450,7 +442,8 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).postalCode + " :",
+                        MyLocalizations.of(context)
+                            .getLocalizations("POSTEL_CODE", true),
                         style: regular(),
                       ),
                     ],
@@ -483,7 +476,7 @@ class _EditAddressState extends State<EditAddress> {
                       validator: (String value) {
                         if (value.isEmpty) {
                           return MyLocalizations.of(context)
-                              .pleaseenterpostalcode;
+                              .getLocalizations("ENTER_POSTEL_CODE");
                         } else
                           return null;
                       },
@@ -501,7 +494,8 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).contactNumber + " :",
+                        MyLocalizations.of(context)
+                            .getLocalizations("CONTACT_NUMBER", true),
                         style: regular(),
                       ),
                     ],
@@ -510,7 +504,7 @@ class _EditAddressState extends State<EditAddress> {
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
-                    initialValue: widget.updateAddressID['contactNumber'],
+                    initialValue: widget.updateAddressID['mobileNumber'],
                     maxLength: 15,
                     style: labelStyle(),
                     keyboardType: TextInputType.number,
@@ -534,12 +528,12 @@ class _EditAddressState extends State<EditAddress> {
                     validator: (String value) {
                       if (value.isEmpty) {
                         return MyLocalizations.of(context)
-                            .pleaseentercontactnumber;
+                            .getLocalizations("ENTER_CONTACT_NUMBER");
                       } else
                         return null;
                     },
                     onSaved: (String value) {
-                      address['contactNumber'] = value;
+                      address['mobileNumber'] = value;
                     },
                   ),
                 ),
@@ -553,7 +547,8 @@ class _EditAddressState extends State<EditAddress> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).addressType,
+                        MyLocalizations.of(context)
+                            .getLocalizations("ADDRESS_TYPE", true),
                         style: regular(),
                       ),
                     ],
@@ -566,12 +561,15 @@ class _EditAddressState extends State<EditAddress> {
                       addressType.length == null ? 0 : addressType.length,
                   itemBuilder: (BuildContext context, int i) {
                     String type;
-                    if (addressType[i] == 'Home') {
-                      type = MyLocalizations.of(context).home;
-                    } else if (addressType[i] == 'Work') {
-                      type = MyLocalizations.of(context).work;
-                    } else if (addressType[i] == 'Others') {
-                      type = MyLocalizations.of(context).others;
+                    if (addressType[i] == 'HOME') {
+                      type =
+                          MyLocalizations.of(context).getLocalizations("HOME");
+                    } else if (addressType[i] == 'WORK') {
+                      type =
+                          MyLocalizations.of(context).getLocalizations("WORK");
+                    } else if (addressType[i] == 'OTHERS') {
+                      type = MyLocalizations.of(context)
+                          .getLocalizations("OTHERS");
                     } else {
                       type = addressType[i];
                     }
@@ -608,13 +606,16 @@ class _EditAddressState extends State<EditAddress> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 0.0, right: 0.0),
                     child: GFButton(
-                      onPressed: updateAddress,
+                      onPressed: () {
+                        updateAddress();
+                      },
                       textStyle: textBarlowRegularBlack(),
                       color: primary,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text(MyLocalizations.of(context).update),
+                          Text(MyLocalizations.of(context)
+                              .getLocalizations("UPDATE")),
                           SizedBox(
                             height: 10,
                           ),

@@ -13,17 +13,11 @@ import 'package:readymadeGroceryApp/widgets/subCategoryProductCart.dart';
 SentryError sentryError = new SentryError();
 
 class SearchItem extends StatefulWidget {
-  final List productsList;
   final String currency, locale;
   final bool token;
   final Map localizedValues;
   SearchItem(
-      {Key key,
-      this.productsList,
-      this.currency,
-      this.locale,
-      this.token,
-      this.localizedValues})
+      {Key key, this.currency, this.locale, this.token, this.localizedValues})
       : super(key: key);
   @override
   _SearchItemState createState() => _SearchItemState();
@@ -93,33 +87,11 @@ class _SearchItemState extends State<SearchItem> {
         });
       }
       ProductService.getSearchList(query).then((onValue) {
-        try {
-          if (onValue != null && onValue['response_data'] is List) {
-            if (mounted) {
-              setState(() {
-                searchresult = onValue['response_data'];
-              });
-            }
-          } else {
-            if (mounted) {
-              setState(() {
-                searchresult = [];
-              });
-            }
-          }
-          if (mounted) {
-            setState(() {
-              isSearching = false;
-            });
-          }
-        } catch (error, stackTrace) {
-          searchresult = [];
-          if (mounted) {
-            setState(() {
-              isSearching = false;
-            });
-          }
-          sentryError.reportError(error, stackTrace);
+        if (mounted) {
+          setState(() {
+            searchresult = onValue['response_data'];
+            isSearching = false;
+          });
         }
       }).catchError((error) {
         searchresult = [];
@@ -181,8 +153,8 @@ class _SearchItemState extends State<SearchItem> {
                           child:
                               new Icon(Icons.arrow_back, color: Colors.black),
                         ),
-                        hintText:
-                            MyLocalizations.of(context).whatareyoubuyingtoday,
+                        hintText: MyLocalizations.of(context)
+                            .getLocalizations("WHAT_ARE_YOU_BUING_TODAY"),
                         fillColor: Color(0xFFF0F0F0),
                         filled: true,
                         focusColor: Colors.black,
@@ -215,7 +187,8 @@ class _SearchItemState extends State<SearchItem> {
                           Padding(
                             padding: const EdgeInsets.only(top: 100.0),
                             child: Text(
-                              MyLocalizations.of(context).typeToSearch,
+                              MyLocalizations.of(context)
+                                  .getLocalizations("TYPE_TO_SEARCH"),
                               textAlign: TextAlign.center,
                               style: hintSfMediumprimary(),
                             ),
@@ -246,7 +219,8 @@ class _SearchItemState extends State<SearchItem> {
                                         searchresult.length.toString() +
                                             " " +
                                             MyLocalizations.of(context)
-                                                .itemsFounds,
+                                                .getLocalizations(
+                                                    "ITEMS_FOUNDS"),
                                         style: textBarlowMediumBlack()),
                                   ],
                                 ),
@@ -294,39 +268,13 @@ class _SearchItemState extends State<SearchItem> {
                                     child: Stack(
                                       children: <Widget>[
                                         SubCategoryProductCard(
-                                            image: searchresult[index]['filePath'] == null
-                                                ? searchresult[index]
-                                                    ['imageUrl']
-                                                : searchresult[index]
-                                                    ['filePath'],
-                                            isPath: searchresult[index]['filePath'] == null
-                                                ? false
-                                                : true,
-                                            title: searchresult[index]['title'],
-                                            currency: currency,
-                                            category: searchresult[index]
-                                                ['category'],
-                                            price: searchresult[index]
-                                                ['variant'][0]['price'],
-                                            dealPercentage: searchresult[index]['isDealAvailable'] != null &&
-                                                    searchresult[index]
-                                                        ['isDealAvailable']
-                                                ? double.parse(searchresult[index]['delaPercent']
-                                                    .toStringAsFixed(1))
-                                                : null,
-                                            unit: searchresult[index]['variant']
-                                                [0]['unit'],
-                                            variantStock: searchresult[index]
-                                                ['variant'][0]['productstock'],
-                                            rating: searchresult[index]['averageRating'].toStringAsFixed(1),
-                                            buttonName: MyLocalizations.of(context).add,
-                                            cartAdded: searchresult[index]['cartAdded'] ?? false,
-                                            cartId: searchresult[index]['cartId'],
-                                            productQuantity: searchresult[index]['cartAddedQuantity'] ?? 0,
-                                            token: true,
-                                            productList: searchresult[index],
-                                            variantList: searchresult[index]['variant'],
-                                            subCategoryId: searchresult[index]['subcategory']),
+                                          currency: currency,
+                                          price: searchresult[index]['variant']
+                                              [0]['price'],
+                                          productData: searchresult[index],
+                                          variantList: searchresult[index]
+                                              ['variant'],
+                                        ),
                                         searchresult[index]
                                                     ['isDealAvailable'] ==
                                                 true
@@ -355,12 +303,13 @@ class _SearchItemState extends State<SearchItem> {
                                                       child: Text(
                                                         " " +
                                                             searchresult[index][
-                                                                    'delaPercent']
+                                                                    'dealPercent']
                                                                 .toString() +
                                                             "% " +
                                                             MyLocalizations.of(
                                                                     context)
-                                                                .off,
+                                                                .getLocalizations(
+                                                                    "OFF"),
                                                         style:
                                                             hintSfboldwhitemed(),
                                                         textAlign:
@@ -406,7 +355,7 @@ class _SearchItemState extends State<SearchItem> {
                                     padding: const EdgeInsets.only(top: 100.0),
                                     child: Text(
                                       MyLocalizations.of(context)
-                                          .noResultsFound,
+                                          .getLocalizations("NO_RESULT_FOUNDS"),
                                       textAlign: TextAlign.center,
                                       style: hintSfMediumprimary(),
                                     ),
@@ -422,12 +371,10 @@ class _SearchItemState extends State<SearchItem> {
               ],
             ),
       bottomNavigationBar: cartData == null
-          ? Container(
-              height: 1
-            )
+          ? Container(height: 1)
           : InkWell(
               onTap: () {
-                Navigator.push(
+                var result = Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (BuildContext context) => Home(
@@ -437,6 +384,14 @@ class _SearchItemState extends State<SearchItem> {
                     ),
                   ),
                 );
+                result.then((value) {
+                  if (searchTerm == null) {
+                    getCurrency();
+                  } else {
+                    searchresult = [];
+                    _searchForProducts(searchTerm);
+                  }
+                });
               },
               child: Container(
                 height: 55.0,
@@ -458,8 +413,9 @@ class _SearchItemState extends State<SearchItem> {
                             children: <Widget>[
                               SizedBox(height: 7),
                               new Text(
-                                '(${cartData['cart'].length})  ' +
-                                    MyLocalizations.of(context).items,
+                                '(${cartData['products'].length})  ' +
+                                    MyLocalizations.of(context)
+                                        .getLocalizations("ITEMS"),
                                 style: textBarlowRegularWhite(),
                               ),
                               new Text(
@@ -472,7 +428,8 @@ class _SearchItemState extends State<SearchItem> {
                         Row(
                           children: <Widget>[
                             new Text(
-                              MyLocalizations.of(context).goToCart,
+                              MyLocalizations.of(context)
+                                  .getLocalizations("GO_TO_CART"),
                               style: textBarlowRegularBlack(),
                             ),
                             SizedBox(width: 4),

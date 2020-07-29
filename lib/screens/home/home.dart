@@ -10,9 +10,7 @@ import 'package:readymadeGroceryApp/screens/tab/searchitem.dart';
 import 'package:readymadeGroceryApp/screens/tab/store.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/fav-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:location/location.dart';
@@ -41,10 +39,10 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       isCurrentLoactionLoading = false,
       getTokenValue = false;
   int currentIndex = 0;
-  List searchProductList, favProductList;
   LocationData currentLocation;
   Location _location = new Location();
   String currency = "";
+
   var addressData;
   void initState() {
     if (widget.currentIndex != null) {
@@ -57,6 +55,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     getToken();
     getResult();
     getGlobalSettingsData();
+
     tabController = TabController(length: 4, vsync: this);
     super.initState();
   }
@@ -67,36 +66,26 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         currencyLoading = true;
       });
     }
-    LoginService.getGlobalSettings().then((onValue) async {
-      try {
-        if (mounted) {
-          setState(() {
-            currencyLoading = false;
-          });
-        }
-        if (onValue['response_code'] == 200) {
-          if (onValue['response_data']['currencyCode'] == null) {
-            await Common.setCurrency('\$');
-            await Common.getCurrency().then((value) {
-              currency = value;
-            });
-          } else {
-            currency = onValue['response_data']['currencyCode'];
-            await Common.setCurrency(currency);
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            currencyLoading = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+    LoginService.getLocationformation().then((onValue) async {
+      if (mounted) {
+        setState(() {
+          currencyLoading = false;
+        });
+      }
+      if (onValue['response_data']['currencyCode'] == null) {
+        await Common.setCurrency('\$');
+        await Common.getCurrency().then((value) {
+          currency = value;
+        });
+      } else {
+        currency = onValue['response_data']['currencyCode'];
+        await Common.setCurrency(currency);
       }
     }).catchError((error) {
       if (mounted) {
         setState(() {
           currencyLoading = false;
+          Common.setCurrency('\$');
         });
       }
       sentryError.reportError(error, null);
@@ -109,7 +98,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         if (mounted) {
           setState(() {
             getTokenValue = true;
-            getFavListApi();
           });
         }
       } else {
@@ -129,71 +117,9 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     });
   }
 
-  getFavListApi() async {
-    await FavouriteService.getFavList().then((onValue) {
-      try {
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              favProductList = onValue['response_data'];
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            favProductList = [];
-          });
-        }
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          favProductList = [];
-        });
-      }
-      sentryError.reportError(error, null);
-    });
-  }
-
-  getProductListMethod() async {
-    await ProductService.getProductListAll(1).then((onValue) {
-      try {
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              searchProductList = onValue['response_data']['products'];
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              searchProductList = [];
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            searchProductList = [];
-          });
-        }
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          searchProductList = [];
-        });
-      }
-      sentryError.reportError(error, null);
-    });
-  }
-
   @override
   void dispose() {
-    tabController.dispose();
+    if (tabController != null) tabController.dispose();
     super.dispose();
   }
 
@@ -207,7 +133,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                MyLocalizations.of(context).yourLocation,
+                MyLocalizations.of(context)
+                    .getLocalizations("YOUR_LOCATION", true),
                 style: textBarlowRegularrBlacksm(),
               ),
               Text(
@@ -291,7 +218,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                         builder: (context) => SearchItem(
                           locale: widget.locale,
                           localizedValues: widget.localizedValues,
-                          productsList: searchProductList,
                           currency: currency,
                           token: getTokenValue,
                         ),
@@ -325,7 +251,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         onTap: _onTapped,
         items: [
           BottomNavigationBarItem(
-            title: Text(MyLocalizations.of(context).store),
+            title: Text(MyLocalizations.of(context).getLocalizations("STORE")),
             icon: Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: Icon(
@@ -337,7 +263,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
             ),
           ),
           BottomNavigationBarItem(
-            title: Text(MyLocalizations.of(context).savedItems),
+            title: Text(
+                MyLocalizations.of(context).getLocalizations("SAVED_ITEMS")),
             icon: Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: Icon(
@@ -349,7 +276,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
             ),
           ),
           BottomNavigationBarItem(
-            title: Text(MyLocalizations.of(context).myCart),
+            title:
+                Text(MyLocalizations.of(context).getLocalizations("MY_CART")),
             icon: Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: Icon(
@@ -361,7 +289,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
             ),
           ),
           BottomNavigationBarItem(
-            title: Text(MyLocalizations.of(context).profile),
+            title:
+                Text(MyLocalizations.of(context).getLocalizations("PROFILE")),
             icon: Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: Icon(
