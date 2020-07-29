@@ -222,7 +222,7 @@ class _OrdersState extends State<Orders> {
                   style: textBarlowRegularrdark(),
                 ),
                 Text(
-                  '${orderDetails['product']['title']}' ?? "",
+                  '${orderDetails['product']['title'][0].toUpperCase()}${orderDetails['product']['title'].substring(1)}',
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                   style: textBarlowRegularrdark(),

@@ -27,7 +27,8 @@ class MyCart extends StatefulWidget {
 }
 
 class _MyCartState extends State<MyCart> {
-  final _scaffoldkey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   bool isLoadingCart = false,
       isGetTokenLoading = false,
       isUpdating = false,
@@ -162,6 +163,10 @@ class _MyCartState extends State<MyCart> {
           cartItem['products'][i]['isQuantityUpdating'] = false;
         });
       }
+      if (onValue['message'] != null) {
+        showSnackbar(onValue['message'] ?? "");
+      }
+
       if (onValue['response_data'] is Map) {
         Common.setCartData(onValue['response_data']);
       } else {
@@ -181,6 +186,14 @@ class _MyCartState extends State<MyCart> {
     });
   }
 
+  void showSnackbar(message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(milliseconds: 3000),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+
   // get to cart
   getCartItems() async {
     if (mounted) {
@@ -189,16 +202,18 @@ class _MyCartState extends State<MyCart> {
       });
     }
     await CartService.getProductToCart().then((onValue) {
+      print(onValue);
       _refreshController.refreshCompleted();
       if (mounted) {
         setState(() {
           isLoadingCart = false;
         });
       }
+      if (onValue['response_data'] is Map &&
+          onValue['response_data']['products'] != [] &&
+          mounted) {
+        Common.setCartData(onValue['response_data']);
 
-      Common.setCartData(onValue['response_data']);
-
-      if (mounted) {
         setState(() {
           cartItem = onValue['response_data'];
           if (cartItem['grandTotal'] != null) {
@@ -214,6 +229,14 @@ class _MyCartState extends State<MyCart> {
             }
           }
         });
+      } else {
+        if (mounted) {
+          setState(() {
+            Common.setCartData(null);
+            cartItem = null;
+            isLoadingCart = false;
+          });
+        }
       }
     }).catchError((error) {
       if (mounted) {
@@ -230,13 +253,16 @@ class _MyCartState extends State<MyCart> {
   deleteCart(i) async {
     await CartService.deleteDataFromCart(cartItem['products'][i]['productId'])
         .then((onValue) {
-      Common.setCartData(onValue['response_data']);
-      if (mounted) {
+      print("onValue");
+      print(onValue);
+      if (onValue['response_data'] is Map && mounted) {
+        getCartItems();
+      } else {
         setState(() {
-          cartItem = onValue['response_data'];
+          Common.setCartData(null);
+          cartItem = null;
         });
       }
-      getCartItems();
     }).catchError((error) {
       if (mounted) {
         setState(() {
@@ -245,7 +271,6 @@ class _MyCartState extends State<MyCart> {
       }
       sentryError.reportError(error, null);
     });
-    getCartItems();
   }
 
   deleteAllCart() async {
@@ -334,7 +359,7 @@ class _MyCartState extends State<MyCart> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFFDFDFD),
-      key: _scaffoldkey,
+      key: _scaffoldKey,
       appBar: isGetTokenLoading || isMinAmountCheckLoading
           ? null
           : token == null
@@ -919,7 +944,7 @@ class _MyCartState extends State<MyCart> {
                                               Text(
                                                 MyLocalizations.of(context)
                                                     .getLocalizations(
-                                                        "CHEKCOUT"),
+                                                        "CHECKOUT"),
                                                 style: textBarlowRegularBlack(),
                                               ),
                                               Icon(Icons.arrow_forward),

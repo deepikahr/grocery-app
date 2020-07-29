@@ -127,7 +127,6 @@ class LoginService {
   // get languages list api
   static Future<dynamic> getLanguagesList() async {
     return client.get(Constants.apiUrl + '/languages/list').then((response) {
-      print(json.decode(response.body));
       return json.decode(response.body);
     });
   }

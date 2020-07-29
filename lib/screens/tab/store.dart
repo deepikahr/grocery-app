@@ -101,7 +101,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
 
   getCartData() {
     CartService.getProductToCart().then((value) {
-      if (value['response_data'] is Map) {
+      if (value['response_data'] is Map &&
+          value['response_data']['products'] != []) {
         Common.setCartData(value['response_data']);
       } else if (value['response_code'] == 403) {
         Common.setCartData(null);
@@ -359,7 +360,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                         left: locale == 'ar' ? 100 : 0,
                       ),
                       child: Text(
-                        url['title'],
+                        '${url['title'][0].toUpperCase()}${url['title'].substring(1)}',
                         overflow: TextOverflow.ellipsis,
                         maxLines: 2,
                         style: textbarlowBoldwhite(),
@@ -367,14 +368,14 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                     ),
                     InkWell(
                       onTap: () {
-                        if (url['bannerType'] == "Product") {
+                        if (url['bannerType'] == "PRODUCT") {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => ProductDetails(
                                 locale: widget.locale,
                                 localizedValues: widget.localizedValues,
-                                productID: url['product'],
+                                productID: url['productId'],
                               ),
                             ),
                           );
@@ -385,7 +386,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                               builder: (context) => SubCategories(
                                   locale: widget.locale,
                                   localizedValues: widget.localizedValues,
-                                  catId: url['category'],
+                                  catId: url['categoryId'],
                                   catTitle:
                                       '${url['title'][0].toUpperCase()}${url['title'].substring(1)}',
                                   token: getTokenValue),
@@ -675,7 +676,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
-                          Text(list[i]['title'],
+                          Text(
+                              '${list[i]['title'][0].toUpperCase()}${list[i]['title'].substring(1)}',
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: textBarlowSemiBoldwbig()),
@@ -804,7 +806,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                             height: 5,
                           ),
                           Text(
-                            list[i]['title'],
+                            '${list[i]['title'][0].toUpperCase()}${list[i]['title'].substring(1)}',
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: textBarlowmediumsmallWhite(),

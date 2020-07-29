@@ -148,7 +148,7 @@ class _AllCategoriesState extends State<AllCategories>
                               ),
                             ),
                             Text(
-                              categoryList[index]['title'],
+                              '${categoryList[index]['title'][0].toUpperCase()}${categoryList[index]['title'].substring(1)}',
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: textBarlowRegularrdarkdull(),

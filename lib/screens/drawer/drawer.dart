@@ -81,24 +81,16 @@ class _DrawerPageState extends State<DrawerPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0),
-                  child: _buildMenuTileList(
-                      'lib/assets/icons/Home.png',
-                      MyLocalizations.of(context)
-                          .getLocalizations("HOME")
-                          .toUpperCase(),
-                      0,
+                  child: _buildMenuTileList('lib/assets/icons/Home.png',
+                      MyLocalizations.of(context).getLocalizations("HOME"), 0,
                       route: Home(
                         locale: widget.locale,
                         localizedValues: widget.localizedValues,
                         currentIndex: 0,
                       )),
                 ),
-                _buildMenuTileList(
-                    'lib/assets/icons/products.png',
-                    MyLocalizations.of(context)
-                        .getLocalizations("PRODUCTS")
-                        .toUpperCase(),
-                    0,
+                _buildMenuTileList('lib/assets/icons/products.png',
+                    MyLocalizations.of(context).getLocalizations("PRODUCTS"), 0,
                     route: AllProducts(
                       locale: widget.locale,
                       localizedValues: widget.localizedValues,
@@ -107,8 +99,7 @@ class _DrawerPageState extends State<DrawerPage> {
                 _buildMenuTileList(
                   'lib/assets/icons/categories.png',
                   MyLocalizations.of(context)
-                      .getLocalizations("ALL_CATEGROIES")
-                      .toUpperCase(),
+                      .getLocalizations("ALL_CATEGROIES"),
                   0,
                   route: AllCategories(
                     locale: widget.locale,
@@ -118,9 +109,7 @@ class _DrawerPageState extends State<DrawerPage> {
                 ),
                 _buildMenuTileList(
                     'lib/assets/icons/deals.png',
-                    MyLocalizations.of(context)
-                        .getLocalizations("TOP_DEALS")
-                        .toUpperCase(),
+                    MyLocalizations.of(context).getLocalizations("TOP_DEALS"),
                     0,
                     route: AllDealsList(
                         locale: widget.locale,
@@ -133,9 +122,7 @@ class _DrawerPageState extends State<DrawerPage> {
                 getTokenValue
                     ? _buildMenuTileList(
                         'lib/assets/images/profileIcon.png',
-                        MyLocalizations.of(context)
-                            .getLocalizations("PROFILE")
-                            .toUpperCase(),
+                        MyLocalizations.of(context).getLocalizations("PROFILE"),
                         0,
                         route: Home(
                           locale: widget.locale,
@@ -147,8 +134,7 @@ class _DrawerPageState extends State<DrawerPage> {
                     ? _buildMenuTileList(
                         'lib/assets/icons/history.png',
                         MyLocalizations.of(context)
-                            .getLocalizations("MY_ORDERS")
-                            .toUpperCase(),
+                            .getLocalizations("MY_ORDERS"),
                         0,
                         route: Orders(
                           locale: widget.locale,
@@ -158,9 +144,7 @@ class _DrawerPageState extends State<DrawerPage> {
                 getTokenValue
                     ? _buildMenuTileList(
                         'lib/assets/icons/location.png',
-                        MyLocalizations.of(context)
-                            .getLocalizations("ADDRESS")
-                            .toUpperCase(),
+                        MyLocalizations.of(context).getLocalizations("ADDRESS"),
                         0,
                         route: Address(
                           locale: widget.locale,
@@ -171,8 +155,7 @@ class _DrawerPageState extends State<DrawerPage> {
                     ? _buildMenuTileList(
                         'lib/assets/icons/fav.png',
                         MyLocalizations.of(context)
-                            .getLocalizations("SAVED_ITEMS")
-                            .toUpperCase(),
+                            .getLocalizations("FAVORITE"),
                         0,
                         route: Home(
                           locale: widget.locale,
@@ -181,44 +164,31 @@ class _DrawerPageState extends State<DrawerPage> {
                         ))
                     : Container(),
                 getTokenValue
-                    ? _buildMenuTileList(
-                        'lib/assets/icons/chat.png',
-                        MyLocalizations.of(context)
-                            .getLocalizations("CHAT")
-                            .toUpperCase(),
-                        0,
+                    ? _buildMenuTileList('lib/assets/icons/chat.png',
+                        MyLocalizations.of(context).getLocalizations("CHAT"), 0,
                         route: Chat(
                           locale: widget.locale,
                           localizedValues: widget.localizedValues,
                         ))
                     : Container(),
-                _buildMenuTileList(
-                    'lib/assets/icons/about.png',
-                    MyLocalizations.of(context)
-                        .getLocalizations("ABOUT_US")
-                        .toUpperCase(),
-                    0,
+                _buildMenuTileList('lib/assets/icons/about.png',
+                    MyLocalizations.of(context).getLocalizations("ABOUT_US"), 0,
                     route: WebViewPage(
                         locale: widget.locale,
                         localizedValues: widget.localizedValues,
                         title: MyLocalizations.of(context)
-                            .getLocalizations("ABOUT_US")
-                            .toUpperCase(),
+                            .getLocalizations("ABOUT_US"),
                         url: Constants.baseUrl + "/about-us")),
                 SizedBox(height: 20.0),
                 getTokenValue
                     ? _buildMenuTileList1(
                         'lib/assets/icons/lg.png',
-                        MyLocalizations.of(context)
-                            .getLocalizations("LOGOUT")
-                            .toUpperCase(),
+                        MyLocalizations.of(context).getLocalizations("LOGOUT"),
                         0,
                         route: null)
                     : _buildMenuTileList1(
                         'lib/assets/icons/lg.png',
-                        MyLocalizations.of(context)
-                            .getLocalizations("LOGIN")
-                            .toUpperCase(),
+                        MyLocalizations.of(context).getLocalizations("LOGIN"),
                         0,
                         route: Login(
                           locale: widget.locale,

@@ -65,7 +65,7 @@ class ProductCard extends StatelessWidget {
                     children: <Widget>[
                       Expanded(
                         child: Text(
-                          productData['title'],
+                          '${productData['title'][0].toUpperCase()}${productData['title'].substring(1)}',
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: textbarlowRegularBlackb(),

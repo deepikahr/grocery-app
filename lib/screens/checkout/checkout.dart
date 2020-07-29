@@ -97,7 +97,9 @@ class _CheckoutState extends State<Checkout> {
     await CartService.getProductToCart().then((onValue) {
       getAddress();
       _refreshController.refreshCompleted();
-      if (onValue['response_data'] is Map && mounted) {
+      if (onValue['response_data'] is Map &&
+          onValue['response_data']['products'] != [] &&
+          mounted) {
         setState(() {
           cartItem = onValue['response_data'];
           Common.setCartData(onValue['response_data']);
@@ -445,7 +447,7 @@ class _CheckoutState extends State<Checkout> {
       key: _scaffoldKey,
       appBar: GFAppBar(
         title: Text(
-          MyLocalizations.of(context).getLocalizations("CHEKCOUT"),
+          MyLocalizations.of(context).getLocalizations("CHECKOUT"),
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -1236,7 +1238,7 @@ class _CheckoutState extends State<Checkout> {
                                 children: <Widget>[
                                   Text(
                                     MyLocalizations.of(context)
-                                        .getLocalizations("PROCEE"),
+                                        .getLocalizations("PROCEED"),
                                     style: textBarlowRegularBlack(),
                                   ),
                                 ],
