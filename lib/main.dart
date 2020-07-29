@@ -21,8 +21,12 @@ bool get isInDebugMode {
 }
 
 void main() {
+  initializeMain();
+}
+
+void initializeMain() {
   WidgetsFlutterBinding.ensureInitialized();
-  configLocalNotification();
+  // configLocalNotification();
   runZoned<Future<Null>>(() {
     runApp(MaterialApp(
       home: AnimatedScreen(),

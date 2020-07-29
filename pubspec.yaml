@@ -32,13 +32,16 @@ dependencies:
   url_launcher: ^5.4.5
   flutter_map_picker: ^0.1.2
   stripe_payment: ^1.0.7
- 
   flutter_localizations:
     sdk: flutter
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_driver:
+    sdk: flutter
+  test: ^1.5.1
+  screenshots: ^2.1.1
 
 flutter:
   uses-material-design: true
