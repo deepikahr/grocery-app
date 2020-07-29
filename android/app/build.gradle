@@ -29,6 +29,7 @@ def keystorePropertiesFile = rootProject.file('key.properties')
    if (keystorePropertiesFile.exists()) {
        keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
    }
+def googleMapApiKey = System.getenv("googleMapApiKey")
 android {
     compileSdkVersion 29
 
@@ -41,7 +42,6 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.ionicfirebaseapp.readymadegroceryuserapp"
         minSdkVersion 19
         targetSdkVersion 29
@@ -50,6 +50,8 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         manifestPlaceholders = [googleMapApiKey: "$System.env.GOOGLE_MAP_API_KEY"]
+        //[googleMapApiKey: googleMapApiKey]
+        // [googleMapApiKey: "$System.env.GOOGLE_MAP_API_KEY"]
     }
     signingConfigs {
        release {
@@ -62,8 +64,6 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.release
         }
     }

@@ -24,7 +24,11 @@ bool get isInDebugMode {
 
 Timer oneSignalTimer;
 
-void main() async {
+void main() {
+  initializeMain();
+}
+
+void initializeMain() async {
   await DotEnv().load('.env');
   WidgetsFlutterBinding.ensureInitialized();
   oneSignalTimer = Timer.periodic(Duration(seconds: 4), (timer) {
@@ -36,9 +40,7 @@ void main() async {
       debugShowCheckedModeBanner: false,
     ));
     return Future.value(null);
-  },
-      // ignore: deprecated_member_use
-      onError: (error, stackTrace) {
+  }, onError: (error, stackTrace) {
     sentryError.reportError(error, stackTrace);
   });
   Common.getSelectedLanguage().then((selectedLocale) {
@@ -68,9 +70,7 @@ void main() async {
           localizedValues: localizedValues,
         ));
         return Future.value(null);
-      },
-          // ignore: deprecated_member_use
-          onError: (error, stackTrace) {
+      }, onError: (error, stackTrace) {
         sentryError.reportError(error, stackTrace);
       });
     });
