@@ -394,7 +394,7 @@ class _AddAddressState extends State<AddAddress> {
                     children: <Widget>[
                       Text(
                         MyLocalizations.of(context)
-                            .getLocalizations("POSTEL_CODE", true),
+                            .getLocalizations("POSTAL_CODE", true),
                         style: textbarlowRegularBlack(),
                       ),
                     ],
@@ -435,7 +435,7 @@ class _AddAddressState extends State<AddAddress> {
                       validator: (String value) {
                         if (value.isEmpty) {
                           return MyLocalizations.of(context)
-                              .getLocalizations("ENTER_POSTEL_CODE");
+                              .getLocalizations("ENTER_POSTAL_CODE");
                         } else
                           return null;
                       },

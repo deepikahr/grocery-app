@@ -443,7 +443,7 @@ class _EditAddressState extends State<EditAddress> {
                     children: <Widget>[
                       Text(
                         MyLocalizations.of(context)
-                            .getLocalizations("POSTEL_CODE", true),
+                            .getLocalizations("POSTAL_CODE", true),
                         style: regular(),
                       ),
                     ],
@@ -476,7 +476,7 @@ class _EditAddressState extends State<EditAddress> {
                       validator: (String value) {
                         if (value.isEmpty) {
                           return MyLocalizations.of(context)
-                              .getLocalizations("ENTER_POSTEL_CODE");
+                              .getLocalizations("ENTER_POSTAL_CODE");
                         } else
                           return null;
                       },

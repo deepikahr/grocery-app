@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
+import 'package:readymadeGroceryApp/screens/orders/orders.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -40,7 +41,16 @@ class _ThankyouState extends State<Thankyou> {
             SizedBox(height: 30.0),
             GFButton(
               onPressed: () {
-                Navigator.pushAndRemoveUntil(
+                var reuslt = Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => Orders(
+                      locale: widget.locale,
+                      localizedValues: widget.localizedValues,
+                    ),
+                  ),
+                );
+                reuslt.then((value) => Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
                       builder: (BuildContext context) => Home(
@@ -49,11 +59,11 @@ class _ThankyouState extends State<Thankyou> {
                         currentIndex: 0,
                       ),
                     ),
-                    (Route<dynamic> route) => false);
+                    (Route<dynamic> route) => false));
               },
               color: Colors.black,
               child: Text(
-                MyLocalizations.of(context).getLocalizations("BACK_TO_HOME"),
+                MyLocalizations.of(context).getLocalizations("ORDERS"),
                 style: textbarlowMediumPrimary(),
               ),
             ),

@@ -82,8 +82,6 @@ class _ProfileState extends State<Profile> {
 
   userInfoMethod() async {
     await LoginService.getUserInfo().then((onValue) {
-      print(onValue);
-
       if (mounted) {
         setState(() {
           userInfo = onValue['response_data'];
@@ -381,8 +379,7 @@ class _ProfileState extends State<Profile> {
                                       right: 20.0),
                                   child: Text(
                                     MyLocalizations.of(context)
-                                        .getLocalizations("ADDRESS")
-                                        .toUpperCase(),
+                                        .getLocalizations("ADDRESS"),
                                     style: textBarlowMediumBlack(),
                                   ),
                                 ),

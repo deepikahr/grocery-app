@@ -96,7 +96,6 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
       }
       if (mounted) {
         setState(() {
-          print(increase);
           if (increase) {
             widget.productData['quantityToCart']++;
           } else {
@@ -189,7 +188,7 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                         children: <Widget>[
                           Expanded(
                             child: Text(
-                              widget.productData['title'],
+                              '${widget.productData['title'][0].toUpperCase()}${widget.productData['title'].substring(1)}',
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: textbarlowRegularBlackb(),
@@ -333,7 +332,6 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                                       .addAndUpdateProductMethod(
                                                           productAddBody)
                                                   .then((onValue) {
-                                                print(onValue);
                                                 if (onValue['response_data']
                                                     is Map) {
                                                   Common.setCartData(

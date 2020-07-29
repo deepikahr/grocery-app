@@ -964,7 +964,7 @@ TextStyle textBarlowSemiBoldBlack() {
 
 TextStyle textBarlowSemiBoldBlackbigg() {
   return TextStyle(
-    fontSize: 22.0,
+    fontSize: 20.0,
     fontWeight: FontWeight.bold,
     fontFamily: 'BarlowSemiBold',
     color: Colors.black,

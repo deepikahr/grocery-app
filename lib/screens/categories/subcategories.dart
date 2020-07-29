@@ -246,7 +246,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                                 ),
                                               ),
                                               child: Text(
-                                                subCategryList[0]['title'],
+                                                '${subCategryList[0]['title'][0].toUpperCase()}${subCategryList[0]['title'].substring(1)}',
                                                 textAlign: TextAlign.center,
                                                 style: textbarlowMediumBlackm(),
                                               ),
@@ -291,7 +291,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                             ),
                                           ),
                                           child: Text(
-                                            subCategryList[i]['title'],
+                                            '${subCategryList[i]['title'][0].toUpperCase()}${subCategryList[i]['title'].substring(1)}',
                                             textAlign: TextAlign.center,
                                             style: textbarlowMediumBlackm(),
                                           ),
