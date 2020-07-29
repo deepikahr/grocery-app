@@ -240,7 +240,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                                 ),
                                               ),
                                               child: Text(
-                                                'All',
+                                                MyLocalizations.of(context).all,
                                                 textAlign: TextAlign.center,
                                                 style: textbarlowMediumBlackm(),
                                               ),

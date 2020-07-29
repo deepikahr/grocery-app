@@ -48,7 +48,7 @@ class _CheckoutState extends State<Checkout> {
   // Declare this variable
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  Map<String, dynamic> userInfo, address, cartItem;
+  Map userInfo, address, cartItem, locationInfo;
 
   List addressList, deliverySlotList;
   int selectedRadio, groupValue, groupValue1, _selectedIndex = 0;
@@ -65,18 +65,56 @@ class _CheckoutState extends State<Checkout> {
       deliverySlot = false,
       isLoadingCart = false,
       isDeliveryChargeLoading = false,
-      isDeliveryChargeFree = false;
+      isDeliveryChargeFree = false,
+      _serviceEnabled;
   LocationData currentLocation;
   Location _location = new Location();
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
+
+  PermissionStatus _permissionGranted;
   @override
   void initState() {
     cartItem = widget.cartItem;
     super.initState();
+    getAdminLocationInfo();
     getUserInfo();
     getDeliverySlot();
     getCartItems();
+  }
+
+  getAdminLocationInfo() async {
+    await LoginService.getLocationformation().then((onValue) {
+      try {
+        if (onValue['response_code'] == 200) {
+          if (mounted) {
+            setState(() {
+              locationInfo = onValue['response_data'];
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              locationInfo = null;
+            });
+          }
+        }
+      } catch (error, stackTrace) {
+        if (mounted) {
+          setState(() {
+            locationInfo = null;
+          });
+        }
+        sentryError.reportError(error, stackTrace);
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          locationInfo = null;
+        });
+      }
+      sentryError.reportError(error, null);
+    });
   }
 
   proceed() {
@@ -375,7 +413,7 @@ class _CheckoutState extends State<Checkout> {
 
   placeOrder() async {
     if (selectedDate == null) {
-      selectedDate = DateFormat("dd-MM-yyyy").format(DateTime.now());
+      selectedDate = deliverySlotList[0]['date'];
     }
     if (groupValue1 == null) {
       showSnackbar(MyLocalizations.of(context).pleaseselectaddressfirst);
@@ -606,6 +644,38 @@ class _CheckoutState extends State<Checkout> {
     );
   }
 
+  addAddressPageMethod(locationlatlong) async {
+    PlacePickerResult pickerResult = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => PlacePickerScreen(
+                  googlePlacesApiKey: Constants.GOOGLE_API_KEY,
+                  initialPosition: LatLng(locationlatlong['latitude'],
+                      locationlatlong['longitude']),
+                  mainColor: primary,
+                  mapStrings: MapPickerStrings.english(),
+                  placeAutoCompleteLanguage: 'en',
+                )));
+    if (pickerResult != null) {
+      setState(() {
+        var result = Navigator.push(
+          context,
+          new MaterialPageRoute(
+            builder: (BuildContext context) => new AddAddress(
+              isProfile: true,
+              pickedLocation: pickerResult,
+              locale: widget.locale,
+              localizedValues: widget.localizedValues,
+            ),
+          ),
+        );
+        result.then((res) {
+          getAddress();
+        });
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -626,6 +696,7 @@ class _CheckoutState extends State<Checkout> {
         enablePullUp: false,
         controller: _refreshController,
         onRefresh: () {
+          getAdminLocationInfo();
           getUserInfo();
           getDeliverySlot();
           getCartItems();
@@ -1173,58 +1244,39 @@ class _CheckoutState extends State<Checkout> {
                                         EdgeInsets.only(left: 10, right: 10),
                                     child: GFButton(
                                       onPressed: () async {
+                                        _permissionGranted =
+                                            await _location.hasPermission();
+                                        if (_permissionGranted ==
+                                            PermissionStatus.denied) {
+                                          _permissionGranted = await _location
+                                              .requestPermission();
+                                          if (_permissionGranted !=
+                                              PermissionStatus.granted) {
+                                            Map locationLatLong = {
+                                              "latitude":
+                                                  locationInfo['location']
+                                                      ['lat'],
+                                              "longitude":
+                                                  locationInfo['location']
+                                                      ['lng']
+                                            };
+
+                                            addAddressPageMethod(
+                                                locationLatLong);
+                                            return;
+                                          }
+                                        }
                                         currentLocation =
                                             await _location.getLocation();
+
                                         if (currentLocation != null) {
-                                          PlacePickerResult pickerResult =
-                                              await Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          PlacePickerScreen(
-                                                            googlePlacesApiKey:
-                                                                Constants
-                                                                    .GOOGLE_API_KEY,
-                                                            initialPosition: LatLng(
-                                                                currentLocation
-                                                                    .latitude,
-                                                                currentLocation
-                                                                    .longitude),
-                                                            mainColor: primary,
-                                                            mapStrings:
-                                                                MapPickerStrings
-                                                                    .english(),
-                                                            placeAutoCompleteLanguage:
-                                                                'en',
-                                                          )));
-                                          if (pickerResult != null) {
-                                            setState(() {
-                                              var result = Navigator.push(
-                                                context,
-                                                new MaterialPageRoute(
-                                                  builder:
-                                                      (BuildContext context) =>
-                                                          new AddAddress(
-                                                    isProfile: true,
-                                                    pickedLocation:
-                                                        pickerResult,
-                                                    locale: widget.locale,
-                                                    localizedValues:
-                                                        widget.localizedValues,
-                                                  ),
-                                                ),
-                                              );
-                                              result.then((res) {
-                                                getAddress();
-                                              });
-                                            });
-                                          }
-                                        } else {
-                                          showError(
-                                              MyLocalizations.of(context)
-                                                  .enableTogetlocation,
-                                              MyLocalizations.of(context)
-                                                  .thereisproblemusingyourdevicelocationPleasecheckyourGPSsettings);
+                                          Map locationLatLong = {
+                                            "latitude":
+                                                currentLocation.latitude,
+                                            "longitude":
+                                                currentLocation.longitude
+                                          };
+                                          addAddressPageMethod(locationLatLong);
                                         }
                                       },
                                       type: GFButtonType.transparent,
@@ -1379,8 +1431,7 @@ class _CheckoutState extends State<Checkout> {
                                                           value: i,
                                                           groupValue:
                                                               selectedRadio,
-                                                          activeColor:
-                                                              Colors.green,
+                                                          activeColor: primary,
                                                           onChanged: (value) {
                                                             setSelectedRadio(
                                                                 value);

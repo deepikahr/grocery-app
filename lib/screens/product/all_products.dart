@@ -35,7 +35,7 @@ class AllProducts extends StatefulWidget {
 
 class _AllProductsState extends State<AllProducts> {
   List productsList = [], subCategryByProduct, subCategryList;
-  String currency;
+  String currency, currentSubCategoryId;
   bool getTokenValue = false,
       isLoadingProductsList = false,
       isSelected = true,
@@ -368,7 +368,7 @@ class _AllProductsState extends State<AllProducts> {
                                               ),
                                             ),
                                             child: Text(
-                                              'All',
+                                              MyLocalizations.of(context).all,
                                               textAlign: TextAlign.center,
                                               style: textbarlowMediumBlackm(),
                                             ),
@@ -385,6 +385,9 @@ class _AllProductsState extends State<AllProducts> {
                                                 isSelectetedId = null;
                                               });
                                             }
+                                            currentSubCategoryId =
+                                                subCategryList[0]['_id']
+                                                    .toString();
 
                                             getProductToSubCategory(
                                                 subCategryList[0]['_id']
@@ -426,6 +429,8 @@ class _AllProductsState extends State<AllProducts> {
                                                 subCategryList[i]['_id'];
                                           });
                                         }
+                                        currentSubCategoryId =
+                                            subCategryList[i]['_id'].toString();
 
                                         getProductToSubCategory(
                                             subCategryList[i]['_id']
@@ -519,15 +524,14 @@ class _AllProductsState extends State<AllProducts> {
                                                     ),
                                                   );
                                                   result.then((value) {
-                                                    if (mounted) {
-                                                      setState(() {
-                                                        isLoadingSubCatProductsList =
-                                                            true;
-                                                      });
-                                                    }
+                                                   
+                                                         if (mounted) {
+      setState(() {
+        isLoadingSubCatProductsList = true;
+      });
+    }
                                                     getProductToSubCategory(
-                                                        subCategryByProduct[i]
-                                                            ['_id']);
+                                                        currentSubCategoryId);
                                                   });
                                                 },
                                                 child: Stack(
@@ -738,7 +742,7 @@ class _AllProductsState extends State<AllProducts> {
                                                 unit: productsList[i]['variant']
                                                     [0]['unit'],
                                                 rating: productsList[i]['averageRating'].toStringAsFixed(1),
-                                                buttonName: "Add",
+                                                buttonName: MyLocalizations.of(context).add,
                                                 cartAdded: productsList[i]['cartAdded'] ?? false,
                                                 cartId: productsList[i]['cartId'],
                                                 productQuantity: productsList[i]['cartAddedQuantity'] ?? 0,

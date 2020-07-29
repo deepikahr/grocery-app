@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:getflutter/getflutter.dart';
@@ -20,20 +22,23 @@ bool get isInDebugMode {
   return inDebugMode;
 }
 
-void main() {
-  initializeMain();
-}
+Timer oneSignalTimer;
 
-void initializeMain() {
+void main() async {
+  await DotEnv().load('.env');
   WidgetsFlutterBinding.ensureInitialized();
-  // configLocalNotification();
+  oneSignalTimer = Timer.periodic(Duration(seconds: 4), (timer) {
+    configLocalNotification();
+  });
   runZoned<Future<Null>>(() {
     runApp(MaterialApp(
       home: AnimatedScreen(),
       debugShowCheckedModeBanner: false,
     ));
     return Future.value(null);
-  }, onError: (error, stackTrace) {
+  },
+      // ignore: deprecated_member_use
+      onError: (error, stackTrace) {
     sentryError.reportError(error, stackTrace);
   });
   Common.getSelectedLanguage().then((selectedLocale) {
@@ -52,13 +57,10 @@ void initializeMain() {
     };
     LoginService.getLanguageJson(locale).then((value) async {
       localizedValues = value['response_data']['json'];
-      if (locale == '') {
-        defaultLocale = value['response_data']['defaultCode']['languageCode'];
-        locale = defaultLocale;
-      }
+      defaultLocale = value['response_data']['languageCode'];
+      locale = defaultLocale;
+
       await Common.setSelectedLanguage(locale);
-      await Common.setAllLanguageNames(value['response_data']['langName']);
-      await Common.setAllLanguageCodes(value['response_data']['langCode']);
       getToken();
       runZoned<Future<Null>>(() {
         runApp(MainScreen(
@@ -66,7 +68,9 @@ void initializeMain() {
           localizedValues: localizedValues,
         ));
         return Future.value(null);
-      }, onError: (error, stackTrace) {
+      },
+          // ignore: deprecated_member_use
+          onError: (error, stackTrace) {
         sentryError.reportError(error, stackTrace);
       });
     });
@@ -76,24 +80,11 @@ void initializeMain() {
 void getToken() async {
   await Common.getToken().then((onValue) async {
     if (onValue != null) {
-      await LoginService.setLanguageCodeToProfile();
-      checkToken(onValue);
-    } else {}
-  }).catchError((error) {
-    sentryError.reportError(error, null);
-  });
-}
-
-void checkToken(token) async {
-  LoginService.checkToken().then((onValue) async {
-    try {
-      if (onValue['response_data']['tokenVerify'] == false) {
-        await Common.setToken(null);
-      } else {
+      Common.getSelectedLanguage().then((selectedLocale) async {
+        Map body = {"language": selectedLocale};
+        await LoginService.updateUserInfo(body);
         userInfoMethod();
-      }
-    } catch (error, stackTrace) {
-      sentryError.reportError(error, stackTrace);
+      });
     }
   }).catchError((error) {
     sentryError.reportError(error, null);
@@ -102,11 +93,7 @@ void checkToken(token) async {
 
 void userInfoMethod() async {
   await LoginService.getUserInfo().then((onValue) async {
-    try {
-      await Common.setUserID(onValue['response_data']['userInfo']['_id']);
-    } catch (error, stackTrace) {
-      sentryError.reportError(error, stackTrace);
-    }
+    await Common.setUserID(onValue['response_data']['_id']);
   }).catchError((error) {
     sentryError.reportError(error, null);
   });
@@ -121,17 +108,17 @@ Future<void> configLocalNotification() async {
       .setNotificationReceivedHandler((OSNotification notification) {});
   OneSignal.shared
       .setNotificationOpenedHandler((OSNotificationOpenedResult result) {});
-  await OneSignal.shared.init(Constants.ONE_SIGNAL_KEY, iOSSettings: settings);
+  await OneSignal.shared.init(Constants.oneSignalKey, iOSSettings: settings);
   OneSignal.shared
       .promptUserForPushNotificationPermission(fallbackToSettings: true);
   OneSignal.shared
       .setInFocusDisplayType(OSNotificationDisplayType.notification);
   var status = await OneSignal.shared.getPermissionSubscriptionState();
   String playerId = status.subscriptionStatus.userId;
-  if (playerId == null) {
-    configLocalNotification();
-  } else {
+  if (playerId != null) {
     await Common.setPlayerID(playerId);
+    if (oneSignalTimer != null && oneSignalTimer.isActive)
+      oneSignalTimer.cancel();
   }
 }
 
@@ -150,9 +137,11 @@ class MainScreen extends StatelessWidget {
     return MaterialApp(
       locale: Locale(locale),
       localizationsDelegates: [
-        MyLocalizationsDelegate(localizedValues),
-        GlobalMaterialLocalizations.delegate,
+        MyLocalizationsDelegate(localizedValues, [locale]),
         GlobalWidgetsLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        DefaultCupertinoLocalizations.delegate
       ],
       supportedLocales: [Locale(locale)],
       debugShowCheckedModeBanner: false,

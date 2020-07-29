@@ -10,7 +10,6 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:stripe_payment/stripe_payment.dart';
 
 SentryError sentryError = new SentryError();
@@ -39,13 +38,11 @@ class Payment extends StatefulWidget {
 
 class _PaymentState extends State<Payment> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+
   int groupValue;
   String currency;
   var grandTotal, deliveryCharges;
   bool isPlaceOrderLoading = false,
-      isCardDelete = false,
       isCardListLoading = false,
       isSelected = false;
   List<Map<String, dynamic>> paymentTypes = [
@@ -257,165 +254,152 @@ class _PaymentState extends State<Payment> {
         elevation: 0,
         iconTheme: IconThemeData(color: Colors.black, size: 15.0),
       ),
-      body: SmartRefresher(
-        enablePullDown: true,
-        enablePullUp: false,
-        controller: _refreshController,
-        onRefresh: () {
-          fetchCardInfo();
-
-          deliveryCharges = widget.deliveryCharges;
-          grandTotal = widget.grandTotals;
-        },
-        child: isCardListLoading
-            ? SquareLoader()
-            : ListView(
-                children: <Widget>[
-                  deliveryCharges == 0 || deliveryCharges == "0"
-                      ? Container()
-                      : Container(
-                          color: Colors.grey[100],
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 8.0, bottom: 8.0, left: 20, right: 20),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Column(
-                                  children: <Widget>[
-                                    Text(
-                                      MyLocalizations.of(context)
-                                          .deliveryCharges,
-                                      style: textbarlowMediumBlack(),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: <Widget>[
-                                    Row(
-                                      children: <Widget>[
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 0.0),
-                                          child: Text(
-                                            currency,
-                                            style: textbarlowBoldBlack(),
-                                          ),
-                                        ),
-                                        Text(
-                                          deliveryCharges
-                                              .toDouble()
-                                              .toStringAsFixed(2),
+      body: isCardListLoading
+          ? SquareLoader()
+          : ListView(
+              children: <Widget>[
+                deliveryCharges == 0 || deliveryCharges == "0"
+                    ? Container()
+                    : Container(
+                        color: Colors.grey[100],
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 8.0, bottom: 8.0, left: 20, right: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Column(
+                                children: <Widget>[
+                                  Text(
+                                    MyLocalizations.of(context).deliveryCharges,
+                                    style: textbarlowMediumBlack(),
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 0.0),
+                                        child: Text(
+                                          currency,
                                           style: textbarlowBoldBlack(),
                                         ),
-                                      ],
-                                    )
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                  Container(
-                    color: Colors.grey[100],
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          top: 8.0, bottom: 8.0, left: 20, right: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Column(
-                            children: <Widget>[
-                              Text(
-                                MyLocalizations.of(context).grandTotal,
-                                style: textbarlowMediumBlack(),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 0.0),
-                                    child: Text(
-                                      currency,
-                                      style: textbarlowBoldBlack(),
-                                    ),
-                                  ),
-                                  Text(
-                                    grandTotal.toDouble().toStringAsFixed(2),
-                                    style: textbarlowBoldBlack(),
-                                  ),
+                                      ),
+                                      Text(
+                                        deliveryCharges
+                                            .toDouble()
+                                            .toStringAsFixed(2),
+                                        style: textbarlowBoldBlack(),
+                                      ),
+                                    ],
+                                  )
                                 ],
                               )
                             ],
-                          )
-                        ],
+                          ),
+                        ),
                       ),
+                Container(
+                  color: Colors.grey[100],
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 8.0, bottom: 8.0, left: 20, right: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Column(
+                          children: <Widget>[
+                            Text(
+                              MyLocalizations.of(context).grandTotal,
+                              style: textbarlowMediumBlack(),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 0.0),
+                                  child: Text(
+                                    currency,
+                                    style: textbarlowBoldBlack(),
+                                  ),
+                                ),
+                                Text(
+                                  grandTotal.toDouble().toStringAsFixed(2),
+                                  style: textbarlowBoldBlack(),
+                                ),
+                              ],
+                            )
+                          ],
+                        )
+                      ],
                     ),
                   ),
-                  SizedBox(height: 10),
-                  Column(
-                    children: [
-                      ListView.builder(
-                        physics: ScrollPhysics(),
-                        shrinkWrap: true,
-                        padding: EdgeInsets.only(right: 0.0),
-                        itemCount: paymentTypes.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          if (grandTotal >= 0.5) {
-                            paymentTypes[0]['isSelected'] = true;
-                            paymentTypes[1]['isSelected'] = true;
-                          } else {
-                            paymentTypes[0]['isSelected'] = true;
-                            paymentTypes[1]['isSelected'] = false;
-                          }
-                          return paymentTypes[index]['isSelected'] == true
-                              ? Container(
-                                  margin: EdgeInsets.all(8.0),
-                                  color: Colors.white,
-                                  child: RadioListTile(
-                                    value: index,
-                                    groupValue: groupValue,
-                                    selected: isSelected,
-                                    activeColor: primary,
-                                    title: Text(
-                                      paymentTypes[index]['type'] == 'COD'
-                                          ? MyLocalizations.of(context)
-                                              .cashOnDelivery
-                                          : MyLocalizations.of(context)
-                                              .payByCard,
-                                      style: TextStyle(color: primary),
-                                    ),
-                                    onChanged: (int selected) {
-                                      if (mounted) {
-                                        setState(() {
-                                          groupValue = selected;
-                                        });
-                                      }
-                                    },
-                                    secondary: paymentTypes[index]['type'] ==
-                                            "COD"
-                                        ? Text(
-                                            currency,
-                                            style: TextStyle(color: primary),
-                                          )
-                                        : Icon(
-                                            Icons.credit_card,
-                                            color: primary,
-                                            size: 16.0,
-                                          ),
+                ),
+                SizedBox(height: 10),
+                Column(
+                  children: [
+                    ListView.builder(
+                      physics: ScrollPhysics(),
+                      shrinkWrap: true,
+                      padding: EdgeInsets.only(right: 0.0),
+                      itemCount: paymentTypes.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        if (grandTotal >= 0.5) {
+                          paymentTypes[0]['isSelected'] = true;
+                          paymentTypes[1]['isSelected'] = true;
+                        } else {
+                          paymentTypes[0]['isSelected'] = true;
+                          paymentTypes[1]['isSelected'] = false;
+                        }
+                        return paymentTypes[index]['isSelected'] == true
+                            ? Container(
+                                margin: EdgeInsets.all(8.0),
+                                color: Colors.white,
+                                child: RadioListTile(
+                                  value: index,
+                                  groupValue: groupValue,
+                                  selected: isSelected,
+                                  activeColor: primary,
+                                  title: Text(
+                                    paymentTypes[index]['type'] == 'COD'
+                                        ? MyLocalizations.of(context)
+                                            .cashOnDelivery
+                                        : MyLocalizations.of(context).payByCard,
+                                    style: TextStyle(color: primary),
                                   ),
-                                )
-                              : Container();
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-      ),
+                                  onChanged: (int selected) {
+                                    if (mounted) {
+                                      setState(() {
+                                        groupValue = selected;
+                                      });
+                                    }
+                                  },
+                                  secondary:
+                                      paymentTypes[index]['type'] == "COD"
+                                          ? Text(
+                                              currency,
+                                              style: TextStyle(color: primary),
+                                            )
+                                          : Icon(
+                                              Icons.credit_card,
+                                              color: primary,
+                                              size: 16.0,
+                                            ),
+                                ),
+                              )
+                            : Container();
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
       bottomNavigationBar: Container(
         margin: EdgeInsets.only(left: 15, right: 15, bottom: 20),
         height: 55,

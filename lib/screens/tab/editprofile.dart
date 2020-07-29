@@ -157,6 +157,7 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   selectGallary() async {
+    // ignore: deprecated_member_use
     image = await ImagePicker.pickImage(source: ImageSource.gallery);
     if (mounted) {
       setState(() {
@@ -167,6 +168,7 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   selectCamera() async {
+    // ignore: deprecated_member_use
     image = await ImagePicker.pickImage(source: ImageSource.camera);
     if (mounted) {
       setState(() {
@@ -178,8 +180,8 @@ class _EditProfileState extends State<EditProfile> {
 
   imageUpload(_imageFile) async {
     Navigator.pop(context);
-
     var stream =
+        // ignore: deprecated_member_use
         new http.ByteStream(DelegatingStream.typed(_imageFile.openRead()));
 
     int length = await _imageFile.length();
@@ -484,9 +486,6 @@ class _EditProfileState extends State<EditProfile> {
                       validator: (String value) {
                         if (value.isEmpty) {
                           return MyLocalizations.of(context).enterFullName;
-                        } else if (!RegExp(r'^[A-Za-z ]+$').hasMatch(value)) {
-                          return MyLocalizations.of(context)
-                              .pleaseEnterValidFullName;
                         } else
                           return null;
                       },

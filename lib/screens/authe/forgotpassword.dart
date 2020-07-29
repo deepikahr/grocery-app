@@ -54,10 +54,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   content: new SingleChildScrollView(
                     child: new ListBody(
                       children: <Widget>[
-                        new Text(
-                          '${onValue['response_data']['message']}',
-                          style: textBarlowMediumBlack(),
-                        ),
+                        new Text('${onValue['response_data']['message']}',
+                            style: textBarlowRegularBlack()),
                       ],
                     ),
                   ),
