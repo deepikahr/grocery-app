@@ -45,9 +45,10 @@ workflows:
       email:
         recipients:
           - pietechsolution@gmail.com
-          - 'kakadiyasandip4world@gmail.com '
-          - 'chandra@pietechsolution.com '
-          - 'ujjwal.2518@gmail.com '
+          - kakadiyasandip4world@gmail.com
+          - chandra@pietechsolution.com
+          - ujjwal.2518@gmail.com
+          - montyvipul@gmail.com
       app_store_connect:
         app_id: '1506920690'
         apple_id: pietechsolution@gmail.com
@@ -70,7 +71,7 @@ workflows:
       events:
         - push
       branch_patterns:
-        - pattern: master
+        - pattern: testing
           include: true
           source: true
     scripts:
@@ -84,6 +85,7 @@ workflows:
       email:
         recipients:
           - pietechsolution@gmail.com
-          - 'kakadiyasandip4world@gmail.com '
-          - 'chandra@pietechsolution.com '
-          - 'ujjwal.2518@gmail.com '
+          - kakadiyasandip4world@gmail.com
+          - chandra@pietechsolution.com
+          - ujjwal.2518@gmail.com
+          - montyvipul@gmail.com
