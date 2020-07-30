@@ -31,6 +31,7 @@ void main() {
 void initializeMain() async {
   await DotEnv().load('.env');
   WidgetsFlutterBinding.ensureInitialized();
+  configLocalNotification();
   oneSignalTimer = Timer.periodic(Duration(seconds: 4), (timer) {
     configLocalNotification();
   });
