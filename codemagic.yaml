@@ -65,6 +65,8 @@ workflows:
       flutter: v1.14.6
       xcode: latest
       cocoapods: 1.8.4
+      vars:
+        ENV_FILE: QVBJX1VSTD1odHRwOi8vMTYyLjI0My4xNzEuODE6NDAwMApCQVNFX1VSTD1odHRwOi8vZDFrNXF4bGlsZjExdS5jbG91ZGZyb250Lm5ldApPTkVfU0lHTkFMX0tFWT1hNzZiNjg2Ny1iZjEyLTQ0MGYtOGJjMi0zMDk0NmM2NTJhZjgKU1RSSVBFX0tFWT1wa190ZXN0X1JCZEF1NmpJYkVCeVkzS2FCUUZiSDROMTAwbk1rVml2NmcKSU1BR0VfVVJMX1BBVEg9aHR0cHM6Ly9pay5pbWFnZWtpdC5pby9rcGxodnRocWJpCkdPT0dMRV9NQVBfQVBJX0tFWT1BSXphU3lCQXdQR08wbk8tejFhWFZnRUpnNUdfWFJBbzZSbmVwU3c=
     cache:
       cache_paths: []
     triggering:
@@ -75,6 +77,7 @@ workflows:
           include: true
           source: true
     scripts:
+      - echo $ENV_FILE  | base64 --decode > .env
       - flutter packages pub get
       - flutter build apk --release
     artifacts:
