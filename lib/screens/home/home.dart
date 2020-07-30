@@ -186,17 +186,17 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     if (getTokenValue) {
-      CounterModel().getCartDataMethod().then((res) {
+      CounterModel().getCartDataCountMethod().then((res) {
         if (mounted) {
           setState(() {
-            cartData = res['products'].length ?? 0;
+            cartData = res;
           });
         }
       });
     } else {
       if (mounted) {
         setState(() {
-          cartData = null;
+          cartData = 0;
         });
       }
     }
