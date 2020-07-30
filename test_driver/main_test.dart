@@ -19,7 +19,6 @@ void main() {
     // await LoginService.getLanguageJson('').then((value) async {
     test('Take screenshots', () async {
       // Map localizedValues = value['response_data']['json'];
-      // print('our localized json $localizedValues');
       SerializableFinder store = find.text('Online Adres');
       await driver.waitFor(store);
       await screenshot(driver, config, '01_homepage');

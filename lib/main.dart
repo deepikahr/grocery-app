@@ -59,9 +59,7 @@ void initializeMain() async {
     };
     LoginService.getLanguageJson(locale).then((value) async {
       localizedValues = value['response_data']['json'];
-      defaultLocale = value['response_data']['languageCode'];
-      locale = defaultLocale;
-
+      locale = value['response_data']['languageCode'];
       await Common.setSelectedLanguage(locale);
       getToken();
       runZoned<Future<Null>>(() {

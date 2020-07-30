@@ -96,7 +96,6 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
       }
       if (mounted) {
         setState(() {
-          print(increase);
           if (increase) {
             widget.productData['quantityToCart']++;
           } else {
@@ -333,7 +332,6 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                                       .addAndUpdateProductMethod(
                                                           productAddBody)
                                                   .then((onValue) {
-                                                print(onValue);
                                                 if (onValue['response_data']
                                                     is Map) {
                                                   Common.setCartData(

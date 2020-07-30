@@ -82,8 +82,6 @@ class _ProfileState extends State<Profile> {
 
   userInfoMethod() async {
     await LoginService.getUserInfo().then((onValue) {
-      print(onValue);
-
       if (mounted) {
         setState(() {
           userInfo = onValue['response_data'];
