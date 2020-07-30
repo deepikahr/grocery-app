@@ -202,7 +202,6 @@ class _MyCartState extends State<MyCart> {
       });
     }
     await CartService.getProductToCart().then((onValue) {
-      print(onValue);
       _refreshController.refreshCompleted();
       if (mounted) {
         setState(() {
@@ -253,14 +252,17 @@ class _MyCartState extends State<MyCart> {
   deleteCart(i) async {
     await CartService.deleteDataFromCart(cartItem['products'][i]['productId'])
         .then((onValue) {
-      print("onValue");
-      print(onValue);
-      if (onValue['response_data'] is Map && mounted) {
-        getCartItems();
+      if (onValue['response_data'] is Map &&
+          onValue['response_data']['products'].length == 0 &&
+          mounted) {
+        setState(() {
+          cartItem = null;
+          deleteAllCart();
+          Common.setCartData(null);
+        });
       } else {
         setState(() {
-          Common.setCartData(null);
-          cartItem = null;
+          getCartItems();
         });
       }
     }).catchError((error) {
@@ -275,10 +277,12 @@ class _MyCartState extends State<MyCart> {
 
   deleteAllCart() async {
     await CartService.deleteAllDataFromCart().then((onValue) {
+      print(onValue);
       Common.setCartData(null);
       if (mounted) {
         setState(() {
           cartItem = null;
+          getCartItems();
         });
       }
     }).catchError((error) {

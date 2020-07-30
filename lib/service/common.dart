@@ -44,6 +44,16 @@ class Common {
     }
   }
 
+  static Future<bool> setCartDataCount(int data) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setInt('cartDataCount', data);
+  }
+
+  static Future<int> getCartDataCount() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return Future(() => prefs.getInt('cartDataCount'));
+  }
+
   static Future<bool> setBanner(Map<String, dynamic> data) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.setString('bannerInfo', json.encode(data));
