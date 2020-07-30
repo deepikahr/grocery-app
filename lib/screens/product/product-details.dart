@@ -229,13 +229,17 @@ class _ProductDetailsState extends State<ProductDetails>
           groupValue = 0;
         });
       }
+      if (onValue['message'] != null) {
+        showSnackbar(onValue['message'] ?? "");
+      }
+      Future.delayed(Duration(milliseconds: 1500), () {
+        Navigator.of(context).pop();
+      });
       if (onValue['response_data'] is Map) {
         Common.setCartData(onValue['response_data']);
       } else {
         Common.setCartData(null);
       }
-
-      Navigator.of(context).pop();
     }).catchError((error) {
       if (mounted) {
         setState(() {
@@ -418,7 +422,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                         padding: const EdgeInsets.only(
                                             left: 20, right: 20),
                                         child: Text(
-                                          productDetail['title'],
+                                          '${productDetail['title'][0].toUpperCase()}${productDetail['title'].substring(1)}',
                                           maxLines: 3,
                                           overflow: TextOverflow.ellipsis,
                                           style: textBarlowSemiBoldBlack(),

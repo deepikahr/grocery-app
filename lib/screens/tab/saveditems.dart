@@ -126,7 +126,7 @@ class _SavedItemsState extends State<SavedItems> {
               ? null
               : GFAppBar(
                   title: Text(
-                    MyLocalizations.of(context).getLocalizations("SAVED_ITEMS"),
+                    MyLocalizations.of(context).getLocalizations("FAVORITE"),
                     style: textbarlowSemiBoldBlack(),
                   ),
                   centerTitle: true,

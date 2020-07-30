@@ -61,7 +61,6 @@ void initializeMain() async {
       localizedValues = value['response_data']['json'];
       locale = value['response_data']['languageCode'];
       await Common.setSelectedLanguage(locale);
-      getToken();
       runZoned<Future<Null>>(() {
         runApp(MainScreen(
           locale: locale,
@@ -78,10 +77,12 @@ void initializeMain() async {
 void getToken() async {
   await Common.getToken().then((onValue) async {
     if (onValue != null) {
-      Common.getSelectedLanguage().then((selectedLocale) async {
-        Map body = {"language": selectedLocale};
-        await LoginService.updateUserInfo(body);
-        userInfoMethod();
+      Common.getPlayerID().then((palyerId) {
+        Common.getSelectedLanguage().then((selectedLocale) async {
+          Map body = {"language": selectedLocale, "playerId": palyerId};
+          await LoginService.updateUserInfo(body);
+          userInfoMethod();
+        });
       });
     }
   }).catchError((error) {
@@ -115,6 +116,7 @@ Future<void> configLocalNotification() async {
   String playerId = status.subscriptionStatus.userId;
   if (playerId != null) {
     await Common.setPlayerID(playerId);
+    getToken();
     if (oneSignalTimer != null && oneSignalTimer.isActive)
       oneSignalTimer.cancel();
   }

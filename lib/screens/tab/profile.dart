@@ -379,8 +379,7 @@ class _ProfileState extends State<Profile> {
                                       right: 20.0),
                                   child: Text(
                                     MyLocalizations.of(context)
-                                        .getLocalizations("ADDRESS")
-                                        .toUpperCase(),
+                                        .getLocalizations("ADDRESS"),
                                     style: textBarlowMediumBlack(),
                                   ),
                                 ),

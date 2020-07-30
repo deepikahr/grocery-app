@@ -63,7 +63,7 @@ class DealsCard extends StatelessWidget {
                     children: <Widget>[
                       Expanded(
                           child: Text(
-                        title,
+                        '${title.toUpperCase()}${title.substring(1)}',
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: textbarlowRegularBlackb(),

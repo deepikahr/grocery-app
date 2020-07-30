@@ -188,7 +188,7 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                         children: <Widget>[
                           Expanded(
                             child: Text(
-                              widget.productData['title'],
+                              '${widget.productData['title'][0].toUpperCase()}${widget.productData['title'].substring(1)}',
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: textbarlowRegularBlackb(),

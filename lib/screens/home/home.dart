@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:getflutter/getflutter.dart';
+import 'package:readymadeGroceryApp/model/counterModel.dart';
 import 'package:readymadeGroceryApp/screens/drawer/drawer.dart';
 import 'package:readymadeGroceryApp/screens/tab/mycart.dart';
 import 'package:readymadeGroceryApp/screens/tab/profile.dart';
@@ -38,12 +39,13 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   bool currencyLoading = false,
       isCurrentLoactionLoading = false,
       getTokenValue = false;
-  int currentIndex = 0;
+  int currentIndex = 0, cartData;
   LocationData currentLocation;
   Location _location = new Location();
   String currency = "";
 
   var addressData;
+
   void initState() {
     if (widget.currentIndex != null) {
       if (mounted) {
@@ -183,6 +185,84 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    if (getTokenValue) {
+      CounterModel().getCartDataCountMethod().then((res) {
+        if (mounted) {
+          setState(() {
+            cartData = res;
+          });
+        }
+      });
+    } else {
+      if (mounted) {
+        setState(() {
+          cartData = 0;
+        });
+      }
+    }
+    List<BottomNavigationBarItem> items = [
+      BottomNavigationBarItem(
+        title: Text(MyLocalizations.of(context).getLocalizations("STORE")),
+        icon: Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Icon(
+            IconData(
+              0xe90f,
+              fontFamily: 'icomoon',
+            ),
+          ),
+        ),
+      ),
+      BottomNavigationBarItem(
+        title: Text(MyLocalizations.of(context).getLocalizations("FAVORITE")),
+        icon: Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Icon(
+            IconData(
+              0xe90d,
+              fontFamily: 'icomoon',
+            ),
+          ),
+        ),
+      ),
+      BottomNavigationBarItem(
+        title: Text(MyLocalizations.of(context).getLocalizations("MY_CART")),
+        icon: GFIconBadge(
+          child: Icon(
+            IconData(
+              0xe911,
+              fontFamily: 'icomoon',
+            ),
+          ),
+          counterChild: (cartData == null || cartData == 0)
+              ? Container()
+              : GFBadge(
+                  child: Text(
+                    '${cartData.toString()}',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: Colors.black, fontFamily: "bold", fontSize: 11),
+                  ),
+                  shape: GFBadgeShape.circle,
+                  color: bg,
+                  size: 25,
+                ),
+        ),
+      ),
+      BottomNavigationBarItem(
+        title: Text(MyLocalizations.of(context).getLocalizations("PROFILE")),
+        icon: Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Icon(
+            IconData(
+              0xe912,
+              fontFamily: 'icomoon',
+            ),
+          ),
+        ),
+      ),
+    ];
+
     List<Widget> _screens = [
       Store(
         locale: widget.locale,
@@ -201,6 +281,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         localizedValues: widget.localizedValues,
       ),
     ];
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: currentIndex == 0
@@ -249,59 +330,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         type: BottomNavigationBarType.fixed,
         fixedColor: primary,
         onTap: _onTapped,
-        items: [
-          BottomNavigationBarItem(
-            title: Text(MyLocalizations.of(context).getLocalizations("STORE")),
-            icon: Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Icon(
-                IconData(
-                  0xe90f,
-                  fontFamily: 'icomoon',
-                ),
-              ),
-            ),
-          ),
-          BottomNavigationBarItem(
-            title: Text(
-                MyLocalizations.of(context).getLocalizations("SAVED_ITEMS")),
-            icon: Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Icon(
-                IconData(
-                  0xe90d,
-                  fontFamily: 'icomoon',
-                ),
-              ),
-            ),
-          ),
-          BottomNavigationBarItem(
-            title:
-                Text(MyLocalizations.of(context).getLocalizations("MY_CART")),
-            icon: Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Icon(
-                IconData(
-                  0xe911,
-                  fontFamily: 'icomoon',
-                ),
-              ),
-            ),
-          ),
-          BottomNavigationBarItem(
-            title:
-                Text(MyLocalizations.of(context).getLocalizations("PROFILE")),
-            icon: Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Icon(
-                IconData(
-                  0xe912,
-                  fontFamily: 'icomoon',
-                ),
-              ),
-            ),
-          ),
-        ],
+        items: items,
       ),
     );
   }

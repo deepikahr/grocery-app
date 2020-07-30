@@ -36,7 +36,7 @@ class CategoryBlock extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              title,
+              '${title[0].toUpperCase()}${title.substring(1)}',
               overflow: TextOverflow.ellipsis,
               style: textBarlowRegularrdarkdull(),
               textAlign: TextAlign.center,

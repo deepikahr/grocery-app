@@ -122,12 +122,18 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
             addProductTocart = false;
           });
         }
+        if (onValue['message'] != null) {
+          showSnackbar(onValue['message'] ?? "");
+        }
+        Future.delayed(Duration(milliseconds: 1500), () {
+          Navigator.of(context).pop(onValue['response_data']);
+        });
+
         if (onValue['response_data'] is Map) {
           Common.setCartData(onValue['response_data']);
         } else {
           Common.setCartData(null);
         }
-        Navigator.of(context).pop(onValue['response_data']);
       }).catchError((error) {
         if (mounted) {
           setState(() {
