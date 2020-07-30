@@ -277,7 +277,6 @@ class _MyCartState extends State<MyCart> {
 
   deleteAllCart() async {
     await CartService.deleteAllDataFromCart().then((onValue) {
-      print(onValue);
       Common.setCartData(null);
       if (mounted) {
         setState(() {
