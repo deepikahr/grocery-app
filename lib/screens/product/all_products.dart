@@ -36,7 +36,10 @@ class AllProducts extends StatefulWidget {
 class _AllProductsState extends State<AllProducts> {
   List productsList = [], subCategryByProduct, subCategryList;
   String currency, currentSubCategoryId;
-  bool getTokenValue = false, isSelected = true, isSelectedIndexZero = false;
+  bool getTokenValue = false,
+      isSelected = true,
+      isSelectedIndexZero = false,
+      subProductLastApiCall = true;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   ScrollController controller;
@@ -48,12 +51,17 @@ class _AllProductsState extends State<AllProducts> {
       lastApiCall = true;
   var cartData;
   String isSelectetedId;
-  int productLimt = 10, productIndex = 0, totalProduct = 1;
+  int productLimt = 15,
+      productIndex = 0,
+      totalProduct = 1,
+      subCatProductLimt = 15,
+      subCatProductIndex = 0,
+      subCattotalProduct = 1;
+
   @override
   void initState() {
     getTokenValueMethod();
     getSubCatList();
-
     super.initState();
   }
 
@@ -155,16 +163,34 @@ class _AllProductsState extends State<AllProducts> {
     });
   }
 
-  getProductToSubCategory(catId) async {
+  getProductToSubCategory(catId, subCatProductIndex) async {
     if (mounted) {
       setState(() {
         isLoadingSubCatProductsList = true;
       });
     }
-    await ProductService.getProductToSubCategoryList(catId).then((onValue) {
+    await ProductService.getProductToSubCategoryList(
+            catId, subCatProductIndex, subCatProductLimt)
+        .then((onValue) {
       if (mounted)
         setState(() {
           subCategryByProduct = onValue['response_data'];
+          subCategryByProduct.addAll(onValue['response_data']);
+          subCattotalProduct = onValue["total"];
+          int index = subCategryByProduct.length;
+          if (subProductLastApiCall == true) {
+            subCatProductIndex++;
+            if (index < subCattotalProduct) {
+              getProductToSubCategory(catId, subCatProductIndex);
+            } else {
+              if (index == subCattotalProduct) {
+                if (mounted) {
+                  subProductLastApiCall = false;
+                  getProductToSubCategory(catId, subCatProductIndex);
+                }
+              }
+            }
+          }
           isLoadingSubCatProductsList = false;
         });
     }).catchError((error) {
@@ -314,15 +340,19 @@ class _AllProductsState extends State<AllProducts> {
                                                 isSelected = false;
                                                 isSelectedIndexZero = true;
                                                 isSelectetedId = null;
+                                                currentSubCategoryId =
+                                                    subCategryList[0]['_id']
+                                                        .toString();
+                                                subCategryByProduct = [];
+                                                subCatProductIndex =
+                                                    subCategryByProduct.length;
                                               });
                                             }
-                                            currentSubCategoryId =
-                                                subCategryList[0]['_id']
-                                                    .toString();
 
                                             getProductToSubCategory(
                                                 subCategryList[0]['_id']
-                                                    .toString());
+                                                    .toString(),
+                                                subCatProductIndex);
                                           },
                                           child: Container(
                                             height: 35,
@@ -356,16 +386,20 @@ class _AllProductsState extends State<AllProducts> {
                                             isSelected = false;
                                             isSelectedIndexZero = false;
                                             isLoadingSubCatProductsList = true;
+                                            currentSubCategoryId =
+                                                subCategryList[i]['_id']
+                                                    .toString();
                                             isSelectetedId =
                                                 subCategryList[i]['_id'];
+                                            subCategryByProduct = [];
+                                            subCatProductIndex =
+                                                subCategryByProduct.length;
                                           });
                                         }
-                                        currentSubCategoryId =
-                                            subCategryList[i]['_id'].toString();
 
                                         getProductToSubCategory(
-                                            subCategryList[i]['_id']
-                                                .toString());
+                                            subCategryList[i]['_id'].toString(),
+                                            subCatProductIndex);
                                       },
                                       child: Container(
                                         height: 35,
@@ -459,10 +493,16 @@ class _AllProductsState extends State<AllProducts> {
                                                       setState(() {
                                                         isLoadingSubCatProductsList =
                                                             true;
+                                                        subCategryByProduct =
+                                                            [];
+                                                        subCatProductIndex =
+                                                            subCategryByProduct
+                                                                .length;
                                                       });
                                                     }
                                                     getProductToSubCategory(
-                                                        currentSubCategoryId);
+                                                        currentSubCategoryId,
+                                                        subCatProductIndex);
                                                   });
                                                 },
                                                 child: Stack(
