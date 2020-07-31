@@ -21,6 +21,7 @@ class ApiInterceptor implements InterceptorContract {
       data.headers['Content-Type'] = 'application/json';
       data.headers['language'] = languageCode;
       data.headers['Authorization'] = 'bearer $token';
+      print(token);
     } catch (e) {
       print(e.toString());
     }

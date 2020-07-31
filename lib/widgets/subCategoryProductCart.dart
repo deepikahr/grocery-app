@@ -116,13 +116,22 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
   deleteCart() async {
     await CartService.deleteDataFromCart(widget.productData["_id"])
         .then((onValue) {
-      if (onValue['response_data'] is Map) {
-        Common.setCartData(onValue['response_data']);
-      } else {
-        Common.setCartData(null);
-      }
-      if (mounted) {
+      if (onValue['response_data'] is Map &&
+          onValue['response_data']['products'].length == 0 &&
+          mounted) {
         setState(() {
+          deleteAllCart();
+          Common.setCartData(null);
+          cardAdded = false;
+          isQuantityUpdating = false;
+        });
+      } else {
+        setState(() {
+          if (onValue['response_data'] is Map && mounted) {
+            Common.setCartData(onValue['response_data']);
+          } else {
+            Common.setCartData(null);
+          }
           cardAdded = false;
           isQuantityUpdating = false;
         });
@@ -139,6 +148,12 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
           isQuantityUpdating = false;
         });
       }
+    });
+  }
+
+  deleteAllCart() async {
+    await CartService.deleteAllDataFromCart().then((onValue) {
+      Common.setCartData(null);
     });
   }
 
