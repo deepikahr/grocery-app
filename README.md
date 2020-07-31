@@ -31,3 +31,11 @@ for windows user need to set environment variables separately. using
 set GOOGLE_MAP_API_KEY=
 set APPLICATION_NAME=
 ```
+
+
+### to generate new launcher icons for android and ios.
+
+replace lib/assets/logo.png and run this command
+```
+flutter pub run flutter_launcher_icons:main
+```
