@@ -46,7 +46,6 @@ class _AllDealsListState extends State<AllDealsList> {
     favProductList = widget.favProductList;
     currency = widget.currency;
     getTokenValue = widget.token;
-    print(widget.dealType);
     if (widget.dealType == "TopDeals") {
       getAllTopDealsListMethod();
     } else {

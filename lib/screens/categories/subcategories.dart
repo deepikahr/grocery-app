@@ -77,7 +77,6 @@ class _SubCategoriesState extends State<SubCategories> {
     await ProductService.getProductToCategoryList(
             id, catProductIndex, catProductLimit)
         .then((onValue) {
-      print(onValue);
       _refreshController.refreshCompleted();
       if (mounted) {
         setState(() {
@@ -123,11 +122,8 @@ class _SubCategoriesState extends State<SubCategories> {
           subCategryByProduct.addAll(onValue['response_data']);
 
           subCatTotalProduct = onValue["total"];
-          print(subCatTotalProduct);
           int index = subCategryByProduct.length;
-          print(index);
           if (subCatLastApiCall == true) {
-            print(subCatProductIndex);
             subCatProductIndex++;
             if (index < subCatTotalProduct) {
               getProductToSubCategory(catId);
@@ -135,7 +131,6 @@ class _SubCategoriesState extends State<SubCategories> {
               if (index == subCatTotalProduct) {
                 if (mounted) {
                   subCatProductIndex++;
-                  print(subCatProductIndex);
                   subCatLastApiCall = false;
                   getProductToSubCategory(catId);
                 }

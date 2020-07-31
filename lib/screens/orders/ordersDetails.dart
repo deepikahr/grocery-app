@@ -50,7 +50,6 @@ class _OrderDetailsState extends State<OrderDetails> {
       currency = value;
     });
     await OrderService.getOrderHistory(widget.orderId).then((onValue) {
-      print(onValue);
       if (mounted) {
         setState(() {
           orderHistory = onValue['response_data'];
@@ -162,7 +161,6 @@ class _OrderDetailsState extends State<OrderDetails> {
 
   orderRating(productID) async {
     var body = {"rate": rating, "productId": productID};
-    print(body);
     await ProductService.productRating(body).then((onValue) {
       Navigator.pop(context);
       setState(() {
@@ -387,7 +385,6 @@ class _OrderDetailsState extends State<OrderDetails> {
                           : orderHistory['cart']['products'].length,
                       itemBuilder: (BuildContext context, int i) {
                         Map order = orderHistory['cart']['products'][i];
-                        print(orderHistory['cart']['products'][i]);
                         return Container(
                           width: MediaQuery.of(context).size.width,
                           color: Color(0xFFF7F7F7),
