@@ -116,13 +116,22 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
   deleteCart() async {
     await CartService.deleteDataFromCart(widget.productData["_id"])
         .then((onValue) {
-      if (onValue['response_data'] is Map) {
-        Common.setCartData(onValue['response_data']);
-      } else {
-        Common.setCartData(null);
-      }
-      if (mounted) {
+      if (onValue['response_data'] is Map &&
+          onValue['response_data']['products'].length == 0 &&
+          mounted) {
         setState(() {
+          deleteAllCart();
+          Common.setCartData(null);
+          cardAdded = false;
+          isQuantityUpdating = false;
+        });
+      } else {
+        setState(() {
+          if (onValue['response_data'] is Map && mounted) {
+            Common.setCartData(onValue['response_data']);
+          } else {
+            Common.setCartData(null);
+          }
           cardAdded = false;
           isQuantityUpdating = false;
         });
@@ -139,6 +148,12 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
           isQuantityUpdating = false;
         });
       }
+    });
+  }
+
+  deleteAllCart() async {
+    await CartService.deleteAllDataFromCart().then((onValue) {
+      Common.setCartData(null);
     });
   }
 
@@ -280,26 +295,30 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                                       'quantityToCart']);
                                         });
                                     bottomSheet.then((onValue) {
-                                      for (int i = 0;
-                                          i < onValue['products'].length;
-                                          i++) {
-                                        if (widget.productData["_id"] ==
-                                            onValue['products'][i]
-                                                ["productId"]) {
-                                          if (mounted) {
-                                            setState(() {
-                                              widget.productData[
-                                                      'quantityToCart'] =
-                                                  onValue['products'][i]
-                                                      ['quantity'];
-                                              variantPrice = onValue['products']
-                                                  [i]['price'];
-                                              cartId = onValue['_id'];
+                                      if (onValue != null) {
+                                        for (int i = 0;
+                                            i < onValue['products'].length;
+                                            i++) {
+                                          if (widget.productData["_id"] ==
+                                              onValue['products'][i]
+                                                  ["productId"]) {
+                                            if (mounted) {
+                                              setState(() {
+                                                widget.productData[
+                                                        'quantityToCart'] =
+                                                    onValue['products'][i]
+                                                        ['quantity'];
+                                                variantPrice =
+                                                    onValue['products'][i]
+                                                        ['price'];
+                                                cartId = onValue['_id'];
 
-                                              variantUnit = onValue['products']
-                                                  [i]['unit'];
-                                              cardAdded = true;
-                                            });
+                                                variantUnit =
+                                                    onValue['products'][i]
+                                                        ['unit'];
+                                                cardAdded = true;
+                                              });
+                                            }
                                           }
                                         }
                                       }
@@ -355,14 +374,18 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                                         widget.productData[
                                                                 'quantityToCart'] =
                                                             onValue['response_data']
+                                                                    ['products']
                                                                 [i]['quantity'];
-                                                        variantPrice = onValue[
-                                                                'response_data']
-                                                            [i]['price'];
 
-                                                        variantUnit =
-                                                            onValue['products']
-                                                                [i]['unit'];
+                                                        variantPrice =
+                                                            onValue['response_data']
+                                                                    ['products']
+                                                                [i]['price'];
+                                                        variantUnit = onValue[
+                                                                'response_data']
+                                                            [
+                                                            'products'][i]['unit'];
+
                                                         cardAdded = true;
                                                       });
                                                     }
