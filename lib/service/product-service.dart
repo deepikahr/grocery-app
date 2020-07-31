@@ -53,18 +53,22 @@ class ProductService {
   }
 
   // get product to category list
-  static Future<Map<String, dynamic>> getProductToCategoryList(id) async {
+  static Future<Map<String, dynamic>> getProductToCategoryList(
+      id, index, limit) async {
     return client
-        .get(Constants.apiUrl + "/products/category/$id")
+        .get(Constants.apiUrl +
+            "/products/category/$id?limit=$limit&page=$index")
         .then((response) {
       return json.decode(response.body);
     });
   }
 
   // get product to sub category list
-  static Future<Map<String, dynamic>> getProductToSubCategoryList(id) async {
+  static Future<Map<String, dynamic>> getProductToSubCategoryList(
+      id, index, limit) async {
     return client
-        .get(Constants.apiUrl + "/products/sub-category/$id")
+        .get(Constants.apiUrl +
+            "/products/sub-category/$id?limit=$limit&page=$index")
         .then((response) {
       return json.decode(response.body);
     });

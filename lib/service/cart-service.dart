@@ -10,8 +10,6 @@ Client client =
 class CartService {
   // add product in cart
   static Future<Map<String, dynamic>> addAndUpdateProduct(body) async {
-    print(Constants.apiUrl + "/carts/update");
-    print(body);
     return client
         .post(Constants.apiUrl + "/carts/update", body: json.encode(body))
         .then((response) {

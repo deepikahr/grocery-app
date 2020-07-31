@@ -168,7 +168,7 @@ class _AllDealsListState extends State<AllDealsList> {
                           itemBuilder: (BuildContext context, int i) {
                             return InkWell(
                               onTap: () {
-                                if (dealsList[i]['delalType'] == 'CATEGORY') {
+                                if (dealsList[i]['dealType'] == 'CATEGORY') {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(

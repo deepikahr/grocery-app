@@ -629,7 +629,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
             itemBuilder: (BuildContext context, int i) {
               return InkWell(
                 onTap: () {
-                  if (list[i]['delalType'] == 'CATEGORY') {
+                  if (list[i]['dealType'] == 'CATEGORY') {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -747,7 +747,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
             itemBuilder: (BuildContext context, int i) {
               return InkWell(
                 onTap: () {
-                  if (list[i]['delalType'] == 'CATEGORY') {
+                  if (list[i]['dealType'] == 'CATEGORY') {
                     Navigator.push(
                       context,
                       MaterialPageRoute(

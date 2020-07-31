@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
@@ -11,7 +10,6 @@ import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/orderSevice.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
-
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -66,7 +64,6 @@ class _OrdersState extends State<Orders> {
           orderList.addAll(onValue['response_data']);
           totalOrders = onValue["total"];
           int index = orderList.length;
-
           if (lastApiCall == true) {
             orderIndex++;
             if (index < totalOrders) {
