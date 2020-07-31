@@ -227,26 +227,31 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       ),
       BottomNavigationBarItem(
         title: Text(MyLocalizations.of(context).getLocalizations("MY_CART")),
-        icon: GFIconBadge(
-          child: Icon(
-            IconData(
-              0xe911,
-              fontFamily: 'icomoon',
+        icon: Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: GFIconBadge(
+            child: Icon(
+              IconData(
+                0xe911,
+                fontFamily: 'icomoon',
+              ),
             ),
-          ),
-          counterChild: (cartData == null || cartData == 0)
-              ? Container()
-              : GFBadge(
-                  child: Text(
-                    '${cartData.toString()}',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Colors.black, fontFamily: "bold", fontSize: 11),
+            counterChild: (cartData == null || cartData == 0)
+                ? Container()
+                : GFBadge(
+                    child: Text(
+                      '${cartData.toString()}',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: "bold",
+                          fontSize: 11),
+                    ),
+                    shape: GFBadgeShape.circle,
+                    color: Colors.red,
+                    size: 25,
                   ),
-                  shape: GFBadgeShape.circle,
-                  color: bg,
-                  size: 25,
-                ),
+          ),
         ),
       ),
       BottomNavigationBarItem(

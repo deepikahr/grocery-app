@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:intl/intl.dart';
@@ -7,6 +8,7 @@ import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/orderSevice.dart';
+import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
@@ -48,6 +50,7 @@ class _OrderDetailsState extends State<OrderDetails> {
       currency = value;
     });
     await OrderService.getOrderHistory(widget.orderId).then((onValue) {
+      print(onValue);
       if (mounted) {
         setState(() {
           orderHistory = onValue['response_data'];
@@ -76,14 +79,13 @@ class _OrderDetailsState extends State<OrderDetails> {
     }
 
     await OrderService.orderCancel(widget.orderId).then((onValue) {
-          if (mounted) {
-            setState(() {
-              getOrderHistory();
-              showSnackbar(onValue['response_data']);
-              isOrderCancleLoading = false;
-            });
-          }
-     
+      if (mounted) {
+        setState(() {
+          getOrderHistory();
+          showSnackbar(onValue['response_data']);
+          isOrderCancleLoading = false;
+        });
+      }
     }).catchError((error) {
       if (mounted) {
         setState(() {
@@ -100,6 +102,75 @@ class _OrderDetailsState extends State<OrderDetails> {
       duration: Duration(milliseconds: 3000),
     );
     _scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+
+  ratingAlert(productID) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            MyLocalizations.of(context).getLocalizations("RATE_PRODUCT"),
+            style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                decoration: TextDecoration.none),
+          ),
+          actions: <Widget>[
+            Center(
+                child: Container(
+              child: GFButton(
+                onPressed: () {
+                  orderRating(productID);
+                },
+                text: MyLocalizations.of(context).getLocalizations("SUBMIT"),
+                color: primary,
+                textStyle: textBarlowRegularrWhite(),
+              ),
+            ))
+          ],
+          content: Container(
+            decoration: new BoxDecoration(
+              color: Colors.white,
+              borderRadius: new BorderRadius.all(
+                new Radius.circular(32.0),
+              ),
+            ),
+            child: RatingBar(
+              initialRating: rating,
+              minRating: 1,
+              direction: Axis.horizontal,
+              allowHalfRating: true,
+              itemSize: 30.0,
+              itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+              itemBuilder: (context, _) => Icon(
+                Icons.star,
+                color: primary,
+                size: 10.0,
+              ),
+              onRatingUpdate: (rate) {
+                setState(() {
+                  rating = rate;
+                });
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  orderRating(productID) async {
+    var body = {"rate": rating, "productId": productID};
+    print(body);
+    await ProductService.productRating(body).then((onValue) {
+      Navigator.pop(context);
+      setState(() {
+        getOrderHistory();
+      });
+    }).catchError((error) {
+      sentryError.reportError(error, null);
+    });
   }
 
   @override
@@ -316,6 +387,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                           : orderHistory['cart']['products'].length,
                       itemBuilder: (BuildContext context, int i) {
                         Map order = orderHistory['cart']['products'][i];
+                        print(orderHistory['cart']['products'][i]);
                         return Container(
                           width: MediaQuery.of(context).size.width,
                           color: Color(0xFFF7F7F7),
@@ -393,6 +465,62 @@ class _OrderDetailsState extends State<OrderDetails> {
                                         ),
                                       ],
                                     ),
+                                orderHistory['order']['orderStatus'] == "DELIVERED"?    Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: <Widget>[
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 8.0, right: 8.0),
+                                            child: GFButton(
+                                              shape: GFButtonShape.pills,
+                                              onPressed: () {
+                                                if (order["rating"] != null &&
+                                                    order["rating"] > 0) {
+                                                  setState(() {
+                                                    rating = double.parse(
+                                                        order["rating"]
+                                                            .toString());
+                                                  });
+                                                } else {
+                                                  setState(() {
+                                                    rating = 1.0;
+                                                  });
+                                                }
+
+                                                ratingAlert(order['productId']);
+                                              },
+                                              color: order["isRated"] == true
+                                                  ? green
+                                                  : primary,
+                                              child: order["isRated"] == true &&
+                                                      order["rating"] != null
+                                                  ? Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.end,
+                                                      children: <Widget>[
+                                                        Text(
+                                                          order["rating"]
+                                                              .toString(),
+                                                        ),
+                                                        Icon(
+                                                          Icons.star,
+                                                          color: Colors.white,
+                                                          size: 20,
+                                                        ),
+                                                      ],
+                                                    )
+                                                  : Text(
+                                                      MyLocalizations.of(
+                                                              context)
+                                                          .getLocalizations(
+                                                              "RATE_PRODUCT"),
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                            ),
+                                          ),
+                                        ]):Container(),
                                     Divider(),
                                   ],
                                 ),

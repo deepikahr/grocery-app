@@ -38,8 +38,8 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
   int groupValue = 0;
   bool selectVariant = false, addProductTocart = false, getTokenValue = false;
   int quantity = 1;
-  String variantUnit, variantId;
-  int variantStock;
+  var variantUnit, variantId;
+  var variantStock;
   var variantPrice;
   @override
   void initState() {
@@ -122,7 +122,6 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
             addProductTocart = false;
           });
         }
-        print(onValue);
         if (onValue['message'] != null) {
           showSnackbar(onValue['message'] ?? "");
         }

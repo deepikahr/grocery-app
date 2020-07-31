@@ -40,6 +40,7 @@ class ProductService {
 
   // get all top deal
   static Future<Map<String, dynamic>> getTopDealsListAll() async {
+    print(Constants.apiUrl + "/deals/top");
     return client.get(Constants.apiUrl + "/deals/top").then((response) {
       return json.decode(response.body);
     });
@@ -53,18 +54,24 @@ class ProductService {
   }
 
   // get product to category list
-  static Future<Map<String, dynamic>> getProductToCategoryList(id) async {
+  static Future<Map<String, dynamic>> getProductToCategoryList(
+      id, index, limit) async {
     return client
-        .get(Constants.apiUrl + "/products/category/$id")
+        .get(Constants.apiUrl +
+            "/products/category/$id?limit=$limit&page=$index")
         .then((response) {
       return json.decode(response.body);
     });
   }
 
   // get product to sub category list
-  static Future<Map<String, dynamic>> getProductToSubCategoryList(id) async {
+  static Future<Map<String, dynamic>> getProductToSubCategoryList(
+      id, index, limit) async {
+    print("/products/sub-category/$id?limit=$limit&page=$index");
+
     return client
-        .get(Constants.apiUrl + "/products/sub-category/$id")
+        .get(Constants.apiUrl +
+            "/products/sub-category/$id?limit=$limit&page=$index")
         .then((response) {
       return json.decode(response.body);
     });

@@ -46,6 +46,7 @@ class _AllDealsListState extends State<AllDealsList> {
     favProductList = widget.favProductList;
     currency = widget.currency;
     getTokenValue = widget.token;
+    print(widget.dealType);
     if (widget.dealType == "TopDeals") {
       getAllTopDealsListMethod();
     } else {
@@ -168,7 +169,7 @@ class _AllDealsListState extends State<AllDealsList> {
                           itemBuilder: (BuildContext context, int i) {
                             return InkWell(
                               onTap: () {
-                                if (dealsList[i]['delalType'] == 'CATEGORY') {
+                                if (dealsList[i]['dealType'] == 'CATEGORY') {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(

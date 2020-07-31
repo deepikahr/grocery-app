@@ -37,14 +37,22 @@ class SubCategories extends StatefulWidget {
 
 class _SubCategoriesState extends State<SubCategories> {
   bool isLoadingSubProductsList = false, isLoadingSubCatProductsList = false;
-  List subProductsList, subCategryList, subCategryByProduct;
+  List subProductsList = [], subCategryList, subCategryByProduct;
 
-  bool isSelected = true, isSelectedIndexZero = false;
+  bool isSelected = true,
+      isSelectedIndexZero = false,
+      catLastApiCall = true,
+      subCatLastApiCall = true;
   String currency, isSelectetedId, currentSubCategoryId;
   var cartData;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-
+  int catProductLimit = 15,
+      catProductIndex = 0,
+      catTotalProduct = 1,
+      subCatProductLimit = 15,
+      subCatProductIndex = 0,
+      subCatTotalProduct = 1;
   @override
   void initState() {
     if (mounted) {
@@ -66,15 +74,35 @@ class _SubCategoriesState extends State<SubCategories> {
     await Common.getCurrency().then((value) {
       currency = value;
     });
-    await ProductService.getProductToCategoryList(id).then((onValue) {
+    await ProductService.getProductToCategoryList(
+            id, catProductIndex, catProductLimit)
+        .then((onValue) {
+      print(onValue);
       _refreshController.refreshCompleted();
-      if (mounted)
+      if (mounted) {
         setState(() {
-          subProductsList = onValue['response_data']['products'];
+          subProductsList.addAll(onValue['response_data']['products']);
           subCategryList = onValue['response_data']['subCategories'];
-          isLoadingSubProductsList = false;
-          isLoadingSubCatProductsList = false;
+          catTotalProduct = onValue["total"];
+          int index = subProductsList.length;
+          if (catLastApiCall == true) {
+            catProductIndex++;
+            if (index < catTotalProduct) {
+              getProductToCategory(id);
+            } else {
+              if (index == catTotalProduct) {
+                if (mounted) {
+                  catProductIndex++;
+                  catLastApiCall = false;
+                  getProductToCategory(id);
+                }
+              }
+            }
+            isLoadingSubProductsList = false;
+            isLoadingSubCatProductsList = false;
+          }
         });
+      }
     }).catchError((error) {
       if (mounted) {
         setState(() {
@@ -87,11 +115,34 @@ class _SubCategoriesState extends State<SubCategories> {
   }
 
   getProductToSubCategory(catId) async {
-    await ProductService.getProductToSubCategoryList(catId).then((onValue) {
+    await ProductService.getProductToSubCategoryList(
+            catId, subCatProductIndex, subCatProductLimit)
+        .then((onValue) {
       if (mounted)
         setState(() {
-          subCategryByProduct = onValue['response_data'];
-          isLoadingSubCatProductsList = false;
+          subCategryByProduct.addAll(onValue['response_data']);
+
+          subCatTotalProduct = onValue["total"];
+          print(subCatTotalProduct);
+          int index = subCategryByProduct.length;
+          print(index);
+          if (subCatLastApiCall == true) {
+            print(subCatProductIndex);
+            subCatProductIndex++;
+            if (index < subCatTotalProduct) {
+              getProductToSubCategory(catId);
+            } else {
+              if (index == subCatTotalProduct) {
+                if (mounted) {
+                  subCatProductIndex++;
+                  print(subCatProductIndex);
+                  subCatLastApiCall = false;
+                  getProductToSubCategory(catId);
+                }
+              }
+            }
+            isLoadingSubCatProductsList = false;
+          }
         });
     }).catchError((error) {
       if (mounted) {
