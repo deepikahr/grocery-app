@@ -296,7 +296,7 @@ class _LoginState extends State<Login> {
       padding: const EdgeInsets.only(top: 5.0, bottom: 10.0),
       child: Container(
         child: TextFormField(
-          initialValue: Constants.APP_NAME.contains('Readymade')
+          initialValue: Constants.appName.contains('Readymade')
               ? "user@ionicfirebaseapp.com"
               : null,
           onSaved: (String value) {
@@ -356,8 +356,7 @@ class _LoginState extends State<Login> {
     return Container(
       margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
       child: TextFormField(
-        initialValue:
-            Constants.APP_NAME.contains('Readymade') ? "123456" : null,
+        initialValue: Constants.appName.contains('Readymade') ? "123456" : null,
         style: textBarlowRegularBlack(),
         keyboardType: TextInputType.text,
         onSaved: (String value) {
