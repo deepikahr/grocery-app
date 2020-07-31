@@ -146,7 +146,7 @@ class MainScreen extends StatelessWidget {
       ],
       supportedLocales: [Locale(locale)],
       debugShowCheckedModeBanner: false,
-      title: Constants.APP_NAME,
+      title: Constants.appName,
       theme: ThemeData(primaryColor: primary, accentColor: primary),
       home: Home(
         locale: locale,
@@ -164,7 +164,7 @@ class AnimatedScreen extends StatelessWidget {
         color: primary,
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        child: Constants.APP_NAME.contains('Readymade Grocery App')
+        child: Constants.appName.contains('Readymade Grocery App')
             ? Image.asset(
                 'lib/assets/splash.png',
                 fit: BoxFit.cover,
