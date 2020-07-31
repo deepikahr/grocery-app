@@ -25,6 +25,7 @@ workflows:
     scripts:
       - echo $ENV_FILE  | base64 --decode > .env
       - source .env
+      - export APPLICATION_NAME=$APPLICATION_NAME; export GOOGLE_MAP_API_KEY=$GOOGLE_MAP_API_KEY;
       - sed -e "s|GOOGLE_MAP_API_KEY|$GOOGLE_MAP_API_KEY|g" ios/Runner/AppDelegate.swift > temp_file.txt
       - mv temp_file.txt ios/Runner/AppDelegate.swift
       - flutter packages pub get
@@ -82,6 +83,7 @@ workflows:
     scripts:
       - echo $ENV_FILE  | base64 --decode > .env
       - source .env
+      - export APPLICATION_NAME=$APPLICATION_NAME; export GOOGLE_MAP_API_KEY=$GOOGLE_MAP_API_KEY;
       - flutter packages pub get
       - flutter build apk --release
     artifacts:

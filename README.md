@@ -23,10 +23,11 @@ GOOGLE_MAP_API_KEY=
 if you close terminal you need to run this command again.
 
 ```
-source .env
+source .env; export APPLICATION_NAME=$APPLICATION_NAME; export GOOGLE_MAP_API_KEY=$GOOGLE_MAP_API_KEY;
 ```
 
 for windows user need to set environment variable separately. using
 ```
 set GOOGLE_MAP_API_KEY=
+set APPLICATION_NAME=
 ```
