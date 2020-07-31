@@ -25,10 +25,18 @@ workflows:
     scripts:
       - echo $ENV_FILE  | base64 --decode > .env
       - source .env
-      - export APPLICATION_NAME=$APPLICATION_NAME; export GOOGLE_MAP_API_KEY=$GOOGLE_MAP_API_KEY;
-      - sed -e "s|GOOGLE_MAP_API_KEY|$GOOGLE_MAP_API_KEY|g" ios/Runner/AppDelegate.swift > temp_file.txt
-      - mv temp_file.txt ios/Runner/AppDelegate.swift
+      - export APPLICATION_NAME=$APPLICATION_NAME; export GOOGLE_MAP_API_KEY=$GOOGLE_MAP_API_KEY; export LC_CTYPE=C; export LANG=C;
+      - cp lib/assets/splash.png android/app/src/main/res/drawable/splash.png
+      - find ios/Runner/AppDelegate.swift -type f -exec sed -i '.original' "s|GOOGLE_MAP_API_KEY|$GOOGLE_MAP_API_KEY|g" {} \;
+      - find ios/Runner/info.plist -type f -exec sed -i '.original' "s|<string>APPLICATION_NAME</string>|<string>$APPLICATION_NAME</string>|g" {} \;
+      - find ios/Runner.xcodeproj -type f -exec sed -i '.original' "s|com.ionicfirebaseapp.readymadegroceryuserapp|$PACKAGE_NAME|g" {} \;
+      - find android/app/build.gradle -type f -exec sed -i '.original' "s|com.ionicfirebaseapp.readymadegroceryuserapp|$PACKAGE_NAME|g" {} \;
+      - find android/app/src/main/AndroidManifest.xml -type f -exec sed -i '.original' "s|com.ionicfirebaseapp.readymadegroceryuserapp|$PACKAGE_NAME|g" {} \;
+      - find android/app/src/debug/AndroidManifest.xml -type f -exec sed -i '.original' "s|com.ionicfirebaseapp.readymadegroceryuserapp|$PACKAGE_NAME|g" {} \;
+      - find android/app/src/profile/AndroidManifest.xml -type f -exec sed -i '.original' "s|com.ionicfirebaseapp.readymadegroceryuserapp|$PACKAGE_NAME|g" {} \;
+      - find android/app/src/main/kotlin/com/example/demoaddressmap/MainActivity.kt -type f -exec sed -i '.original' "s|com.ionicfirebaseapp.readymadegroceryuserapp|$PACKAGE_NAME|g" {} \;
       - flutter packages pub get
+      - flutter pub run flutter_launcher_icons:main
       - flutter build appbundle --target-platform android-arm,android-arm64,android-x64
       - find . -name "Podfile" -execdir pod install \;
       - keychain initialize
@@ -71,6 +79,7 @@ workflows:
       cocoapods: 1.8.4
       vars:
         ENV_FILE: QVBQX05BTUU9J1JlYWR5bWFkZSBHcm9jZXJ5IEFwcCcKQVBJX1VSTD1odHRwOi8vMTYyLjI0My4xNzEuODE6NDAwMApCQVNFX1VSTD1odHRwOi8vZDFrNXF4bGlsZjExdS5jbG91ZGZyb250Lm5ldApPTkVfU0lHTkFMX0tFWT1hNzZiNjg2Ny1iZjEyLTQ0MGYtOGJjMi0zMDk0NmM2NTJhZjgKU1RSSVBFX0tFWT1wa190ZXN0X1JCZEF1NmpJYkVCeVkzS2FCUUZiSDROMTAwbk1rVml2NmcKSU1BR0VfVVJMX1BBVEg9aHR0cHM6Ly9pay5pbWFnZWtpdC5pby9rcGxodnRocWJpCkdPT0dMRV9NQVBfQVBJX0tFWT1BSXphU3lCQXdQR08wbk8tejFhWFZnRUpnNUdfWFJBbzZSbmVwU3c=
+        PACKAGE_NAME: com.ionicfirebaseapp.readymadegroceryuserapp
     cache:
       cache_paths: []
     triggering:
@@ -83,7 +92,18 @@ workflows:
     scripts:
       - echo $ENV_FILE  | base64 --decode > .env
       - source .env
-      - export APPLICATION_NAME=$APPLICATION_NAME; export GOOGLE_MAP_API_KEY=$GOOGLE_MAP_API_KEY;
+      - export APPLICATION_NAME=$APPLICATION_NAME; export GOOGLE_MAP_API_KEY=$GOOGLE_MAP_API_KEY; export LC_CTYPE=C; export LANG=C;
+      - cp lib/assets/splash.png android/app/src/main/res/drawable/splash.png
+      - find ios/Runner/AppDelegate.swift -type f -exec sed -i '.original' "s|GOOGLE_MAP_API_KEY|$GOOGLE_MAP_API_KEY|g" {} \;
+      - find ios/Runner/info.plist -type f -exec sed -i '.original' "s|<string>APPLICATION_NAME</string>|<string>$APPLICATION_NAME</string>|g" {} \;
+      - find ios/Runner.xcodeproj -type f -exec sed -i '.original' "s|com.ionicfirebaseapp.readymadegroceryuserapp|$PACKAGE_NAME|g" {} \;
+      - find android/app/build.gradle -type f -exec sed -i '.original' "s|com.ionicfirebaseapp.readymadegroceryuserapp|$PACKAGE_NAME|g" {} \;
+      - find android/app/src/main/AndroidManifest.xml -type f -exec sed -i '.original' "s|com.ionicfirebaseapp.readymadegroceryuserapp|$PACKAGE_NAME|g" {} \;
+      - find android/app/src/debug/AndroidManifest.xml -type f -exec sed -i '.original' "s|com.ionicfirebaseapp.readymadegroceryuserapp|$PACKAGE_NAME|g" {} \;
+      - find android/app/src/profile/AndroidManifest.xml -type f -exec sed -i '.original' "s|com.ionicfirebaseapp.readymadegroceryuserapp|$PACKAGE_NAME|g" {} \;
+      - find android/app/src/main/kotlin/com/example/demoaddressmap/MainActivity.kt -type f -exec sed -i '.original' "s|com.ionicfirebaseapp.readymadegroceryuserapp|$PACKAGE_NAME|g" {} \;
+      - flutter packages pub get
+      - flutter pub run flutter_launcher_icons:main
       - flutter packages pub get
       - flutter build apk --release
     artifacts:
