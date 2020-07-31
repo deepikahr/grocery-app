@@ -280,26 +280,30 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                                       'quantityToCart']);
                                         });
                                     bottomSheet.then((onValue) {
-                                      for (int i = 0;
-                                          i < onValue['products'].length;
-                                          i++) {
-                                        if (widget.productData["_id"] ==
-                                            onValue['products'][i]
-                                                ["productId"]) {
-                                          if (mounted) {
-                                            setState(() {
-                                              widget.productData[
-                                                      'quantityToCart'] =
-                                                  onValue['products'][i]
-                                                      ['quantity'];
-                                              variantPrice = onValue['products']
-                                                  [i]['price'];
-                                              cartId = onValue['_id'];
+                                      if (onValue != null) {
+                                        for (int i = 0;
+                                            i < onValue['products'].length;
+                                            i++) {
+                                          if (widget.productData["_id"] ==
+                                              onValue['products'][i]
+                                                  ["productId"]) {
+                                            if (mounted) {
+                                              setState(() {
+                                                widget.productData[
+                                                        'quantityToCart'] =
+                                                    onValue['products'][i]
+                                                        ['quantity'];
+                                                variantPrice =
+                                                    onValue['products'][i]
+                                                        ['price'];
+                                                cartId = onValue['_id'];
 
-                                              variantUnit = onValue['products']
-                                                  [i]['unit'];
-                                              cardAdded = true;
-                                            });
+                                                variantUnit =
+                                                    onValue['products'][i]
+                                                        ['unit'];
+                                                cardAdded = true;
+                                              });
+                                            }
                                           }
                                         }
                                       }
@@ -355,14 +359,18 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                                         widget.productData[
                                                                 'quantityToCart'] =
                                                             onValue['response_data']
+                                                                    ['products']
                                                                 [i]['quantity'];
-                                                        variantPrice = onValue[
-                                                                'response_data']
-                                                            [i]['price'];
 
-                                                        variantUnit =
-                                                            onValue['products']
-                                                                [i]['unit'];
+                                                        variantPrice =
+                                                            onValue['response_data']
+                                                                    ['products']
+                                                                [i]['price'];
+                                                        variantUnit = onValue[
+                                                                'response_data']
+                                                            [
+                                                            'products'][i]['unit'];
+
                                                         cardAdded = true;
                                                       });
                                                     }
