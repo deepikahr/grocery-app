@@ -26,7 +26,6 @@ workflows:
     scripts:
       - echo $ENV_FILE  | base64 --decode > .env
       - source .env
-      - cat .env
       - export APPLICATION_NAME=$APPLICATION_NAME; export GOOGLE_MAP_API_KEY=$GOOGLE_MAP_API_KEY; export LC_CTYPE=C; export LANG=C;
       - cp lib/assets/splash.png android/app/src/main/res/drawable/splash.png
       - find ios/Runner/AppDelegate.swift -type f -exec sed -i '.original' "s|GOOGLE_MAP_API_KEY|$GOOGLE_MAP_API_KEY|g" {} \;
@@ -95,6 +94,7 @@ workflows:
     scripts:
       - echo $ENV_FILE  | base64 --decode > .env
       - source .env
+      - cat .env
       - export APPLICATION_NAME=$APPLICATION_NAME; export GOOGLE_MAP_API_KEY=$GOOGLE_MAP_API_KEY; export LC_CTYPE=C; export LANG=C;
       - cp lib/assets/splash.png android/app/src/main/res/drawable/splash.png
       - find ios/Runner/AppDelegate.swift -type f -exec sed -i '.original' "s|GOOGLE_MAP_API_KEY|$GOOGLE_MAP_API_KEY|g" {} \;
