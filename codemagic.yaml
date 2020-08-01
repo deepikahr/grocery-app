@@ -113,14 +113,12 @@ workflows:
       - find android/app/src/main/kotlin/com/example/demoaddressmap/MainActivity.kt -type f -exec sed -i '.original' "s|com.ionicfirebaseapp.readymadegroceryuserapp|$ANDROID_PACKAGE_NAME|g" {} \;
       - echo Y2F0IDw8RU9UID4+IC5lbnYKQVBQTElDQVRJT05fTkFNRT0ke0FQUExJQ0FUSU9OX05BTUV9CkFQSV9VUkw9JHtBUElfVVJMfQpCQVNFX1VSTD0ke0JBU0VfVVJMfQpPTkVfU0lHTkFMX0tFWT0ke09ORV9TSUdOQUxfS0VZfQpTVFJJUEVfS0VZPSR7U1RSSVBFX0tFWX0KSU1BR0VfVVJMX1BBVEg9JHtJTUFHRV9VUkxfUEFUSH0KR09PR0xFX01BUF9BUElfS0VZPSR7R09PR0xFX01BUF9BUElfS0VZfQpFT1Q= | base64 --decode > temp
       - sh temp
-      - zip -r archive_grocery.zip
       - flutter packages pub get
       - flutter pub run flutter_launcher_icons:main
       - flutter build apk --release
     artifacts:
       - build/**/outputs/**/app-release.apk
       - build/**/outputs/**/mapping.txt
-      - archive_grocery.zip
       - flutter_drive.log
     publishing:
       email:
