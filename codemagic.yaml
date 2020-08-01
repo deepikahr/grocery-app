@@ -4,7 +4,7 @@ workflows:
     max_build_duration: 60
     environment:
       vars:
-        APPLICATION_NAME: 'Readymade Grocery App'
+        APPLICATION_NAME: "Readymade Grocery App"
         API_URL: http://162.243.171.81:3000
         BASE_URL: http://d1awsskgiqlo01.cloudfront.net
         IMAGE_URL_PATH: https://ik.imagekit.io/kplhvthqbi
@@ -85,7 +85,7 @@ workflows:
       xcode: latest
       cocoapods: 1.8.4
       vars:
-        APPLICATION_NAME: 'Readymade Grocery App'
+        APPLICATION_NAME: "Readymade Grocery App"
         API_URL: http://162.243.171.81:4000
         BASE_URL: http://d1k5qxlilf11u.cloudfront.net
         IMAGE_URL_PATH: https://ik.imagekit.io/kplhvthqbi
