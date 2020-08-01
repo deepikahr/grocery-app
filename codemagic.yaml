@@ -80,7 +80,7 @@ workflows:
       cocoapods: 1.8.4
       vars:
         ENV_FILE: Encrypted(Z0FBQUFBQmZKUU04QVR5QXhXRXQ2MEZlQWEyU2ZfWC1XSDhQb0MtZERYWmVhYjFCU0l2UG5LTmVRSkR1S0NaNkh6eTktWm5SbUUxLTdrYW84RUd3ZTNyZTg4anFQZVhDY09qOWxadGl2UDZkXzBuQXVpclFNOGRvcnZNS2FaUWNOX3JtSlpVZTZ2UGw5eEdxcm1GeHAxcnZfTkRRZkRyRVZYejdZTmhCSjUyWE0zZGNxTTFkNFJSRS1adWcxb0tsazRmV0x6WEVOUXphQy1TZ1RCS1NhLXBDWUZTb3pUSEhXSnowLURsMFJodXFVMWxGWVRoX2J2Ynh5aHhtQTF5dkNqMWRLMzB2NHc5My01SDlicFY4U3hVSUVlaXlxaDF0TzI3bk9hTERuRUVySGRoLWJLcXFHbGR2TG1XbXZGZ0FDSkZHZy1LWlpzdGZ6dnFYOU5BektkZE1wR3FYNGpmSlVfWldVdXp3b0dtRDN4dkV4TFBfWkUtT1RsRF8yOHFicXJzWkFfNW1tUHU2cU42SHhSZXdRelhTM25iMllkRzJ0Z1pyME9iY3RFTzlLN0xZVDM4OGlqb0hHWGdaYnJ5TGdQd3lrNWFBZ3dYa18zRkJWWFgxZU04c2tZejNUMkdqS1FLTTFWWll1d3l2dWlRZEh0VGZUbjY3ZlRacWxFZ1c3bW54VlR2T1pPZDBYaXc0UTh6M2xENmFxUDU0XzhzNF9JSzB1NXNLR09BSVRTbmpzWGJaNDZ0UHlfZUp6dGNleHFxOVV0b19TZWM5RnpDREs2WTNSR0lQc24tNmRyWmF0WVg1QUhjRWhmNGE0T1Y4bGFwaWs1ZUZjN3RUZUwyM2dkOUZhWUdMVjc1dWZJMmh4OF9UUGIzRW5NVnk1Q0pXMkVTeWxMVFBXQ01GNmNCWDdwV1g2bE09)
-        ANDROID_PACKAGE_NAME: com.ionicfirebaseapp.readymadegroceryuserapp
+        ANDROID_PACKAGE_NAME: com.test.test
         IOS_PACKAGE_NAME: com.ionicfirebaseapp.readymadegroceryuserapp
     cache:
       cache_paths: []
@@ -104,8 +104,9 @@ workflows:
       - flutter packages pub get
       - flutter pub run flutter_launcher_icons:main
       - source .env
+      - cat .env
       - export APPLICATION_NAME=$APPLICATION_NAME; export GOOGLE_MAP_API_KEY=$GOOGLE_MAP_API_KEY; export LC_CTYPE=C; export LANG=C;
-      - echo $APPLICATION_NAME; echo $GOOGLE_MAP_API_KEY; echo $ANDROID_PACKAGE_NAME;
+      - echo helloword; echo $APPLICATION_NAME; echo $GOOGLE_MAP_API_KEY; echo $ANDROID_PACKAGE_NAME;
       - cat android/app/src/main/AndroidManifest.xml
       - flutter build apk --release
     artifacts:
