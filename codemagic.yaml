@@ -48,7 +48,7 @@ workflows:
       - flutter build appbundle --target-platform android-arm,android-arm64,android-x64
       - find . -name "Podfile" -execdir pod install \;
       - keychain initialize
-      - app-store-connect fetch-signing-files "$PACKAGE_NAME" --type IOS_APP_STORE
+      - app-store-connect fetch-signing-files "$IOS_PACKAGE_NAME" --type IOS_APP_STORE
         --create
       - keychain add-certificates
       - flutter build ios --release --no-codesign
