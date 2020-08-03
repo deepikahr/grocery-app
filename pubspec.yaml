@@ -1,7 +1,7 @@
 name: readymadeGroceryApp
 description: A new Flutter project.
 
-version: 1.4.3+22
+version: 1.4.4+23
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -32,13 +32,26 @@ dependencies:
   url_launcher: ^5.4.5
   flutter_map_picker: ^0.1.2
   stripe_payment: ^1.0.7
- 
+  flutter_dotenv: ^2.1.0
+  http_interceptor: ^0.3.2
+  webview_flutter: ^0.3.22+1
+  fluttertoast: ^7.0.1
   flutter_localizations:
     sdk: flutter
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_driver:
+    sdk: flutter
+  test: ^1.5.1
+  screenshots: ^2.1.1
+  flutter_launcher_icons: "^0.7.5"
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "lib/assets/logo.png"
 
 flutter:
   uses-material-design: true
@@ -80,6 +93,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - .env
     - lib/assets/images/profile.png
     - lib/assets/images/product.png
     - lib/assets/images/thank-you.png
@@ -87,16 +101,12 @@ flutter:
     - lib/assets/images/no-orders.png
     - lib/assets/images/profileIcon.png
 
-    - lib/assets/icons/plus.svg
     - lib/assets/icons/tick.svg
     - lib/assets/icons/editt.svg
     - lib/assets/icons/add1.svg
-    - lib/assets/icons/delete.svg
-    - lib/assets/icons/minus.svg
 
     - lib/assets/icons/sale.png
     - lib/assets/icons/Home.png
-    - lib/assets/icons/minus.svg
     - lib/assets/icons/products.png
     - lib/assets/icons/location.png
     - lib/assets/icons/fav.png
@@ -108,3 +118,4 @@ flutter:
     - lib/assets/icons/history.png
 
     - lib/assets/splash.png
+    - lib/assets/logo.png

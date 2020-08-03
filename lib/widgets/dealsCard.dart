@@ -47,7 +47,7 @@ class DealsCard extends StatelessWidget {
                   const BorderRadius.vertical(top: Radius.circular(12)),
               child: Image.network(
                 isPath
-                    ? Constants.IMAGE_URL_PATH + "tr:dpr-auto,tr:w-500" + image
+                    ? Constants.baseUrl + "/tr:dpr-auto,tr:w-500" + image
                     : image,
                 fit: BoxFit.cover,
                 width: MediaQuery.of(context).size.width * 0.5,
@@ -63,7 +63,7 @@ class DealsCard extends StatelessWidget {
                     children: <Widget>[
                       Expanded(
                           child: Text(
-                        title,
+                        '${title.toUpperCase()}${title.substring(1)}',
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: textbarlowRegularBlackb(),

@@ -76,79 +76,68 @@ class _LoginState extends State<Login> {
           "playerId": playerID
         };
         await LoginService.signIn(body).then((onValue) async {
-          try {
-            if (mounted) {
-              setState(() {
-                isUserLoaginLoading = false;
-              });
-            }
-            if (onValue['response_code'] == 200) {
-              if (onValue['response_data']['role'] == 'User') {
-                await Common.setToken(onValue['response_data']['token']);
-                await Common.setUserID(onValue['response_data']['_id']);
-                await LoginService.setLanguageCodeToProfile();
-                if (widget.isCart == true) {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => Home(
-                          locale: widget.locale,
-                          localizedValues: widget.localizedValues,
-                          currentIndex: 2,
-                        ),
+          if (mounted) {
+            setState(() {
+              isUserLoaginLoading = false;
+            });
+          }
+          if (onValue['response_code'] == 205) {
+            showAlert(onValue['response_data'], email.toLowerCase());
+          } else {
+            if (onValue['response_data']['role'] == 'USER') {
+              await Common.setToken(onValue['response_data']['token']);
+
+              if (widget.isCart == true) {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Home(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                        currentIndex: 2,
                       ),
-                      (Route<dynamic> route) => false);
-                } else if (widget.isProfile == true) {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => Home(
-                          locale: widget.locale,
-                          localizedValues: widget.localizedValues,
-                          currentIndex: 3,
-                        ),
+                    ),
+                    (Route<dynamic> route) => false);
+              } else if (widget.isProfile == true) {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Home(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                        currentIndex: 3,
                       ),
-                      (Route<dynamic> route) => false);
-                } else if (widget.isSaveItem == true) {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => Home(
-                          locale: widget.locale,
-                          localizedValues: widget.localizedValues,
-                          currentIndex: 1,
-                        ),
+                    ),
+                    (Route<dynamic> route) => false);
+              } else if (widget.isSaveItem == true) {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Home(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                        currentIndex: 1,
                       ),
-                      (Route<dynamic> route) => false);
-                } else if (widget.isProductDetails == true) {
-                  Navigator.pop(context);
-                } else {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => Home(
-                          locale: widget.locale,
-                          localizedValues: widget.localizedValues,
-                          currentIndex: 0,
-                        ),
-                      ),
-                      (Route<dynamic> route) => false);
-                }
+                    ),
+                    (Route<dynamic> route) => false);
+              } else if (widget.isProductDetails == true) {
+                Navigator.pop(context);
               } else {
-                showSnackbar(MyLocalizations.of(context).invalidUser);
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Home(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                        currentIndex: 0,
+                      ),
+                    ),
+                    (Route<dynamic> route) => false);
               }
-            } else if (onValue['response_code'] == 205) {
-              showAlert(onValue['response_data'], email.toLowerCase());
             } else {
-              showSnackbar(onValue['response_data']);
+              showSnackbar(
+                  MyLocalizations.of(context).getLocalizations("INVAILD_USER"));
             }
-          } catch (error, stackTrace) {
-            if (mounted) {
-              setState(() {
-                isUserLoaginLoading = false;
-              });
-            }
-            sentryError.reportError(error, stackTrace);
           }
         }).catchError((error) {
           if (mounted) {
@@ -182,7 +171,7 @@ class _LoginState extends State<Login> {
           actions: <Widget>[
             new FlatButton(
               child: new Text(
-                MyLocalizations.of(context).cancel,
+                MyLocalizations.of(context).getLocalizations("CANCEL"),
                 style: textbarlowRegularaPrimary(),
               ),
               onPressed: () {
@@ -191,18 +180,13 @@ class _LoginState extends State<Login> {
             ),
             new FlatButton(
               child: new Text(
-                MyLocalizations.of(context).sendVerificationlink,
+                MyLocalizations.of(context).getLocalizations("VERI_LINK"),
                 style: textbarlowRegularaPrimary(),
               ),
               onPressed: () {
-                Map body = {
-                  "email": email,
-                };
-                LoginService.verificationMailSendApi(body).then((response) {
+                LoginService.verificationMailSendApi(email).then((response) {
                   Navigator.of(context).pop();
-                  if (response['response_code'] == 200) {
-                    showSnackbar(response['response_data']);
-                  }
+                  showSnackbar(response['response_data']);
                 });
               },
             ),
@@ -222,7 +206,7 @@ class _LoginState extends State<Login> {
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20))),
         title: Text(
-          MyLocalizations.of(context).login,
+          MyLocalizations.of(context).getLocalizations("LOGIN"),
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -276,7 +260,7 @@ class _LoginState extends State<Login> {
       child: GFTypography(
         showDivider: false,
         child: Text(
-          MyLocalizations.of(context).welcomeBack,
+          MyLocalizations.of(context).getLocalizations("WELCOME_BACK"),
           style: textbarlowMediumBlack(),
         ),
       ),
@@ -292,7 +276,8 @@ class _LoginState extends State<Login> {
           text: TextSpan(
             children: <TextSpan>[
               TextSpan(
-                text: MyLocalizations.of(context).email,
+                text:
+                    MyLocalizations.of(context).getLocalizations("EMAIL", true),
                 style: textbarlowRegularBlackdull(),
               ),
               TextSpan(
@@ -311,7 +296,7 @@ class _LoginState extends State<Login> {
       padding: const EdgeInsets.only(top: 5.0, bottom: 10.0),
       child: Container(
         child: TextFormField(
-          initialValue: Constants.APP_NAME.contains('Readymade')
+          initialValue: Constants.appName.contains('Readymade')
               ? "user@ionicfirebaseapp.com"
               : null,
           onSaved: (String value) {
@@ -319,11 +304,12 @@ class _LoginState extends State<Login> {
           },
           validator: (String value) {
             if (value.isEmpty) {
-              return MyLocalizations.of(context).enterYourEmail;
+              return MyLocalizations.of(context)
+                  .getLocalizations("ENTER_YOUR_EMAIL");
             } else if (!RegExp(
                     r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
                 .hasMatch(value)) {
-              return MyLocalizations.of(context).pleaseEnterValidEmail;
+              return MyLocalizations.of(context).getLocalizations("ERROR_MAIL");
             } else
               return null;
           },
@@ -353,7 +339,8 @@ class _LoginState extends State<Login> {
         text: TextSpan(
           children: <TextSpan>[
             TextSpan(
-                text: MyLocalizations.of(context).password,
+                text: MyLocalizations.of(context)
+                    .getLocalizations("PASSWORD", true),
                 style: textbarlowRegularBlackdull()),
             TextSpan(
               text: ' *',
@@ -369,8 +356,7 @@ class _LoginState extends State<Login> {
     return Container(
       margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
       child: TextFormField(
-        initialValue:
-            Constants.APP_NAME.contains('Readymade') ? "123456" : null,
+        initialValue: Constants.appName.contains('Readymade') ? "123456" : null,
         style: textBarlowRegularBlack(),
         keyboardType: TextInputType.text,
         onSaved: (String value) {
@@ -378,9 +364,10 @@ class _LoginState extends State<Login> {
         },
         validator: (String value) {
           if (value.isEmpty) {
-            return MyLocalizations.of(context).enterPassword;
+            return MyLocalizations.of(context)
+                .getLocalizations("ENTER_PASSWORD");
           } else if (value.length < 6) {
-            return MyLocalizations.of(context).pleaseEnterMin6DigitPassword;
+            return MyLocalizations.of(context).getLocalizations("ERROR_PASS");
           } else
             return null;
         },
@@ -434,7 +421,7 @@ class _LoginState extends State<Login> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              MyLocalizations.of(context).login,
+              MyLocalizations.of(context).getLocalizations("LOGIN"),
               style: textBarlowRegularrBlack(),
             ),
             SizedBox(
@@ -470,8 +457,10 @@ class _LoginState extends State<Login> {
           text: TextSpan(
             children: <TextSpan>[
               TextSpan(
-                  text: MyLocalizations.of(context).forgotPasswordWithQuasMarks,
-                  style: textbarlowRegularBlackd()),
+                  text: MyLocalizations.of(context)
+                          .getLocalizations("FORGET_PASSWORD") +
+                      "?",
+                  style: textbarlowRegularBlackFont()),
               TextSpan(
                 text: '',
                 style: TextStyle(color: primary),
@@ -485,7 +474,7 @@ class _LoginState extends State<Login> {
 
   Widget buildcontinuetext() {
     return Text(
-      MyLocalizations.of(context).or,
+      MyLocalizations.of(context).getLocalizations("OR"),
       textAlign: TextAlign.center,
       style: textBarlowRegularBlack(),
     );
@@ -509,7 +498,8 @@ class _LoginState extends State<Login> {
           text: TextSpan(
             children: <TextSpan>[
               TextSpan(
-                text: MyLocalizations.of(context).registerWithQuasMarks,
+                text: MyLocalizations.of(context).getLocalizations("REGISTER") +
+                    "?",
                 style: textbarlowRegularaPrimary(),
               ),
               TextSpan(

@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:getflutter/getflutter.dart';
@@ -20,21 +22,28 @@ bool get isInDebugMode {
   return inDebugMode;
 }
 
+Timer oneSignalTimer;
+
 void main() {
+  initializeMain();
+}
+
+void initializeMain() async {
+  await DotEnv().load('.env');
   WidgetsFlutterBinding.ensureInitialized();
   configLocalNotification();
+  oneSignalTimer = Timer.periodic(Duration(seconds: 4), (timer) {
+    configLocalNotification();
+  });
   runZoned<Future<Null>>(() {
     runApp(MaterialApp(
       home: AnimatedScreen(),
       debugShowCheckedModeBanner: false,
     ));
     return Future.value(null);
-  },
-      // ignore: deprecated_member_use
-      onError: (error, stackTrace) {
+  }, onError: (error, stackTrace) {
     sentryError.reportError(error, stackTrace);
   });
-
   Common.getSelectedLanguage().then((selectedLocale) {
     Map localizedValues;
     String defaultLocale = '';
@@ -51,23 +60,15 @@ void main() {
     };
     LoginService.getLanguageJson(locale).then((value) async {
       localizedValues = value['response_data']['json'];
-      if (locale == '') {
-        defaultLocale = value['response_data']['defaultCode']['languageCode'];
-        locale = defaultLocale;
-      }
+      locale = value['response_data']['languageCode'];
       await Common.setSelectedLanguage(locale);
-      await Common.setAllLanguageNames(value['response_data']['langName']);
-      await Common.setAllLanguageCodes(value['response_data']['langCode']);
-      getToken();
       runZoned<Future<Null>>(() {
         runApp(MainScreen(
           locale: locale,
           localizedValues: localizedValues,
         ));
         return Future.value(null);
-      },
-          // ignore: deprecated_member_use
-          onError: (error, stackTrace) {
+      }, onError: (error, stackTrace) {
         sentryError.reportError(error, stackTrace);
       });
     });
@@ -77,24 +78,13 @@ void main() {
 void getToken() async {
   await Common.getToken().then((onValue) async {
     if (onValue != null) {
-      await LoginService.setLanguageCodeToProfile();
-      checkToken(onValue);
-    } else {}
-  }).catchError((error) {
-    sentryError.reportError(error, null);
-  });
-}
-
-void checkToken(token) async {
-  LoginService.checkToken().then((onValue) async {
-    try {
-      if (onValue['response_data']['tokenVerify'] == false) {
-        await Common.setToken(null);
-      } else {
-        userInfoMethod();
-      }
-    } catch (error, stackTrace) {
-      sentryError.reportError(error, stackTrace);
+      Common.getPlayerID().then((palyerId) {
+        Common.getSelectedLanguage().then((selectedLocale) async {
+          Map body = {"language": selectedLocale, "playerId": palyerId};
+          await LoginService.updateUserInfo(body);
+          userInfoMethod();
+        });
+      });
     }
   }).catchError((error) {
     sentryError.reportError(error, null);
@@ -103,11 +93,7 @@ void checkToken(token) async {
 
 void userInfoMethod() async {
   await LoginService.getUserInfo().then((onValue) async {
-    try {
-      await Common.setUserID(onValue['response_data']['userInfo']['_id']);
-    } catch (error, stackTrace) {
-      sentryError.reportError(error, stackTrace);
-    }
+    await Common.setUserID(onValue['response_data']['_id']);
   }).catchError((error) {
     sentryError.reportError(error, null);
   });
@@ -122,17 +108,18 @@ Future<void> configLocalNotification() async {
       .setNotificationReceivedHandler((OSNotification notification) {});
   OneSignal.shared
       .setNotificationOpenedHandler((OSNotificationOpenedResult result) {});
-  await OneSignal.shared.init(Constants.ONE_SIGNAL_KEY, iOSSettings: settings);
+  await OneSignal.shared.init(Constants.oneSignalKey, iOSSettings: settings);
   OneSignal.shared
       .promptUserForPushNotificationPermission(fallbackToSettings: true);
   OneSignal.shared
       .setInFocusDisplayType(OSNotificationDisplayType.notification);
   var status = await OneSignal.shared.getPermissionSubscriptionState();
   String playerId = status.subscriptionStatus.userId;
-  if (playerId == null) {
-    configLocalNotification();
-  } else {
+  if (playerId != null) {
     await Common.setPlayerID(playerId);
+    getToken();
+    if (oneSignalTimer != null && oneSignalTimer.isActive)
+      oneSignalTimer.cancel();
   }
 }
 
@@ -151,7 +138,7 @@ class MainScreen extends StatelessWidget {
     return MaterialApp(
       locale: Locale(locale),
       localizationsDelegates: [
-        MyLocalizationsDelegate(localizedValues),
+        MyLocalizationsDelegate(localizedValues, [locale]),
         GlobalWidgetsLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
@@ -159,7 +146,7 @@ class MainScreen extends StatelessWidget {
       ],
       supportedLocales: [Locale(locale)],
       debugShowCheckedModeBanner: false,
-      title: Constants.APP_NAME,
+      title: Constants.appName,
       theme: ThemeData(primaryColor: primary, accentColor: primary),
       home: Home(
         locale: locale,
@@ -177,7 +164,7 @@ class AnimatedScreen extends StatelessWidget {
         color: primary,
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        child: Constants.APP_NAME.contains('Readymade Grocery App')
+        child: Constants.appName.contains('Readymade Grocery App')
             ? Image.asset(
                 'lib/assets/splash.png',
                 fit: BoxFit.cover,

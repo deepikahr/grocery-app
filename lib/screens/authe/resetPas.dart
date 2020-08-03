@@ -14,9 +14,14 @@ import 'package:readymadeGroceryApp/style/style.dart';
 SentryError sentryError = new SentryError();
 
 class ResetPassword extends StatefulWidget {
-  final String token, locale;
+  final String verificationToken, locale, email;
   final Map localizedValues;
-  ResetPassword({Key key, this.token, this.localizedValues, this.locale})
+  ResetPassword(
+      {Key key,
+      this.verificationToken,
+      this.localizedValues,
+      this.locale,
+      this.email})
       : super(key: key);
 
   @override
@@ -43,65 +48,54 @@ class _ResetPasswordState extends State<ResetPassword> {
           isResetPasswordLoading = true;
         });
       }
-      Map<String, dynamic> body = {"password": password1};
-      await LoginService.resetPassword(body, widget.token).then((onValue) {
-        try {
-          if (mounted) {
-            setState(() {
-              isResetPasswordLoading = false;
-            });
-          }
-          if (onValue['response_code'] == 200) {
-            showDialog<Null>(
-              context: context,
-              barrierDismissible: false, // user must tap button!
-              builder: (BuildContext context) {
-                return new AlertDialog(
-                  content: new SingleChildScrollView(
-                    child: new ListBody(
-                      children: <Widget>[
-                        new Text(
-                          '${onValue['response_data']}',
-                          style: textBarlowRegularBlack(),
-                        ),
-                      ],
-                    ),
-                  ),
-                  actions: <Widget>[
-                    new FlatButton(
-                      child: new Text(
-                        MyLocalizations.of(context).ok,
-                        style: textbarlowRegularaPrimary(),
-                      ),
-                      onPressed: () {
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) => Login(
-                                locale: widget.locale,
-                                localizedValues: widget.localizedValues,
-                              ),
-                            ),
-                            (Route<dynamic> route) => false);
-                      },
+      Map<String, dynamic> body = {
+        "newPassword": password1,
+        "email": widget.email,
+        "verificationToken": widget.verificationToken
+      };
+      await LoginService.resetPassword(body).then((onValue) {
+        if (mounted) {
+          setState(() {
+            isResetPasswordLoading = false;
+          });
+        }
+        showDialog<Null>(
+          context: context,
+          barrierDismissible: false, // user must tap button!
+          builder: (BuildContext context) {
+            return new AlertDialog(
+              content: new SingleChildScrollView(
+                child: new ListBody(
+                  children: <Widget>[
+                    new Text(
+                      '${onValue['response_data']}',
+                      style: textBarlowRegularBlack(),
                     ),
                   ],
-                );
-              },
+                ),
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text(
+                    MyLocalizations.of(context).getLocalizations("OK"),
+                    style: textbarlowRegularaPrimary(),
+                  ),
+                  onPressed: () {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => Login(
+                            locale: widget.locale,
+                            localizedValues: widget.localizedValues,
+                          ),
+                        ),
+                        (Route<dynamic> route) => false);
+                  },
+                ),
+              ],
             );
-          } else if (onValue['response_code'] == 401) {
-            showSnackbar('${onValue['response_data']}');
-          } else {
-            showSnackbar('${onValue['response_data']}');
-          }
-        } catch (error, stackTrace) {
-          if (mounted) {
-            setState(() {
-              isResetPasswordLoading = false;
-            });
-          }
-          sentryError.reportError(error, stackTrace);
-        }
+          },
+        );
       }).catchError((error) {
         if (mounted) {
           setState(() {
@@ -132,7 +126,7 @@ class _ResetPasswordState extends State<ResetPassword> {
           ),
         ),
         title: Text(
-          MyLocalizations.of(context).passwordreset,
+          MyLocalizations.of(context).getLocalizations("RESET"),
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -155,8 +149,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                       text: TextSpan(
                         children: <TextSpan>[
                           TextSpan(
-                              text:
-                                  MyLocalizations.of(context).enternewpassword,
+                              text: MyLocalizations.of(context)
+                                  .getLocalizations("ENTER_PASSWORD", true),
                               style: textBarlowRegularBlack()),
                           TextSpan(
                             text: ' ',
@@ -203,10 +197,11 @@ class _ResetPasswordState extends State<ResetPassword> {
                     ),
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return MyLocalizations.of(context).enterPassword;
+                        return MyLocalizations.of(context)
+                            .getLocalizations("ENTER_PASSWORD");
                       } else if (value.length < 6) {
                         return MyLocalizations.of(context)
-                            .pleaseEnterMin6DigitPassword;
+                            .getLocalizations("ERROR_PASS");
                       } else
                         return null;
                     },
@@ -227,8 +222,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                     text: TextSpan(
                       children: <TextSpan>[
                         TextSpan(
-                            text:
-                                MyLocalizations.of(context).reenternewpassword,
+                            text: MyLocalizations.of(context).getLocalizations(
+                                "RE_ENTER_NEW_PASSWORD", true),
                             style: textBarlowRegularBlack()),
                         TextSpan(
                           text: ' ',
@@ -276,12 +271,14 @@ class _ResetPasswordState extends State<ResetPassword> {
                     ),
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return MyLocalizations.of(context).enterPassword;
+                        return MyLocalizations.of(context)
+                            .getLocalizations("ENTER_PASSWORD");
                       } else if (value.length < 6) {
                         return MyLocalizations.of(context)
-                            .pleaseEnterMin6DigitPassword;
+                            .getLocalizations("ERROR_PASS");
                       } else if (_passwordTextController.text != value) {
-                        return MyLocalizations.of(context).passwordsdonotmatch;
+                        return MyLocalizations.of(context)
+                            .getLocalizations("PASS_NOT_MATCH");
                       } else
                         return null;
                     },
@@ -313,7 +310,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          MyLocalizations.of(context).submit,
+                          MyLocalizations.of(context)
+                              .getLocalizations("SUBMIT"),
                           style: textbarlowMediumBlack(),
                         ),
                         SizedBox(

@@ -18,11 +18,11 @@ class CardOverlay extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              MyLocalizations.of(context).oops,
+              MyLocalizations.of(context).getLocalizations("OOPS"),
               style: textBarlowSemiBoldwhite(),
             ),
             Text(
-              MyLocalizations.of(context).outOfStock,
+              MyLocalizations.of(context).getLocalizations("OUT_OF_STOCK"),
               style: textBarlowSemiBoldwhite(),
             ),
           ],

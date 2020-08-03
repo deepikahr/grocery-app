@@ -40,20 +40,18 @@ class ProductDetails extends StatefulWidget {
 class _ProductDetailsState extends State<ProductDetails>
     with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  Map<String, dynamic> productDetail;
-  String variantUnit, variantId, favId, currency;
-  String currentCardId;
+  var productDetail;
+  String variantUnit, variantId, currency, description;
 
   int groupValue = 0;
   bool sizeSelect = false,
       getTokenValue = false,
-      isFavProduct = false,
       addProductTocart = false,
       isProductDetails = false,
       isFavProductLoading = false,
       isProductAlredayInCart = false;
-  int quantity = 1, variantPrice, variantStock;
+  var quantity = 1, variantPrice, variantStock;
+  var rating;
   void _changeProductQuantity(bool increase) {
     if (increase) {
       if (mounted) {
@@ -88,7 +86,6 @@ class _ProductDetailsState extends State<ProductDetails>
         setState(() {
           if (onValue != null) {
             getTokenValue = true;
-            _checkFavourite();
           } else {
             getTokenValue = false;
           }
@@ -104,97 +101,21 @@ class _ProductDetailsState extends State<ProductDetails>
       });
     }
     ProductService.productDetails(widget.productID).then((value) {
-      try {
-        if (mounted) {
-          setState(() {
-            isProductDetails = false;
-          });
-        }
-        if (value['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              productDetail = value['response_data'];
-              if (productDetail['cartAddedQuantity'] != null) {
-                quantity = productDetail['cartAddedQuantity'];
-                isProductAlredayInCart = productDetail['cartAdded'];
-                currentCardId = value['response_data']['cartId'];
-              }
-            });
+      if (mounted) {
+        setState(() {
+          productDetail = value['response_data'];
+          if (productDetail['quantityToCart'] != null) {
+            quantity = productDetail['quantityToCart'];
+            isProductAlredayInCart = productDetail['isAddedToCart'];
           }
-        } else {
-          if (mounted) {
-            setState(() {
-              productDetail = null;
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            isProductDetails = false;
-            productDetail = null;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+          isProductDetails = false;
+        });
       }
     }).catchError((error) {
       if (mounted) {
         setState(() {
           isProductDetails = false;
           productDetail = null;
-        });
-      }
-      sentryError.reportError(error, null);
-    });
-  }
-
-  void _checkFavourite() async {
-    if (mounted) {
-      setState(() {
-        isFavProductLoading = true;
-      });
-    }
-    await FavouriteService.checkFavProduct(widget.productID).then((onValue) {
-      try {
-        if (onValue['response_code'] == 200) {
-          if (onValue['response_data'] == null) {
-            if (mounted) {
-              setState(() {
-                favId = null;
-                isFavProductLoading = false;
-              });
-            }
-          } else {
-            if (mounted) {
-              setState(() {
-                favId = onValue['response_data']["_id"];
-                isFavProductLoading = false;
-                isFavProduct = true;
-              });
-            }
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              favId = null;
-              isFavProductLoading = false;
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            favId = null;
-            isFavProductLoading = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          favId = null;
-          isFavProductLoading = false;
         });
       }
       sentryError.reportError(error, null);
@@ -234,72 +155,47 @@ class _ProductDetailsState extends State<ProductDetails>
     setState(() {
       isFavProductLoading = true;
     });
-    if (isFavProduct) {
-      Map<String, dynamic> body = {"product": id};
-      await FavouriteService.addToFav(body).then((onValue) {
-        try {
-          if (onValue['response_code'] == 201) {
-            showSnackbar(onValue['response_data']);
-            _checkFavourite();
-          } else {
-            setState(() {
-              isFavProductLoading = false;
-              showSnackbar(onValue['response_data']);
-            });
-          }
-        } catch (error, stackTrace) {
-          sentryError.reportError(error, stackTrace);
-        }
-      }).catchError((error) {
-        sentryError.reportError(error, null);
+    await FavouriteService.addToFav(id).then((onValue) {
+      setState(() {
+        productDetail['isFavourite'] = true;
+        isFavProductLoading = false;
+        showSnackbar(onValue['response_data']);
       });
-    } else {
-      await FavouriteService.deleteToFav(id).then((onValue) {
-        try {
-          if (onValue['response_code'] == 200) {
-            showSnackbar(onValue['response_data']);
-            _checkFavourite();
-          } else {
-            setState(() {
-              isFavProductLoading = false;
-              showSnackbar(onValue['response_data']);
-            });
-          }
-        } catch (error, stackTrace) {
-          sentryError.reportError(error, stackTrace);
-        }
-      }).catchError((error) {
-        sentryError.reportError(error, null);
+    }).catchError((error) {
+      setState(() {
+        isFavProductLoading = false;
+        productDetail['isFavourite'] = false;
       });
-    }
+      sentryError.reportError(error, null);
+    });
+  }
+
+  removeToFavApi(id) async {
+    setState(() {
+      isFavProductLoading = true;
+    });
+
+    await FavouriteService.deleteToFav(id).then((onValue) {
+      setState(() {
+        isFavProductLoading = false;
+        showSnackbar(onValue['response_data']);
+        productDetail['isFavourite'] = false;
+      });
+    }).catchError((error) {
+      setState(() {
+        productDetail['isFavourite'] = true;
+        isFavProductLoading = false;
+      });
+      sentryError.reportError(error, null);
+    });
   }
 
   addToCart(data) async {
-    if (mounted) {
-      setState(() {
-        addProductTocart = true;
-      });
-    }
-
     if ((variantStock == null
-            ? productDetail['variant'][0]['productstock']
+            ? productDetail['variant'][0]['productStock']
             : variantStock) >=
         quantity) {
-      if (isProductAlredayInCart) {
-        Map<String, dynamic> body = {
-          'cartId': currentCardId,
-          'productId': data['_id'].toString(),
-        };
-        await CartService.deleteDataFromCart(body).then((onValue) {
-          if (onValue['response_code'] == 200) {
-            addProductToCart(data);
-          } else {
-            showSnackbar(onValue['response_data']);
-          }
-        });
-      } else {
-        addProductToCart(data);
-      }
+      addProductToCart(data);
     } else {
       if (mounted) {
         setState(() {
@@ -307,50 +203,42 @@ class _ProductDetailsState extends State<ProductDetails>
         });
       }
       showSnackbar(MyLocalizations.of(context)
-              .limitedquantityavailableyoucantaddmorethan +
-          " ${variantStock == null ? productDetail['variant'][0]['productstock'] : variantStock} " +
-          MyLocalizations.of(context).ofthisitem);
+              .getLocalizations("LIMITED_STOCK") +
+          " ${variantStock == null ? productDetail['variant'][0]['productStock'] : variantStock} " +
+          MyLocalizations.of(context).getLocalizations("OF_THIS_ITEM"));
     }
   }
 
   addProductToCart(data) {
+    if (mounted) {
+      setState(() {
+        addProductTocart = true;
+      });
+    }
     Map<String, dynamic> buyNowProduct = {
-      "category": data['category'],
-      "subcategory": data['subcategory'],
       'productId': data['_id'].toString(),
       'quantity': quantity,
-      "price": double.parse(variantPrice == null
-          ? productDetail['variant'][0]['price'].toString()
-          : variantPrice.toString()),
       "unit": variantUnit == null
           ? productDetail['variant'][0]['unit'].toString()
           : variantUnit.toString()
     };
-    AddToCart.addToCartMethod(buyNowProduct).then((onValue) {
-      try {
-        if (mounted) {
-          setState(() {
-            addProductTocart = false;
-            groupValue = 0;
-          });
-        }
-        if (onValue['response_code'] == 200) {
-          if (onValue['response_data'] is Map) {
-            Common.setCartData(onValue['response_data']);
-          } else {
-            Common.setCartData(null);
-          }
-          Navigator.pop(context);
-        } else if (onValue['response_code'] == 403) {
-          cartClear(onValue['response_data']);
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            addProductTocart = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+    AddToCart.addAndUpdateProductMethod(buyNowProduct).then((onValue) {
+      if (mounted) {
+        setState(() {
+          addProductTocart = false;
+          groupValue = 0;
+        });
+      }
+      if (onValue['message'] != null) {
+        showSnackbar(onValue['message'] ?? "");
+      }
+      Future.delayed(Duration(milliseconds: 1500), () {
+        Navigator.of(context).pop();
+      });
+      if (onValue['response_data'] is Map) {
+        Common.setCartData(onValue['response_data']);
+      } else {
+        Common.setCartData(null);
       }
     }).catchError((error) {
       if (mounted) {
@@ -372,26 +260,23 @@ class _ProductDetailsState extends State<ProductDetails>
               Text(responseData['message'], style: textBarlowRegularrBlack()),
           actions: <Widget>[
             FlatButton(
-              child: Text(MyLocalizations.of(context).cancel),
+              child:
+                  Text(MyLocalizations.of(context).getLocalizations("CANCEL")),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             FlatButton(
-              child: Text(MyLocalizations.of(context).clearCart),
+              child: Text(
+                  MyLocalizations.of(context).getLocalizations("CLEAR_CART")),
               onPressed: () {
                 Navigator.pop(context);
 
-                CartService.deleteAllDataFromCart(responseData['cartId'])
-                    .then((response) {
-                  if (response['response_code'] == 200) {
-                    if (response['response_data'] is Map) {
-                      Common.setCartData(response['response_data']);
-                    } else {
-                      Common.setCartData(null);
-                    }
+                CartService.deleteAllDataFromCart().then((response) {
+                  if (response['response_data'] is Map) {
+                    Common.setCartData(response['response_data']);
                   } else {
-                    showSnackbar("${response['response_data']}");
+                    Common.setCartData(null);
                   }
                 });
               },
@@ -442,8 +327,8 @@ class _ProductDetailsState extends State<ProductDetails>
                                   image: new NetworkImage(
                                     productDetail['filePath'] == null
                                         ? productDetail['imageUrl']
-                                        : Constants.IMAGE_URL_PATH +
-                                            "tr:dpr-auto,tr:w-1000" +
+                                        : Constants.imageUrlPath +
+                                            "/tr:dpr-auto,tr:w-1000" +
                                             productDetail['filePath'],
                                   ),
                                 ),
@@ -465,49 +350,39 @@ class _ProductDetailsState extends State<ProductDetails>
                                         padding: const EdgeInsets.only(
                                             left: 20, right: 20),
                                         child: Text(
-                                          productDetail['title'],
+                                          '${productDetail['title'][0].toUpperCase()}${productDetail['title'].substring(1)}',
                                           maxLines: 3,
                                           overflow: TextOverflow.ellipsis,
                                           style: textBarlowSemiBoldBlack(),
                                         ),
                                       ),
                                     ),
-                                    productDetail['averageRating'] == null ||
-                                            productDetail['averageRating'] ==
-                                                0.0 ||
-                                            productDetail['averageRating'] ==
-                                                '0.0'
-                                        ? Container()
-                                        : Expanded(
-                                            flex: 3,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 0.0,
-                                                  right: 5.0,
-                                                  left: 5.0),
-                                              child: RatingBar(
-                                                initialRating: double.parse(
-                                                    productDetail[
-                                                            'averageRating']
-                                                        .toStringAsFixed(1)),
-                                                minRating: 0,
-                                                direction: Axis.horizontal,
-                                                allowHalfRating: true,
-                                                itemCount: 5,
-                                                itemSize: 15.0,
-                                                itemPadding:
-                                                    EdgeInsets.symmetric(
-                                                        horizontal: 1.0),
-                                                itemBuilder: (context, _) =>
-                                                    Icon(
-                                                  Icons.star,
-                                                  color: Colors.red,
-                                                  size: 10.0,
-                                                ),
-                                                onRatingUpdate: null,
-                                              ),
-                                            ),
+                                    Expanded(
+                                      flex: 3,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 0.0, right: 5.0, left: 5.0),
+                                        child: RatingBar(
+                                          initialRating: double.parse(
+                                                  productDetail['averageRating']
+                                                      .toStringAsFixed(1)) ??
+                                              0.0,
+                                          minRating: 0,
+                                          direction: Axis.horizontal,
+                                          allowHalfRating: true,
+                                          itemCount: 5,
+                                          itemSize: 15.0,
+                                          itemPadding: EdgeInsets.symmetric(
+                                              horizontal: 1.0),
+                                          itemBuilder: (context, _) => Icon(
+                                            Icons.star,
+                                            color: Colors.red,
+                                            size: 10.0,
                                           ),
+                                          onRatingUpdate: null,
+                                        ),
+                                      ),
+                                    )
                                   ],
                                 ),
                                 Container(
@@ -521,25 +396,29 @@ class _ProductDetailsState extends State<ProductDetails>
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
                                         children: <Widget>[
-                                          Padding(
-                                              padding: const EdgeInsets.only(
-                                                right: 0.0,
-                                                top: 3.0,
-                                              ),
-                                              child: Container(
-                                                margin: EdgeInsets.only(
-                                                  left: 10,
-                                                ),
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width -
-                                                    30,
-                                                child: Text(
-                                                  '${productDetail['description'][0].toUpperCase()}${productDetail['description'].substring(1)}',
-                                                  style:
-                                                      textbarlowRegularBlack(),
-                                                ),
-                                              )),
+                                          productDetail['description'] == null
+                                              ? Container()
+                                              : Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                    right: 0.0,
+                                                    top: 3.0,
+                                                  ),
+                                                  child: Container(
+                                                    margin: EdgeInsets.only(
+                                                      left: 10,
+                                                    ),
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width -
+                                                            30,
+                                                    child: Text(
+                                                      '${productDetail['description']}',
+                                                      style:
+                                                          textbarlowRegularBlack(),
+                                                    ),
+                                                  )),
                                           Padding(
                                             padding: const EdgeInsets.only(
                                                 left: 10.0,
@@ -550,7 +429,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                                 Text(
                                                   productDetail[
                                                           'isDealAvailable']
-                                                      ? "$currency${((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * (productDetail['delaPercent'] / 100))).toDouble().toStringAsFixed(2)}"
+                                                      ? "$currency${((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * (productDetail['dealPercent'] / 100))).toDouble().toStringAsFixed(2)}"
                                                       : '$currency${(variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice).toDouble().toStringAsFixed(2)}',
                                                   style: textbarlowBoldGreen(),
                                                 ),
@@ -582,14 +461,11 @@ class _ProductDetailsState extends State<ProductDetails>
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
-                                      productDetail['variant'].length > 1
-                                          ? Text(
-                                              MyLocalizations.of(context)
-                                                      .quantity +
-                                                  ':',
-                                              style: textBarlowMediumBlack(),
-                                            )
-                                          : Container(),
+                                      Text(
+                                        MyLocalizations.of(context)
+                                            .getLocalizations("QUANTITY", true),
+                                        style: textBarlowMediumBlack(),
+                                      ),
                                       Container(
                                         decoration: BoxDecoration(
                                             color: Colors.grey[300],
@@ -641,7 +517,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                                     if ((variantStock == null
                                                             ? productDetail[
                                                                     'variant'][0]
-                                                                ['productstock']
+                                                                ['productStock']
                                                             : variantStock) >
                                                         quantity) {
                                                       _changeProductQuantity(
@@ -649,11 +525,13 @@ class _ProductDetailsState extends State<ProductDetails>
                                                     } else {
                                                       showSnackbar(MyLocalizations
                                                                   .of(context)
-                                                              .limitedquantityavailableyoucantaddmorethan +
-                                                          " ${variantStock == null ? productDetail['variant'][0]['productstock'] : variantStock} " +
+                                                              .getLocalizations(
+                                                                  "LIMITED_STOCK") +
+                                                          " ${variantStock == null ? productDetail['variant'][0]['productStock'] : variantStock} " +
                                                           MyLocalizations.of(
                                                                   context)
-                                                              .ofthisitem);
+                                                              .getLocalizations(
+                                                                  "OF_THIS_ITEM"));
                                                     }
                                                   },
                                                   child: Icon(Icons.add),
@@ -677,62 +555,73 @@ class _ProductDetailsState extends State<ProductDetails>
                                             : productDetail['variant'].length,
                                         itemBuilder:
                                             (BuildContext context, int i) {
-                                          return RadioListTile(
-                                            value: i,
-                                            groupValue: groupValue,
-                                            selected: sizeSelect,
-                                            activeColor: primary,
-                                            onChanged: (int value) {
-                                              if (mounted) {
-                                                setState(() {
-                                                  groupValue = value;
-                                                  sizeSelect = !sizeSelect;
-                                                  variantPrice =
-                                                      productDetail['variant']
-                                                          [value]['price'];
-                                                  variantUnit =
-                                                      productDetail['variant']
-                                                          [value]['unit'];
-                                                  variantId =
-                                                      productDetail['variant']
-                                                          [value]['_id'];
-                                                  variantStock =
-                                                      productDetail['variant']
-                                                              [value]
-                                                          ['productstock'];
-                                                });
-                                              }
-                                            },
-                                            secondary: Text(
-                                              '${productDetail['variant'][i]['unit']}',
-                                              style: textbarlowBoldGreen(),
-                                            ),
-                                            title: Row(
-                                              children: <Widget>[
-                                                Text(
-                                                  productDetail[
-                                                          'isDealAvailable']
-                                                      ? "$currency${(productDetail['variant'][i]['price'] - (productDetail['variant'][i]['price'] * (productDetail['delaPercent'] / 100))).toDouble().toStringAsFixed(2)}"
-                                                      : '$currency${productDetail['variant'][i]['price'].toDouble().toStringAsFixed(2)}',
-                                                  style: textbarlowBoldGreen(),
-                                                ),
-                                                SizedBox(width: 3),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          top: 5.0),
-                                                  child: productDetail[
-                                                          'isDealAvailable']
-                                                      ? Text(
-                                                          '$currency${productDetail['variant'][i]['price'].toDouble().toStringAsFixed(2)}',
-                                                          style:
-                                                              barlowregularlackstrike(),
-                                                        )
-                                                      : Container(),
+                                          return productDetail['variant'][i]
+                                                      ['productStock'] >
+                                                  0
+                                              ? RadioListTile(
+                                                  value: i,
+                                                  groupValue: groupValue,
+                                                  selected: sizeSelect,
+                                                  activeColor: primary,
+                                                  onChanged: (int value) {
+                                                    if (mounted) {
+                                                      setState(() {
+                                                        groupValue = value;
+                                                        sizeSelect =
+                                                            !sizeSelect;
+                                                        variantPrice =
+                                                            productDetail[
+                                                                    'variant'][
+                                                                value]['price'];
+                                                        variantUnit =
+                                                            productDetail[
+                                                                    'variant']
+                                                                [value]['unit'];
+                                                        variantId =
+                                                            productDetail[
+                                                                    'variant']
+                                                                [value]['_id'];
+                                                        variantStock =
+                                                            productDetail[
+                                                                        'variant']
+                                                                    [value][
+                                                                'productStock'];
+                                                      });
+                                                    }
+                                                  },
+                                                  secondary: Text(
+                                                    '${productDetail['variant'][i]['unit']}',
+                                                    style:
+                                                        textbarlowBoldGreen(),
+                                                  ),
+                                                  title: Row(
+                                                    children: <Widget>[
+                                                      Text(
+                                                        productDetail[
+                                                                'isDealAvailable']
+                                                            ? "$currency${(productDetail['variant'][i]['price'] - (productDetail['variant'][i]['price'] * (productDetail['dealPercent'] / 100))).toDouble().toStringAsFixed(2)}"
+                                                            : '$currency${productDetail['variant'][i]['price'].toDouble().toStringAsFixed(2)}',
+                                                        style:
+                                                            textbarlowBoldGreen(),
+                                                      ),
+                                                      SizedBox(width: 3),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(top: 5.0),
+                                                        child: productDetail[
+                                                                'isDealAvailable']
+                                                            ? Text(
+                                                                '$currency${productDetail['variant'][i]['price'].toDouble().toStringAsFixed(2)}',
+                                                                style:
+                                                                    barlowregularlackstrike(),
+                                                              )
+                                                            : Container(),
+                                                      )
+                                                    ],
+                                                  ),
                                                 )
-                                              ],
-                                            ),
-                                          );
+                                              : Container();
                                         })
                                     : Container(),
                               ],
@@ -764,12 +653,12 @@ class _ProductDetailsState extends State<ProductDetails>
                                         if (mounted) {
                                           setState(() {
                                             if (!isFavProductLoading) {
-                                              if (isFavProduct == true) {
-                                                isFavProduct = false;
-
-                                                addToFavApi(favId);
+                                              if (productDetail[
+                                                      'isFavourite'] ==
+                                                  true) {
+                                                removeToFavApi(
+                                                    productDetail['_id']);
                                               } else {
-                                                isFavProduct = true;
                                                 addToFavApi(
                                                     productDetail['_id']);
                                               }
@@ -780,7 +669,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                       child: isFavProductLoading
                                           ? GFLoader(
                                               type: GFLoaderType.ios, size: 27)
-                                          : isFavProduct
+                                          : productDetail['isFavourite'] == true
                                               ? Icon(
                                                   Icons.favorite,
                                                   color: Colors.red,
@@ -860,7 +749,8 @@ class _ProductDetailsState extends State<ProductDetails>
                                       style: textBarlowRegularWhite(),
                                     ),
                                     TextSpan(
-                                        text: MyLocalizations.of(context).items,
+                                        text: MyLocalizations.of(context)
+                                            .getLocalizations("ITEMS"),
                                         style: textBarlowRegularWhite()),
                                   ],
                                 ),
@@ -870,7 +760,7 @@ class _ProductDetailsState extends State<ProductDetails>
                               ),
                               new Text(
                                 productDetail['isDealAvailable']
-                                    ? "$currency${((((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * (productDetail['delaPercent'] / 100)))) * quantity).toDouble().toStringAsFixed(2)}"
+                                    ? "$currency${((((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * (productDetail['dealPercent'] / 100)))) * quantity).toDouble().toStringAsFixed(2)}"
                                     : '$currency${((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * quantity).toDouble().toStringAsFixed(2)}',
                                 style: textbarlowBoldWhite(),
                               ),
@@ -886,7 +776,8 @@ class _ProductDetailsState extends State<ProductDetails>
                       Padding(
                         padding: const EdgeInsets.only(left: 0.0),
                         child: new Text(
-                          MyLocalizations.of(context).addToCart,
+                          MyLocalizations.of(context)
+                              .getLocalizations("ADD_TO_CART"),
                           style: textBarlowRegularBlack(),
                         ),
                       ),

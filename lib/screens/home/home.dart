@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:getflutter/getflutter.dart';
+import 'package:readymadeGroceryApp/model/counterModel.dart';
 import 'package:readymadeGroceryApp/screens/drawer/drawer.dart';
 import 'package:readymadeGroceryApp/screens/tab/mycart.dart';
 import 'package:readymadeGroceryApp/screens/tab/profile.dart';
@@ -10,9 +11,7 @@ import 'package:readymadeGroceryApp/screens/tab/searchitem.dart';
 import 'package:readymadeGroceryApp/screens/tab/store.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/fav-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:location/location.dart';
@@ -40,12 +39,13 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   bool currencyLoading = false,
       isCurrentLoactionLoading = false,
       getTokenValue = false;
-  int currentIndex = 0;
-  List searchProductList, favProductList;
+  int currentIndex = 0, cartData;
   LocationData currentLocation;
   Location _location = new Location();
   String currency = "";
+
   var addressData;
+
   void initState() {
     if (widget.currentIndex != null) {
       if (mounted) {
@@ -57,6 +57,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     getToken();
     getResult();
     getGlobalSettingsData();
+
     tabController = TabController(length: 4, vsync: this);
     super.initState();
   }
@@ -67,36 +68,26 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         currencyLoading = true;
       });
     }
-    LoginService.getGlobalSettings().then((onValue) async {
-      try {
-        if (mounted) {
-          setState(() {
-            currencyLoading = false;
-          });
-        }
-        if (onValue['response_code'] == 200) {
-          if (onValue['response_data']['currencyCode'] == null) {
-            await Common.setCurrency('\$');
-            await Common.getCurrency().then((value) {
-              currency = value;
-            });
-          } else {
-            currency = onValue['response_data']['currencyCode'];
-            await Common.setCurrency(currency);
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            currencyLoading = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+    LoginService.getLocationformation().then((onValue) async {
+      if (mounted) {
+        setState(() {
+          currencyLoading = false;
+        });
+      }
+      if (onValue['response_data']['currencyCode'] == null) {
+        await Common.setCurrency('\$');
+        await Common.getCurrency().then((value) {
+          currency = value;
+        });
+      } else {
+        currency = onValue['response_data']['currencyCode'];
+        await Common.setCurrency(currency);
       }
     }).catchError((error) {
       if (mounted) {
         setState(() {
           currencyLoading = false;
+          Common.setCurrency('\$');
         });
       }
       sentryError.reportError(error, null);
@@ -109,7 +100,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         if (mounted) {
           setState(() {
             getTokenValue = true;
-            getFavListApi();
           });
         }
       } else {
@@ -129,71 +119,9 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     });
   }
 
-  getFavListApi() async {
-    await FavouriteService.getFavList().then((onValue) {
-      try {
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              favProductList = onValue['response_data'];
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            favProductList = [];
-          });
-        }
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          favProductList = [];
-        });
-      }
-      sentryError.reportError(error, null);
-    });
-  }
-
-  getProductListMethod() async {
-    await ProductService.getProductListAll(1).then((onValue) {
-      try {
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              searchProductList = onValue['response_data']['products'];
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              searchProductList = [];
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            searchProductList = [];
-          });
-        }
-        sentryError.reportError(error, stackTrace);
-      }
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          searchProductList = [];
-        });
-      }
-      sentryError.reportError(error, null);
-    });
-  }
-
   @override
   void dispose() {
-    tabController.dispose();
+    if (tabController != null) tabController.dispose();
     super.dispose();
   }
 
@@ -207,7 +135,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                MyLocalizations.of(context).yourLocation,
+                MyLocalizations.of(context)
+                    .getLocalizations("YOUR_LOCATION", true),
                 style: textBarlowRegularrBlacksm(),
               ),
               Text(
@@ -256,6 +185,89 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    if (getTokenValue) {
+      CounterModel().getCartDataCountMethod().then((res) {
+        if (mounted) {
+          setState(() {
+            cartData = res;
+          });
+        }
+      });
+    } else {
+      if (mounted) {
+        setState(() {
+          cartData = 0;
+        });
+      }
+    }
+    List<BottomNavigationBarItem> items = [
+      BottomNavigationBarItem(
+        title: Text(MyLocalizations.of(context).getLocalizations("STORE")),
+        icon: Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Icon(
+            IconData(
+              0xe90f,
+              fontFamily: 'icomoon',
+            ),
+          ),
+        ),
+      ),
+      BottomNavigationBarItem(
+        title: Text(MyLocalizations.of(context).getLocalizations("FAVORITE")),
+        icon: Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Icon(
+            IconData(
+              0xe90d,
+              fontFamily: 'icomoon',
+            ),
+          ),
+        ),
+      ),
+      BottomNavigationBarItem(
+        title: Text(MyLocalizations.of(context).getLocalizations("MY_CART")),
+        icon: Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: GFIconBadge(
+            child: Icon(
+              IconData(
+                0xe911,
+                fontFamily: 'icomoon',
+              ),
+            ),
+            counterChild: (cartData == null || cartData == 0)
+                ? Container()
+                : GFBadge(
+                    child: Text(
+                      '${cartData.toString()}',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: "bold",
+                          fontSize: 11),
+                    ),
+                    shape: GFBadgeShape.circle,
+                    color: Colors.red,
+                    size: 25,
+                  ),
+          ),
+        ),
+      ),
+      BottomNavigationBarItem(
+        title: Text(MyLocalizations.of(context).getLocalizations("PROFILE")),
+        icon: Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Icon(
+            IconData(
+              0xe912,
+              fontFamily: 'icomoon',
+            ),
+          ),
+        ),
+      ),
+    ];
+
     List<Widget> _screens = [
       Store(
         locale: widget.locale,
@@ -274,6 +286,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         localizedValues: widget.localizedValues,
       ),
     ];
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: currentIndex == 0
@@ -291,7 +304,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                         builder: (context) => SearchItem(
                           locale: widget.locale,
                           localizedValues: widget.localizedValues,
-                          productsList: searchProductList,
                           currency: currency,
                           token: getTokenValue,
                         ),
@@ -323,56 +335,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         type: BottomNavigationBarType.fixed,
         fixedColor: primary,
         onTap: _onTapped,
-        items: [
-          BottomNavigationBarItem(
-            title: Text(MyLocalizations.of(context).store),
-            icon: Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Icon(
-                IconData(
-                  0xe90f,
-                  fontFamily: 'icomoon',
-                ),
-              ),
-            ),
-          ),
-          BottomNavigationBarItem(
-            title: Text(MyLocalizations.of(context).savedItems),
-            icon: Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Icon(
-                IconData(
-                  0xe90d,
-                  fontFamily: 'icomoon',
-                ),
-              ),
-            ),
-          ),
-          BottomNavigationBarItem(
-            title: Text(MyLocalizations.of(context).myCart),
-            icon: Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Icon(
-                IconData(
-                  0xe911,
-                  fontFamily: 'icomoon',
-                ),
-              ),
-            ),
-          ),
-          BottomNavigationBarItem(
-            title: Text(MyLocalizations.of(context).profile),
-            icon: Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Icon(
-                IconData(
-                  0xe912,
-                  fontFamily: 'icomoon',
-                ),
-              ),
-            ),
-          ),
-        ],
+        items: items,
       ),
     );
   }

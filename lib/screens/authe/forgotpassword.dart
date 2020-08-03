@@ -37,66 +37,50 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           isVerfyEmailLoading = true;
         });
       }
-      Map<String, dynamic> body = {"email": email.toLowerCase()};
-      await LoginService.verifyEmail(body).then((onValue) {
-        try {
-          if (mounted) {
-            setState(() {
-              isVerfyEmailLoading = false;
-            });
-          }
-          if (onValue['response_code'] == 200) {
-            showDialog<Null>(
-              context: context,
-              barrierDismissible: false, // user must tap button!
-              builder: (BuildContext context) {
-                return new AlertDialog(
-                  content: new SingleChildScrollView(
-                    child: new ListBody(
-                      children: <Widget>[
-                        new Text('${onValue['response_data']['message']}',
-                            style: textBarlowRegularBlack()),
-                      ],
-                    ),
-                  ),
-                  actions: <Widget>[
-                    new FlatButton(
-                      child: new Text(
-                        MyLocalizations.of(context).ok,
-                        style: textbarlowRegularaPrimary(),
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Otp(
-                              email: email.toLowerCase(),
-                              token: onValue['response_data']['token'],
-                              locale: widget.locale,
-                              localizedValues: widget.localizedValues,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                );
-              },
-            );
-          } else if (onValue['response_code'] == 401) {
-            showSnackbar('${onValue['response_data']}');
-          } else {
-            showSnackbar('${onValue['response_data']}');
-          }
-        } catch (error, stackTrace) {
-          if (mounted) {
-            setState(() {
-              isVerfyEmailLoading = false;
-            });
-          }
-          sentryError.reportError(error, stackTrace);
+
+      await LoginService.forgetPassword(email.toLowerCase()).then((onValue) {
+        if (mounted) {
+          setState(() {
+            isVerfyEmailLoading = false;
+          });
         }
+        showDialog<Null>(
+          context: context,
+          barrierDismissible: false, // user must tap button!
+          builder: (BuildContext context) {
+            return new AlertDialog(
+              content: new SingleChildScrollView(
+                child: new ListBody(
+                  children: <Widget>[
+                    new Text('${onValue['response_data']}',
+                        style: textBarlowRegularBlack()),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text(
+                    MyLocalizations.of(context).getLocalizations("SUBMIT"),
+                    style: textbarlowRegularaPrimary(),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Otp(
+                          email: email.toLowerCase(),
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            );
+          },
+        );
       }).catchError((error) {
         if (mounted) {
           setState(() {
@@ -127,7 +111,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           ),
         ),
         title: Text(
-          MyLocalizations.of(context).forgotPassword,
+          MyLocalizations.of(context).getLocalizations("FORGET_PASSWORD"),
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -143,7 +127,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 padding: const EdgeInsets.only(
                     top: 40.0, left: 18.0, bottom: 8.0, right: 20.0),
                 child: Text(
-                  MyLocalizations.of(context).passwordreset,
+                  MyLocalizations.of(context)
+                      .getLocalizations("PASSWORD_RESET"),
                   style: textbarlowMediumBlack(),
                 ),
               ),
@@ -152,7 +137,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     left: 18.0, bottom: 25.0, right: 20.0),
                 child: Text(
                   MyLocalizations.of(context)
-                      .pleaseenteryourregisteredEmailtosendtheresetcode,
+                      .getLocalizations("FORET_PASS_MESSAGE"),
                   style: textbarlowRegularBlack(),
                 ),
               ),
@@ -165,7 +150,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     text: TextSpan(
                       children: <TextSpan>[
                         TextSpan(
-                            text: MyLocalizations.of(context).email,
+                            text: MyLocalizations.of(context)
+                                .getLocalizations("EMAIL", true),
                             style: textbarlowRegularBlack()),
                         TextSpan(
                           text: ' *',
@@ -186,12 +172,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     },
                     validator: (String value) {
                       if (value.isEmpty) {
-                        return MyLocalizations.of(context).enterYourEmail;
+                        return MyLocalizations.of(context)
+                            .getLocalizations("ENTER_YOUR_EMAIL");
                       } else if (!RegExp(
                               r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
                           .hasMatch(value)) {
                         return MyLocalizations.of(context)
-                            .pleaseEnterValidEmail;
+                            .getLocalizations("ERROR_MAIL");
                       } else
                         return null;
                     },
@@ -230,7 +217,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        MyLocalizations.of(context).submit,
+                        MyLocalizations.of(context).getLocalizations("SUBMIT"),
                         style: textBarlowRegularrBlack(),
                       ),
                       SizedBox(

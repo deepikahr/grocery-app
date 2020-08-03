@@ -51,31 +51,12 @@ class _AllCategoriesState extends State<AllCategories>
       });
     }
     await ProductService.getCategoryList().then((onValue) {
-      try {
-        _refreshController.refreshCompleted();
-        if (onValue['response_code'] == 200) {
-          if (mounted) {
-            setState(() {
-              categoryList = onValue['response_data'];
-              isLoadingcategoryList = false;
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              categoryList = [];
-              isLoadingcategoryList = false;
-            });
-          }
-        }
-      } catch (error, stackTrace) {
-        if (mounted) {
-          setState(() {
-            categoryList = [];
-            isLoadingcategoryList = false;
-          });
-        }
-        sentryError.reportError(error, stackTrace);
+      _refreshController.refreshCompleted();
+      if (mounted) {
+        setState(() {
+          categoryList = onValue['response_data'];
+          isLoadingcategoryList = false;
+        });
       }
     }).catchError((error) {
       if (mounted) {
@@ -92,7 +73,8 @@ class _AllCategoriesState extends State<AllCategories>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: GFAppBar(
-        title: Text(MyLocalizations.of(context).allCategories,
+        title: Text(
+            MyLocalizations.of(context).getLocalizations("ALL_CATEGROIES"),
             style: textbarlowSemiBoldBlack()),
         centerTitle: true,
         backgroundColor: Colors.transparent,
@@ -157,8 +139,8 @@ class _AllCategoriesState extends State<AllCategories>
                                 child: Image.network(
                                   categoryList[index]['filePath'] == null
                                       ? categoryList[index]['imageUrl']
-                                      : Constants.IMAGE_URL_PATH +
-                                          "tr:dpr-auto,tr:w-500" +
+                                      : Constants.imageUrlPath +
+                                          "/tr:dpr-auto,tr:w-500" +
                                           categoryList[index]['filePath'],
                                   scale: 5,
                                   fit: BoxFit.cover,
@@ -166,7 +148,7 @@ class _AllCategoriesState extends State<AllCategories>
                               ),
                             ),
                             Text(
-                              categoryList[index]['title'],
+                              '${categoryList[index]['title'][0].toUpperCase()}${categoryList[index]['title'].substring(1)}',
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: textBarlowRegularrdarkdull(),

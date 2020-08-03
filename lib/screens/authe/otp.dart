@@ -10,13 +10,14 @@ import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:pin_entry_text_field/pin_entry_text_field.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
 
 SentryError sentryError = new SentryError();
 
 class Otp extends StatefulWidget {
-  Otp({Key key, this.email, this.token, this.locale, this.localizedValues})
+  Otp({Key key, this.email, this.locale, this.localizedValues})
       : super(key: key);
-  final String email, token, locale;
+  final String email, locale;
   final Map localizedValues;
 
   @override
@@ -29,7 +30,9 @@ class _OtpState extends State<Otp> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   String enteredOtp;
-  bool isOtpVerifyLoading = false, isEmailLoading = false;
+  bool isOtpVerifyLoading = false,
+      isEmailLoading = false,
+      isResentOtpLoading = false;
 
   verifyOTP() async {
     if (enteredOtp != null) {
@@ -41,65 +44,56 @@ class _OtpState extends State<Otp> {
             isOtpVerifyLoading = true;
           });
         }
-        Map<String, dynamic> body = {"otp": enteredOtp};
-        await LoginService.verifyOtp(body, widget.token).then((onValue) {
-          try {
-            if (mounted) {
-              setState(() {
-                isOtpVerifyLoading = false;
-              });
-            }
-            if (onValue['response_code'] == 200) {
-              showDialog<Null>(
-                context: context,
-                barrierDismissible: false, // user must tap button!
-                builder: (BuildContext context) {
-                  return new AlertDialog(
-                    content: new SingleChildScrollView(
-                      child: new ListBody(
-                        children: <Widget>[
-                          new Text(
-                            '${onValue['response_data']['message']}',
-                            style: textBarlowMediumBlack(),
-                          ),
-                        ],
-                      ),
-                    ),
-                    actions: <Widget>[
-                      new FlatButton(
-                        child: new Text(
-                          'OK',
-                          style: TextStyle(color: green),
+        await LoginService.verifyOtp(enteredOtp, widget.email).then((onValue) {
+          if (mounted) {
+            setState(() {
+              isOtpVerifyLoading = false;
+            });
+          }
+          if (onValue['response_data'] != null) {
+            showDialog<Null>(
+              context: context,
+              barrierDismissible: false, // user must tap button!
+              builder: (BuildContext context) {
+                return new AlertDialog(
+                  content: new SingleChildScrollView(
+                    child: new ListBody(
+                      children: <Widget>[
+                        new Text(
+                          '${onValue['response_data']['message'] ?? ""}',
+                          style: textBarlowMediumBlack(),
                         ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ResetPassword(
-                                token: onValue['response_data']['token'],
-                                locale: widget.locale,
-                                localizedValues: widget.localizedValues,
-                              ),
-                            ),
-                          );
-                        },
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    new FlatButton(
+                      child: new Text(
+                        'OK',
+                        style: TextStyle(color: green),
                       ),
-                    ],
-                  );
-                },
-              );
-            } else if (onValue['response_code'] == 401) {
-              showSnackbar('${onValue['response_data']}');
-            } else {
-              showSnackbar('${onValue['response_data']}');
-            }
-          } catch (error, stackTrace) {
-            if (mounted) {
-              setState(() {
-                isOtpVerifyLoading = false;
-              });
-            }
-            sentryError.reportError(error, stackTrace);
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ResetPassword(
+                              verificationToken: onValue['response_data']
+                                  ['verificationToken'],
+                              email: widget.email,
+                              locale: widget.locale,
+                              localizedValues: widget.localizedValues,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          } else {
+            showSnackbar('${onValue['response_data']}');
           }
         }).catchError((error) {
           if (mounted) {
@@ -118,7 +112,7 @@ class _OtpState extends State<Otp> {
           isOtpVerifyLoading = false;
         });
       }
-      showSnackbar(MyLocalizations.of(context).pleaseEnter4DigitOTP);
+      showSnackbar(MyLocalizations.of(context).getLocalizations("OTP_MSG"));
     }
   }
 
@@ -129,7 +123,7 @@ class _OtpState extends State<Otp> {
       builder: (BuildContext context) {
         return new AlertDialog(
           title: new Text(
-            MyLocalizations.of(context).error,
+            MyLocalizations.of(context).getLocalizations("ERROR"),
             style: hintSfMediumredsmall(),
           ),
           content: new SingleChildScrollView(
@@ -145,7 +139,7 @@ class _OtpState extends State<Otp> {
           actions: <Widget>[
             new FlatButton(
               child: new Text(
-                MyLocalizations.of(context).ok,
+                MyLocalizations.of(context).getLocalizations("OK"),
                 style: textbarlowRegularaPrimary(),
               ),
               onPressed: () {
@@ -156,6 +150,30 @@ class _OtpState extends State<Otp> {
         );
       },
     );
+  }
+
+  resentOTP() async {
+    if (mounted) {
+      setState(() {
+        isResentOtpLoading = true;
+      });
+    }
+
+    await LoginService.forgetPassword(widget.email.toLowerCase())
+        .then((response) {
+      if (mounted) {
+        setState(() {
+          isResentOtpLoading = false;
+          showSnackbar(response['response_data']);
+        });
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isResentOtpLoading = false;
+        });
+      }
+    });
   }
 
   @override
@@ -170,7 +188,7 @@ class _OtpState extends State<Otp> {
           ),
         ),
         title: Text(
-          MyLocalizations.of(context).welcome,
+          MyLocalizations.of(context).getLocalizations("WELCOME"),
           style: textbarlowSemiBoldBlack(),
         ),
         centerTitle: true,
@@ -182,7 +200,7 @@ class _OtpState extends State<Otp> {
           Padding(
             padding: const EdgeInsets.only(top: 40.0, left: 15.0, right: 20.0),
             child: Text(
-              MyLocalizations.of(context).verifyOtp,
+              MyLocalizations.of(context).getLocalizations("VERIFY_OTP"),
               style: textbarlowMediumBlack(),
             ),
           ),
@@ -192,7 +210,8 @@ class _OtpState extends State<Otp> {
               text: TextSpan(
                 children: <TextSpan>[
                   TextSpan(
-                      text: MyLocalizations.of(context).wehavesenta4digitcodeto,
+                      text: MyLocalizations.of(context)
+                          .getLocalizations("CODE_MSG"),
                       style: textBarlowRegularBlack()),
                   TextSpan(
                     text: ' ${widget.email}',
@@ -202,13 +221,34 @@ class _OtpState extends State<Otp> {
               ),
             ),
           ),
+          InkWell(
+            onTap: resentOTP,
+            child: Row(
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 20.0, top: 10.0, right: 20.0),
+                  child: Text(
+                    MyLocalizations.of(context).getLocalizations("RESENT_OTP"),
+                    style: textBarlowRegularBlack(),
+                  ),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 20.0, top: 10.0, right: 20.0),
+                  child: isResentOtpLoading ? SquareLoader() : Container(),
+                ),
+              ],
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.only(
                 top: 20.0, bottom: 5.0, left: 20.0, right: 20.0),
             child: GFTypography(
               showDivider: false,
               child: Text(
-                MyLocalizations.of(context).enterVerificationcode,
+                MyLocalizations.of(context)
+                    .getLocalizations("ENTER_VERIFICATION_CODE", true),
                 style: textBarlowRegularBlack(),
               ),
             ),
@@ -249,7 +289,7 @@ class _OtpState extends State<Otp> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      MyLocalizations.of(context).submitOTP,
+                      MyLocalizations.of(context).getLocalizations("SUBMIT"),
                       style: textbarlowMediumBlack(),
                     ),
                     SizedBox(
