@@ -8,7 +8,7 @@ Grocery User App
 
 Add these following in env variable 
 ```
-APP_NAME='here_with_single_quotes'
+APPLICATION_NAME='here_with_single_quotes'
 API_URL=
 BASE_URL=
 ONE_SIGNAL_KEY=
