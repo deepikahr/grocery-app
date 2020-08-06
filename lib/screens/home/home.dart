@@ -206,7 +206,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         icon: Padding(
           padding: const EdgeInsets.only(top: 8.0),
           child: Icon(
-            IconData(
+            const IconData(
               0xe90f,
               fontFamily: 'icomoon',
             ),
@@ -218,7 +218,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         icon: Padding(
           padding: const EdgeInsets.only(top: 8.0),
           child: Icon(
-            IconData(
+            const IconData(
               0xe90d,
               fontFamily: 'icomoon',
             ),
@@ -231,7 +231,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           padding: const EdgeInsets.only(top: 8.0),
           child: GFIconBadge(
             child: Icon(
-              IconData(
+              const IconData(
                 0xe911,
                 fontFamily: 'icomoon',
               ),
@@ -259,7 +259,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         icon: Padding(
           padding: const EdgeInsets.only(top: 8.0),
           child: Icon(
-            IconData(
+            const IconData(
               0xe912,
               fontFamily: 'icomoon',
             ),
