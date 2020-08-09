@@ -678,7 +678,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                 ),
                                 SizedBox(width: 4),
                                 Icon(
-                                  IconData(
+                                  const IconData(
                                     0xe911,
                                     fontFamily: 'icomoon',
                                   ),

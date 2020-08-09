@@ -1,8 +1,9 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'dart:io';
 
 class Constants {
   // app name
-  static String appName = DotEnv().env['APPLICATION_NAME'];
+  static String appName = 'Readymade Grocery App';
 
   // delopy url production
   static String apiUrl = DotEnv().env['API_URL'];
@@ -11,7 +12,9 @@ class Constants {
   static String oneSignalKey = DotEnv().env['ONE_SIGNAL_KEY'];
 
   // googleapikey
-  static String googleMapApiKey = DotEnv().env['GOOGLE_MAP_API_KEY'];
+  static String googleMapApiKey = Platform.isIOS
+      ? DotEnv().env['IOS_GOOGLE_MAP_API_KEY']
+      : DotEnv().env['ANDROID_GOOGLE_MAP_API_KEY'];
 
   // stripe key
   static String stripKey = DotEnv().env['STRIPE_KEY'];
