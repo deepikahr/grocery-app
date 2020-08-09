@@ -74,13 +74,13 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           currencyLoading = false;
         });
       }
-      if (onValue['response_data']['currencyCode'] == null) {
+      if (onValue['response_data']['currencySymbol'] == null) {
         await Common.setCurrency('\$');
         await Common.getCurrency().then((value) {
           currency = value;
         });
       } else {
-        currency = onValue['response_data']['currencyCode'];
+        currency = onValue['response_data']['currencySymbol'];
         await Common.setCurrency(currency);
       }
     }).catchError((error) {
