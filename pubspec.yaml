@@ -1,6 +1,5 @@
 name: readymadeGroceryApp
-description: A new Flutter project.
-
+description: Grocery user app
 version: 2.0.0+25
 
 environment:
