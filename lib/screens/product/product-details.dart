@@ -233,7 +233,7 @@ class _ProductDetailsState extends State<ProductDetails>
         showSnackbar(onValue['message'] ?? "");
       }
       Future.delayed(Duration(milliseconds: 1500), () {
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(true);
       });
       if (onValue['response_data'] is Map) {
         Common.setCartData(onValue['response_data']);

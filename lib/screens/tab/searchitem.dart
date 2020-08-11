@@ -261,8 +261,10 @@ class _SearchItemState extends State<SearchItem> {
                                         ),
                                       );
                                       result.then((value) {
-                                        searchresult = [];
-                                        _searchForProducts(searchTerm);
+                                        if (value != null) {
+                                          searchresult = [];
+                                          _searchForProducts(searchTerm);
+                                        }
                                       });
                                     },
                                     child: Stack(
