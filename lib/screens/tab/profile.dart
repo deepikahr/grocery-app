@@ -321,7 +321,7 @@ class _ProfileState extends State<Profile> {
                                         padding: const EdgeInsets.only(
                                             top: 5.0, right: .0),
                                         child: Text(
-                                          '${userInfo['mobileNumber'] ?? ""}',
+                                          '${userInfo['mobileNumber'].toString() ?? ""}',
                                           style: textbarlowmedium(),
                                         ),
                                       ),

@@ -56,7 +56,6 @@ class _ChangePasswordState extends State<ChangePassword> {
           "confirmPassword": confirmPassword
         };
         await LoginService.changePassword(body).then((onValue) {
-          print(onValue);
           if (mounted) {
             setState(() {
               isChangePasswordLoading = false;

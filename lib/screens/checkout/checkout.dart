@@ -901,7 +901,7 @@ class _CheckoutState extends State<Checkout> {
                                                   ),
                                                   Text(
                                                     "${addressList[i]['landmark']} ,"
-                                                    '${addressList[i]['postalCode']}, ${addressList[i]['mobileNumber']}',
+                                                    '${addressList[i]['postalCode']}, ${addressList[i]['mobileNumber'].toString()}',
                                                     style:
                                                         textBarlowRegularBlackdl(),
                                                   ),

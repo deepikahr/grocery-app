@@ -122,7 +122,6 @@ class _SubCategoriesState extends State<SubCategories> {
     await ProductService.getProductToSubCategoryList(
             catId, subCatProductIndex, subCatProductLimit)
         .then((onValue) {
-      print(onValue);
       if (mounted)
         setState(() {
           subCategryByProduct.addAll(onValue['response_data']);
