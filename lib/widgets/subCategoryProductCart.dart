@@ -312,7 +312,6 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                                     onValue['products'][i]
                                                         ['price'];
                                                 cartId = onValue['_id'];
-
                                                 variantUnit =
                                                     onValue['products'][i]
                                                         ['unit'];

@@ -50,7 +50,6 @@ class _OrderDetailsState extends State<OrderDetails> {
       currency = value;
     });
     await OrderService.getOrderHistory(widget.orderId).then((onValue) {
-      print(onValue);
       if (mounted) {
         setState(() {
           orderHistory = onValue['response_data'];

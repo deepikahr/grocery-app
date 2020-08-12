@@ -177,11 +177,6 @@ class _OrdersState extends State<Orders> {
   }
 
   product(orderDetails) {
-    // var createdAt;
-    // DateTime todayDate = DateTime.parse(orderDetails['createdAt'].toString());
-    // print(todayDate);
-    // print(todayDate.toLocal());
-    // createdAt = ;
     return Container(
       color: Color(0xFFF7F7F7),
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),

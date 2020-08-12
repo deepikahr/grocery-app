@@ -34,8 +34,8 @@ class _SignupState extends State<Signup> {
       passwordVisible = true,
       isChecked = false,
       _obscureText = true;
-  String userName, email, password, mobileNumber, firstName, lastName;
-
+  String userName, email, password, firstName, lastName;
+  int mobileNumber;
   // Toggles the password
   void _toggle() {
     setState(() {
@@ -548,7 +548,7 @@ class _SignupState extends State<Signup> {
             return null;
         },
         onSaved: (String value) {
-          mobileNumber = value;
+          mobileNumber = int.parse(value);
         },
         decoration: InputDecoration(
           counterText: "",

@@ -205,7 +205,7 @@ class _AddressState extends State<Address> {
                                                 ', '
                                                     '${addressList[index]['postalCode'].toString()}' +
                                                 ', ' +
-                                                '${addressList[index]['mobileNumber']}',
+                                                '${addressList[index]['mobileNumber'].toString()}',
                                             style: textBarlowRegularBlack(),
                                           ),
                                         ),

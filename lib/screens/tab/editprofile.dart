@@ -33,7 +33,8 @@ class _EditProfileState extends State<EditProfile> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Map<String, dynamic> userInfo;
   bool isLoading = false, isPicUploading = false, profileEdit = false;
-  String firstName, lastName, mobileNumber;
+  String firstName, lastName;
+  int mobileNumber;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var image, walletAmount;
   @override
@@ -109,7 +110,6 @@ class _EditProfileState extends State<EditProfile> {
         "lastName": lastName,
         "mobileNumber": mobileNumber
       };
-
       await LoginService.updateUserInfo(body).then((onValue) {
         if (mounted) {
           setState(() {
@@ -536,7 +536,7 @@ class _EditProfileState extends State<EditProfile> {
                   Padding(
                     padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                     child: TextFormField(
-                      initialValue: userInfo['mobileNumber'] ?? "",
+                      initialValue: userInfo['mobileNumber'].toString() ?? "",
                       style: textBarlowRegularBlack(),
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
@@ -561,7 +561,7 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                       ),
                       onSaved: (String value) {
-                        mobileNumber = value;
+                        mobileNumber = int.parse(value);
                       },
                       validator: (String value) {
                         if (value.isEmpty) {
