@@ -88,7 +88,7 @@ workflows:
       events:
         - push
       branch_patterns:
-        - pattern: testing
+        - pattern: testing-build
           include: true
           source: true
     scripts:
