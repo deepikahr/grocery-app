@@ -24,4 +24,7 @@ class Constants {
 
   // dashboard url
   static String baseUrl = DotEnv().env['BASE_URL'];
+
+  // PREDEFINED
+  static String predefined = DotEnv().env['PREDEFINED'] ?? "false";
 }
