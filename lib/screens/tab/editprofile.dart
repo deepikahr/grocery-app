@@ -33,7 +33,7 @@ class _EditProfileState extends State<EditProfile> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Map<String, dynamic> userInfo;
   bool isLoading = false, isPicUploading = false, profileEdit = false;
-  String firstName, lastName;
+  String firstName, lastName, currency = "";
   int mobileNumber;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var image, walletAmount;
@@ -49,12 +49,15 @@ class _EditProfileState extends State<EditProfile> {
         isLoading = true;
       });
     }
+    await Common.getCurrency().then((value) {
+      currency = value;
+    });
     await LoginService.getUserInfo().then((onValue) {
       if (mounted) {
         setState(() {
           isLoading = false;
           userInfo = onValue['response_data'];
-          walletAmount = onValue['response_data']['walletAmount'] ?? 0.00;
+          walletAmount = onValue['response_data']['walletAmount'] ?? 0;
         });
       }
     }).catchError((error) {
@@ -406,9 +409,8 @@ class _EditProfileState extends State<EditProfile> {
                   SizedBox(
                     height: 25,
                   ),
-                  walletAmount == null
-                      ? Container()
-                      : Padding(
+                  walletAmount != null && walletAmount > 0
+                      ? Padding(
                           padding:
                               const EdgeInsets.only(left: 18.0, right: 18.0),
                           child: Row(
@@ -419,12 +421,14 @@ class _EditProfileState extends State<EditProfile> {
                                 style: textbarlowRegularBlack(),
                               ),
                               Text(
-                                walletAmount.toDouble().toStringAsFixed(2),
+                                currency +
+                                    walletAmount.toDouble().toStringAsFixed(2),
                                 style: textbarlowRegularBlackbold(),
                               ),
                             ],
                           ),
-                        ),
+                        )
+                      : Container(),
                   SizedBox(height: 25),
                   Padding(
                     padding: const EdgeInsets.only(

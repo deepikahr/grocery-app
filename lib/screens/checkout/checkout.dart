@@ -741,7 +741,7 @@ class _CheckoutState extends State<Checkout> {
                                                                             .getLocalizations("APPLY") +
                                                                         " ",
                                                                     style:
-                                                                        textBarlowRegularBlack(),
+                                                                        textbarlowRegularBlack(),
                                                                   ),
                                                           ),
                                                           color: primary,
@@ -823,6 +823,37 @@ class _CheckoutState extends State<Checkout> {
                                               ],
                                             ),
                                   SizedBox(height: 10),
+                                  cartItem['walletAmount'] > 0
+                                      ? Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Text(
+                                              MyLocalizations.of(context)
+                                                  .getLocalizations(
+                                                      "USED_WALLET_AMOUNT"),
+                                              style: textBarlowRegularBlack(),
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: <Widget>[
+                                                Text(
+                                                  currency +
+                                                      cartItem['walletAmount']
+                                                          .toDouble()
+                                                          .toStringAsFixed(2),
+                                                  style:
+                                                      textbarlowBoldsmBlack(),
+                                                )
+                                              ],
+                                            ),
+                                          ],
+                                        )
+                                      : Container(),
+                                  cartItem['walletAmount'] > 0
+                                      ? SizedBox(height: 10)
+                                      : Container(),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -1239,7 +1270,7 @@ class _CheckoutState extends State<Checkout> {
                                   Text(
                                     MyLocalizations.of(context)
                                         .getLocalizations("PROCEED"),
-                                    style: textBarlowRegularBlack(),
+                                    style: textbarlowRegularBlack(),
                                   ),
                                 ],
                               ),
