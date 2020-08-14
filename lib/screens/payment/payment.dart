@@ -54,7 +54,12 @@ class _PaymentState extends State<Payment> {
         merchantId: "Test",
         androidPayMode: 'test'));
     cartItem = widget.cartItems;
-
+    if (cartItem['walletAmount'] > 0) {
+      walletUsedOrNotValue = true;
+      if (cartItem['grandTotal'] == 0) {
+        fullWalletUsedOrNot = true;
+      }
+    }
     super.initState();
   }
 
@@ -383,8 +388,13 @@ class _PaymentState extends State<Payment> {
                                             .getLocalizations(
                                                 "USE_WALLET_AMOUNT")
                                         : MyLocalizations.of(context)
-                                            .getLocalizations(
-                                                "USED_WALLET_AMOUNT"),
+                                                .getLocalizations(
+                                                    "USED_WALLET_AMOUNT") +
+                                            " " +
+                                            currency +
+                                            cartItem['walletAmount']
+                                                .toDouble()
+                                                .toStringAsFixed(2),
                                     style: textbarlowMediumBlack(),
                                   ),
                                   Row(
