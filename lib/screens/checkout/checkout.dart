@@ -1101,9 +1101,21 @@ class _CheckoutState extends State<Checkout> {
                                 ],
                               ),
                             ),
-                            SizedBox(
-                              height: 15,
-                            ),
+                            SizedBox(height: 15),
+                            Constants.predefined == "true"
+                                ? Container(
+                                    padding: EdgeInsets.only(
+                                        left: 15, right: 15, bottom: 10),
+                                    child: Text(
+                                      MyLocalizations.of(context)
+                                              .getLocalizations(
+                                                  "TIME_ZONE_MESSAGE") +
+                                          " *",
+                                      style: textbarlowRegularaddRed(),
+                                    ),
+                                  )
+                                : Container(),
+                            SizedBox(height: 5),
                             Container(
                               padding: EdgeInsets.only(
                                   left: 15, right: 15, bottom: 10),
@@ -1113,9 +1125,7 @@ class _CheckoutState extends State<Checkout> {
                                 style: textbarlowRegularadd(),
                               ),
                             ),
-                            SizedBox(
-                              height: 15,
-                            ),
+                            SizedBox(height: 15),
                             deliverySlotList.length > 0
                                 ? Row(
                                     children: <Widget>[
