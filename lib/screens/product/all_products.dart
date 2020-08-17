@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:getflutter/components/appbar/gf_appbar.dart';
+import 'package:getflutter/getflutter.dart';
+
 import 'package:readymadeGroceryApp/model/counterModel.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/product/product-details.dart';
@@ -489,20 +490,22 @@ class _AllProductsState extends State<AllProducts> {
                                                     ),
                                                   );
                                                   result.then((value) {
-                                                    if (mounted) {
-                                                      setState(() {
-                                                        isLoadingSubCatProductsList =
-                                                            true;
-                                                        subCategryByProduct =
-                                                            [];
-                                                        subCatProductIndex =
-                                                            subCategryByProduct
-                                                                .length;
-                                                      });
+                                                    if (value != null) {
+                                                      if (mounted) {
+                                                        setState(() {
+                                                          isLoadingSubCatProductsList =
+                                                              true;
+                                                          subCategryByProduct =
+                                                              [];
+                                                          subCatProductIndex =
+                                                              subCategryByProduct
+                                                                  .length;
+                                                        });
+                                                      }
+                                                      getProductToSubCategory(
+                                                          currentSubCategoryId,
+                                                          subCatProductIndex);
                                                     }
-                                                    getProductToSubCategory(
-                                                        currentSubCategoryId,
-                                                        subCatProductIndex);
                                                   });
                                                 },
                                                 child: Stack(
@@ -611,14 +614,16 @@ class _AllProductsState extends State<AllProducts> {
                                             ),
                                           );
                                           result.then((value) {
-                                            if (mounted) {
-                                              setState(() {
-                                                isNewProductsLoading = true;
-                                              });
+                                            if (value != null) {
+                                              if (mounted) {
+                                                setState(() {
+                                                  isNewProductsLoading = true;
+                                                });
+                                              }
+                                              productIndex = 0;
+                                              productsList = [];
+                                              getTokenValueMethod();
                                             }
-                                            productIndex = 0;
-                                            productsList = [];
-                                            getTokenValueMethod();
                                           });
                                         },
                                         child: Stack(

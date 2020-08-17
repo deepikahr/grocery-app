@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:getflutter/components/appbar/gf_appbar.dart';
+import 'package:getflutter/getflutter.dart';
+
 import 'package:readymadeGroceryApp/model/counterModel.dart';
 import 'package:readymadeGroceryApp/screens/categories/subcategories.dart';
 import 'package:readymadeGroceryApp/screens/product/product-details.dart';
@@ -183,7 +184,7 @@ class _AllDealsListState extends State<AllDealsList> {
                                     ),
                                   );
                                 } else {
-                                  var result = Navigator.push(
+                                  Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => ProductDetails(
@@ -193,13 +194,6 @@ class _AllDealsListState extends State<AllDealsList> {
                                       ),
                                     ),
                                   );
-                                  result.then((value) {
-                                    if (widget.dealType == "TopDeals") {
-                                      getAllTopDealsListMethod();
-                                    } else {
-                                      getAllTodayDealsListMethod();
-                                    }
-                                  });
                                 }
                               },
                               child: DealsCard(

@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:getflutter/components/appbar/gf_appbar.dart';
+
 import 'package:getflutter/getflutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -205,7 +205,7 @@ class _AddressState extends State<Address> {
                                                 ', '
                                                     '${addressList[index]['postalCode'].toString()}' +
                                                 ', ' +
-                                                '${addressList[index]['mobileNumber']}',
+                                                '${addressList[index]['mobileNumber'].toString()}',
                                             style: textBarlowRegularBlack(),
                                           ),
                                         ),
@@ -352,7 +352,7 @@ class _AddressState extends State<Address> {
               color: primary,
               type: GFButtonType.outline,
             ),
-          )
+          ),
         ],
       ),
     );

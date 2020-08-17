@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map_picker/flutter_map_picker.dart';
-import 'package:getflutter/components/appbar/gf_appbar.dart';
+
 import 'package:getflutter/getflutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
@@ -75,7 +75,7 @@ class _EditAddressState extends State<EditAddress> {
     "apartmentName": null,
     "landmark": null,
     "postalCode": null,
-    "mobileNumber": null,
+    "mobileNumber": 0,
     "addressType": null
   };
   updateAddress() async {
@@ -504,7 +504,8 @@ class _EditAddressState extends State<EditAddress> {
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
-                    initialValue: widget.updateAddressID['mobileNumber'],
+                    initialValue:
+                        widget.updateAddressID['mobileNumber'].toString() ?? "",
                     maxLength: 15,
                     style: labelStyle(),
                     keyboardType: TextInputType.number,
@@ -533,7 +534,7 @@ class _EditAddressState extends State<EditAddress> {
                         return null;
                     },
                     onSaved: (String value) {
-                      address['mobileNumber'] = value;
+                      address['mobileNumber'] = int.parse(value);
                     },
                   ),
                 ),

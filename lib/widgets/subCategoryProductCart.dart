@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:getflutter/getflutter.dart';
-import 'package:getflutter/types/gf_loader_type.dart';
 import 'package:readymadeGroceryApp/model/addToCart.dart';
 import 'package:readymadeGroceryApp/model/bottomSheet.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
@@ -312,7 +311,6 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                                     onValue['products'][i]
                                                         ['price'];
                                                 cartId = onValue['_id'];
-
                                                 variantUnit =
                                                     onValue['products'][i]
                                                         ['unit'];

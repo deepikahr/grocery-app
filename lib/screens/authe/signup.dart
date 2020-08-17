@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:getflutter/components/appbar/gf_appbar.dart';
-import 'package:getflutter/components/button/gf_button.dart';
-import 'package:getflutter/components/typography/gf_typography.dart';
+
 import 'package:getflutter/getflutter.dart';
-import 'package:getflutter/size/gf_size.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -34,8 +31,8 @@ class _SignupState extends State<Signup> {
       passwordVisible = true,
       isChecked = false,
       _obscureText = true;
-  String userName, email, password, mobileNumber, firstName, lastName;
-
+  String userName, email, password, firstName, lastName;
+  int mobileNumber;
   // Toggles the password
   void _toggle() {
     setState(() {
@@ -548,7 +545,7 @@ class _SignupState extends State<Signup> {
             return null;
         },
         onSaved: (String value) {
-          mobileNumber = value;
+          mobileNumber = int.parse(value);
         },
         decoration: InputDecoration(
           counterText: "",

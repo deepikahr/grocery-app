@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:getflutter/components/appbar/gf_appbar.dart';
+
 import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -60,7 +60,7 @@ class _AddAddressState extends State<AddAddress> {
     "apartmentName": null,
     "landmark": null,
     "postalCode": null,
-    "mobileNumber": null,
+    "mobileNumber": 0,
     "addressType": null
   };
   addAddress() async {
@@ -79,6 +79,7 @@ class _AddAddressState extends State<AddAddress> {
       address['address'] = addressController.text;
       address['location'] = location;
       address['addressType'] = addressType[selectedAddressType];
+
       AddressService.addAddress(address).then((onValue) {
         if (mounted) {
           setState(() {
@@ -491,7 +492,7 @@ class _AddAddressState extends State<AddAddress> {
                         return null;
                     },
                     onSaved: (String value) {
-                      address['mobileNumber'] = value;
+                      address['mobileNumber'] = int.parse(value);
                     },
                   ),
                 ),

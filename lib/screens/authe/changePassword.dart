@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:getflutter/components/appbar/gf_appbar.dart';
-import 'package:getflutter/components/button/gf_button.dart';
-import 'package:getflutter/components/loader/gf_loader.dart';
-import 'package:getflutter/components/typography/gf_typography.dart';
+
 import 'package:getflutter/getflutter.dart';
+import 'package:readymadeGroceryApp/screens/authe/login.dart';
+import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -58,36 +58,35 @@ class _ChangePasswordState extends State<ChangePassword> {
               isChangePasswordLoading = false;
             });
           }
-          showDialog<Null>(
-            context: context,
-            barrierDismissible: false, // user must tap button!
-            builder: (BuildContext context) {
-              return new AlertDialog(
-                content: new SingleChildScrollView(
-                  child: new ListBody(
-                    children: <Widget>[
-                      new Text(
-                        '${onValue['response_data']}',
-                        style: textBarlowRegularBlack(),
-                      ),
-                    ],
+          showSnackbar(onValue['response_data']);
+          Common.getSelectedLanguage().then((selectedLocale) async {
+            Map body = {"language": selectedLocale, "playerId": null};
+            LoginService.updateUserInfo(body).then((value) async {
+              await Common.setToken(null);
+              await Common.setUserID(null);
+              var result = Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => Login(
+                    locale: widget.locale,
+                    localizedValues: widget.localizedValues,
                   ),
                 ),
-                actions: <Widget>[
-                  new FlatButton(
-                    child: new Text(
-                      MyLocalizations.of(context).getLocalizations("OK"),
-                      style: textbarlowRegularaPrimary(),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
               );
-            },
-          );
+              result.then((value) {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Home(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                        currentIndex: 0,
+                      ),
+                    ),
+                    (Route<dynamic> route) => false);
+              });
+            });
+          });
         }).catchError((error) {
           if (mounted) {
             setState(() {
