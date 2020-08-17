@@ -15,6 +15,7 @@ import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 
 SentryError sentryError = new SentryError();
@@ -183,16 +184,8 @@ class _ProfileState extends State<Profile> {
           ? null
           : token == null
               ? null
-              : GFAppBar(
-                  elevation: 0,
-                  title: Text(
-                    MyLocalizations.of(context).getLocalizations("PROFILE"),
-                    style: textbarlowSemiBoldBlack(),
-                  ),
-                  centerTitle: true,
-                  backgroundColor: primary,
-                  automaticallyImplyLeading: false,
-                ),
+              : appBarPrimary(context,
+                  MyLocalizations.of(context).getLocalizations("PROFILE")),
       body: isGetTokenLoading || isGetLanguagesListLoading
           ? SquareLoader()
           : token == null

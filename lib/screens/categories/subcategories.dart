@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-
-import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/model/counterModel.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/product/product-details.dart';
@@ -8,6 +6,7 @@ import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:readymadeGroceryApp/widgets/subCategoryProductCart.dart';
@@ -171,17 +170,7 @@ class _SubCategoriesState extends State<SubCategories> {
       }
     }
     return Scaffold(
-      appBar: GFAppBar(
-        title: Text(
-          '${widget.catTitle}',
-          style: TextStyle(
-              color: Colors.black, fontSize: 17.0, fontWeight: FontWeight.w600),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black, size: 1.0),
-      ),
+      appBar: appBarTransparent(context, widget.catTitle),
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,

@@ -13,6 +13,7 @@ import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/screens/checkout/checkout.dart';
 import 'package:getflutter/getflutter.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -367,15 +368,12 @@ class _MyCartState extends State<MyCart> {
           ? null
           : token == null
               ? null
-              : GFAppBar(
-                  title: Text(
-                    MyLocalizations.of(context).getLocalizations("MY_CART"),
-                    style: textbarlowSemiBoldBlack(),
-                  ),
-                  centerTitle: true,
-                  backgroundColor: Colors.white,
-                  elevation: 0,
-                ),
+              : appBarWhite(
+                  context,
+                  MyLocalizations.of(context).getLocalizations("MY_CART"),
+                  false,
+                  false,
+                  Container()),
       body: isGetTokenLoading || isMinAmountCheckLoading
           ? SquareLoader()
           : token == null

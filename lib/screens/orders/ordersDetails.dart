@@ -10,6 +10,7 @@ import 'package:readymadeGroceryApp/service/orderSevice.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 
 SentryError sentryError = new SentryError();
@@ -175,17 +176,8 @@ class _OrderDetailsState extends State<OrderDetails> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Color(0xFFFDFDFD),
-      appBar: GFAppBar(
-        title: Text(
-          MyLocalizations.of(context).getLocalizations("ORDER_DETAILS"),
-          style: textbarlowSemiBoldBlack(),
-        ),
-        centerTitle: true,
-        backgroundColor: primary,
-        iconTheme: IconThemeData(
-          color: Colors.black,
-        ),
-      ),
+      appBar: appBarPrimary(context,
+          MyLocalizations.of(context).getLocalizations("ORDER_DETAILS")),
       body: isLoading
           ? SquareLoader()
           : orderHistory == null

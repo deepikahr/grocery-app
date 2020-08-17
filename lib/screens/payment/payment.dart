@@ -9,6 +9,7 @@ import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/orderSevice.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
 
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:stripe_payment/stripe_payment.dart';
@@ -220,16 +221,8 @@ class _PaymentState extends State<Payment> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: GFAppBar(
-        title: Text(
-          MyLocalizations.of(context).getLocalizations("PAYMENT"),
-          style: textbarlowSemiBoldBlack(),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black, size: 15.0),
-      ),
+      appBar: appBarTransparent(
+          context, MyLocalizations.of(context).getLocalizations("PAYMENT")),
       body: isCardListLoading
           ? SquareLoader()
           : ListView(

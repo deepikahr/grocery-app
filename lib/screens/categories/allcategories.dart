@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-
-import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/screens/categories/subcategories.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
-
 import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -72,15 +70,8 @@ class _AllCategoriesState extends State<AllCategories>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: GFAppBar(
-        title: Text(
-            MyLocalizations.of(context).getLocalizations("ALL_CATEGROIES"),
-            style: textbarlowSemiBoldBlack()),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black, size: 15.0),
-      ),
+      appBar: appBarTransparent(context,
+          MyLocalizations.of(context).getLocalizations("ALL_CATEGROIES")),
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
