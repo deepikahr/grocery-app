@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:getflutter/components/appbar/gf_appbar.dart';
-import 'package:getflutter/components/button/gf_button.dart';
-import 'package:getflutter/components/typography/gf_typography.dart';
+
 import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/screens/authe/resetPas.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
@@ -10,6 +8,7 @@ import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:pin_entry_text_field/pin_entry_text_field.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 
 SentryError sentryError = new SentryError();
@@ -180,21 +179,7 @@ class _OtpState extends State<Otp> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: GFAppBar(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(20),
-            bottomRight: Radius.circular(20),
-          ),
-        ),
-        title: Text(
-          MyLocalizations.of(context).getLocalizations("WELCOME"),
-          style: textbarlowSemiBoldBlack(),
-        ),
-        centerTitle: true,
-        backgroundColor: primary,
-        iconTheme: IconThemeData(color: Colors.black),
-      ),
+      appBar: appBarPrimary(context, "WELCOME"),
       body: ListView(
         children: <Widget>[
           Padding(

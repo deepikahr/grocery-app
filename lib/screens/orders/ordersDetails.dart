@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:intl/intl.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
@@ -11,6 +10,7 @@ import 'package:readymadeGroceryApp/service/orderSevice.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 
 SentryError sentryError = new SentryError();
@@ -33,7 +33,7 @@ class _OrderDetailsState extends State<OrderDetails> {
   var orderHistory;
   String currency;
   double rating;
-
+  var createdAt;
   @override
   void initState() {
     getOrderHistory();
@@ -176,17 +176,8 @@ class _OrderDetailsState extends State<OrderDetails> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Color(0xFFFDFDFD),
-      appBar: GFAppBar(
-        title: Text(
-          MyLocalizations.of(context).getLocalizations("ORDER_DETAILS"),
-          style: textbarlowSemiBoldBlack(),
-        ),
-        centerTitle: true,
-        backgroundColor: primary,
-        iconTheme: IconThemeData(
-          color: Colors.black,
-        ),
-      ),
+      appBar: appBarPrimary(context,
+          "ORDER_DETAILS"),
       body: isLoading
           ? SquareLoader()
           : orderHistory == null
@@ -238,13 +229,13 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                           "DATE", true) +
                                                   DateFormat(
                                                           'dd/MM/yyyy, hh:mm a')
-                                                      .format(
-                                                        DateTime.parse(
-                                                            orderHistory[
-                                                                    'order']
-                                                                ['createdAt']),
-                                                      )
-                                                      .replaceAll('-', '/'),
+                                                      .format(DateTime.parse(
+                                                              orderHistory[
+                                                                          'order']
+                                                                      [
+                                                                      'createdAt']
+                                                                  .toString())
+                                                          .toLocal()),
                                               overflow: TextOverflow.ellipsis,
                                               style: textBarlowMediumBlack()),
                                         )
@@ -286,6 +277,26 @@ class _OrderDetailsState extends State<OrderDetails> {
                                       ],
                                     ),
                                     SizedBox(height: 10),
+                                    Constants.predefined == "true"
+                                        ? Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: <Widget>[
+                                              Expanded(
+                                                child: Text(
+                                                    MyLocalizations.of(context)
+                                                            .getLocalizations(
+                                                                "TIME_ZONE_MESSAGE") +
+                                                        " *",
+                                                    style:
+                                                        textBarlowMediumBlackRed()),
+                                              )
+                                            ],
+                                          )
+                                        : Container(),
+                                    Constants.predefined == "true"
+                                        ? SizedBox(height: 10)
+                                        : Container(),
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
@@ -462,62 +473,73 @@ class _OrderDetailsState extends State<OrderDetails> {
                                         ),
                                       ],
                                     ),
-                                orderHistory['order']['orderStatus'] == "DELIVERED"?    Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: <Widget>[
-                                          Padding(
+                                    orderHistory['order']['orderStatus'] ==
+                                            "DELIVERED"
+                                        ? Padding(
                                             padding: const EdgeInsets.only(
                                                 left: 8.0, right: 8.0),
-                                            child: GFButton(
-                                              shape: GFButtonShape.pills,
-                                              onPressed: () {
-                                                if (order["rating"] != null &&
-                                                    order["rating"] > 0) {
-                                                  setState(() {
-                                                    rating = double.parse(
-                                                        order["rating"]
-                                                            .toString());
-                                                  });
-                                                } else {
-                                                  setState(() {
-                                                    rating = 1.0;
-                                                  });
-                                                }
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: <Widget>[
+                                                GFButton(
+                                                  shape: GFButtonShape.pills,
+                                                  onPressed: () {
+                                                    if (order["rating"] !=
+                                                            null &&
+                                                        order["rating"] > 0) {
+                                                      setState(() {
+                                                        rating = double.parse(
+                                                            order["rating"]
+                                                                .toString());
+                                                      });
+                                                    } else {
+                                                      setState(() {
+                                                        rating = 1.0;
+                                                      });
+                                                    }
 
-                                                ratingAlert(order['productId']);
-                                              },
-                                              color: order["isRated"] == true
-                                                  ? green
-                                                  : primary,
-                                              child: order["isRated"] == true &&
-                                                      order["rating"] != null
-                                                  ? Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.end,
-                                                      children: <Widget>[
-                                                        Text(
-                                                          order["rating"]
-                                                              .toString(),
+                                                    ratingAlert(
+                                                        order['productId']);
+                                                  },
+                                                  color:
+                                                      order["isRated"] == true
+                                                          ? green
+                                                          : primary,
+                                                  child: order["isRated"] ==
+                                                              true &&
+                                                          order["rating"] !=
+                                                              null
+                                                      ? Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .end,
+                                                          children: <Widget>[
+                                                            Text(
+                                                              order["rating"]
+                                                                  .toString(),
+                                                            ),
+                                                            Icon(
+                                                              Icons.star,
+                                                              color:
+                                                                  Colors.white,
+                                                              size: 20,
+                                                            ),
+                                                          ],
+                                                        )
+                                                      : Text(
+                                                          MyLocalizations.of(
+                                                                  context)
+                                                              .getLocalizations(
+                                                                  "RATE_PRODUCT"),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
                                                         ),
-                                                        Icon(
-                                                          Icons.star,
-                                                          color: Colors.white,
-                                                          size: 20,
-                                                        ),
-                                                      ],
-                                                    )
-                                                  : Text(
-                                                      MyLocalizations.of(
-                                                              context)
-                                                          .getLocalizations(
-                                                              "RATE_PRODUCT"),
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                    ),
+                                                ),
+                                              ],
                                             ),
-                                          ),
-                                        ]):Container(),
+                                          )
+                                        : Container(),
                                     Divider(),
                                   ],
                                 ),

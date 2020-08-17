@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:getflutter/components/appbar/gf_appbar.dart';
+
 import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -9,6 +9,7 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/address-service.dart';
 import 'package:location/location.dart';
 import 'package:flutter_map_picker/flutter_map_picker.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -60,7 +61,7 @@ class _AddAddressState extends State<AddAddress> {
     "apartmentName": null,
     "landmark": null,
     "postalCode": null,
-    "mobileNumber": null,
+    "mobileNumber": 0,
     "addressType": null
   };
   addAddress() async {
@@ -79,6 +80,7 @@ class _AddAddressState extends State<AddAddress> {
       address['address'] = addressController.text;
       address['location'] = location;
       address['addressType'] = addressType[selectedAddressType];
+
       AddressService.addAddress(address).then((onValue) {
         if (mounted) {
           setState(() {
@@ -128,17 +130,7 @@ class _AddAddressState extends State<AddAddress> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: GFAppBar(
-        iconTheme: IconThemeData(
-          color: Colors.black,
-        ),
-        title: Text(
-          MyLocalizations.of(context).getLocalizations("ADD_NEW_ADDRESS"),
-          style: textbarlowSemiBoldBlack(),
-        ),
-        centerTitle: true,
-        backgroundColor: primary,
-      ),
+      appBar: appBarPrimary(context, "ADD_NEW_ADDRESS"),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -491,7 +483,7 @@ class _AddAddressState extends State<AddAddress> {
                         return null;
                     },
                     onSaved: (String value) {
-                      address['mobileNumber'] = value;
+                      address['mobileNumber'] = int.parse(value);
                     },
                   ),
                 ),

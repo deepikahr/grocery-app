@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-
-import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/model/counterModel.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/product/product-details.dart';
@@ -8,11 +6,11 @@ import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:readymadeGroceryApp/widgets/subCategoryProductCart.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
-
 import '../../style/style.dart';
 
 SentryError sentryError = new SentryError();
@@ -36,9 +34,8 @@ class SubCategories extends StatefulWidget {
 }
 
 class _SubCategoriesState extends State<SubCategories> {
-  bool isLoadingSubProductsList = false, isLoadingSubCatProductsList = false;
-  List subProductsList = [], subCategryList, subCategryByProduct;
-
+  bool isCatProLoading = false, isLoadingSubCatProductsList = false;
+  List catProductsList = [], subCategryList, subCategryByProduct = [];
   bool isSelected = true,
       isSelectedIndexZero = false,
       catLastApiCall = true,
@@ -57,11 +54,14 @@ class _SubCategoriesState extends State<SubCategories> {
   void initState() {
     if (mounted) {
       setState(() {
-        isLoadingSubProductsList = true;
+        isCatProLoading = true;
+        subCategryByProduct = [];
+        subCatProductIndex = subCategryByProduct.length;
+        catProductsList = [];
+        catProductIndex = catProductsList.length;
       });
     }
-    getProductToCategory(widget.catId);
-
+    getCategoryProduct(widget.catId);
     super.initState();
   }
 
@@ -70,42 +70,46 @@ class _SubCategoriesState extends State<SubCategories> {
     super.dispose();
   }
 
-  getProductToCategory(id) async {
+  getCategoryProduct(id) async {
     await Common.getCurrency().then((value) {
       currency = value;
     });
+
     await ProductService.getProductToCategoryList(
             id, catProductIndex, catProductLimit)
         .then((onValue) {
       _refreshController.refreshCompleted();
       if (mounted) {
         setState(() {
-          subProductsList.addAll(onValue['response_data']['products']);
+          catProductsList.addAll(onValue['response_data']['products']);
           subCategryList = onValue['response_data']['subCategories'];
           catTotalProduct = onValue["total"];
-          int index = subProductsList.length;
+          subCategryByProduct = [];
+          int index = catProductsList.length;
           if (catLastApiCall == true) {
             catProductIndex++;
             if (index < catTotalProduct) {
-              getProductToCategory(id);
+              getCategoryProduct(id);
             } else {
               if (index == catTotalProduct) {
                 if (mounted) {
-                  catProductIndex++;
-                  catLastApiCall = false;
-                  getProductToCategory(id);
+                  setState(() {
+                    catProductIndex++;
+                    catLastApiCall = false;
+                    getCategoryProduct(id);
+                  });
                 }
               }
             }
-            isLoadingSubProductsList = false;
-            isLoadingSubCatProductsList = false;
           }
+          isCatProLoading = false;
+          isLoadingSubCatProductsList = false;
         });
       }
     }).catchError((error) {
       if (mounted) {
         setState(() {
-          isLoadingSubProductsList = false;
+          isCatProLoading = false;
           isLoadingSubCatProductsList = false;
         });
       }
@@ -120,7 +124,6 @@ class _SubCategoriesState extends State<SubCategories> {
       if (mounted)
         setState(() {
           subCategryByProduct.addAll(onValue['response_data']);
-
           subCatTotalProduct = onValue["total"];
           int index = subCategryByProduct.length;
           if (subCatLastApiCall == true) {
@@ -136,8 +139,8 @@ class _SubCategoriesState extends State<SubCategories> {
                 }
               }
             }
-            isLoadingSubCatProductsList = false;
           }
+          isLoadingSubCatProductsList = false;
         });
     }).catchError((error) {
       if (mounted) {
@@ -167,17 +170,7 @@ class _SubCategoriesState extends State<SubCategories> {
       }
     }
     return Scaffold(
-      appBar: GFAppBar(
-        title: Text(
-          '${widget.catTitle}',
-          style: TextStyle(
-              color: Colors.black, fontSize: 17.0, fontWeight: FontWeight.w600),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black, size: 1.0),
-      ),
+      appBar: appBarTransparent(context, widget.catTitle),
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
@@ -185,13 +178,16 @@ class _SubCategoriesState extends State<SubCategories> {
         onRefresh: () {
           if (mounted) {
             setState(() {
-              isLoadingSubProductsList = true;
+              isCatProLoading = true;
+              catProductsList = [];
+              catProductIndex = catProductsList.length;
+              subCategryByProduct = [];
+              subCatProductIndex = subCategryByProduct.length;
             });
           }
-
-          getProductToCategory(widget.catId);
+          getCategoryProduct(widget.catId);
         },
-        child: isLoadingSubProductsList
+        child: isCatProLoading
             ? SquareLoader()
             : ListView(
                 children: <Widget>[
@@ -219,19 +215,22 @@ class _SubCategoriesState extends State<SubCategories> {
                                         children: <Widget>[
                                           InkWell(
                                             onTap: () {
-                                              subCategryByProduct = null;
                                               if (mounted) {
                                                 setState(() {
-                                                  isLoadingSubProductsList =
-                                                      true;
+                                                  isCatProLoading = true;
                                                   isSelected = true;
                                                   isSelectedIndexZero = false;
                                                   isSelectetedId = null;
+                                                  subCategryByProduct = [];
+                                                  subCatProductIndex =
+                                                      subCategryByProduct
+                                                          .length;
+                                                  catProductsList = [];
+                                                  catProductIndex =
+                                                      catProductsList.length;
                                                 });
                                               }
-
-                                              getProductToCategory(
-                                                  widget.catId);
+                                              getCategoryProduct(widget.catId);
                                             },
                                             child: Container(
                                               height: 35,
@@ -264,15 +263,15 @@ class _SubCategoriesState extends State<SubCategories> {
                                                   isSelected = false;
                                                   isSelectedIndexZero = true;
                                                   isSelectetedId = null;
+                                                  catProductsList = [];
+                                                  currentSubCategoryId =
+                                                      subCategryList[0]['_id']
+                                                          .toString();
+                                                  getProductToSubCategory(
+                                                      subCategryList[0]['_id']
+                                                          .toString());
                                                 });
                                               }
-                                              currentSubCategoryId =
-                                                  subCategryList[0]['_id']
-                                                      .toString();
-
-                                              getProductToSubCategory(
-                                                  subCategryList[0]['_id']
-                                                      .toString());
                                             },
                                             child: Container(
                                               height: 35,
@@ -310,15 +309,15 @@ class _SubCategoriesState extends State<SubCategories> {
                                                   true;
                                               isSelectetedId =
                                                   subCategryList[i]['_id'];
+                                              currentSubCategoryId =
+                                                  subCategryList[i]['_id']
+                                                      .toString();
+
+                                              getProductToSubCategory(
+                                                  subCategryList[i]['_id']
+                                                      .toString());
                                             });
                                           }
-                                          currentSubCategoryId =
-                                              subCategryList[i]['_id']
-                                                  .toString();
-
-                                          getProductToSubCategory(
-                                              subCategryList[i]['_id']
-                                                  .toString());
                                         },
                                         child: Container(
                                           height: 35,
@@ -350,7 +349,7 @@ class _SubCategoriesState extends State<SubCategories> {
                       : Container(),
                   isLoadingSubCatProductsList
                       ? SquareLoader()
-                      : subCategryByProduct != null
+                      : subCategryByProduct.length > 0
                           ? Container(
                               height: MediaQuery.of(context).size.height - 201,
                               child: ListView(
@@ -409,14 +408,26 @@ class _SubCategoriesState extends State<SubCategories> {
                                                       ),
                                                     );
                                                     result.then((value) {
-                                                      if (mounted) {
-                                                        setState(() {
-                                                          isLoadingSubCatProductsList =
-                                                              true;
-                                                        });
+                                                      if (value != null) {
+                                                        if (mounted) {
+                                                          setState(() {
+                                                            isLoadingSubCatProductsList =
+                                                                true;
+                                                            subCategryByProduct =
+                                                                [];
+                                                            subCatProductIndex =
+                                                                subCategryByProduct
+                                                                    .length;
+                                                            catProductsList =
+                                                                [];
+                                                            catProductIndex =
+                                                                catProductsList
+                                                                    .length;
+                                                            getProductToSubCategory(
+                                                                currentSubCategoryId);
+                                                          });
+                                                        }
                                                       }
-                                                      getProductToSubCategory(
-                                                          currentSubCategoryId);
                                                     });
                                                   },
                                                   child: Stack(
@@ -486,7 +497,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                 children: <Widget>[
                                   Stack(
                                     children: <Widget>[
-                                      subProductsList.length == 0
+                                      catProductsList.length == 0
                                           ? Center(
                                               child: Image.asset(
                                                   'lib/assets/images/no-orders.png'),
@@ -497,9 +508,9 @@ class _SubCategoriesState extends State<SubCategories> {
                                               physics: ScrollPhysics(),
                                               shrinkWrap: true,
                                               itemCount:
-                                                  subProductsList.length == null
+                                                  catProductsList.length == null
                                                       ? 0
-                                                      : subProductsList.length,
+                                                      : catProductsList.length,
                                               gridDelegate:
                                                   SliverGridDelegateWithFixedCrossAxisCount(
                                                       crossAxisCount: 2,
@@ -513,10 +524,10 @@ class _SubCategoriesState extends State<SubCategories> {
                                               itemBuilder:
                                                   (BuildContext context,
                                                       int i) {
-                                                if (subProductsList[i]
+                                                if (catProductsList[i]
                                                         ['averageRating'] ==
                                                     null) {
-                                                  subProductsList[i]
+                                                  catProductsList[i]
                                                       ['averageRating'] = 0;
                                                 }
 
@@ -531,21 +542,32 @@ class _SubCategoriesState extends State<SubCategories> {
                                                           localizedValues: widget
                                                               .localizedValues,
                                                           productID:
-                                                              subProductsList[i]
+                                                              catProductsList[i]
                                                                   ['_id'],
                                                         ),
                                                       ),
                                                     );
                                                     result.then((value) {
-                                                      if (mounted) {
-                                                        setState(() {
-                                                          isLoadingSubProductsList =
-                                                              true;
-                                                        });
+                                                      if (value != null) {
+                                                        if (mounted) {
+                                                          setState(() {
+                                                            isCatProLoading =
+                                                                true;
+                                                            subCategryByProduct =
+                                                                [];
+                                                            subCatProductIndex =
+                                                                subCategryByProduct
+                                                                    .length;
+                                                            catProductsList =
+                                                                [];
+                                                            catProductIndex =
+                                                                catProductsList
+                                                                    .length;
+                                                            getCategoryProduct(
+                                                                widget.catId);
+                                                          });
+                                                        }
                                                       }
-
-                                                      getProductToCategory(
-                                                          widget.catId);
                                                     });
                                                   },
                                                   child: Stack(
@@ -553,16 +575,16 @@ class _SubCategoriesState extends State<SubCategories> {
                                                       SubCategoryProductCard(
                                                         currency: currency,
                                                         price:
-                                                            subProductsList[i]
+                                                            catProductsList[i]
                                                                     ['variant']
                                                                 [0]['price'],
                                                         productData:
-                                                            subProductsList[i],
+                                                            catProductsList[i],
                                                         variantList:
-                                                            subProductsList[i]
+                                                            catProductsList[i]
                                                                 ['variant'],
                                                       ),
-                                                      subProductsList[i][
+                                                      catProductsList[i][
                                                                   'isDealAvailable'] ==
                                                               true
                                                           ? Positioned(
@@ -582,7 +604,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                                                   ),
                                                                   Text(
                                                                     " " +
-                                                                        subProductsList[i]['dealPercent']
+                                                                        catProductsList[i]['dealPercent']
                                                                             .toString() +
                                                                         "% " +
                                                                         MyLocalizations.of(context)
@@ -629,10 +651,14 @@ class _SubCategoriesState extends State<SubCategories> {
                 result.then((value) {
                   if (mounted) {
                     setState(() {
-                      isLoadingSubProductsList = true;
+                      isCatProLoading = true;
+                      subCategryByProduct = [];
+                      subCatProductIndex = subCategryByProduct.length;
+                      catProductsList = [];
+                      catProductIndex = catProductsList.length;
+                      getCategoryProduct(widget.catId);
                     });
                   }
-                  getProductToCategory(widget.catId);
                 });
               },
               child: Container(

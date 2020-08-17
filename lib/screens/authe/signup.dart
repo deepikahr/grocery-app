@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:getflutter/components/appbar/gf_appbar.dart';
-import 'package:getflutter/components/button/gf_button.dart';
-import 'package:getflutter/components/typography/gf_typography.dart';
+
 import 'package:getflutter/getflutter.dart';
-import 'package:getflutter/size/gf_size.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -34,8 +32,8 @@ class _SignupState extends State<Signup> {
       passwordVisible = true,
       isChecked = false,
       _obscureText = true;
-  String userName, email, password, mobileNumber, firstName, lastName;
-
+  String userName, email, password, firstName, lastName;
+  int mobileNumber;
   // Toggles the password
   void _toggle() {
     setState(() {
@@ -194,19 +192,7 @@ class _SignupState extends State<Signup> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: GFAppBar(
-        automaticallyImplyLeading: false,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20))),
-        title: Text(
-          MyLocalizations.of(context).getLocalizations("SIGNUP"),
-          style: textbarlowSemiBoldBlack(),
-        ),
-        centerTitle: true,
-        backgroundColor: primary,
-      ),
+      appBar: appBarPrimary(context, "SIGNUP"),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -548,7 +534,7 @@ class _SignupState extends State<Signup> {
             return null;
         },
         onSaved: (String value) {
-          mobileNumber = value;
+          mobileNumber = int.parse(value);
         },
         decoration: InputDecoration(
           counterText: "",

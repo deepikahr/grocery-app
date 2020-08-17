@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:getflutter/components/appbar/gf_appbar.dart';
+
 import 'package:getflutter/getflutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -12,6 +12,7 @@ import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/address-service.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:flutter_map_picker/flutter_map_picker.dart';
@@ -127,17 +128,7 @@ class _AddressState extends State<Address> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: GFAppBar(
-        iconTheme: IconThemeData(
-          color: Colors.black,
-        ),
-        title: Text(
-          MyLocalizations.of(context).getLocalizations("ADDRESS"),
-          style: textbarlowSemiBoldBlack(),
-        ),
-        centerTitle: true,
-        backgroundColor: primary,
-      ),
+      appBar: appBarPrimary(context, "ADDRESS"),
       body: addressLoading || isLocationLoading
           ? SquareLoader()
           : ListView(
@@ -205,7 +196,7 @@ class _AddressState extends State<Address> {
                                                 ', '
                                                     '${addressList[index]['postalCode'].toString()}' +
                                                 ', ' +
-                                                '${addressList[index]['mobileNumber']}',
+                                                '${addressList[index]['mobileNumber'].toString()}',
                                             style: textBarlowRegularBlack(),
                                           ),
                                         ),
@@ -352,7 +343,7 @@ class _AddressState extends State<Address> {
               color: primary,
               type: GFButtonType.outline,
             ),
-          )
+          ),
         ],
       ),
     );

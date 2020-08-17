@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:getflutter/components/appbar/gf_appbar.dart';
-import 'package:getflutter/components/button/gf_button.dart';
-import 'package:getflutter/components/typography/gf_typography.dart';
+
 import 'package:getflutter/getflutter.dart';
-import 'package:getflutter/size/gf_size.dart';
 import 'package:readymadeGroceryApp/screens/authe/forgotpassword.dart';
 import 'package:readymadeGroceryApp/screens/authe/signup.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
@@ -13,6 +10,7 @@ import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -200,19 +198,7 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: GFAppBar(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20))),
-        title: Text(
-          MyLocalizations.of(context).getLocalizations("LOGIN"),
-          style: textbarlowSemiBoldBlack(),
-        ),
-        centerTitle: true,
-        backgroundColor: primary,
-        iconTheme: IconThemeData(color: Colors.black),
-      ),
+      appBar: appBarPrimary(context, "LOGIN"),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -296,7 +282,7 @@ class _LoginState extends State<Login> {
       padding: const EdgeInsets.only(top: 5.0, bottom: 10.0),
       child: Container(
         child: TextFormField(
-          initialValue: Constants.appName.contains('Readymade')
+          initialValue: Constants.predefined == "true"
               ? "user@ionicfirebaseapp.com"
               : null,
           onSaved: (String value) {
@@ -356,7 +342,7 @@ class _LoginState extends State<Login> {
     return Container(
       margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
       child: TextFormField(
-        initialValue: Constants.appName.contains('Readymade') ? "123456" : null,
+        initialValue: Constants.predefined == "true" ? "123456" : null,
         style: textBarlowRegularBlack(),
         keyboardType: TextInputType.text,
         onSaved: (String value) {
