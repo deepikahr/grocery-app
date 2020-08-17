@@ -182,10 +182,7 @@ class _ProfileState extends State<Profile> {
       backgroundColor: Color(0xFFFDFDFD),
       appBar: isGetTokenLoading
           ? null
-          : token == null
-              ? null
-              : appBarPrimary(context,
-                  MyLocalizations.of(context).getLocalizations("PROFILE")),
+          : token == null ? null : appBarPrimary(context, "PROFILE"),
       body: isGetTokenLoading || isGetLanguagesListLoading
           ? SquareLoader()
           : token == null

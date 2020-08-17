@@ -130,8 +130,7 @@ class _AddAddressState extends State<AddAddress> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: appBarPrimary(context,
-          MyLocalizations.of(context).getLocalizations("ADD_NEW_ADDRESS")),
+      appBar: appBarPrimary(context, "ADD_NEW_ADDRESS"),
       body: Form(
         key: _formKey,
         child: ListView(

@@ -221,8 +221,7 @@ class _PaymentState extends State<Payment> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: appBarTransparent(
-          context, MyLocalizations.of(context).getLocalizations("PAYMENT")),
+      appBar: appBarTransparent(context, "PAYMENT"),
       body: isCardListLoading
           ? SquareLoader()
           : ListView(

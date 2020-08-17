@@ -368,12 +368,7 @@ class _MyCartState extends State<MyCart> {
           ? null
           : token == null
               ? null
-              : appBarWhite(
-                  context,
-                  MyLocalizations.of(context).getLocalizations("MY_CART"),
-                  false,
-                  false,
-                  Container()),
+              : appBarWhite(context, "MY_CART", false, false, Container()),
       body: isGetTokenLoading || isMinAmountCheckLoading
           ? SquareLoader()
           : token == null

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 
 Widget appBarPrimary(BuildContext context, title) {
@@ -11,7 +12,7 @@ Widget appBarPrimary(BuildContext context, title) {
       ),
     ),
     title: Text(
-      title,
+      MyLocalizations.of(context).getLocalizations(title),
       style: textbarlowSemiBoldBlack(),
     ),
     centerTitle: true,
@@ -26,7 +27,7 @@ Widget appBarWhite(BuildContext context, title, bool changeUi,
     title: changeUi
         ? title
         : Text(
-            title,
+            MyLocalizations.of(context).getLocalizations(title),
             style: textbarlowSemiBoldBlack(),
           ),
     centerTitle: true,
@@ -41,7 +42,7 @@ Widget appBarWhite(BuildContext context, title, bool changeUi,
 Widget appBarTransparent(BuildContext context, title) {
   return GFAppBar(
     title: Text(
-      title,
+      MyLocalizations.of(context).getLocalizations(title),
       style: textbarlowSemiBoldBlack(),
     ),
     centerTitle: true,

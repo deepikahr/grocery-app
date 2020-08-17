@@ -177,7 +177,7 @@ class _OrderDetailsState extends State<OrderDetails> {
       key: _scaffoldKey,
       backgroundColor: Color(0xFFFDFDFD),
       appBar: appBarPrimary(context,
-          MyLocalizations.of(context).getLocalizations("ORDER_DETAILS")),
+          "ORDER_DETAILS"),
       body: isLoading
           ? SquareLoader()
           : orderHistory == null

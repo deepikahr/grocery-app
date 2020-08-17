@@ -149,8 +149,7 @@ class _EditAddressState extends State<EditAddress> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: appBarPrimary(context,
-          MyLocalizations.of(context).getLocalizations("EDIT_ADDRESS")),
+      appBar: appBarPrimary(context, "EDIT_ADDRESS"),
       body: Form(
         key: _formKey,
         child: ListView(

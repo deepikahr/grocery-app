@@ -128,8 +128,7 @@ class _AddressState extends State<Address> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: appBarPrimary(
-          context, MyLocalizations.of(context).getLocalizations("ADDRESS")),
+      appBar: appBarPrimary(context, "ADDRESS"),
       body: addressLoading || isLocationLoading
           ? SquareLoader()
           : ListView(

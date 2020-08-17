@@ -225,7 +225,7 @@ class _AllProductsState extends State<AllProducts> {
       backgroundColor: bg,
       appBar: appBarWhite(
         context,
-        MyLocalizations.of(context).getLocalizations("PRODUCTS"),
+        "PRODUCTS",
         false,
         true,
         InkWell(

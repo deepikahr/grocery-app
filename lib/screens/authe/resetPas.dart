@@ -116,8 +116,7 @@ class _ResetPasswordState extends State<ResetPassword> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: appBarPrimary(
-          context, MyLocalizations.of(context).getLocalizations("RESET")),
+      appBar: appBarPrimary(context, "RESET"),
       body: Form(
         key: _formKey,
         child: Container(

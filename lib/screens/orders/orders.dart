@@ -96,8 +96,7 @@ class _OrdersState extends State<Orders> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFFDFDFD),
-      appBar: appBarPrimary(
-          context, MyLocalizations.of(context).getLocalizations("MY_ORDERS")),
+      appBar: appBarPrimary(context, "MY_ORDERS"),
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,

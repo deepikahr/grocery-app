@@ -309,8 +309,7 @@ class _EditProfileState extends State<EditProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: appBarPrimary(context,
-          MyLocalizations.of(context).getLocalizations("EDIT_PROFILE")),
+      appBar: appBarPrimary(context, "EDIT_PROFILE"),
       body: isLoading
           ? SquareLoader()
           : Form(

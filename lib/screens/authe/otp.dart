@@ -179,8 +179,7 @@ class _OtpState extends State<Otp> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: appBarPrimary(
-          context, MyLocalizations.of(context).getLocalizations("WELCOME")),
+      appBar: appBarPrimary(context, "WELCOME"),
       body: ListView(
         children: <Widget>[
           Padding(

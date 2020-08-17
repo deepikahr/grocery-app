@@ -446,8 +446,7 @@ class _CheckoutState extends State<Checkout> {
     return Scaffold(
       backgroundColor: Color(0xFFFDFDFD),
       key: _scaffoldKey,
-      appBar: appBarTransparent(
-          context, MyLocalizations.of(context).getLocalizations("CHECKOUT")),
+      appBar: appBarTransparent(context, "CHECKOUT"),
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,

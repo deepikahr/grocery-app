@@ -192,8 +192,7 @@ class _SignupState extends State<Signup> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: appBarPrimary(
-          context, MyLocalizations.of(context).getLocalizations("SIGNUP")),
+      appBar: appBarPrimary(context, "SIGNUP"),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

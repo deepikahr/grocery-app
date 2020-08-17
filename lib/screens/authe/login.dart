@@ -198,8 +198,7 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: appBarPrimary(
-          context, MyLocalizations.of(context).getLocalizations("LOGIN")),
+      appBar: appBarPrimary(context, "LOGIN"),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
