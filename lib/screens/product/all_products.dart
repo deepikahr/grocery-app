@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:getflutter/getflutter.dart';
-
 import 'package:readymadeGroceryApp/model/counterModel.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/product/product-details.dart';
@@ -10,6 +8,7 @@ import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/cardOverlay.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/subCategoryProductCart.dart';
@@ -224,41 +223,36 @@ class _AllProductsState extends State<AllProducts> {
 
     return Scaffold(
       backgroundColor: bg,
-      appBar: GFAppBar(
-        backgroundColor: bg,
-        elevation: 0,
-        title: Text(
-          MyLocalizations.of(context).getLocalizations("PRODUCTS"),
-          style: textbarlowSemiBoldBlack(),
-        ),
-        centerTitle: true,
-        actions: <Widget>[
-          InkWell(
-            onTap: () {
-              var result = Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SearchItem(
-                      locale: widget.locale,
-                      localizedValues: widget.localizedValues,
-                      currency: currency,
-                      token: getTokenValue),
-                ),
-              );
-              result.then((value) {
-                productsList = [];
-                productIndex = productsList.length;
-                getTokenValueMethod();
-              });
-            },
-            child: Padding(
-              padding: EdgeInsets.only(right: 15, left: 15),
-              child: Icon(
-                Icons.search,
+      appBar: appBarWhite(
+        context,
+        "PRODUCTS",
+        false,
+        true,
+        InkWell(
+          onTap: () {
+            var result = Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SearchItem(
+                    locale: widget.locale,
+                    localizedValues: widget.localizedValues,
+                    currency: currency,
+                    token: getTokenValue),
               ),
+            );
+            result.then((value) {
+              productsList = [];
+              productIndex = productsList.length;
+              getTokenValueMethod();
+            });
+          },
+          child: Padding(
+            padding: EdgeInsets.only(right: 15, left: 15),
+            child: Icon(
+              Icons.search,
             ),
           ),
-        ],
+        ),
       ),
       body: SmartRefresher(
         enablePullDown: true,

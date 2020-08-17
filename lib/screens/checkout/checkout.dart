@@ -14,6 +14,7 @@ import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/address-service.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -445,16 +446,7 @@ class _CheckoutState extends State<Checkout> {
     return Scaffold(
       backgroundColor: Color(0xFFFDFDFD),
       key: _scaffoldKey,
-      appBar: GFAppBar(
-        title: Text(
-          MyLocalizations.of(context).getLocalizations("CHECKOUT"),
-          style: textbarlowSemiBoldBlack(),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black, size: 1.0),
-      ),
+      appBar: appBarTransparent(context, "CHECKOUT"),
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,

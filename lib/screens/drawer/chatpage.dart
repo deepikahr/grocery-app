@@ -7,6 +7,7 @@ import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
@@ -136,23 +137,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-          leading: InkWell(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Icon(Icons.arrow_back, color: Colors.black),
-          ),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(20),
-                  bottomRight: Radius.circular(20))),
-          title: new Text(
-            MyLocalizations.of(context).getLocalizations("CHAT"),
-            style: textbarlowSemiBoldBlack(),
-          ),
-          centerTitle: true,
-          backgroundColor: primary),
+      appBar: appBarPrimary(context, "CHAT"),
       body: isChatLoading || getUserDataLoading
           ? SquareLoader()
           : Stack(

@@ -9,6 +9,7 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import '../../service/constants.dart';
 import 'package:path/path.dart' as path;
 import 'package:http/http.dart' as http;
@@ -308,15 +309,7 @@ class _EditProfileState extends State<EditProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: GFAppBar(
-        title: Text(
-          MyLocalizations.of(context).getLocalizations("EDIT_PROFILE"),
-          style: textbarlowSemiBoldBlack(),
-        ),
-        centerTitle: true,
-        backgroundColor: primary,
-        iconTheme: IconThemeData(color: Colors.black),
-      ),
+      appBar: appBarPrimary(context, "EDIT_PROFILE"),
       body: isLoading
           ? SquareLoader()
           : Form(

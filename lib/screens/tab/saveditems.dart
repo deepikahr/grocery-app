@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/model/counterModel.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
@@ -9,6 +8,7 @@ import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/fav-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/subCategoryProductCart.dart';
 
@@ -122,18 +122,7 @@ class _SavedItemsState extends State<SavedItems> {
     return Scaffold(
       appBar: isGetTokenLoading
           ? null
-          : token == null
-              ? null
-              : GFAppBar(
-                  title: Text(
-                    MyLocalizations.of(context).getLocalizations("FAVORITE"),
-                    style: textbarlowSemiBoldBlack(),
-                  ),
-                  centerTitle: true,
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  automaticallyImplyLeading: false,
-                ),
+          : token == null ? null : appBarTransparent(context, "FAVORITE"),
       body: isGetTokenLoading
           ? SquareLoader()
           : token == null

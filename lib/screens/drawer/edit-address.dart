@@ -11,6 +11,7 @@ import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/address-service.dart';
 import 'package:location/location.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -148,18 +149,7 @@ class _EditAddressState extends State<EditAddress> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: GFAppBar(
-        iconTheme: IconThemeData(
-          color: Colors.black,
-        ),
-        title: Text(
-          MyLocalizations.of(context).getLocalizations("EDIT_ADDRESS"),
-          style: textbarlowSemiBoldBlack(),
-        ),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: primary,
-      ),
+      appBar: appBarPrimary(context, "EDIT_ADDRESS"),
       body: Form(
         key: _formKey,
         child: ListView(
