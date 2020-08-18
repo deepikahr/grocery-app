@@ -10,6 +10,7 @@ import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:pin_entry_text_field/pin_entry_text_field.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
+import 'package:readymadeGroceryApp/widgets/button.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -255,42 +256,12 @@ class _OtpState extends State<Otp> {
               ),
             ),
           ),
-          Container(
-            height: 55,
-            margin: EdgeInsets.only(top: 30, bottom: 20, right: 20, left: 20),
-            decoration: BoxDecoration(boxShadow: [
-              BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 5)
-            ]),
-            child: Padding(
-              padding: const EdgeInsets.only(
-                left: 0.0,
-                right: 0.0,
-              ),
-              child: GFButton(
-                color: primary,
-                blockButton: true,
-                onPressed: verifyOTP,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      MyLocalizations.of(context).getLocalizations("SUBMIT"),
-                      style: textbarlowMediumBlack(),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    isOtpVerifyLoading
-                        ? GFLoader(
-                            type: GFLoaderType.ios,
-                          )
-                        : Text("")
-                  ],
-                ),
-                textStyle: textBarlowRegularrBlack(),
-              ),
-            ),
-          ),
+          InkWell(
+              onTap: verifyOTP,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: buttonPrimary(context, "SUBMIT", isOtpVerifyLoading),
+              )),
         ],
       ),
     );

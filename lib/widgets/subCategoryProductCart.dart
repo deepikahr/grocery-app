@@ -10,6 +10,7 @@ import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:readymadeGroceryApp/widgets/button.dart';
 
 class SubCategoryProductCard extends StatefulWidget {
   final price, currency;
@@ -433,32 +434,34 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                   });
                                 }
                               },
-                              child: Container(
-                                height: 35,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(5),
-                                    ),
-                                    color: primary),
-                                padding: EdgeInsets.only(
-                                    left: 15, right: 15, bottom: 5),
-                                margin: EdgeInsets.only(top: 5),
-                                child: isAddInProgress
-                                    ? GFLoader(
-                                        type: GFLoaderType.ios,
-                                      )
-                                    : Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Text(
-                                            MyLocalizations.of(context)
-                                                .getLocalizations("ADD"),
-                                            style: textbarlowMediumBlackm(),
-                                          ),
-                                        ],
-                                      ),
-                              ),
+                              child: productAddButton(
+                                  context, "ADD", isAddInProgress),
+                              // Container(
+                              //   height: 35,
+                              //   decoration: BoxDecoration(
+                              //       borderRadius: BorderRadius.all(
+                              //         Radius.circular(5),
+                              //       ),
+                              //       color: primary),
+                              //   padding: EdgeInsets.only(
+                              //       left: 15, right: 15, bottom: 5),
+                              //   margin: EdgeInsets.only(top: 5),
+                              //   child: isAddInProgress
+                              //       ? GFLoader(
+                              //           type: GFLoaderType.ios,
+                              //         )
+                              //       : Row(
+                              //           mainAxisAlignment:
+                              //               MainAxisAlignment.center,
+                              //           children: <Widget>[
+                              //             Text(
+                              //               MyLocalizations.of(context)
+                              //                   .getLocalizations("ADD"),
+                              //               style: textbarlowMediumBlackm(),
+                              //             ),
+                              //           ],
+                              //         ),
+                              // ),
                             )
                           : Container(
                               height: 35,

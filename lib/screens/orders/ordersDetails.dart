@@ -11,6 +11,7 @@ import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
+import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 
 SentryError sentryError = new SentryError();
@@ -117,15 +118,19 @@ class _OrderDetailsState extends State<OrderDetails> {
           ),
           actions: <Widget>[
             Center(
-                child: Container(
-              child: GFButton(
-                onPressed: () {
-                  orderRating(productID);
-                },
-                text: MyLocalizations.of(context).getLocalizations("SUBMIT"),
-                color: primary,
-                textStyle: textBarlowRegularrWhite(),
-              ),
+                child: InkWell(
+              onTap: () {
+                orderRating(productID);
+              },
+              child: alertSubmitButton(context, "SUBMIT"),
+              // GFButton(
+              //   onPressed: () {
+              //     orderRating(productID);
+              //   },
+              //   text: MyLocalizations.of(context).getLocalizations("SUBMIT"),
+              //   color: primary,
+              //   textStyle: textBarlowRegularrWhite(),
+              // ),
             ))
           ],
           content: Container(
@@ -176,8 +181,7 @@ class _OrderDetailsState extends State<OrderDetails> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Color(0xFFFDFDFD),
-      appBar: appBarPrimary(context,
-          "ORDER_DETAILS"),
+      appBar: appBarPrimary(context, "ORDER_DETAILS"),
       body: isLoading
           ? SquareLoader()
           : orderHistory == null
@@ -847,39 +851,49 @@ class _OrderDetailsState extends State<OrderDetails> {
                     orderHistory['order']['orderStatus'] == "DELIVERED" ||
                             orderHistory['order']['orderStatus'] == "CANCELLED"
                         ? Container()
-                        : Container(
-                            height: 45,
-                            margin: EdgeInsets.all(10),
-                            decoration: BoxDecoration(boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black.withOpacity(0.29),
-                                  blurRadius: 5)
-                            ]),
-                            child: GFButton(
-                              size: GFSize.LARGE,
-                              color: primary,
-                              blockButton: true,
-                              onPressed: orderCancelMethod,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(
-                                    MyLocalizations.of(context)
-                                        .getLocalizations("CANCEL_ORDER"),
-                                    style: textBarlowRegularrBlack(),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  isOrderCancleLoading
-                                      ? GFLoader(
-                                          type: GFLoaderType.ios,
-                                        )
-                                      : Text("")
-                                ],
-                              ),
-                            ),
-                          ),
+                        : InkWell(
+                            onTap: orderCancelMethod,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 15.0),
+                              child: buttonPrimary(context, "CANCEL_ORDER",
+                                  isOrderCancleLoading),
+                            )),
+
+                    // Container(
+                    //     height: 45,
+                    //     margin: EdgeInsets.all(10),
+                    //     decoration: BoxDecoration(boxShadow: [
+                    //       BoxShadow(
+                    //           color: Colors.black.withOpacity(0.29),
+                    //           blurRadius: 5)
+                    //     ]),
+                    //     child: GFButton(
+                    //       size: GFSize.LARGE,
+                    //       color: primary,
+                    //       blockButton: true,
+                    //       onPressed: orderCancelMethod,
+                    //       child: Row(
+                    //         mainAxisAlignment: MainAxisAlignment.center,
+                    //         children: <Widget>[
+                    //           Text(
+                    //             MyLocalizations.of(context)
+                    //                 .getLocalizations("CANCEL_ORDER"),
+                    //             style: textBarlowRegularrBlack(),
+                    //           ),
+                    //           SizedBox(
+                    //             height: 10,
+                    //           ),
+                    //           isOrderCancleLoading
+                    //               ? GFLoader(
+                    //                   type: GFLoaderType.ios,
+                    //                 )
+                    //               : Text("")
+                    //         ],
+                    //       ),
+                    //     ),
+                    //   ),
+                    SizedBox(height: 20),
                   ],
                 ),
     );

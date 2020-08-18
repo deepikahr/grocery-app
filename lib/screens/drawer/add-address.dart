@@ -10,6 +10,7 @@ import 'package:readymadeGroceryApp/service/address-service.dart';
 import 'package:location/location.dart';
 import 'package:flutter_map_picker/flutter_map_picker.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
+import 'package:readymadeGroceryApp/widgets/button.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -544,48 +545,54 @@ class _AddAddressState extends State<AddAddress> {
                     );
                   },
                 ),
-                SizedBox(
-                  height: 30,
-                ),
-                Container(
-                  height: 55,
-                  margin: EdgeInsets.only(bottom: 20, right: 20, left: 20),
-                  decoration: BoxDecoration(boxShadow: [
-                    BoxShadow(
-                        color: Colors.black.withOpacity(0.29), blurRadius: 5)
-                  ]),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      left: 0.0,
-                      right: 0.0,
-                    ),
-                    child: GFButton(
-                      color: primary,
-                      onPressed: () {
-                        addAddress();
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            MyLocalizations.of(context)
-                                .getLocalizations("SUBMIT"),
-                            style: textBarlowRegularrBlack(),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          isAddAddressLoading
-                              ? GFLoader(
-                                  type: GFLoaderType.ios,
-                                )
-                              : Text("")
-                        ],
-                      ),
-                      textStyle: textBarlowRegularrBlack(),
-                    ),
-                  ),
-                ),
+                InkWell(
+                    onTap: () {
+                      addAddress();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child:
+                          buttonPrimary(context, "SUBMIT", isAddAddressLoading),
+                    )),
+                // Container(
+                //   height: 55,
+                //   margin: EdgeInsets.only(bottom: 20, right: 20, left: 20),
+                //   decoration: BoxDecoration(boxShadow: [
+                //     BoxShadow(
+                //         color: Colors.black.withOpacity(0.29), blurRadius: 5)
+                //   ]),
+                //   child: Padding(
+                //     padding: const EdgeInsets.only(
+                //       left: 0.0,
+                //       right: 0.0,
+                //     ),
+                //     child: GFButton(
+                //       color: primary,
+                //       onPressed: () {
+                //         addAddress();
+                //       },
+                //       child: Row(
+                //         mainAxisAlignment: MainAxisAlignment.center,
+                //         children: <Widget>[
+                //           Text(
+                //             MyLocalizations.of(context)
+                //                 .getLocalizations("SUBMIT"),
+                //             style: textBarlowRegularrBlack(),
+                //           ),
+                //           SizedBox(
+                //             height: 10,
+                //           ),
+                //           isAddAddressLoading
+                //               ? GFLoader(
+                //                   type: GFLoaderType.ios,
+                //                 )
+                //               : Text("")
+                //         ],
+                //       ),
+                //       textStyle: textBarlowRegularrBlack(),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ],

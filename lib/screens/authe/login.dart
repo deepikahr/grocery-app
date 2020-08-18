@@ -11,6 +11,7 @@ import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
+import 'package:readymadeGroceryApp/widgets/button.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -392,36 +393,9 @@ class _LoginState extends State<Login> {
   }
 
   Widget buildLoginButton() {
-    return Container(
-      height: 55,
-      margin: EdgeInsets.only(top: 30, bottom: 20),
-      decoration: BoxDecoration(boxShadow: [
-        BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 5)
-      ]),
-      child: GFButton(
-        size: GFSize.LARGE,
-        color: primary,
-        blockButton: true,
-        onPressed: userLogin,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              MyLocalizations.of(context).getLocalizations("LOGIN"),
-              style: textBarlowRegularrBlack(),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            isUserLoaginLoading
-                ? GFLoader(
-                    type: GFLoaderType.ios,
-                  )
-                : Text("")
-          ],
-        ),
-      ),
-    );
+    return InkWell(
+        onTap: userLogin,
+        child: buttonPrimary(context, "LOGIN", isUserLoaginLoading));
   }
 
   Widget buildForgotPasswordLink() {

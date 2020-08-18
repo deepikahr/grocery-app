@@ -9,6 +9,7 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/fav-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
+import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/subCategoryProductCart.dart';
 
@@ -238,60 +239,74 @@ class _SavedItemsState extends State<SavedItems> {
                 );
                 result.then((value) => getToken());
               },
-              child: Container(
-                height: 55.0,
-                padding: EdgeInsets.only(right: 20),
-                decoration: BoxDecoration(color: primary, boxShadow: [
-                  BoxShadow(
-                      color: Colors.black.withOpacity(0.29), blurRadius: 5)
-                ]),
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Container(
-                          color: Colors.black,
-                          height: 55,
-                          width: MediaQuery.of(context).size.width * 0.35,
-                          child: Column(
-                            children: <Widget>[
-                              SizedBox(height: 7),
-                              new Text(
-                                '(${cartData['products'].length})  ' +
-                                    MyLocalizations.of(context)
-                                        .getLocalizations("ITEMS"),
-                                style: textBarlowRegularWhite(),
-                              ),
-                              new Text(
-                                "$currency${cartData['subTotal'].toStringAsFixed(2)}",
-                                style: textbarlowBoldWhite(),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Row(
-                          children: <Widget>[
-                            new Text(
-                              MyLocalizations.of(context)
-                                  .getLocalizations("GO_TO_CART"),
-                              style: textBarlowRegularBlack(),
-                            ),
-                            SizedBox(width: 4),
-                            Icon(
-                              const IconData(
-                                0xe911,
-                                fontFamily: 'icomoon',
-                              ),
-                              color: Colors.black,
-                            ),
-                          ],
-                        ),
-                      ],
+              child: addToCartButton(
+                  context,
+                  '(${cartData['products'].length})  ',
+                  "$currency${cartData['subTotal'].toStringAsFixed(2)}",
+                  "GO_TO_CART",
+                  Icon(
+                    const IconData(
+                      0xe911,
+                      fontFamily: 'icomoon',
                     ),
-                  ],
-                ),
-              ),
+                    color: Colors.black,
+                  ),
+                  false),
+
+              // Container(
+              //   height: 55.0,
+              //   padding: EdgeInsets.only(right: 20),
+              //   decoration: BoxDecoration(color: primary, boxShadow: [
+              //     BoxShadow(
+              //         color: Colors.black.withOpacity(0.29), blurRadius: 5)
+              //   ]),
+              //   child: Column(
+              //     children: <Widget>[
+              //       Row(
+              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //         children: <Widget>[
+              //           Container(
+              //             color: Colors.black,
+              //             height: 55,
+              //             width: MediaQuery.of(context).size.width * 0.35,
+              //             child: Column(
+              //               children: <Widget>[
+              //                 SizedBox(height: 7),
+              //                 new Text(
+              //                   '(${cartData['products'].length})  ' +
+              //                       MyLocalizations.of(context)
+              //                           .getLocalizations("ITEMS"),
+              //                   style: textBarlowRegularWhite(),
+              //                 ),
+              //                 new Text(
+              //                   "$currency${cartData['subTotal'].toStringAsFixed(2)}",
+              //                   style: textbarlowBoldWhite(),
+              //                 ),
+              //               ],
+              //             ),
+              //           ),
+              //           Row(
+              //             children: <Widget>[
+              //               new Text(
+              //                 MyLocalizations.of(context)
+              //                     .getLocalizations("GO_TO_CART"),
+              //                 style: textBarlowRegularBlack(),
+              //               ),
+              //               SizedBox(width: 4),
+              //               Icon(
+              //                 const IconData(
+              //                   0xe911,
+              //                   fontFamily: 'icomoon',
+              //                 ),
+              //                 color: Colors.black,
+              //               ),
+              //             ],
+              //           ),
+              //         ],
+              //       ),
+              //     ],
+              //   ),
+              // ),
             ),
     );
   }

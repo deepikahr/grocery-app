@@ -16,6 +16,7 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
+import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 
 SentryError sentryError = new SentryError();
@@ -150,24 +151,33 @@ class _ProfileState extends State<Profile> {
                           ? 0
                           : languagesList.length,
                       itemBuilder: (BuildContext context, int i) {
-                        return GFButton(
-                          onPressed: () async {
-                            await Common.setSelectedLanguage(
-                                languagesList[i]['languageCode']);
-                            main();
-                          },
-                          type: GFButtonType.transparent,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                languagesList[i]['languageName'],
-                                style: hintSfboldBig(),
-                              ),
-                              Container()
-                            ],
-                          ),
-                        );
+                        return InkWell(
+                            onTap: () async {
+                              await Common.setSelectedLanguage(
+                                  languagesList[i]['languageCode']);
+                              main();
+                            },
+                            child: transparentButton(
+                                context, languagesList[i]['languageName']));
+
+                        // GFButton(
+                        //   onPressed: () async {
+                        //     await Common.setSelectedLanguage(
+                        //         languagesList[i]['languageCode']);
+                        //     main();
+                        //   },
+                        //   type: GFButtonType.transparent,
+                        //   child: Row(
+                        //     mainAxisAlignment: MainAxisAlignment.start,
+                        //     children: <Widget>[
+                        //       Text(
+                        //         languagesList[i]['languageName'],
+                        //         style: hintSfboldBig(),
+                        //       ),
+                        //       Container()
+                        //     ],
+                        //   ),
+                        // );
                       }),
                 ],
               ),
