@@ -36,6 +36,7 @@ dependencies:
   http_interceptor: ^0.3.2
   fluttertoast: ^7.0.2
   flutter_html: ^1.0.2
+  share: ^0.6.4+3
   flutter_localizations:
     sdk: flutter
 
@@ -117,6 +118,7 @@ flutter:
     - lib/assets/icons/deals.png
     - lib/assets/icons/history.png
     - lib/assets/icons/tc.png
+    - lib/assets/icons/share.png
 
     - lib/assets/splash.png
     - lib/assets/logo.png
