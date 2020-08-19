@@ -5,6 +5,7 @@ import 'package:readymadeGroceryApp/screens/orders/orders.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 
 import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/widgets/button.dart';
 
 class Thankyou extends StatefulWidget {
   final Map localizedValues;
@@ -39,34 +40,29 @@ class _ThankyouState extends State<Thankyou> {
               style: textbarlowMediumlgBlack(),
             ),
             SizedBox(height: 30.0),
-            GFButton(
-              onPressed: () {
-                var reuslt = Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => Orders(
-                      locale: widget.locale,
-                      localizedValues: widget.localizedValues,
-                    ),
-                  ),
-                );
-                reuslt.then((value) => Navigator.pushAndRemoveUntil(
+            InkWell(
+                onTap: () {
+                  var reuslt = Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (BuildContext context) => Home(
+                      builder: (BuildContext context) => Orders(
                         locale: widget.locale,
                         localizedValues: widget.localizedValues,
-                        currentIndex: 0,
                       ),
                     ),
-                    (Route<dynamic> route) => false));
-              },
-              color: Colors.black,
-              child: Text(
-                MyLocalizations.of(context).getLocalizations("ORDERS"),
-                style: textbarlowMediumPrimary(),
-              ),
-            ),
+                  );
+                  reuslt.then((value) => Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => Home(
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                          currentIndex: 0,
+                        ),
+                      ),
+                      (Route<dynamic> route) => false));
+                },
+                child: defaultButton(context, "ORDERS", Colors.black)),
           ],
         ),
       ),

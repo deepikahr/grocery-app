@@ -9,6 +9,7 @@ import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
+import 'package:readymadeGroceryApp/widgets/button.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -185,38 +186,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   ),
                 ),
               ),
-              Container(
-                height: 55,
-                margin:
-                    EdgeInsets.only(top: 30, bottom: 20, right: 20, left: 20),
-                decoration: BoxDecoration(boxShadow: [
-                  BoxShadow(
-                      color: Colors.black.withOpacity(0.29), blurRadius: 5)
-                ]),
-                child: GFButton(
-                  color: primary,
-                  size: GFSize.LARGE,
-                  blockButton: true,
-                  onPressed: verifyEmail,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        MyLocalizations.of(context).getLocalizations("SUBMIT"),
-                        style: textBarlowRegularrBlack(),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      isVerfyEmailLoading
-                          ? GFLoader(
-                              type: GFLoaderType.ios,
-                            )
-                          : Text("")
-                    ],
-                  ),
-                ),
-              ),
+              InkWell(
+                  onTap: verifyEmail,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child:
+                        buttonPrimary(context, "SUBMIT", isVerfyEmailLoading),
+                  )),
             ],
           ),
         ),

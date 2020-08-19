@@ -7,6 +7,7 @@ import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
+import 'package:readymadeGroceryApp/widgets/button.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -561,36 +562,9 @@ class _SignupState extends State<Signup> {
   }
 
   Widget buildsignuplink() {
-    return Container(
-      height: 55,
-      margin: EdgeInsets.only(top: 30, bottom: 20),
-      decoration: BoxDecoration(boxShadow: [
-        BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 5)
-      ]),
-      child: GFButton(
-        size: GFSize.LARGE,
-        color: primary,
-        blockButton: true,
-        onPressed: userSignup,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              MyLocalizations.of(context).getLocalizations("SIGNUP"),
-              style: textBarlowRegularrBlack(),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            registerationLoading
-                ? GFLoader(
-                    type: GFLoaderType.ios,
-                  )
-                : Text("")
-          ],
-        ),
-      ),
-    );
+    return InkWell(
+        onTap: userSignup,
+        child: buttonPrimary(context, "SIGNUP", registerationLoading));
   }
 
   Widget buildLoginButton() {
@@ -623,39 +597,6 @@ class _SignupState extends State<Signup> {
       MyLocalizations.of(context).getLocalizations("OR"),
       textAlign: TextAlign.center,
       style: textBarlowRegularBlack(),
-    );
-  }
-
-  Widget buildsocialbuttons() {
-    return Row(
-      children: <Widget>[
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 10.0, left: 0.0, right: 0.0),
-            child: GFButton(
-              size: GFSize.LARGE,
-              icon: Icon(
-                IconData(
-                  0xe906,
-                  fontFamily: 'icomoon',
-                ),
-                color: Colors.white,
-                size: 28,
-              ),
-              buttonBoxShadow: true,
-              color: Color(0xFF3B5998),
-              onPressed: () {},
-              child: Text(
-                "Sign Up with Facebook",
-                style: textBarlowRegularrWhite(),
-              ),
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 10,
-        ),
-      ],
     );
   }
 

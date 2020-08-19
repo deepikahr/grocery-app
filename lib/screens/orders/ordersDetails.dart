@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:getflutter/getflutter.dart';
 import 'package:intl/intl.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
@@ -11,6 +10,7 @@ import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
+import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 
 SentryError sentryError = new SentryError();
@@ -117,15 +117,11 @@ class _OrderDetailsState extends State<OrderDetails> {
           ),
           actions: <Widget>[
             Center(
-                child: Container(
-              child: GFButton(
-                onPressed: () {
-                  orderRating(productID);
-                },
-                text: MyLocalizations.of(context).getLocalizations("SUBMIT"),
-                color: primary,
-                textStyle: textBarlowRegularrWhite(),
-              ),
+                child: InkWell(
+              onTap: () {
+                orderRating(productID);
+              },
+              child: alertSubmitButton(context, "SUBMIT"),
             ))
           ],
           content: Container(
@@ -164,6 +160,7 @@ class _OrderDetailsState extends State<OrderDetails> {
     await ProductService.productRating(body).then((onValue) {
       Navigator.pop(context);
       setState(() {
+        showSnackbar(onValue['response_data']);
         getOrderHistory();
       });
     }).catchError((error) {
@@ -176,8 +173,7 @@ class _OrderDetailsState extends State<OrderDetails> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Color(0xFFFDFDFD),
-      appBar: appBarPrimary(context,
-          "ORDER_DETAILS"),
+      appBar: appBarPrimary(context, "ORDER_DETAILS"),
       body: isLoading
           ? SquareLoader()
           : orderHistory == null
@@ -482,60 +478,32 @@ class _OrderDetailsState extends State<OrderDetails> {
                                               mainAxisAlignment:
                                                   MainAxisAlignment.end,
                                               children: <Widget>[
-                                                GFButton(
-                                                  shape: GFButtonShape.pills,
-                                                  onPressed: () {
-                                                    if (order["rating"] !=
-                                                            null &&
-                                                        order["rating"] > 0) {
-                                                      setState(() {
-                                                        rating = double.parse(
-                                                            order["rating"]
-                                                                .toString());
-                                                      });
-                                                    } else {
-                                                      setState(() {
-                                                        rating = 1.0;
-                                                      });
-                                                    }
-
-                                                    ratingAlert(
-                                                        order['productId']);
-                                                  },
-                                                  color:
-                                                      order["isRated"] == true
-                                                          ? green
-                                                          : primary,
-                                                  child: order["isRated"] ==
-                                                              true &&
-                                                          order["rating"] !=
-                                                              null
-                                                      ? Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .end,
-                                                          children: <Widget>[
-                                                            Text(
+                                                InkWell(
+                                                    onTap: () {
+                                                      if (order["rating"] !=
+                                                              null &&
+                                                          order["rating"] > 0) {
+                                                        setState(() {
+                                                          rating = double.parse(
                                                               order["rating"]
-                                                                  .toString(),
-                                                            ),
-                                                            Icon(
-                                                              Icons.star,
-                                                              color:
-                                                                  Colors.white,
-                                                              size: 20,
-                                                            ),
-                                                          ],
-                                                        )
-                                                      : Text(
-                                                          MyLocalizations.of(
-                                                                  context)
-                                                              .getLocalizations(
-                                                                  "RATE_PRODUCT"),
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                        ),
-                                                ),
+                                                                  .toString());
+                                                        });
+                                                      } else {
+                                                        setState(() {
+                                                          rating = 1.0;
+                                                        });
+                                                      }
+
+                                                      ratingAlert(
+                                                          order['productId']);
+                                                    },
+                                                    child: mdPillsButton(
+                                                        context,
+                                                        order["isRated"] == true
+                                                            ? green
+                                                            : primary,
+                                                        "RATE_PRODUCT",
+                                                        order))
                                               ],
                                             ),
                                           )
@@ -847,39 +815,15 @@ class _OrderDetailsState extends State<OrderDetails> {
                     orderHistory['order']['orderStatus'] == "DELIVERED" ||
                             orderHistory['order']['orderStatus'] == "CANCELLED"
                         ? Container()
-                        : Container(
-                            height: 45,
-                            margin: EdgeInsets.all(10),
-                            decoration: BoxDecoration(boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black.withOpacity(0.29),
-                                  blurRadius: 5)
-                            ]),
-                            child: GFButton(
-                              size: GFSize.LARGE,
-                              color: primary,
-                              blockButton: true,
-                              onPressed: orderCancelMethod,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(
-                                    MyLocalizations.of(context)
-                                        .getLocalizations("CANCEL_ORDER"),
-                                    style: textBarlowRegularrBlack(),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  isOrderCancleLoading
-                                      ? GFLoader(
-                                          type: GFLoaderType.ios,
-                                        )
-                                      : Text("")
-                                ],
-                              ),
-                            ),
-                          ),
+                        : InkWell(
+                            onTap: orderCancelMethod,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 15.0),
+                              child: buttonPrimary(context, "CANCEL_ORDER",
+                                  isOrderCancleLoading),
+                            )),
+                    SizedBox(height: 20),
                   ],
                 ),
     );

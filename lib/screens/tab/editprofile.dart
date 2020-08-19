@@ -10,6 +10,8 @@ import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
+import 'package:readymadeGroceryApp/widgets/button.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import '../../service/constants.dart';
 import 'package:path/path.dart' as path;
 import 'package:http/http.dart' as http;
@@ -37,7 +39,7 @@ class _EditProfileState extends State<EditProfile> {
   String firstName, lastName, currency = "";
   int mobileNumber;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  var image, walletAmount;
+  var image;
   @override
   void initState() {
     getUserInfo();
@@ -58,14 +60,12 @@ class _EditProfileState extends State<EditProfile> {
         setState(() {
           isLoading = false;
           userInfo = onValue['response_data'];
-          walletAmount = onValue['response_data']['walletAmount'] ?? 0;
         });
       }
     }).catchError((error) {
       if (mounted) {
         setState(() {
           userInfo = null;
-          walletAmount = 0;
           isLoading = false;
         });
       }
@@ -228,51 +228,21 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                   ),
                   GFButton(
-                    onPressed: selectCamera,
-                    type: GFButtonType.transparent,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          MyLocalizations.of(context)
-                              .getLocalizations("TAKE_PHOTO"),
-                          style: hintSfboldBig(),
-                        ),
-                        Icon(Icons.camera_alt),
-                      ],
-                    ),
-                  ),
+                      onPressed: selectCamera,
+                      type: GFButtonType.transparent,
+                      child: alertText(
+                          context, "TAKE_PHOTO", Icon(Icons.camera_alt))),
                   GFButton(
-                    onPressed: selectGallary,
-                    type: GFButtonType.transparent,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          MyLocalizations.of(context)
-                              .getLocalizations("CHOOSE_FROM_PHOTOS"),
-                          style: hintSfboldBig(),
-                        ),
-                        Icon(Icons.image),
-                      ],
-                    ),
-                  ),
+                      onPressed: selectGallary,
+                      type: GFButtonType.transparent,
+                      child: alertText(
+                          context, "CHOOSE_FROM_PHOTOS", Icon(Icons.image))),
                   userInfo['filePath'] != null && userInfo['imageUrl'] != null
                       ? GFButton(
                           onPressed: removeImage,
                           type: GFButtonType.transparent,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(
-                                MyLocalizations.of(context)
-                                    .getLocalizations("REMOVE_PHOTO"),
-                                style: hintSfboldBig(),
-                              ),
-                              Icon(Icons.delete_forever),
-                            ],
-                          ),
-                        )
+                          child: alertText(context, "REMOVE_PHOTO",
+                              Icon(Icons.delete_forever)))
                       : Container(),
                 ],
               ),
@@ -399,29 +369,6 @@ class _EditProfileState extends State<EditProfile> {
                       style: textBarlowRegularBlack(),
                     ),
                   ),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  walletAmount != null && walletAmount > 0
-                      ? Padding(
-                          padding:
-                              const EdgeInsets.only(left: 18.0, right: 18.0),
-                          child: Row(
-                            children: [
-                              Text(
-                                MyLocalizations.of(context).getLocalizations(
-                                    "TOTAL_WALLET_AMOUNT", true),
-                                style: textbarlowRegularBlack(),
-                              ),
-                              Text(
-                                currency +
-                                    walletAmount.toDouble().toStringAsFixed(2),
-                                style: textbarlowRegularBlackbold(),
-                              ),
-                            ],
-                          ),
-                        )
-                      : Container(),
                   SizedBox(height: 25),
                   Padding(
                     padding: const EdgeInsets.only(
@@ -575,36 +522,42 @@ class _EditProfileState extends State<EditProfile> {
                 ],
               ),
             ),
-      bottomNavigationBar: Container(
-        height: 55,
-        margin: EdgeInsets.only(bottom: 20, left: 15, right: 15),
-        decoration: BoxDecoration(boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 5)
-        ]),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 0.0, right: 0.0),
-          child: GFButton(
-            onPressed: updateUserInformation,
-            color: primary,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  MyLocalizations.of(context).getLocalizations("SUBMIT"),
-                  style: textBarlowRegularrBlack(),
-                ),
-                profileEdit
-                    ? GFLoader(
-                        type: GFLoaderType.ios,
-                      )
-                    : Text("")
-              ],
-            ),
-            textColor: Colors.black,
-            blockButton: true,
-          ),
-        ),
-      ),
+      bottomNavigationBar: InkWell(
+          onTap: updateUserInformation,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            child: editProfileButton(context, "SUBMIT", profileEdit),
+          )),
+      // Container(
+      //   height: 55,
+      //   margin: EdgeInsets.only(bottom: 20, left: 15, right: 15),
+      //   decoration: BoxDecoration(boxShadow: [
+      //     BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 5)
+      //   ]),
+      //   child: Padding(
+      //     padding: const EdgeInsets.only(left: 0.0, right: 0.0),
+      //     child: GFButton(
+      //       onPressed: updateUserInformation,
+      //       color: primary,
+      //       child: Row(
+      //         mainAxisAlignment: MainAxisAlignment.center,
+      //         children: <Widget>[
+      //           Text(
+      //             MyLocalizations.of(context).getLocalizations("SUBMIT"),
+      //             style: textBarlowRegularrBlack(),
+      //           ),
+      //           profileEdit
+      //               ? GFLoader(
+      //                   type: GFLoaderType.ios,
+      //                 )
+      //               : Text("")
+      //         ],
+      //       ),
+      //       textColor: Colors.black,
+      //       blockButton: true,
+      //     ),
+      //   ),
+      // ),
     );
   }
 

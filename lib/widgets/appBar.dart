@@ -25,6 +25,7 @@ Widget appBarWhite(BuildContext context, title, bool changeUi,
             style: textbarlowSemiBoldBlack()),
     centerTitle: true,
     backgroundColor: bg,
+    elevation: 0,
     iconTheme: IconThemeData(color: Colors.black),
     actions: <Widget>[actionTrueOrFalse ? actionProcess : Container()],
   );
