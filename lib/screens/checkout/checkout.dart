@@ -14,9 +14,10 @@ import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/address-service.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
+import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:dotted_border/dotted_border.dart';
 import '../../service/constants.dart';
 import 'package:flutter_map_picker/flutter_map_picker.dart';
 
@@ -445,16 +446,7 @@ class _CheckoutState extends State<Checkout> {
     return Scaffold(
       backgroundColor: Color(0xFFFDFDFD),
       key: _scaffoldKey,
-      appBar: GFAppBar(
-        title: Text(
-          MyLocalizations.of(context).getLocalizations("CHECKOUT"),
-          style: textbarlowSemiBoldBlack(),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black, size: 1.0),
-      ),
+      appBar: appBarTransparent(context, "CHECKOUT"),
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
@@ -723,30 +715,10 @@ class _CheckoutState extends State<Checkout> {
                                                       padding:
                                                           const EdgeInsets.only(
                                                               left: 8.0),
-                                                      child: Container(
-                                                        height: 44,
-                                                        width: 119,
-                                                        child: GFButton(
-                                                          onPressed: null,
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    left: 8.0,
-                                                                    right: 8.0),
-                                                            child: isCouponLoading
-                                                                ? SquareLoader()
-                                                                : Text(
-                                                                    MyLocalizations.of(context)
-                                                                            .getLocalizations("APPLY") +
-                                                                        " ",
-                                                                    style:
-                                                                        textBarlowRegularBlack(),
-                                                                  ),
-                                                          ),
-                                                          color: primary,
-                                                        ),
-                                                      ),
+                                                      child: applyCoupon(
+                                                          context,
+                                                          "APPLY",
+                                                          isCouponLoading),
                                                     ),
                                                   ),
                                                 )
@@ -823,6 +795,37 @@ class _CheckoutState extends State<Checkout> {
                                               ],
                                             ),
                                   SizedBox(height: 10),
+                                  cartItem['walletAmount'] > 0
+                                      ? Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Text(
+                                              MyLocalizations.of(context)
+                                                  .getLocalizations(
+                                                      "USED_WALLET_AMOUNT"),
+                                              style: textBarlowRegularBlack(),
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: <Widget>[
+                                                Text(
+                                                  currency +
+                                                      cartItem['walletAmount']
+                                                          .toDouble()
+                                                          .toStringAsFixed(2),
+                                                  style:
+                                                      textbarlowBoldsmBlack(),
+                                                )
+                                              ],
+                                            ),
+                                          ],
+                                        )
+                                      : Container(),
+                                  cartItem['walletAmount'] > 0
+                                      ? SizedBox(height: 10)
+                                      : Container(),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -901,7 +904,7 @@ class _CheckoutState extends State<Checkout> {
                                                   ),
                                                   Text(
                                                     "${addressList[i]['landmark']} ,"
-                                                    '${addressList[i]['postalCode']}, ${addressList[i]['mobileNumber']}',
+                                                    '${addressList[i]['postalCode']}, ${addressList[i]['mobileNumber'].toString()}',
                                                     style:
                                                         textBarlowRegularBlackdl(),
                                                   ),
@@ -919,8 +922,8 @@ class _CheckoutState extends State<Checkout> {
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.start,
                                                   children: <Widget>[
-                                                    GFButton(
-                                                      onPressed: () async {
+                                                    InkWell(
+                                                      onTap: () async {
                                                         await Navigator.push(
                                                           context,
                                                           MaterialPageRoute(
@@ -945,29 +948,15 @@ class _CheckoutState extends State<Checkout> {
                                                         padding:
                                                             const EdgeInsets
                                                                     .only(
-                                                                left: 18.0,
-                                                                right: 18.0),
-                                                        child: Text(
-                                                          MyLocalizations.of(
-                                                                  context)
-                                                              .getLocalizations(
-                                                                  "EDIT"),
-                                                          style:
-                                                              textbarlowRegularaPrimar(),
-                                                        ),
+                                                                left: 8.0),
+                                                        child:
+                                                            primaryOutlineButton(
+                                                                context,
+                                                                "EDIT"),
                                                       ),
-                                                      type:
-                                                          GFButtonType.outline,
-                                                      color: primary,
-                                                      size: GFSize.MEDIUM,
                                                     ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              right: 18.0,
-                                                              left: 20.0),
-                                                      child: GFButton(
-                                                        onPressed: () {
+                                                    InkWell(
+                                                        onTap: () {
                                                           deleteAddress(
                                                               addressList[i]
                                                                   ['_id']);
@@ -975,23 +964,14 @@ class _CheckoutState extends State<Checkout> {
                                                         child: Padding(
                                                           padding:
                                                               const EdgeInsets
-                                                                      .only(
-                                                                  left: 8.0,
-                                                                  right: 8.0),
-                                                          child: Text(
-                                                            MyLocalizations.of(
-                                                                    context)
-                                                                .getLocalizations(
-                                                                    "DELETE"),
-                                                            style:
-                                                                textbarlowRegularaPrimar(),
-                                                          ),
-                                                        ),
-                                                        color: primary,
-                                                        type: GFButtonType
-                                                            .outline,
-                                                      ),
-                                                    )
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      20.0),
+                                                          child:
+                                                              primaryOutlineButton(
+                                                                  context,
+                                                                  "DELETE"),
+                                                        )),
                                                   ],
                                                 ),
                                               ),
@@ -1011,14 +991,8 @@ class _CheckoutState extends State<Checkout> {
                                   SizedBox(
                                     height: 20,
                                   ),
-                                  DottedBorder(
-                                    color: Color(0XFFBBBBBB),
-                                    dashPattern: [4, 2],
-                                    strokeWidth: 2,
-                                    padding:
-                                        EdgeInsets.only(left: 10, right: 10),
-                                    child: GFButton(
-                                      onPressed: () async {
+                                  InkWell(
+                                      onTap: () async {
                                         _permissionGranted =
                                             await _location.hasPermission();
                                         if (_permissionGranted ==
@@ -1054,25 +1028,31 @@ class _CheckoutState extends State<Checkout> {
                                           addAddressPageMethod(locationLatLong);
                                         }
                                       },
-                                      type: GFButtonType.transparent,
-                                      color: GFColors.LIGHT,
-                                      child: Text(
-                                        MyLocalizations.of(context)
-                                            .getLocalizations(
-                                                "ADD_NEW_ADDRESS"),
-                                        style: textBarlowRegularBb(),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 80.0),
+                                        child: dottedBorderButton(
+                                            context, "ADD_NEW_ADDRESS"),
+                                      )),
+                                  SizedBox(height: 20),
                                 ],
                               ),
                             ),
-                            SizedBox(
-                              height: 15,
-                            ),
+                            SizedBox(height: 15),
+                            Constants.predefined == "true"
+                                ? Container(
+                                    padding: EdgeInsets.only(
+                                        left: 15, right: 15, bottom: 10),
+                                    child: Text(
+                                      MyLocalizations.of(context)
+                                              .getLocalizations(
+                                                  "TIME_ZONE_MESSAGE") +
+                                          " *",
+                                      style: textbarlowRegularaddRed(),
+                                    ),
+                                  )
+                                : Container(),
+                            SizedBox(height: 5),
                             Container(
                               padding: EdgeInsets.only(
                                   left: 15, right: 15, bottom: 10),
@@ -1082,9 +1062,7 @@ class _CheckoutState extends State<Checkout> {
                                 style: textbarlowRegularadd(),
                               ),
                             ),
-                            SizedBox(
-                              height: 15,
-                            ),
+                            SizedBox(height: 15),
                             deliverySlotList.length > 0
                                 ? Row(
                                     children: <Widget>[
@@ -1213,39 +1191,13 @@ class _CheckoutState extends State<Checkout> {
                           ],
                         ),
                       ),
-                      SizedBox(height: 20),
-                      SizedBox(height: 20.0),
-                      Container(
-                        margin:
-                            EdgeInsets.only(left: 15, right: 15, bottom: 20),
-                        height: 55,
-                        decoration: BoxDecoration(boxShadow: [
-                          BoxShadow(
-                              color: Colors.black.withOpacity(0.33),
-                              blurRadius: 6)
-                        ]),
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            left: 0.0,
-                            right: 0.0,
-                          ),
-                          child: GFButton(
-                              color: primary,
-                              blockButton: true,
-                              onPressed: placeOrder,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(
-                                    MyLocalizations.of(context)
-                                        .getLocalizations("PROCEED"),
-                                    style: textBarlowRegularBlack(),
-                                  ),
-                                ],
-                              ),
-                              textStyle: textBarlowregbkck()),
-                        ),
-                      ),
+                      InkWell(
+                          onTap: placeOrder,
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 15.0),
+                            child: buttonPrimary(context, "PROCEED", false),
+                          )),
                     ],
                   ),
       ),

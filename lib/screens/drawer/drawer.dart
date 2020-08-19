@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/categories/allcategories.dart';
+import 'package:readymadeGroceryApp/screens/drawer/about-us.dart';
 import 'package:readymadeGroceryApp/screens/drawer/address.dart';
 import 'package:readymadeGroceryApp/screens/drawer/chatpage.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/orders/orders.dart';
 import 'package:readymadeGroceryApp/screens/product/all_deals.dart';
 import 'package:readymadeGroceryApp/screens/product/all_products.dart';
-import 'package:readymadeGroceryApp/screens/webView/webView.dart';
+import 'package:readymadeGroceryApp/screens/drawer/TandC-PP.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import '../../main.dart';
@@ -173,12 +173,35 @@ class _DrawerPageState extends State<DrawerPage> {
                     : Container(),
                 _buildMenuTileList('lib/assets/icons/about.png',
                     MyLocalizations.of(context).getLocalizations("ABOUT_US"), 0,
-                    route: WebViewPage(
+                    route: AboutUs(
                         locale: widget.locale,
-                        localizedValues: widget.localizedValues,
-                        title: MyLocalizations.of(context)
-                            .getLocalizations("ABOUT_US"),
-                        url: Constants.baseUrl + "/about-us")),
+                        localizedValues: widget.localizedValues)),
+                _buildMenuTileList(
+                  'lib/assets/icons/tc.png',
+                  MyLocalizations.of(context)
+                      .getLocalizations("PRIVACY_POLICY"),
+                  0,
+                  route: TandCandPrivacyPolicy(
+                    locale: widget.locale,
+                    localizedValues: widget.localizedValues,
+                    endPoint: "/pages/privacy-policy",
+                    title: MyLocalizations.of(context)
+                        .getLocalizations("PRIVACY_POLICY"),
+                  ),
+                ),
+                _buildMenuTileList(
+                  'lib/assets/icons/tc.png',
+                  MyLocalizations.of(context)
+                      .getLocalizations("TERMS_CONDITIONS"),
+                  0,
+                  route: TandCandPrivacyPolicy(
+                    locale: widget.locale,
+                    localizedValues: widget.localizedValues,
+                    endPoint: "/pages/terms-and-conditions",
+                    title: MyLocalizations.of(context)
+                        .getLocalizations("TERMS_CONDITIONS"),
+                  ),
+                ),
                 SizedBox(height: 20.0),
                 getTokenValue
                     ? _buildMenuTileList1(

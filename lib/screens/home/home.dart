@@ -15,6 +15,7 @@ import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:location/location.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 
 SentryError sentryError = new SentryError();
@@ -290,34 +291,32 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: currentIndex == 0
-          ? GFAppBar(
-              backgroundColor: bg,
-              elevation: 0,
-              iconTheme: IconThemeData(color: Colors.black),
-              title: deliveryAddress(),
-              actions: <Widget>[
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SearchItem(
-                          locale: widget.locale,
-                          localizedValues: widget.localizedValues,
-                          currency: currency,
-                          token: getTokenValue,
-                        ),
+          ? appBarWhite(
+              context,
+              deliveryAddress(),
+              true,
+              true,
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SearchItem(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                        currency: currency,
+                        token: getTokenValue,
                       ),
-                    );
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 15, left: 15),
-                    child: Icon(
-                      Icons.search,
                     ),
+                  );
+                },
+                child: Padding(
+                  padding: EdgeInsets.only(right: 15, left: 15),
+                  child: Icon(
+                    Icons.search,
                   ),
                 ),
-              ],
+              ),
             )
           : null,
       drawer: Drawer(

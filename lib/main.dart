@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:getflutter/getflutter.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
@@ -164,17 +163,12 @@ class AnimatedScreen extends StatelessWidget {
         color: primary,
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        child: Constants.appName.contains('Readymade Grocery App')
-            ? Image.asset(
-                'lib/assets/splash.png',
-                fit: BoxFit.cover,
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-              )
-            : GFLoader(
-                type: GFLoaderType.ios,
-                size: 40,
-              ),
+        child: Image.asset(
+          'lib/assets/splash.png',
+          fit: BoxFit.cover,
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+        ),
       ),
     );
   }

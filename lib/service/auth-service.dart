@@ -93,8 +93,22 @@ class LoginService {
   }
 
   // get about us data
-  static Future aboutUs() async {
+  static Future businessInfo() async {
     return client.get(Constants.apiUrl + "/business/detail").then((response) {
+      return json.decode(response.body);
+    });
+  }
+
+  // get about us data
+  static Future aboutUs() async {
+    return client.get(Constants.apiUrl + "/pages/about-us").then((response) {
+      return json.decode(response.body);
+    });
+  }
+
+  // get about us data
+  static Future tandCandPandPMethod(endPoint) async {
+    return client.get(Constants.apiUrl + endPoint).then((response) {
       return json.decode(response.body);
     });
   }

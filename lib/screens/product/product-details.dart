@@ -11,6 +11,7 @@ import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/fav-service.dart';
+import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 
 SentryError sentryError = new SentryError();
@@ -233,7 +234,7 @@ class _ProductDetailsState extends State<ProductDetails>
         showSnackbar(onValue['message'] ?? "");
       }
       Future.delayed(Duration(milliseconds: 1500), () {
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(true);
       });
       if (onValue['response_data'] is Map) {
         Common.setCartData(onValue['response_data']);
@@ -290,365 +291,362 @@ class _ProductDetailsState extends State<ProductDetails>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
-      body: isProductDetails
-          ? SquareLoader()
-          : Container(
-              height: MediaQuery.of(context).size.height,
-              color: Colors.white,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    Stack(
-                      children: <Widget>[
-                        Column(
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.zero,
-                              margin: EdgeInsets.zero,
-                              height: 340,
-                              decoration: new BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(40),
-                                  bottomRight: Radius.circular(40),
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey,
-                                    blurRadius: 10.0,
-                                    offset: Offset(
-                                      2.0,
-                                      2.0,
-                                    ),
-                                  )
-                                ],
-                                image: new DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: new NetworkImage(
-                                    productDetail['filePath'] == null
-                                        ? productDetail['imageUrl']
-                                        : Constants.imageUrlPath +
-                                            "/tr:dpr-auto,tr:w-1000" +
-                                            productDetail['filePath'],
+        key: _scaffoldKey,
+        body: isProductDetails
+            ? SquareLoader()
+            : Container(
+                height: MediaQuery.of(context).size.height,
+                color: Colors.white,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      Stack(
+                        children: <Widget>[
+                          Column(
+                            children: <Widget>[
+                              Container(
+                                padding: EdgeInsets.zero,
+                                margin: EdgeInsets.zero,
+                                height: 340,
+                                decoration: new BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(40),
+                                    bottomRight: Radius.circular(40),
                                   ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 40,
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Expanded(
-                                      flex: 7,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 20, right: 20),
-                                        child: Text(
-                                          '${productDetail['title'][0].toUpperCase()}${productDetail['title'].substring(1)}',
-                                          maxLines: 3,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: textBarlowSemiBoldBlack(),
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 3,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 0.0, right: 5.0, left: 5.0),
-                                        child: RatingBar(
-                                          initialRating: double.parse(
-                                                  productDetail['averageRating']
-                                                      .toStringAsFixed(1)) ??
-                                              0.0,
-                                          minRating: 0,
-                                          direction: Axis.horizontal,
-                                          allowHalfRating: true,
-                                          itemCount: 5,
-                                          itemSize: 15.0,
-                                          itemPadding: EdgeInsets.symmetric(
-                                              horizontal: 1.0),
-                                          itemBuilder: (context, _) => Icon(
-                                            Icons.star,
-                                            color: Colors.red,
-                                            size: 10.0,
-                                          ),
-                                          onRatingUpdate: null,
-                                        ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey,
+                                      blurRadius: 10.0,
+                                      offset: Offset(
+                                        2.0,
+                                        2.0,
                                       ),
                                     )
                                   ],
-                                ),
-                                Container(
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: <Widget>[
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: <Widget>[
-                                          productDetail['description'] == null
-                                              ? Container()
-                                              : Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                    right: 0.0,
-                                                    top: 3.0,
-                                                  ),
-                                                  child: Container(
-                                                    margin: EdgeInsets.only(
-                                                      left: 10,
-                                                    ),
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width -
-                                                            30,
-                                                    child: Text(
-                                                      '${productDetail['description']}',
-                                                      style:
-                                                          textbarlowRegularBlack(),
-                                                    ),
-                                                  )),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 10.0,
-                                                top: 5.0,
-                                                right: 10),
-                                            child: Row(
-                                              children: <Widget>[
-                                                Text(
-                                                  productDetail[
-                                                          'isDealAvailable']
-                                                      ? "$currency${((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * (productDetail['dealPercent'] / 100))).toDouble().toStringAsFixed(2)}"
-                                                      : '$currency${(variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice).toDouble().toStringAsFixed(2)}',
-                                                  style: textbarlowBoldGreen(),
-                                                ),
-                                                SizedBox(width: 3),
-                                                productDetail['isDealAvailable']
-                                                    ? Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(top: 5.0),
-                                                        child: Text(
-                                                          "$currency${(variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice).toDouble().toStringAsFixed(2)}",
-                                                          style:
-                                                              barlowregularlackstrike(),
-                                                        ),
-                                                      )
-                                                    : Container()
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                                  image: new DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: new NetworkImage(
+                                      productDetail['filePath'] == null
+                                          ? productDetail['imageUrl']
+                                          : Constants.imageUrlPath +
+                                              "/tr:dpr-auto,tr:w-1000" +
+                                              productDetail['filePath'],
+                                    ),
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 20.0, right: 20),
-                                  child: Row(
+                              ),
+                              SizedBox(
+                                height: 40,
+                              ),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
-                                      Text(
-                                        MyLocalizations.of(context)
-                                            .getLocalizations("QUANTITY", true),
-                                        style: textBarlowMediumBlack(),
+                                      Expanded(
+                                        flex: 7,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 20, right: 20),
+                                          child: Text(
+                                            '${productDetail['title'][0].toUpperCase()}${productDetail['title'].substring(1)}',
+                                            maxLines: 3,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: textBarlowSemiBoldBlack(),
+                                          ),
+                                        ),
                                       ),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                            color: Colors.grey[300],
-                                            borderRadius:
-                                                BorderRadius.circular(30.0)),
-                                        height: 34,
-                                        child: Row(
+                                      Expanded(
+                                        flex: 3,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 0.0, right: 5.0, left: 5.0),
+                                          child: RatingBar(
+                                            initialRating: double.parse(
+                                                    productDetail[
+                                                            'averageRating']
+                                                        .toStringAsFixed(1)) ??
+                                                0.0,
+                                            minRating: 0,
+                                            direction: Axis.horizontal,
+                                            allowHalfRating: true,
+                                            itemCount: 5,
+                                            itemSize: 15.0,
+                                            itemPadding: EdgeInsets.symmetric(
+                                                horizontal: 1.0),
+                                            itemBuilder: (context, _) => Icon(
+                                              Icons.star,
+                                              color: Colors.red,
+                                              size: 10.0,
+                                            ),
+                                            onRatingUpdate: null,
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  Container(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
                                           children: <Widget>[
-                                            Container(
-                                              width: 32,
-                                              height: 32,
-                                              decoration: BoxDecoration(
-                                                color: Colors.black,
-                                                borderRadius:
-                                                    BorderRadius.circular(20.0),
-                                              ),
-                                              child: InkWell(
-                                                onTap: () {
-                                                  _changeProductQuantity(false);
-                                                },
-                                                child: Icon(
-                                                  Icons.remove,
-                                                  color: primary,
-                                                ),
-                                              ),
-                                            ),
+                                            productDetail['description'] == null
+                                                ? Container()
+                                                : Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                      right: 0.0,
+                                                      top: 3.0,
+                                                    ),
+                                                    child: Container(
+                                                      margin: EdgeInsets.only(
+                                                        left: 10,
+                                                      ),
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width -
+                                                              30,
+                                                      child: Text(
+                                                        '${productDetail['description']}',
+                                                        style:
+                                                            textbarlowRegularBlack(),
+                                                      ),
+                                                    )),
                                             Padding(
                                               padding: const EdgeInsets.only(
-                                                  left: 20.0, right: 20),
-                                              child: Container(
-                                                  child: Text(
-                                                      quantity.toString())),
+                                                  left: 10.0,
+                                                  top: 5.0,
+                                                  right: 10),
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Text(
+                                                    productDetail[
+                                                            'isDealAvailable']
+                                                        ? "$currency${((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * (productDetail['dealPercent'] / 100))).toDouble().toStringAsFixed(2)}"
+                                                        : '$currency${(variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice).toDouble().toStringAsFixed(2)}',
+                                                    style:
+                                                        textbarlowBoldGreen(),
+                                                  ),
+                                                  SizedBox(width: 3),
+                                                  productDetail[
+                                                          'isDealAvailable']
+                                                      ? Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  top: 5.0),
+                                                          child: Text(
+                                                            "$currency${(variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice).toDouble().toStringAsFixed(2)}",
+                                                            style:
+                                                                barlowregularlackstrike(),
+                                                          ),
+                                                        )
+                                                      : Container()
+                                                ],
+                                              ),
                                             ),
-                                            Text(''),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 0.0),
-                                              child: Container(
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 20.0, right: 20),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Text(
+                                          MyLocalizations.of(context)
+                                              .getLocalizations(
+                                                  "QUANTITY", true),
+                                          style: textBarlowMediumBlack(),
+                                        ),
+                                        Container(
+                                          decoration: BoxDecoration(
+                                              color: Colors.grey[300],
+                                              borderRadius:
+                                                  BorderRadius.circular(30.0)),
+                                          height: 34,
+                                          child: Row(
+                                            children: <Widget>[
+                                              Container(
                                                 width: 32,
                                                 height: 32,
                                                 decoration: BoxDecoration(
-                                                  color: primary,
+                                                  color: Colors.black,
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           20.0),
                                                 ),
                                                 child: InkWell(
                                                   onTap: () {
-                                                    if ((variantStock == null
-                                                            ? productDetail[
-                                                                    'variant'][0]
-                                                                ['productStock']
-                                                            : variantStock) >
-                                                        quantity) {
-                                                      _changeProductQuantity(
-                                                          true);
-                                                    } else {
-                                                      showSnackbar(MyLocalizations
-                                                                  .of(context)
-                                                              .getLocalizations(
-                                                                  "LIMITED_STOCK") +
-                                                          " ${variantStock == null ? productDetail['variant'][0]['productStock'] : variantStock} " +
-                                                          MyLocalizations.of(
-                                                                  context)
-                                                              .getLocalizations(
-                                                                  "OF_THIS_ITEM"));
-                                                    }
+                                                    _changeProductQuantity(
+                                                        false);
                                                   },
-                                                  child: Icon(Icons.add),
+                                                  child: Icon(
+                                                    Icons.remove,
+                                                    color: primary,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                productDetail['variant'].length > 1
-                                    ? ListView.builder(
-                                        physics: ScrollPhysics(),
-                                        shrinkWrap: true,
-                                        itemCount: productDetail['variant']
-                                                    .length ==
-                                                null
-                                            ? 0
-                                            : productDetail['variant'].length,
-                                        itemBuilder:
-                                            (BuildContext context, int i) {
-                                          return productDetail['variant'][i]
-                                                      ['productStock'] >
-                                                  0
-                                              ? RadioListTile(
-                                                  value: i,
-                                                  groupValue: groupValue,
-                                                  selected: sizeSelect,
-                                                  activeColor: primary,
-                                                  onChanged: (int value) {
-                                                    if (mounted) {
-                                                      setState(() {
-                                                        groupValue = value;
-                                                        sizeSelect =
-                                                            !sizeSelect;
-                                                        variantPrice =
-                                                            productDetail[
-                                                                    'variant'][
-                                                                value]['price'];
-                                                        variantUnit =
-                                                            productDetail[
-                                                                    'variant']
-                                                                [value]['unit'];
-                                                        variantId =
-                                                            productDetail[
-                                                                    'variant']
-                                                                [value]['_id'];
-                                                        variantStock =
-                                                            productDetail[
-                                                                        'variant']
-                                                                    [value][
-                                                                'productStock'];
-                                                      });
-                                                    }
-                                                  },
-                                                  secondary: Text(
-                                                    '${productDetail['variant'][i]['unit']}',
-                                                    style:
-                                                        textbarlowBoldGreen(),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 20.0, right: 20),
+                                                child: Container(
+                                                    child: Text(
+                                                        quantity.toString())),
+                                              ),
+                                              Text(''),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 0.0),
+                                                child: Container(
+                                                  width: 32,
+                                                  height: 32,
+                                                  decoration: BoxDecoration(
+                                                    color: primary,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20.0),
                                                   ),
-                                                  title: Row(
-                                                    children: <Widget>[
-                                                      Text(
-                                                        productDetail[
-                                                                'isDealAvailable']
-                                                            ? "$currency${(productDetail['variant'][i]['price'] - (productDetail['variant'][i]['price'] * (productDetail['dealPercent'] / 100))).toDouble().toStringAsFixed(2)}"
-                                                            : '$currency${productDetail['variant'][i]['price'].toDouble().toStringAsFixed(2)}',
-                                                        style:
-                                                            textbarlowBoldGreen(),
-                                                      ),
-                                                      SizedBox(width: 3),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(top: 5.0),
-                                                        child: productDetail[
-                                                                'isDealAvailable']
-                                                            ? Text(
-                                                                '$currency${productDetail['variant'][i]['price'].toDouble().toStringAsFixed(2)}',
-                                                                style:
-                                                                    barlowregularlackstrike(),
-                                                              )
-                                                            : Container(),
-                                                      )
-                                                    ],
+                                                  child: InkWell(
+                                                    onTap: () {
+                                                      if ((variantStock == null
+                                                              ? productDetail[
+                                                                      'variant'][0]
+                                                                  [
+                                                                  'productStock']
+                                                              : variantStock) >
+                                                          quantity) {
+                                                        _changeProductQuantity(
+                                                            true);
+                                                      } else {
+                                                        showSnackbar(MyLocalizations
+                                                                    .of(context)
+                                                                .getLocalizations(
+                                                                    "LIMITED_STOCK") +
+                                                            " ${variantStock == null ? productDetail['variant'][0]['productStock'] : variantStock} " +
+                                                            MyLocalizations.of(
+                                                                    context)
+                                                                .getLocalizations(
+                                                                    "OF_THIS_ITEM"));
+                                                      }
+                                                    },
+                                                    child: Icon(Icons.add),
                                                   ),
-                                                )
-                                              : Container();
-                                        })
-                                    : Container(),
-                              ],
-                            ),
-                          ],
-                        ),
-                        Positioned(
-                          top: 310.0,
-                          left: 280.0,
-                          child: !getTokenValue
-                              ? Container()
-                              : Container(
-                                  height: 50.0,
-                                  width: 50.0,
-                                  decoration: BoxDecoration(
-                                      boxShadow: [
-                                        new BoxShadow(
-                                          color: Colors.black.withOpacity(0.29),
-                                          blurRadius: 6.0,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ],
-                                      color: Colors.white,
-                                      borderRadius:
-                                          BorderRadius.circular(50.0)),
-                                  child: GFIconButton(
-                                    onPressed: null,
-                                    icon: GestureDetector(
+                                    ),
+                                  ),
+                                  productDetail['variant'].length > 1
+                                      ? ListView.builder(
+                                          physics: ScrollPhysics(),
+                                          shrinkWrap: true,
+                                          itemCount: productDetail['variant']
+                                                      .length ==
+                                                  null
+                                              ? 0
+                                              : productDetail['variant'].length,
+                                          itemBuilder:
+                                              (BuildContext context, int i) {
+                                            return productDetail['variant'][i]
+                                                        ['productStock'] >
+                                                    0
+                                                ? RadioListTile(
+                                                    value: i,
+                                                    groupValue: groupValue,
+                                                    selected: sizeSelect,
+                                                    activeColor: primary,
+                                                    onChanged: (int value) {
+                                                      if (mounted) {
+                                                        setState(() {
+                                                          groupValue = value;
+                                                          sizeSelect =
+                                                              !sizeSelect;
+                                                          variantPrice =
+                                                              productDetail[
+                                                                      'variant']
+                                                                  [
+                                                                  value]['price'];
+                                                          variantUnit =
+                                                              productDetail[
+                                                                      'variant']
+                                                                  [
+                                                                  value]['unit'];
+                                                          variantId =
+                                                              productDetail[
+                                                                      'variant']
+                                                                  [
+                                                                  value]['_id'];
+                                                          variantStock =
+                                                              productDetail[
+                                                                          'variant']
+                                                                      [value][
+                                                                  'productStock'];
+                                                        });
+                                                      }
+                                                    },
+                                                    secondary: Text(
+                                                      '${productDetail['variant'][i]['unit']}',
+                                                      style:
+                                                          textbarlowBoldGreen(),
+                                                    ),
+                                                    title: Row(
+                                                      children: <Widget>[
+                                                        Text(
+                                                          productDetail[
+                                                                  'isDealAvailable']
+                                                              ? "$currency${(productDetail['variant'][i]['price'] - (productDetail['variant'][i]['price'] * (productDetail['dealPercent'] / 100))).toDouble().toStringAsFixed(2)}"
+                                                              : '$currency${productDetail['variant'][i]['price'].toDouble().toStringAsFixed(2)}',
+                                                          style:
+                                                              textbarlowBoldGreen(),
+                                                        ),
+                                                        SizedBox(width: 3),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  top: 5.0),
+                                                          child: productDetail[
+                                                                  'isDealAvailable']
+                                                              ? Text(
+                                                                  '$currency${productDetail['variant'][i]['price'].toDouble().toStringAsFixed(2)}',
+                                                                  style:
+                                                                      barlowregularlackstrike(),
+                                                                )
+                                                              : Container(),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  )
+                                                : Container();
+                                          })
+                                      : Container(),
+                                ],
+                              ),
+                            ],
+                          ),
+                          Positioned(
+                              top: 310.0,
+                              left: 280.0,
+                              child: !getTokenValue
+                                  ? Container()
+                                  : InkWell(
                                       onTap: () {
                                         if (mounted) {
                                           setState(() {
@@ -666,10 +664,9 @@ class _ProductDetailsState extends State<ProductDetails>
                                           });
                                         }
                                       },
-                                      child: isFavProductLoading
-                                          ? GFLoader(
-                                              type: GFLoaderType.ios, size: 27)
-                                          : productDetail['isFavourite'] == true
+                                      child: iconButton(
+                                          context,
+                                          productDetail['isFavourite'] == true
                                               ? Icon(
                                                   Icons.favorite,
                                                   color: Colors.red,
@@ -680,121 +677,58 @@ class _ProductDetailsState extends State<ProductDetails>
                                                   color: Colors.red,
                                                   size: 25.0,
                                                 ),
-                                    ),
-                                    type: GFButtonType.transparent,
+                                          isFavProductLoading),
+                                    )),
+                          Positioned(
+                            top: 45,
+                            left: 20,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                  height: 40,
+                                  width: 40,
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
+                                    color: Colors.black26,
                                   ),
-                                ),
-                        ),
-                        Positioned(
-                          top: 45,
-                          left: 20,
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: Container(
-                                height: 40,
-                                width: 40,
-                                decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10)),
-                                  color: Colors.black26,
-                                ),
-                                child: Icon(
-                                  Icons.arrow_back_ios,
-                                  color: Colors.white,
-                                )),
+                                  child: Icon(
+                                    Icons.arrow_back_ios,
+                                    color: Colors.white,
+                                  )),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-      bottomNavigationBar: isProductDetails
-          ? Container(height: 65.0)
-          : Container(
-              height: 65.0,
-              child: Padding(
-                padding: const EdgeInsetsDirectional.only(
-                    start: 20.0, end: 20.0, bottom: 5.0),
-                child: RawMaterialButton(
-                  padding: EdgeInsetsDirectional.only(start: .0, end: 15.0),
-                  fillColor: primary,
-                  constraints: const BoxConstraints(minHeight: 44.0),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(5.0),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(right: 0.0),
-                        child: Container(
-                          color: Colors.black,
-                          margin: EdgeInsets.only(right: 0),
-                          width: 120,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              SizedBox(
-                                height: 2.0,
-                              ),
-                              RichText(
-                                text: TextSpan(
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      text: '(${quantity.toString()})  ',
-                                      style: textBarlowRegularWhite(),
-                                    ),
-                                    TextSpan(
-                                        text: MyLocalizations.of(context)
-                                            .getLocalizations("ITEMS"),
-                                        style: textBarlowRegularWhite()),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                height: 1.0,
-                              ),
-                              new Text(
-                                productDetail['isDealAvailable']
-                                    ? "$currency${((((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * (productDetail['dealPercent'] / 100)))) * quantity).toDouble().toStringAsFixed(2)}"
-                                    : '$currency${((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * quantity).toDouble().toStringAsFixed(2)}',
-                                style: textbarlowBoldWhite(),
-                              ),
-                            ],
-                          ),
-                        ),
+                        ],
                       ),
-                      addProductTocart
-                          ? GFLoader(
-                              type: GFLoaderType.ios,
-                            )
-                          : Text(""),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 0.0),
-                        child: new Text(
-                          MyLocalizations.of(context)
-                              .getLocalizations("ADD_TO_CART"),
-                          style: textBarlowRegularBlack(),
-                        ),
-                      ),
-                      Icon(Icons.shopping_cart, color: Colors.black)
                     ],
                   ),
-                  onPressed: () {
+                ),
+              ),
+        bottomNavigationBar: isProductDetails
+            ? Container(height: 65.0)
+            : Container(
+                margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                child: InkWell(
+                  onTap: () {
                     if (getTokenValue == true) {
                       addToCart(productDetail);
                     } else {
                       getToken(productDetail);
                     }
                   },
+                  child: addToCartButton(
+                      context,
+                      '(${quantity.toString()})  ',
+                      productDetail['isDealAvailable']
+                          ? "$currency${((((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * (productDetail['dealPercent'] / 100)))) * quantity).toDouble().toStringAsFixed(2)}"
+                          : '$currency${((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * quantity).toDouble().toStringAsFixed(2)}',
+                      "ADD_TO_CART",
+                      Icon(Icons.shopping_cart, color: Colors.black),
+                      addProductTocart),
                 ),
-              ),
-            ),
-    );
+              ));
   }
 
   void showSnackbar(message) {

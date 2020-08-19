@@ -1452,3 +1452,20 @@ TextStyle textoswaldboldwhite() {
     color: Colors.white,
   );
 }
+
+TextStyle textBarlowMediumBlackRed() {
+  return TextStyle(
+    fontSize: 17.0,
+    fontWeight: FontWeight.w500,
+    fontFamily: 'BarlowMedium',
+    color: Colors.red,
+  );
+}
+
+TextStyle textbarlowRegularaddRed() {
+  return TextStyle(
+    fontSize: 16.0,
+    fontFamily: 'BarlowRegular',
+    color: Colors.red,
+  );
+}
