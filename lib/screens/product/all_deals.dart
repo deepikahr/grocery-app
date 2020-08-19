@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:getflutter/components/appbar/gf_appbar.dart';
 import 'package:readymadeGroceryApp/model/counterModel.dart';
 import 'package:readymadeGroceryApp/screens/categories/subcategories.dart';
 import 'package:readymadeGroceryApp/screens/product/product-details.dart';
@@ -7,6 +6,7 @@ import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/dealsCard.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -123,16 +123,7 @@ class _AllDealsListState extends State<AllDealsList> {
     }
     return Scaffold(
       backgroundColor: bg,
-      appBar: GFAppBar(
-        backgroundColor: bg,
-        elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black),
-        title: Text(
-          widget.title,
-          style: textbarlowSemiBoldBlack(),
-        ),
-        centerTitle: true,
-      ),
+      appBar: appBarWhite(context, widget.title, false, false, null),
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,

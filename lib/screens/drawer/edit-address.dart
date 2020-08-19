@@ -2,8 +2,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map_picker/flutter_map_picker.dart';
-import 'package:getflutter/components/appbar/gf_appbar.dart';
-import 'package:getflutter/getflutter.dart';
+
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -11,6 +10,8 @@ import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/address-service.dart';
 import 'package:location/location.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
+import 'package:readymadeGroceryApp/widgets/button.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -148,18 +149,7 @@ class _EditAddressState extends State<EditAddress> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: GFAppBar(
-        iconTheme: IconThemeData(
-          color: Colors.black,
-        ),
-        title: Text(
-          MyLocalizations.of(context).getLocalizations("EDIT_ADDRESS"),
-          style: textbarlowSemiBoldBlack(),
-        ),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: primary,
-      ),
+      appBar: appBarPrimary(context, "EDIT_ADDRESS"),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -228,57 +218,35 @@ class _EditAddressState extends State<EditAddress> {
                         address['address'] = addressController.text;
                       }),
                 ),
-                SizedBox(
-                  height: 25,
-                ),
-                Container(
-                  height: 45,
-                  margin:
-                      EdgeInsets.only(left: 12, right: 12, top: 15, bottom: 15),
-                  decoration: BoxDecoration(boxShadow: [
-                    BoxShadow(
-                        color: Colors.black.withOpacity(0.33), blurRadius: 6)
-                  ]),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      left: 0.0,
-                      right: 0.0,
-                    ),
-                    child: GFButton(
-                        color: primary,
-                        blockButton: true,
-                        onPressed: () async {
-                          var lat, long;
-                          if (_pickedLocation == null) {
-                            lat =
-                                widget.updateAddressID['location']['latitude'];
-                            long =
-                                widget.updateAddressID['location']['longitude'];
-                          } else {
-                            lat = _pickedLocation.latLng.latitude;
-                            long = _pickedLocation.latLng.longitude;
-                          }
+                InkWell(
+                  onTap: () async {
+                    var lat, long;
+                    if (_pickedLocation == null) {
+                      lat = widget.updateAddressID['location']['latitude'];
+                      long = widget.updateAddressID['location']['longitude'];
+                    } else {
+                      lat = _pickedLocation.latLng.latitude;
+                      long = _pickedLocation.latLng.longitude;
+                    }
 
-                          PlacePickerResult pickerResult = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => PlacePickerScreen(
-                                        googlePlacesApiKey:
-                                            Constants.googleMapApiKey,
-                                        initialPosition: LatLng(lat, long),
-                                        mainColor: primary,
-                                        mapStrings: MapPickerStrings.english(),
-                                        placeAutoCompleteLanguage: 'en',
-                                      )));
-                          setState(() {
-                            _pickedLocation = pickerResult;
-                            addressController.text =
-                                pickerResult.address.toString();
-                          });
-                        },
-                        text: MyLocalizations.of(context)
-                            .getLocalizations("CHANGE"),
-                        textStyle: textBarlowRegularBlack()),
+                    PlacePickerResult pickerResult = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PlacePickerScreen(
+                                  googlePlacesApiKey: Constants.googleMapApiKey,
+                                  initialPosition: LatLng(lat, long),
+                                  mainColor: primary,
+                                  mapStrings: MapPickerStrings.english(),
+                                  placeAutoCompleteLanguage: 'en',
+                                )));
+                    setState(() {
+                      _pickedLocation = pickerResult;
+                      addressController.text = pickerResult.address.toString();
+                    });
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                    child: buttonPrimary(context, "CHANGE", false),
                   ),
                 ),
                 Padding(
@@ -594,42 +562,14 @@ class _EditAddressState extends State<EditAddress> {
                     );
                   },
                 ),
-                SizedBox(
-                  height: 30,
-                ),
-                Container(
-                  margin: EdgeInsets.only(bottom: 20),
-                  height: 45,
-                  decoration: BoxDecoration(boxShadow: [
-                    BoxShadow(
-                        color: Colors.black.withOpacity(0.33), blurRadius: 6)
-                  ]),
+                InkWell(
+                  onTap: () {
+                    updateAddress();
+                  },
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 0.0, right: 0.0),
-                    child: GFButton(
-                      onPressed: () {
-                        updateAddress();
-                      },
-                      textStyle: textBarlowRegularBlack(),
-                      color: primary,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(MyLocalizations.of(context)
-                              .getLocalizations("UPDATE")),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          isUpdateAddressLoading
-                              ? GFLoader(
-                                  type: GFLoaderType.ios,
-                                )
-                              : Text("")
-                        ],
-                      ),
-                      textColor: Colors.black,
-                      blockButton: true,
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                    child: buttonPrimary(
+                        context, "UPDATE", isUpdateAddressLoading),
                   ),
                 ),
               ],

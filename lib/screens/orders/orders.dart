@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:getflutter/components/appbar/gf_appbar.dart';
+
 import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/screens/orders/ordersDetails.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
@@ -10,6 +10,7 @@ import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/orderSevice.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -95,18 +96,7 @@ class _OrdersState extends State<Orders> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFFDFDFD),
-      appBar: GFAppBar(
-        title: Text(
-          MyLocalizations.of(context).getLocalizations("MY_ORDERS"),
-          style: textbarlowSemiBoldBlack(),
-        ),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: primary,
-        iconTheme: IconThemeData(
-          color: Colors.black,
-        ),
-      ),
+      appBar: appBarPrimary(context, "MY_ORDERS"),
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,

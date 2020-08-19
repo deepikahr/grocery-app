@@ -1,15 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:getflutter/components/appbar/gf_appbar.dart';
-import 'package:getflutter/components/button/gf_button.dart';
-import 'package:getflutter/components/typography/gf_typography.dart';
+
 import 'package:getflutter/getflutter.dart';
-import 'package:getflutter/size/gf_size.dart';
+
 import 'package:readymadeGroceryApp/screens/authe/otp.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
+import 'package:readymadeGroceryApp/widgets/button.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -103,21 +103,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: GFAppBar(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(20),
-            bottomRight: Radius.circular(20),
-          ),
-        ),
-        title: Text(
-          MyLocalizations.of(context).getLocalizations("FORGET_PASSWORD"),
-          style: textbarlowSemiBoldBlack(),
-        ),
-        centerTitle: true,
-        backgroundColor: primary,
-        iconTheme: IconThemeData(color: Colors.black),
-      ),
+      appBar: appBarPrimary(context, "FORGET_PASSWORD"),
       body: Form(
         key: _formKey,
         child: Container(
@@ -200,38 +186,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   ),
                 ),
               ),
-              Container(
-                height: 55,
-                margin:
-                    EdgeInsets.only(top: 30, bottom: 20, right: 20, left: 20),
-                decoration: BoxDecoration(boxShadow: [
-                  BoxShadow(
-                      color: Colors.black.withOpacity(0.29), blurRadius: 5)
-                ]),
-                child: GFButton(
-                  color: primary,
-                  size: GFSize.LARGE,
-                  blockButton: true,
-                  onPressed: verifyEmail,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        MyLocalizations.of(context).getLocalizations("SUBMIT"),
-                        style: textBarlowRegularrBlack(),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      isVerfyEmailLoading
-                          ? GFLoader(
-                              type: GFLoaderType.ios,
-                            )
-                          : Text("")
-                    ],
-                  ),
-                ),
-              ),
+              InkWell(
+                  onTap: verifyEmail,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child:
+                        buttonPrimary(context, "SUBMIT", isVerfyEmailLoading),
+                  )),
             ],
           ),
         ),

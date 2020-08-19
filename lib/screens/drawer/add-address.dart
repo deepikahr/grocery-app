@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:getflutter/components/appbar/gf_appbar.dart';
+
 import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -9,6 +9,8 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/address-service.dart';
 import 'package:location/location.dart';
 import 'package:flutter_map_picker/flutter_map_picker.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
+import 'package:readymadeGroceryApp/widgets/button.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -129,17 +131,7 @@ class _AddAddressState extends State<AddAddress> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: GFAppBar(
-        iconTheme: IconThemeData(
-          color: Colors.black,
-        ),
-        title: Text(
-          MyLocalizations.of(context).getLocalizations("ADD_NEW_ADDRESS"),
-          style: textbarlowSemiBoldBlack(),
-        ),
-        centerTitle: true,
-        backgroundColor: primary,
-      ),
+      appBar: appBarPrimary(context, "ADD_NEW_ADDRESS"),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -553,48 +545,15 @@ class _AddAddressState extends State<AddAddress> {
                     );
                   },
                 ),
-                SizedBox(
-                  height: 30,
-                ),
-                Container(
-                  height: 55,
-                  margin: EdgeInsets.only(bottom: 20, right: 20, left: 20),
-                  decoration: BoxDecoration(boxShadow: [
-                    BoxShadow(
-                        color: Colors.black.withOpacity(0.29), blurRadius: 5)
-                  ]),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      left: 0.0,
-                      right: 0.0,
-                    ),
-                    child: GFButton(
-                      color: primary,
-                      onPressed: () {
-                        addAddress();
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            MyLocalizations.of(context)
-                                .getLocalizations("SUBMIT"),
-                            style: textBarlowRegularrBlack(),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          isAddAddressLoading
-                              ? GFLoader(
-                                  type: GFLoaderType.ios,
-                                )
-                              : Text("")
-                        ],
-                      ),
-                      textStyle: textBarlowRegularrBlack(),
-                    ),
-                  ),
-                ),
+                InkWell(
+                    onTap: () {
+                      addAddress();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child:
+                          buttonPrimary(context, "SUBMIT", isAddAddressLoading),
+                    )),
               ],
             ),
           ],

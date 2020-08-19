@@ -1,9 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:getflutter/components/appbar/gf_appbar.dart';
-import 'package:getflutter/components/button/gf_button.dart';
-import 'package:getflutter/components/loader/gf_loader.dart';
-import 'package:getflutter/components/typography/gf_typography.dart';
+
 import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
@@ -12,6 +9,8 @@ import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
+import 'package:readymadeGroceryApp/widgets/button.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -113,21 +112,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: GFAppBar(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(20),
-            bottomRight: Radius.circular(20),
-          ),
-        ),
-        title: Text(
-          MyLocalizations.of(context).getLocalizations("CHANGE_PASSWORD"),
-          style: textbarlowSemiBoldBlack(),
-        ),
-        centerTitle: true,
-        backgroundColor: primary,
-        iconTheme: IconThemeData(color: Colors.black),
-      ),
+      appBar: appBarPrimary(context, "CHANGE_PASSWORD"),
       body: Form(
         key: _formKey,
         child: Container(
@@ -355,45 +340,13 @@ class _ChangePasswordState extends State<ChangePassword> {
                   ),
                 ),
               ),
-              Container(
-                height: 55,
-                margin:
-                    EdgeInsets.only(top: 30, bottom: 20, right: 20, left: 20),
-                decoration: BoxDecoration(boxShadow: [
-                  BoxShadow(
-                      color: Colors.black.withOpacity(0.29), blurRadius: 5)
-                ]),
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: 0.0,
-                    right: 0.0,
-                  ),
-                  child: GFButton(
-                    color: primary,
-                    blockButton: true,
-                    onPressed: changePassword,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          MyLocalizations.of(context)
-                              .getLocalizations("SUBMIT"),
-                          style: textbarlowMediumBlack(),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        isChangePasswordLoading
-                            ? GFLoader(
-                                type: GFLoaderType.ios,
-                              )
-                            : Text("")
-                      ],
-                    ),
-                    textStyle: textBarlowRegularrBlack(),
-                  ),
-                ),
-              ),
+              InkWell(
+                  onTap: changePassword,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: buttonPrimary(
+                        context, "SUBMIT", isChangePasswordLoading),
+                  )),
             ],
           ),
         ),
