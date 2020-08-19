@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/orders/orders.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';

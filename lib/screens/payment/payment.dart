@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
