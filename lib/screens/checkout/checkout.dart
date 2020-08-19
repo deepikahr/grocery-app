@@ -720,30 +720,6 @@ class _CheckoutState extends State<Checkout> {
                                                           context,
                                                           "APPLY",
                                                           isCouponLoading),
-                                                      // Container(
-                                                      //   height: 44,
-                                                      //   width: 119,
-                                                      //   child: GFButton(
-                                                      //     onPressed: null,
-                                                      //     child: Padding(
-                                                      //       padding:
-                                                      //           const EdgeInsets
-                                                      //                   .only(
-                                                      //               left: 8.0,
-                                                      //               right: 8.0),
-                                                      //       child: isCouponLoading
-                                                      //           ? SquareLoader()
-                                                      //           : Text(
-                                                      //               MyLocalizations.of(context)
-                                                      //                       .getLocalizations("APPLY") +
-                                                      //                   " ",
-                                                      //               style:
-                                                      //                   textbarlowRegularBlack(),
-                                                      //             ),
-                                                      //     ),
-                                                      //     color: primary,
-                                                      //   ),
-                                                      // ),
                                                     ),
                                                   ),
                                                 )

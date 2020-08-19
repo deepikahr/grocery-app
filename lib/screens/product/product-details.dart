@@ -642,65 +642,43 @@ class _ProductDetailsState extends State<ProductDetails>
                             ],
                           ),
                           Positioned(
-                            top: 310.0,
-                            left: 280.0,
-                            child: !getTokenValue
-                                ? Container()
-                                : Container(
-                                    height: 50.0,
-                                    width: 50.0,
-                                    decoration: BoxDecoration(
-                                        boxShadow: [
-                                          new BoxShadow(
-                                            color:
-                                                Colors.black.withOpacity(0.29),
-                                            blurRadius: 6.0,
-                                          ),
-                                        ],
-                                        color: Colors.white,
-                                        borderRadius:
-                                            BorderRadius.circular(50.0)),
-                                    child: GFIconButton(
-                                      onPressed: null,
-                                      icon: GestureDetector(
-                                        onTap: () {
-                                          if (mounted) {
-                                            setState(() {
-                                              if (!isFavProductLoading) {
-                                                if (productDetail[
-                                                        'isFavourite'] ==
-                                                    true) {
-                                                  removeToFavApi(
-                                                      productDetail['_id']);
-                                                } else {
-                                                  addToFavApi(
-                                                      productDetail['_id']);
-                                                }
+                              top: 310.0,
+                              left: 280.0,
+                              child: !getTokenValue
+                                  ? Container()
+                                  : InkWell(
+                                      onTap: () {
+                                        if (mounted) {
+                                          setState(() {
+                                            if (!isFavProductLoading) {
+                                              if (productDetail[
+                                                      'isFavourite'] ==
+                                                  true) {
+                                                removeToFavApi(
+                                                    productDetail['_id']);
+                                              } else {
+                                                addToFavApi(
+                                                    productDetail['_id']);
                                               }
-                                            });
-                                          }
-                                        },
-                                        child: isFavProductLoading
-                                            ? GFLoader(
-                                                type: GFLoaderType.ios,
-                                                size: 27)
-                                            : productDetail['isFavourite'] ==
-                                                    true
-                                                ? Icon(
-                                                    Icons.favorite,
-                                                    color: Colors.red,
-                                                    size: 25.0,
-                                                  )
-                                                : Icon(
-                                                    Icons.favorite_border,
-                                                    color: Colors.red,
-                                                    size: 25.0,
-                                                  ),
-                                      ),
-                                      type: GFButtonType.transparent,
-                                    ),
-                                  ),
-                          ),
+                                            }
+                                          });
+                                        }
+                                      },
+                                      child: iconButton(
+                                          context,
+                                          productDetail['isFavourite'] == true
+                                              ? Icon(
+                                                  Icons.favorite,
+                                                  color: Colors.red,
+                                                  size: 25.0,
+                                                )
+                                              : Icon(
+                                                  Icons.favorite_border,
+                                                  color: Colors.red,
+                                                  size: 25.0,
+                                                ),
+                                          isFavProductLoading),
+                                    )),
                           Positioned(
                             top: 45,
                             left: 20,
@@ -724,16 +702,6 @@ class _ProductDetailsState extends State<ProductDetails>
                           ),
                         ],
                       ),
-                      // Text("data"),
-                      // checkoutButton(context,
-                      // '(${quantity.toString()})  ',
-                      //  productDetail['isDealAvailable']
-                      //                 ? "$currency${((((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * (productDetail['dealPercent'] / 100)))) * quantity).toDouble().toStringAsFixed(2)}"
-                      //                 : '$currency${((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * quantity).toDouble().toStringAsFixed(2)}',
-                      //                 "sdfg",
-                      //                 Icon(Icons.camera_alt),
-                      //                 addProductTocart
-                      // )
                     ],
                   ),
                 ),
@@ -760,89 +728,7 @@ class _ProductDetailsState extends State<ProductDetails>
                       Icon(Icons.shopping_cart, color: Colors.black),
                       addProductTocart),
                 ),
-              )
-
-        // Container(
-        //     height: 65.0,
-        //     child: Padding(
-        //       padding: const EdgeInsetsDirectional.only(
-        //           start: 20.0, end: 20.0, bottom: 5.0),
-        //       child: RawMaterialButton(
-        //         padding: EdgeInsetsDirectional.only(start: .0, end: 15.0),
-        //         fillColor: primary,
-        //         constraints: const BoxConstraints(minHeight: 44.0),
-        //         shape: RoundedRectangleBorder(
-        //           borderRadius: new BorderRadius.circular(5.0),
-        //         ),
-        //         child: Row(
-        //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //           children: <Widget>[
-        //             Padding(
-        //               padding: const EdgeInsets.only(right: 0.0),
-        //               child: Container(
-        //                 color: Colors.black,
-        //                 margin: EdgeInsets.only(right: 0),
-        //                 width: 120,
-        //                 child: Column(
-        //                   mainAxisAlignment: MainAxisAlignment.start,
-        //                   children: <Widget>[
-        //                     SizedBox(
-        //                       height: 2.0,
-        //                     ),
-        //                     RichText(
-        //                       text: TextSpan(
-        //                         children: <TextSpan>[
-        //                           TextSpan(
-        //                             text: '(${quantity.toString()})  ',
-        //                             style: textBarlowRegularWhite(),
-        //                           ),
-        //                           TextSpan(
-        //                               text: MyLocalizations.of(context)
-        //                                   .getLocalizations("ITEMS"),
-        //                               style: textBarlowRegularWhite()),
-        //                         ],
-        //                       ),
-        //                     ),
-        //                     SizedBox(
-        //                       height: 1.0,
-        //                     ),
-        //                     new Text(
-        //                       productDetail['isDealAvailable']
-        //                           ? "$currency${((((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * (productDetail['dealPercent'] / 100)))) * quantity).toDouble().toStringAsFixed(2)}"
-        //                           : '$currency${((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * quantity).toDouble().toStringAsFixed(2)}',
-        //                       style: textbarlowBoldWhite(),
-        //                     ),
-        //                   ],
-        //                 ),
-        //               ),
-        //             ),
-        //             addProductTocart
-        //                 ? GFLoader(
-        //                     type: GFLoaderType.ios,
-        //                   )
-        //                 : Text(""),
-        //             Padding(
-        //               padding: const EdgeInsets.only(left: 0.0),
-        //               child: new Text(
-        //                 MyLocalizations.of(context)
-        //                     .getLocalizations("ADD_TO_CART"),
-        //                 style: textBarlowRegularBlack(),
-        //               ),
-        //             ),
-        //             Icon(Icons.shopping_cart, color: Colors.black)
-        //           ],
-        //         ),
-        //         onPressed: () {
-        //           if (getTokenValue == true) {
-        //             addToCart(productDetail);
-        //           } else {
-        //             getToken(productDetail);
-        //           }
-        //         },
-        //       ),
-        //     ),
-        //   ),
-        );
+              ));
   }
 
   void showSnackbar(message) {

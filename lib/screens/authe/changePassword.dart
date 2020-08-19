@@ -347,45 +347,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                     child: buttonPrimary(
                         context, "SUBMIT", isChangePasswordLoading),
                   )),
-              // Container(
-              //   height: 55,
-              //   margin:
-              //       EdgeInsets.only(top: 30, bottom: 20, right: 20, left: 20),
-              //   decoration: BoxDecoration(boxShadow: [
-              //     BoxShadow(
-              //         color: Colors.black.withOpacity(0.29), blurRadius: 5)
-              //   ]),
-              //   child: Padding(
-              //     padding: const EdgeInsets.only(
-              //       left: 0.0,
-              //       right: 0.0,
-              //     ),
-              //     child: GFButton(
-              //       color: primary,
-              //       blockButton: true,
-              //       onPressed: changePassword,
-              //       child: Row(
-              //         mainAxisAlignment: MainAxisAlignment.center,
-              //         children: <Widget>[
-              //           Text(
-              //             MyLocalizations.of(context)
-              //                 .getLocalizations("SUBMIT"),
-              //             style: textbarlowMediumBlack(),
-              //           ),
-              //           SizedBox(
-              //             height: 10,
-              //           ),
-              //           isChangePasswordLoading
-              //               ? GFLoader(
-              //                   type: GFLoaderType.ios,
-              //                 )
-              //               : Text("")
-              //         ],
-              //       ),
-              //       textStyle: textBarlowRegularrBlack(),
-              //     ),
-              //   ),
-              // ),
             ],
           ),
         ),

@@ -483,40 +483,6 @@ class _PaymentState extends State<Payment> {
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: buttonPrimary(context, "PAY_NOW", isPlaceOrderLoading),
               ))
-
-          // Container(
-          //     margin: EdgeInsets.only(left: 15, right: 15, bottom: 20),
-          //     height: 55,
-          //     decoration: BoxDecoration(boxShadow: [
-          //       BoxShadow(color: Colors.black.withOpacity(0.33), blurRadius: 6)
-          //     ]),
-          //     child: Padding(
-          //       padding: const EdgeInsets.only(
-          //         left: 0.0,
-          //         right: 0.0,
-          //       ),
-          //       child: GFButton(
-          //         color: primary,
-          //         blockButton: true,
-          //         onPressed: placeOrder,
-          //         child: Row(
-          //           mainAxisAlignment: MainAxisAlignment.center,
-          //           children: <Widget>[
-          //             Text(
-          //               MyLocalizations.of(context).getLocalizations("PAY_NOW"),
-          //               style: textBarlowRegularBlack(),
-          //             ),
-          //             isPlaceOrderLoading
-          //                 ? GFLoader(
-          //                     type: GFLoaderType.ios,
-          //                   )
-          //                 : Text("")
-          //           ],
-          //         ),
-          //         textStyle: TextStyle(fontSize: 17.0, color: Colors.black),
-          //       ),
-          //     ),
-          //   )
           : Container(height: 1),
     );
   }

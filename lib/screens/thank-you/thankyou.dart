@@ -63,34 +63,6 @@ class _ThankyouState extends State<Thankyou> {
                       (Route<dynamic> route) => false));
                 },
                 child: defaultButton(context, "ORDERS", Colors.black)),
-            // GFButton(
-            //   onPressed: () {
-            //     var reuslt = Navigator.push(
-            //       context,
-            //       MaterialPageRoute(
-            //         builder: (BuildContext context) => Orders(
-            //           locale: widget.locale,
-            //           localizedValues: widget.localizedValues,
-            //         ),
-            //       ),
-            //     );
-            //     reuslt.then((value) => Navigator.pushAndRemoveUntil(
-            //         context,
-            //         MaterialPageRoute(
-            //           builder: (BuildContext context) => Home(
-            //             locale: widget.locale,
-            //             localizedValues: widget.localizedValues,
-            //             currentIndex: 0,
-            //           ),
-            //         ),
-            //         (Route<dynamic> route) => false));
-            //   },
-            //   color: Colors.black,
-            //   child: Text(
-            //     MyLocalizations.of(context).getLocalizations("ORDERS"),
-            //     style: textbarlowMediumPrimary(),
-            //   ),
-            // ),
           ],
         ),
       ),

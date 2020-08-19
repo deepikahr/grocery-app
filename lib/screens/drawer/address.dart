@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:getflutter/getflutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:readymadeGroceryApp/screens/drawer/add-address.dart';
@@ -244,53 +243,7 @@ class _AddressState extends State<Address> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15.0),
               child: editProfileButton(context, "ADD_NEW_ADDRESS", false),
-            ))
-
-        // Container(
-        //   height: 55,
-        //   margin: EdgeInsets.only(top: 30, bottom: 20, right: 20, left: 20),
-        //   decoration: BoxDecoration(boxShadow: [
-        //     BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 5)
-        //   ]),
-        //   child: Padding(
-        //     padding: const EdgeInsets.only(
-        //       left: 0.0,
-        //       right: 0.0,
-        //     ),
-        //     child: GFButton(
-        //       color: primary,
-        //       blockButton: true,
-        //       onPressed: () async {
-        //         _permissionGranted = await _location.hasPermission();
-        //         if (_permissionGranted == PermissionStatus.denied) {
-        //           _permissionGranted = await _location.requestPermission();
-        //           if (_permissionGranted != PermissionStatus.granted) {
-        //             Map locationLatLong = {
-        //               "latitude": locationInfo['location']['latitude'],
-        //               "longitude": locationInfo['location']['longitude']
-        //             };
-
-        //             addAddressPageMethod(locationLatLong);
-        //             return;
-        //           }
-        //         }
-        //         currentLocation = await _location.getLocation();
-
-        //         if (currentLocation != null) {
-        //           Map locationLatLong = {
-        //             "latitude": currentLocation.latitude,
-        //             "longitude": currentLocation.longitude
-        //           };
-        //           addAddressPageMethod(locationLatLong);
-        //         }
-        //       },
-        //       text:
-        //           MyLocalizations.of(context).getLocalizations("ADD_NEW_ADDRESS"),
-        //       textStyle: textBarlowRegularBlack(),
-        //     ),
-        //   ),
-        // ),
-        );
+            )));
   }
 
   addAddressPageMethod(locationlatlong) async {
@@ -332,34 +285,6 @@ class _AddressState extends State<Address> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          // GFButton(
-          //   onPressed: () {
-          //     var result = Navigator.push(
-          //       context,
-          //       MaterialPageRoute(
-          //         builder: (context) => EditAddress(
-          //           updateAddressID: addressList,
-          //           isProfile: true,
-          //           locale: widget.locale,
-          //           localizedValues: widget.localizedValues,
-          //         ),
-          //       ),
-          //     );
-          //     result.then((update) {
-          //       getAddress();
-          //     });
-          //   },
-          //   child: Padding(
-          //     padding: const EdgeInsets.only(left: 3.0, right: 3.0),
-          //     child: Text(
-          //       MyLocalizations.of(context).getLocalizations("EDIT"),
-          //       style: textbarlowRegularaPrimar(),
-          //     ),
-          //   ),
-          //   type: GFButtonType.outline,
-          //   color: primary,
-          //   size: GFSize.MEDIUM,
-          // ),
           InkWell(
               onTap: () {
                 var result = Navigator.push(
@@ -386,23 +311,6 @@ class _AddressState extends State<Address> {
                 padding: const EdgeInsets.symmetric(horizontal: 40.0),
                 child: primaryOutlineButton(context, "DELETE"),
               )),
-          // Padding(
-          //   padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-          //   child: GFButton(
-          //     onPressed: () {
-          //       deleteAddress(addressList['_id']);
-          //     },
-          //     child: Padding(
-          //       padding: const EdgeInsets.only(left: 3.0, right: 3.0),
-          //       child: Text(
-          //         MyLocalizations.of(context).getLocalizations("DELETE"),
-          //         style: textbarlowRegularaPrimar(),
-          //       ),
-          //     ),
-          //     color: primary,
-          //     type: GFButtonType.outline,
-          //   ),
-          // ),
         ],
       ),
     );

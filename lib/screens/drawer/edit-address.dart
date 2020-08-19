@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map_picker/flutter_map_picker.dart';
 
-import 'package:getflutter/getflutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -250,56 +249,6 @@ class _EditAddressState extends State<EditAddress> {
                     child: buttonPrimary(context, "CHANGE", false),
                   ),
                 ),
-                // Container(
-                //   height: 45,
-                //   margin:
-                //       EdgeInsets.only(left: 12, right: 12, top: 15, bottom: 15),
-                //   decoration: BoxDecoration(boxShadow: [
-                //     BoxShadow(
-                //         color: Colors.black.withOpacity(0.33), blurRadius: 6)
-                //   ]),
-                //   child: Padding(
-                //     padding: const EdgeInsets.only(
-                //       left: 0.0,
-                //       right: 0.0,
-                //     ),
-                //     child: GFButton(
-                //         color: primary,
-                //         blockButton: true,
-                //         onPressed: () async {
-                //           var lat, long;
-                //           if (_pickedLocation == null) {
-                //             lat =
-                //                 widget.updateAddressID['location']['latitude'];
-                //             long =
-                //                 widget.updateAddressID['location']['longitude'];
-                //           } else {
-                //             lat = _pickedLocation.latLng.latitude;
-                //             long = _pickedLocation.latLng.longitude;
-                //           }
-
-                //           PlacePickerResult pickerResult = await Navigator.push(
-                //               context,
-                //               MaterialPageRoute(
-                //                   builder: (context) => PlacePickerScreen(
-                //                         googlePlacesApiKey:
-                //                             Constants.googleMapApiKey,
-                //                         initialPosition: LatLng(lat, long),
-                //                         mainColor: primary,
-                //                         mapStrings: MapPickerStrings.english(),
-                //                         placeAutoCompleteLanguage: 'en',
-                //                       )));
-                //           setState(() {
-                //             _pickedLocation = pickerResult;
-                //             addressController.text =
-                //                 pickerResult.address.toString();
-                //           });
-                //         },
-                //         text: MyLocalizations.of(context)
-                //             .getLocalizations("CHANGE"),
-                //         textStyle: textBarlowRegularBlack()),
-                //   ),
-                // ),
                 Padding(
                   padding: const EdgeInsets.only(
                       left: 20.0, bottom: 5.0, right: 20.0),
@@ -623,41 +572,6 @@ class _EditAddressState extends State<EditAddress> {
                         context, "UPDATE", isUpdateAddressLoading),
                   ),
                 ),
-                // Container(
-                //   margin: EdgeInsets.only(bottom: 20),
-                //   height: 45,
-                //   decoration: BoxDecoration(boxShadow: [
-                //     BoxShadow(
-                //         color: Colors.black.withOpacity(0.33), blurRadius: 6)
-                //   ]),
-                //   child: Padding(
-                //     padding: const EdgeInsets.only(left: 0.0, right: 0.0),
-                //     child: GFButton(
-                //       onPressed: () {
-                //         updateAddress();
-                //       },
-                //       textStyle: textBarlowRegularBlack(),
-                //       color: primary,
-                //       child: Row(
-                //         mainAxisAlignment: MainAxisAlignment.center,
-                //         children: <Widget>[
-                //           Text(MyLocalizations.of(context)
-                //               .getLocalizations("UPDATE")),
-                //           SizedBox(
-                //             height: 10,
-                //           ),
-                //           isUpdateAddressLoading
-                //               ? GFLoader(
-                //                   type: GFLoaderType.ios,
-                //                 )
-                //               : Text("")
-                //         ],
-                //       ),
-                //       textColor: Colors.black,
-                //       blockButton: true,
-                //     ),
-                //   ),
-                // ),
               ],
             ),
           ],

@@ -554,45 +554,6 @@ class _AddAddressState extends State<AddAddress> {
                       child:
                           buttonPrimary(context, "SUBMIT", isAddAddressLoading),
                     )),
-                // Container(
-                //   height: 55,
-                //   margin: EdgeInsets.only(bottom: 20, right: 20, left: 20),
-                //   decoration: BoxDecoration(boxShadow: [
-                //     BoxShadow(
-                //         color: Colors.black.withOpacity(0.29), blurRadius: 5)
-                //   ]),
-                //   child: Padding(
-                //     padding: const EdgeInsets.only(
-                //       left: 0.0,
-                //       right: 0.0,
-                //     ),
-                //     child: GFButton(
-                //       color: primary,
-                //       onPressed: () {
-                //         addAddress();
-                //       },
-                //       child: Row(
-                //         mainAxisAlignment: MainAxisAlignment.center,
-                //         children: <Widget>[
-                //           Text(
-                //             MyLocalizations.of(context)
-                //                 .getLocalizations("SUBMIT"),
-                //             style: textBarlowRegularrBlack(),
-                //           ),
-                //           SizedBox(
-                //             height: 10,
-                //           ),
-                //           isAddAddressLoading
-                //               ? GFLoader(
-                //                   type: GFLoaderType.ios,
-                //                 )
-                //               : Text("")
-                //         ],
-                //       ),
-                //       textStyle: textBarlowRegularrBlack(),
-                //     ),
-                //   ),
-                // ),
               ],
             ),
           ],

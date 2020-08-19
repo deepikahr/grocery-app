@@ -123,14 +123,6 @@ class _OrderDetailsState extends State<OrderDetails> {
                 orderRating(productID);
               },
               child: alertSubmitButton(context, "SUBMIT"),
-              // GFButton(
-              //   onPressed: () {
-              //     orderRating(productID);
-              //   },
-              //   text: MyLocalizations.of(context).getLocalizations("SUBMIT"),
-              //   color: primary,
-              //   textStyle: textBarlowRegularrWhite(),
-              // ),
             ))
           ],
           content: Container(
@@ -169,6 +161,7 @@ class _OrderDetailsState extends State<OrderDetails> {
     await ProductService.productRating(body).then((onValue) {
       Navigator.pop(context);
       setState(() {
+        showSnackbar(onValue['response_data']);
         getOrderHistory();
       });
     }).catchError((error) {
@@ -486,60 +479,32 @@ class _OrderDetailsState extends State<OrderDetails> {
                                               mainAxisAlignment:
                                                   MainAxisAlignment.end,
                                               children: <Widget>[
-                                                GFButton(
-                                                  shape: GFButtonShape.pills,
-                                                  onPressed: () {
-                                                    if (order["rating"] !=
-                                                            null &&
-                                                        order["rating"] > 0) {
-                                                      setState(() {
-                                                        rating = double.parse(
-                                                            order["rating"]
-                                                                .toString());
-                                                      });
-                                                    } else {
-                                                      setState(() {
-                                                        rating = 1.0;
-                                                      });
-                                                    }
-
-                                                    ratingAlert(
-                                                        order['productId']);
-                                                  },
-                                                  color:
-                                                      order["isRated"] == true
-                                                          ? green
-                                                          : primary,
-                                                  child: order["isRated"] ==
-                                                              true &&
-                                                          order["rating"] !=
-                                                              null
-                                                      ? Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .end,
-                                                          children: <Widget>[
-                                                            Text(
+                                                InkWell(
+                                                    onTap: () {
+                                                      if (order["rating"] !=
+                                                              null &&
+                                                          order["rating"] > 0) {
+                                                        setState(() {
+                                                          rating = double.parse(
                                                               order["rating"]
-                                                                  .toString(),
-                                                            ),
-                                                            Icon(
-                                                              Icons.star,
-                                                              color:
-                                                                  Colors.white,
-                                                              size: 20,
-                                                            ),
-                                                          ],
-                                                        )
-                                                      : Text(
-                                                          MyLocalizations.of(
-                                                                  context)
-                                                              .getLocalizations(
-                                                                  "RATE_PRODUCT"),
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                        ),
-                                                ),
+                                                                  .toString());
+                                                        });
+                                                      } else {
+                                                        setState(() {
+                                                          rating = 1.0;
+                                                        });
+                                                      }
+
+                                                      ratingAlert(
+                                                          order['productId']);
+                                                    },
+                                                    child: mdPillsButton(
+                                                        context,
+                                                        order["isRated"] == true
+                                                            ? green
+                                                            : primary,
+                                                        "RATE_PRODUCT",
+                                                        order))
                                               ],
                                             ),
                                           )

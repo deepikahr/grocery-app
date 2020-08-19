@@ -34,8 +34,8 @@ dependencies:
   stripe_payment: ^1.0.7
   flutter_dotenv: ^2.1.0
   http_interceptor: ^0.3.2
-  webview_flutter: ^0.3.22+1
   fluttertoast: ^7.0.2
+  flutter_html: ^1.0.2
   flutter_localizations:
     sdk: flutter
 
@@ -116,6 +116,7 @@ flutter:
     - lib/assets/icons/categories.png
     - lib/assets/icons/deals.png
     - lib/assets/icons/history.png
+    - lib/assets/icons/tc.png
 
     - lib/assets/splash.png
     - lib/assets/logo.png

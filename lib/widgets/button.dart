@@ -69,6 +69,34 @@ Widget productAddButton(BuildContext context, title, isLoading) {
   );
 }
 
+Widget transparenttButton(BuildContext context, title, Icon icon) {
+  return Container(
+    height: 35,
+    padding: EdgeInsets.only(left: 15, right: 15, bottom: 5),
+    margin: EdgeInsets.only(top: 5),
+    decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(
+          Radius.circular(5),
+        ),
+        color: primary),
+    child: GFButton(
+      size: GFSize.LARGE,
+      color: primary,
+      onPressed: null,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(
+            MyLocalizations.of(context).getLocalizations(title),
+            style: textbarlowMediumBlackm(),
+          ),
+          icon
+        ],
+      ),
+    ),
+  );
+}
+
 Widget editProfileButton(BuildContext context, title, isLoading) {
   return Container(
     height: 55,
@@ -150,22 +178,16 @@ Widget dottedBorderButton(BuildContext context, title) {
 
 Widget transparentIconButton(BuildContext context, title, Icon icon) {
   return Container(
-    // height: 40,
-    // width: 200,
-    child: GFButton(
-      type: GFButtonType.transparent,
-      onPressed: null,
-      blockButton: false,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text(
-            MyLocalizations.of(context).getLocalizations(title),
-            style: hintSfboldBig(),
-          ),
-          icon
-        ],
-      ),
+    height: 40,
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Text(
+          MyLocalizations.of(context).getLocalizations(title),
+          style: hintSfboldBig(),
+        ),
+        icon
+      ],
     ),
   );
 }
@@ -391,5 +413,80 @@ Widget defaultButton(BuildContext context, title, color) {
         style: textbarlowMediumPrimary(),
       ),
     ),
+  );
+}
+
+Widget iconButton(BuildContext context, Icon icon, isLoading) {
+  return Container(
+    height: 50.0,
+    width: 50.0,
+    decoration: BoxDecoration(boxShadow: [
+      new BoxShadow(
+        color: Colors.black.withOpacity(0.29),
+        blurRadius: 6.0,
+      ),
+    ], color: Colors.white, borderRadius: BorderRadius.circular(50.0)),
+    child: GFIconButton(
+      onPressed: null,
+      icon: GestureDetector(
+          child: Stack(
+        children: [
+          Center(child: icon),
+          isLoading ? GFLoader(type: GFLoaderType.ios) : Text(""),
+        ],
+      )),
+      type: GFButtonType.transparent,
+    ),
+  );
+}
+
+Widget mdPillsButton(BuildContext context, color, title, Map order) {
+  return Container(
+    height: 35,
+    decoration:
+        BoxDecoration(color: color, borderRadius: BorderRadius.circular(25)),
+    child: GFButton(
+      shape: GFButtonShape.pills,
+      onPressed: null,
+      color: color,
+      child: order["isRated"] == true && order["rating"] != null
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                Text(
+                  order["rating"].toString(),
+                ),
+                Icon(
+                  Icons.star,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ],
+            )
+          : Text(
+              MyLocalizations.of(context).getLocalizations(title),
+              overflow: TextOverflow.ellipsis,
+            ),
+    ),
+  );
+}
+
+Widget addsubQuantityButton(context, color, Map order, isLoading) {
+  return Container(
+    width: 32,
+    height: 32,
+    decoration: BoxDecoration(
+      color: color,
+      borderRadius: BorderRadius.all(Radius.circular(5)),
+    ),
+    child: InkWell(
+        onTap: null,
+        child: order != null
+            ? Stack(
+                children: [
+                  isLoading ? GFLoader(type: GFLoaderType.ios) : Text(""),
+                ],
+              )
+            : Container),
   );
 }

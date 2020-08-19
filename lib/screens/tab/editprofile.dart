@@ -38,7 +38,7 @@ class _EditProfileState extends State<EditProfile> {
   String firstName, lastName, currency = "";
   int mobileNumber;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  var image, walletAmount;
+  var image;
   @override
   void initState() {
     getUserInfo();
@@ -59,14 +59,12 @@ class _EditProfileState extends State<EditProfile> {
         setState(() {
           isLoading = false;
           userInfo = onValue['response_data'];
-          walletAmount = onValue['response_data']['walletAmount'] ?? 0;
         });
       }
     }).catchError((error) {
       if (mounted) {
         setState(() {
           userInfo = null;
-          walletAmount = 0;
           isLoading = false;
         });
       }
@@ -230,7 +228,8 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                   // InkWell(
                   //   onTap: selectCamera,
-                  //   child: transparentIconButton(context, "TAKE_PHOTO" , Icon(Icons.camera_alt))),
+                  //   child: transparenttButton(context, "TAKE_PHOTO" , Icon(Icons.camera_alt))),
+                  // transparenttButton(context, "titlehhh", Icon(Icons.camera_alt)),
                   GFButton(
                     onPressed: selectCamera,
                     type: GFButtonType.transparent,
@@ -403,29 +402,6 @@ class _EditProfileState extends State<EditProfile> {
                       style: textBarlowRegularBlack(),
                     ),
                   ),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  walletAmount != null && walletAmount > 0
-                      ? Padding(
-                          padding:
-                              const EdgeInsets.only(left: 18.0, right: 18.0),
-                          child: Row(
-                            children: [
-                              Text(
-                                MyLocalizations.of(context).getLocalizations(
-                                    "TOTAL_WALLET_AMOUNT", true),
-                                style: textbarlowRegularBlack(),
-                              ),
-                              Text(
-                                currency +
-                                    walletAmount.toDouble().toStringAsFixed(2),
-                                style: textbarlowRegularBlackbold(),
-                              ),
-                            ],
-                          ),
-                        )
-                      : Container(),
                   SizedBox(height: 25),
                   Padding(
                     padding: const EdgeInsets.only(
