@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:getflutter/getflutter.dart';
 import 'package:intl/intl.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
@@ -824,40 +823,6 @@ class _OrderDetailsState extends State<OrderDetails> {
                               child: buttonPrimary(context, "CANCEL_ORDER",
                                   isOrderCancleLoading),
                             )),
-
-                    // Container(
-                    //     height: 45,
-                    //     margin: EdgeInsets.all(10),
-                    //     decoration: BoxDecoration(boxShadow: [
-                    //       BoxShadow(
-                    //           color: Colors.black.withOpacity(0.29),
-                    //           blurRadius: 5)
-                    //     ]),
-                    //     child: GFButton(
-                    //       size: GFSize.LARGE,
-                    //       color: primary,
-                    //       blockButton: true,
-                    //       onPressed: orderCancelMethod,
-                    //       child: Row(
-                    //         mainAxisAlignment: MainAxisAlignment.center,
-                    //         children: <Widget>[
-                    //           Text(
-                    //             MyLocalizations.of(context)
-                    //                 .getLocalizations("CANCEL_ORDER"),
-                    //             style: textBarlowRegularrBlack(),
-                    //           ),
-                    //           SizedBox(
-                    //             height: 10,
-                    //           ),
-                    //           isOrderCancleLoading
-                    //               ? GFLoader(
-                    //                   type: GFLoaderType.ios,
-                    //                 )
-                    //               : Text("")
-                    //         ],
-                    //       ),
-                    //     ),
-                    //   ),
                     SizedBox(height: 20),
                   ],
                 ),

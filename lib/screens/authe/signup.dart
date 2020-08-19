@@ -600,39 +600,6 @@ class _SignupState extends State<Signup> {
     );
   }
 
-  Widget buildsocialbuttons() {
-    return Row(
-      children: <Widget>[
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 10.0, left: 0.0, right: 0.0),
-            child: GFButton(
-              size: GFSize.LARGE,
-              icon: Icon(
-                IconData(
-                  0xe906,
-                  fontFamily: 'icomoon',
-                ),
-                color: Colors.white,
-                size: 28,
-              ),
-              buttonBoxShadow: true,
-              color: Color(0xFF3B5998),
-              onPressed: () {},
-              child: Text(
-                "Sign Up with Facebook",
-                style: textBarlowRegularrWhite(),
-              ),
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 10,
-        ),
-      ],
-    );
-  }
-
   void showSnackbar(message) {
     final snackBar = SnackBar(
       content: Text(message),

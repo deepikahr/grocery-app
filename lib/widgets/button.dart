@@ -69,26 +69,19 @@ Widget productAddButton(BuildContext context, title, isLoading) {
   );
 }
 
-Widget transparenttButton(BuildContext context, title, Icon icon) {
+Widget transparenttButton(BuildContext context, title, icon) {
   return Container(
     height: 35,
-    padding: EdgeInsets.only(left: 15, right: 15, bottom: 5),
-    margin: EdgeInsets.only(top: 5),
-    decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(
-          Radius.circular(5),
-        ),
-        color: primary),
     child: GFButton(
       size: GFSize.LARGE,
-      color: primary,
+      color: bg,
       onPressed: null,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
             MyLocalizations.of(context).getLocalizations(title),
-            style: textbarlowMediumBlackm(),
+            style: hintSfboldBig(),
           ),
           icon
         ],

@@ -3,7 +3,6 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import '../../service/auth-service.dart';
 import '../../service/sentry-service.dart';
-import '../../style/style.dart';
 import '../../widgets/loader.dart';
 
 SentryError sentryError = new SentryError();
@@ -37,7 +36,6 @@ class _TandCandPrivacyPolicyState extends State<TandCandPrivacyPolicy> {
       });
     }
     LoginService.tandCandPandPMethod(widget.endPoint).then((value) {
-      print(value);
       try {
         if (mounted) {
           setState(() {

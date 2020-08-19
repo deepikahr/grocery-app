@@ -15,6 +15,7 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -84,7 +85,6 @@ class _ProfileState extends State<Profile> {
 
   userInfoMethod() async {
     await LoginService.getUserInfo().then((onValue) {
-      print(onValue);
       if (mounted) {
         setState(() {
           userInfo = onValue['response_data'];
@@ -154,23 +154,14 @@ class _ProfileState extends State<Profile> {
                           : languagesList.length,
                       itemBuilder: (BuildContext context, int i) {
                         return GFButton(
-                          onPressed: () async {
-                            await Common.setSelectedLanguage(
-                                languagesList[i]['languageCode']);
-                            main();
-                          },
-                          type: GFButtonType.transparent,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                languagesList[i]['languageName'],
-                                style: hintSfboldBig(),
-                              ),
-                              Container()
-                            ],
-                          ),
-                        );
+                            onPressed: () async {
+                              await Common.setSelectedLanguage(
+                                  languagesList[i]['languageCode']);
+                              main();
+                            },
+                            type: GFButtonType.transparent,
+                            child: alertText(context,
+                                languagesList[i]['languageName'], null));
                       }),
                 ],
               ),
