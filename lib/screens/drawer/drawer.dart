@@ -182,7 +182,7 @@ class _DrawerPageState extends State<DrawerPage> {
                       final RenderBox box = context.findRenderObject();
                       Share.share(
                           MyLocalizations.of(context)
-                                  .getLocalizations("VISIT_MESSAGE") +
+                                  .getLocalizations("SHARE_MESSAGE") +
                               " " +
                               Constants.baseUrl,
                           sharePositionOrigin:
