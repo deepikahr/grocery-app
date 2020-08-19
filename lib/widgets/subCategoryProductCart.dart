@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:getflutter/getflutter.dart';
-import 'package:getflutter/types/gf_loader_type.dart';
 import 'package:readymadeGroceryApp/model/addToCart.dart';
 import 'package:readymadeGroceryApp/model/bottomSheet.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
@@ -11,6 +10,7 @@ import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:readymadeGroceryApp/widgets/button.dart';
 
 class SubCategoryProductCard extends StatefulWidget {
   final price, currency;
@@ -85,9 +85,12 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
           ? widget.productData['variant'][0]['unit']
           : variantUnit,
       'productId': widget.productData["_id"],
-      'quantity': quanity++
     };
-
+    if (increase) {
+      body['quantity'] = quanity + 1;
+    } else {
+      body['quantity'] = quanity - 1;
+    }
     await AddToCart.addAndUpdateProductMethod(body).then((onValue) {
       if (onValue['response_data'] is Map) {
         Common.setCartData(onValue['response_data']);
@@ -312,7 +315,6 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                                     onValue['products'][i]
                                                         ['price'];
                                                 cartId = onValue['_id'];
-
                                                 variantUnit =
                                                     onValue['products'][i]
                                                         ['unit'];
@@ -435,32 +437,8 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                   });
                                 }
                               },
-                              child: Container(
-                                height: 35,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(5),
-                                    ),
-                                    color: primary),
-                                padding: EdgeInsets.only(
-                                    left: 15, right: 15, bottom: 5),
-                                margin: EdgeInsets.only(top: 5),
-                                child: isAddInProgress
-                                    ? GFLoader(
-                                        type: GFLoaderType.ios,
-                                      )
-                                    : Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Text(
-                                            MyLocalizations.of(context)
-                                                .getLocalizations("ADD"),
-                                            style: textbarlowMediumBlackm(),
-                                          ),
-                                        ],
-                                      ),
-                              ),
+                              child: productAddButton(
+                                  context, "ADD", isAddInProgress),
                             )
                           : Container(
                               height: 35,
@@ -505,6 +483,31 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                             ),
                                     ),
                                   ),
+                                  //                               InkWell(
+                                  //  onTap: () {
+                                  //                                     if (!isQuantityUpdating) {
+                                  //                                       quantityChangeType = '-';
+                                  //                                       _changeProductQuantity(false);
+                                  //                                     }
+                                  //                                   },
+                                  //                           child: addsubQuantityButton(context,
+                                  //                                  color : isQuantityUpdating &&
+                                  //                                             quantityChangeType == '-'
+                                  //                                         ? Colors.grey.shade100
+                                  //                                         : Colors.black,
+                                  //                                        isQuantityUpdating &&
+                                  //                                             quantityChangeType == '-'
+                                  //                                         ? GFLoader(
+                                  //                                             type: GFLoaderType.ios,
+                                  //                                             size: 35,
+                                  //                                           )
+                                  //                                         : Icon(
+                                  //                                             Icons.remove,
+                                  //                                             color: primary,
+                                  //                                           ),
+                                  //                                          false
+                                  //                                 ),
+                                  //                               ),
                                   Text(widget.productData['quantityToCart']
                                       .toString()),
                                   Container(

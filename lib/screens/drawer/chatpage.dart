@@ -7,6 +7,7 @@ import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
@@ -28,7 +29,7 @@ class Chat extends StatefulWidget {
 
 class _ChatState extends State<Chat> with TickerProviderStateMixin {
   List chatList = List();
-  final ScrollController _scrollController = new ScrollController();
+  ScrollController _scrollController = new ScrollController();
   final TextEditingController _textController = new TextEditingController();
   bool _isWriting = false, isChatLoading = false, getUserDataLoading = false;
 
@@ -37,6 +38,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   var socket = io.io(Constants.apiUrl, <String, dynamic>{
     'transports': ['websocket']
   });
+  // ScrollController _controller = ScrollController();
   @override
   void initState() {
     getUserData();
@@ -80,6 +82,12 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
       if (mounted) {
         setState(() {
           chatList.addAll(response['response_data']);
+          Timer(Duration(milliseconds: 300), () {
+            Timer(
+                Duration(milliseconds: 300),
+                () => _scrollController
+                    .jumpTo(_scrollController.position.maxScrollExtent));
+          });
           isChatLoading = false;
         });
       }
@@ -108,6 +116,12 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
       if (data != null && mounted) {
         setState(() {
           chatList.add(data);
+          Timer(Duration(milliseconds: 300), () {
+            Timer(
+                Duration(milliseconds: 300),
+                () => _scrollController
+                    .jumpTo(_scrollController.position.maxScrollExtent));
+          });
         });
       }
     });
@@ -123,26 +137,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-          leading: InkWell(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            ),
-          ),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(20),
-                  bottomRight: Radius.circular(20))),
-          title: new Text(
-            MyLocalizations.of(context).getLocalizations("CHAT"),
-            style: textbarlowSemiBoldBlack(),
-          ),
-          centerTitle: true,
-          backgroundColor: primary),
+      appBar: appBarPrimary(context, "CHAT"),
       body: isChatLoading || getUserDataLoading
           ? SquareLoader()
           : Stack(
@@ -321,8 +316,12 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   }
 
   void _submitMsg(String txt) async {
-    _scrollController.animateTo(_scrollController.position.maxScrollExtent,
-        duration: Duration(milliseconds: 100), curve: Curves.easeOut);
+    Timer(Duration(milliseconds: 300), () {
+      Timer(
+          Duration(milliseconds: 300),
+          () => _scrollController
+              .jumpTo(_scrollController.position.maxScrollExtent));
+    });
     _textController.clear();
     if (mounted) {
       setState(() {

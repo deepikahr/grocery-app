@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:getflutter/components/appbar/gf_appbar.dart';
+
 import 'package:readymadeGroceryApp/model/addToCart.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
@@ -13,6 +13,8 @@ import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/screens/checkout/checkout.dart';
 import 'package:getflutter/getflutter.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
+import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -367,15 +369,7 @@ class _MyCartState extends State<MyCart> {
           ? null
           : token == null
               ? null
-              : GFAppBar(
-                  title: Text(
-                    MyLocalizations.of(context).getLocalizations("MY_CART"),
-                    style: textbarlowSemiBoldBlack(),
-                  ),
-                  centerTitle: true,
-                  backgroundColor: Colors.white,
-                  elevation: 0,
-                ),
+              : appBarWhite(context, "MY_CART", false, false, Container()),
       body: isGetTokenLoading || isMinAmountCheckLoading
           ? SquareLoader()
           : token == null
@@ -720,249 +714,167 @@ class _MyCartState extends State<MyCart> {
                         ],
                       ),
                     ),
-      bottomNavigationBar: isGetTokenLoading || isMinAmountCheckLoading
+      bottomNavigationBar: isGetTokenLoading ||
+              isMinAmountCheckLoading ||
+              isLoadingCart
           ? SquareLoader()
-          : token == null
+          : token == null || cartItem == null
               ? Container(height: 1)
-              : isLoadingCart
-                  ? SquareLoader()
-                  : cartItem == null
-                      ? Container(height: 1)
-                      : Container(
-                          height: bottomBarHeight,
-                          child: Column(
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 20.0, right: 20.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    new Text(
-                                      MyLocalizations.of(context)
-                                          .getLocalizations("SUB_TOTAL"),
-                                      style: textBarlowRegularBlack(),
-                                    ),
-                                    new Text(
-                                      '$currency${cartItem['subTotal'].toDouble().toStringAsFixed(2)}',
-                                      style: textbarlowBoldsmBlack(),
-                                    ),
-                                  ],
-                                ),
+              : Container(
+                  height: bottomBarHeight,
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            new Text(
+                              MyLocalizations.of(context)
+                                  .getLocalizations("SUB_TOTAL"),
+                              style: textBarlowRegularBlack(),
+                            ),
+                            new Text(
+                              '$currency${cartItem['subTotal'].toDouble().toStringAsFixed(2)}',
+                              style: textbarlowBoldsmBlack(),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      cartItem['tax'] == 0
+                          ? Container()
+                          : Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 20.0, right: 20.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Image.asset('lib/assets/icons/sale.png'),
+                                      SizedBox(width: 5),
+                                      cartItem['taxInfo'] == null
+                                          ? new Text(
+                                              MyLocalizations.of(context)
+                                                  .getLocalizations("TAX"),
+                                              style: textBarlowRegularBlack(),
+                                            )
+                                          : new Text(
+                                              MyLocalizations.of(context)
+                                                      .getLocalizations("TAX") +
+                                                  " (" +
+                                                  cartItem['taxInfo']
+                                                      ['taxName'] +
+                                                  " " +
+                                                  cartItem['taxInfo']['amount']
+                                                      .toString() +
+                                                  "%)",
+                                              style: textBarlowRegularBlack(),
+                                            ),
+                                    ],
+                                  ),
+                                  new Text(
+                                    '$currency${cartItem['tax'].toDouble().toStringAsFixed(2)}',
+                                    style: textbarlowBoldsmBlack(),
+                                  ),
+                                ],
                               ),
-                              SizedBox(height: 4),
-                              cartItem['tax'] == 0
-                                  ? Container()
-                                  : Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 20.0, right: 20.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: <Widget>[
-                                          Row(
-                                            children: <Widget>[
-                                              Image.asset(
-                                                  'lib/assets/icons/sale.png'),
-                                              SizedBox(width: 5),
-                                              cartItem['taxInfo'] == null
-                                                  ? new Text(
-                                                      MyLocalizations.of(
-                                                              context)
-                                                          .getLocalizations(
-                                                              "TAX"),
-                                                      style:
-                                                          textBarlowRegularBlack(),
-                                                    )
-                                                  : new Text(
-                                                      MyLocalizations.of(
-                                                                  context)
-                                                              .getLocalizations(
-                                                                  "TAX") +
-                                                          " (" +
-                                                          cartItem['taxInfo']
-                                                              ['taxName'] +
-                                                          " " +
-                                                          cartItem['taxInfo']
-                                                                  ['amount']
-                                                              .toString() +
-                                                          "%)",
-                                                      style:
-                                                          textBarlowRegularBlack(),
-                                                    ),
-                                            ],
-                                          ),
-                                          new Text(
-                                            '$currency${cartItem['tax'].toDouble().toStringAsFixed(2)}',
-                                            style: textbarlowBoldsmBlack(),
-                                          ),
-                                        ],
+                            ),
+                      SizedBox(height: 6),
+                      cartItem['couponCode'] == null
+                          ? Container()
+                          : Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 20.0, right: 20.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  new Text(
+                                    MyLocalizations.of(context)
+                                            .getLocalizations(
+                                                "COUPON_APPLIED") +
+                                        " (" +
+                                        "${MyLocalizations.of(context).getLocalizations("DISCOUNT")}"
+                                            ")",
+                                    style: textBarlowRegularBlack(),
+                                  ),
+                                  new Text(
+                                    '$currency${cartItem['couponAmount'].toDouble().toStringAsFixed(2)}',
+                                    style: textbarlowBoldsmBlack(),
+                                  ),
+                                ],
+                              ),
+                            ),
+                      cartItem['couponCode'] == null
+                          ? Container()
+                          : SizedBox(height: 6),
+                      cartItem['deliveryCharges'] == 0 &&
+                              cartItem['deliveryAddress'] != null
+                          ? Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 20.0, right: 20.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  new Text(
+                                    MyLocalizations.of(context)
+                                        .getLocalizations("DELIVERY_CHARGES"),
+                                    style: textBarlowRegularBlack(),
+                                  ),
+                                  new Text(
+                                    MyLocalizations.of(context)
+                                        .getLocalizations("FREE"),
+                                    style: textbarlowBoldsmBlack(),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : cartItem['deliveryCharges'] == 0
+                              ? Container()
+                              : Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 20.0, right: 20.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      new Text(
+                                        MyLocalizations.of(context)
+                                            .getLocalizations(
+                                                "DELIVERY_CHARGES"),
+                                        style: textBarlowRegularBlack(),
                                       ),
-                                    ),
-                              SizedBox(height: 6),
-                              cartItem['couponCode'] == null
-                                  ? Container()
-                                  : Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 20.0, right: 20.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: <Widget>[
-                                          new Text(
-                                            MyLocalizations.of(context)
-                                                    .getLocalizations(
-                                                        "COUPON_APPLIED") +
-                                                " (" +
-                                                "${MyLocalizations.of(context).getLocalizations("DISCOUNT")}"
-                                                    ")",
-                                            style: textBarlowRegularBlack(),
-                                          ),
-                                          new Text(
-                                            '$currency${cartItem['couponAmount'].toDouble().toStringAsFixed(2)}',
-                                            style: textbarlowBoldsmBlack(),
-                                          ),
-                                        ],
+                                      new Text(
+                                        '$currency${cartItem['deliveryCharges'].toDouble().toStringAsFixed(2)}',
+                                        style: textbarlowBoldsmBlack(),
                                       ),
-                                    ),
-                              cartItem['couponCode'] == null
-                                  ? Container()
-                                  : SizedBox(height: 6),
-                              cartItem['deliveryCharges'] == 0 &&
-                                      cartItem['deliveryAddress'] != null
-                                  ? Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 20.0, right: 20.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: <Widget>[
-                                          new Text(
-                                            MyLocalizations.of(context)
-                                                .getLocalizations(
-                                                    "DELIVERY_CHARGES"),
-                                            style: textBarlowRegularBlack(),
-                                          ),
-                                          new Text(
-                                            MyLocalizations.of(context)
-                                                .getLocalizations("FREE"),
-                                            style: textbarlowBoldsmBlack(),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  : cartItem['deliveryCharges'] == 0
-                                      ? Container()
-                                      : Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 20.0, right: 20.0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: <Widget>[
-                                              new Text(
-                                                MyLocalizations.of(context)
-                                                    .getLocalizations(
-                                                        "DELIVERY_CHARGES"),
-                                                style: textBarlowRegularBlack(),
-                                              ),
-                                              new Text(
-                                                '$currency${cartItem['deliveryCharges'].toDouble().toStringAsFixed(2)}',
-                                                style: textbarlowBoldsmBlack(),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                              SizedBox(height: 10),
-                              Container(
-                                height: 55,
-                                margin: EdgeInsets.only(left: 15, right: 15),
-                                decoration: BoxDecoration(
-                                  color: primary,
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.black.withOpacity(0.29),
-                                        blurRadius: 6)
-                                  ],
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(5),
+                                    ],
                                   ),
                                 ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.black,
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(5),
-                                          bottomLeft: Radius.circular(5),
-                                        ),
-                                      ),
-                                      width: 115,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Text(
-                                            MyLocalizations.of(context)
-                                                .getLocalizations("TOTAL"),
-                                            style: textBarlowRegularWhite(),
-                                          ),
-                                          new Text(
-                                            '$currency${cartItem['grandTotal'].toDouble().toStringAsFixed(2)}',
-                                            style: textbarlowBoldWhite(),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      child: RawMaterialButton(
-                                        onPressed: checkMinOrderAmountCondition,
-                                        child: Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.55,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: <Widget>[
-                                              isCheckProductAvailableOrNot
-                                                  ? GFLoader(
-                                                      type: GFLoaderType.ios,
-                                                    )
-                                                  : Text(""),
-                                              Text(
-                                                MyLocalizations.of(context)
-                                                    .getLocalizations(
-                                                        "CHECKOUT"),
-                                                style: textBarlowRegularBlack(),
-                                              ),
-                                              Icon(Icons.arrow_forward),
-                                              SizedBox(width: 10)
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                      SizedBox(height: 10),
+                      InkWell(
+                        onTap: checkMinOrderAmountCondition,
+                        child: checkoutButton(
+                            context,
+                            "TOTAL",
+                            '$currency${cartItem['grandTotal'].toDouble().toStringAsFixed(2)}',
+                            "CHECKOUT",
+                            Icon(Icons.arrow_forward),
+                            isCheckProductAvailableOrNot),
+                      ),
+                    ],
+                  ),
+                ),
     );
   }
 }

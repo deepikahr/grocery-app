@@ -9,6 +9,8 @@ import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/orderSevice.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
+import 'package:readymadeGroceryApp/widgets/button.dart';
 
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:stripe_payment/stripe_payment.dart';
@@ -54,7 +56,12 @@ class _PaymentState extends State<Payment> {
         merchantId: "Test",
         androidPayMode: 'test'));
     cartItem = widget.cartItems;
-
+    if (cartItem['walletAmount'] > 0) {
+      walletUsedOrNotValue = true;
+      if (cartItem['grandTotal'] == 0) {
+        fullWalletUsedOrNot = true;
+      }
+    }
     super.initState();
   }
 
@@ -215,16 +222,7 @@ class _PaymentState extends State<Payment> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: GFAppBar(
-        title: Text(
-          MyLocalizations.of(context).getLocalizations("PAYMENT"),
-          style: textbarlowSemiBoldBlack(),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black, size: 15.0),
-      ),
+      appBar: appBarTransparent(context, "PAYMENT"),
       body: isCardListLoading
           ? SquareLoader()
           : ListView(
@@ -383,8 +381,13 @@ class _PaymentState extends State<Payment> {
                                             .getLocalizations(
                                                 "USE_WALLET_AMOUNT")
                                         : MyLocalizations.of(context)
-                                            .getLocalizations(
-                                                "USED_WALLET_AMOUNT"),
+                                                .getLocalizations(
+                                                    "USED_WALLET_AMOUNT") +
+                                            " " +
+                                            currency +
+                                            cartItem['walletAmount']
+                                                .toDouble()
+                                                .toStringAsFixed(2),
                                     style: textbarlowMediumBlack(),
                                   ),
                                   Row(
@@ -474,39 +477,12 @@ class _PaymentState extends State<Payment> {
               ],
             ),
       bottomNavigationBar: paymentTypes.length > 0
-          ? Container(
-              margin: EdgeInsets.only(left: 15, right: 15, bottom: 20),
-              height: 55,
-              decoration: BoxDecoration(boxShadow: [
-                BoxShadow(color: Colors.black.withOpacity(0.33), blurRadius: 6)
-              ]),
+          ? InkWell(
+              onTap: placeOrder,
               child: Padding(
-                padding: const EdgeInsets.only(
-                  left: 0.0,
-                  right: 0.0,
-                ),
-                child: GFButton(
-                  color: primary,
-                  blockButton: true,
-                  onPressed: placeOrder,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        MyLocalizations.of(context).getLocalizations("PAY_NOW"),
-                        style: textBarlowRegularBlack(),
-                      ),
-                      isPlaceOrderLoading
-                          ? GFLoader(
-                              type: GFLoaderType.ios,
-                            )
-                          : Text("")
-                    ],
-                  ),
-                  textStyle: TextStyle(fontSize: 17.0, color: Colors.black),
-                ),
-              ),
-            )
+                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                child: buttonPrimary(context, "PAY_NOW", isPlaceOrderLoading),
+              ))
           : Container(height: 1),
     );
   }
