@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:getflutter/getflutter.dart';
+import 'package:readymadeGroceryApp/screens/orders/orders.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
@@ -403,4 +405,93 @@ Widget chatMessgae(BuildContext context, message, isOwn) {
       ],
     ),
   );
+}
+
+Widget locationText(BuildContext context, title, value) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: <Widget>[
+      Container(
+        width: MediaQuery.of(context).size.width * 0.6,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              MyLocalizations.of(context).getLocalizations(title, true),
+              style: textBarlowRegularrBlacksm(),
+            ),
+            Text(
+              value ?? "",
+              overflow: TextOverflow.ellipsis,
+              style: textAddressLocation(),
+            )
+          ],
+        ),
+      ),
+    ],
+  );
+}
+
+Widget orderPageText(BuildContext context, title) {
+  return Text(title,
+      overflow: TextOverflow.ellipsis,
+      maxLines: 1,
+      style: textBarlowRegularrdark());
+}
+
+Widget trackBuild(BuildContext context, title, color, style, icon, line) {
+  return GFListTile(
+    avatar: Column(
+      children: <Widget>[
+        GFAvatar(backgroundColor: color, radius: 6),
+        SizedBox(height: 10),
+        line ? Container() : CustomPaint(painter: LineDashedPainter()),
+      ],
+    ),
+    title:
+        Text(MyLocalizations.of(context).getLocalizations(title), style: style),
+    icon: icon == true
+        ? Padding(
+            padding: EdgeInsets.only(bottom: 20),
+            child: SvgPicture.asset('lib/assets/icons/tick.svg'))
+        : null,
+    subTitle: Text('', style: textSMBarlowRegularrGreyb()),
+  );
+}
+
+Widget buildOrderDetilsText(BuildContext context, title, subTitle) {
+  return GFTypography(
+    showDivider: false,
+    child: Expanded(
+        child: Text(
+            MyLocalizations.of(context).getLocalizations(title, true) +
+                MyLocalizations.of(context).getLocalizations(subTitle),
+            style: textBarlowMediumBlack())),
+  );
+}
+
+Widget buildOrderDetilsStatusText(BuildContext context, title, subTitle) {
+  return GFTypography(
+    showDivider: false,
+    child: Expanded(
+        child: Row(
+      children: [
+        Text(MyLocalizations.of(context).getLocalizations(title, true),
+            style: textBarlowMediumBlack()),
+        Text(MyLocalizations.of(context).getLocalizations(subTitle),
+            style: textBarlowMediumGreen()),
+      ],
+    )),
+  );
+}
+
+Widget textLightSmall(title) {
+  return Text(title, style: textSMBarlowRegularrBlack());
+}
+
+Widget textMediumSmall(title) {
+  return Text(title ?? "",
+      overflow: TextOverflow.ellipsis,
+      maxLines: 1,
+      style: textBarlowRegularrdark());
 }

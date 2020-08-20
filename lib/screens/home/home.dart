@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geocoder/geocoder.dart';
-import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/model/counterModel.dart';
 import 'package:readymadeGroceryApp/screens/drawer/drawer.dart';
 import 'package:readymadeGroceryApp/screens/tab/mycart.dart';
@@ -16,7 +15,9 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:location/location.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
+import 'package:readymadeGroceryApp/widgets/icon.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -127,29 +128,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   }
 
   deliveryAddress() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Container(
-          width: MediaQuery.of(context).size.width * 0.6,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                MyLocalizations.of(context)
-                    .getLocalizations("YOUR_LOCATION", true),
-                style: textBarlowRegularrBlacksm(),
-              ),
-              Text(
-                addressData ?? "",
-                overflow: TextOverflow.ellipsis,
-                style: textAddressLocation(),
-              )
-            ],
-          ),
-        ),
-      ],
-    );
+    return locationText(context, "YOUR_LOCATION", addressData ?? "");
   }
 
   getResult() async {
@@ -203,89 +182,25 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     }
     List<BottomNavigationBarItem> items = [
       BottomNavigationBarItem(
-        title: Text(MyLocalizations.of(context).getLocalizations("STORE")),
-        icon: Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: Icon(
-            const IconData(
-              0xe90f,
-              fontFamily: 'icomoon',
-            ),
-          ),
-        ),
-      ),
+          title: Text(MyLocalizations.of(context).getLocalizations("STORE")),
+          icon: icon(context, 0xe90f, 0)),
       BottomNavigationBarItem(
-        title: Text(MyLocalizations.of(context).getLocalizations("FAVORITE")),
-        icon: Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: Icon(
-            const IconData(
-              0xe90d,
-              fontFamily: 'icomoon',
-            ),
-          ),
-        ),
-      ),
+          title: Text(MyLocalizations.of(context).getLocalizations("FAVORITE")),
+          icon: icon(context, 0xe90d, 0)),
       BottomNavigationBarItem(
-        title: Text(MyLocalizations.of(context).getLocalizations("MY_CART")),
-        icon: Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: GFIconBadge(
-            child: Icon(
-              const IconData(
-                0xe911,
-                fontFamily: 'icomoon',
-              ),
-            ),
-            counterChild: (cartData == null || cartData == 0)
-                ? Container()
-                : GFBadge(
-                    child: Text(
-                      '${cartData.toString()}',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: "bold",
-                          fontSize: 11),
-                    ),
-                    shape: GFBadgeShape.circle,
-                    color: Colors.red,
-                    size: 25,
-                  ),
-          ),
-        ),
-      ),
+          title: Text(MyLocalizations.of(context).getLocalizations("MY_CART")),
+          icon: icon(context, 0xe911, cartData)),
       BottomNavigationBarItem(
-        title: Text(MyLocalizations.of(context).getLocalizations("PROFILE")),
-        icon: Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: Icon(
-            const IconData(
-              0xe912,
-              fontFamily: 'icomoon',
-            ),
-          ),
-        ),
-      ),
+          title: Text(MyLocalizations.of(context).getLocalizations("PROFILE")),
+          icon: icon(context, 0xe912, 0)),
     ];
 
     List<Widget> _screens = [
-      Store(
-        locale: widget.locale,
-        localizedValues: widget.localizedValues,
-      ),
+      Store(locale: widget.locale, localizedValues: widget.localizedValues),
       SavedItems(
-        locale: widget.locale,
-        localizedValues: widget.localizedValues,
-      ),
-      MyCart(
-        locale: widget.locale,
-        localizedValues: widget.localizedValues,
-      ),
-      Profile(
-        locale: widget.locale,
-        localizedValues: widget.localizedValues,
-      ),
+          locale: widget.locale, localizedValues: widget.localizedValues),
+      MyCart(locale: widget.locale, localizedValues: widget.localizedValues),
+      Profile(locale: widget.locale, localizedValues: widget.localizedValues),
     ];
 
     return Scaffold(
@@ -312,30 +227,26 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                 },
                 child: Padding(
                   padding: EdgeInsets.only(right: 15, left: 15),
-                  child: Icon(
-                    Icons.search,
-                  ),
+                  child: Icon(Icons.search),
                 ),
               ),
             )
           : null,
       drawer: Drawer(
         child: DrawerPage(
-          locale: widget.locale,
-          localizedValues: widget.localizedValues,
-          addressData: addressData ?? "",
-        ),
+            locale: widget.locale,
+            localizedValues: widget.localizedValues,
+            addressData: addressData ?? ""),
       ),
       body: currencyLoading ? SquareLoader() : _screens[currentIndex],
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: currentIndex,
-        backgroundColor: Colors.black,
-        unselectedItemColor: greyc,
-        type: BottomNavigationBarType.fixed,
-        fixedColor: primary,
-        onTap: _onTapped,
-        items: items,
-      ),
+          currentIndex: currentIndex,
+          backgroundColor: Colors.black,
+          unselectedItemColor: greyc,
+          type: BottomNavigationBarType.fixed,
+          fixedColor: primary,
+          onTap: _onTapped,
+          items: items),
     );
   }
 }
