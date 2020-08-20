@@ -545,6 +545,31 @@ Widget titleThreeLine(title) {
       style: textBarlowSemiBoldBlack());
 }
 
+Widget titleTwoLine(title) {
+  return Text(title,
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+      style: textBarlowRegularBlack());
+}
+
 Widget discriptionMultipleLine(title) {
   return Text(title, style: textbarlowRegularBlack());
+}
+
+Widget searchPage(BuildContext context, title, icon) {
+  return Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: <Widget>[
+      Padding(
+        padding: const EdgeInsets.only(top: 100.0),
+        child: Text(
+          MyLocalizations.of(context).getLocalizations(title),
+          textAlign: TextAlign.center,
+          style: hintSfMediumprimary(),
+        ),
+      ),
+      SizedBox(height: 20.0),
+      icon
+    ],
+  );
 }
