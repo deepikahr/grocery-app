@@ -17,7 +17,6 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import 'package:share/share.dart';
 import '../../main.dart';
-import '../../style/style.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -42,6 +41,9 @@ class _DrawerPageState extends State<DrawerPage> {
   }
 
   getToken() async {
+    LoginService.getWalletsHistory("jjj", "hh").then((value) {
+      print(value);
+    });
     await Common.getCurrency().then((value) {
       currency = value;
     });
@@ -182,7 +184,7 @@ class _DrawerPageState extends State<DrawerPage> {
                       final RenderBox box = context.findRenderObject();
                       Share.share(
                           MyLocalizations.of(context)
-                                  .getLocalizations("VISIT_MESSAGE") +
+                                  .getLocalizations("SHARE_MESSAGE") +
                               " " +
                               Constants.baseUrl,
                           sharePositionOrigin:
