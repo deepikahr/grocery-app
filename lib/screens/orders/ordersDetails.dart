@@ -417,7 +417,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                       padding: const EdgeInsets.only(left: 18.0, right: 18.0),
                       child: Column(
                         children: <Widget>[
-                          buildPrice(
+                          buildPriceBold(
                               context,
                               null,
                               MyLocalizations.of(context)
@@ -429,7 +429,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                           SizedBox(height: 6),
                           orderHistory['cart']['tax'] == 0
                               ? Container()
-                              : buildPrice(
+                              : buildPriceBold(
                                   context,
                                   null,
                                   MyLocalizations.of(context)
@@ -439,7 +439,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                           .toStringAsFixed(2),
                                   false),
                           SizedBox(height: 6),
-                          buildPrice(
+                          buildPriceBold(
                               context,
                               null,
                               MyLocalizations.of(context)
@@ -455,7 +455,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                           orderHistory['cart']['walletAmount'] == 0 ||
                                   orderHistory['cart']['walletAmount'] == 0.0
                               ? Container()
-                              : buildPrice(
+                              : buildPriceBold(
                                   context,
                                   null,
                                   MyLocalizations.of(context)
@@ -469,7 +469,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                               ? Container()
                               : Column(
                                   children: <Widget>[
-                                    buildPrice(
+                                    buildPriceBold(
                                         context,
                                         null,
                                         MyLocalizations.of(context)
@@ -478,7 +478,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                             .toStringAsFixed(2),
                                         false),
                                     SizedBox(height: 6),
-                                    buildPrice(
+                                    buildPriceBold(
                                         context,
                                         null,
                                         MyLocalizations.of(context)
@@ -502,7 +502,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                     SizedBox(height: 6),
                     Padding(
                       padding: const EdgeInsets.only(left: 18.0, right: 18.0),
-                      child: buildPrice(
+                      child: buildPriceBold(
                           context,
                           null,
                           MyLocalizations.of(context).getLocalizations("TOTAL"),

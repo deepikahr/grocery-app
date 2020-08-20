@@ -936,7 +936,7 @@ class _CheckoutState extends State<Checkout> {
                                                                             ' ')
                                                                         .join(
                                                                             '\n'),
-                                                                    false)),
+                                                                    true)),
                                                           ),
                                                         ),
                                                       ],

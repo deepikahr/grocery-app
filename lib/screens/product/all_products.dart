@@ -12,6 +12,7 @@ import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/cardOverlay.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import 'package:readymadeGroceryApp/widgets/subCategoryProductCart.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -134,18 +135,20 @@ class _AllProductsState extends State<AllProducts> {
       _refreshController.refreshCompleted();
       if (mounted) {
         setState(() {
-          productsList.addAll(onValue['response_data']);
-          totalProduct = onValue["total"];
-          int index = productsList.length;
-          if (lastApiCall == true) {
-            productIndex++;
-            if (index < totalProduct) {
-              getProductListMethod(index);
-            } else {
-              if (index == totalProduct) {
-                if (mounted) {
-                  lastApiCall = false;
-                  getProductListMethod(index);
+          if (onValue['response_data'] != []) {
+            productsList.addAll(onValue['response_data']);
+            totalProduct = onValue["total"];
+            int index = productsList.length;
+            if (lastApiCall == true) {
+              productIndex++;
+              if (index < totalProduct) {
+                getProductListMethod(index);
+              } else {
+                if (index == totalProduct) {
+                  if (mounted) {
+                    lastApiCall = false;
+                    getProductListMethod(index);
+                  }
                 }
               }
             }
@@ -290,89 +293,60 @@ class _AllProductsState extends State<AllProducts> {
                                   ? Row(
                                       children: <Widget>[
                                         InkWell(
-                                          onTap: () {
-                                            subCategryByProduct = null;
-                                            if (mounted) {
-                                              setState(() {
-                                                isSelected = true;
-                                                isSelectedIndexZero = false;
-                                                isSelectetedId = null;
-                                                lastApiCall = true;
-                                              });
-                                            }
+                                            onTap: () {
+                                              subCategryByProduct = null;
+                                              if (mounted) {
+                                                setState(() {
+                                                  isSelected = true;
+                                                  isSelectedIndexZero = false;
+                                                  isSelectetedId = null;
+                                                  lastApiCall = true;
+                                                });
+                                              }
 
-                                            productsList = [];
-                                            productIndex = productsList.length;
+                                              productsList = [];
+                                              productIndex =
+                                                  productsList.length;
 
-                                            getTokenValueMethod();
-                                          },
-                                          child: Container(
-                                            height: 35,
-                                            padding: EdgeInsets.only(
-                                                left: 25, right: 25, top: 8),
-                                            margin: EdgeInsets.only(right: 15),
-                                            decoration: BoxDecoration(
-                                              color: isSelected
-                                                  ? primary
-                                                  : Color(0xFFf0F0F0),
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(4),
-                                              ),
-                                            ),
-                                            child: Text(
-                                              MyLocalizations.of(context)
-                                                  .getLocalizations("ALL"),
-                                              textAlign: TextAlign.center,
-                                              style: textbarlowMediumBlackm(),
-                                            ),
-                                          ),
-                                        ),
+                                              getTokenValueMethod();
+                                            },
+                                            child: subCatTab(
+                                                context,
+                                                MyLocalizations.of(context)
+                                                    .getLocalizations("ALL"),
+                                                isSelected
+                                                    ? primary
+                                                    : Color(0xFFf0F0F0))),
                                         InkWell(
-                                          onTap: () {
-                                            if (mounted) {
-                                              setState(() {
-                                                isLoadingSubCatProductsList =
-                                                    true;
-                                                isSelected = false;
-                                                isSelectedIndexZero = true;
-                                                isSelectetedId = null;
-                                                currentSubCategoryId =
-                                                    subCategryList[0]['_id']
-                                                        .toString();
-                                                subCategryByProduct = [];
-                                                subCatProductIndex =
-                                                    subCategryByProduct.length;
-                                              });
-                                            }
+                                            onTap: () {
+                                              if (mounted) {
+                                                setState(() {
+                                                  isLoadingSubCatProductsList =
+                                                      true;
+                                                  isSelected = false;
+                                                  isSelectedIndexZero = true;
+                                                  isSelectetedId = null;
+                                                  currentSubCategoryId =
+                                                      subCategryList[0]['_id']
+                                                          .toString();
+                                                  subCategryByProduct = [];
+                                                  subCatProductIndex =
+                                                      subCategryByProduct
+                                                          .length;
+                                                });
+                                              }
 
-                                            getProductToSubCategory(
-                                                subCategryList[0]['_id']
-                                                    .toString(),
-                                                subCatProductIndex);
-                                          },
-                                          child: Container(
-                                            height: 35,
-                                            padding: EdgeInsets.only(
-                                                left: 15, right: 15, top: 8),
-                                            margin: EdgeInsets.only(right: 15),
-                                            decoration: BoxDecoration(
-                                              color: isSelectedIndexZero
-                                                  ? primary
-                                                  : Color(0xFFf0F0F0),
-                                              border: Border.all(
-                                                color: Color(0xFFDFDFDF),
-                                              ),
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(4),
-                                              ),
-                                            ),
-                                            child: Text(
-                                              '${subCategryList[0]['title'][0].toUpperCase()}${subCategryList[0]['title'].substring(1)}',
-                                              textAlign: TextAlign.center,
-                                              style: textbarlowMediumBlackm(),
-                                            ),
-                                          ),
-                                        )
+                                              getProductToSubCategory(
+                                                  subCategryList[0]['_id']
+                                                      .toString(),
+                                                  subCatProductIndex);
+                                            },
+                                            child: subCatTab(
+                                                context,
+                                                '${subCategryList[0]['title'][0].toUpperCase()}${subCategryList[0]['title'].substring(1)}',
+                                                isSelectedIndexZero
+                                                    ? primary
+                                                    : Color(0xFFf0F0F0)))
                                       ],
                                     )
                                   : InkWell(
@@ -397,29 +371,13 @@ class _AllProductsState extends State<AllProducts> {
                                             subCategryList[i]['_id'].toString(),
                                             subCatProductIndex);
                                       },
-                                      child: Container(
-                                        height: 35,
-                                        padding: EdgeInsets.only(
-                                            left: 15, right: 15, top: 8),
-                                        margin: EdgeInsets.only(right: 15),
-                                        decoration: BoxDecoration(
-                                          color: isSelectetedId ==
+                                      child: subCatTab(
+                                          context,
+                                          '${subCategryList[i]['title'][0].toUpperCase()}${subCategryList[i]['title'].substring(1)}',
+                                          isSelectetedId ==
                                                   subCategryList[i]['_id']
                                               ? primary
-                                              : Color(0xFFf0F0F0),
-                                          border: Border.all(
-                                              color: Color(0xFFDFDFDF)),
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(4),
-                                          ),
-                                        ),
-                                        child: Text(
-                                          '${subCategryList[i]['title'][0].toUpperCase()}${subCategryList[i]['title'].substring(1)}',
-                                          textAlign: TextAlign.center,
-                                          style: textbarlowMediumBlackm(),
-                                        ),
-                                      ),
-                                    );
+                                              : Color(0xFFf0F0F0)));
                             },
                           ),
                         ),
@@ -521,42 +479,13 @@ class _AllProductsState extends State<AllProducts> {
                                                     subCategryByProduct[i][
                                                                 'isDealAvailable'] ==
                                                             true
-                                                        ? Positioned(
-                                                            child: Stack(
-                                                              children: <
-                                                                  Widget>[
-                                                                Container(
-                                                                  width: 61,
-                                                                  height: 18,
-                                                                  decoration: BoxDecoration(
-                                                                      color: Color(
-                                                                          0xFFFFAF72),
-                                                                      borderRadius: BorderRadius.only(
-                                                                          topLeft: Radius.circular(
-                                                                              10),
-                                                                          bottomRight:
-                                                                              Radius.circular(10))),
-                                                                ),
-                                                                Text(
-                                                                  " " +
-                                                                      subCategryByProduct[i]
-                                                                              [
-                                                                              'dealPercent']
-                                                                          .toString() +
-                                                                      "% " +
-                                                                      MyLocalizations.of(
-                                                                              context)
-                                                                          .getLocalizations(
-                                                                              "OFF"),
-                                                                  style:
-                                                                      hintSfboldwhitemed(),
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center,
-                                                                )
-                                                              ],
-                                                            ),
-                                                          )
+                                                        ? buildBadge(
+                                                            context,
+                                                            subCategryByProduct[
+                                                                        i][
+                                                                    'dealPercent']
+                                                                .toString(),
+                                                            "OFF")
                                                         : Container()
                                                   ],
                                                 ),
@@ -634,46 +563,12 @@ class _AllProductsState extends State<AllProducts> {
                                             productsList[i]
                                                         ['isDealAvailable'] ==
                                                     true
-                                                ? Positioned(
-                                                    child: Stack(
-                                                      children: <Widget>[
-                                                        Container(
-                                                          width: 61,
-                                                          height: 18,
-                                                          decoration: BoxDecoration(
-                                                              color: Color(
-                                                                  0xFFFFAF72),
-                                                              borderRadius: BorderRadius.only(
-                                                                  topLeft: Radius
-                                                                      .circular(
-                                                                          10),
-                                                                  bottomRight: Radius
-                                                                      .circular(
-                                                                          10))),
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(2.0),
-                                                          child: Text(
-                                                            " " +
-                                                                productsList[i][
-                                                                        'dealPercent']
-                                                                    .toString() +
-                                                                "% " +
-                                                                MyLocalizations.of(
-                                                                        context)
-                                                                    .getLocalizations(
-                                                                        "OFF"),
-                                                            style:
-                                                                hintSfboldwhitemed(),
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  )
+                                                ? buildBadge(
+                                                    context,
+                                                    productsList[i]
+                                                            ['dealPercent']
+                                                        .toString(),
+                                                    "OFF")
                                                 : Container()
                                           ],
                                         ),

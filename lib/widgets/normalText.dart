@@ -289,6 +289,31 @@ Widget buildPrice(
   );
 }
 
+Widget buildPriceBold(
+    BuildContext context, icon, title, value, isDeliveryChargeLoading) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: <Widget>[
+      Row(
+        children: [
+          icon == null ? Container() : icon,
+          Text(title, style: textbarlowMediumBlack()),
+        ],
+      ),
+      isDeliveryChargeLoading
+          ? SquareLoader()
+          : value == null
+              ? Container()
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Text(value, style: textbarlowMediumBlack())
+                  ],
+                ),
+    ],
+  );
+}
+
 Widget buildAddress(title, subTitle) {
   return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -494,4 +519,32 @@ Widget textMediumSmall(title) {
       overflow: TextOverflow.ellipsis,
       maxLines: 1,
       style: textBarlowRegularrdark());
+}
+
+Widget priceMrpText(title, subtitle) {
+  return Row(children: <Widget>[
+    Text(title, style: textbarlowBoldGreen()),
+    SizedBox(width: 3),
+    subtitle != null
+        ? Padding(
+            padding: const EdgeInsets.only(top: 5.0),
+            child: Text(subtitle, style: barlowregularlackstrike()),
+          )
+        : Container()
+  ]);
+}
+
+Widget textGreenPrimary(title, style) {
+  return Text(title, style: style);
+}
+
+Widget titleThreeLine(title) {
+  return Text(title,
+      maxLines: 3,
+      overflow: TextOverflow.ellipsis,
+      style: textBarlowSemiBoldBlack());
+}
+
+Widget discriptionMultipleLine(title) {
+  return Text(title, style: textbarlowRegularBlack());
 }
