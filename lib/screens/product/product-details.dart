@@ -346,13 +346,12 @@ class _ProductDetailsState extends State<ProductDetails>
                                         MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
                                       Expanded(
-                                        flex: 7,
-                                        child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 20, right: 20),
-                                            child: titleThreeLine(
-                                                '${productDetail['title'][0].toUpperCase()}${productDetail['title'].substring(1)}')),
-                                      ),
+                                          flex: 7,
+                                          child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 20, right: 20),
+                                              child: titleThreeLine(
+                                                  '${productDetail['title'][0].toUpperCase()}${productDetail['title'].substring(1)}'))),
                                       Expanded(
                                         flex: 3,
                                         child: Padding(
