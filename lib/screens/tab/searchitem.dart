@@ -396,20 +396,7 @@ class _SearchItemState extends State<SearchItem> {
                   }
                 });
               },
-              child: addToCartButton(
-                  context,
-                  '(${cartData['products'].length})  ',
-                  "$currency${cartData['subTotal'].toStringAsFixed(2)}",
-                  "GO_TO_CART",
-                  Icon(
-                    const IconData(
-                      0xe911,
-                      fontFamily: 'icomoon',
-                    ),
-                    color: Colors.black,
-                  ),
-                  false),
-            ),
+              child: cartInfoButton(context, cartData, currency)),
     );
   }
 }

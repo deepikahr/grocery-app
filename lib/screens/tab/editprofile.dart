@@ -528,36 +528,6 @@ class _EditProfileState extends State<EditProfile> {
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
             child: editProfileButton(context, "SUBMIT", profileEdit),
           )),
-      // Container(
-      //   height: 55,
-      //   margin: EdgeInsets.only(bottom: 20, left: 15, right: 15),
-      //   decoration: BoxDecoration(boxShadow: [
-      //     BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 5)
-      //   ]),
-      //   child: Padding(
-      //     padding: const EdgeInsets.only(left: 0.0, right: 0.0),
-      //     child: GFButton(
-      //       onPressed: updateUserInformation,
-      //       color: primary,
-      //       child: Row(
-      //         mainAxisAlignment: MainAxisAlignment.center,
-      //         children: <Widget>[
-      //           Text(
-      //             MyLocalizations.of(context).getLocalizations("SUBMIT"),
-      //             style: textBarlowRegularrBlack(),
-      //           ),
-      //           profileEdit
-      //               ? GFLoader(
-      //                   type: GFLoaderType.ios,
-      //                 )
-      //               : Text("")
-      //         ],
-      //       ),
-      //       textColor: Colors.black,
-      //       blockButton: true,
-      //     ),
-      //   ),
-      // ),
     );
   }
 

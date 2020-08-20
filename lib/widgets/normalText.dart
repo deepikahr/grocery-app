@@ -215,3 +215,48 @@ Widget profileText(BuildContext context, title) {
     ),
   );
 }
+
+Widget subCatTab(BuildContext context, title, Color color) {
+  return Container(
+    height: 35,
+    padding: EdgeInsets.only(left: 25, right: 25, top: 8),
+    margin: EdgeInsets.only(right: 15),
+    decoration: BoxDecoration(
+      color: color,
+      borderRadius: BorderRadius.all(
+        Radius.circular(4),
+      ),
+    ),
+    child: Text(
+      title,
+      textAlign: TextAlign.center,
+      style: textbarlowMediumBlackm(),
+    ),
+  );
+}
+
+Widget buildBadge(BuildContext context, title, subTitle) {
+  return Positioned(
+    child: Stack(
+      children: <Widget>[
+        Container(
+          width: 61,
+          height: 18,
+          decoration: BoxDecoration(
+              color: Color(0xFFFFAF72),
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10),
+                  bottomRight: Radius.circular(10))),
+        ),
+        Text(
+          " " +
+              title +
+              "% " +
+              MyLocalizations.of(context).getLocalizations(subTitle),
+          style: hintSfboldwhitemed(),
+          textAlign: TextAlign.center,
+        )
+      ],
+    ),
+  );
+}
