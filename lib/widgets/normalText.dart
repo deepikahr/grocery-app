@@ -168,8 +168,9 @@ Widget buildResentOtp(BuildContext context, title, isResentOtpLoading) {
 Widget buildBoldText(BuildContext context, title) {
   return GFTypography(
     showDivider: false,
-    child: Text(MyLocalizations.of(context).getLocalizations(title),
-        style: textbarlowMediumBlack()),
+    child: Expanded(
+        child: Text(MyLocalizations.of(context).getLocalizations(title),
+            style: textBarlowSemiBoldBlackbigg())),
   );
 }
 
@@ -257,6 +258,51 @@ Widget buildBadge(BuildContext context, title, subTitle) {
           textAlign: TextAlign.center,
         )
       ],
+    ),
+  );
+}
+
+Widget buildPrice(
+    BuildContext context, icon, title, value, isDeliveryChargeLoading) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: <Widget>[
+      Row(
+        children: [
+          icon == null ? Container() : icon,
+          Text(title, style: textBarlowRegularBlack()),
+        ],
+      ),
+      isDeliveryChargeLoading
+          ? SquareLoader()
+          : value == null
+              ? Container()
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Text(value, style: textbarlowBoldsmBlack())
+                  ],
+                ),
+    ],
+  );
+}
+
+Widget buildAddress(title, subTitle) {
+  return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Text(title, style: textBarlowRegularBlack()),
+        Text(subTitle, style: textBarlowRegularBlackdl()),
+      ]);
+}
+
+Widget timeZoneMessage(BuildContext context, title) {
+  return Container(
+    padding: EdgeInsets.only(left: 15, right: 15, bottom: 10),
+    child: Text(
+      MyLocalizations.of(context).getLocalizations(title) + " *",
+      style: textbarlowRegularaddRed(),
     ),
   );
 }
