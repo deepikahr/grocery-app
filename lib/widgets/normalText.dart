@@ -293,7 +293,9 @@ Widget buildAddress(title, subTitle) {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Text(title, style: textBarlowRegularBlack()),
-        Text(subTitle, style: textBarlowRegularBlackdl()),
+        subTitle == null
+            ? Container()
+            : Text(subTitle, style: textBarlowRegularBlackdl()),
       ]);
 }
 
@@ -303,6 +305,102 @@ Widget timeZoneMessage(BuildContext context, title) {
     child: Text(
       MyLocalizations.of(context).getLocalizations(title) + " *",
       style: textbarlowRegularaddRed(),
+    ),
+  );
+}
+
+Widget textWithValue(BuildContext context, title, value) {
+  return Container(
+    margin: EdgeInsets.only(left: 15, right: 15.0),
+    child: value == null
+        ? Text(
+            MyLocalizations.of(context).getLocalizations(title, true),
+            style: textBarlowMediumBlack(),
+          )
+        : Text(
+            MyLocalizations.of(context).getLocalizations(title, true) + value,
+            style: textBarlowMediumBlack(),
+          ),
+  );
+}
+
+Widget addressPage(BuildContext context, title) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.start,
+    children: <Widget>[
+      Text(
+        MyLocalizations.of(context).getLocalizations(title, true),
+        style: regular(),
+      ),
+    ],
+  );
+}
+
+Widget chatMessgae(BuildContext context, message, isOwn) {
+  return Padding(
+    padding: const EdgeInsets.only(left: 16.0),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: <Widget>[
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: isOwn
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.only(
+                            top: 12.0, bottom: 14.0, left: 16.0, right: 16.0),
+                        constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * 0.6,
+                        ),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(40),
+                              topRight: Radius.circular(0),
+                              bottomRight: Radius.circular(40),
+                              bottomLeft: Radius.circular(40),
+                            ),
+                            color: primary.withOpacity(0.60)),
+                        child: Text(
+                          message,
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ],
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.only(
+                            top: 12.0, bottom: 14.0, left: 16.0, right: 16.0),
+                        constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * 0.6,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(0),
+                            topRight: Radius.circular(40),
+                            bottomRight: Radius.circular(40),
+                            bottomLeft: Radius.circular(40),
+                          ),
+                          color: Color(0xFFF0F0F0),
+                        ),
+                        child: Text(
+                          message,
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ],
+                  ),
+          ),
+        ),
+      ],
     ),
   );
 }

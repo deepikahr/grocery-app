@@ -41,9 +41,6 @@ class _DrawerPageState extends State<DrawerPage> {
   }
 
   getToken() async {
-    LoginService.getWalletsHistory("jjj", "hh").then((value) {
-      print(value);
-    });
     await Common.getCurrency().then((value) {
       currency = value;
     });

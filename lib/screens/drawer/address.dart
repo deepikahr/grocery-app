@@ -14,8 +14,8 @@ import 'package:readymadeGroceryApp/service/address-service.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:flutter_map_picker/flutter_map_picker.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -32,12 +32,9 @@ class _AddressState extends State<Address> {
   bool addressLoading = false, isLocationLoading = false;
   List addressList = List();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
   PlacePickerResult pickedLocation;
   LocationData currentLocation;
   Location _location = new Location();
-  RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
   Map locationInfo;
   PermissionStatus _permissionGranted;
   @override
@@ -55,7 +52,6 @@ class _AddressState extends State<Address> {
     }
 
     await AddressService.getAddress().then((onValue) {
-      _refreshController.refreshCompleted();
       if (mounted) {
         setState(() {
           addressList = onValue['response_data'];
@@ -133,19 +129,10 @@ class _AddressState extends State<Address> {
             ? SquareLoader()
             : ListView(
                 children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            top: 10.0, bottom: 10.0, left: 20.0, right: 20.0),
-                        child: Text(
-                          MyLocalizations.of(context)
-                              .getLocalizations("SAVED_ADDRESS"),
-                          style: textbarlowSemiBoldBlack(),
-                        ),
-                      ),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        top: 10.0, bottom: 10.0, left: 20.0, right: 20.0),
+                    child: buildBoldText(context, "SAVED_ADDRESS"),
                   ),
                   addressList.length == 0
                       ? Center(
@@ -172,7 +159,7 @@ class _AddressState extends State<Address> {
                                       margin:
                                           EdgeInsets.only(bottom: 100, left: 7),
                                       child: Text(
-                                        (index + 1).toString(),
+                                        (index + 1).toString() + ".",
                                       ),
                                     ),
                                     Column(
@@ -187,20 +174,9 @@ class _AddressState extends State<Address> {
                                           child: Padding(
                                             padding: const EdgeInsets.only(
                                                 top: 10.0, left: 10.0),
-                                            child: Text(
-                                              '${addressList[index]['flatNo']}' +
-                                                  ', ' +
-                                                  '${addressList[index]['apartmentName']}' +
-                                                  ', ' +
-                                                  '${addressList[index]['address']}' +
-                                                  ', ' +
-                                                  '${addressList[index]['landmark']}' +
-                                                  ', '
-                                                      '${addressList[index]['postalCode'].toString()}' +
-                                                  ', ' +
-                                                  '${addressList[index]['mobileNumber'].toString()}',
-                                              style: textBarlowRegularBlack(),
-                                            ),
+                                            child: buildAddress(
+                                                '${addressList[index]['flatNo']}, ${addressList[index]['apartmentName']},${addressList[index]['address']}, ${addressList[index]['landmark']} ,${addressList[index]['postalCode']}, ${addressList[index]['mobileNumber'].toString()}',
+                                                null),
                                           ),
                                         ),
                                         SizedBox(height: 20),
