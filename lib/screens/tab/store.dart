@@ -16,8 +16,9 @@ import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:readymadeGroceryApp/widgets/categoryBlock.dart';
-import 'package:readymadeGroceryApp/widgets/productCard.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import 'package:readymadeGroceryApp/widgets/cardOverlay.dart';
+import 'package:readymadeGroceryApp/widgets/subCategoryProductCart.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -186,7 +187,6 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
             categoryList = value['response_data']['categories'];
             dealList = value['response_data']['dealsOfDay'];
             topDealList = value['response_data']['topDeals'];
-
             getAllDataMethod();
           });
         }
@@ -217,38 +217,32 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
     });
   }
 
+  Widget _buildTitleViewAllTile(String name, {Widget route}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        homePageBoldText(context, name),
+        InkWell(
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (BuildContext context) => route));
+          },
+          child: viewAllBoldText(context, "VIEW_ALL"),
+        )
+      ],
+    );
+  }
+
   categoryRow() {
     return Column(
       children: <Widget>[
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Expanded(
-              child: Text(
-                MyLocalizations.of(context)
-                    .getLocalizations("EXPLORE_BY_CATEGORIES"),
-                style: textBarlowMediumBlack(),
-              ),
-            ),
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AllCategories(
-                      locale: widget.locale,
-                      localizedValues: widget.localizedValues,
-                      getTokenValue: getTokenValue,
-                    ),
-                  ),
-                );
-              },
-              child: Text(
-                MyLocalizations.of(context).getLocalizations("VIEW_ALL"),
-                style: textBarlowMediumPrimary(),
-              ),
-            )
-          ],
+        _buildTitleViewAllTile(
+          "EXPLORE_BY_CATEGORIES",
+          route: AllCategories(
+            locale: widget.locale,
+            localizedValues: widget.localizedValues,
+            getTokenValue: getTokenValue,
+          ),
         ),
         SizedBox(height: 20),
         SizedBox(
@@ -338,10 +332,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
           },
           child: Stack(
             children: <Widget>[
-              Container(
-                height: 130,
-                color: bg,
-              ),
+              Container(height: 130, color: bg),
               Container(
                 height: 115,
                 margin: EdgeInsets.only(top: 10),
@@ -354,53 +345,41 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Padding(
-                      padding: EdgeInsets.only(
-                        right: locale == 'ar' ? 0 : 100,
-                        left: locale == 'ar' ? 100 : 0,
-                      ),
-                      child: Text(
-                        '${url['title'][0].toUpperCase()}${url['title'].substring(1)}',
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
-                        style: textbarlowBoldwhite(),
-                      ),
-                    ),
+                        padding: EdgeInsets.only(
+                          right: locale == 'ar' ? 0 : 100,
+                          left: locale == 'ar' ? 100 : 0,
+                        ),
+                        child: bannerTitle(
+                            '${url['title'][0].toUpperCase()}${url['title'].substring(1)}')),
                     InkWell(
-                      onTap: () {
-                        if (url['bannerType'] == "PRODUCT") {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ProductDetails(
-                                locale: widget.locale,
-                                localizedValues: widget.localizedValues,
-                                productID: url['productId'],
-                              ),
-                            ),
-                          );
-                        } else {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SubCategories(
+                        onTap: () {
+                          if (url['bannerType'] == "PRODUCT") {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ProductDetails(
                                   locale: widget.locale,
                                   localizedValues: widget.localizedValues,
-                                  catId: url['categoryId'],
-                                  catTitle:
-                                      '${url['title'][0].toUpperCase()}${url['title'].substring(1)}',
-                                  token: getTokenValue),
-                            ),
-                          );
-                        }
-                      },
-                      child: Row(
-                        children: <Widget>[
-                          Text(MyLocalizations.of(context)
-                              .getLocalizations("ORDER_NOW")),
-                          Icon(Icons.arrow_right)
-                        ],
-                      ),
-                    )
+                                  productID: url['productId'],
+                                ),
+                              ),
+                            );
+                          } else {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SubCategories(
+                                    locale: widget.locale,
+                                    localizedValues: widget.localizedValues,
+                                    catId: url['categoryId'],
+                                    catTitle:
+                                        '${url['title'][0].toUpperCase()}${url['title'].substring(1)}',
+                                    token: getTokenValue),
+                              ),
+                            );
+                          }
+                        },
+                        child: orderNow(context, "ORDER_NOW"))
                   ],
                 ),
               ),
@@ -440,38 +419,17 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   productRow(titleTranslate, list) {
     return Column(
       children: <Widget>[
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Text(
-              titleTranslate,
-              style: textBarlowMediumBlack(),
-            ),
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => AllProducts(
-                      locale: widget.locale,
-                      localizedValues: widget.localizedValues,
-                      productsList: list,
-                      currency: currency,
-                      token: getTokenValue,
-                    ),
-                  ),
-                );
-              },
-              child: Text(
-                MyLocalizations.of(context).getLocalizations("VIEW_ALL"),
-                style: textBarlowMediumPrimary(),
-              ),
-            )
-          ],
+        _buildTitleViewAllTile(
+          titleTranslate,
+          route: AllProducts(
+            locale: widget.locale,
+            localizedValues: widget.localizedValues,
+            productsList: list,
+            currency: currency,
+            token: getTokenValue,
+          ),
         ),
-        SizedBox(
-          height: 20,
-        ),
+        SizedBox(height: 20),
         GridView.builder(
           physics: ScrollPhysics(),
           shrinkWrap: true,
@@ -505,74 +463,28 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       },
                       child: Stack(
                         children: <Widget>[
-                          ProductCard(
-                            currency: currency,
-                            dealPercentage: list[i]['isDealAvailable'] == true
-                                ? double.parse(
-                                    list[i]['dealPercent'].toStringAsFixed(1))
-                                : null,
-                            productData: list[i],
-                            variantList: list[i]['variant'],
-                          ),
+                          SubCategoryProductCard(
+                              currency: currency,
+                              price: list[i]['variant'][0]['price'],
+                              productData: list[i],
+                              variantList: list[i]['variant'],
+                              isHome: true),
                           list[i]['isDealAvailable'] == true
-                              ? Positioned(
-                                  child: Stack(
-                                    children: <Widget>[
-                                      Container(
-                                        width: 61,
-                                        height: 18,
-                                        decoration: BoxDecoration(
-                                            color: Color(0xFFFFAF72),
-                                            borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(10),
-                                                bottomRight:
-                                                    Radius.circular(10))),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(2.0),
-                                        child: Text(
-                                          " " +
-                                              list[i]['dealPercent']
-                                                  .toString() +
-                                              "% " +
-                                              MyLocalizations.of(context)
-                                                  .getLocalizations("OFF"),
-                                          style: hintSfboldwhitemed(),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                )
-                              : Positioned(
-                                  child: Stack(
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.all(2.0),
-                                        child: Text(
-                                          " ",
-                                          style: hintSfboldwhitemed(),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                )
+                              ? buildBadge(context,
+                                  list[i]['dealPercent'].toString(), "OFF")
+                              : Container(),
                         ],
                       ),
                     ),
                   )
                 : Stack(
                     children: <Widget>[
-                      ProductCard(
-                        currency: currency,
-                        dealPercentage: list[i]['isDealAvailable'] == true
-                            ? double.parse(
-                                list[i]['dealPercent'].toStringAsFixed(1))
-                            : null,
-                        productData: list[i],
-                        variantList: list[i]['variant'],
-                      ),
+                      SubCategoryProductCard(
+                          currency: currency,
+                          price: list[i]['variant'][0]['price'],
+                          productData: list[i],
+                          variantList: list[i]['variant'],
+                          isHome: true),
                       CardOverlay()
                     ],
                   );
@@ -582,42 +494,20 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
     );
   }
 
-  topDealsRow(titleTranslate, list, dealsType) {
+  topDealsRow(titleTranslate, list) {
     return Column(
       children: <Widget>[
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Text(
-              titleTranslate,
-              style: textBarlowMediumBlack(),
-            ),
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => AllDealsList(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
-                        productsList: list,
-                        currency: currency,
-                        token: getTokenValue,
-                        dealType: dealsType,
-                        title: titleTranslate),
-                  ),
-                );
-              },
-              child: Text(
-                MyLocalizations.of(context).getLocalizations("VIEW_ALL"),
-                style: textBarlowMediumPrimary(),
-              ),
-            )
-          ],
+        _buildTitleViewAllTile(
+          titleTranslate,
+          route: AllDealsList(
+              locale: widget.locale,
+              localizedValues: widget.localizedValues,
+              productsList: list,
+              currency: currency,
+              token: getTokenValue,
+              title: titleTranslate),
         ),
-        SizedBox(
-          height: 20,
-        ),
+        SizedBox(height: 20),
         Container(
           height: 200,
           child: ListView.builder(
@@ -669,27 +559,14 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                         Colors.black.withOpacity(0.40), BlendMode.darken),
                     borderRadius: const BorderRadius.all(Radius.circular(4)),
                     child: Padding(
-                      padding: const EdgeInsets.only(
-                          bottom: 10, left: 10, right: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Text(
-                              '${list[i]['title'][0].toUpperCase()}${list[i]['title'].substring(1)}',
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: textBarlowSemiBoldwbig()),
-                          Text(
+                        padding: const EdgeInsets.only(
+                            bottom: 10, left: 10, right: 10),
+                        child: topDeals(
+                            '${list[i]['title'][0].toUpperCase()}${list[i]['title'].substring(1)}',
                             list[i]['dealPercent'].toString() +
                                 "% " +
                                 MyLocalizations.of(context)
-                                    .getLocalizations("OFF"),
-                            style: textBarlowRegularrwhsm(),
-                          )
-                        ],
-                      ),
-                    ),
+                                    .getLocalizations("OFF"))),
                   ),
                 ),
               );
@@ -700,42 +577,18 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
     );
   }
 
-  todayDealsRow(titleTranslate, list, dealsType) {
+  todayDealsRow(titleTranslate, list) {
     return Column(
       children: <Widget>[
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Text(
-              titleTranslate,
-              style: textBarlowMediumBlack(),
-            ),
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => AllDealsList(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
-                        productsList: list,
-                        currency: currency,
-                        token: getTokenValue,
-                        dealType: dealsType,
-                        title: titleTranslate),
-                  ),
-                );
-              },
-              child: Text(
-                MyLocalizations.of(context).getLocalizations("VIEW_ALL"),
-                style: textBarlowMediumPrimary(),
-              ),
-            )
-          ],
-        ),
-        SizedBox(
-          height: 20,
-        ),
+        _buildTitleViewAllTile(titleTranslate,
+            route: AllDealsList(
+                locale: widget.locale,
+                localizedValues: widget.localizedValues,
+                productsList: list,
+                currency: currency,
+                token: getTokenValue,
+                title: titleTranslate)),
+        SizedBox(height: 20),
         Container(
           height: 200,
           child: ListView.builder(
@@ -789,30 +642,14 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                         Colors.black.withOpacity(0.40), BlendMode.darken),
                     borderRadius: const BorderRadius.all(Radius.circular(4)),
                     child: Padding(
-                      padding: const EdgeInsets.only(
-                          bottom: 10, left: 10, right: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Text(
-                              list[i]['dealPercent'].toString() +
-                                  "% " +
-                                  MyLocalizations.of(context)
-                                      .getLocalizations("OFF"),
-                              style: textoswaldboldwhite()),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            '${list[i]['title'][0].toUpperCase()}${list[i]['title'].substring(1)}',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: textBarlowmediumsmallWhite(),
-                          )
-                        ],
-                      ),
-                    ),
+                        padding: const EdgeInsets.only(
+                            bottom: 10, left: 10, right: 10),
+                        child: todayDeal(
+                            list[i]['dealPercent'].toString() +
+                                "% " +
+                                MyLocalizations.of(context)
+                                    .getLocalizations("OFF"),
+                            '${list[i]['title'][0].toUpperCase()}${list[i]['title'].substring(1)}')),
                   ),
                 ),
               );
@@ -842,73 +679,54 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
         },
         child: isLoadingAllData || isBannerLoading
             ? SquareLoader()
-            : categoryList.length == 0 &&
+            : (categoryList.length == 0 &&
                     productsList.length == 0 &&
                     dealList.length == 0 &&
                     topDealList.length == 0 &&
-                    bannerList.length == 0
-                ? Center(
-                    child: Image.asset('lib/assets/images/no-orders.png'),
-                  )
+                    bannerList.length == 0)
+                ? noDataImage()
                 : SingleChildScrollView(
                     physics: ScrollPhysics(),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Column(
                         children: <Widget>[
-                          bannerList.length == 0
-                              ? Container()
-                              : SizedBox(height: 20),
-                          bannerList.length == 0 ? Container() : banner(),
-                          bannerList.length == 0
-                              ? Container()
-                              : SizedBox(height: 15),
-                          categoryList.length == 0
-                              ? Container()
-                              : categoryRow(),
-                          categoryList.length == 0 ? Container() : Divider(),
-                          categoryList.length == 0
-                              ? Container()
-                              : SizedBox(height: 10),
-                          topDealList.length == 0
-                              ? Container()
-                              : topDealsRow(
-                                  MyLocalizations.of(context)
-                                      .getLocalizations("TOP_DEALS"),
-                                  topDealList,
-                                  "TopDeals"),
-                          topDealList.length == 0
-                              ? Container()
-                              : SizedBox(height: 10),
-                          topDealList.length == 0 ? Container() : Divider(),
-                          topDealList.length == 0
-                              ? Container()
-                              : SizedBox(height: 10),
-                          productRow(
-                              MyLocalizations.of(context)
-                                  .getLocalizations("PRODUCTS"),
-                              productsList),
-                          productsList.length == 0
-                              ? Container()
-                              : SizedBox(height: 10),
-                          productsList.length == 0 ? Container() : Divider(),
-                          productsList.length == 0
-                              ? Container()
-                              : SizedBox(height: 10),
-                          dealList.length == 0
-                              ? Container()
-                              : todayDealsRow(
-                                  MyLocalizations.of(context)
-                                      .getLocalizations("DEALS_OF_THE_DAYS"),
-                                  dealList,
-                                  "TodayDeals"),
-                          dealList.length == 0
-                              ? Container()
-                              : SizedBox(height: 10),
-                          dealList.length == 0 ? Container() : Divider(),
-                          dealList.length == 0
-                              ? Container()
-                              : SizedBox(height: 10),
+                          bannerList.length > 0
+                              ? Column(
+                                  children: [banner(), Divider()],
+                                )
+                              : Container(),
+                          categoryList.length > 0
+                              ? Column(
+                                  children: [categoryRow(), Divider()],
+                                )
+                              : Container(),
+                          topDealList.length > 0
+                              ? Column(
+                                  children: [
+                                    topDealsRow("TOP_DEALS", topDealList),
+                                    Divider()
+                                  ],
+                                )
+                              : Container(),
+                          productsList.length > 0
+                              ? Column(
+                                  children: [
+                                    productRow("PRODUCTS", productsList),
+                                    Divider()
+                                  ],
+                                )
+                              : Container(),
+                          dealList.length > 0
+                              ? Column(
+                                  children: [
+                                    todayDealsRow(
+                                        "DEALS_OF_THE_DAYS", dealList),
+                                    Divider()
+                                  ],
+                                )
+                              : Container(),
+                          SizedBox(height: 10)
                         ],
                       ),
                     ),

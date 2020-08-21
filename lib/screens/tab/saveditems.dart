@@ -4,10 +4,8 @@ import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/product/product-details.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/fav-service.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
@@ -182,6 +180,7 @@ class _SavedItemsState extends State<SavedItems> {
                                         ['price'],
                                     productData: favProductList[i],
                                     variantList: favProductList[i]['variant'],
+                                    isHome: false,
                                   ),
                                   favProductList[i]['isDealAvailable'] == true
                                       ? buildBadge(
@@ -195,9 +194,7 @@ class _SavedItemsState extends State<SavedItems> {
                             );
                           },
                         )
-                      : Center(
-                          child: Image.asset('lib/assets/images/no-orders.png'),
-                        ),
+                      : noDataImage(),
       bottomNavigationBar: cartData == null
           ? Container(height: 1)
           : InkWell(

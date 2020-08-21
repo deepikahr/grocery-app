@@ -393,10 +393,7 @@ class _AllProductsState extends State<AllProducts> {
                                 Stack(
                                   children: <Widget>[
                                     subCategryByProduct.length == 0
-                                        ? Center(
-                                            child: Image.asset(
-                                                'lib/assets/images/no-orders.png'),
-                                          )
+                                        ? noDataImage()
                                         : GridView.builder(
                                             padding: EdgeInsets.symmetric(
                                                 horizontal: 16, vertical: 16),
@@ -475,6 +472,7 @@ class _AllProductsState extends State<AllProducts> {
                                                       variantList:
                                                           subCategryByProduct[i]
                                                               ['variant'],
+                                                      isHome: false,
                                                     ),
                                                     subCategryByProduct[i][
                                                                 'isDealAvailable'] ==
@@ -559,6 +557,7 @@ class _AllProductsState extends State<AllProducts> {
                                               productData: productsList[i],
                                               variantList: productsList[i]
                                                   ['variant'],
+                                              isHome: false,
                                             ),
                                             productsList[i]
                                                         ['isDealAvailable'] ==
@@ -582,6 +581,7 @@ class _AllProductsState extends State<AllProducts> {
                                             productData: productsList[i],
                                             variantList: productsList[i]
                                                 ['variant'],
+                                            isHome: false,
                                           ),
                                           CardOverlay()
                                         ],

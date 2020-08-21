@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/orders/orders.dart';
-import 'package:readymadeGroceryApp/service/localizations.dart';
-
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 class Thankyou extends StatefulWidget {
   final Map localizedValues;
@@ -24,20 +23,13 @@ class _ThankyouState extends State<Thankyou> {
         decoration: BoxDecoration(color: primary),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Image.asset('lib/assets/images/thank-you.png'),
+            thankuImage(),
             SizedBox(height: 10.0),
-            Text(
-              MyLocalizations.of(context).getLocalizations("ORDER_PLACED"),
-              textAlign: TextAlign.center,
-              style: textbarlowMediumBlack(),
-            ),
+            orderPlaceText(context, "ORDER_PLACED"),
             SizedBox(height: 13.0),
-            Text(
-              MyLocalizations.of(context).getLocalizations("THANK_YOU"),
-              textAlign: TextAlign.center,
-              style: textbarlowMediumlgBlack(),
-            ),
+            thankyouText(context, "THANK_YOU"),
             SizedBox(height: 30.0),
             InkWell(
                 onTap: () {

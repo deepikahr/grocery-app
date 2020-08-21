@@ -263,6 +263,7 @@ class _SearchItemState extends State<SearchItem> {
                                           productData: searchresult[index],
                                           variantList: searchresult[index]
                                               ['variant'],
+                                          isHome: false,
                                         ),
                                         searchresult[index]
                                                     ['isDealAvailable'] ==

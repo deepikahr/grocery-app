@@ -311,10 +311,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                   Stack(
                                     children: <Widget>[
                                       subCategryByProduct.length == 0
-                                          ? Center(
-                                              child: Image.asset(
-                                                  'lib/assets/images/no-orders.png'),
-                                            )
+                                          ? noDataImage()
                                           : GridView.builder(
                                               padding: EdgeInsets.symmetric(
                                                   horizontal: 16, vertical: 16),
@@ -399,6 +396,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                                         variantList:
                                                             subCategryByProduct[
                                                                 i]['variant'],
+                                                        isHome: false,
                                                       ),
                                                       subCategryByProduct[i][
                                                                   'isDealAvailable'] ==
@@ -428,10 +426,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                   Stack(
                                     children: <Widget>[
                                       catProductsList.length == 0
-                                          ? Center(
-                                              child: Image.asset(
-                                                  'lib/assets/images/no-orders.png'),
-                                            )
+                                          ? noDataImage()
                                           : GridView.builder(
                                               padding: EdgeInsets.symmetric(
                                                   horizontal: 16, vertical: 16),
@@ -513,6 +508,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                                         variantList:
                                                             catProductsList[i]
                                                                 ['variant'],
+                                                        isHome: false,
                                                       ),
                                                       catProductsList[i][
                                                                   'isDealAvailable'] ==

@@ -155,9 +155,7 @@ class _OrdersState extends State<Orders> {
                       SizedBox(height: 30)
                     ],
                   )
-                : Center(
-                    child: Image.asset('lib/assets/images/no-orders.png'),
-                  ),
+                : noDataImage(),
       ),
     );
   }
