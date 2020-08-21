@@ -6,6 +6,7 @@ import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -170,11 +171,7 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text(
-                      MyLocalizations.of(context)
-                          .getLocalizations("QUANTITY", true),
-                      style: textBarlowMediumBlack(),
-                    ),
+                    buildGFTypography(context, "QUANTITY", false, true),
                     Container(
                       decoration: BoxDecoration(
                           color: Colors.grey[300],
@@ -202,7 +199,8 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                           Padding(
                             padding:
                                 const EdgeInsets.only(left: 20.0, right: 20),
-                            child: Container(child: Text(quantity.toString())),
+                            child: Container(
+                                child: titleTwoLine(quantity.toString())),
                           ),
                           Text(''),
                           Padding(
@@ -269,40 +267,16 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                         }
                       },
                       activeColor: primary,
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                widget.dealPercentage != null
-                                    ? "${widget.currency}${((widget.variantsList[index]['price'] - (widget.variantsList[index]['price'] * (widget.dealPercentage / 100)))).toStringAsFixed(2)}"
-                                    : '${widget.currency}${(widget.variantsList[index]['price']).toStringAsFixed(2)}',
-                                style: textbarlowBoldGreen(),
-                              ),
-                              SizedBox(width: 3),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 5.0),
-                                child: widget.dealPercentage != null
-                                    ? Text(
-                                        '${widget.currency}${(widget.variantsList[index]['price']).toStringAsFixed(2)}',
-                                        style: barlowregularlackstrike(),
-                                      )
-                                    : Container(),
-                              ),
-                            ],
-                          ),
-                          SizedBox(width: 3),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 5.0),
-                            child: Text(
-                              '${widget.variantsList[index]['unit']} ',
-                              style: textbarlowBoldGreen(),
-                            ),
-                          ),
-                        ],
-                      ),
+                      secondary: textGreenPrimary(
+                          '${widget.variantsList[index]['unit']} ',
+                          textbarlowBoldGreen()),
+                      title: priceMrpText(
+                          widget.dealPercentage != null
+                              ? "${widget.currency}${((widget.variantsList[index]['price'] - (widget.variantsList[index]['price'] * (widget.dealPercentage / 100)))).toStringAsFixed(2)}"
+                              : '${widget.currency}${(widget.variantsList[index]['price']).toStringAsFixed(2)}',
+                          widget.dealPercentage != null
+                              ? '${widget.currency}${(widget.variantsList[index]['price']).toStringAsFixed(2)}'
+                              : null),
                     );
                   }),
               SizedBox(height: 5),
