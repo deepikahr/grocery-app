@@ -278,13 +278,13 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                   );
                 },
                 child: CategoryBlock(
-                  image: categoryList[index]['filePath'] == null
-                      ? categoryList[index]['imageUrl']
-                      : categoryList[index]['filePath'],
-                  title: categoryList[index]['title'],
-                  isPath:
-                      categoryList[index]['filePath'] == null ? false : true,
-                ),
+                    image: categoryList[index]['filePath'] == null
+                        ? categoryList[index]['imageUrl']
+                        : categoryList[index]['filePath'],
+                    title: categoryList[index]['title'],
+                    isPath:
+                        categoryList[index]['filePath'] == null ? false : true,
+                    isHome: true),
               );
             },
           ),

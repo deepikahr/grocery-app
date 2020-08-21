@@ -9,6 +9,7 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import 'package:readymadeGroceryApp/widgets/subCategoryProductCart.dart';
 
 SentryError sentryError = new SentryError();
@@ -182,25 +183,10 @@ class _SearchItemState extends State<SearchItem> {
                   ),
                 ),
                 isFirstTime
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(top: 100.0),
-                            child: Text(
-                              MyLocalizations.of(context)
-                                  .getLocalizations("TYPE_TO_SEARCH"),
-                              textAlign: TextAlign.center,
-                              style: hintSfMediumprimary(),
-                            ),
-                          ),
-                          SizedBox(height: 20.0),
-                          Icon(
-                            Icons.search,
-                            size: 50.0,
-                            color: primary,
-                          ),
-                        ],
+                    ? searchPage(
+                        context,
+                        "TYPE_TO_SEARCH",
+                        Icon(Icons.search, size: 50.0, color: primary),
                       )
                     : searchresult.length > 0
                         ? Column(
@@ -281,65 +267,13 @@ class _SearchItemState extends State<SearchItem> {
                                         searchresult[index]
                                                     ['isDealAvailable'] ==
                                                 true
-                                            ? Positioned(
-                                                child: Stack(
-                                                  children: <Widget>[
-                                                    Container(
-                                                      width: 61,
-                                                      height: 18,
-                                                      decoration: BoxDecoration(
-                                                          color:
-                                                              Color(0xFFFFAF72),
-                                                          borderRadius:
-                                                              BorderRadius.only(
-                                                                  topLeft: Radius
-                                                                      .circular(
-                                                                          10),
-                                                                  bottomRight: Radius
-                                                                      .circular(
-                                                                          10))),
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              2.0),
-                                                      child: Text(
-                                                        " " +
-                                                            searchresult[index][
-                                                                    'dealPercent']
-                                                                .toString() +
-                                                            "% " +
-                                                            MyLocalizations.of(
-                                                                    context)
-                                                                .getLocalizations(
-                                                                    "OFF"),
-                                                        style:
-                                                            hintSfboldwhitemed(),
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                              )
-                                            : Positioned(
-                                                child: Stack(
-                                                  children: <Widget>[
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              2.0),
-                                                      child: Text(
-                                                        " ",
-                                                        style:
-                                                            hintSfboldwhitemed(),
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                              )
+                                            ? buildBadge(
+                                                context,
+                                                searchresult[index]
+                                                        ['dealPercent']
+                                                    .toString(),
+                                                "OFF")
+                                            : Container()
                                       ],
                                     ),
                                   );
@@ -351,25 +285,11 @@ class _SearchItemState extends State<SearchItem> {
                             ? Center(
                                 child: SquareLoader(),
                               )
-                            : Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 100.0),
-                                    child: Text(
-                                      MyLocalizations.of(context)
-                                          .getLocalizations("NO_RESULT_FOUNDS"),
-                                      textAlign: TextAlign.center,
-                                      style: hintSfMediumprimary(),
-                                    ),
-                                  ),
-                                  SizedBox(height: 20.0),
-                                  Icon(
-                                    Icons.hourglass_empty,
-                                    size: 50.0,
-                                    color: primary,
-                                  ),
-                                ],
+                            : searchPage(
+                                context,
+                                "NO_RESULT_FOUNDS",
+                                Icon(Icons.hourglass_empty,
+                                    size: 50.0, color: primary),
                               )
               ],
             ),
@@ -396,20 +316,7 @@ class _SearchItemState extends State<SearchItem> {
                   }
                 });
               },
-              child: addToCartButton(
-                  context,
-                  '(${cartData['products'].length})  ',
-                  "$currency${cartData['subTotal'].toStringAsFixed(2)}",
-                  "GO_TO_CART",
-                  Icon(
-                    const IconData(
-                      0xe911,
-                      fontFamily: 'icomoon',
-                    ),
-                    color: Colors.black,
-                  ),
-                  false),
-            ),
+              child: cartInfoButton(context, cartData, currency)),
     );
   }
 }

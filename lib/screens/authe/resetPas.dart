@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -9,6 +7,7 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -126,31 +125,12 @@ class _ResetPasswordState extends State<ResetPassword> {
               Padding(
                 padding:
                     const EdgeInsets.only(left: 20.0, bottom: 5.0, right: 20.0),
-                child: GFTypography(
-                  showDivider: false,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 20.0, bottom: 2.0),
-                    child: RichText(
-                      text: TextSpan(
-                        children: <TextSpan>[
-                          TextSpan(
-                              text: MyLocalizations.of(context)
-                                  .getLocalizations("ENTER_PASSWORD", true),
-                              style: textBarlowRegularBlack()),
-                          TextSpan(
-                            text: ' ',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                child: buildGFTypography(context, "ENTER_PASSWORD", true, true),
               ),
               Container(
                 child: Padding(
                   padding: const EdgeInsets.only(
-                      left: 20.0, right: 20.0, bottom: 20.0),
+                      left: 20.0, right: 20.0, bottom: 10.0),
                   child: TextFormField(
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
@@ -201,23 +181,8 @@ class _ResetPasswordState extends State<ResetPassword> {
               Padding(
                 padding:
                     const EdgeInsets.only(left: 20.0, bottom: 5.0, right: 20.0),
-                child: GFTypography(
-                  showDivider: false,
-                  child: RichText(
-                    text: TextSpan(
-                      children: <TextSpan>[
-                        TextSpan(
-                            text: MyLocalizations.of(context).getLocalizations(
-                                "RE_ENTER_NEW_PASSWORD", true),
-                            style: textBarlowRegularBlack()),
-                        TextSpan(
-                          text: ' ',
-                          style: TextStyle(color: Colors.red),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                child: buildGFTypography(
+                    context, "RE_ENTER_NEW_PASSWORD", true, true),
               ),
               Container(
                 child: Padding(

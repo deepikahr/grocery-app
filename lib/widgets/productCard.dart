@@ -26,7 +26,6 @@ class ProductCard extends StatelessWidget {
     final CardTheme cardTheme = CardTheme.of(context);
     final double _defaultElevation = 1;
     final Clip _defaultClipBehavior = Clip.none;
-
     return Container(
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(12)),

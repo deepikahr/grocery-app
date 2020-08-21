@@ -18,6 +18,7 @@ import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import '../../service/constants.dart';
 import 'package:flutter_map_picker/flutter_map_picker.dart';
 
@@ -478,101 +479,42 @@ class _CheckoutState extends State<Checkout> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text(
-                                      MyLocalizations.of(context)
-                                          .getLocalizations("CART_SUMMARY"),
-                                      style: textBarlowSemiBoldBlackbigg()),
+                                  buildBoldText(context, "CART_SUMMARY"),
                                   SizedBox(height: 10),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Text(
-                                        MyLocalizations.of(context)
-                                                .getLocalizations("SUB_TOTAL") +
-                                            ' ( ${cartItem['products'].length} ' +
-                                            MyLocalizations.of(context)
-                                                .getLocalizations("ITEMS") +
-                                            ')',
-                                        style: textBarlowRegularBlack(),
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: <Widget>[
-                                          Text(
-                                            currency,
-                                            style: textbarlowBoldsmBlack(),
-                                          ),
-                                          Text(
-                                            '${cartItem['subTotal'].toDouble().toStringAsFixed(2)}',
-                                            style: textbarlowBoldsmBlack(),
-                                          )
-                                        ],
-                                      ),
-                                    ],
-                                  ),
+                                  buildPrice(
+                                      context,
+                                      null,
+                                      MyLocalizations.of(context)
+                                              .getLocalizations("SUB_TOTAL") +
+                                          ' ( ${cartItem['products'].length} ' +
+                                          MyLocalizations.of(context)
+                                              .getLocalizations("ITEMS") +
+                                          ')',
+                                      '$currency${cartItem['subTotal'].toDouble().toStringAsFixed(2)}',
+                                      false),
                                   cartItem['tax'] == 0
                                       ? Container()
                                       : SizedBox(height: 10),
                                   cartItem['tax'] == 0
                                       ? Container()
-                                      : Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Row(
-                                              children: <Widget>[
-                                                Image.asset(
-                                                    'lib/assets/icons/sale.png'),
-                                                SizedBox(
-                                                  width: 5,
-                                                ),
-                                                cartItem['taxInfo'] == null
-                                                    ? Text(
-                                                        MyLocalizations.of(
-                                                                context)
-                                                            .getLocalizations(
-                                                                "TAX"),
-                                                        style:
-                                                            textBarlowRegularBlack(),
-                                                      )
-                                                    : Text(
-                                                        MyLocalizations.of(
-                                                                    context)
-                                                                .getLocalizations(
-                                                                    "TAX") +
-                                                            " (" +
-                                                            cartItem['taxInfo']
-                                                                ['taxName'] +
-                                                            " " +
-                                                            cartItem['taxInfo']
-                                                                    ['amount']
-                                                                .toString() +
-                                                            "%)",
-                                                        style:
-                                                            textBarlowRegularBlack(),
-                                                      ),
-                                              ],
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: <Widget>[
-                                                Text(
-                                                  currency,
-                                                  style:
-                                                      textbarlowBoldsmBlack(),
-                                                ),
-                                                Text(
-                                                  '${cartItem['tax'].toDouble().toStringAsFixed(2)}',
-                                                  style:
-                                                      textbarlowBoldsmBlack(),
-                                                )
-                                              ],
-                                            ),
-                                          ],
-                                        ),
+                                      : buildPrice(
+                                          context,
+                                          Image.asset(
+                                              'lib/assets/icons/sale.png'),
+                                          cartItem['taxInfo'] == null
+                                              ? MyLocalizations.of(context)
+                                                  .getLocalizations("TAX")
+                                              : MyLocalizations.of(context)
+                                                      .getLocalizations("TAX") +
+                                                  " (" +
+                                                  cartItem['taxInfo']
+                                                      ['taxName'] +
+                                                  " " +
+                                                  cartItem['taxInfo']['amount']
+                                                      .toString() +
+                                                  "%)",
+                                          '$currency${cartItem['tax'].toDouble().toStringAsFixed(2)}',
+                                          false),
                                   SizedBox(height: 10),
                                   Form(
                                     key: _formKey,
@@ -585,17 +527,18 @@ class _CheckoutState extends State<Checkout> {
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: <Widget>[
-                                                    Text(
-                                                      MyLocalizations.of(
-                                                                  context)
-                                                              .getLocalizations(
-                                                                  "COUPON_APPLIED") +
-                                                          " (" +
-                                                          "${cartItem['couponCode']}"
-                                                              ")",
-                                                      style:
-                                                          textBarlowRegularBlack(),
-                                                    ),
+                                                    buildPrice(
+                                                        context,
+                                                        null,
+                                                        MyLocalizations.of(
+                                                                    context)
+                                                                .getLocalizations(
+                                                                    "COUPON_APPLIED") +
+                                                            " (" +
+                                                            "${cartItem['couponCode']}"
+                                                                ")",
+                                                        null,
+                                                        false),
                                                     Row(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment.end,
@@ -616,37 +559,14 @@ class _CheckoutState extends State<Checkout> {
                                                   ],
                                                 ),
                                                 SizedBox(height: 10),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: <Widget>[
-                                                    Text(
-                                                      MyLocalizations.of(
-                                                              context)
-                                                          .getLocalizations(
-                                                              "DISCOUNT"),
-                                                      style:
-                                                          textBarlowRegularBlack(),
-                                                    ),
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.end,
-                                                      children: <Widget>[
-                                                        Text(
-                                                          currency,
-                                                          style:
-                                                              textbarlowBoldsmBlack(),
-                                                        ),
-                                                        Text(
-                                                          '${cartItem['couponAmount'].toDouble().toStringAsFixed(2)}',
-                                                          style:
-                                                              textbarlowBoldsmBlack(),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
+                                                buildPrice(
+                                                    context,
+                                                    null,
+                                                    MyLocalizations.of(context)
+                                                        .getLocalizations(
+                                                            "DISCOUNT"),
+                                                    '$currency${cartItem['couponAmount'].toDouble().toStringAsFixed(2)}',
+                                                    false),
                                               ],
                                             )
                                           : Row(
@@ -733,129 +653,49 @@ class _CheckoutState extends State<Checkout> {
                                   ),
                                   SizedBox(height: 10),
                                   isDeliveryChargeFree == true
-                                      ? Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Text(
-                                              MyLocalizations.of(context)
-                                                  .getLocalizations(
-                                                      "DELIVERY_CHARGES"),
-                                              style: textBarlowRegularBlack(),
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: <Widget>[
-                                                Text(
-                                                  MyLocalizations.of(context)
-                                                      .getLocalizations("FREE"),
-                                                  style:
-                                                      textbarlowBoldsmBlack(),
-                                                )
-                                              ],
-                                            ),
-                                          ],
-                                        )
+                                      ? buildPrice(
+                                          context,
+                                          null,
+                                          MyLocalizations.of(context)
+                                              .getLocalizations(
+                                                  "DELIVERY_CHARGES"),
+                                          MyLocalizations.of(context)
+                                              .getLocalizations("FREE"),
+                                          false)
                                       : cartItem['deliveryCharges'] == 0 ||
                                               cartItem['deliveryCharges'] == '0'
                                           ? Container()
-                                          : Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: <Widget>[
-                                                Text(
-                                                  MyLocalizations.of(context)
-                                                      .getLocalizations(
-                                                          "DELIVERY_CHARGES"),
-                                                  style:
-                                                      textBarlowRegularBlack(),
-                                                ),
-                                                isDeliveryChargeLoading
-                                                    ? SquareLoader()
-                                                    : Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .end,
-                                                        children: <Widget>[
-                                                          Text(
-                                                            currency,
-                                                            style:
-                                                                textbarlowBoldsmBlack(),
-                                                          ),
-                                                          Text(
-                                                            '${cartItem['deliveryCharges'].toDouble().toStringAsFixed(2)}'
-                                                                .toString(),
-                                                            style:
-                                                                textbarlowBoldsmBlack(),
-                                                          )
-                                                        ],
-                                                      ),
-                                              ],
-                                            ),
-                                  SizedBox(height: 10),
-                                  cartItem['walletAmount'] > 0
-                                      ? Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Text(
+                                          : buildPrice(
+                                              context,
+                                              null,
                                               MyLocalizations.of(context)
                                                   .getLocalizations(
-                                                      "USED_WALLET_AMOUNT"),
-                                              style: textBarlowRegularBlack(),
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: <Widget>[
-                                                Text(
-                                                  currency +
-                                                      cartItem['walletAmount']
-                                                          .toDouble()
-                                                          .toStringAsFixed(2),
-                                                  style:
-                                                      textbarlowBoldsmBlack(),
-                                                )
-                                              ],
-                                            ),
-                                          ],
-                                        )
+                                                      "DELIVERY_CHARGES"),
+                                              '$currency${cartItem['deliveryCharges'].toDouble().toStringAsFixed(2)}',
+                                              isDeliveryChargeLoading),
+                                  SizedBox(height: 10),
+                                  cartItem['walletAmount'] > 0
+                                      ? buildPrice(
+                                          context,
+                                          null,
+                                          MyLocalizations.of(context)
+                                              .getLocalizations(
+                                                  "USED_WALLET_AMOUNT"),
+                                          '$currency${cartItem['walletAmount'].toDouble().toStringAsFixed(2)}',
+                                          false)
                                       : Container(),
                                   cartItem['walletAmount'] > 0
                                       ? SizedBox(height: 10)
                                       : Container(),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Text(
-                                        MyLocalizations.of(context)
-                                            .getLocalizations("TOTAL"),
-                                        style: textbarlowMediumBlack(),
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: <Widget>[
-                                          Text(
-                                            currency,
-                                            style: textBarlowBoldBlack(),
-                                          ),
-                                          Text(
-                                            '${cartItem['grandTotal'].toDouble().toStringAsFixed(2)}',
-                                            style: textBarlowBoldBlack(),
-                                          )
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 20),
-                                  Text(
+                                  buildPrice(
+                                      context,
+                                      null,
                                       MyLocalizations.of(context)
-                                          .getLocalizations("DELIVERY_ADDESS"),
-                                      style: textBarlowSemiBoldBlackbigg()),
+                                          .getLocalizations("TOTAL"),
+                                      '$currency${cartItem['grandTotal'].toDouble().toStringAsFixed(2)}',
+                                      false),
+                                  SizedBox(height: 20),
+                                  buildBoldText(context, "DELIVERY_ADDESS"),
                                 ],
                               ),
                             ),
@@ -891,24 +731,9 @@ class _CheckoutState extends State<Checkout> {
                                             groupValue: selecteAddressValue,
                                             activeColor: primary,
                                             value: i,
-                                            title: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    '${addressList[i]['flatNo']}, ${addressList[i]['apartmentName']},${addressList[i]['address']},',
-                                                    style:
-                                                        textBarlowRegularBlack(),
-                                                  ),
-                                                  Text(
-                                                    "${addressList[i]['landmark']} ,"
-                                                    '${addressList[i]['postalCode']}, ${addressList[i]['mobileNumber'].toString()}',
-                                                    style:
-                                                        textBarlowRegularBlackdl(),
-                                                  ),
-                                                ]),
+                                            title: buildAddress(
+                                                '${addressList[i]['flatNo']}, ${addressList[i]['apartmentName']},${addressList[i]['address']},',
+                                                "${addressList[i]['landmark']} ,'${addressList[i]['postalCode']}, ${addressList[i]['mobileNumber'].toString()}"),
                                             onChanged: addressRadioValueChanged,
                                           ),
                                           Row(
@@ -980,17 +805,13 @@ class _CheckoutState extends State<Checkout> {
                                           Padding(
                                             padding: EdgeInsets.only(
                                                 left: 20, right: 20),
-                                            child: Divider(
-                                              thickness: 1,
-                                            ),
+                                            child: Divider(thickness: 1),
                                           ),
                                         ],
                                       );
                                     },
                                   ),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
+                                  SizedBox(height: 20),
                                   InkWell(
                                       onTap: () async {
                                         _permissionGranted =
@@ -1040,109 +861,93 @@ class _CheckoutState extends State<Checkout> {
                             ),
                             SizedBox(height: 15),
                             Constants.predefined == "true"
-                                ? Container(
-                                    padding: EdgeInsets.only(
-                                        left: 15, right: 15, bottom: 10),
-                                    child: Text(
-                                      MyLocalizations.of(context)
-                                              .getLocalizations(
-                                                  "TIME_ZONE_MESSAGE") +
-                                          " *",
-                                      style: textbarlowRegularaddRed(),
-                                    ),
-                                  )
+                                ? timeZoneMessage(context, "TIME_ZONE_MESSAGE")
                                 : Container(),
                             SizedBox(height: 5),
-                            Container(
-                              padding: EdgeInsets.only(
-                                  left: 15, right: 15, bottom: 10),
-                              child: Text(
-                                MyLocalizations.of(context)
-                                    .getLocalizations("CHOOSE_DATE_TIME"),
-                                style: textbarlowRegularadd(),
-                              ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 15, right: 15),
+                              child: buildBoldText(context, "CHOOSE_DATE_TIME"),
                             ),
                             SizedBox(height: 15),
                             deliverySlotList.length > 0
-                                ? Row(
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: Container(
-                                          height: 50,
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          child: ListView.builder(
-                                            shrinkWrap: true,
-                                            scrollDirection: Axis.horizontal,
-                                            itemCount:
-                                                deliverySlotList.length == null
-                                                    ? 0
-                                                    : deliverySlotList.length,
-                                            itemBuilder: (BuildContext context,
-                                                int index) {
-                                              return Container(
-                                                color: Colors.grey[200],
-                                                width: 70,
-                                                child: Row(
-                                                  children: <Widget>[
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              top: 3,
-                                                              bottom: 3),
-                                                      child: Container(
-                                                        width: 60,
-                                                        margin: EdgeInsets.only(
-                                                          left: 10,
-                                                        ),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: dateSelectedValue !=
-                                                                      null &&
-                                                                  dateSelectedValue ==
-                                                                      index
-                                                              ? primary
-                                                              : Colors
-                                                                  .transparent,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                        ),
-                                                        child: InkWell(
-                                                          onTap: () =>
-                                                              dateSelectMethod(
-                                                                  index),
-                                                          child: Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: <Widget>[
-                                                              Text(
-                                                                '${deliverySlotList[index]['date'].split(' ').join('\n')}',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style:
-                                                                    textbarlowRegularBlack(),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  )
-                                : Container(),
-                            deliverySlotList.length > 0
                                 ? Column(
                                     children: <Widget>[
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: Container(
+                                              height: 50,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              child: ListView.builder(
+                                                shrinkWrap: true,
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                itemCount: deliverySlotList
+                                                            .length ==
+                                                        null
+                                                    ? 0
+                                                    : deliverySlotList.length,
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
+                                                  return Container(
+                                                    color: Colors.grey[200],
+                                                    width: 70,
+                                                    child: Row(
+                                                      children: <Widget>[
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  top: 3,
+                                                                  bottom: 3),
+                                                          child: Container(
+                                                            width: 60,
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                              left: 10,
+                                                            ),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color: dateSelectedValue !=
+                                                                          null &&
+                                                                      dateSelectedValue ==
+                                                                          index
+                                                                  ? primary
+                                                                  : Colors
+                                                                      .transparent,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                            ),
+                                                            child: InkWell(
+                                                                onTap: () =>
+                                                                    dateSelectMethod(
+                                                                        index),
+                                                                child: normalTextWithOutRow(
+                                                                    context,
+                                                                    deliverySlotList[index]
+                                                                            [
+                                                                            'date']
+                                                                        .split(
+                                                                            ' ')
+                                                                        .join(
+                                                                            '\n'),
+                                                                    true)),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                       Container(
                                         color: Color(0xFFF7F7F7),
                                         child: ListView.builder(
@@ -1166,19 +971,20 @@ class _CheckoutState extends State<Checkout> {
                                               children: <Widget>[
                                                 Expanded(
                                                   child: RadioListTile(
-                                                    value: i,
-                                                    groupValue: selectSlot,
-                                                    activeColor: primary,
-                                                    onChanged: (value) {
-                                                      selectedSlotSelected(
-                                                          value);
-                                                    },
-                                                    title: Text(
-                                                      '${deliverySlotList[dateSelectedValue]['timings'][i]['slot']}',
-                                                      style:
-                                                          textBarlowRegularBlack(),
-                                                    ),
-                                                  ),
+                                                      value: i,
+                                                      groupValue: selectSlot,
+                                                      activeColor: primary,
+                                                      onChanged: (value) {
+                                                        selectedSlotSelected(
+                                                            value);
+                                                      },
+                                                      title: normalTextWithOutRow(
+                                                          context,
+                                                          deliverySlotList[
+                                                                      dateSelectedValue]
+                                                                  ['timings'][i]
+                                                              ['slot'],
+                                                          false)),
                                                 )
                                               ],
                                             );
@@ -1192,12 +998,12 @@ class _CheckoutState extends State<Checkout> {
                         ),
                       ),
                       InkWell(
-                          onTap: placeOrder,
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 15.0),
-                            child: buttonPrimary(context, "PROCEED", false),
-                          )),
+                        onTap: placeOrder,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                          child: buttonPrimary(context, "PROCEED", false),
+                        ),
+                      ),
                     ],
                   ),
       ),

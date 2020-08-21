@@ -11,6 +11,7 @@ import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import 'package:readymadeGroceryApp/widgets/subCategoryProductCart.dart';
 
 SentryError sentryError = new SentryError();
@@ -183,37 +184,11 @@ class _SavedItemsState extends State<SavedItems> {
                                     variantList: favProductList[i]['variant'],
                                   ),
                                   favProductList[i]['isDealAvailable'] == true
-                                      ? Positioned(
-                                          child: Stack(
-                                            children: <Widget>[
-                                              Container(
-                                                width: 61,
-                                                height: 18,
-                                                decoration: BoxDecoration(
-                                                    color: Color(0xFFFFAF72),
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                            topLeft: Radius
-                                                                .circular(10),
-                                                            bottomRight:
-                                                                Radius.circular(
-                                                                    10))),
-                                              ),
-                                              Text(
-                                                " " +
-                                                    favProductList[i]
-                                                            ['dealPercent']
-                                                        .toString() +
-                                                    "% " +
-                                                    MyLocalizations.of(context)
-                                                        .getLocalizations(
-                                                            "OFF"),
-                                                style: hintSfboldwhitemed(),
-                                                textAlign: TextAlign.center,
-                                              )
-                                            ],
-                                          ),
-                                        )
+                                      ? buildBadge(
+                                          context,
+                                          favProductList[i]['dealPercent']
+                                              .toString(),
+                                          "OFF")
                                       : Container()
                                 ],
                               ),
@@ -239,20 +214,7 @@ class _SavedItemsState extends State<SavedItems> {
                 );
                 result.then((value) => getToken());
               },
-              child: addToCartButton(
-                  context,
-                  '(${cartData['products'].length})  ',
-                  "$currency${cartData['subTotal'].toStringAsFixed(2)}",
-                  "GO_TO_CART",
-                  Icon(
-                    const IconData(
-                      0xe911,
-                      fontFamily: 'icomoon',
-                    ),
-                    color: Colors.black,
-                  ),
-                  false),
-            ),
+              child: cartInfoButton(context, cartData, currency)),
     );
   }
 }

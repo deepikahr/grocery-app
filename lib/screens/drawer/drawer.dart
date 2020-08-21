@@ -17,7 +17,6 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import 'package:share/share.dart';
 import '../../main.dart';
-import '../../style/style.dart';
 
 SentryError sentryError = new SentryError();
 

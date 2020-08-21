@@ -12,6 +12,7 @@ import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 
 import 'package:readymadeGroceryApp/widgets/loader.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import 'package:stripe_payment/stripe_payment.dart';
 
 SentryError sentryError = new SentryError();
@@ -233,86 +234,33 @@ class _PaymentState extends State<Payment> {
                         color: Colors.grey[100],
                         child: Padding(
                           padding: const EdgeInsets.only(
-                              top: 8.0, bottom: 8.0, left: 20, right: 20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Column(
-                                children: <Widget>[
-                                  Text(
-                                    MyLocalizations.of(context)
-                                        .getLocalizations(
-                                            "DELIVERY_CHARGES", true),
-                                    style: textbarlowMediumBlack(),
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                children: <Widget>[
-                                  Row(
-                                    children: <Widget>[
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(top: 0.0),
-                                        child: Text(
-                                          currency,
-                                          style: textbarlowBoldBlack(),
-                                        ),
-                                      ),
-                                      Text(
-                                        cartItem['deliveryCharges']
-                                            .toDouble()
-                                            .toStringAsFixed(2),
-                                        style: textbarlowBoldBlack(),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              )
-                            ],
-                          ),
+                              top: 10, bottom: 10, left: 20.0, right: 20.0),
+                          child: buildPriceBold(
+                              context,
+                              null,
+                              MyLocalizations.of(context)
+                                  .getLocalizations("DELIVERY_CHARGES"),
+                              currency +
+                                  cartItem['deliveryCharges']
+                                      .toDouble()
+                                      .toStringAsFixed(2),
+                              false),
                         ),
                       ),
                 Container(
                   color: Colors.grey[100],
                   child: Padding(
                     padding: const EdgeInsets.only(
-                        top: 8.0, bottom: 8.0, left: 20, right: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Column(
-                          children: <Widget>[
-                            Text(
-                              MyLocalizations.of(context)
-                                  .getLocalizations("TOTAL", true),
-                              style: textbarlowMediumBlack(),
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: <Widget>[
-                            Row(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 0.0),
-                                  child: Text(
-                                    currency,
-                                    style: textbarlowBoldBlack(),
-                                  ),
-                                ),
-                                Text(
-                                  cartItem['grandTotal']
-                                      .toDouble()
-                                      .toStringAsFixed(2),
-                                  style: textbarlowBoldBlack(),
-                                ),
-                              ],
-                            )
-                          ],
-                        )
-                      ],
-                    ),
+                        top: 10, bottom: 10, left: 20.0, right: 20.0),
+                    child: buildPriceBold(
+                        context,
+                        null,
+                        MyLocalizations.of(context).getLocalizations("TOTAL"),
+                        currency +
+                            cartItem['grandTotal']
+                                .toDouble()
+                                .toStringAsFixed(2),
+                        false),
                   ),
                 ),
                 walletAmount == null || walletAmount == 0
@@ -323,46 +271,17 @@ class _PaymentState extends State<Payment> {
                             color: Colors.grey[100],
                             child: Padding(
                               padding: const EdgeInsets.only(
-                                  top: 8.0, bottom: 8.0, left: 20, right: 20),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Column(
-                                    children: <Widget>[
-                                      Text(
-                                        MyLocalizations.of(context)
-                                            .getLocalizations(
-                                                "TOTAL_WALLET_AMOUNT"),
-                                        style: textbarlowMediumBlack(),
-                                      ),
-                                    ],
-                                  ),
-                                  Column(
-                                    children: <Widget>[
-                                      Row(
-                                        children: <Widget>[
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 0.0),
-                                            child: Text(
-                                              currency,
-                                              style: textbarlowBoldBlack(),
-                                            ),
-                                          ),
-                                          Text(
-                                            (walletAmount -
-                                                    cartItem['walletAmount'])
-                                                .toDouble()
-                                                .toStringAsFixed(2),
-                                            style: textbarlowBoldBlack(),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
+                                  top: 10, bottom: 10, left: 20.0, right: 20.0),
+                              child: buildPriceBold(
+                                  context,
+                                  null,
+                                  MyLocalizations.of(context)
+                                      .getLocalizations("TOTAL_WALLET_AMOUNT"),
+                                  currency +
+                                      (walletAmount - cartItem['walletAmount'])
+                                          .toDouble()
+                                          .toStringAsFixed(2),
+                                  false),
                             ),
                           ),
                           Container(
@@ -374,21 +293,23 @@ class _PaymentState extends State<Payment> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
-                                  Text(
-                                    cartItem['walletAmount'] == 0
-                                        ? MyLocalizations.of(context)
-                                            .getLocalizations(
-                                                "USE_WALLET_AMOUNT")
-                                        : MyLocalizations.of(context)
-                                                .getLocalizations(
-                                                    "USED_WALLET_AMOUNT") +
-                                            " " +
-                                            currency +
-                                            cartItem['walletAmount']
-                                                .toDouble()
-                                                .toStringAsFixed(2),
-                                    style: textbarlowMediumBlack(),
-                                  ),
+                                  buildPriceBold(
+                                      context,
+                                      null,
+                                      cartItem['walletAmount'] == 0
+                                          ? MyLocalizations.of(context)
+                                              .getLocalizations(
+                                                  "USE_WALLET_AMOUNT")
+                                          : MyLocalizations.of(context)
+                                                  .getLocalizations(
+                                                      "USED_WALLET_AMOUNT") +
+                                              " " +
+                                              currency +
+                                              cartItem['walletAmount']
+                                                  .toDouble()
+                                                  .toStringAsFixed(2),
+                                      null,
+                                      false),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: <Widget>[
@@ -434,7 +355,7 @@ class _PaymentState extends State<Payment> {
                                       groupValue: groupValue,
                                       selected: isSelected,
                                       activeColor: primary,
-                                      title: Text(
+                                      title: textGreenPrimary(
                                         paymentTypes[index] == 'COD'
                                             ? MyLocalizations.of(context)
                                                 .getLocalizations(
@@ -442,7 +363,7 @@ class _PaymentState extends State<Payment> {
                                             : MyLocalizations.of(context)
                                                 .getLocalizations(
                                                     "PAY_BY_CARD"),
-                                        style: TextStyle(color: primary),
+                                        TextStyle(color: primary),
                                       ),
                                       onChanged: (int selected) {
                                         if (mounted) {

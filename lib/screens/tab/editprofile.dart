@@ -364,20 +364,13 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                   ),
                   Center(
-                    child: Text(
-                      userInfo['email'],
-                      style: textBarlowRegularBlack(),
-                    ),
+                    child: Text(userInfo['email'],
+                        style: textBarlowRegularBlack()),
                   ),
-                  SizedBox(height: 25),
                   Padding(
                     padding: const EdgeInsets.only(
                         left: 18.0, right: 18.0, bottom: 5, top: 5),
-                    child: Text(
-                      MyLocalizations.of(context)
-                          .getLocalizations("FIRST_NAME", true),
-                      style: textbarlowRegularBlack(),
-                    ),
+                    child: buildGFTypography(context, "FIRST_NAME", true, true),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 15.0, right: 15.0),
@@ -418,16 +411,11 @@ class _EditProfileState extends State<EditProfile> {
                       },
                     ),
                   ),
-                  SizedBox(height: 25),
                   Padding(
-                    padding: const EdgeInsets.only(
-                        left: 18.0, right: 18.0, bottom: 5, top: 5),
-                    child: Text(
-                      MyLocalizations.of(context)
-                          .getLocalizations("LAST_NAME", true),
-                      style: textbarlowRegularBlack(),
-                    ),
-                  ),
+                      padding: const EdgeInsets.only(
+                          left: 18.0, right: 18.0, bottom: 5, top: 5),
+                      child:
+                          buildGFTypography(context, "LAST_NAME", true, true)),
                   Padding(
                     padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                     child: TextFormField(
@@ -467,16 +455,11 @@ class _EditProfileState extends State<EditProfile> {
                       },
                     ),
                   ),
-                  SizedBox(height: 25),
                   Padding(
-                    padding: const EdgeInsets.only(
-                        left: 18.0, bottom: 5.0, right: 18.0),
-                    child: Text(
-                      MyLocalizations.of(context)
-                          .getLocalizations("CONTACT_NUMBER", true),
-                      style: textbarlowRegularBlack(),
-                    ),
-                  ),
+                      padding: const EdgeInsets.only(
+                          left: 18.0, bottom: 5.0, right: 18.0),
+                      child: buildGFTypography(
+                          context, "CONTACT_NUMBER", true, true)),
                   Padding(
                     padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                     child: TextFormField(
@@ -516,9 +499,6 @@ class _EditProfileState extends State<EditProfile> {
                       },
                     ),
                   ),
-                  SizedBox(
-                    height: 25,
-                  ),
                 ],
               ),
             ),
@@ -528,36 +508,6 @@ class _EditProfileState extends State<EditProfile> {
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
             child: editProfileButton(context, "SUBMIT", profileEdit),
           )),
-      // Container(
-      //   height: 55,
-      //   margin: EdgeInsets.only(bottom: 20, left: 15, right: 15),
-      //   decoration: BoxDecoration(boxShadow: [
-      //     BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 5)
-      //   ]),
-      //   child: Padding(
-      //     padding: const EdgeInsets.only(left: 0.0, right: 0.0),
-      //     child: GFButton(
-      //       onPressed: updateUserInformation,
-      //       color: primary,
-      //       child: Row(
-      //         mainAxisAlignment: MainAxisAlignment.center,
-      //         children: <Widget>[
-      //           Text(
-      //             MyLocalizations.of(context).getLocalizations("SUBMIT"),
-      //             style: textBarlowRegularrBlack(),
-      //           ),
-      //           profileEdit
-      //               ? GFLoader(
-      //                   type: GFLoaderType.ios,
-      //                 )
-      //               : Text("")
-      //         ],
-      //       ),
-      //       textColor: Colors.black,
-      //       blockButton: true,
-      //     ),
-      //   ),
-      // ),
     );
   }
 
