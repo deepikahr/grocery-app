@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -271,26 +272,59 @@ class _ProfileState extends State<Profile> {
                                               ),
                                             )
                                           : Center(
-                                              child: new Container(
-                                                width: 200.0,
-                                                height: 200.0,
-                                                decoration: new BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          20.0),
-                                                  image: new DecorationImage(
-                                                    fit: BoxFit.cover,
-                                                    image: new NetworkImage(userInfo[
-                                                                'filePath'] ==
-                                                            null
-                                                        ? userInfo['imageUrl']
-                                                        : Constants
-                                                                .imageUrlPath +
-                                                            "/tr:dpr-auto,tr:w-500" +
-                                                            userInfo[
-                                                                'filePath']),
+                                              child: CachedNetworkImage(
+                                                imageUrl: userInfo[
+                                                            'filePath'] ==
+                                                        null
+                                                    ? userInfo['imageUrl']
+                                                    : Constants.imageUrlPath +
+                                                        "/tr:dpr-auto,tr:w-500" +
+                                                        userInfo['filePath'],
+                                                imageBuilder:
+                                                    (context, imageProvider) =>
+                                                        Container(
+                                                  width: 200.0,
+                                                  height: 200.0,
+                                                  decoration: new BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20.0),
+                                                    image: DecorationImage(
+                                                        image: imageProvider,
+                                                        fit: BoxFit.cover,
+                                                        colorFilter:
+                                                            ColorFilter.mode(
+                                                                Colors.red,
+                                                                BlendMode
+                                                                    .colorBurn)),
                                                   ),
                                                 ),
+                                                placeholder: (context, url) =>
+                                                    Container(
+                                                        width: 200.0,
+                                                        height: 200.0,
+                                                        decoration:
+                                                            new BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      20.0),
+                                                        ),
+                                                        child: SquareLoader(
+                                                            size: 20.0)),
+                                                errorWidget: (context, url,
+                                                        error) =>
+                                                    Container(
+                                                        width: 200.0,
+                                                        height: 200.0,
+                                                        decoration:
+                                                            new BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      20.0),
+                                                        ),
+                                                        child: noDataImage()),
                                               ),
                                             ),
                                     ),

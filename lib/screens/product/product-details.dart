@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:readymadeGroceryApp/model/addToCart.dart';
@@ -304,36 +305,39 @@ class _ProductDetailsState extends State<ProductDetails>
                         children: <Widget>[
                           Column(
                             children: <Widget>[
-                              Container(
-                                padding: EdgeInsets.zero,
-                                margin: EdgeInsets.zero,
-                                height: 340,
-                                decoration: new BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(40),
-                                    bottomRight: Radius.circular(40),
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey,
-                                      blurRadius: 10.0,
-                                      offset: Offset(
-                                        2.0,
-                                        2.0,
-                                      ),
-                                    )
-                                  ],
-                                  image: new DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: new NetworkImage(
-                                      productDetail['filePath'] == null
-                                          ? productDetail['imageUrl']
-                                          : Constants.imageUrlPath +
-                                              "/tr:dpr-auto,tr:w-1000" +
-                                              productDetail['filePath'],
+                              CachedNetworkImage(
+                                imageUrl: productDetail['filePath'] == null
+                                    ? productDetail['imageUrl']
+                                    : Constants.imageUrlPath +
+                                        "/tr:dpr-auto,tr:w-1000" +
+                                        productDetail['filePath'],
+                                imageBuilder: (context, imageProvider) =>
+                                    Container(
+                                  padding: EdgeInsets.zero,
+                                  margin: EdgeInsets.zero,
+                                  height: 340,
+                                  decoration: new BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(40),
+                                      bottomRight: Radius.circular(40),
                                     ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.grey,
+                                          blurRadius: 10.0,
+                                          offset: Offset(2.0, 2.0))
+                                    ],
+                                    image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.cover,
+                                        colorFilter: ColorFilter.mode(
+                                            Colors.red, BlendMode.colorBurn)),
                                   ),
                                 ),
+                                placeholder: (context, url) => Container(
+                                    height: 340, child: SquareLoader()),
+                                errorWidget: (context, url, error) => Container(
+                                    height: 340, child: noDataImage()),
                               ),
                               SizedBox(
                                 height: 40,

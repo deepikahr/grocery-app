@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:getflutter/getflutter.dart';
@@ -11,6 +12,7 @@ import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 class SubCategoryProductCard extends StatefulWidget {
@@ -189,14 +191,31 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                 ClipRRect(
                   borderRadius:
                       const BorderRadius.vertical(top: Radius.circular(12)),
-                  child: Image.network(
-                    widget.productData['filePath'] != null
+                  child: CachedNetworkImage(
+                    imageUrl: widget.productData['filePath'] != null
                         ? Constants.imageUrlPath +
                             "/tr:dpr-auto,tr:w-500" +
                             widget.productData['filePath']
                         : widget.productData['imageUrl'],
-                    fit: BoxFit.cover,
-                    height: 123,
+                    imageBuilder: (context, imageProvider) => Container(
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      height: 123,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                            colorFilter: ColorFilter.mode(
+                                Colors.red, BlendMode.colorBurn)),
+                      ),
+                    ),
+                    placeholder: (context, url) => Container(
+                        width: MediaQuery.of(context).size.width * 0.5,
+                        height: 123,
+                        child: SquareLoader()),
+                    errorWidget: (context, url, error) => Container(
+                        width: MediaQuery.of(context).size.width * 0.5,
+                        height: 123,
+                        child: noDataImage()),
                   ),
                 ),
                 Padding(

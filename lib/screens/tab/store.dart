@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
@@ -388,25 +389,42 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                   : Positioned(
                       right: locale == 'ar' ? null : 0,
                       left: locale == 'ar' ? 0 : null,
-                      child: Container(
-                        height: 134,
-                        width: 134,
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.black.withOpacity(0.33),
-                                blurRadius: 6)
-                          ],
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: NetworkImage((url['filePath'] == null
-                                ? url['imageURL']
-                                : Constants.imageUrlPath +
-                                    "/tr:dpr-auto,tr:w-500" +
-                                    url['filePath'])),
-                            fit: BoxFit.cover,
+                      child: CachedNetworkImage(
+                        imageUrl: url['filePath'] == null
+                            ? url['imageURL']
+                            : Constants.imageUrlPath +
+                                "/tr:dpr-auto,tr:w-500" +
+                                url['filePath'],
+                        imageBuilder: (context, imageProvider) => Container(
+                          height: 134,
+                          width: 134,
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.black.withOpacity(0.33),
+                                  blurRadius: 6)
+                            ],
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.cover,
+                                colorFilter: ColorFilter.mode(
+                                    Colors.red, BlendMode.colorBurn)),
                           ),
                         ),
+                        placeholder: (context, url) => Container(),
+                        errorWidget: (context, url, error) => Container(
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black.withOpacity(0.33),
+                                    blurRadius: 6)
+                              ],
+                              shape: BoxShape.circle,
+                            ),
+                            height: 134,
+                            width: 134,
+                            child: noDataImage()),
                       ),
                     ),
             ],
@@ -544,30 +562,57 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                     );
                   }
                 },
-                child: Container(
-                  width: 150,
-                  margin: EdgeInsets.only(right: 15),
-                  child: GFImageOverlay(
-                    image: NetworkImage(list[i]['filePath'] == null
-                        ? list[i]['imageUrl']
-                        : Constants.imageUrlPath +
-                            "/tr:dpr-auto,tr:w-500" +
-                            list[i]['filePath']),
-                    boxFit: BoxFit.cover,
-                    color: Colors.black,
-                    colorFilter: ColorFilter.mode(
-                        Colors.black.withOpacity(0.40), BlendMode.darken),
-                    borderRadius: const BorderRadius.all(Radius.circular(4)),
-                    child: Padding(
-                        padding: const EdgeInsets.only(
-                            bottom: 10, left: 10, right: 10),
-                        child: topDeals(
-                            '${list[i]['title'][0].toUpperCase()}${list[i]['title'].substring(1)}',
-                            list[i]['dealPercent'].toString() +
-                                "% " +
-                                MyLocalizations.of(context)
-                                    .getLocalizations("OFF"))),
-                  ),
+                child: CachedNetworkImage(
+                  imageUrl: list[i]['filePath'] == null
+                      ? list[i]['imageUrl']
+                      : Constants.imageUrlPath +
+                          "/tr:dpr-auto,tr:w-500" +
+                          list[i]['filePath'],
+                  imageBuilder: (context, imageProvider) => Container(
+                      width: 150,
+                      margin: EdgeInsets.only(right: 15),
+                      child: GFImageOverlay(
+                          image: NetworkImage(list[i]['filePath'] == null
+                              ? list[i]['imageUrl']
+                              : Constants.imageUrlPath +
+                                  "/tr:dpr-auto,tr:w-500" +
+                                  list[i]['filePath']),
+                          boxFit: BoxFit.cover,
+                          color: Colors.black,
+                          colorFilter: ColorFilter.mode(
+                              Colors.black.withOpacity(0.40), BlendMode.darken),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(4)),
+                          child: Padding(
+                              padding: const EdgeInsets.only(
+                                  bottom: 10, left: 10, right: 10),
+                              child: topDeals(
+                                  '${list[i]['title'][0].toUpperCase()}${list[i]['title'].substring(1)}',
+                                  list[i]['dealPercent'].toString() +
+                                      "% " +
+                                      MyLocalizations.of(context)
+                                          .getLocalizations("OFF"))))),
+                  placeholder: (context, url) =>
+                      Container(width: 150, child: SquareLoader()),
+                  errorWidget: (context, url, error) => Container(
+                      width: 150,
+                      margin: EdgeInsets.only(right: 15),
+                      child: GFImageOverlay(
+                          image: AssetImage("lib/assets/images/no-orders.png"),
+                          boxFit: BoxFit.cover,
+                          colorFilter: ColorFilter.mode(
+                              Colors.black.withOpacity(0.40), BlendMode.darken),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(4)),
+                          child: Padding(
+                              padding: const EdgeInsets.only(
+                                  bottom: 10, left: 10, right: 10),
+                              child: topDeals(
+                                  '${list[i]['title'][0].toUpperCase()}${list[i]['title'].substring(1)}',
+                                  list[i]['dealPercent'].toString() +
+                                      "% " +
+                                      MyLocalizations.of(context)
+                                          .getLocalizations("OFF"))))),
                 ),
               );
             },
@@ -625,31 +670,57 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                     );
                   }
                 },
-                child: Container(
-                  width: 150,
-                  margin: EdgeInsets.only(right: 15),
-                  child: GFImageOverlay(
-                    image: NetworkImage(
-                      list[i]['filePath'] == null
-                          ? list[i]['imageUrl']
-                          : Constants.imageUrlPath +
-                              "/tr:dpr-auto,tr:w-500" +
-                              list[i]['filePath'],
-                    ),
-                    boxFit: BoxFit.cover,
-                    color: Colors.black,
-                    colorFilter: ColorFilter.mode(
-                        Colors.black.withOpacity(0.40), BlendMode.darken),
-                    borderRadius: const BorderRadius.all(Radius.circular(4)),
-                    child: Padding(
+                child: CachedNetworkImage(
+                  imageUrl: list[i]['filePath'] == null
+                      ? list[i]['imageUrl']
+                      : Constants.imageUrlPath +
+                          "/tr:dpr-auto,tr:w-500" +
+                          list[i]['filePath'],
+                  imageBuilder: (context, imageProvider) => Container(
+                      width: 150,
+                      margin: EdgeInsets.only(right: 15),
+                      child: GFImageOverlay(
+                          image: NetworkImage(list[i]['filePath'] == null
+                              ? list[i]['imageUrl']
+                              : Constants.imageUrlPath +
+                                  "/tr:dpr-auto,tr:w-500" +
+                                  list[i]['filePath']),
+                          boxFit: BoxFit.cover,
+                          color: Colors.black,
+                          colorFilter: ColorFilter.mode(
+                              Colors.black.withOpacity(0.40), BlendMode.darken),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(4)),
+                          child: Padding(
+                              padding: const EdgeInsets.only(
+                                  bottom: 10, left: 10, right: 10),
+                              child: todayDeal(
+                                  '${list[i]['title'][0].toUpperCase()}${list[i]['title'].substring(1)}',
+                                  list[i]['dealPercent'].toString() +
+                                      "% " +
+                                      MyLocalizations.of(context)
+                                          .getLocalizations("OFF"))))),
+                  errorWidget: (context, url, error) => Container(
+                    width: 150,
+                    margin: EdgeInsets.only(right: 15),
+                    child: GFImageOverlay(
+                      image: AssetImage("lib/assets/images/no-orders.png"),
+                      boxFit: BoxFit.cover,
+                      colorFilter: ColorFilter.mode(
+                          Colors.black.withOpacity(0.40), BlendMode.darken),
+                      borderRadius: const BorderRadius.all(Radius.circular(4)),
+                      child: Padding(
                         padding: const EdgeInsets.only(
                             bottom: 10, left: 10, right: 10),
                         child: todayDeal(
-                            list[i]['dealPercent'].toString() +
-                                "% " +
-                                MyLocalizations.of(context)
-                                    .getLocalizations("OFF"),
-                            '${list[i]['title'][0].toUpperCase()}${list[i]['title'].substring(1)}')),
+                          '${list[i]['title'][0].toUpperCase()}${list[i]['title'].substring(1)}',
+                          list[i]['dealPercent'].toString() +
+                              "% " +
+                              MyLocalizations.of(context)
+                                  .getLocalizations("OFF"),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               );
