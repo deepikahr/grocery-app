@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/orders/ordersDetails.dart';
@@ -166,27 +167,47 @@ class _OrdersState extends State<Orders> {
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
       child: Row(
         children: <Widget>[
-          Container(
-            height: 70,
-            width: 99,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(5)),
-              boxShadow: [
-                BoxShadow(color: Color(0xFF0000000A), blurRadius: 0.40)
-              ],
-              image: DecorationImage(
-                  image: orderDetails['product']['filePath'] == null &&
-                          orderDetails['product']['imageUrl'] == null
-                      ? AssetImage('lib/assets/images/no-orders.png')
-                      : NetworkImage(
-                          orderDetails['product']['filePath'] == null
-                              ? orderDetails['product']['imageUrl']
-                              : Constants.imageUrlPath +
-                                  "/tr:dpr-auto,tr:w-500" +
-                                  orderDetails['product']['filePath'],
-                        ),
-                  fit: BoxFit.cover),
+          CachedNetworkImage(
+            imageUrl: orderDetails['product']['filePath'] == null
+                ? orderDetails['product']['imageUrl']
+                : Constants.imageUrlPath +
+                    "/tr:dpr-auto,tr:w-500" +
+                    orderDetails['product']['filePath'],
+            imageBuilder: (context, imageProvider) => Container(
+              height: 70,
+              width: 99,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(5)),
+                boxShadow: [
+                  BoxShadow(color: Color(0xFF0000000A), blurRadius: 0.40)
+                ],
+                image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                    colorFilter:
+                        ColorFilter.mode(Colors.red, BlendMode.colorBurn)),
+              ),
             ),
+            placeholder: (context, url) => Container(
+                height: 70,
+                width: 99,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  boxShadow: [
+                    BoxShadow(color: Color(0xFF0000000A), blurRadius: 0.40)
+                  ],
+                ),
+                child: SquareLoader(size: 20.0)),
+            errorWidget: (context, url, error) => Container(
+                height: 70,
+                width: 99,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  boxShadow: [
+                    BoxShadow(color: Color(0xFF0000000A), blurRadius: 0.40)
+                  ],
+                ),
+                child: noDataImage()),
           ),
           SizedBox(width: 17),
           Container(

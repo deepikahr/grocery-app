@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -434,55 +435,88 @@ class _MyCartState extends State<MyCart> {
                                           Flexible(
                                             flex: 3,
                                             fit: FlexFit.tight,
-                                            child: Container(
-                                              height: 90,
-                                              width: 117,
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(6)),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Colors.black
-                                                        .withOpacity(0.10),
-                                                    blurRadius: 5,
-                                                  )
-                                                ],
-                                                image: DecorationImage(
-                                                  fit: BoxFit.cover,
-                                                  image: cartItem['products'][i]
-                                                                  [
-                                                                  'filePath'] ==
-                                                              null &&
-                                                          cartItem['products']
-                                                                      [i][
-                                                                  'imageUrl'] ==
-                                                              null
-                                                      ? AssetImage(
-                                                          'lib/assets/images/no-orders.png')
-                                                      : NetworkImage(
-                                                          cartItem['products']
-                                                                          [i][
-                                                                      'filePath'] ==
-                                                                  null
-                                                              ? cartItem[
-                                                                      'products']
-                                                                  [
-                                                                  i]['imageUrl']
-                                                              : Constants
-                                                                      .imageUrlPath +
-                                                                  "/tr:dpr-auto,tr:w-500" +
-                                                                  cartItem['products']
-                                                                          [i][
-                                                                      'filePath'],
-                                                        ),
+                                            child: CachedNetworkImage(
+                                              imageUrl: cartItem['products'][i]
+                                                          ['filePath'] ==
+                                                      null
+                                                  ? cartItem['products'][i]
+                                                      ['imageUrl']
+                                                  : Constants.imageUrlPath +
+                                                      "/tr:dpr-auto,tr:w-500" +
+                                                      cartItem['products'][i]
+                                                          ['filePath'],
+                                              imageBuilder:
+                                                  (context, imageProvider) =>
+                                                      Container(
+                                                height: 90,
+                                                width: 117,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(6)),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.black
+                                                          .withOpacity(0.10),
+                                                      blurRadius: 5,
+                                                    )
+                                                  ],
+                                                  image: DecorationImage(
+                                                      image: imageProvider,
+                                                      fit: BoxFit.cover,
+                                                      colorFilter:
+                                                          ColorFilter.mode(
+                                                              Colors.red,
+                                                              BlendMode
+                                                                  .colorBurn)),
                                                 ),
                                               ),
+                                              placeholder: (context, url) =>
+                                                  Container(
+                                                      height: 90,
+                                                      width: 117,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    6)),
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.10),
+                                                            blurRadius: 5,
+                                                          )
+                                                        ],
+                                                      ),
+                                                      child: SquareLoader(
+                                                          size: 20.0)),
+                                              errorWidget: (context, url,
+                                                      error) =>
+                                                  Container(
+                                                      height: 90,
+                                                      width: 117,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    6)),
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.10),
+                                                            blurRadius: 5,
+                                                          )
+                                                        ],
+                                                      ),
+                                                      child: noDataImage()),
                                             ),
                                           ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
+                                          SizedBox(width: 10),
                                           Flexible(
                                             flex: 6,
                                             fit: FlexFit.tight,

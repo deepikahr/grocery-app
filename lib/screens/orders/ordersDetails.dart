@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -300,31 +301,59 @@ class _OrderDetailsState extends State<OrderDetails> {
                                   horizontal: 10, vertical: 3),
                               child: Row(
                                 children: <Widget>[
-                                  Container(
-                                    height: 75,
-                                    width: 99,
-                                    decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(5)),
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Color(0xFF0000000A),
-                                            blurRadius: 0.40)
-                                      ],
-                                      image: DecorationImage(
-                                          image: order['filePath'] == null &&
-                                                  order['imageUrl'] == null
-                                              ? AssetImage(
-                                                  'lib/assets/images/no-orders.png')
-                                              : NetworkImage(
-                                                  order['filePath'] == null
-                                                      ? order['imageUrl']
-                                                      : Constants.imageUrlPath +
-                                                          "/tr:dpr-auto,tr:w-500" +
-                                                          order['filePath'],
-                                                ),
-                                          fit: BoxFit.cover),
+                                  CachedNetworkImage(
+                                    imageUrl: order['filePath'] == null
+                                        ? order['imageUrl']
+                                        : Constants.imageUrlPath +
+                                            "/tr:dpr-auto,tr:w-500" +
+                                            order['filePath'],
+                                    imageBuilder: (context, imageProvider) =>
+                                        Container(
+                                      height: 75,
+                                      width: 99,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(5)),
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color: Color(0xFF0000000A),
+                                              blurRadius: 0.40)
+                                        ],
+                                        image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.cover,
+                                            colorFilter: ColorFilter.mode(
+                                                Colors.red,
+                                                BlendMode.colorBurn)),
+                                      ),
                                     ),
+                                    placeholder: (context, url) => Container(
+                                        height: 75,
+                                        width: 99,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(5)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Color(0xFF0000000A),
+                                                blurRadius: 0.40)
+                                          ],
+                                        ),
+                                        child: SquareLoader(size: 20.0)),
+                                    errorWidget: (context, url, error) =>
+                                        Container(
+                                            height: 75,
+                                            width: 99,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(5)),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    color: Color(0xFF0000000A),
+                                                    blurRadius: 0.40)
+                                              ],
+                                            ),
+                                            child: noDataImage()),
                                   ),
                                   SizedBox(width: 17),
                                   Container(
@@ -471,8 +500,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                         null,
                                         MyLocalizations.of(context)
                                             .getLocalizations("COUPON_APPLIED"),
-                                        orderHistory['cart']['couponCode']
-                                            .toStringAsFixed(2),
+                                        orderHistory['cart']['couponCode'],
                                         false),
                                     SizedBox(height: 6),
                                     buildPriceBold(
