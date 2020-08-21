@@ -178,9 +178,7 @@ class _OrderDetailsState extends State<OrderDetails> {
       body: isLoading
           ? SquareLoader()
           : orderHistory == null
-              ? Center(
-                  child: Image.asset('lib/assets/images/no-orders.png'),
-                )
+              ? noDataImage()
               : ListView(
                   children: <Widget>[
                     Container(
@@ -447,9 +445,8 @@ class _OrderDetailsState extends State<OrderDetails> {
                               orderHistory['cart']['deliveryCharges'] == 0
                                   ? MyLocalizations.of(context)
                                       .getLocalizations("FREE")
-                                  : currency +
-                                      orderHistory['cart']['deliveryCharges']
-                                          .toStringAsFixed(2),
+                                  : orderHistory['cart']['deliveryCharges']
+                                      .toStringAsFixed(2),
                               false),
                           SizedBox(height: 6),
                           orderHistory['cart']['walletAmount'] == 0 ||
@@ -481,11 +478,11 @@ class _OrderDetailsState extends State<OrderDetails> {
                                     buildPriceBold(
                                         context,
                                         null,
-                                        MyLocalizations.of(context)
-                                            .getLocalizations("DISCOUNT"),
                                         currency +
-                                            orderHistory['cart']['couponAmount']
-                                                .toStringAsFixed(2),
+                                            MyLocalizations.of(context)
+                                                .getLocalizations("DISCOUNT"),
+                                        orderHistory['cart']['couponAmount']
+                                            .toStringAsFixed(2),
                                         false),
                                   ],
                                 ),

@@ -79,6 +79,7 @@ class _PaymentState extends State<Payment> {
 
     await Common.getCurrency().then((value) {
       currency = value;
+      print(currency);
     });
   }
 
@@ -144,6 +145,7 @@ class _PaymentState extends State<Payment> {
           isPlaceOrderLoading = false;
         });
       }
+      Common.setCartDataCount(0);
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
@@ -390,10 +392,7 @@ class _PaymentState extends State<Payment> {
                               ),
                             ],
                           )
-                        : Center(
-                            child:
-                                Image.asset('lib/assets/images/no-orders.png'),
-                          )
+                        : noDataImage()
               ],
             ),
       bottomNavigationBar: paymentTypes.length > 0

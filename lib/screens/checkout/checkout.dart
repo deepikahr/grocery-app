@@ -460,9 +460,7 @@ class _CheckoutState extends State<Checkout> {
         child: addressLoading || deliverySlotsLoading || isLoadingCart
             ? SquareLoader()
             : cartItem == null
-                ? Center(
-                    child: Image.asset('lib/assets/images/no-orders.png'),
-                  )
+                ? noDataImage()
                 : ListView(
                     children: <Widget>[
                       Container(

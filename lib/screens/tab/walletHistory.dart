@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/orders/ordersDetails.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
@@ -14,9 +13,7 @@ SentryError sentryError = new SentryError();
 class WalletHistory extends StatefulWidget {
   final String locale;
   final Map localizedValues;
-
   WalletHistory({Key key, this.locale, this.localizedValues}) : super(key: key);
-
   @override
   _WalletHistoryState createState() => _WalletHistoryState();
 }
@@ -124,9 +121,7 @@ class _WalletHistoryState extends State<WalletHistory> {
                     SizedBox(height: 30)
                   ],
                 )
-              : Center(
-                  child: Image.asset('lib/assets/images/no-orders.png'),
-                ),
+              : noDataImage(),
     );
   }
 
@@ -137,28 +132,18 @@ class _WalletHistoryState extends State<WalletHistory> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          walletText(context, "ORDER_ID", '#${walletDetails['orderID']}', true),
           walletText(
               context,
-              MyLocalizations.of(context).getLocalizations("ORDER_ID", true) +
-                  '#${walletDetails['orderID']}',
-              true),
-          walletText(
-              context,
-              MyLocalizations.of(context)
-                      .getLocalizations("TRANSECTION_TYPE", true) +
-                  (walletDetails['transactionType'] == "ORDER_PAYMENT"
-                      ? MyLocalizations.of(context)
-                          .getLocalizations("ORDER_PAYMENT")
-                      : walletDetails['transactionType'] == "ORDER_CANCELLED"
-                          ? MyLocalizations.of(context)
-                              .getLocalizations("ORDER_CANCELLED")
-                          : walletDetails['transactionType']),
+              "TRANSECTION_TYPE",
+              (walletDetails['transactionType'] == "ORDER_PAYMENT"
+                  ? "ORDER_PAYMENT"
+                  : walletDetails['transactionType'] == "ORDER_CANCELLED"
+                      ? "ORDER_CANCELLED"
+                      : walletDetails['transactionType']),
               false),
           walletText(
-              context,
-              MyLocalizations.of(context).getLocalizations("ORDER_ID", true) +
-                  '#${walletDetails['orderID']}',
-              false),
+              context, "ORDER_ID", '#${walletDetails['orderID']}', false),
           Divider()
         ],
       ),

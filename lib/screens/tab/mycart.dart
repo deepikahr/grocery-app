@@ -380,9 +380,7 @@ class _MyCartState extends State<MyCart> {
                   isCart: true,
                 )
               : cartItem == null
-                  ? Center(
-                      child: Image.asset('lib/assets/images/no-orders.png'),
-                    )
+                  ? noDataImage()
                   : Container(
                       child: ListView(
                         children: <Widget>[

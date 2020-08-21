@@ -472,7 +472,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                                 padding: const EdgeInsets.only(
                                                     left: 20.0, right: 20),
                                                 child: Container(
-                                                    child: Text(
+                                                    child: titleTwoLine(
                                                         quantity.toString())),
                                               ),
                                               Text(''),

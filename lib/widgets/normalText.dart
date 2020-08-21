@@ -31,12 +31,12 @@ Widget normalText(BuildContext context, title) {
   );
 }
 
-Widget walletText(BuildContext context, title, idOrderId) {
+Widget walletText(BuildContext context, title, subTitle, idOrderId) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.start,
     children: <Widget>[
       Text(
-        title,
+        MyLocalizations.of(context).getLocalizations(title, true) + subTitle,
         style: idOrderId ? textbarlowmedium() : textSMBarlowRegularrBlack(),
       ),
     ],
@@ -572,4 +572,148 @@ Widget searchPage(BuildContext context, title, icon) {
       icon
     ],
   );
+}
+
+homePageBoldText(BuildContext context, title) {
+  return Expanded(
+    child: Text(MyLocalizations.of(context).getLocalizations(title),
+        style: textBarlowMediumBlack()),
+  );
+}
+
+viewAllBoldText(BuildContext context, title) {
+  return Text(MyLocalizations.of(context).getLocalizations(title),
+      style: textBarlowMediumPrimary());
+}
+
+bannerTitle(title) {
+  return Text(title,
+      overflow: TextOverflow.ellipsis,
+      maxLines: 2,
+      style: textbarlowBoldwhite());
+}
+
+orderNow(BuildContext context, title) {
+  return Row(
+    children: <Widget>[
+      Text(MyLocalizations.of(context).getLocalizations(title)),
+      Icon(Icons.arrow_right)
+    ],
+  );
+}
+
+Widget icon(BuildContext context, icon, cartData) {
+  return Padding(
+    padding: const EdgeInsets.only(top: 8.0),
+    child: GFIconBadge(
+      child: Icon(
+        IconData(
+          icon,
+          fontFamily: 'icomoon',
+        ),
+      ),
+      counterChild: (cartData == null || cartData == 0)
+          ? Container()
+          : GFBadge(
+              child: Text(
+                '${cartData.toString()}',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Colors.white, fontFamily: "bold", fontSize: 11),
+              ),
+              shape: GFBadgeShape.circle,
+              color: Colors.red,
+              size: 25,
+            ),
+    ),
+  );
+}
+
+topDeals(title, subTitle) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    mainAxisAlignment: MainAxisAlignment.end,
+    children: <Widget>[
+      Text(title,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: textBarlowSemiBoldwbig()),
+      Text(subTitle, style: textBarlowRegularrwhsm())
+    ],
+  );
+}
+
+todayDeal(title, subTitle) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    mainAxisAlignment: MainAxisAlignment.end,
+    children: <Widget>[
+      Text(title, style: textoswaldboldwhite()),
+      SizedBox(
+        height: 5,
+      ),
+      Text(
+        subTitle,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        style: textBarlowmediumsmallWhite(),
+      )
+    ],
+  );
+}
+
+noDataImage() {
+  return Center(
+    child: Image.asset('lib/assets/images/no-orders.png'),
+  );
+}
+
+outOfStck(BuildContext context, title, subTtile) {
+  return Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: <Widget>[
+      Text(
+        MyLocalizations.of(context).getLocalizations(title),
+        style: textBarlowSemiBoldwhite(),
+      ),
+      Text(
+        MyLocalizations.of(context).getLocalizations(subTtile),
+        style: textBarlowSemiBoldwhite(),
+      ),
+    ],
+  );
+}
+
+buildCatTitle(title, isCenter, style) {
+  return Text(title,
+      overflow: TextOverflow.ellipsis,
+      style: style,
+      textAlign: isCenter ? TextAlign.center : TextAlign.start);
+}
+
+buildProductTitle(title) {
+  return Text(title,
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+      style: textbarlowRegularBlackb());
+}
+
+thankyouText(BuildContext context, title) {
+  return Text(
+    MyLocalizations.of(context).getLocalizations(title),
+    textAlign: TextAlign.center,
+    style: textbarlowMediumlgBlack(),
+  );
+}
+
+orderPlaceText(BuildContext context, title) {
+  return Text(
+    MyLocalizations.of(context).getLocalizations(title),
+    textAlign: TextAlign.center,
+    style: textbarlowMediumBlack(),
+  );
+}
+
+thankuImage() {
+  return Image.asset('lib/assets/images/thank-you.png');
 }

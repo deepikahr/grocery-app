@@ -135,9 +135,7 @@ class _AddressState extends State<Address> {
                     child: buildBoldText(context, "SAVED_ADDRESS"),
                   ),
                   addressList.length == 0
-                      ? Center(
-                          child: Image.asset('lib/assets/images/no-orders.png'),
-                        )
+                      ? noDataImage()
                       : ListView.builder(
                           physics: ScrollPhysics(),
                           shrinkWrap: true,

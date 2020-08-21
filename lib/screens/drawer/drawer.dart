@@ -111,9 +111,7 @@ class _DrawerPageState extends State<DrawerPage> {
                         localizedValues: widget.localizedValues,
                         currency: currency,
                         token: getTokenValue,
-                        dealType: "TopDeals",
-                        title: MyLocalizations.of(context)
-                            .getLocalizations("TOP_DEALS"))),
+                        title: "TOP_DEALS")),
                 getTokenValue
                     ? _buildMenuTileList(
                         'lib/assets/images/profileIcon.png', "PROFILE",
