@@ -1,8 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
-import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/screens/orders/ordersDetails.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
@@ -14,6 +12,7 @@ import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import '../../style/style.dart';
 
 SentryError sentryError = new SentryError();
@@ -147,9 +146,7 @@ class _OrdersState extends State<Orders> {
                                               "PENDING"
                                       ? orderTrack(orderList[i])
                                       : Container(),
-                                  SizedBox(
-                                    height: 20,
-                                  )
+                                  SizedBox(height: 20)
                                 ],
                               ),
                             );
@@ -159,9 +156,7 @@ class _OrdersState extends State<Orders> {
                       SizedBox(height: 30)
                     ],
                   )
-                : Center(
-                    child: Image.asset('lib/assets/images/no-orders.png'),
-                  ),
+                : noDataImage(),
       ),
     );
   }
@@ -172,27 +167,47 @@ class _OrdersState extends State<Orders> {
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
       child: Row(
         children: <Widget>[
-          Container(
-            height: 70,
-            width: 99,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(5)),
-              boxShadow: [
-                BoxShadow(color: Color(0xFF0000000A), blurRadius: 0.40)
-              ],
-              image: DecorationImage(
-                  image: orderDetails['product']['filePath'] == null &&
-                          orderDetails['product']['imageUrl'] == null
-                      ? AssetImage('lib/assets/images/no-orders.png')
-                      : NetworkImage(
-                          orderDetails['product']['filePath'] == null
-                              ? orderDetails['product']['imageUrl']
-                              : Constants.imageUrlPath +
-                                  "/tr:dpr-auto,tr:w-500" +
-                                  orderDetails['product']['filePath'],
-                        ),
-                  fit: BoxFit.cover),
+          CachedNetworkImage(
+            imageUrl: orderDetails['product']['filePath'] == null
+                ? orderDetails['product']['imageUrl']
+                : Constants.imageUrlPath +
+                    "/tr:dpr-auto,tr:w-500" +
+                    orderDetails['product']['filePath'],
+            imageBuilder: (context, imageProvider) => Container(
+              height: 70,
+              width: 99,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(5)),
+                boxShadow: [
+                  BoxShadow(color: Color(0xFF0000000A), blurRadius: 0.40)
+                ],
+                image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                    colorFilter:
+                        ColorFilter.mode(Colors.red, BlendMode.colorBurn)),
+              ),
             ),
+            placeholder: (context, url) => Container(
+                height: 70,
+                width: 99,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  boxShadow: [
+                    BoxShadow(color: Color(0xFF0000000A), blurRadius: 0.40)
+                  ],
+                ),
+                child: SquareLoader(size: 20.0)),
+            errorWidget: (context, url, error) => Container(
+                height: 70,
+                width: 99,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  boxShadow: [
+                    BoxShadow(color: Color(0xFF0000000A), blurRadius: 0.40)
+                  ],
+                ),
+                child: noDataImage()),
           ),
           SizedBox(width: 17),
           Container(
@@ -201,45 +216,30 @@ class _OrdersState extends State<Orders> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(
-                  '${MyLocalizations.of(context).getLocalizations("ORDER_ID", true)}  #${orderDetails['orderID']}' ??
-                      "",
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  style: textBarlowRegularrdark(),
-                ),
-                Text(
-                  '${orderDetails['product']['title'][0].toUpperCase()}${orderDetails['product']['title'].substring(1)}',
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  style: textBarlowRegularrdark(),
-                ),
+                orderPageText(context,
+                    '${MyLocalizations.of(context).getLocalizations("ORDER_ID", true)}  #${orderDetails['orderID']}'),
+                orderPageText(context,
+                    '${orderDetails['product']['title'][0].toUpperCase()}${orderDetails['product']['title'].substring(1)}'),
                 orderDetails['totalProduct'] == 1
                     ? Container()
                     : SizedBox(height: 5),
                 orderDetails['totalProduct'] == 1
                     ? Container()
-                    : Text(
+                    : textLightSmall(
                         MyLocalizations.of(context).getLocalizations("AND") +
                             ' ${orderDetails['totalProduct'].toString()} ' +
                             MyLocalizations.of(context)
                                 .getLocalizations("MORE_ITEMS"),
-                        style: textSMBarlowRegularrBlack(),
                       ),
                 SizedBox(height: 10),
-                Text(
-                  '$currency${orderDetails['grandTotal'].toStringAsFixed(2)}',
-                  style: titleLargeSegoeBlack(),
-                ),
+                buildBoldText(context,
+                    '$currency${orderDetails['grandTotal'].toStringAsFixed(2)}'),
                 SizedBox(height: 10),
-                Text(
-                  MyLocalizations.of(context)
-                          .getLocalizations("ORDERED", true) +
-                      DateFormat('dd/MM/yyyy, hh:mm a').format(
-                          DateTime.parse(orderDetails['createdAt'].toString())
-                              .toLocal()),
-                  style: textSMBarlowRegularrBlack(),
-                )
+                textLightSmall(MyLocalizations.of(context)
+                        .getLocalizations("ORDERED", true) +
+                    DateFormat('dd/MM/yyyy, hh:mm a').format(
+                        DateTime.parse(orderDetails['createdAt'].toString())
+                            .toLocal()))
               ],
             ),
           ),
@@ -254,99 +254,44 @@ class _OrdersState extends State<Orders> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          GFListTile(
-            avatar: Column(
-              children: <Widget>[
-                GFAvatar(
-                  backgroundColor:
-                      (orderDetails['orderStatus'] == "CONFIRMED" ||
-                              orderDetails['orderStatus'] == "OUT_FOR_DELIVERY")
-                          ? green
-                          : greyb.withOpacity(0.5),
-                  radius: 6,
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                CustomPaint(painter: LineDashedPainter()),
-              ],
-            ),
-            title: Text(
-              MyLocalizations.of(context).getLocalizations("ORDER_CONFIRMED"),
-              style: orderDetails['orderStatus'] == "CONFIRMED" ||
+          trackBuild(
+              context,
+              "ORDER_CONFIRMED",
+              (orderDetails['orderStatus'] == "CONFIRMED" ||
+                      orderDetails['orderStatus'] == "OUT_FOR_DELIVERY")
+                  ? green
+                  : greyb.withOpacity(0.5),
+              orderDetails['orderStatus'] == "CONFIRMED" ||
                       orderDetails['orderStatus'] == "OUT_FOR_DELIVERY"
                   ? titleSegoeGreen()
                   : titleSegoeGrey(),
-            ),
-            icon: Padding(
-              padding: EdgeInsets.only(bottom: 20),
-              child: SvgPicture.asset('lib/assets/icons/tick.svg'),
-            ),
-            subTitle: Text(
-              '',
-              style: textSMBarlowRegularrGreyb(),
-            ),
-          ),
-          GFListTile(
-            avatar: Column(
-              children: <Widget>[
-                GFAvatar(
-                  backgroundColor:
+              orderDetails['orderStatus'] == "CONFIRMED" ||
                       orderDetails['orderStatus'] == "OUT_FOR_DELIVERY"
-                          ? green
-                          : greyb.withOpacity(0.5),
-                  radius: 6,
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                CustomPaint(painter: LineDashedPainter()),
-              ],
-            ),
-            title: Text(
-              MyLocalizations.of(context).getLocalizations("OUT_FOR_DELIVERY"),
-              style: orderDetails['orderStatus'] == "OUT_FOR_DELIVERY"
+                  ? true
+                  : false,
+              false),
+          trackBuild(
+              context,
+              "OUT_FOR_DELIVERY",
+              orderDetails['orderStatus'] == "OUT_FOR_DELIVERY"
+                  ? green
+                  : greyb.withOpacity(0.5),
+              orderDetails['orderStatus'] == "OUT_FOR_DELIVERY"
                   ? titleSegoeGreen()
                   : titleSegoeGrey(),
-            ),
-            icon: orderDetails['orderStatus'] == "OUT_FOR_DELIVERY"
-                ? Padding(
-                    padding: EdgeInsets.only(bottom: 20),
-                    child: SvgPicture.asset('lib/assets/icons/tick.svg'),
-                  )
-                : null,
-            subTitle: Text(
-              '',
-              style: textSMBarlowRegularrGreyb(),
-            ),
-          ),
-          GFListTile(
-            avatar: Column(
-              children: <Widget>[
-                GFAvatar(
-                  backgroundColor: greyb.withOpacity(0.5),
-                  radius: 6,
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-              ],
-            ),
-            title: Text(
-              MyLocalizations.of(context).getLocalizations("ORDER_DELIVERED"),
-              style: titleSegoeGrey(),
-            ),
-            icon: orderDetails['orderStatus'] == "DELIVERED"
-                ? Padding(
-                    padding: EdgeInsets.only(bottom: 20),
-                    child: SvgPicture.asset('lib/assets/icons/tick.svg'),
-                  )
-                : null,
-            subTitle: Text(
-              '',
-              style: textSMBarlowRegularrGreyb(),
-            ),
-          ),
+              orderDetails['orderStatus'] == "DELIVERED" ? true : false,
+              false),
+          trackBuild(
+              context,
+              "ORDER_DELIVERED",
+              orderDetails['orderStatus'] == "DELIVERED"
+                  ? green
+                  : greyb.withOpacity(0.5),
+              orderDetails['orderStatus'] == "DELIVERED"
+                  ? titleSegoeGreen()
+                  : titleSegoeGrey(),
+              orderDetails['orderStatus'] == "DELIVERED" ? true : false,
+              true),
         ],
       ),
     );

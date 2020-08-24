@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
@@ -309,22 +310,44 @@ class _EditProfileState extends State<EditProfile> {
                                     ),
                                   )
                                 : Center(
-                                    child: new Container(
-                                      width: 200.0,
-                                      height: 200.0,
-                                      decoration: new BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(20.0),
-                                        image: new DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: new NetworkImage(
-                                              userInfo['filePath'] == null
-                                                  ? userInfo['imageUrl']
-                                                  : Constants.imageUrlPath +
-                                                      "/tr:dpr-auto,tr:w-500" +
-                                                      userInfo['filePath']),
+                                    child: CachedNetworkImage(
+                                      imageUrl: userInfo['filePath'] == null
+                                          ? userInfo['imageUrl']
+                                          : Constants.imageUrlPath +
+                                              "/tr:dpr-auto,tr:w-500" +
+                                              userInfo['filePath'],
+                                      imageBuilder: (context, imageProvider) =>
+                                          Container(
+                                        width: 200.0,
+                                        height: 200.0,
+                                        decoration: new BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(20.0),
+                                          image: DecorationImage(
+                                              image: imageProvider,
+                                              fit: BoxFit.cover,
+                                              colorFilter: ColorFilter.mode(
+                                                  Colors.red,
+                                                  BlendMode.colorBurn)),
                                         ),
                                       ),
+                                      placeholder: (context, url) => Container(
+                                          width: 200.0,
+                                          height: 200.0,
+                                          decoration: new BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(20.0),
+                                          ),
+                                          child: SquareLoader(size: 20.0)),
+                                      errorWidget: (context, url, error) =>
+                                          Container(
+                                              width: 200.0,
+                                              height: 200.0,
+                                              decoration: new BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(20.0),
+                                              ),
+                                              child: noDataImage()),
                                     ),
                                   )
                             : isPicUploading
@@ -364,20 +387,13 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                   ),
                   Center(
-                    child: Text(
-                      userInfo['email'],
-                      style: textBarlowRegularBlack(),
-                    ),
+                    child: Text(userInfo['email'],
+                        style: textBarlowRegularBlack()),
                   ),
-                  SizedBox(height: 25),
                   Padding(
                     padding: const EdgeInsets.only(
                         left: 18.0, right: 18.0, bottom: 5, top: 5),
-                    child: Text(
-                      MyLocalizations.of(context)
-                          .getLocalizations("FIRST_NAME", true),
-                      style: textbarlowRegularBlack(),
-                    ),
+                    child: buildGFTypography(context, "FIRST_NAME", true, true),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 15.0, right: 15.0),
@@ -418,16 +434,11 @@ class _EditProfileState extends State<EditProfile> {
                       },
                     ),
                   ),
-                  SizedBox(height: 25),
                   Padding(
-                    padding: const EdgeInsets.only(
-                        left: 18.0, right: 18.0, bottom: 5, top: 5),
-                    child: Text(
-                      MyLocalizations.of(context)
-                          .getLocalizations("LAST_NAME", true),
-                      style: textbarlowRegularBlack(),
-                    ),
-                  ),
+                      padding: const EdgeInsets.only(
+                          left: 18.0, right: 18.0, bottom: 5, top: 5),
+                      child:
+                          buildGFTypography(context, "LAST_NAME", true, true)),
                   Padding(
                     padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                     child: TextFormField(
@@ -467,16 +478,11 @@ class _EditProfileState extends State<EditProfile> {
                       },
                     ),
                   ),
-                  SizedBox(height: 25),
                   Padding(
-                    padding: const EdgeInsets.only(
-                        left: 18.0, bottom: 5.0, right: 18.0),
-                    child: Text(
-                      MyLocalizations.of(context)
-                          .getLocalizations("CONTACT_NUMBER", true),
-                      style: textbarlowRegularBlack(),
-                    ),
-                  ),
+                      padding: const EdgeInsets.only(
+                          left: 18.0, bottom: 5.0, right: 18.0),
+                      child: buildGFTypography(
+                          context, "CONTACT_NUMBER", true, true)),
                   Padding(
                     padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                     child: TextFormField(
@@ -516,9 +522,6 @@ class _EditProfileState extends State<EditProfile> {
                       },
                     ),
                   ),
-                  SizedBox(
-                    height: 25,
-                  ),
                 ],
               ),
             ),
@@ -528,36 +531,6 @@ class _EditProfileState extends State<EditProfile> {
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
             child: editProfileButton(context, "SUBMIT", profileEdit),
           )),
-      // Container(
-      //   height: 55,
-      //   margin: EdgeInsets.only(bottom: 20, left: 15, right: 15),
-      //   decoration: BoxDecoration(boxShadow: [
-      //     BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 5)
-      //   ]),
-      //   child: Padding(
-      //     padding: const EdgeInsets.only(left: 0.0, right: 0.0),
-      //     child: GFButton(
-      //       onPressed: updateUserInformation,
-      //       color: primary,
-      //       child: Row(
-      //         mainAxisAlignment: MainAxisAlignment.center,
-      //         children: <Widget>[
-      //           Text(
-      //             MyLocalizations.of(context).getLocalizations("SUBMIT"),
-      //             style: textBarlowRegularrBlack(),
-      //           ),
-      //           profileEdit
-      //               ? GFLoader(
-      //                   type: GFLoaderType.ios,
-      //                 )
-      //               : Text("")
-      //         ],
-      //       ),
-      //       textColor: Colors.black,
-      //       blockButton: true,
-      //     ),
-      //   ),
-      // ),
     );
   }
 

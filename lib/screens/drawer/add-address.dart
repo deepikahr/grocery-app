@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
@@ -11,6 +9,7 @@ import 'package:location/location.dart';
 import 'package:flutter_map_picker/flutter_map_picker.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -26,7 +25,6 @@ class AddAddress extends StatefulWidget {
       this.localizedValues})
       : super(key: key);
   final bool isCheckout, isProfile;
-  // final LocationResult pickedLocation;
   final PlacePickerResult pickedLocation;
   final Map<String, dynamic> updateAddressID;
   final LocationData currentLocation;
@@ -138,23 +136,10 @@ class _AddAddressState extends State<AddAddress> {
           children: <Widget>[
             Column(
               children: <Widget>[
-                SizedBox(
-                  height: 25,
-                ),
                 Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20.0, bottom: 5.0, right: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        MyLocalizations.of(context)
-                            .getLocalizations("LOCATION", true),
-                        style: textbarlowRegularBlack(),
-                      ),
-                    ],
-                  ),
-                ),
+                    padding: const EdgeInsets.only(
+                        left: 12.0, bottom: 5.0, right: 20.0),
+                    child: addressPage(context, "LOCATION")),
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
@@ -204,19 +189,9 @@ class _AddAddressState extends State<AddAddress> {
                   height: 25,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20.0, bottom: 5.0, right: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        MyLocalizations.of(context)
-                            .getLocalizations("HOUSE_FLAT_BLOCK_NUMBER", true),
-                        style: textbarlowRegularBlack(),
-                      ),
-                    ],
-                  ),
-                ),
+                    padding: const EdgeInsets.only(
+                        left: 20.0, bottom: 5.0, right: 20.0),
+                    child: addressPage(context, "HOUSE_FLAT_BLOCK_NUMBER")),
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
@@ -258,23 +233,11 @@ class _AddAddressState extends State<AddAddress> {
                     },
                   ),
                 ),
-                SizedBox(
-                  height: 25,
-                ),
+                SizedBox(height: 25),
                 Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20.0, bottom: 5.0, right: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        MyLocalizations.of(context)
-                            .getLocalizations("APARTMENT_NAME", true),
-                        style: textbarlowRegularBlack(),
-                      ),
-                    ],
-                  ),
-                ),
+                    padding: const EdgeInsets.only(
+                        left: 20.0, bottom: 5.0, right: 20.0),
+                    child: addressPage(context, "APARTMENT_NAME")),
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
@@ -317,23 +280,11 @@ class _AddAddressState extends State<AddAddress> {
                         address['apartmentName'] = value;
                       }),
                 ),
-                SizedBox(
-                  height: 25,
-                ),
+                SizedBox(height: 25),
                 Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20.0, bottom: 5.0, right: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        MyLocalizations.of(context)
-                            .getLocalizations("LANDMARK", true),
-                        style: textbarlowRegularBlack(),
-                      ),
-                    ],
-                  ),
-                ),
+                    padding: const EdgeInsets.only(
+                        left: 20.0, bottom: 5.0, right: 20.0),
+                    child: addressPage(context, "LANDMARK")),
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
@@ -376,23 +327,11 @@ class _AddAddressState extends State<AddAddress> {
                         address['landmark'] = value;
                       }),
                 ),
-                SizedBox(
-                  height: 25,
-                ),
+                SizedBox(height: 25),
                 Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20.0, bottom: 5.0, right: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        MyLocalizations.of(context)
-                            .getLocalizations("POSTAL_CODE", true),
-                        style: textbarlowRegularBlack(),
-                      ),
-                    ],
-                  ),
-                ),
+                    padding: const EdgeInsets.only(
+                        left: 20.0, bottom: 5.0, right: 20.0),
+                    child: addressPage(context, "POSTAL_CODE")),
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
@@ -436,23 +375,11 @@ class _AddAddressState extends State<AddAddress> {
                         address['postalCode'] = value;
                       }),
                 ),
-                SizedBox(
-                  height: 25,
-                ),
+                SizedBox(height: 25),
                 Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20.0, bottom: 5.0, right: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        MyLocalizations.of(context)
-                            .getLocalizations("CONTACT_NUMBER", true),
-                        style: textbarlowRegularBlack(),
-                      ),
-                    ],
-                  ),
-                ),
+                    padding: const EdgeInsets.only(
+                        left: 20.0, bottom: 5.0, right: 20.0),
+                    child: addressPage(context, "CONTACT_NUMBER")),
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
@@ -488,23 +415,11 @@ class _AddAddressState extends State<AddAddress> {
                     },
                   ),
                 ),
-                SizedBox(
-                  height: 25,
-                ),
+                SizedBox(height: 25),
                 Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20.0, bottom: 5.0, right: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        MyLocalizations.of(context)
-                            .getLocalizations("ADDRESS_TYPE", true),
-                        style: textbarlowRegularBlack(),
-                      ),
-                    ],
-                  ),
-                ),
+                    padding: const EdgeInsets.only(
+                        left: 20.0, bottom: 5.0, right: 20.0),
+                    child: addressPage(context, "ADDRESS_TYPE")),
                 ListView.builder(
                   physics: ScrollPhysics(),
                   shrinkWrap: true,
@@ -539,16 +454,14 @@ class _AddAddressState extends State<AddAddress> {
                               setSelectedRadio(value);
                             },
                           ),
-                          Text(type),
+                          normalTextWithOutRow(context, type, false)
                         ],
                       ),
                     );
                   },
                 ),
                 InkWell(
-                    onTap: () {
-                      addAddress();
-                    },
+                    onTap: addAddress,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child:

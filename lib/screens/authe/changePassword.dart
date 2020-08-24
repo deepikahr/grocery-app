@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
@@ -11,6 +9,7 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -118,30 +117,7 @@ class _ChangePasswordState extends State<ChangePassword> {
         child: Container(
           child: ListView(
             children: <Widget>[
-              Padding(
-                padding:
-                    const EdgeInsets.only(left: 20.0, bottom: 5.0, right: 20.0),
-                child: GFTypography(
-                  showDivider: false,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 20.0, bottom: 2.0),
-                    child: RichText(
-                      text: TextSpan(
-                        children: <TextSpan>[
-                          TextSpan(
-                              text: MyLocalizations.of(context)
-                                  .getLocalizations("ENTER_OLD_PASSWORD", true),
-                              style: textBarlowRegularBlack()),
-                          TextSpan(
-                            text: ' ',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              buildGFTypography(context, "ENTER_OLD_PASSWORD", true, true),
               Container(
                 child: Padding(
                   padding: const EdgeInsets.only(
@@ -192,27 +168,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                   ),
                 ),
               ),
-              Padding(
-                padding:
-                    const EdgeInsets.only(left: 20.0, bottom: 5.0, right: 20.0),
-                child: GFTypography(
-                  showDivider: false,
-                  child: RichText(
-                    text: TextSpan(
-                      children: <TextSpan>[
-                        TextSpan(
-                            text: MyLocalizations.of(context)
-                                .getLocalizations("ENTER_NEW_PASSWORD", true),
-                            style: textBarlowRegularBlack()),
-                        TextSpan(
-                          text: ' ',
-                          style: TextStyle(color: Colors.red),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+              buildGFTypography(context, "ENTER_NEW_PASSWORD", true, true),
               Container(
                 child: Padding(
                   padding: const EdgeInsets.only(
@@ -264,27 +220,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                   ),
                 ),
               ),
-              Padding(
-                padding:
-                    const EdgeInsets.only(left: 20.0, bottom: 5.0, right: 20.0),
-                child: GFTypography(
-                  showDivider: false,
-                  child: RichText(
-                    text: TextSpan(
-                      children: <TextSpan>[
-                        TextSpan(
-                            text: MyLocalizations.of(context).getLocalizations(
-                                "ENTER_CONFIRM_PASSWORD", true),
-                            style: textBarlowRegularBlack()),
-                        TextSpan(
-                          text: ' ',
-                          style: TextStyle(color: Colors.red),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+              buildGFTypography(context, "ENTER_CONFIRM_PASSWORD", true, true),
               Container(
                 child: Padding(
                   padding: const EdgeInsets.only(left: 20.0, right: 20.0),
@@ -341,12 +277,12 @@ class _ChangePasswordState extends State<ChangePassword> {
                 ),
               ),
               InkWell(
-                  onTap: changePassword,
-                  child: Padding(
+                onTap: changePassword,
+                child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: buttonPrimary(
-                        context, "SUBMIT", isChangePasswordLoading),
-                  )),
+                        context, "SUBMIT", isChangePasswordLoading)),
+              ),
             ],
           ),
         ),

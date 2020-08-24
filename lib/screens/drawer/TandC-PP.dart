@@ -65,7 +65,7 @@ class _TandCandPrivacyPolicyState extends State<TandCandPrivacyPolicy> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: appBarTransparent(context, "PRIVACY_POLICY"),
+      appBar: appBarTransparent(context, widget.title),
       body: isTandCandPPloading
           ? SquareLoader()
           : ListView(
