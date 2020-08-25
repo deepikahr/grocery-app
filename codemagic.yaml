@@ -148,6 +148,7 @@ workflows:
       - flutter packages pub get
       - xcrun simctl create test-iphone-simulator com.apple.CoreSimulator.SimDeviceType.iPhone-11-Pro-Max com.apple.CoreSimulator.SimRuntime.iOS-13-6
       - xcrun simctl create test-ipad-simulator com.apple.CoreSimulator.SimDeviceType.iPad-Pro--12-9-inch---4th-generation- com.apple.CoreSimulator.SimRuntime.iOS-13-6
+      - avdmanager create avd -n Android29 -k "system-images;android-29;google_apis;x86"
       - pub global activate screenshots
       - screenshots
     artifacts:
