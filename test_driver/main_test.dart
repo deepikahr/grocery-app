@@ -3,7 +3,7 @@ import 'package:screenshots/screenshots.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('SS-G1', () async {
+  group('SS-G1', () {
     FlutterDriver driver;
     final config = Config();
 
@@ -15,24 +15,20 @@ void main() {
       if (driver != null) await driver.close();
     });
 
-    // await LoginService.getLanguageJson('').then((value) async {
     test('Take screenshots', () async {
-      // Map localizedValues = value['response_data']['json'];
-      SerializableFinder store = find.text('Online Adres');
-      await driver.waitFor(store);
+      SerializableFinder viewAllButton = find.byValueKey('view-all-categories');
+      await driver.waitFor(viewAllButton);
       await screenshot(driver, config, '01_homepage');
-      // await driver.waitFor(viewall);
-      // await driver.tap(viewall);
-      // await screenshot(driver, config, '01_viewall');
-      // SerializableFinder savedItem = find.byType('SavedItems');
-      // await driver.waitFor(savedItem);
-      // await driver.tap(savedItem).then((value) async {
-      //   SerializableFinder myCart = find.byType('MyCart');
-      //   await driver.waitFor(myCart);
-      //   await screenshot(driver, config, '02_saveditems');
-      //   await driver.tap(myCart);
-      //   await screenshot(driver, config, '03_mycart');
-    }, timeout: Timeout(Duration(minutes: 5)));
+      await driver.tap(viewAllButton);
+      SerializableFinder firstCategory = find.byValueKey('0-first-category');
+      await driver.waitFor(firstCategory);
+      await screenshot(driver, config, '02_categories');
+      await driver.tap(firstCategory);
+      await screenshot(driver, config, '03_products');
+      SerializableFinder firstProduct = find.byValueKey('0-first-product');
+      await driver.waitFor(firstProduct);
+      await driver.tap(firstProduct);
+      await screenshot(driver, config, '04_product_details');
+    }, timeout: Timeout(Duration(minutes: 15)));
   });
-  // });
 }
