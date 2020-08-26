@@ -92,6 +92,7 @@ class _AllCategoriesState extends State<AllCategories>
                       mainAxisSpacing: 0),
                   itemBuilder: (BuildContext context, int index) {
                     return InkWell(
+                      key: ValueKey('$index-first-category'),
                       onTap: () {
                         Navigator.push(
                           context,

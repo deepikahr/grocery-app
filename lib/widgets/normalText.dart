@@ -441,10 +441,12 @@ Widget locationText(BuildContext context, title, value) {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(
-              MyLocalizations.of(context).getLocalizations(title, true),
-              style: textBarlowRegularrBlacksm(),
-            ),
+            title != null
+                ? Text(
+                    MyLocalizations.of(context).getLocalizations(title, true),
+                    style: textBarlowRegularrBlacksm(),
+                  )
+                : Container(),
             Text(
               value ?? "",
               overflow: TextOverflow.ellipsis,
@@ -581,9 +583,9 @@ homePageBoldText(BuildContext context, title) {
   );
 }
 
-viewAllBoldText(BuildContext context, title) {
+viewAllBoldText(BuildContext context, title, {valueKey}) {
   return Text(MyLocalizations.of(context).getLocalizations(title),
-      style: textBarlowMediumPrimary());
+      key: valueKey, style: textBarlowMediumPrimary());
 }
 
 bannerTitle(title) {
@@ -602,15 +604,12 @@ orderNow(BuildContext context, title) {
   );
 }
 
-Widget icon(BuildContext context, icon, cartData) {
+Widget buildIcon(BuildContext context, iconData, cartData) {
   return Padding(
     padding: const EdgeInsets.only(top: 8.0),
     child: GFIconBadge(
-      child: Icon(
-        IconData(
-          icon,
-          fontFamily: 'icomoon',
-        ),
+      child: new Icon(
+        iconData,
       ),
       counterChild: (cartData == null || cartData == 0)
           ? Container()

@@ -4,7 +4,7 @@ workflows:
     max_build_duration: 60
     environment:
       vars:
-        PREDEFINED: true
+        PREDEFINED: "true"
         API_URL: https://grocery-api.ionicfirebaseapp.com
         BASE_URL: https://grocery-web.ionicfirebaseapp.com
         IMAGE_URL_PATH: https://ik.imagekit.io/kplhvthqbi
@@ -76,7 +76,7 @@ workflows:
       xcode: latest
       cocoapods: default
       vars:
-        PREDEFINED: true
+        PREDEFINED: "true"
         API_URL: https://grocery-api-stg.ionicfirebaseapp.com
         BASE_URL: https://grocery-web-stg.ionicfirebaseapp.com
         IMAGE_URL_PATH: https://ik.imagekit.io/kplhvthqbi
@@ -113,3 +113,50 @@ workflows:
           - ujjwal.2518@gmail.com
           - montyvipul@gmail.com
           - nitish.k@pietechsolution.com
+
+  screenshots:
+    name: Take screenshots for appstore and playstore
+    max_build_duration: 60
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+      vars:
+        PREDEFINED: "true"
+        API_URL: https://grocery-api.ionicfirebaseapp.com
+        BASE_URL: https://grocery-web.ionicfirebaseapp.com
+        IMAGE_URL_PATH: https://ik.imagekit.io/kplhvthqbi
+        ONE_SIGNAL_KEY: Encrypted(Z0FBQUFBQmZKUkdfSUFNTmwwWTFOWW14a2dCZXNkaU5vWUZ1VmUyMDV4Y1pCRHV6OU1QNm5DOVhNQzNGYXE5UlA4Tjl0c2o3Qi1JbGhZSkM0ZzlXLXFldWU5dFUxcWttN2JtNlJyNGtKdURWU1llb3NHVWp4djMzN2lGaXBDRU1nTl9sWEJHY1dWclo=)
+        STRIPE_KEY: Encrypted(Z0FBQUFBQmZKUkVJcjIzYXplUDVHeFYzei0wcG5vNDlqR1l4MjU4SnNhczhzZFFfMmZlbnJ5TWc0UG1CQzFDeHZTSmFHV1AtMkVVYnNHZGFPd1BBWnRCbXo4el9fd0tEeGo0S2JVcHJUUjZlUW0zcFVra2dvb2RVdFVsU2JWb1d1V3NhdkZNNHRLb0Q=)
+        IOS_GOOGLE_MAP_API_KEY: Encrypted(Z0FBQUFBQmZKUTlyMUwzcFBvcjBKZGlJX1FqREhhRFRqMTc5WnRhN05LdERSbUluNDhXUWVQeFh3OHpweUdlOTZCNGxxcVdHVTVrWWZodWl0Sm5VM1JTNEhCdkczdmRWdTFiNm9COWRreWR5aURDbkNoX0g5WklORUIwQjZNN1pnWGZ2WjBaSlFLQTM=)
+        ANDROID_GOOGLE_MAP_API_KEY: Encrypted(Z0FBQUFBQmZKUTlyMUwzcFBvcjBKZGlJX1FqREhhRFRqMTc5WnRhN05LdERSbUluNDhXUWVQeFh3OHpweUdlOTZCNGxxcVdHVTVrWWZodWl0Sm5VM1JTNEhCdkczdmRWdTFiNm9COWRreWR5aURDbkNoX0g5WklORUIwQjZNN1pnWGZ2WjBaSlFLQTM=)
+        SH_FILE_VAR: Y2F0IDw8RU9UID4+IC5lbnYKQVBJX1VSTD0ke0FQSV9VUkx9CkJBU0VfVVJMPSR7QkFTRV9VUkx9Ck9ORV9TSUdOQUxfS0VZPSR7T05FX1NJR05BTF9LRVl9ClNUUklQRV9LRVk9JHtTVFJJUEVfS0VZfQpJTUFHRV9VUkxfUEFUSD0ke0lNQUdFX1VSTF9QQVRIfQpJT1NfR09PR0xFX01BUF9BUElfS0VZPSR7SU9TX0dPT0dMRV9NQVBfQVBJX0tFWX0KQU5EUk9JRF9HT09HTEVfTUFQX0FQSV9LRVk9JHtBTkRST0lEX0dPT0dMRV9NQVBfQVBJX0tFWX0KUFJFREVGSU5FRD0ke1BSRURFRklORUR9CkVPVA==
+    cache:
+      cache_paths: []
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: screenshots
+          include: true
+          source: true
+    scripts:
+      - flutter upgrade
+      - export LC_CTYPE=C; export LANG=C;
+      - echo $SH_FILE_VAR | base64 --decode > temp
+      - sh temp
+      - flutter packages pub get
+      - xcrun simctl create test-iphone-simulator com.apple.CoreSimulator.SimDeviceType.iPhone-11-Pro-Max com.apple.CoreSimulator.SimRuntime.iOS-13-6
+      - xcrun simctl create test-ipad-simulator com.apple.CoreSimulator.SimDeviceType.iPad-Pro--12-9-inch---4th-generation- com.apple.CoreSimulator.SimRuntime.iOS-13-6
+      - avdmanager create avd -n Android29 -k "system-images;android-29;google_apis;x86"
+      - pub global activate screenshots
+      - screenshots
+    artifacts:
+      - android/fastlane
+      - ios/fastlane
+      - build/**/outputs/**/mapping.txt
+      - flutter_drive.log
+    publishing:
+      email:
+        recipients:
+          - kakadiyasandip4world@gmail.com

@@ -10,6 +10,7 @@ import 'package:readymadeGroceryApp/screens/tab/searchitem.dart';
 import 'package:readymadeGroceryApp/screens/tab/store.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -24,12 +25,14 @@ class Home extends StatefulWidget {
   final int currentIndex;
   final Map localizedValues;
   final String locale;
-  Home({
-    Key key,
-    this.currentIndex,
-    this.locale,
-    this.localizedValues,
-  }) : super(key: key);
+  final bool isTest;
+  Home(
+      {Key key,
+      this.currentIndex,
+      this.locale,
+      this.localizedValues,
+      this.isTest})
+      : super(key: key);
 
   @override
   _HomeState createState() => _HomeState();
@@ -56,9 +59,10 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       }
     }
     getToken();
-    getResult();
+    if (widget.isTest == null || !widget.isTest) {
+      getResult();
+    }
     getGlobalSettingsData();
-
     tabController = TabController(length: 4, vsync: this);
     super.initState();
   }
@@ -127,7 +131,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   }
 
   deliveryAddress() {
-    return locationText(context, "YOUR_LOCATION", addressData ?? "");
+    return locationText(context, addressData == null ? null : "YOUR_LOCATION",
+        addressData ?? Constants.appName);
   }
 
   getResult() async {
@@ -182,16 +187,40 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     List<BottomNavigationBarItem> items = [
       BottomNavigationBarItem(
           title: Text(MyLocalizations.of(context).getLocalizations("STORE")),
-          icon: icon(context, 0xe90f, 0)),
+          icon: buildIcon(
+              context,
+              const IconData(
+                0xe90f,
+                fontFamily: 'icomoon',
+              ),
+              0)),
       BottomNavigationBarItem(
           title: Text(MyLocalizations.of(context).getLocalizations("FAVORITE")),
-          icon: icon(context, 0xe90d, 0)),
+          icon: buildIcon(
+              context,
+              const IconData(
+                0xe90d,
+                fontFamily: 'icomoon',
+              ),
+              0)),
       BottomNavigationBarItem(
           title: Text(MyLocalizations.of(context).getLocalizations("MY_CART")),
-          icon: icon(context, 0xe911, cartData)),
+          icon: buildIcon(
+              context,
+              const IconData(
+                0xe911,
+                fontFamily: 'icomoon',
+              ),
+              cartData)),
       BottomNavigationBarItem(
           title: Text(MyLocalizations.of(context).getLocalizations("PROFILE")),
-          icon: icon(context, 0xe912, 0)),
+          icon: buildIcon(
+              context,
+              const IconData(
+                0xe912,
+                fontFamily: 'icomoon',
+              ),
+              0)),
     ];
 
     List<Widget> _screens = [

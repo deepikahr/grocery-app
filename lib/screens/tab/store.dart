@@ -218,7 +218,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
     });
   }
 
-  Widget _buildTitleViewAllTile(String name, {Widget route}) {
+  Widget _buildTitleViewAllTile(String name, {Widget route, valueKey}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
@@ -228,7 +228,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
             Navigator.push(context,
                 MaterialPageRoute(builder: (BuildContext context) => route));
           },
-          child: viewAllBoldText(context, "VIEW_ALL"),
+          child: viewAllBoldText(context, "VIEW_ALL", valueKey: valueKey),
         )
       ],
     );
@@ -237,14 +237,13 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   categoryRow() {
     return Column(
       children: <Widget>[
-        _buildTitleViewAllTile(
-          "EXPLORE_BY_CATEGORIES",
-          route: AllCategories(
-            locale: widget.locale,
-            localizedValues: widget.localizedValues,
-            getTokenValue: getTokenValue,
-          ),
-        ),
+        _buildTitleViewAllTile("EXPLORE_BY_CATEGORIES",
+            route: AllCategories(
+              locale: widget.locale,
+              localizedValues: widget.localizedValues,
+              getTokenValue: getTokenValue,
+            ),
+            valueKey: ValueKey('view-all-categories')),
         SizedBox(height: 20),
         SizedBox(
           height: 100,

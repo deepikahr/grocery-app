@@ -343,6 +343,8 @@ class _SubCategoriesState extends State<SubCategories> {
                                                 }
 
                                                 return InkWell(
+                                                  key: ValueKey(
+                                                      '$i-first-product'),
                                                   onTap: () {
                                                     var result = Navigator.push(
                                                       context,
@@ -457,6 +459,8 @@ class _SubCategoriesState extends State<SubCategories> {
                                                 }
 
                                                 return InkWell(
+                                                  key: ValueKey(
+                                                      '$i-first-product'),
                                                   onTap: () {
                                                     var result = Navigator.push(
                                                       context,

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:device_info/device_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -13,30 +12,22 @@ import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
-import 'dart:io';
 
 SentryError sentryError = new SentryError();
-
-bool get isInDebugMode {
-  bool inDebugMode = false;
-  assert(inDebugMode = true);
-  return inDebugMode;
-}
-
 Timer oneSignalTimer;
 
 void main() {
-  initializeMain();
+  initializeMain(isTest: false);
 }
 
-void initializeMain() async {
+void initializeMain({bool isTest}) async {
   await DotEnv().load('.env');
   WidgetsFlutterBinding.ensureInitialized();
-  configLocalNotification();
-  oneSignalTimer = Timer.periodic(Duration(seconds: 4), (timer) {
-    configLocalNotification();
-  });
-  runZoned<Future<Null>>(() {
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarBrightness: Brightness.dark,
+      statusBarIconBrightness: Brightness.dark));
+  // if (isTest != null && !isTest) {
+  runZoned<Future>(() {
     runApp(MaterialApp(
       home: AnimatedScreen(),
       debugShowCheckedModeBanner: false,
@@ -45,26 +36,28 @@ void initializeMain() async {
   }, onError: (error, stackTrace) {
     sentryError.reportError(error, stackTrace);
   });
-  Common.getSelectedLanguage().then((selectedLocale) {
+  // }
+  initializeLanguage(isTest: isTest);
+}
+
+void initializeLanguage({bool isTest}) async {
+  if (isTest != null && !isTest) {
+    oneSignalTimer = Timer.periodic(Duration(seconds: 4), (timer) {
+      configLocalNotification();
+    });
+    configLocalNotification();
+  }
+  await Common.getSelectedLanguage().then((selectedLocale) async {
     Map localizedValues;
     String defaultLocale = '';
     String locale = selectedLocale ?? defaultLocale;
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarBrightness: Brightness.dark,
-        statusBarIconBrightness: Brightness.dark));
-    FlutterError.onError = (FlutterErrorDetails details) {
-      if (isInDebugMode) {
-        FlutterError.dumpErrorToConsole(details);
-      } else {
-        Zone.current.handleUncaughtError(details.exception, details.stack);
-      }
-    };
-    LoginService.getLanguageJson(locale).then((value) async {
+    await LoginService.getLanguageJson(locale).then((value) async {
       localizedValues = value['response_data']['json'];
       locale = value['response_data']['languageCode'];
       await Common.setSelectedLanguage(locale);
-      runZoned<Future<Null>>(() {
+      runZoned<Future>(() {
         runApp(MainScreen(
+          isTest: isTest,
           locale: locale,
           localizedValues: localizedValues,
         ));
@@ -127,12 +120,9 @@ Future<void> configLocalNotification() async {
 class MainScreen extends StatelessWidget {
   final String locale;
   final Map localizedValues;
+  final bool isTest;
 
-  MainScreen({
-    Key key,
-    this.locale,
-    this.localizedValues,
-  });
+  MainScreen({Key key, this.locale, this.localizedValues, this.isTest});
 
   @override
   Widget build(BuildContext context) {
@@ -150,6 +140,7 @@ class MainScreen extends StatelessWidget {
       title: Constants.appName,
       theme: ThemeData(primaryColor: primary, accentColor: primary),
       home: Home(
+        isTest: isTest,
         locale: locale,
         localizedValues: localizedValues,
       ),
