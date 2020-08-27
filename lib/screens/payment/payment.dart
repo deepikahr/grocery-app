@@ -73,7 +73,7 @@ class _PaymentState extends State<Payment> {
     }
     getUserInfo();
     paymentTypes = widget.locationInfo["paymentMethod"];
-    print(paymentTypes);
+   
     if (paymentTypes.length > 0) {
       widget.data['paymentType'] = paymentTypes[groupValue];
     }
