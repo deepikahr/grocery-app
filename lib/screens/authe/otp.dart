@@ -16,8 +16,6 @@ SentryError sentryError = new SentryError();
 class Otp extends StatefulWidget {
   Otp(
       {Key key,
-      this.email,
-      this.token,
       this.locale,
       this.localizedValues,
       this.signUpTime,
@@ -25,10 +23,9 @@ class Otp extends StatefulWidget {
       this.mobileNumber,
       this.sid})
       : super(key: key);
-  final String email, token, locale, mobileNumber;
+  final String locale, mobileNumber, sid;
   final Map localizedValues;
   final bool signUpTime, resentOtptime;
-  final sid;
 
   @override
   _OtpState createState() => _OtpState();
@@ -39,7 +36,7 @@ class _OtpState extends State<Otp> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  String enteredOtp;
+  int enteredOtp;
   bool isOtpVerifyLoading = false,
       isEmailLoading = false,
       isResentOtpLoading = false;
@@ -54,11 +51,12 @@ class _OtpState extends State<Otp> {
             isOtpVerifyLoading = true;
           });
         }
-         Map<String, dynamic> body = {
+        Map<String, dynamic> body = {
           "otp": enteredOtp,
-          "sid": widget.sid,
-          "mobileNumber": widget.mobileNumber.toString()
+          "sId": widget.sid,
+          "contactNumber": widget.mobileNumber.toString()
         };
+        print(body);
         await OtpService.verifyOtp(body).then((onValue) {
           if (mounted) {
             setState(() {
@@ -88,27 +86,28 @@ class _OtpState extends State<Otp> {
                         style: TextStyle(color: green),
                       ),
                       onPressed: () {
-                         if (widget.signUpTime == true) {
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pop();
-                          } else if (widget.resentOtptime == true) {
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pop();
-                          } else {
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pop();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ResetPassword(
-                                  token: widget.token,
-                                  locale: widget.locale,
-                                  localizedValues: widget.localizedValues,
-                                ),
+                        if (widget.signUpTime == true) {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        } else if (widget.resentOtptime == true) {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        } else {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ResetPassword(
+                                token: onValue['verificationToken'],
+                                mobileNumber: widget.mobileNumber,
+                                locale: widget.locale,
+                                localizedValues: widget.localizedValues,
                               ),
-                            );
-                          }
+                            ),
+                          );
+                        }
                       },
                     ),
                   ],
@@ -182,12 +181,11 @@ class _OtpState extends State<Otp> {
       });
     }
 
-    await LoginService.forgetPassword(widget.email.toLowerCase())
-        .then((response) {
+    Map body = {"number": widget.mobileNumber};
+    OtpService.resendOtp(body).then((response) {
       if (mounted) {
         setState(() {
           isResentOtpLoading = false;
-          showSnackbar(response['response_data']);
         });
       }
     }).catchError((error) {
@@ -212,8 +210,8 @@ class _OtpState extends State<Otp> {
               child: buildBoldText(context, "VERIFY_OTP")),
           Padding(
             padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-            child:
-                buildGFTypographyOtp(context, "CODE_MSG", ' ${widget.mobileNumber}'),
+            child: buildGFTypographyOtp(
+                context, "CODE_MSG", ' ${widget.mobileNumber}'),
           ),
           InkWell(
               onTap: resentOTP,
@@ -235,7 +233,7 @@ class _OtpState extends State<Otp> {
                 onSubmit: (String pin) {
                   if (mounted) {
                     setState(() {
-                      enteredOtp = pin;
+                      enteredOtp = int.parse(pin);
                     });
                   }
                 },

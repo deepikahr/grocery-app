@@ -11,7 +11,8 @@ class OtpService {
   // register user
   static Future signUp(body) async {
     return client
-        .post(Constants.apiUrl + "/users/register-phone", body: json.encode(body))
+        .post(Constants.apiUrl + "/users/register-phone",
+            body: json.encode(body))
         .then((response) {
       return json.decode(response.body);
     });
@@ -20,7 +21,7 @@ class OtpService {
   // user login
   static Future signIn(body) async {
     return client
-        .post(Constants.apiUrl + "/users/login", body: json.encode(body))
+        .post(Constants.apiUrl + "/users/login-phone", body: json.encode(body))
         .then((response) {
       return json.decode(response.body);
     });
@@ -40,7 +41,17 @@ class OtpService {
   // verify otp
   static Future verifyOtp(body) async {
     return client
-        .post(Constants.apiUrl + "/users/send-otp-phone")
+        .post(Constants.apiUrl + "/users/verify-OTP/number",
+            body: json.encode(body))
+        .then((response) {
+      return json.decode(response.body);
+    });
+  }
+
+  static Future resendOtp(body) async {
+    return client
+        .post(Constants.apiUrl + "/users/send-otp-phone",
+            body: json.encode(body))
         .then((response) {
       return json.decode(response.body);
     });
@@ -49,7 +60,7 @@ class OtpService {
   // reset password
   static Future resetPassword(body) async {
     return client
-        .post(Constants.apiUrl + "/users/reset-password",
+        .post(Constants.apiUrl + "/users/reset-password-number",
             body: json.encode(body))
         .then((response) {
       return json.decode(response.body);

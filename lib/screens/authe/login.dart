@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/authe/forgotpassword.dart';
+import 'package:readymadeGroceryApp/screens/authe/otp.dart';
 import 'package:readymadeGroceryApp/screens/authe/signup.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/otp-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
@@ -44,7 +46,7 @@ class _LoginState extends State<Login> {
       value = false,
       passwordVisible = true,
       _obscureText = true;
-  String email, password ,mobileNumber;
+  String email, password, mobileNumber;
 
   // Toggles the password
   void _toggle() {
@@ -74,18 +76,19 @@ class _LoginState extends State<Login> {
         //   "playerId": playerID
         // };
         Map<String, dynamic> body = {
-          "email": email.toLowerCase(),
+          "number": mobileNumber,
           "password": password,
           "playerId": playerID
         };
-        await LoginService.signIn(body).then((onValue) async {
+        print(body);
+        await OtpService.signIn(body).then((onValue) async {
           if (mounted) {
             setState(() {
               isUserLoaginLoading = false;
             });
           }
           if (onValue['response_code'] == 205) {
-            showAlert(onValue['response_data'], email.toLowerCase());
+            showAlert(onValue['response_data'], mobileNumber);
           } else {
             if (onValue['response_data']['role'] == 'USER') {
               await Common.setToken(onValue['response_data']['token']);
@@ -161,7 +164,7 @@ class _LoginState extends State<Login> {
     }
   }
 
-  showAlert(message, email) {
+  showAlert(message, mobileNumber) {
     return showDialog<Null>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -183,13 +186,25 @@ class _LoginState extends State<Login> {
             ),
             new FlatButton(
               child: new Text(
-                MyLocalizations.of(context).getLocalizations("VERI_LINK"),
+                MyLocalizations.of(context).getLocalizations("SEND_OTP"),
                 style: textbarlowRegularaPrimary(),
               ),
               onPressed: () {
-                LoginService.verificationMailSendApi(email).then((response) {
+                Map body = {"number": mobileNumber};
+                OtpService.resendOtp(body).then((response) {
                   Navigator.of(context).pop();
-                  showSnackbar(response['response_data']);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Otp(
+                        locale: widget.locale,
+                        resentOtptime: true,
+                        localizedValues: widget.localizedValues,
+                        mobileNumber: mobileNumber,
+                        sid: response['response_data']['isSent']['data'],
+                      ),
+                    ),
+                  );
                 });
               },
             ),
@@ -229,8 +244,8 @@ class _LoginState extends State<Login> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               buildwelcometext(),
-              buildEmailText(),
-              buildEmailTextField(),
+              buildContactNumberText(),
+              buildContactNumberTextField(),
               buildPasswordText(),
               buildPasswordTextField(),
               buildLoginButton(),
@@ -251,34 +266,28 @@ class _LoginState extends State<Login> {
         child: buildBoldText(context, "WELCOME_BACK"));
   }
 
-  Widget buildEmailText() {
-    return buildGFTypography(context, "EMAIL", true, true);
+  Widget buildContactNumberText() {
+    return buildGFTypography(context, "CONTACT_NUMBER", true, true);
   }
 
-  Widget buildEmailTextField() {
+  Widget buildContactNumberTextField() {
     return Padding(
       padding: const EdgeInsets.only(top: 5.0, bottom: 10.0),
       child: Container(
         child: TextFormField(
-          initialValue: Constants.predefined == "true"
-              ? "user@ionicfirebaseapp.com"
-              : null,
+          initialValue: "",
           onSaved: (String value) {
-            email = value;
+            mobileNumber = value;
           },
           validator: (String value) {
             if (value.isEmpty) {
               return MyLocalizations.of(context)
-                  .getLocalizations("ENTER_YOUR_EMAIL");
-            } else if (!RegExp(
-                    r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
-                .hasMatch(value)) {
-              return MyLocalizations.of(context).getLocalizations("ERROR_MAIL");
+                  .getLocalizations("ENTER_YOUR_CONTACT_NUMBER");
             } else
               return null;
           },
           style: textBarlowRegularBlack(),
-          keyboardType: TextInputType.emailAddress,
+          keyboardType: TextInputType.number,
           decoration: InputDecoration(
             errorBorder: OutlineInputBorder(
                 borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),

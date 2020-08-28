@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/authe/otp.dart';
-import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/otp-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
@@ -23,13 +22,12 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
-  String email, mobileno;
+  String email, mobileNumber;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool isVerfyEmailLoading = false;
 
-
-  verifyEmail() async {
+  verifyContactNumber() async {
     final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
@@ -38,10 +36,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           isVerfyEmailLoading = true;
         });
       }
- Map body = {
-        "mobileNumber": mobileno.toString(),
+      Map body = {
+        "number": mobileNumber.toString(),
       };
-      await OtpService.forgetPassword(body).then((onValue) {
+      await OtpService.resendOtp(body).then((onValue) {
         if (mounted) {
           setState(() {
             isVerfyEmailLoading = false;
@@ -72,11 +70,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => Otp(
-                                token: onValue['response_data']['token'],
-                                locale: widget.locale,
-                                localizedValues: widget.localizedValues,
-                                mobileNumber: mobileno,
-                                sid: onValue['response_data']['sid']),
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                          mobileNumber: mobileNumber,
+                          sid: onValue['response_data']['isSent']['data'],
+                        ),
                       ),
                     );
                   },
@@ -125,7 +123,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       context, "FORET_PASS_MESSAGE", false)),
               Padding(
                 padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-                child: buildGFTypography(context, "EMAIL", true, true),
+                child: buildGFTypography(context, "CONTACT_NUMBER", true, true),
               ),
               Padding(
                 padding: const EdgeInsets.only(
@@ -133,17 +131,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 child: Container(
                   child: TextFormField(
                     onSaved: (String value) {
-                      email = value;
+                      mobileNumber = value;
                     },
                     validator: (String value) {
                       if (value.isEmpty) {
                         return MyLocalizations.of(context)
-                            .getLocalizations("ENTER_YOUR_EMAIL");
-                      } else if (!RegExp(
-                              r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
-                          .hasMatch(value)) {
-                        return MyLocalizations.of(context)
-                            .getLocalizations("ERROR_MAIL");
+                            .getLocalizations("ENTER_YOUR_CONTACT_NUMBER");
                       } else
                         return null;
                     },
@@ -166,7 +159,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 ),
               ),
               InkWell(
-                  onTap: verifyEmail,
+                  onTap: verifyContactNumber,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child:

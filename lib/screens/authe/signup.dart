@@ -33,7 +33,7 @@ class _SignupState extends State<Signup> {
       passwordVisible = true,
       isChecked = false,
       _obscureText = true;
-  String userName, email, password, firstName, lastName ,mobileNumber;
+  String userName, email, password, firstName, lastName, mobileNumber;
   // int mobileNumber;
   // Toggles the password
   void _toggle() {
@@ -97,10 +97,11 @@ class _SignupState extends State<Signup> {
                       context,
                       MaterialPageRoute(
                         builder: (BuildContext context) => Otp(
-                        locale: widget.locale,
-                              localizedValues: widget.localizedValues,
-                              signUpTime: true,
-                              mobileNumber: mobileNumber,
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                          signUpTime: true,
+                          mobileNumber: mobileNumber,
+                          sid: onValue['isSent']['data'],
                         ),
                       ),
                     );
