@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
-import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/screens/authe/otp.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/otp-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
@@ -32,8 +33,8 @@ class _SignupState extends State<Signup> {
       passwordVisible = true,
       isChecked = false,
       _obscureText = true;
-  String userName, email, password, firstName, lastName;
-  int mobileNumber;
+  String userName, email, password, firstName, lastName ,mobileNumber;
+  // int mobileNumber;
   // Toggles the password
   void _toggle() {
     setState(() {
@@ -56,7 +57,6 @@ class _SignupState extends State<Signup> {
           registerationLoading = true;
         });
       }
-
       Map<String, dynamic> body = {
         "firstName": firstName,
         "lastName": lastName,
@@ -64,13 +64,12 @@ class _SignupState extends State<Signup> {
         "password": password,
         "mobileNumber": mobileNumber
       };
-      await LoginService.signUp(body).then((onValue) {
+      await OtpService.signUp(body).then((onValue) {
         if (mounted) {
           setState(() {
             registerationLoading = false;
           });
         }
-
         showDialog<Null>(
           context: context,
           barrierDismissible: false, // user must tap button!
@@ -97,9 +96,11 @@ class _SignupState extends State<Signup> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (BuildContext context) => Login(
-                          locale: widget.locale,
-                          localizedValues: widget.localizedValues,
+                        builder: (BuildContext context) => Otp(
+                        locale: widget.locale,
+                              localizedValues: widget.localizedValues,
+                              signUpTime: true,
+                              mobileNumber: mobileNumber,
                         ),
                       ),
                     );
@@ -433,8 +434,11 @@ class _SignupState extends State<Signup> {
           } else
             return null;
         },
+        // onSaved: (String value) {
+        //   mobileNumber = int.parse(value);
+        // },
         onSaved: (String value) {
-          mobileNumber = int.parse(value);
+          mobileNumber = value;
         },
         decoration: InputDecoration(
           counterText: "",

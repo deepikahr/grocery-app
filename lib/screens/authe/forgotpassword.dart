@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/authe/otp.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/otp-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
@@ -22,10 +23,12 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
-  String email;
+  String email, mobileno;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool isVerfyEmailLoading = false;
+
+
   verifyEmail() async {
     final form = _formKey.currentState;
     if (form.validate()) {
@@ -35,8 +38,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           isVerfyEmailLoading = true;
         });
       }
-
-      await LoginService.forgetPassword(email.toLowerCase()).then((onValue) {
+ Map body = {
+        "mobileNumber": mobileno.toString(),
+      };
+      await OtpService.forgetPassword(body).then((onValue) {
         if (mounted) {
           setState(() {
             isVerfyEmailLoading = false;
@@ -67,10 +72,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => Otp(
-                          email: email.toLowerCase(),
-                          locale: widget.locale,
-                          localizedValues: widget.localizedValues,
-                        ),
+                                token: onValue['response_data']['token'],
+                                locale: widget.locale,
+                                localizedValues: widget.localizedValues,
+                                mobileNumber: mobileno,
+                                sid: onValue['response_data']['sid']),
                       ),
                     );
                   },

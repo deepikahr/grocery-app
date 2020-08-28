@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/otp-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
@@ -12,10 +13,11 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 SentryError sentryError = new SentryError();
 
 class ResetPassword extends StatefulWidget {
-  final String verificationToken, locale, email;
+  final String verificationToken, locale, email ,token;
   final Map localizedValues;
   ResetPassword(
       {Key key,
+      this.token,
       this.verificationToken,
       this.localizedValues,
       this.locale,
@@ -46,12 +48,8 @@ class _ResetPasswordState extends State<ResetPassword> {
           isResetPasswordLoading = true;
         });
       }
-      Map<String, dynamic> body = {
-        "newPassword": password1,
-        "email": widget.email,
-        "verificationToken": widget.verificationToken
-      };
-      await LoginService.resetPassword(body).then((onValue) {
+     Map<String, dynamic> body = {"password": password1};
+      await OtpService.resetPassword(body).then((onValue) {
         if (mounted) {
           setState(() {
             isResetPasswordLoading = false;

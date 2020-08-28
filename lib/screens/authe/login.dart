@@ -44,7 +44,7 @@ class _LoginState extends State<Login> {
       value = false,
       passwordVisible = true,
       _obscureText = true;
-  String email, password;
+  String email, password ,mobileNumber;
 
   // Toggles the password
   void _toggle() {
@@ -68,6 +68,11 @@ class _LoginState extends State<Login> {
         });
       }
       await Common.getPlayerID().then((playerID) async {
+        //  Map<String, dynamic> body = {
+        //   "mobileNumber": mobileNumber.toString(),
+        //   "password": password,
+        //   "playerId": playerID
+        // };
         Map<String, dynamic> body = {
           "email": email.toLowerCase(),
           "password": password,
