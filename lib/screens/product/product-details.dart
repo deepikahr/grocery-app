@@ -317,22 +317,19 @@ class _ProductDetailsState extends State<ProductDetails>
                                   margin: EdgeInsets.zero,
                                   height: 340,
                                   decoration: new BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(40),
-                                      bottomRight: Radius.circular(40),
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.grey,
-                                          blurRadius: 10.0,
-                                          offset: Offset(2.0, 2.0))
-                                    ],
-                                    image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.cover,
-                                        colorFilter: ColorFilter.mode(
-                                            Colors.red, BlendMode.colorBurn)),
-                                  ),
+                                      borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(40),
+                                        bottomRight: Radius.circular(40),
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.grey,
+                                            blurRadius: 10.0,
+                                            offset: Offset(2.0, 2.0))
+                                      ],
+                                      image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover)),
                                 ),
                                 placeholder: (context, url) => Container(
                                     height: 340, child: SquareLoader()),
