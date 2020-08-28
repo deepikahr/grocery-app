@@ -325,10 +325,7 @@ class _EditProfileState extends State<EditProfile> {
                                               BorderRadius.circular(20.0),
                                           image: DecorationImage(
                                               image: imageProvider,
-                                              fit: BoxFit.cover,
-                                              colorFilter: ColorFilter.mode(
-                                                  Colors.red,
-                                                  BlendMode.colorBurn)),
+                                              fit: BoxFit.cover),
                                         ),
                                       ),
                                       placeholder: (context, url) => Container(

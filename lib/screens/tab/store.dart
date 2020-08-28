@@ -406,9 +406,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                             shape: BoxShape.circle,
                             image: DecorationImage(
                                 image: imageProvider,
-                                fit: BoxFit.cover,
-                                colorFilter: ColorFilter.mode(
-                                    Colors.red, BlendMode.colorBurn)),
+                                fit: BoxFit.cover),
                           ),
                         ),
                         placeholder: (context, url) => Container(),

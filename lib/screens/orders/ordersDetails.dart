@@ -321,10 +321,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                         ],
                                         image: DecorationImage(
                                             image: imageProvider,
-                                            fit: BoxFit.cover,
-                                            colorFilter: ColorFilter.mode(
-                                                Colors.red,
-                                                BlendMode.colorBurn)),
+                                            fit: BoxFit.cover),
                                       ),
                                     ),
                                     placeholder: (context, url) => Container(
