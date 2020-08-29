@@ -9,7 +9,6 @@ import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/otp-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
-import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
@@ -37,8 +36,6 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final GlobalKey<FormState> _formKeyForLogin = GlobalKey<FormState>();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool isUserLoaginLoading = false,
@@ -46,7 +43,7 @@ class _LoginState extends State<Login> {
       value = false,
       passwordVisible = true,
       _obscureText = true;
-  String email, password, mobileNumber;
+  String password, mobileNumber;
 
   // Toggles the password
   void _toggle() {
@@ -60,7 +57,7 @@ class _LoginState extends State<Login> {
     super.initState();
   }
 
-  userLogin() async {
+  userLoginwithMobile() async {
     final form = _formKeyForLogin.currentState;
     if (form.validate()) {
       form.save();
@@ -70,18 +67,12 @@ class _LoginState extends State<Login> {
         });
       }
       await Common.getPlayerID().then((playerID) async {
-        //  Map<String, dynamic> body = {
-        //   "mobileNumber": mobileNumber.toString(),
-        //   "password": password,
-        //   "playerId": playerID
-        // };
         Map<String, dynamic> body = {
           "number": mobileNumber,
           "password": password,
           "playerId": playerID
         };
-        print(body);
-        await OtpService.signIn(body).then((onValue) async {
+        await OtpService.signInWithNumber(body).then((onValue) async {
           if (mounted) {
             setState(() {
               isUserLoaginLoading = false;
@@ -191,20 +182,20 @@ class _LoginState extends State<Login> {
               ),
               onPressed: () {
                 Map body = {"number": mobileNumber};
-                OtpService.resendOtp(body).then((response) {
-                  Navigator.of(context).pop();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => Otp(
-                        locale: widget.locale,
-                        resentOtptime: true,
-                        localizedValues: widget.localizedValues,
-                        mobileNumber: mobileNumber,
-                        sid: response['response_data']['isSent']['data'],
+                OtpService.resendOtpWithNumber(body).then((response) {
+                  showSnackbar(response['response_data']);
+                   Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => Otp(
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                          signUpTime: true,
+                          mobileNumber: mobileNumber,
+                          sid: response['isSent']['data'],
+                        ),
                       ),
-                    ),
-                  );
+                    );
                 });
               },
             ),
@@ -364,7 +355,7 @@ class _LoginState extends State<Login> {
 
   Widget buildLoginButton() {
     return InkWell(
-        onTap: userLogin,
+        onTap: userLoginwithMobile,
         child: buttonPrimary(context, "LOGIN", isUserLoaginLoading));
   }
 

@@ -25,7 +25,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   String email, mobileNumber;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool isVerfyEmailLoading = false;
+  bool isVerifyMobileLoading = false;
 
   verifyContactNumber() async {
     final form = _formKey.currentState;
@@ -33,16 +33,16 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       form.save();
       if (mounted) {
         setState(() {
-          isVerfyEmailLoading = true;
+          isVerifyMobileLoading = true;
         });
       }
       Map body = {
         "number": mobileNumber.toString(),
       };
-      await OtpService.resendOtp(body).then((onValue) {
+      await OtpService.resendOtpWithNumber(body).then((onValue) {
         if (mounted) {
           setState(() {
-            isVerfyEmailLoading = false;
+            isVerifyMobileLoading = false;
           });
         }
         showDialog<Null>(
@@ -73,7 +73,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           locale: widget.locale,
                           localizedValues: widget.localizedValues,
                           mobileNumber: mobileNumber,
-                          sid: onValue['response_data']['isSent']['data'],
+                          sid: onValue['isSent']['data'],
                         ),
                       ),
                     );
@@ -86,7 +86,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       }).catchError((error) {
         if (mounted) {
           setState(() {
-            isVerfyEmailLoading = false;
+            isVerifyMobileLoading = false;
           });
         }
         sentryError.reportError(error, null);
@@ -94,7 +94,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     } else {
       if (mounted) {
         setState(() {
-          isVerfyEmailLoading = false;
+          isVerifyMobileLoading = false;
         });
       }
       return;
@@ -120,7 +120,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   padding: const EdgeInsets.only(
                       left: 20.0, bottom: 25.0, right: 20.0),
                   child: normalTextWithOutRow(
-                      context, "FORET_PASS_MESSAGE", false)),
+                      context, "FORET_PASS_MOBILE_MSG", false)),
               Padding(
                 padding: const EdgeInsets.only(left: 20.0, right: 20.0),
                 child: buildGFTypography(context, "CONTACT_NUMBER", true, true),
@@ -163,7 +163,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child:
-                        buttonPrimary(context, "SUBMIT", isVerfyEmailLoading),
+                        buttonPrimary(context, "SUBMIT", isVerifyMobileLoading),
                   )),
             ],
           ),

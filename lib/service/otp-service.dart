@@ -9,7 +9,7 @@ Client client =
 
 class OtpService {
   // register user
-  static Future signUp(body) async {
+  static Future signUpWithNumber(body) async {
     return client
         .post(Constants.apiUrl + "/users/register-phone",
             body: json.encode(body))
@@ -19,7 +19,7 @@ class OtpService {
   }
 
   // user login
-  static Future signIn(body) async {
+  static Future signInWithNumber(body) async {
     return client
         .post(Constants.apiUrl + "/users/login-phone", body: json.encode(body))
         .then((response) {
@@ -28,7 +28,7 @@ class OtpService {
   }
 
   // forget password
-  static Future forgetPassword(email) async {
+  static Future forgetPasswordWithNumber(email) async {
     Map body = {"email": email};
     return client
         .post(Constants.apiUrl + "/users/forgot-password",
@@ -39,7 +39,7 @@ class OtpService {
   }
 
   // verify otp
-  static Future verifyOtp(body) async {
+  static Future verifyOtpWithNumber(body) async {
     return client
         .post(Constants.apiUrl + "/users/verify-OTP/number",
             body: json.encode(body))
@@ -48,7 +48,7 @@ class OtpService {
     });
   }
 
-  static Future resendOtp(body) async {
+  static Future resendOtpWithNumber(body) async {
     return client
         .post(Constants.apiUrl + "/users/send-otp-phone",
             body: json.encode(body))
@@ -58,7 +58,7 @@ class OtpService {
   }
 
   // reset password
-  static Future resetPassword(body) async {
+  static Future resetPasswordWithNumber(body) async {
     return client
         .post(Constants.apiUrl + "/users/reset-password-number",
             body: json.encode(body))

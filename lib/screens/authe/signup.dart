@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/authe/otp.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/otp-service.dart';
@@ -34,7 +33,6 @@ class _SignupState extends State<Signup> {
       isChecked = false,
       _obscureText = true;
   String userName, email, password, firstName, lastName, mobileNumber;
-  // int mobileNumber;
   // Toggles the password
   void _toggle() {
     setState(() {
@@ -47,10 +45,9 @@ class _SignupState extends State<Signup> {
     super.initState();
   }
 
-  userSignup() async {
+  userSignupwithMobile() async {
     final form = _formKey.currentState;
     if (form.validate()) {
-      // if (isChecked == true) {
       form.save();
       if (mounted) {
         setState(() {
@@ -64,7 +61,7 @@ class _SignupState extends State<Signup> {
         "password": password,
         "mobileNumber": mobileNumber
       };
-      await OtpService.signUp(body).then((onValue) {
+      await OtpService.signUpWithNumber(body).then((onValue) {
         if (mounted) {
           setState(() {
             registerationLoading = false;
@@ -119,10 +116,6 @@ class _SignupState extends State<Signup> {
         }
         sentryError.reportError(error, null);
       });
-      // } else {
-      //   showSnackbar(
-      //       MyLocalizations.of(context).getLocalizations("ACCEPT_MSG"));
-      // }
     } else {
       if (mounted) {
         setState(() {
@@ -435,9 +428,6 @@ class _SignupState extends State<Signup> {
           } else
             return null;
         },
-        // onSaved: (String value) {
-        //   mobileNumber = int.parse(value);
-        // },
         onSaved: (String value) {
           mobileNumber = value;
         },
@@ -467,7 +457,7 @@ class _SignupState extends State<Signup> {
 
   Widget buildsignuplink() {
     return InkWell(
-        onTap: userSignup,
+        onTap: userSignupwithMobile,
         child: buttonPrimary(context, "SIGNUP", registerationLoading));
   }
 

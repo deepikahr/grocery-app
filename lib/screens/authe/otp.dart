@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/authe/resetPas.dart';
-import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/otp-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
@@ -36,12 +35,11 @@ class _OtpState extends State<Otp> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  int enteredOtp;
+  String enteredOtp;
   bool isOtpVerifyLoading = false,
-      isEmailLoading = false,
       isResentOtpLoading = false;
 
-  verifyOTP() async {
+  verifyOTPwithMobile() async {
     if (enteredOtp != null) {
       final form = _formKey.currentState;
       if (form.validate()) {
@@ -56,14 +54,14 @@ class _OtpState extends State<Otp> {
           "sId": widget.sid,
           "contactNumber": widget.mobileNumber.toString()
         };
-        print(body);
-        await OtpService.verifyOtp(body).then((onValue) {
+        await OtpService.verifyOtpWithNumber(body).then((onValue) {
           if (mounted) {
             setState(() {
               isOtpVerifyLoading = false;
             });
           }
-          if (onValue['response_data'] != null) {
+       
+          if (onValue['response_data'] != null&&onValue['verificationToken']!=null) {
             showDialog<Null>(
               context: context,
               barrierDismissible: false, // user must tap button!
@@ -82,7 +80,7 @@ class _OtpState extends State<Otp> {
                   actions: <Widget>[
                     new FlatButton(
                       child: new Text(
-                        'OK',
+                        MyLocalizations.of(context).getLocalizations("OK"),
                         style: TextStyle(color: green),
                       ),
                       onPressed: () {
@@ -182,9 +180,10 @@ class _OtpState extends State<Otp> {
     }
 
     Map body = {"number": widget.mobileNumber};
-    OtpService.resendOtp(body).then((response) {
+    OtpService.resendOtpWithNumber(body).then((response) {
       if (mounted) {
         setState(() {
+            showSnackbar(response['response_data']);
           isResentOtpLoading = false;
         });
       }
@@ -211,7 +210,7 @@ class _OtpState extends State<Otp> {
           Padding(
             padding: const EdgeInsets.only(left: 20.0, right: 20.0),
             child: buildGFTypographyOtp(
-                context, "CODE_MSG", ' ${widget.mobileNumber}'),
+                context, "OTP_CODE_MSG", ' ${widget.mobileNumber}'),
           ),
           InkWell(
               onTap: resentOTP,
@@ -233,7 +232,7 @@ class _OtpState extends State<Otp> {
                 onSubmit: (String pin) {
                   if (mounted) {
                     setState(() {
-                      enteredOtp = int.parse(pin);
+                      enteredOtp = pin;
                     });
                   }
                 },
@@ -241,7 +240,7 @@ class _OtpState extends State<Otp> {
             ),
           ),
           InkWell(
-              onTap: verifyOTP,
+              onTap: verifyOTPwithMobile,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: buttonPrimary(context, "SUBMIT", isOtpVerifyLoading),
