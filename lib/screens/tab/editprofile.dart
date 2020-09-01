@@ -38,7 +38,7 @@ class _EditProfileState extends State<EditProfile> {
   Map<String, dynamic> userInfo;
   bool isLoading = false, isPicUploading = false, profileEdit = false;
   String firstName, lastName, currency = "";
-  int mobileNumber;
+  String mobileNumber;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var image;
   @override
@@ -57,6 +57,7 @@ class _EditProfileState extends State<EditProfile> {
       currency = value;
     });
     await LoginService.getUserInfo().then((onValue) {
+      print(onValue);
       if (mounted) {
         setState(() {
           isLoading = false;
@@ -508,7 +509,7 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                       ),
                       onSaved: (String value) {
-                        mobileNumber = int.parse(value);
+                        mobileNumber = value;
                       },
                       validator: (String value) {
                         if (value.isEmpty) {
