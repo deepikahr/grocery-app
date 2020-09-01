@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -17,6 +18,7 @@ import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -214,12 +216,12 @@ class _MyCartState extends State<MyCart> {
           onValue['response_data']['products'] != [] &&
           mounted) {
         Common.setCartData(onValue['response_data']);
-
         setState(() {
           cartItem = onValue['response_data'];
           if (cartItem['grandTotal'] != null) {
             bottomBarHeight = 150;
-            if (cartItem['deliveryCharges'] != 0) {
+            if (cartItem['deliveryCharges'] == 0 &&
+                cartItem['deliveryAddress'] != null) {
               bottomBarHeight = bottomBarHeight + 20;
             }
             if (cartItem['tax'] != 0) {
@@ -379,9 +381,7 @@ class _MyCartState extends State<MyCart> {
                   isCart: true,
                 )
               : cartItem == null
-                  ? Center(
-                      child: Image.asset('lib/assets/images/no-orders.png'),
-                    )
+                  ? noDataImage()
                   : Container(
                       child: ListView(
                         children: <Widget>[
@@ -397,28 +397,22 @@ class _MyCartState extends State<MyCart> {
                                         MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
                                       cartItem == null
-                                          ? Text(
-                                              '0 ' +
-                                                  MyLocalizations.of(context)
-                                                      .getLocalizations("ITEM"),
-                                              style: textBarlowMediumBlack(),
-                                            )
-                                          : Text(
+                                          ? textMediumSmall('0 ' +
+                                              MyLocalizations.of(context)
+                                                  .getLocalizations("ITEM"))
+                                          : textMediumSmall(
                                               '(${cartItem['products'].length}) ' +
                                                   MyLocalizations.of(context)
                                                       .getLocalizations(
-                                                          "ITEMS"),
-                                              style: textBarlowMediumBlack(),
-                                            ),
+                                                          "ITEM")),
                                       InkWell(
                                         onTap: () {
                                           deleteAllCart();
                                         },
-                                        child: Text(
-                                          MyLocalizations.of(context)
-                                              .getLocalizations("CLEAR_CART"),
-                                          style: textBarlowMediumBlack(),
-                                        ),
+                                        child: textMediumSmall(
+                                            MyLocalizations.of(context)
+                                                .getLocalizations(
+                                                    "CLEAR_CART")),
                                       ),
                                     ],
                                   ),
@@ -441,55 +435,88 @@ class _MyCartState extends State<MyCart> {
                                           Flexible(
                                             flex: 3,
                                             fit: FlexFit.tight,
-                                            child: Container(
-                                              height: 90,
-                                              width: 117,
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(6)),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Colors.black
-                                                        .withOpacity(0.10),
-                                                    blurRadius: 5,
-                                                  )
-                                                ],
-                                                image: DecorationImage(
-                                                  fit: BoxFit.cover,
-                                                  image: cartItem['products'][i]
-                                                                  [
-                                                                  'filePath'] ==
-                                                              null &&
-                                                          cartItem['products']
-                                                                      [i][
-                                                                  'imageUrl'] ==
-                                                              null
-                                                      ? AssetImage(
-                                                          'lib/assets/images/no-orders.png')
-                                                      : NetworkImage(
-                                                          cartItem['products']
-                                                                          [i][
-                                                                      'filePath'] ==
-                                                                  null
-                                                              ? cartItem[
-                                                                      'products']
-                                                                  [
-                                                                  i]['imageUrl']
-                                                              : Constants
-                                                                      .imageUrlPath +
-                                                                  "/tr:dpr-auto,tr:w-500" +
-                                                                  cartItem['products']
-                                                                          [i][
-                                                                      'filePath'],
-                                                        ),
+                                            child: CachedNetworkImage(
+                                              imageUrl: cartItem['products'][i]
+                                                          ['filePath'] ==
+                                                      null
+                                                  ? cartItem['products'][i]
+                                                      ['imageUrl']
+                                                  : Constants.imageUrlPath +
+                                                      "/tr:dpr-auto,tr:w-500" +
+                                                      cartItem['products'][i]
+                                                          ['filePath'],
+                                              imageBuilder:
+                                                  (context, imageProvider) =>
+                                                      Container(
+                                                height: 90,
+                                                width: 117,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(6)),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.black
+                                                          .withOpacity(0.10),
+                                                      blurRadius: 5,
+                                                    )
+                                                  ],
+                                                  image: DecorationImage(
+                                                      image: imageProvider,
+                                                      fit: BoxFit.cover,
+                                                      colorFilter:
+                                                          ColorFilter.mode(
+                                                              Colors.red,
+                                                              BlendMode
+                                                                  .colorBurn)),
                                                 ),
                                               ),
+                                              placeholder: (context, url) =>
+                                                  Container(
+                                                      height: 90,
+                                                      width: 117,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    6)),
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.10),
+                                                            blurRadius: 5,
+                                                          )
+                                                        ],
+                                                      ),
+                                                      child: SquareLoader(
+                                                          size: 20.0)),
+                                              errorWidget: (context, url,
+                                                      error) =>
+                                                  Container(
+                                                      height: 90,
+                                                      width: 117,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    6)),
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.10),
+                                                            blurRadius: 5,
+                                                          )
+                                                        ],
+                                                      ),
+                                                      child: noDataImage()),
                                             ),
                                           ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
+                                          SizedBox(width: 10),
                                           Flexible(
                                             flex: 6,
                                             fit: FlexFit.tight,
@@ -500,70 +527,42 @@ class _MyCartState extends State<MyCart> {
                                                   MainAxisAlignment
                                                       .spaceBetween,
                                               children: <Widget>[
-                                                Text(
-                                                  cartItem['products'][i]
-                                                          ['productName'] ??
-                                                      " ",
-                                                  maxLines: 2,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style:
-                                                      textBarlowRegularBlack(),
-                                                ),
+                                                titleTwoLine(
+                                                    cartItem['products'][i]
+                                                        ['productName']),
                                                 SizedBox(height: 10),
                                                 Row(
                                                   children: <Widget>[
-                                                    Text(
-                                                      currency,
-                                                      style:
-                                                          textbarlowBoldGreen(),
-                                                    ),
-                                                    Text(
-                                                      cartItem['products'][i][
-                                                                  'productTotal']
-                                                              .toDouble()
-                                                              .toStringAsFixed(
-                                                                  2)
-                                                              .toString() ??
-                                                          "",
-                                                      style:
-                                                          textbarlowBoldGreen(),
-                                                    ),
-                                                    SizedBox(width: 3),
-                                                    cartItem['products'][i]
-                                                            ['isDealAvailable']
-                                                        ? Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    top: 5.0),
-                                                            child: Text(
-                                                              '$currency${((cartItem['products'][i]['price']) * (cartItem['products'][i]['quantity'])).toDouble().toStringAsFixed(2)}',
-                                                              style:
-                                                                  barlowregularlackstrike(),
-                                                            ),
-                                                          )
-                                                        : Container(),
+                                                    priceMrpText(
+                                                        cartItem['products'][i][
+                                                                    'productTotal']
+                                                                .toDouble()
+                                                                .toStringAsFixed(
+                                                                    2)
+                                                                .toString() ??
+                                                            "",
+                                                        cartItem['products'][i][
+                                                                'isDealAvailable']
+                                                            ? '$currency${((cartItem['products'][i]['price']) * (cartItem['products'][i]['quantity'])).toDouble().toStringAsFixed(2)}'
+                                                            : null),
                                                     Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              top: 5.0),
-                                                      child: Text(
-                                                        " / " +
-                                                            cartItem['products']
-                                                                    [i]['unit']
-                                                                .toString(),
-                                                        style:
-                                                            barlowregularlack(),
-                                                      ),
-                                                    ),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(top: 5.0),
+                                                        child: textLightSmall(
+                                                          " / " +
+                                                              cartItem['products']
+                                                                          [i]
+                                                                      ['unit']
+                                                                  .toString(),
+                                                        )),
                                                   ],
                                                 ),
                                                 SizedBox(height: 10),
                                                 cartItem['products'][i][
                                                             'isDealAvailable'] ==
                                                         true
-                                                    ? Text(
+                                                    ? textLightSmall(
                                                         MyLocalizations.of(
                                                                     context)
                                                                 .getLocalizations(
@@ -578,9 +577,6 @@ class _MyCartState extends State<MyCart> {
                                                                     context)
                                                                 .getLocalizations(
                                                                     "OFF"),
-                                                        style:
-                                                            barlowregularlack(),
-                                                        // textBarlowRegularBlack(),
                                                       )
                                                     : Text("")
                                               ],
@@ -634,22 +630,19 @@ class _MyCartState extends State<MyCart> {
                                                           ? GFLoader(
                                                               type: GFLoaderType
                                                                   .ios,
-                                                              size: 35,
-                                                            )
-                                                          : Icon(
-                                                              Icons.add,
-                                                            ),
+                                                              size: 35)
+                                                          : Icon(Icons.add),
                                                     ),
                                                   ),
                                                   cartItem['products'][i]
                                                               ['quantity'] ==
                                                           null
                                                       ? Text('0')
-                                                      : Text(
-                                                          '${cartItem['products'][i]['quantity']}',
-                                                          style:
-                                                              textBarlowRegularBlack(),
-                                                        ),
+                                                      : titleTwoLine(
+                                                          cartItem['products']
+                                                                      [i]
+                                                                  ['quantity']
+                                                              .toString()),
                                                   Container(
                                                     width: 32,
                                                     height: 32,
@@ -688,12 +681,9 @@ class _MyCartState extends State<MyCart> {
                                                           ? GFLoader(
                                                               type: GFLoaderType
                                                                   .ios,
-                                                              size: 35,
-                                                            )
-                                                          : Icon(
-                                                              Icons.remove,
-                                                              color: primary,
-                                                            ),
+                                                              size: 35)
+                                                          : Icon(Icons.remove,
+                                                              color: primary),
                                                     ),
                                                   ),
                                                 ],
@@ -708,9 +698,7 @@ class _MyCartState extends State<MyCart> {
                               ],
                             ),
                           ),
-                          SizedBox(
-                            height: 20.0,
-                          ),
+                          SizedBox(height: 20.0),
                         ],
                       ),
                     ),
@@ -725,92 +713,57 @@ class _MyCartState extends State<MyCart> {
                   child: Column(
                     children: <Widget>[
                       Padding(
-                        padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            new Text(
+                          padding:
+                              const EdgeInsets.only(left: 20.0, right: 20.0),
+                          child: buildPrice(
+                              context,
+                              null,
                               MyLocalizations.of(context)
-                                  .getLocalizations("SUB_TOTAL"),
-                              style: textBarlowRegularBlack(),
-                            ),
-                            new Text(
+                                      .getLocalizations("SUB_TOTAL") +
+                                  ' ( ${cartItem['products'].length} ' +
+                                  MyLocalizations.of(context)
+                                      .getLocalizations("ITEMS") +
+                                  ')',
                               '$currency${cartItem['subTotal'].toDouble().toStringAsFixed(2)}',
-                              style: textbarlowBoldsmBlack(),
-                            ),
-                          ],
-                        ),
-                      ),
+                              false)),
                       SizedBox(height: 4),
                       cartItem['tax'] == 0
                           ? Container()
                           : Padding(
                               padding: const EdgeInsets.only(
                                   left: 20.0, right: 20.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Row(
-                                    children: <Widget>[
-                                      Image.asset('lib/assets/icons/sale.png'),
-                                      SizedBox(width: 5),
-                                      cartItem['taxInfo'] == null
-                                          ? new Text(
-                                              MyLocalizations.of(context)
-                                                  .getLocalizations("TAX"),
-                                              style: textBarlowRegularBlack(),
-                                            )
-                                          : new Text(
-                                              MyLocalizations.of(context)
-                                                      .getLocalizations("TAX") +
-                                                  " (" +
-                                                  cartItem['taxInfo']
-                                                      ['taxName'] +
-                                                  " " +
-                                                  cartItem['taxInfo']['amount']
-                                                      .toString() +
-                                                  "%)",
-                                              style: textBarlowRegularBlack(),
-                                            ),
-                                    ],
-                                  ),
-                                  new Text(
-                                    '$currency${cartItem['tax'].toDouble().toStringAsFixed(2)}',
-                                    style: textbarlowBoldsmBlack(),
-                                  ),
-                                ],
-                              ),
-                            ),
+                              child: buildPrice(
+                                  context,
+                                  Image.asset('lib/assets/icons/sale.png'),
+                                  cartItem['taxInfo'] == null
+                                      ? MyLocalizations.of(context)
+                                          .getLocalizations("TAX")
+                                      : MyLocalizations.of(context)
+                                              .getLocalizations("TAX") +
+                                          " (" +
+                                          cartItem['taxInfo']['taxName'] +
+                                          " " +
+                                          cartItem['taxInfo']['amount']
+                                              .toString() +
+                                          "%)",
+                                  '$currency${cartItem['tax'].toDouble().toStringAsFixed(2)}',
+                                  false)),
                       SizedBox(height: 6),
                       cartItem['couponCode'] == null
                           ? Container()
                           : Padding(
                               padding: const EdgeInsets.only(
                                   left: 20.0, right: 20.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  new Text(
-                                    MyLocalizations.of(context)
-                                            .getLocalizations(
-                                                "COUPON_APPLIED") +
-                                        " (" +
-                                        "${MyLocalizations.of(context).getLocalizations("DISCOUNT")}"
-                                            ")",
-                                    style: textBarlowRegularBlack(),
-                                  ),
-                                  new Text(
-                                    '$currency${cartItem['couponAmount'].toDouble().toStringAsFixed(2)}',
-                                    style: textbarlowBoldsmBlack(),
-                                  ),
-                                ],
-                              ),
-                            ),
+                              child: buildPrice(
+                                  context,
+                                  null,
+                                  MyLocalizations.of(context)
+                                          .getLocalizations("COUPON_APPLIED") +
+                                      " (" +
+                                      "${MyLocalizations.of(context).getLocalizations("DISCOUNT")}"
+                                          ")",
+                                  '$currency${cartItem['couponAmount'].toDouble().toStringAsFixed(2)}',
+                                  false)),
                       cartItem['couponCode'] == null
                           ? Container()
                           : SizedBox(height: 6),
@@ -819,49 +772,26 @@ class _MyCartState extends State<MyCart> {
                           ? Padding(
                               padding: const EdgeInsets.only(
                                   left: 20.0, right: 20.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  new Text(
-                                    MyLocalizations.of(context)
-                                        .getLocalizations("DELIVERY_CHARGES"),
-                                    style: textBarlowRegularBlack(),
-                                  ),
-                                  new Text(
-                                    MyLocalizations.of(context)
-                                        .getLocalizations("FREE"),
-                                    style: textbarlowBoldsmBlack(),
-                                  ),
-                                ],
-                              ),
-                            )
+                              child: buildPrice(
+                                  context,
+                                  null,
+                                  MyLocalizations.of(context)
+                                      .getLocalizations("DELIVERY_CHARGES"),
+                                  MyLocalizations.of(context)
+                                      .getLocalizations("FREE"),
+                                  false))
                           : cartItem['deliveryCharges'] == 0
                               ? Container()
                               : Padding(
                                   padding: const EdgeInsets.only(
                                       left: 20.0, right: 20.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      new Text(
-                                        MyLocalizations.of(context)
-                                            .getLocalizations(
-                                                "DELIVERY_CHARGES"),
-                                        style: textBarlowRegularBlack(),
-                                      ),
-                                      new Text(
-                                        '$currency${cartItem['deliveryCharges'].toDouble().toStringAsFixed(2)}',
-                                        style: textbarlowBoldsmBlack(),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                      SizedBox(height: 10),
+                                  child: buildPrice(
+                                      context,
+                                      null,
+                                      MyLocalizations.of(context)
+                                          .getLocalizations("DELIVERY_CHARGES"),
+                                      '$currency${cartItem['deliveryCharges'].toDouble().toStringAsFixed(2)}',
+                                      false)),
                       InkWell(
                         onTap: checkMinOrderAmountCondition,
                         child: checkoutButton(

@@ -8,5 +8,5 @@ void main() {
   };
   enableFlutterDriverExtension(handler: handler);
   WidgetsApp.debugAllowBannerOverride = false;
-  initializeMain();
+  initializeMain(isTest: true);
 }

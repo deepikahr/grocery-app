@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class DealsCard extends StatelessWidget {
   final image, title, price, currency, rating, category, offer, nullImage;
@@ -45,12 +48,26 @@ class DealsCard extends StatelessWidget {
             ClipRRect(
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(12)),
-              child: Image.network(
-                isPath
+              child: CachedNetworkImage(
+                imageUrl: isPath
                     ? Constants.imageUrlPath + "/tr:dpr-auto,tr:w-500" + image
                     : image,
-                fit: BoxFit.cover,
-                width: MediaQuery.of(context).size.width * 0.5,
+                imageBuilder: (context, imageProvider) => Container(
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  height: 250,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: imageProvider, fit: BoxFit.cover),
+                  ),
+                ),
+                placeholder: (context, url) => Container(
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    height: 250,
+                    child: SquareLoader()),
+                errorWidget: (context, url, error) => Container(
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    height: 250,
+                    child: noDataImage()),
               ),
             ),
             Padding(
@@ -62,18 +79,13 @@ class DealsCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Expanded(
-                          child: Text(
-                        '${title[0].toUpperCase()}${title.substring(1)}',
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: textbarlowRegularBlackb(),
-                      )),
+                          child: buildCatTitle(
+                              '${title[0].toUpperCase()}${title.substring(1)}',
+                              false,
+                              textBarlowRegularrdarkdull()))
                     ],
                   ),
-                  Text(
-                    '$price',
-                    style: textbarlowBoldgreen(),
-                  ),
+                  priceMrpText(price, null)
                 ],
               ),
             ),

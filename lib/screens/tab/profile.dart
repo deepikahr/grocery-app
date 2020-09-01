@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -8,6 +9,7 @@ import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/drawer/address.dart';
 import 'package:readymadeGroceryApp/screens/orders/orders.dart';
 import 'package:readymadeGroceryApp/screens/tab/editprofile.dart';
+import 'package:readymadeGroceryApp/screens/tab/walletHistory.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -271,26 +273,59 @@ class _ProfileState extends State<Profile> {
                                               ),
                                             )
                                           : Center(
-                                              child: new Container(
-                                                width: 200.0,
-                                                height: 200.0,
-                                                decoration: new BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          20.0),
-                                                  image: new DecorationImage(
-                                                    fit: BoxFit.cover,
-                                                    image: new NetworkImage(userInfo[
-                                                                'filePath'] ==
-                                                            null
-                                                        ? userInfo['imageUrl']
-                                                        : Constants
-                                                                .imageUrlPath +
-                                                            "/tr:dpr-auto,tr:w-500" +
-                                                            userInfo[
-                                                                'filePath']),
+                                              child: CachedNetworkImage(
+                                                imageUrl: userInfo[
+                                                            'filePath'] ==
+                                                        null
+                                                    ? userInfo['imageUrl']
+                                                    : Constants.imageUrlPath +
+                                                        "/tr:dpr-auto,tr:w-500" +
+                                                        userInfo['filePath'],
+                                                imageBuilder:
+                                                    (context, imageProvider) =>
+                                                        Container(
+                                                  width: 200.0,
+                                                  height: 200.0,
+                                                  decoration: new BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20.0),
+                                                    image: DecorationImage(
+                                                        image: imageProvider,
+                                                        fit: BoxFit.cover,
+                                                        colorFilter:
+                                                            ColorFilter.mode(
+                                                                Colors.red,
+                                                                BlendMode
+                                                                    .colorBurn)),
                                                   ),
                                                 ),
+                                                placeholder: (context, url) =>
+                                                    Container(
+                                                        width: 200.0,
+                                                        height: 200.0,
+                                                        decoration:
+                                                            new BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      20.0),
+                                                        ),
+                                                        child: SquareLoader(
+                                                            size: 20.0)),
+                                                errorWidget: (context, url,
+                                                        error) =>
+                                                    Container(
+                                                        width: 200.0,
+                                                        height: 200.0,
+                                                        decoration:
+                                                            new BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      20.0),
+                                                        ),
+                                                        child: noDataImage()),
                                               ),
                                             ),
                                     ),
@@ -304,50 +339,28 @@ class _ProfileState extends State<Profile> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: <Widget>[
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 6.0),
-                                        child: Text(
+                                      alertText(
+                                          context,
                                           '${userInfo['firstName'] ?? ""} ${userInfo['lastName'] ?? ""}',
-                                          style: textBarlowMediumBlack(),
-                                        ),
-                                      ),
+                                          null),
                                       SizedBox(height: 6),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: <Widget>[
-                                          Text(
-                                            '${userInfo['email'] ?? ""}',
-                                            style: textbarlowmedium(),
-                                          ),
-                                        ],
-                                      ),
+                                      normalText(context,
+                                          '${userInfo['email'] ?? ""}'),
                                       SizedBox(height: 6),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(top: 5.0),
-                                        child: Text(
-                                          '${userInfo['mobileNumber'].toString() ?? ""}',
-                                          style: textbarlowmedium(),
-                                        ),
-                                      ),
+                                      normalText(context,
+                                          '${userInfo['mobileNumber'].toString() ?? ""}'),
+                                      SizedBox(height: 6),
                                       walletAmount != null && walletAmount > 0
-                                          ? Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 5.0),
-                                              child: Text(
-                                                (MyLocalizations.of(context)
-                                                        .getLocalizations(
-                                                            "TOTAL_WALLET_AMOUNT",
-                                                            true) +
-                                                    currency +
-                                                    walletAmount
-                                                        .toDouble()
-                                                        .toStringAsFixed(2)),
-                                                style: textbarlowmedium(),
-                                              ),
-                                            )
+                                          ? normalText(
+                                              context,
+                                              (MyLocalizations.of(context)
+                                                      .getLocalizations(
+                                                          "TOTAL_WALLET_AMOUNT",
+                                                          true) +
+                                                  currency +
+                                                  walletAmount
+                                                      .toDouble()
+                                                      .toStringAsFixed(2)))
                                           : Container(),
                                     ],
                                   ),
@@ -375,44 +388,36 @@ class _ProfileState extends State<Profile> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 15),
+                        SizedBox(height: 10),
                         InkWell(
-                          onTap: () {
-                            var result = Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => Address(
-                                  locale: widget.locale,
-                                  localizedValues: widget.localizedValues,
-                                ),
-                              ),
-                            );
-                            result.then((value) => getToken());
-                          },
-                          child: Container(
-                            height: 55,
-                            decoration: BoxDecoration(
-                              color: Color(0xFFF7F7F7),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 10.0,
-                                      bottom: 10.0,
-                                      left: 20.0,
-                                      right: 20.0),
-                                  child: Text(
-                                    MyLocalizations.of(context)
-                                        .getLocalizations("ADDRESS"),
-                                    style: textBarlowMediumBlack(),
+                            onTap: () {
+                              var result = Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => WalletHistory(
+                                    locale: widget.locale,
+                                    localizedValues: widget.localizedValues,
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
+                              );
+                              result.then((value) => getToken());
+                            },
+                            child: profileText(context, "WALLET_HISTORY")),
+                        SizedBox(height: 15),
+                        InkWell(
+                            onTap: () {
+                              var result = Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Address(
+                                    locale: widget.locale,
+                                    localizedValues: widget.localizedValues,
+                                  ),
+                                ),
+                              );
+                              result.then((value) => getToken());
+                            },
+                            child: profileText(context, "ADDRESS")),
                         languagesList.length > 0
                             ? SizedBox(height: 15)
                             : Container(),
@@ -421,137 +426,44 @@ class _ProfileState extends State<Profile> {
                                 onTap: () {
                                   selectLanguagesMethod();
                                 },
-                                child: Container(
-                                  height: 55,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFFF7F7F7),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 10.0,
-                                            bottom: 10.0,
-                                            left: 20.0,
-                                            right: 20.0),
-                                        child: Text(
-                                          MyLocalizations.of(context)
-                                              .getLocalizations(
-                                                  "SELECT_LANGUAGE"),
-                                          style: textBarlowMediumBlack(),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )
+                                child: profileText(context, "SELECT_LANGUAGE"))
                             : Container(),
-                        SizedBox(height: 20.0),
+                        SizedBox(height: 15),
                         InkWell(
-                          onTap: () {
-                            var result = Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => Orders(
-                                  locale: widget.locale,
-                                  localizedValues: widget.localizedValues,
-                                  userID: userID,
-                                ),
-                              ),
-                            );
-                            result.then((value) => getToken());
-                          },
-                          child: Container(
-                            height: 55,
-                            decoration: BoxDecoration(
-                              color: Color(0xFFF7F7F7),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 10.0,
-                                      bottom: 10.0,
-                                      left: 20.0,
-                                      right: 20.0),
-                                  child: Text(
-                                    MyLocalizations.of(context)
-                                        .getLocalizations("MY_ORDERS"),
-                                    style: textBarlowMediumBlack(),
+                            onTap: () {
+                              var result = Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Orders(
+                                    locale: widget.locale,
+                                    localizedValues: widget.localizedValues,
+                                    userID: userID,
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20.0),
+                              );
+                              result.then((value) => getToken());
+                            },
+                            child: profileText(context, "MY_ORDERS")),
+                        SizedBox(height: 15),
                         InkWell(
-                          onTap: () {
-                            var result = Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ChangePassword(
-                                  locale: widget.locale,
-                                  localizedValues: widget.localizedValues,
-                                ),
-                              ),
-                            );
-                            result.then((value) => getToken());
-                          },
-                          child: Container(
-                            height: 55,
-                            decoration: BoxDecoration(
-                              color: Color(0xFFF7F7F7),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 10.0,
-                                      bottom: 10.0,
-                                      left: 20.0,
-                                      right: 20.0),
-                                  child: Text(
-                                    MyLocalizations.of(context)
-                                        .getLocalizations("CHANGE_PASSWORD"),
-                                    style: textBarlowMediumBlack(),
+                            onTap: () {
+                              var result = Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ChangePassword(
+                                    locale: widget.locale,
+                                    localizedValues: widget.localizedValues,
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20.0),
+                              );
+                              result.then((value) => getToken());
+                            },
+                            child: profileText(context, "CHANGE_PASSWORD")),
+                        SizedBox(height: 15),
                         InkWell(
-                          onTap: logout,
-                          child: Container(
-                            height: 55,
-                            decoration: BoxDecoration(
-                              color: Color(0xFFF7F7F7),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 10.0,
-                                      bottom: 10.0,
-                                      left: 20.0,
-                                      right: 20.0),
-                                  child: Text(
-                                    MyLocalizations.of(context)
-                                        .getLocalizations("LOGOUT"),
-                                    style: textBarlowMediumBlack(),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20.0),
+                            onTap: logout,
+                            child: profileText(context, "LOGOUT")),
+                        SizedBox(height: 15),
                       ],
                     ),
     );

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -12,6 +13,7 @@ import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -177,9 +179,7 @@ class _OrderDetailsState extends State<OrderDetails> {
       body: isLoading
           ? SquareLoader()
           : orderHistory == null
-              ? Center(
-                  child: Image.asset('lib/assets/images/no-orders.png'),
-                )
+              ? noDataImage()
               : ListView(
                   children: <Widget>[
                     Container(
@@ -196,185 +196,85 @@ class _OrderDetailsState extends State<OrderDetails> {
                                 fit: FlexFit.tight,
                                 child: Column(
                                   children: <Widget>[
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        Expanded(
-                                          child: Text(
-                                              MyLocalizations.of(context)
-                                                      .getLocalizations(
-                                                          "ORDER_ID", true) +
-                                                  "#" +
-                                                  orderHistory['order']
-                                                          ['orderID']
-                                                      .toString(),
-                                              style: textBarlowMediumBlack()),
-                                        )
-                                      ],
-                                    ),
+                                    buildOrderDetilsText(
+                                        context,
+                                        "ORDER_ID",
+                                        "#" +
+                                            orderHistory['order']['orderID']
+                                                .toString()),
                                     SizedBox(height: 10),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        Expanded(
-                                          child: Text(
-                                              MyLocalizations.of(context)
-                                                      .getLocalizations(
-                                                          "DATE", true) +
-                                                  DateFormat(
-                                                          'dd/MM/yyyy, hh:mm a')
-                                                      .format(DateTime.parse(
-                                                              orderHistory[
-                                                                          'order']
-                                                                      [
-                                                                      'createdAt']
-                                                                  .toString())
-                                                          .toLocal()),
-                                              overflow: TextOverflow.ellipsis,
-                                              style: textBarlowMediumBlack()),
-                                        )
-                                      ],
-                                    ),
+                                    buildOrderDetilsText(
+                                        context,
+                                        "DATE",
+                                        DateFormat('dd/MM/yyyy, hh:mm a')
+                                            .format(DateTime.parse(
+                                                    orderHistory['order']
+                                                            ['createdAt']
+                                                        .toString())
+                                                .toLocal())),
                                     SizedBox(height: 10),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        Expanded(
-                                          child: Text(
-                                              MyLocalizations.of(context)
-                                                      .getLocalizations(
-                                                          "DELIVERY_DATE",
-                                                          true) +
-                                                  orderHistory['order']
-                                                      ['deliveryDate'],
-                                              overflow: TextOverflow.ellipsis,
-                                              style: textBarlowMediumBlack()),
-                                        )
-                                      ],
-                                    ),
+                                    buildOrderDetilsText(
+                                        context,
+                                        "DELIVERY_DATE",
+                                        orderHistory['order']['deliveryDate']),
                                     SizedBox(height: 10),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        Expanded(
-                                          child: Text(
-                                              MyLocalizations.of(context)
-                                                      .getLocalizations(
-                                                          "DELIVERY_TIME",
-                                                          true) +
-                                                  orderHistory['order']
-                                                      ['deliveryTime'],
-                                              style: textBarlowMediumBlack()),
-                                        )
-                                      ],
-                                    ),
+                                    buildOrderDetilsText(
+                                        context,
+                                        "DELIVERY_TIME",
+                                        orderHistory['order']['deliveryTime']),
                                     SizedBox(height: 10),
                                     Constants.predefined == "true"
-                                        ? Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              Expanded(
-                                                child: Text(
-                                                    MyLocalizations.of(context)
-                                                            .getLocalizations(
-                                                                "TIME_ZONE_MESSAGE") +
-                                                        " *",
-                                                    style:
-                                                        textBarlowMediumBlackRed()),
-                                              )
-                                            ],
-                                          )
+                                        ? timeZoneMessage(
+                                            context, "TIME_ZONE_MESSAGE")
                                         : Container(),
-                                    Constants.predefined == "true"
-                                        ? SizedBox(height: 10)
-                                        : Container(),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        Expanded(
-                                          child: Text(
-                                              MyLocalizations.of(context)
-                                                      .getLocalizations(
-                                                          "PAYMENT_TYPE", true) +
-                                                  (orderHistory['order']['paymentType'] == 'COD'
-                                                      ? MyLocalizations.of(context)
-                                                          .getLocalizations(
-                                                              "CASH_ON_DELIVERY")
-                                                      : orderHistory['order']['paymentType'] == "CARD"
-                                                          ? MyLocalizations.of(context)
-                                                              .getLocalizations(
-                                                                  "PAY_BY_CARD")
-                                                          : orderHistory['order']['paymentType'] ==
-                                                                  "WALLET"
-                                                              ? MyLocalizations.of(context)
-                                                                  .getLocalizations(
-                                                                      "WALLET")
-                                                              : orderHistory['order']
-                                                                  ['paymentType']),
-                                              style: textBarlowMediumBlack()),
-                                        )
-                                      ],
-                                    ),
+                                    buildOrderDetilsText(
+                                        context,
+                                        "PAYMENT_TYPE",
+                                        (orderHistory['order']['paymentType'] ==
+                                                'COD'
+                                            ? "CASH_ON_DELIVERY"
+                                            : orderHistory['order']
+                                                        ['paymentType'] ==
+                                                    "CARD"
+                                                ? "PAY_BY_CARD"
+                                                : orderHistory['order']
+                                                            ['paymentType'] ==
+                                                        "WALLET"
+                                                    ? "WALLET"
+                                                    : orderHistory['order']
+                                                        ['paymentType'])),
                                     SizedBox(height: 10),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        Expanded(
-                                          child: Text(
-                                              MyLocalizations.of(context)
-                                                      .getLocalizations(
-                                                          "ADDRESS", true) +
-                                                  orderHistory['order']
-                                                      ['address']['address'],
-                                              style: textBarlowMediumBlack()),
-                                        ),
-                                      ],
-                                    ),
+                                    buildOrderDetilsText(
+                                        context,
+                                        "ADDRESS",
+                                        orderHistory['order']['address']
+                                            ['address']),
                                     SizedBox(height: 10),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                            MyLocalizations.of(context)
-                                                .getLocalizations(
-                                                    "ORDER_STAUS", true),
-                                            style: textBarlowMediumBlack()),
-                                        SizedBox(height: 5),
-                                        Expanded(
-                                          child: Text(
-                                              orderHistory['order']['orderStatus'] == "DELIVERED"
-                                                  ? MyLocalizations.of(context)
-                                                      .getLocalizations(
-                                                          "DELIVERED")
-                                                  : orderHistory['order']
-                                                              ['orderStatus'] ==
-                                                          "CANCELLED"
-                                                      ? MyLocalizations.of(context)
-                                                          .getLocalizations(
-                                                              "CANCELLED")
-                                                      : orderHistory['order']['orderStatus'] == "OUT_FOR_DELIVERY"
-                                                          ? MyLocalizations.of(context)
-                                                              .getLocalizations(
-                                                                  "OUT_FOR_DELIVERY")
-                                                          : orderHistory['order']['orderStatus'] == "CONFIRMED"
-                                                              ? MyLocalizations.of(context)
-                                                                  .getLocalizations(
-                                                                      "CONFIRMED")
-                                                              : orderHistory['order']['orderStatus'] == "PENDING"
-                                                                  ? MyLocalizations.of(context).getLocalizations("PENDING")
-                                                                  : orderHistory['order']['orderStatus'],
-                                              style: textBarlowMediumGreen()),
-                                        ),
-                                      ],
-                                    ),
+                                    buildOrderDetilsStatusText(
+                                        context,
+                                        "ORDER_STAUS",
+                                        (orderHistory['order']['orderStatus'] ==
+                                                "DELIVERED"
+                                            ? "DELIVERED"
+                                            : orderHistory['order']
+                                                        ['orderStatus'] ==
+                                                    "CANCELLED"
+                                                ? "CANCELLED"
+                                                : orderHistory['order']
+                                                            ['orderStatus'] ==
+                                                        "OUT_FOR_DELIVERY"
+                                                    ? "OUT_FOR_DELIVERY"
+                                                    : orderHistory['order'][
+                                                                'orderStatus'] ==
+                                                            "CONFIRMED"
+                                                        ? "CONFIRMED"
+                                                        : orderHistory['order'][
+                                                                    'orderStatus'] ==
+                                                                "PENDING"
+                                                            ? "PENDING"
+                                                            : orderHistory[
+                                                                    'order'][
+                                                                'orderStatus'])),
                                   ],
                                 ),
                               ),
@@ -392,384 +292,228 @@ class _OrderDetailsState extends State<OrderDetails> {
                           : orderHistory['cart']['products'].length,
                       itemBuilder: (BuildContext context, int i) {
                         Map order = orderHistory['cart']['products'][i];
-                        return Container(
-                          width: MediaQuery.of(context).size.width,
-                          color: Color(0xFFF7F7F7),
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                          child: Row(
-                            children: <Widget>[
-                              Container(
-                                height: 75,
-                                width: 99,
-                                decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5)),
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Color(0xFF0000000A),
-                                        blurRadius: 0.40)
-                                  ],
-                                  image: DecorationImage(
-                                      image: order['filePath'] == null &&
-                                              order['imageUrl'] == null
-                                          ? AssetImage(
-                                              'lib/assets/images/no-orders.png')
-                                          : NetworkImage(
-                                              order['filePath'] == null
-                                                  ? order['imageUrl']
-                                                  : Constants.imageUrlPath +
-                                                      "/tr:dpr-auto,tr:w-500" +
-                                                      order['filePath'],
-                                            ),
-                                      fit: BoxFit.cover),
-                                ),
-                              ),
-                              SizedBox(width: 17),
-                              Container(
-                                width: MediaQuery.of(context).size.width - 146,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text(
-                                      '${order['productName']}' ?? "",
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                      style: textBarlowRegularrdark(),
+                        return Column(
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width,
+                              color: Color(0xFFF7F7F7),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 3),
+                              child: Row(
+                                children: <Widget>[
+                                  CachedNetworkImage(
+                                    imageUrl: order['filePath'] == null
+                                        ? order['imageUrl']
+                                        : Constants.imageUrlPath +
+                                            "/tr:dpr-auto,tr:w-500" +
+                                            order['filePath'],
+                                    imageBuilder: (context, imageProvider) =>
+                                        Container(
+                                      height: 75,
+                                      width: 99,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(5)),
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color: Color(0xFF0000000A),
+                                              blurRadius: 0.40)
+                                        ],
+                                        image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.cover),
+                                      ),
                                     ),
-                                    SizedBox(height: 10),
-                                    Text(
-                                      '${order['unit']} (${order['quantity']}) *  $currency${order['price'].toStringAsFixed(2)}',
-                                      style: textSMBarlowRegularrBlack(),
-                                    ),
-                                    order['dealTotalAmount'] == 0
-                                        ? Container()
-                                        : SizedBox(height: 5),
-                                    order['dealTotalAmount'] == 0
-                                        ? Container()
-                                        : Text(
-                                            MyLocalizations.of(context)
-                                                    .getLocalizations(
-                                                        "DEAL_AMOUNT", true) +
-                                                ' $currency${order['dealTotalAmount'].toStringAsFixed(2)}',
-                                            style: textSMBarlowRegularrBlack(),
-                                          ),
-                                    SizedBox(height: 10),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Text(
-                                          '$currency ${order['productTotal'].toStringAsFixed(2)}',
-                                          style: textBarlowMediumBlack(),
+                                    placeholder: (context, url) => Container(
+                                        height: 75,
+                                        width: 99,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(5)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Color(0xFF0000000A),
+                                                blurRadius: 0.40)
+                                          ],
                                         ),
-                                        SizedBox(
-                                          width: 30,
-                                        ),
-                                      ],
-                                    ),
-                                    orderHistory['order']['orderStatus'] ==
-                                            "DELIVERED"
-                                        ? Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 8.0, right: 8.0),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: <Widget>[
-                                                InkWell(
-                                                    onTap: () {
-                                                      if (order["rating"] !=
-                                                              null &&
-                                                          order["rating"] > 0) {
-                                                        setState(() {
-                                                          rating = double.parse(
-                                                              order["rating"]
-                                                                  .toString());
-                                                        });
-                                                      } else {
-                                                        setState(() {
-                                                          rating = 1.0;
-                                                        });
-                                                      }
-
-                                                      ratingAlert(
-                                                          order['productId']);
-                                                    },
-                                                    child: mdPillsButton(
-                                                        context,
-                                                        order["isRated"] == true
-                                                            ? green
-                                                            : primary,
-                                                        "RATE_PRODUCT",
-                                                        order))
+                                        child: SquareLoader(size: 20.0)),
+                                    errorWidget: (context, url, error) =>
+                                        Container(
+                                            height: 75,
+                                            width: 99,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(5)),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    color: Color(0xFF0000000A),
+                                                    blurRadius: 0.40)
                                               ],
                                             ),
-                                          )
-                                        : Container(),
-                                    Divider(),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
+                                            child: noDataImage()),
+                                  ),
+                                  SizedBox(width: 17),
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width - 146,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        textMediumSmall(
+                                            order['productName'] ?? ""),
+                                        SizedBox(height: 10),
+                                        textLightSmall(
+                                            '${order['unit']} (${order['quantity']}) *  $currency${order['price'].toStringAsFixed(2)}'),
+                                        order['dealTotalAmount'] == 0
+                                            ? Container()
+                                            : SizedBox(height: 5),
+                                        order['dealTotalAmount'] == 0
+                                            ? Container()
+                                            : textLightSmall(MyLocalizations.of(
+                                                        context)
+                                                    .getLocalizations(
+                                                        "DEAL_AMOUNT", true) +
+                                                ' $currency${order['dealTotalAmount'].toStringAsFixed(2)}'),
+                                        SizedBox(height: 10),
+                                        textMediumSmall(
+                                            "$currency ${order['productTotal'].toStringAsFixed(2)}"),
+                                        orderHistory['order']['orderStatus'] ==
+                                                "DELIVERED"
+                                            ? Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 8.0, right: 8.0),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: <Widget>[
+                                                    InkWell(
+                                                        onTap: () {
+                                                          if (order["rating"] !=
+                                                                  null &&
+                                                              order["rating"] >
+                                                                  0) {
+                                                            setState(() {
+                                                              rating = double
+                                                                  .parse(order[
+                                                                          "rating"]
+                                                                      .toString());
+                                                            });
+                                                          } else {
+                                                            setState(() {
+                                                              rating = 1.0;
+                                                            });
+                                                          }
+
+                                                          ratingAlert(order[
+                                                              'productId']);
+                                                        },
+                                                        child: mdPillsButton(
+                                                            context,
+                                                            order["isRated"] ==
+                                                                    true
+                                                                ? green
+                                                                : primary,
+                                                            "RATE_PRODUCT",
+                                                            order))
+                                                  ],
+                                                ),
+                                              )
+                                            : Container(),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 16, right: 16),
+                              child: Divider(thickness: 1),
+                            ),
+                          ],
                         );
                       },
                     ),
+                    SizedBox(height: 10),
                     Padding(
-                      padding: EdgeInsets.only(left: 16, right: 16),
-                      child: Divider(
-                        thickness: 1,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Column(
-                      children: <Widget>[
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(left: 18.0, right: 18.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(
+                      padding: const EdgeInsets.only(left: 18.0, right: 18.0),
+                      child: Column(
+                        children: <Widget>[
+                          buildPriceBold(
+                              context,
+                              null,
+                              MyLocalizations.of(context)
+                                  .getLocalizations("SUB_TOTAL"),
+                              currency +
+                                  orderHistory['cart']['subTotal']
+                                      .toStringAsFixed(2),
+                              false),
+                          SizedBox(height: 6),
+                          orderHistory['cart']['tax'] == 0
+                              ? Container()
+                              : buildPriceBold(
+                                  context,
+                                  null,
                                   MyLocalizations.of(context)
-                                      .getLocalizations("SUB_TOTAL", true),
-                                  style: textBarlowMediumBlack()),
-                              Container(
-                                margin: EdgeInsets.only(left: 8),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                    top: 15.0,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      Text(
-                                        currency,
-                                        style: textBarlowBoldBlack(),
-                                      ),
-                                      Text(
-                                        orderHistory['cart']['subTotal']
+                                      .getLocalizations("TAX"),
+                                  currency +
+                                      orderHistory['cart']['tax']
+                                          .toStringAsFixed(2),
+                                  false),
+                          SizedBox(height: 6),
+                          buildPriceBold(
+                              context,
+                              null,
+                              MyLocalizations.of(context)
+                                  .getLocalizations("DELIVERY_CHARGES"),
+                              orderHistory['cart']['deliveryCharges'] == 0
+                                  ? MyLocalizations.of(context)
+                                      .getLocalizations("FREE")
+                                  : orderHistory['cart']['deliveryCharges']
+                                      .toStringAsFixed(2),
+                              false),
+                          SizedBox(height: 6),
+                          orderHistory['cart']['walletAmount'] == 0 ||
+                                  orderHistory['cart']['walletAmount'] == 0.0
+                              ? Container()
+                              : buildPriceBold(
+                                  context,
+                                  null,
+                                  MyLocalizations.of(context)
+                                      .getLocalizations("USED_WALLET_AMOUNT"),
+                                  currency +
+                                      orderHistory['cart']['walletAmount']
+                                          .toStringAsFixed(2),
+                                  false),
+                          SizedBox(height: 6),
+                          orderHistory['cart']['couponCode'] == null
+                              ? Container()
+                              : Column(
+                                  children: <Widget>[
+                                    buildPriceBold(
+                                        context,
+                                        null,
+                                        MyLocalizations.of(context)
+                                            .getLocalizations("COUPON_APPLIED"),
+                                        orderHistory['cart']['couponCode'],
+                                        false),
+                                    SizedBox(height: 6),
+                                    buildPriceBold(
+                                        context,
+                                        null,
+                                        currency +
+                                            MyLocalizations.of(context)
+                                                .getLocalizations("DISCOUNT"),
+                                        orderHistory['cart']['couponAmount']
                                             .toStringAsFixed(2),
-                                        style: textBarlowBoldBlack(),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        orderHistory['cart']['tax'] == 0
-                            ? Container()
-                            : Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 18.0, right: 18.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text(
-                                        MyLocalizations.of(context)
-                                            .getLocalizations("TAX", true),
-                                        style: textBarlowMediumBlack()),
-                                    Container(
-                                      margin: EdgeInsets.only(left: 8),
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                          top: 15.0,
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: <Widget>[
-                                            Text(
-                                              currency,
-                                              style: textBarlowBoldBlack(),
-                                            ),
-                                            Text(
-                                              orderHistory['cart']['tax']
-                                                  .toStringAsFixed(2),
-                                              style: textBarlowBoldBlack(),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
+                                        false),
                                   ],
                                 ),
-                              ),
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(left: 18.0, right: 18.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(
-                                  MyLocalizations.of(context).getLocalizations(
-                                      "DELIVERY_CHARGES", true),
-                                  style: textBarlowMediumBlack()),
-                              Container(
-                                margin: EdgeInsets.only(left: 8),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                    top: 15.0,
-                                    bottom: 5.0,
-                                  ),
-                                  child: orderHistory['cart']
-                                              ['deliveryCharges'] ==
-                                          0
-                                      ? Text(
-                                          MyLocalizations.of(context)
-                                              .getLocalizations("FREE"),
-                                          style: textBarlowBoldBlack(),
-                                        )
-                                      : Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: <Widget>[
-                                            Text(
-                                              currency,
-                                              style: textBarlowBoldBlack(),
-                                            ),
-                                            Text(
-                                              orderHistory['cart']
-                                                      ['deliveryCharges']
-                                                  .toStringAsFixed(2),
-                                              style: textBarlowBoldBlack(),
-                                            )
-                                          ],
-                                        ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        orderHistory['cart']['walletAmount'] == 0 ||
-                                orderHistory['cart']['walletAmount'] == 0.0
-                            ? Container()
-                            : Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 18.0, right: 18.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text(
-                                        MyLocalizations.of(context)
-                                            .getLocalizations(
-                                                "USED_WALLET_AMOUNT", true),
-                                        style: textBarlowMediumBlack()),
-                                    Container(
-                                      margin: EdgeInsets.only(left: 8),
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                          top: 15.0,
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: <Widget>[
-                                            Text(
-                                              currency,
-                                              style: textBarlowBoldBlack(),
-                                            ),
-                                            Text(
-                                              orderHistory['cart']
-                                                      ['walletAmount']
-                                                  .toStringAsFixed(2),
-                                              style: textBarlowBoldBlack(),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                        orderHistory['cart']['couponCode'] == null
-                            ? Container()
-                            : Column(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 18.0, right: 18.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Text(
-                                            MyLocalizations.of(context)
-                                                .getLocalizations(
-                                                    "COUPON_APPLIED", true),
-                                            style: textBarlowMediumBlack()),
-                                        Container(
-                                          margin: EdgeInsets.only(left: 8),
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                              top: 15.0,
-                                              bottom: 5.0,
-                                            ),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: <Widget>[
-                                                Text(
-                                                  '${orderHistory['cart']['couponCode']}',
-                                                  style: textBarlowBoldBlack(),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 18.0, right: 18.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Text(
-                                            MyLocalizations.of(context)
-                                                .getLocalizations(
-                                                    "DISCOUNT", true),
-                                            style: textBarlowMediumBlack()),
-                                        Container(
-                                          margin: EdgeInsets.only(left: 8),
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                              top: 15.0,
-                                              bottom: 5.0,
-                                            ),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: <Widget>[
-                                                Text(
-                                                  currency,
-                                                  style: textBarlowBoldBlack(),
-                                                ),
-                                                Text(
-                                                  '${orderHistory['cart']['couponAmount'].toStringAsFixed(2)}',
-                                                  style: textBarlowBoldBlack(),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                        SizedBox(height: 6),
-                      ],
+                          SizedBox(height: 6),
+                        ],
+                      ),
                     ),
                     Container(
                       margin: EdgeInsets.only(left: 20, right: 20),
@@ -777,41 +521,19 @@ class _OrderDetailsState extends State<OrderDetails> {
                       height: 1,
                       color: Colors.grey[300],
                     ),
+                    SizedBox(height: 6),
                     Padding(
                       padding: const EdgeInsets.only(left: 18.0, right: 18.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                              MyLocalizations.of(context)
-                                  .getLocalizations("TOTAL", true),
-                              style: textBarlowMediumBlack()),
-                          Container(
-                            margin: EdgeInsets.only(left: 8),
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                top: 15.0,
-                                bottom: 15.0,
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    currency,
-                                    style: textBarlowBoldBlack(),
-                                  ),
-                                  Text(
-                                    orderHistory['cart']['grandTotal']
-                                        .toStringAsFixed(2),
-                                    style: textBarlowBoldBlack(),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                      child: buildPriceBold(
+                          context,
+                          null,
+                          MyLocalizations.of(context).getLocalizations("TOTAL"),
+                          currency +
+                              orderHistory['cart']['grandTotal']
+                                  .toStringAsFixed(2),
+                          false),
                     ),
+                    SizedBox(height: 6),
                     orderHistory['order']['orderStatus'] == "DELIVERED" ||
                             orderHistory['order']['orderStatus'] == "CANCELLED"
                         ? Container()

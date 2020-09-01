@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/categories/subcategories.dart';
-import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
+import 'package:readymadeGroceryApp/widgets/categoryBlock.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -93,6 +92,7 @@ class _AllCategoriesState extends State<AllCategories>
                       mainAxisSpacing: 0),
                   itemBuilder: (BuildContext context, int index) {
                     return InkWell(
+                      key: ValueKey('$index-first-category'),
                       onTap: () {
                         Navigator.push(
                           context,
@@ -107,45 +107,15 @@ class _AllCategoriesState extends State<AllCategories>
                           ),
                         );
                       },
-                      child: Container(
-                        width: 96,
-                        padding: EdgeInsets.only(right: 16),
-                        child: Column(
-                          children: <Widget>[
-                            Container(
-                              width: 85,
-                              height: 85,
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8)),
-                                border: Border.all(
-                                    color: Colors.black.withOpacity(0.20)),
-                              ),
-                              child: ClipRRect(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8)),
-                                child: Image.network(
-                                  categoryList[index]['filePath'] == null
-                                      ? categoryList[index]['imageUrl']
-                                      : Constants.imageUrlPath +
-                                          "/tr:dpr-auto,tr:w-500" +
-                                          categoryList[index]['filePath'],
-                                  scale: 5,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            Text(
-                              '${categoryList[index]['title'][0].toUpperCase()}${categoryList[index]['title'].substring(1)}',
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: textBarlowRegularrdarkdull(),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      ),
+                      child: CategoryBlock(
+                          image: categoryList[index]['filePath'] == null
+                              ? categoryList[index]['imageUrl']
+                              : categoryList[index]['filePath'],
+                          title: categoryList[index]['title'],
+                          isPath: categoryList[index]['filePath'] == null
+                              ? false
+                              : true,
+                          isHome: false),
                     );
                   },
                 ),

@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:getflutter/getwidget.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import '../../service/auth-service.dart';
-import '../../service/localizations.dart';
 import '../../service/sentry-service.dart';
-import '../../style/style.dart';
 import '../../widgets/loader.dart';
 
 SentryError sentryError = new SentryError();
@@ -105,7 +104,7 @@ class _AboutUsState extends State<AboutUs> {
           : ListView(
               children: <Widget>[
                 Container(
-                  margin: EdgeInsets.all(20),
+                  margin: EdgeInsets.all(10),
                   child: Center(
                     child: GFAvatar(
                       backgroundImage: AssetImage("lib/assets/logo.png"),
@@ -113,81 +112,26 @@ class _AboutUsState extends State<AboutUs> {
                     ),
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.only(left: 15, right: 15.0),
-                  child: Text(
-                    MyLocalizations.of(context)
-                        .getLocalizations("DESCRIPTION", true),
-                    style: textBarlowMediumBlack(),
-                  ),
-                ),
+                textWithValue(context, "DESCRIPTION", null),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Html(data: aboutUs),
+                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                  child: Html(data: aboutUs ?? ""),
                 ),
-                Container(
-                  margin: EdgeInsets.only(left: 15, bottom: 15, right: 15.0),
-                  child: Text(
-                    MyLocalizations.of(context).getLocalizations("STORE", true),
-                    style: textBarlowMediumBlack(),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 15.0, right: 15.0, bottom: 15),
-                  child: Text(businessInfo['storeName'].toString()),
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 15, bottom: 15, right: 15.0),
-                  child: Text(
-                    MyLocalizations.of(context)
-                        .getLocalizations("LOCATION", true),
-                    style: textBarlowMediumBlack(),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 15.0, right: 15.0, bottom: 15),
-                  child: Text(businessInfo['officeLocation'].toString()),
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 15, bottom: 15, right: 15.0),
-                  child: Text(
-                    MyLocalizations.of(context)
-                        .getLocalizations("ADDRESS", true),
-                    style: textBarlowMediumBlack(),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 15.0, right: 15.0, bottom: 15),
-                  child: Text(businessInfo['address']),
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 15, bottom: 15, right: 15.0),
-                  child: Text(
-                    MyLocalizations.of(context)
-                        .getLocalizations("CONTACT_NUMBER", true),
-                    style: textBarlowMediumBlack(),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 15.0, right: 15.0, bottom: 15),
-                  child: Text(businessInfo['phoneNumber'].toString()),
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 15, bottom: 15, right: 15.0),
-                  child: Text(
-                    MyLocalizations.of(context).getLocalizations("EMAIL", true),
-                    style: textBarlowMediumBlack(),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 15.0, right: 15.0, bottom: 15),
-                  child: Text(businessInfo['email']),
-                ),
+                textWithValue(
+                    context, "STORE", businessInfo['storeName'].toString()),
+                SizedBox(height: 5),
+                textWithValue(context, "LOCATION",
+                    businessInfo['officeLocation'].toString()),
+                SizedBox(height: 5),
+                textWithValue(
+                    context, "ADDRESS", businessInfo['address'].toString()),
+                SizedBox(height: 5),
+                textWithValue(context, "CONTACT_NUMBER",
+                    businessInfo['phoneNumber'].toString()),
+                SizedBox(height: 5),
+                textWithValue(
+                    context, "EMAIL", businessInfo['email'].toString()),
+                SizedBox(height: 5),
               ],
             ),
     );
