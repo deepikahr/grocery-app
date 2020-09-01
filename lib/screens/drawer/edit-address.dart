@@ -76,7 +76,7 @@ class _EditAddressState extends State<EditAddress> {
     "apartmentName": null,
     "landmark": null,
     "postalCode": null,
-    "mobileNumber": 0,
+    "mobileNumber": null,
     "addressType": null
   };
   updateAddress() async {
@@ -502,7 +502,7 @@ class _EditAddressState extends State<EditAddress> {
                         return null;
                     },
                     onSaved: (String value) {
-                      address['mobileNumber'] = int.parse(value);
+                      address['mobileNumber'] = value;
                     },
                   ),
                 ),
