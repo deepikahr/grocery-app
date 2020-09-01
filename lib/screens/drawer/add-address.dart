@@ -62,7 +62,7 @@ class _AddAddressState extends State<AddAddress> {
     "apartmentName": null,
     "landmark": null,
     "postalCode": null,
-    "mobileNumber": 0,
+    "mobileNumber": null,
     "addressType": null
   };
   addAddress() async {
@@ -484,7 +484,7 @@ class _AddAddressState extends State<AddAddress> {
                         return null;
                     },
                     onSaved: (String value) {
-                      address['mobileNumber'] = int.parse(value);
+                      address['mobileNumber'] = value;
                     },
                   ),
                 ),

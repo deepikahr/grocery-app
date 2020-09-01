@@ -174,6 +174,7 @@ class _ProfileState extends State<Profile> {
     Common.getSelectedLanguage().then((selectedLocale) async {
       Map body = {"language": selectedLocale, "playerId": null};
       LoginService.updateUserInfo(body).then((value) async {
+        print(value);
         await Common.setToken(null);
         await Common.setUserID(null);
         main();
