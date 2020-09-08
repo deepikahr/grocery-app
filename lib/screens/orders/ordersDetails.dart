@@ -235,7 +235,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                             ? "CASH_ON_DELIVERY"
                                             : orderHistory['order']
                                                         ['paymentType'] ==
-                                                    "CARD"
+                                                    "STRIPE"
                                                 ? "PAY_BY_CARD"
                                                 : orderHistory['order']
                                                             ['paymentType'] ==

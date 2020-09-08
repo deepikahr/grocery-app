@@ -73,7 +73,7 @@ class _PaymentState extends State<Payment> {
     }
     getUserInfo();
     paymentTypes = widget.locationInfo["paymentMethod"];
-   
+
     if (paymentTypes.length > 0) {
       widget.data['paymentType'] = paymentTypes[groupValue];
     }
@@ -118,7 +118,7 @@ class _PaymentState extends State<Payment> {
       showSnackbar(
           MyLocalizations.of(context).getLocalizations("SELECT_PAYMENT_FIRST"));
     } else {
-      if (widget.data['paymentType'] == "CARD") {
+      if (widget.data['paymentType'] == "STRIPE") {
         widget.data['paymentType'] = "";
         StripePayment.paymentRequestWithCardForm(CardFormPaymentRequest())
             .then((pm) {
