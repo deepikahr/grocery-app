@@ -73,7 +73,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           locale: widget.locale,
                           localizedValues: widget.localizedValues,
                           mobileNumber: mobileNumber,
-                          sid: onValue['isSent']['data'],
+                          sId: onValue['sId'],
                         ),
                       ),
                     );

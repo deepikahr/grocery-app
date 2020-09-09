@@ -348,7 +348,7 @@ class _ProfileState extends State<Profile> {
                                           '${userInfo['email'] ?? ""}'),
                                       SizedBox(height: 6),
                                       normalText(context,
-                                          '${userInfo['mobileNumber'].toString() ?? ""}'),
+                                          '${userInfo['mobileNumber'] ?? ""}'),
                                       SizedBox(height: 6),
                                       walletAmount != null && walletAmount > 0
                                           ? normalText(

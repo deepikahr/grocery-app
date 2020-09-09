@@ -9,6 +9,7 @@ import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
+
 class WalletHistory extends StatefulWidget {
   final String locale;
   final Map localizedValues;
@@ -16,6 +17,7 @@ class WalletHistory extends StatefulWidget {
   @override
   _WalletHistoryState createState() => _WalletHistoryState();
 }
+
 class _WalletHistoryState extends State<WalletHistory> {
   bool isWalletHistory = false, lastApiCall = true;
   int walletLimit = 15, walletIndex = 0, totalWalletIndex = 1;
@@ -32,6 +34,7 @@ class _WalletHistoryState extends State<WalletHistory> {
     getWalletHistory();
     super.initState();
   }
+
   getWalletHistory() async {
     await Common.getCurrency().then((value) {
       currency = value;
@@ -72,6 +75,7 @@ class _WalletHistoryState extends State<WalletHistory> {
       sentryError.reportError(error, null);
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,6 +120,7 @@ class _WalletHistoryState extends State<WalletHistory> {
               : noDataImage(),
     );
   }
+
   walletWidget(walletDetails) {
     return Padding(
       padding: const EdgeInsets.only(left: 10, right: 10),

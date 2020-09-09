@@ -57,10 +57,13 @@ class _SignupState extends State<Signup> {
       Map<String, dynamic> body = {
         "firstName": firstName,
         "lastName": lastName,
-        "email": email.toLowerCase(),
         "password": password,
         "mobileNumber": mobileNumber
       };
+      if (email != null && email != "") {
+        body['email'] = email;
+      }
+      print(body);
       await OtpService.signUpWithNumber(body).then((onValue) {
         if (mounted) {
           setState(() {
@@ -98,7 +101,7 @@ class _SignupState extends State<Signup> {
                           localizedValues: widget.localizedValues,
                           signUpTime: true,
                           mobileNumber: mobileNumber,
-                          sid: onValue['isSent']['data'],
+                          sId: onValue['sId'],
                         ),
                       ),
                     );
@@ -313,7 +316,7 @@ class _SignupState extends State<Signup> {
   }
 
   Widget buildEmailText() {
-    return buildGFTypography(context, "EMAIL", true, true);
+    return buildGFTypography(context, "EMAIL_OPTIONAL", false, true);
   }
 
   Widget buildEmailTextField() {
@@ -325,8 +328,7 @@ class _SignupState extends State<Signup> {
           keyboardType: TextInputType.emailAddress,
           validator: (String value) {
             if (value.isEmpty) {
-              return MyLocalizations.of(context)
-                  .getLocalizations("ENTER_YOUR_EMAIL");
+              return null;
             } else if (!RegExp(
                     r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
                 .hasMatch(value)) {

@@ -184,18 +184,18 @@ class _LoginState extends State<Login> {
                 Map body = {"number": mobileNumber};
                 OtpService.resendOtpWithNumber(body).then((response) {
                   showSnackbar(response['response_data']);
-                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => Otp(
-                          locale: widget.locale,
-                          localizedValues: widget.localizedValues,
-                          signUpTime: true,
-                          mobileNumber: mobileNumber,
-                          sid: response['isSent']['data'],
-                        ),
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Otp(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                        signUpTime: true,
+                        mobileNumber: mobileNumber,
+                        sId: response['sId'],
                       ),
-                    );
+                    ),
+                  );
                 });
               },
             ),

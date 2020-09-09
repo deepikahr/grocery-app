@@ -20,9 +20,9 @@ class Otp extends StatefulWidget {
       this.signUpTime,
       this.resentOtptime,
       this.mobileNumber,
-      this.sid})
+      this.sId})
       : super(key: key);
-  final String locale, mobileNumber, sid;
+  final String locale, mobileNumber, sId;
   final Map localizedValues;
   final bool signUpTime, resentOtptime;
 
@@ -36,8 +36,7 @@ class _OtpState extends State<Otp> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   String enteredOtp;
-  bool isOtpVerifyLoading = false,
-      isResentOtpLoading = false;
+  bool isOtpVerifyLoading = false, isResentOtpLoading = false;
 
   verifyOTPwithMobile() async {
     if (enteredOtp != null) {
@@ -51,7 +50,7 @@ class _OtpState extends State<Otp> {
         }
         Map<String, dynamic> body = {
           "otp": enteredOtp,
-          "sId": widget.sid,
+          "sId": widget.sId,
           "contactNumber": widget.mobileNumber.toString()
         };
         await OtpService.verifyOtpWithNumber(body).then((onValue) {
@@ -60,8 +59,9 @@ class _OtpState extends State<Otp> {
               isOtpVerifyLoading = false;
             });
           }
-       
-          if (onValue['response_data'] != null&&onValue['verificationToken']!=null) {
+
+          if (onValue['response_data'] != null &&
+              onValue['verificationToken'] != null) {
             showDialog<Null>(
               context: context,
               barrierDismissible: false, // user must tap button!
@@ -183,7 +183,7 @@ class _OtpState extends State<Otp> {
     OtpService.resendOtpWithNumber(body).then((response) {
       if (mounted) {
         setState(() {
-            showSnackbar(response['response_data']);
+          showSnackbar(response['response_data']);
           isResentOtpLoading = false;
         });
       }

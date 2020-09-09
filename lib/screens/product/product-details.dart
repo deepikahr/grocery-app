@@ -688,4 +688,3 @@ class _ProductDetailsState extends State<ProductDetails>
     _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 }
-
