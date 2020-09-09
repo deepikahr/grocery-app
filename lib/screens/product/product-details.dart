@@ -317,22 +317,19 @@ class _ProductDetailsState extends State<ProductDetails>
                                   margin: EdgeInsets.zero,
                                   height: 340,
                                   decoration: new BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(40),
-                                      bottomRight: Radius.circular(40),
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.grey,
-                                          blurRadius: 10.0,
-                                          offset: Offset(2.0, 2.0))
-                                    ],
-                                    image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.cover,
-                                        colorFilter: ColorFilter.mode(
-                                            Colors.red, BlendMode.colorBurn)),
-                                  ),
+                                      borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(40),
+                                        bottomRight: Radius.circular(40),
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.grey,
+                                            blurRadius: 10.0,
+                                            offset: Offset(2.0, 2.0))
+                                      ],
+                                      image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover)),
                                 ),
                                 placeholder: (context, url) => Container(
                                     height: 340, child: SquareLoader()),
@@ -580,11 +577,11 @@ class _ProductDetailsState extends State<ProductDetails>
                                                     title: priceMrpText(
                                                         productDetail[
                                                                 'isDealAvailable']
-                                                            ? "$currency${((variantPrice == null ? productDetail['variant'][i]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][i]['price'] : variantPrice) * (productDetail['dealPercent'] / 100))).toDouble().toStringAsFixed(2)}"
-                                                            : '$currency${(variantPrice == null ? productDetail['variant'][i]['price'] : variantPrice).toDouble().toStringAsFixed(2)}',
+                                                            ? "$currency${(productDetail['variant'][i]['price'] - (productDetail['variant'][i]['price'] * (productDetail['dealPercent'] / 100))).toDouble().toStringAsFixed(2)}"
+                                                            : '$currency${productDetail['variant'][i]['price'].toDouble().toStringAsFixed(2)}',
                                                         productDetail[
                                                                 'isDealAvailable']
-                                                            ? "$currency${(variantPrice == null ? productDetail['variant'][i]['price'] : variantPrice).toDouble().toStringAsFixed(2)}"
+                                                            ? "$currency${productDetail['variant'][i]['price'].toDouble().toStringAsFixed(2)}"
                                                             : null))
                                                 : Container();
                                           })
@@ -691,3 +688,4 @@ class _ProductDetailsState extends State<ProductDetails>
     _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 }
+

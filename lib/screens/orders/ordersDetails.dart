@@ -235,7 +235,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                             ? "CASH_ON_DELIVERY"
                                             : orderHistory['order']
                                                         ['paymentType'] ==
-                                                    "CARD"
+                                                    "STRIPE"
                                                 ? "PAY_BY_CARD"
                                                 : orderHistory['order']
                                                             ['paymentType'] ==
@@ -321,10 +321,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                         ],
                                         image: DecorationImage(
                                             image: imageProvider,
-                                            fit: BoxFit.cover,
-                                            colorFilter: ColorFilter.mode(
-                                                Colors.red,
-                                                BlendMode.colorBurn)),
+                                            fit: BoxFit.cover),
                                       ),
                                     ),
                                     placeholder: (context, url) => Container(

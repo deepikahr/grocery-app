@@ -181,11 +181,7 @@ class _OrdersState extends State<Orders> {
                 boxShadow: [
                   BoxShadow(color: Color(0xFF0000000A), blurRadius: 0.40)
                 ],
-                image: DecorationImage(
-                    image: imageProvider,
-                    fit: BoxFit.cover,
-                    colorFilter:
-                        ColorFilter.mode(Colors.red, BlendMode.colorBurn)),
+                image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
               ),
             ),
             placeholder: (context, url) => Container(

@@ -9,7 +9,6 @@ import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
-
 class WalletHistory extends StatefulWidget {
   final String locale;
   final Map localizedValues;
@@ -17,14 +16,12 @@ class WalletHistory extends StatefulWidget {
   @override
   _WalletHistoryState createState() => _WalletHistoryState();
 }
-
 class _WalletHistoryState extends State<WalletHistory> {
-  bool isWalletHistory = false, lastApiCall = true, isScrollLoading = true;
+  bool isWalletHistory = false, lastApiCall = true;
   int walletLimit = 15, walletIndex = 0, totalWalletIndex = 1;
   List walletHistoryList = [];
   String currency = '';
   ScrollController _scrollController = new ScrollController();
-
   @override
   void initState() {
     if (mounted) {
@@ -32,23 +29,10 @@ class _WalletHistoryState extends State<WalletHistory> {
         isWalletHistory = true;
       });
     }
-    getWalletHistory(walletIndex);
-    _scrollController
-      ..addListener(() {
-        var triggerFetchMoreSize =
-            0.9 * _scrollController.position.maxScrollExtent;
-        if (_scrollController.position.pixels > triggerFetchMoreSize) {
-          if (isScrollLoading == true) {
-            isScrollLoading = false;
-            walletIndex++;
-            getWalletHistory(walletIndex);
-          }
-        }
-      });
+    getWalletHistory();
     super.initState();
   }
-
-  getWalletHistory(walletIndex) async {
+  getWalletHistory() async {
     await Common.getCurrency().then((value) {
       currency = value;
     });
@@ -56,12 +40,24 @@ class _WalletHistoryState extends State<WalletHistory> {
         .then((onValue) {
       if (mounted) {
         setState(() {
-          print(onValue['response_data']);
           if (onValue['response_data'] != []) {
             walletHistoryList.addAll(onValue['response_data']);
-            isScrollLoading = true;
-          } else {
-            isScrollLoading = false;
+            totalWalletIndex = onValue["total"];
+            int index = walletHistoryList.length;
+            if (lastApiCall == true) {
+              walletIndex++;
+              if (index < totalWalletIndex) {
+                getWalletHistory();
+              } else {
+                if (index == totalWalletIndex) {
+                  if (mounted) {
+                    walletIndex++;
+                    lastApiCall = false;
+                    getWalletHistory();
+                  }
+                }
+              }
+            }
           }
           isWalletHistory = false;
         });
@@ -76,7 +72,6 @@ class _WalletHistoryState extends State<WalletHistory> {
       sentryError.reportError(error, null);
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,24 +92,21 @@ class _WalletHistoryState extends State<WalletHistory> {
                             ? 0
                             : walletHistoryList.length,
                         itemBuilder: (BuildContext context, int i) {
-                          return walletHistoryList[i]["amount"] > 0
-                              ? InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => OrderDetails(
-                                          locale: widget.locale,
-                                          localizedValues:
-                                              widget.localizedValues,
-                                          orderId: walletHistoryList[i]["_id"],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  child: walletWidget(walletHistoryList[i]),
-                                )
-                              : Container();
+                          return InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => OrderDetails(
+                                    locale: widget.locale,
+                                    localizedValues: widget.localizedValues,
+                                    orderId: walletHistoryList[i]["orderId"],
+                                  ),
+                                ),
+                              );
+                            },
+                            child: walletWidget(walletHistoryList[i]),
+                          );
                         },
                       ),
                     ),
@@ -124,7 +116,6 @@ class _WalletHistoryState extends State<WalletHistory> {
               : noDataImage(),
     );
   }
-
   walletWidget(walletDetails) {
     return Padding(
       padding: const EdgeInsets.only(left: 10, right: 10),
@@ -133,17 +124,28 @@ class _WalletHistoryState extends State<WalletHistory> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           walletText(context, "ORDER_ID", '#${walletDetails['orderID']}', true),
+          SizedBox(height: 3),
           walletText(
               context,
               "TRANSECTION_TYPE",
-              (walletDetails['transactionType'] == "ORDER_PAYMENT"
+              walletDetails['transactionType'] == "ORDER_PAYMENT"
                   ? "ORDER_PAYMENT"
                   : walletDetails['transactionType'] == "ORDER_CANCELLED"
                       ? "ORDER_CANCELLED"
-                      : walletDetails['transactionType']),
+                      : walletDetails['transactionType'],
               false),
+          SizedBox(height: 3),
           walletText(
-              context, "ORDER_ID", '#${walletDetails['orderID']}', false),
+              context, "AMOUNT", '$currency${walletDetails['amount']}', false),
+          SizedBox(height: 3),
+          walletText(
+              context,
+              "WALLET",
+              walletDetails['isCredited'] == true
+                  ? "CREDIT"
+                  : walletDetails['isCredited'] == false ? "DEBIT" : "",
+              false),
+          SizedBox(height: 3),
           Divider()
         ],
       ),

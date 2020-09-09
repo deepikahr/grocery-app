@@ -57,10 +57,7 @@ class DealsCard extends StatelessWidget {
                   height: 250,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                        image: imageProvider,
-                        fit: BoxFit.cover,
-                        colorFilter:
-                            ColorFilter.mode(Colors.red, BlendMode.colorBurn)),
+                        image: imageProvider, fit: BoxFit.cover),
                   ),
                 ),
                 placeholder: (context, url) => Container(
