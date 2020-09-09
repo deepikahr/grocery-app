@@ -34,12 +34,11 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   final TextEditingController _textController = new TextEditingController();
   bool _isWriting = false, isChatLoading = false, getUserDataLoading = false;
 
-  var userData, pageNumber = 0, chatDataLimit = 50;
+  var userData, pageNumber = 0, chatDataLimit = 100;
   Timer chatTimer;
   var socket = io.io(Constants.apiUrl, <String, dynamic>{
     'transports': ['websocket']
   });
-  // ScrollController _controller = ScrollController();
   @override
   void initState() {
     getUserData();
