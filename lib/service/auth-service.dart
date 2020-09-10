@@ -147,7 +147,6 @@ class LoginService {
 
   // get all wallet history
   static Future<Map<String, dynamic>> getWalletsHistory(index, limit) async {
-    print(Constants.apiUrl + "/wallets/history?limit=$limit&page=$index");
     return client
         .get(Constants.apiUrl + "/wallets/history?limit=$limit&page=$index")
         .then((response) {

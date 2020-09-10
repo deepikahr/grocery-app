@@ -57,7 +57,6 @@ class _EditProfileState extends State<EditProfile> {
       currency = value;
     });
     await LoginService.getUserInfo().then((onValue) {
-      print(onValue);
       if (mounted) {
         setState(() {
           isLoading = false;

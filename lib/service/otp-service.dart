@@ -41,14 +41,15 @@ class OtpService {
   // verify otp
   static Future verifyOtpWithNumber(body) async {
     return client
-        .post(Constants.apiUrl + "/users/verify-OTP/number",
+        .post(Constants.apiUrl + "/users/verify-otp/number",
             body: json.encode(body))
         .then((response) {
       return json.decode(response.body);
     });
   }
 
-  static Future resendOtpWithNumber(body) async {
+  static Future resendOtpWithNumber(mobileNumber) async {
+    Map body = {"mobileNumber": mobileNumber.toString()};
     return client
         .post(Constants.apiUrl + "/users/send-otp-phone",
             body: json.encode(body))

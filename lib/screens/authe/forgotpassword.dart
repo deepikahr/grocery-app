@@ -36,10 +36,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           isVerifyMobileLoading = true;
         });
       }
-      Map body = {
-        "number": mobileNumber.toString(),
-      };
-      await OtpService.resendOtpWithNumber(body).then((onValue) {
+
+      await OtpService.resendOtpWithNumber(mobileNumber).then((onValue) {
         if (mounted) {
           setState(() {
             isVerifyMobileLoading = false;

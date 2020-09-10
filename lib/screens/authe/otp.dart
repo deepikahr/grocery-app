@@ -35,8 +35,13 @@ class _OtpState extends State<Otp> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  String enteredOtp;
+  String enteredOtp, sid;
   bool isOtpVerifyLoading = false, isResentOtpLoading = false;
+  @override
+  void initState() {
+    sid = widget.sId;
+    super.initState();
+  }
 
   verifyOTPwithMobile() async {
     if (enteredOtp != null) {
@@ -50,8 +55,8 @@ class _OtpState extends State<Otp> {
         }
         Map<String, dynamic> body = {
           "otp": enteredOtp,
-          "sId": widget.sId,
-          "contactNumber": widget.mobileNumber.toString()
+          "sId": sid,
+          "mobileNumber": widget.mobileNumber.toString()
         };
         await OtpService.verifyOtpWithNumber(body).then((onValue) {
           if (mounted) {
@@ -98,11 +103,10 @@ class _OtpState extends State<Otp> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => ResetPassword(
-                                token: onValue['verificationToken'],
-                                mobileNumber: widget.mobileNumber,
-                                locale: widget.locale,
-                                localizedValues: widget.localizedValues,
-                              ),
+                                  token: onValue['verificationToken'],
+                                  mobileNumber: widget.mobileNumber,
+                                  locale: widget.locale,
+                                  localizedValues: widget.localizedValues),
                             ),
                           );
                         }
@@ -179,11 +183,11 @@ class _OtpState extends State<Otp> {
       });
     }
 
-    Map body = {"number": widget.mobileNumber};
-    OtpService.resendOtpWithNumber(body).then((response) {
+    OtpService.resendOtpWithNumber(widget.mobileNumber).then((response) {
       if (mounted) {
         setState(() {
           showSnackbar(response['response_data']);
+          sid = response['sId'];
           isResentOtpLoading = false;
         });
       }

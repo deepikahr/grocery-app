@@ -4,7 +4,6 @@ import 'package:readymadeGroceryApp/screens/authe/otp.dart';
 import 'package:readymadeGroceryApp/screens/authe/signup.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/otp-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -68,7 +67,7 @@ class _LoginState extends State<Login> {
       }
       await Common.getPlayerID().then((playerID) async {
         Map<String, dynamic> body = {
-          "number": mobileNumber,
+          "mobileNumber": mobileNumber,
           "password": password,
           "playerId": playerID
         };
@@ -181,8 +180,7 @@ class _LoginState extends State<Login> {
                 style: textbarlowRegularaPrimary(),
               ),
               onPressed: () {
-                Map body = {"number": mobileNumber};
-                OtpService.resendOtpWithNumber(body).then((response) {
+                OtpService.resendOtpWithNumber(mobileNumber).then((response) {
                   showSnackbar(response['response_data']);
                   Navigator.push(
                     context,
@@ -266,7 +264,6 @@ class _LoginState extends State<Login> {
       padding: const EdgeInsets.only(top: 5.0, bottom: 10.0),
       child: Container(
         child: TextFormField(
-          initialValue: "",
           onSaved: (String value) {
             mobileNumber = value;
           },
@@ -304,7 +301,6 @@ class _LoginState extends State<Login> {
     return Container(
       margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
       child: TextFormField(
-        initialValue: Constants.predefined == "true" ? "123456" : null,
         style: textBarlowRegularBlack(),
         keyboardType: TextInputType.text,
         onSaved: (String value) {

@@ -63,7 +63,6 @@ class _SignupState extends State<Signup> {
       if (email != null && email != "") {
         body['email'] = email;
       }
-      print(body);
       await OtpService.signUpWithNumber(body).then((onValue) {
         if (mounted) {
           setState(() {
@@ -316,7 +315,12 @@ class _SignupState extends State<Signup> {
   }
 
   Widget buildEmailText() {
-    return buildGFTypography(context, "EMAIL_OPTIONAL", false, true);
+    return Row(
+      children: [
+        buildGFTypography(context, "EMAIL", false, true),
+        buildGFTypography(context, "OPTIONAL", false, false),
+      ],
+    );
   }
 
   Widget buildEmailTextField() {
