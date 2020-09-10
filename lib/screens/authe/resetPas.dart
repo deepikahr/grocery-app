@@ -48,7 +48,7 @@ class _ResetPasswordState extends State<ResetPassword> {
       }
       Map<String, dynamic> body = {
         "newPassword": newpassword,
-        "contactNumber": widget.mobileNumber,
+        "mobileNumber": widget.mobileNumber,
         "verificationToken": widget.token
       };
       await OtpService.resetPasswordWithNumber(body).then((onValue) {
