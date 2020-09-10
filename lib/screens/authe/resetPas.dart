@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
-import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/otp-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
@@ -12,14 +12,14 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 SentryError sentryError = new SentryError();
 
 class ResetPassword extends StatefulWidget {
-  final String verificationToken, locale, email;
+  final String locale, mobileNumber, token;
   final Map localizedValues;
   ResetPassword(
       {Key key,
-      this.verificationToken,
+      this.token,
       this.localizedValues,
       this.locale,
-      this.email})
+      this.mobileNumber})
       : super(key: key);
 
   @override
@@ -31,8 +31,8 @@ class _ResetPasswordState extends State<ResetPassword> {
   final TextEditingController _passwordTextController = TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  String password1;
-  String password2;
+  String newpassword;
+  String confirmpassword;
   bool success = false, passwordVisible = true, passwordVisible1 = true;
 
   bool isResetPasswordLoading = false;
@@ -47,11 +47,11 @@ class _ResetPasswordState extends State<ResetPassword> {
         });
       }
       Map<String, dynamic> body = {
-        "newPassword": password1,
-        "email": widget.email,
-        "verificationToken": widget.verificationToken
+        "newPassword": newpassword,
+        "contactNumber": widget.mobileNumber,
+        "verificationToken": widget.token
       };
-      await LoginService.resetPassword(body).then((onValue) {
+      await OtpService.resetPasswordWithNumber(body).then((onValue) {
         if (mounted) {
           setState(() {
             isResetPasswordLoading = false;
@@ -132,7 +132,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                   padding: const EdgeInsets.only(
                       left: 20.0, right: 20.0, bottom: 10.0),
                   child: TextFormField(
-                    keyboardType: TextInputType.emailAddress,
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       errorBorder: OutlineInputBorder(
                           borderSide:
@@ -172,7 +172,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                     },
                     controller: _passwordTextController,
                     onSaved: (String value) {
-                      password1 = value;
+                      newpassword = value;
                     },
                     obscureText: passwordVisible1,
                   ),
@@ -188,7 +188,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 20.0, right: 20.0),
                   child: TextFormField(
-                    keyboardType: TextInputType.emailAddress,
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       errorBorder: OutlineInputBorder(
                         borderSide: BorderSide(
@@ -233,7 +233,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                         return null;
                     },
                     onSaved: (String value) {
-                      password2 = value;
+                      confirmpassword = value;
                     },
                     obscureText: passwordVisible,
                   ),

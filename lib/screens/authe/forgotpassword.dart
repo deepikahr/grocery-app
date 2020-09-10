@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/authe/otp.dart';
-import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/otp-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
@@ -22,24 +22,27 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
-  String email;
+  String email, mobileNumber;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool isVerfyEmailLoading = false;
-  verifyEmail() async {
+  bool isVerifyMobileLoading = false;
+
+  verifyContactNumber() async {
     final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
       if (mounted) {
         setState(() {
-          isVerfyEmailLoading = true;
+          isVerifyMobileLoading = true;
         });
       }
-
-      await LoginService.forgetPassword(email.toLowerCase()).then((onValue) {
+      Map body = {
+        "number": mobileNumber.toString(),
+      };
+      await OtpService.resendOtpWithNumber(body).then((onValue) {
         if (mounted) {
           setState(() {
-            isVerfyEmailLoading = false;
+            isVerifyMobileLoading = false;
           });
         }
         showDialog<Null>(
@@ -67,9 +70,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => Otp(
-                          email: email.toLowerCase(),
                           locale: widget.locale,
                           localizedValues: widget.localizedValues,
+                          mobileNumber: mobileNumber,
+                          sId: onValue['sId'],
                         ),
                       ),
                     );
@@ -82,7 +86,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       }).catchError((error) {
         if (mounted) {
           setState(() {
-            isVerfyEmailLoading = false;
+            isVerifyMobileLoading = false;
           });
         }
         sentryError.reportError(error, null);
@@ -90,7 +94,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     } else {
       if (mounted) {
         setState(() {
-          isVerfyEmailLoading = false;
+          isVerifyMobileLoading = false;
         });
       }
       return;
@@ -116,10 +120,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   padding: const EdgeInsets.only(
                       left: 20.0, bottom: 25.0, right: 20.0),
                   child: normalTextWithOutRow(
-                      context, "FORET_PASS_MESSAGE", false)),
+                      context, "FORET_PASS_MOBILE_MSG", false)),
               Padding(
                 padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-                child: buildGFTypography(context, "EMAIL", true, true),
+                child: buildGFTypography(context, "CONTACT_NUMBER", true, true),
               ),
               Padding(
                 padding: const EdgeInsets.only(
@@ -127,17 +131,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 child: Container(
                   child: TextFormField(
                     onSaved: (String value) {
-                      email = value;
+                      mobileNumber = value;
                     },
                     validator: (String value) {
                       if (value.isEmpty) {
                         return MyLocalizations.of(context)
-                            .getLocalizations("ENTER_YOUR_EMAIL");
-                      } else if (!RegExp(
-                              r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
-                          .hasMatch(value)) {
-                        return MyLocalizations.of(context)
-                            .getLocalizations("ERROR_MAIL");
+                            .getLocalizations("ENTER_YOUR_CONTACT_NUMBER");
                       } else
                         return null;
                     },
@@ -160,11 +159,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 ),
               ),
               InkWell(
-                  onTap: verifyEmail,
+                  onTap: verifyContactNumber,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child:
-                        buttonPrimary(context, "SUBMIT", isVerfyEmailLoading),
+                        buttonPrimary(context, "SUBMIT", isVerifyMobileLoading),
                   )),
             ],
           ),

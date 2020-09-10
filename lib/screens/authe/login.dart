@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/authe/forgotpassword.dart';
+import 'package:readymadeGroceryApp/screens/authe/otp.dart';
 import 'package:readymadeGroceryApp/screens/authe/signup.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/otp-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
-import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
@@ -35,8 +36,6 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final GlobalKey<FormState> _formKeyForLogin = GlobalKey<FormState>();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool isUserLoaginLoading = false,
@@ -44,7 +43,7 @@ class _LoginState extends State<Login> {
       value = false,
       passwordVisible = true,
       _obscureText = true;
-  String email, password;
+  String password, mobileNumber;
 
   // Toggles the password
   void _toggle() {
@@ -58,7 +57,7 @@ class _LoginState extends State<Login> {
     super.initState();
   }
 
-  userLogin() async {
+  userLoginwithMobile() async {
     final form = _formKeyForLogin.currentState;
     if (form.validate()) {
       form.save();
@@ -69,18 +68,18 @@ class _LoginState extends State<Login> {
       }
       await Common.getPlayerID().then((playerID) async {
         Map<String, dynamic> body = {
-          "email": email.toLowerCase(),
+          "number": mobileNumber,
           "password": password,
           "playerId": playerID
         };
-        await LoginService.signIn(body).then((onValue) async {
+        await OtpService.signInWithNumber(body).then((onValue) async {
           if (mounted) {
             setState(() {
               isUserLoaginLoading = false;
             });
           }
           if (onValue['response_code'] == 205) {
-            showAlert(onValue['response_data'], email.toLowerCase());
+            showAlert(onValue['response_data'], mobileNumber);
           } else {
             if (onValue['response_data']['role'] == 'USER') {
               await Common.setToken(onValue['response_data']['token']);
@@ -156,7 +155,7 @@ class _LoginState extends State<Login> {
     }
   }
 
-  showAlert(message, email) {
+  showAlert(message, mobileNumber) {
     return showDialog<Null>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -178,13 +177,25 @@ class _LoginState extends State<Login> {
             ),
             new FlatButton(
               child: new Text(
-                MyLocalizations.of(context).getLocalizations("VERI_LINK"),
+                MyLocalizations.of(context).getLocalizations("SEND_OTP"),
                 style: textbarlowRegularaPrimary(),
               ),
               onPressed: () {
-                LoginService.verificationMailSendApi(email).then((response) {
-                  Navigator.of(context).pop();
+                Map body = {"number": mobileNumber};
+                OtpService.resendOtpWithNumber(body).then((response) {
                   showSnackbar(response['response_data']);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Otp(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                        signUpTime: true,
+                        mobileNumber: mobileNumber,
+                        sId: response['sId'],
+                      ),
+                    ),
+                  );
                 });
               },
             ),
@@ -224,8 +235,8 @@ class _LoginState extends State<Login> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               buildwelcometext(),
-              buildEmailText(),
-              buildEmailTextField(),
+              buildContactNumberText(),
+              buildContactNumberTextField(),
               buildPasswordText(),
               buildPasswordTextField(),
               buildLoginButton(),
@@ -246,34 +257,28 @@ class _LoginState extends State<Login> {
         child: buildBoldText(context, "WELCOME_BACK"));
   }
 
-  Widget buildEmailText() {
-    return buildGFTypography(context, "EMAIL", true, true);
+  Widget buildContactNumberText() {
+    return buildGFTypography(context, "CONTACT_NUMBER", true, true);
   }
 
-  Widget buildEmailTextField() {
+  Widget buildContactNumberTextField() {
     return Padding(
       padding: const EdgeInsets.only(top: 5.0, bottom: 10.0),
       child: Container(
         child: TextFormField(
-          initialValue: Constants.predefined == "true"
-              ? "user@ionicfirebaseapp.com"
-              : null,
+          initialValue: "",
           onSaved: (String value) {
-            email = value;
+            mobileNumber = value;
           },
           validator: (String value) {
             if (value.isEmpty) {
               return MyLocalizations.of(context)
-                  .getLocalizations("ENTER_YOUR_EMAIL");
-            } else if (!RegExp(
-                    r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
-                .hasMatch(value)) {
-              return MyLocalizations.of(context).getLocalizations("ERROR_MAIL");
+                  .getLocalizations("ENTER_YOUR_CONTACT_NUMBER");
             } else
               return null;
           },
           style: textBarlowRegularBlack(),
-          keyboardType: TextInputType.emailAddress,
+          keyboardType: TextInputType.number,
           decoration: InputDecoration(
             errorBorder: OutlineInputBorder(
                 borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
@@ -350,7 +355,7 @@ class _LoginState extends State<Login> {
 
   Widget buildLoginButton() {
     return InkWell(
-        onTap: userLogin,
+        onTap: userLoginwithMobile,
         child: buttonPrimary(context, "LOGIN", isUserLoaginLoading));
   }
 

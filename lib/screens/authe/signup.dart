@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:readymadeGroceryApp/screens/authe/login.dart';
-import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/screens/authe/otp.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/otp-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
@@ -32,8 +32,7 @@ class _SignupState extends State<Signup> {
       passwordVisible = true,
       isChecked = false,
       _obscureText = true;
-  String userName, email, password, firstName, lastName;
-  String mobileNumber;
+  String userName, email, password, firstName, lastName, mobileNumber;
   // Toggles the password
   void _toggle() {
     setState(() {
@@ -46,31 +45,31 @@ class _SignupState extends State<Signup> {
     super.initState();
   }
 
-  userSignup() async {
+  userSignupwithMobile() async {
     final form = _formKey.currentState;
     if (form.validate()) {
-      // if (isChecked == true) {
       form.save();
       if (mounted) {
         setState(() {
           registerationLoading = true;
         });
       }
-
       Map<String, dynamic> body = {
         "firstName": firstName,
         "lastName": lastName,
-        "email": email.toLowerCase(),
         "password": password,
         "mobileNumber": mobileNumber
       };
-      await LoginService.signUp(body).then((onValue) {
+      if (email != null && email != "") {
+        body['email'] = email;
+      }
+      print(body);
+      await OtpService.signUpWithNumber(body).then((onValue) {
         if (mounted) {
           setState(() {
             registerationLoading = false;
           });
         }
-
         showDialog<Null>(
           context: context,
           barrierDismissible: false, // user must tap button!
@@ -97,9 +96,12 @@ class _SignupState extends State<Signup> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (BuildContext context) => Login(
+                        builder: (BuildContext context) => Otp(
                           locale: widget.locale,
                           localizedValues: widget.localizedValues,
+                          signUpTime: true,
+                          mobileNumber: mobileNumber,
+                          sId: onValue['sId'],
                         ),
                       ),
                     );
@@ -117,10 +119,6 @@ class _SignupState extends State<Signup> {
         }
         sentryError.reportError(error, null);
       });
-      // } else {
-      //   showSnackbar(
-      //       MyLocalizations.of(context).getLocalizations("ACCEPT_MSG"));
-      // }
     } else {
       if (mounted) {
         setState(() {
@@ -318,7 +316,7 @@ class _SignupState extends State<Signup> {
   }
 
   Widget buildEmailText() {
-    return buildGFTypography(context, "EMAIL", true, true);
+    return buildGFTypography(context, "EMAIL_OPTIONAL", false, true);
   }
 
   Widget buildEmailTextField() {
@@ -330,8 +328,7 @@ class _SignupState extends State<Signup> {
           keyboardType: TextInputType.emailAddress,
           validator: (String value) {
             if (value.isEmpty) {
-              return MyLocalizations.of(context)
-                  .getLocalizations("ENTER_YOUR_EMAIL");
+              return null;
             } else if (!RegExp(
                     r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
                 .hasMatch(value)) {
@@ -462,7 +459,7 @@ class _SignupState extends State<Signup> {
 
   Widget buildsignuplink() {
     return InkWell(
-        onTap: userSignup,
+        onTap: userSignupwithMobile,
         child: buttonPrimary(context, "SIGNUP", registerationLoading));
   }
 
