@@ -57,7 +57,6 @@ class _EditProfileState extends State<EditProfile> {
       currency = value;
     });
     await LoginService.getUserInfo().then((onValue) {
-      print(onValue);
       if (mounted) {
         setState(() {
           isLoading = false;
@@ -385,7 +384,14 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                   ),
                   Center(
-                    child: Text(userInfo['email'],
+                    child: Text(userInfo['email'] ?? '',
+                        style: textBarlowRegularBlack()),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Center(
+                    child: Text(userInfo['mobileNumber'].toString(),
                         style: textBarlowRegularBlack()),
                   ),
                   Padding(
@@ -471,50 +477,6 @@ class _EditProfileState extends State<EditProfile> {
                         if (value.isEmpty) {
                           return MyLocalizations.of(context)
                               .getLocalizations("ENTER_LAST_NAME");
-                        } else
-                          return null;
-                      },
-                    ),
-                  ),
-                  Padding(
-                      padding: const EdgeInsets.only(
-                          left: 18.0, bottom: 5.0, right: 18.0),
-                      child: buildGFTypography(
-                          context, "CONTACT_NUMBER", true, true)),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                    child: TextFormField(
-                      initialValue: userInfo['mobileNumber'].toString() ?? "",
-                      style: textBarlowRegularBlack(),
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        errorBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(width: 0, color: Color(0xFFF44242))),
-                        errorStyle: TextStyle(color: Color(0xFFF44242)),
-                        fillColor: Colors.black,
-                        focusColor: Colors.black,
-                        contentPadding: EdgeInsets.only(
-                          left: 15.0,
-                          right: 15.0,
-                          top: 10.0,
-                          bottom: 10.0,
-                        ),
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: Colors.grey, width: 0.0),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
-                        ),
-                      ),
-                      onSaved: (String value) {
-                        mobileNumber = value;
-                      },
-                      validator: (String value) {
-                        if (value.isEmpty) {
-                          return MyLocalizations.of(context)
-                              .getLocalizations("ENTER_CONTACT_NUMBER");
                         } else
                           return null;
                       },

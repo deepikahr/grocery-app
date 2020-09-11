@@ -80,7 +80,6 @@ class _PaymentState extends State<Payment> {
 
     await Common.getCurrency().then((value) {
       currency = value;
-      print(currency);
     });
   }
 
