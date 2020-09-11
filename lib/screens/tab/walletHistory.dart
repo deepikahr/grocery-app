@@ -44,21 +44,10 @@ class _WalletHistoryState extends State<WalletHistory> {
             walletHistoryList.addAll(onValue['response_data']);
             totalWalletIndex = onValue["total"];
             int index = walletHistoryList.length;
-            if (lastApiCall == true) {
+            if (index != totalWalletIndex) {
               walletIndex++;
-              if (index < totalWalletIndex) {
-                getWalletHistory();
-              } else {
-                if (index == totalWalletIndex) {
-                  if (mounted) {
-                    walletIndex++;
-                    lastApiCall = false;
-                    getWalletHistory();
-                  }
-                }
-              }
-            }
-          }
+              getWalletHistory();
+            }}
           isWalletHistory = false;
         });
       }
