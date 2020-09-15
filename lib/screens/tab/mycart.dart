@@ -464,12 +464,7 @@ class _MyCartState extends State<MyCart> {
                                                   ],
                                                   image: DecorationImage(
                                                       image: imageProvider,
-                                                      fit: BoxFit.cover,
-                                                      colorFilter:
-                                                          ColorFilter.mode(
-                                                              Colors.red,
-                                                              BlendMode
-                                                                  .colorBurn)),
+                                                      fit: BoxFit.cover),
                                                 ),
                                               ),
                                               placeholder: (context, url) =>
@@ -491,8 +486,7 @@ class _MyCartState extends State<MyCart> {
                                                           )
                                                         ],
                                                       ),
-                                                      child: SquareLoader(
-                                                          size: 20.0)),
+                                                      child: noDataImage()),
                                               errorWidget: (context, url,
                                                       error) =>
                                                   Container(

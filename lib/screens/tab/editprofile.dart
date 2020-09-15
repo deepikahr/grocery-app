@@ -336,7 +336,7 @@ class _EditProfileState extends State<EditProfile> {
                                             borderRadius:
                                                 BorderRadius.circular(20.0),
                                           ),
-                                          child: SquareLoader(size: 20.0)),
+                                          child: noDataImage()),
                                       errorWidget: (context, url, error) =>
                                           Container(
                                               width: 200.0,

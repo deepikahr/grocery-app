@@ -193,7 +193,7 @@ class _OrdersState extends State<Orders> {
                     BoxShadow(color: Color(0xFF0000000A), blurRadius: 0.40)
                   ],
                 ),
-                child: SquareLoader(size: 20.0)),
+                child: noDataImage()),
             errorWidget: (context, url, error) => Container(
                 height: 70,
                 width: 99,
