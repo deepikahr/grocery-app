@@ -119,7 +119,6 @@ class _PaymentState extends State<Payment> {
           MyLocalizations.of(context).getLocalizations("SELECT_PAYMENT_FIRST"));
     } else {
       if (widget.data['paymentType'] == "STRIPE") {
-        widget.data['paymentType'] = "";
         StripePayment.paymentRequestWithCardForm(CardFormPaymentRequest())
             .then((pm) {
           setState(() {
@@ -365,9 +364,11 @@ class _PaymentState extends State<Payment> {
                                             ? MyLocalizations.of(context)
                                                 .getLocalizations(
                                                     "CASH_ON_DELIVERY")
-                                            : MyLocalizations.of(context)
-                                                .getLocalizations(
-                                                    "PAY_BY_CARD"),
+                                            : paymentTypes[index] == 'STRIPE'
+                                                ? MyLocalizations.of(context)
+                                                    .getLocalizations(
+                                                        "PAY_BY_CARD")
+                                                : paymentTypes[index],
                                         TextStyle(color: primary),
                                       ),
                                       onChanged: (int selected) {
@@ -380,15 +381,10 @@ class _PaymentState extends State<Payment> {
                                         }
                                       },
                                       secondary: paymentTypes[index] == "COD"
-                                          ? Text(
-                                              currency,
-                                              style: TextStyle(color: primary),
-                                            )
-                                          : Icon(
-                                              Icons.credit_card,
-                                              color: primary,
-                                              size: 16.0,
-                                            ),
+                                          ? Text(currency,
+                                              style: TextStyle(color: primary))
+                                          : Icon(Icons.credit_card,
+                                              color: primary, size: 16.0),
                                     ),
                                   );
                                 },

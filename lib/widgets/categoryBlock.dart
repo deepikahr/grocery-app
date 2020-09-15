@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
-import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 class CategoryBlock extends StatelessWidget {
@@ -39,8 +38,7 @@ class CategoryBlock extends StatelessWidget {
                         image: imageProvider, fit: BoxFit.cover),
                   ),
                 ),
-                placeholder: (context, url) =>
-                    Container(child: SquareLoader(size: 15.0)),
+                placeholder: (context, url) => Container(child: noDataImage()),
                 errorWidget: (context, url, error) =>
                     Container(child: noDataImage()),
               ),

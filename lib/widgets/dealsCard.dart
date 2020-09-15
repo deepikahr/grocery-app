@@ -3,7 +3,6 @@ import 'package:flutter/rendering.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
-import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -63,7 +62,7 @@ class DealsCard extends StatelessWidget {
                 placeholder: (context, url) => Container(
                     width: MediaQuery.of(context).size.width * 0.5,
                     height: 250,
-                    child: SquareLoader()),
+                    child: noDataImage()),
                 errorWidget: (context, url, error) => Container(
                     width: MediaQuery.of(context).size.width * 0.5,
                     height: 250,

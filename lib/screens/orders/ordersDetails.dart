@@ -336,7 +336,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                 blurRadius: 0.40)
                                           ],
                                         ),
-                                        child: SquareLoader(size: 20.0)),
+                                        child: noDataImage()),
                                     errorWidget: (context, url, error) =>
                                         Container(
                                             height: 75,

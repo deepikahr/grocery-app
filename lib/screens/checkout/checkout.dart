@@ -518,13 +518,13 @@ class _CheckoutState extends State<Checkout> {
                                     key: _formKey,
                                     child: Container(
                                       child: cartItem['couponCode'] != null
-                                          ? Column(
+                                          ? Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: <Widget>[
                                                 Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: <Widget>[
+                                                  children: [
                                                     buildPrice(
                                                         context,
                                                         null,
@@ -537,34 +537,32 @@ class _CheckoutState extends State<Checkout> {
                                                                 ")",
                                                         null,
                                                         false),
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.end,
-                                                      children: <Widget>[
-                                                        isCouponLoading
-                                                            ? SquareLoader()
-                                                            : InkWell(
-                                                                onTap: () {
-                                                                  removeCoupons(
-                                                                      cartItem[
-                                                                          'couponCode']);
-                                                                },
-                                                                child: Icon(Icons
-                                                                    .delete),
-                                                              ),
-                                                      ],
-                                                    ),
+                                                    SizedBox(width: 5),
+                                                    isCouponLoading
+                                                        ? SquareLoader()
+                                                        : InkWell(
+                                                            onTap: () {
+                                                              removeCoupons(
+                                                                  cartItem[
+                                                                      'couponCode']);
+                                                            },
+                                                            child: Icon(
+                                                                Icons.delete),
+                                                          ),
                                                   ],
                                                 ),
-                                                SizedBox(height: 10),
-                                                buildPrice(
-                                                    context,
-                                                    null,
-                                                    MyLocalizations.of(context)
-                                                        .getLocalizations(
-                                                            "DISCOUNT"),
-                                                    '$currency${cartItem['couponAmount'].toDouble().toStringAsFixed(2)}',
-                                                    false),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: <Widget>[
+                                                    buildPrice(
+                                                        context,
+                                                        null,
+                                                        "",
+                                                        '$currency${cartItem['couponAmount'].toDouble().toStringAsFixed(2)}',
+                                                        false),
+                                                  ],
+                                                ),
                                               ],
                                             )
                                           : Row(
