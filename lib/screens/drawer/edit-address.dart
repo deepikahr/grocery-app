@@ -12,6 +12,7 @@ import 'package:readymadeGroceryApp/service/address-service.dart';
 import 'package:location/location.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -76,7 +77,7 @@ class _EditAddressState extends State<EditAddress> {
     "apartmentName": null,
     "landmark": null,
     "postalCode": null,
-    "mobileNumber": 0,
+    "mobileNumber": null,
     "addressType": null
   };
   updateAddress() async {
@@ -156,23 +157,11 @@ class _EditAddressState extends State<EditAddress> {
           children: <Widget>[
             Column(
               children: <Widget>[
-                SizedBox(
-                  height: 25,
-                ),
+                SizedBox(height: 25),
                 Padding(
-                  padding: const EdgeInsets.only(
-                      left: 12.0, bottom: 5.0, right: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        MyLocalizations.of(context)
-                            .getLocalizations("LOCATION", true),
-                        style: regular(),
-                      ),
-                    ],
-                  ),
-                ),
+                    padding: const EdgeInsets.only(
+                        left: 12.0, bottom: 5.0, right: 20.0),
+                    child: addressPage(context, "LOCATION")),
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
@@ -250,19 +239,9 @@ class _EditAddressState extends State<EditAddress> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20.0, bottom: 5.0, right: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        MyLocalizations.of(context)
-                            .getLocalizations("HOUSE_FLAT_BLOCK_NUMBER", true),
-                        style: regular(),
-                      ),
-                    ],
-                  ),
-                ),
+                    padding: const EdgeInsets.only(
+                        left: 20.0, bottom: 5.0, right: 20.0),
+                    child: addressPage(context, "HOUSE_FLAT_BLOCK_NUMBER")),
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
@@ -298,23 +277,11 @@ class _EditAddressState extends State<EditAddress> {
                     },
                   ),
                 ),
-                SizedBox(
-                  height: 25,
-                ),
+                SizedBox(height: 25),
                 Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20.0, bottom: 5.0, right: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        MyLocalizations.of(context)
-                            .getLocalizations("APARTMENT_NAME", true),
-                        style: regular(),
-                      ),
-                    ],
-                  ),
-                ),
+                    padding: const EdgeInsets.only(
+                        left: 20.0, bottom: 5.0, right: 20.0),
+                    child: addressPage(context, "APARTMENT_NAME")),
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
@@ -349,23 +316,11 @@ class _EditAddressState extends State<EditAddress> {
                         address['apartmentName'] = value;
                       }),
                 ),
-                SizedBox(
-                  height: 25,
-                ),
+                SizedBox(height: 25),
                 Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20.0, bottom: 5.0, right: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        MyLocalizations.of(context)
-                            .getLocalizations("LANDMARK", true),
-                        style: regular(),
-                      ),
-                    ],
-                  ),
-                ),
+                    padding: const EdgeInsets.only(
+                        left: 20.0, bottom: 5.0, right: 20.0),
+                    child: addressPage(context, "LANDMARK")),
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
@@ -400,23 +355,11 @@ class _EditAddressState extends State<EditAddress> {
                         address['landmark'] = value;
                       }),
                 ),
-                SizedBox(
-                  height: 25,
-                ),
+                SizedBox(height: 25),
                 Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20.0, bottom: 5.0, right: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        MyLocalizations.of(context)
-                            .getLocalizations("POSTAL_CODE", true),
-                        style: regular(),
-                      ),
-                    ],
-                  ),
-                ),
+                    padding: const EdgeInsets.only(
+                        left: 20.0, bottom: 5.0, right: 20.0),
+                    child: addressPage(context, "POSTAL_CODE")),
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
@@ -452,23 +395,11 @@ class _EditAddressState extends State<EditAddress> {
                         address['postalCode'] = value;
                       }),
                 ),
-                SizedBox(
-                  height: 25,
-                ),
+                SizedBox(height: 25),
                 Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20.0, bottom: 5.0, right: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        MyLocalizations.of(context)
-                            .getLocalizations("CONTACT_NUMBER", true),
-                        style: regular(),
-                      ),
-                    ],
-                  ),
-                ),
+                    padding: const EdgeInsets.only(
+                        left: 20.0, bottom: 5.0, right: 20.0),
+                    child: addressPage(context, "CONTACT_NUMBER")),
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
@@ -502,27 +433,15 @@ class _EditAddressState extends State<EditAddress> {
                         return null;
                     },
                     onSaved: (String value) {
-                      address['mobileNumber'] = int.parse(value);
+                      address['mobileNumber'] = value;
                     },
                   ),
                 ),
-                SizedBox(
-                  height: 25,
-                ),
+                SizedBox(height: 25),
                 Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20.0, bottom: 5.0, right: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        MyLocalizations.of(context)
-                            .getLocalizations("ADDRESS_TYPE", true),
-                        style: regular(),
-                      ),
-                    ],
-                  ),
-                ),
+                    padding: const EdgeInsets.only(
+                        left: 20.0, bottom: 5.0, right: 20.0),
+                    child: addressPage(context, "ADDRESS_TYPE")),
                 ListView.builder(
                   physics: ScrollPhysics(),
                   shrinkWrap: true,
@@ -556,16 +475,14 @@ class _EditAddressState extends State<EditAddress> {
                               setSelectedRadio(value);
                             },
                           ),
-                          Text(type),
+                          normalTextWithOutRow(context, type, false)
                         ],
                       ),
                     );
                   },
                 ),
                 InkWell(
-                  onTap: () {
-                    updateAddress();
-                  },
+                  onTap: updateAddress,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 5.0),
                     child: buttonPrimary(

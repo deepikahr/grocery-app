@@ -4,13 +4,12 @@ import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/product/product-details.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/fav-service.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import 'package:readymadeGroceryApp/widgets/subCategoryProductCart.dart';
 
 SentryError sentryError = new SentryError();
@@ -181,48 +180,21 @@ class _SavedItemsState extends State<SavedItems> {
                                         ['price'],
                                     productData: favProductList[i],
                                     variantList: favProductList[i]['variant'],
+                                    isHome: false,
                                   ),
                                   favProductList[i]['isDealAvailable'] == true
-                                      ? Positioned(
-                                          child: Stack(
-                                            children: <Widget>[
-                                              Container(
-                                                width: 61,
-                                                height: 18,
-                                                decoration: BoxDecoration(
-                                                    color: Color(0xFFFFAF72),
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                            topLeft: Radius
-                                                                .circular(10),
-                                                            bottomRight:
-                                                                Radius.circular(
-                                                                    10))),
-                                              ),
-                                              Text(
-                                                " " +
-                                                    favProductList[i]
-                                                            ['dealPercent']
-                                                        .toString() +
-                                                    "% " +
-                                                    MyLocalizations.of(context)
-                                                        .getLocalizations(
-                                                            "OFF"),
-                                                style: hintSfboldwhitemed(),
-                                                textAlign: TextAlign.center,
-                                              )
-                                            ],
-                                          ),
-                                        )
+                                      ? buildBadge(
+                                          context,
+                                          favProductList[i]['dealPercent']
+                                              .toString(),
+                                          "OFF")
                                       : Container()
                                 ],
                               ),
                             );
                           },
                         )
-                      : Center(
-                          child: Image.asset('lib/assets/images/no-orders.png'),
-                        ),
+                      : noDataImage(),
       bottomNavigationBar: cartData == null
           ? Container(height: 1)
           : InkWell(
@@ -239,20 +211,7 @@ class _SavedItemsState extends State<SavedItems> {
                 );
                 result.then((value) => getToken());
               },
-              child: addToCartButton(
-                  context,
-                  '(${cartData['products'].length})  ',
-                  "$currency${cartData['subTotal'].toStringAsFixed(2)}",
-                  "GO_TO_CART",
-                  Icon(
-                    const IconData(
-                      0xe911,
-                      fontFamily: 'icomoon',
-                    ),
-                    color: Colors.black,
-                  ),
-                  false),
-            ),
+              child: cartInfoButton(context, cartData, currency)),
     );
   }
 }

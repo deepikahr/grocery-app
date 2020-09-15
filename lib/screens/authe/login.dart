@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-
-import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/screens/authe/forgotpassword.dart';
 import 'package:readymadeGroceryApp/screens/authe/signup.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
@@ -12,6 +10,7 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -243,39 +242,12 @@ class _LoginState extends State<Login> {
 
   Widget buildwelcometext() {
     return Padding(
-      padding: const EdgeInsets.only(top: 10.0),
-      child: GFTypography(
-        showDivider: false,
-        child: Text(
-          MyLocalizations.of(context).getLocalizations("WELCOME_BACK"),
-          style: textbarlowMediumBlack(),
-        ),
-      ),
-    );
+        padding: const EdgeInsets.only(top: 10.0),
+        child: buildBoldText(context, "WELCOME_BACK"));
   }
 
   Widget buildEmailText() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 20.0),
-      child: GFTypography(
-        showDivider: false,
-        child: RichText(
-          text: TextSpan(
-            children: <TextSpan>[
-              TextSpan(
-                text:
-                    MyLocalizations.of(context).getLocalizations("EMAIL", true),
-                style: textbarlowRegularBlackdull(),
-              ),
-              TextSpan(
-                text: ' *',
-                style: TextStyle(color: Color(0xFFF44242)),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+    return buildGFTypography(context, "EMAIL", true, true);
   }
 
   Widget buildEmailTextField() {
@@ -320,23 +292,7 @@ class _LoginState extends State<Login> {
   }
 
   Widget buildPasswordText() {
-    return GFTypography(
-      showDivider: false,
-      child: RichText(
-        text: TextSpan(
-          children: <TextSpan>[
-            TextSpan(
-                text: MyLocalizations.of(context)
-                    .getLocalizations("PASSWORD", true),
-                style: textbarlowRegularBlackdull()),
-            TextSpan(
-              text: ' *',
-              style: TextStyle(color: Color(0xFFF44242)),
-            ),
-          ],
-        ),
-      ),
-    );
+    return buildGFTypography(context, "PASSWORD", true, true);
   }
 
   Widget buildPasswordTextField() {
@@ -400,77 +356,37 @@ class _LoginState extends State<Login> {
 
   Widget buildForgotPasswordLink() {
     return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ForgotPassword(
-              locale: widget.locale,
-              localizedValues: widget.localizedValues,
-            ),
-          ),
-        );
-      },
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 10.0),
-        child: RichText(
-          text: TextSpan(
-            children: <TextSpan>[
-              TextSpan(
-                  text: MyLocalizations.of(context)
-                          .getLocalizations("FORGET_PASSWORD") +
-                      "?",
-                  style: textbarlowRegularBlackFont()),
-              TextSpan(
-                text: '',
-                style: TextStyle(color: primary),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ForgotPassword(
+                locale: widget.locale,
+                localizedValues: widget.localizedValues,
               ),
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          );
+        },
+        child: buildGFTypographyFogotPass(context, "FORGET_PASSWORD", false));
   }
 
   Widget buildcontinuetext() {
-    return Text(
-      MyLocalizations.of(context).getLocalizations("OR"),
-      textAlign: TextAlign.center,
-      style: textBarlowRegularBlack(),
-    );
+    return normalTextWithOutRow(context, "OR", true);
   }
 
   Widget buildsignuplink() {
     return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => Signup(
-                    locale: widget.locale,
-                    localizedValues: widget.localizedValues,
-                  )),
-        );
-      },
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 20.0),
-        child: RichText(
-          text: TextSpan(
-            children: <TextSpan>[
-              TextSpan(
-                text: MyLocalizations.of(context).getLocalizations("REGISTER") +
-                    "?",
-                style: textbarlowRegularaPrimary(),
-              ),
-              TextSpan(
-                text: '',
-                style: TextStyle(color: primary),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Signup(
+                      locale: widget.locale,
+                      localizedValues: widget.localizedValues,
+                    )),
+          );
+        },
+        child: buildGFTypographyFogotPass(context, "REGISTER", true));
   }
 
   void showSnackbar(message) {

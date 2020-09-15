@@ -1,7 +1,7 @@
 name: readymadeGroceryApp
 description: Grocery user app
 
-version: 2.0.1+26
+version: 2.1.0+28
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -36,6 +36,9 @@ dependencies:
   http_interceptor: ^0.3.2
   fluttertoast: ^7.0.2
   flutter_html: ^1.0.2
+  share: ^0.6.4+3
+  device_info: ^0.4.2+6
+  cached_network_image: ^2.2.0+1
   flutter_localizations:
     sdk: flutter
 
@@ -46,7 +49,7 @@ dev_dependencies:
     sdk: flutter
   test: ^1.5.1
   screenshots: ^2.1.1
-  flutter_launcher_icons: "^0.7.5"
+  flutter_launcher_icons: ^0.7.5
 
 flutter_icons:
   android: true
@@ -117,6 +120,7 @@ flutter:
     - lib/assets/icons/deals.png
     - lib/assets/icons/history.png
     - lib/assets/icons/tc.png
+    - lib/assets/icons/share.png
 
     - lib/assets/splash.png
     - lib/assets/logo.png

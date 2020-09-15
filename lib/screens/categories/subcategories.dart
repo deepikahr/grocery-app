@@ -7,8 +7,10 @@ import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
+import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import 'package:readymadeGroceryApp/widgets/subCategoryProductCart.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import '../../style/style.dart';
@@ -214,89 +216,57 @@ class _SubCategoriesState extends State<SubCategories> {
                                     ? Row(
                                         children: <Widget>[
                                           InkWell(
-                                            onTap: () {
-                                              if (mounted) {
-                                                setState(() {
-                                                  isCatProLoading = true;
-                                                  isSelected = true;
-                                                  isSelectedIndexZero = false;
-                                                  isSelectetedId = null;
-                                                  subCategryByProduct = [];
-                                                  subCatProductIndex =
-                                                      subCategryByProduct
-                                                          .length;
-                                                  catProductsList = [];
-                                                  catProductIndex =
-                                                      catProductsList.length;
-                                                });
-                                              }
-                                              getCategoryProduct(widget.catId);
-                                            },
-                                            child: Container(
-                                              height: 35,
-                                              padding: EdgeInsets.only(
-                                                  left: 25, right: 25, top: 8),
-                                              margin:
-                                                  EdgeInsets.only(right: 15),
-                                              decoration: BoxDecoration(
-                                                color: isSelected
-                                                    ? primary
-                                                    : Color(0xFFf0F0F0),
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(4),
-                                                ),
-                                              ),
-                                              child: Text(
-                                                MyLocalizations.of(context)
-                                                    .getLocalizations("ALL"),
-                                                textAlign: TextAlign.center,
-                                                style: textbarlowMediumBlackm(),
-                                              ),
-                                            ),
-                                          ),
+                                              onTap: () {
+                                                if (mounted) {
+                                                  setState(() {
+                                                    isCatProLoading = true;
+                                                    isSelected = true;
+                                                    isSelectedIndexZero = false;
+                                                    isSelectetedId = null;
+                                                    subCategryByProduct = [];
+                                                    subCatProductIndex =
+                                                        subCategryByProduct
+                                                            .length;
+                                                    catProductsList = [];
+                                                    catProductIndex =
+                                                        catProductsList.length;
+                                                  });
+                                                }
+                                                getCategoryProduct(
+                                                    widget.catId);
+                                              },
+                                              child: subCatTab(
+                                                  context,
+                                                  MyLocalizations.of(context)
+                                                      .getLocalizations("ALL"),
+                                                  isSelected
+                                                      ? primary
+                                                      : Color(0xFFf0F0F0))),
                                           InkWell(
-                                            onTap: () {
-                                              if (mounted) {
-                                                setState(() {
-                                                  isLoadingSubCatProductsList =
-                                                      true;
-                                                  isSelected = false;
-                                                  isSelectedIndexZero = true;
-                                                  isSelectetedId = null;
-                                                  catProductsList = [];
-                                                  currentSubCategoryId =
-                                                      subCategryList[0]['_id']
-                                                          .toString();
-                                                  getProductToSubCategory(
-                                                      subCategryList[0]['_id']
-                                                          .toString());
-                                                });
-                                              }
-                                            },
-                                            child: Container(
-                                              height: 35,
-                                              padding: EdgeInsets.only(
-                                                  left: 15, right: 15, top: 8),
-                                              margin:
-                                                  EdgeInsets.only(right: 15),
-                                              decoration: BoxDecoration(
-                                                color: isSelectedIndexZero
-                                                    ? primary
-                                                    : Color(0xFFf0F0F0),
-                                                border: Border.all(
-                                                  color: Color(0xFFDFDFDF),
-                                                ),
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(4),
-                                                ),
-                                              ),
-                                              child: Text(
-                                                '${subCategryList[0]['title'][0].toUpperCase()}${subCategryList[0]['title'].substring(1)}',
-                                                textAlign: TextAlign.center,
-                                                style: textbarlowMediumBlackm(),
-                                              ),
-                                            ),
-                                          )
+                                              onTap: () {
+                                                if (mounted) {
+                                                  setState(() {
+                                                    isLoadingSubCatProductsList =
+                                                        true;
+                                                    isSelected = false;
+                                                    isSelectedIndexZero = true;
+                                                    isSelectetedId = null;
+                                                    catProductsList = [];
+                                                    currentSubCategoryId =
+                                                        subCategryList[0]['_id']
+                                                            .toString();
+                                                    getProductToSubCategory(
+                                                        subCategryList[0]['_id']
+                                                            .toString());
+                                                  });
+                                                }
+                                              },
+                                              child: subCatTab(
+                                                  context,
+                                                  '${subCategryList[0]['title'][0].toUpperCase()}${subCategryList[0]['title'].substring(1)}',
+                                                  isSelectedIndexZero
+                                                      ? primary
+                                                      : Color(0xFFf0F0F0))),
                                         ],
                                       )
                                     : InkWell(
@@ -319,29 +289,13 @@ class _SubCategoriesState extends State<SubCategories> {
                                             });
                                           }
                                         },
-                                        child: Container(
-                                          height: 35,
-                                          padding: EdgeInsets.only(
-                                              left: 15, right: 15, top: 8),
-                                          margin: EdgeInsets.only(right: 15),
-                                          decoration: BoxDecoration(
-                                            color: isSelectetedId ==
+                                        child: subCatTab(
+                                            context,
+                                            '${subCategryList[i]['title'][0].toUpperCase()}${subCategryList[i]['title'].substring(1)}',
+                                            isSelectetedId ==
                                                     subCategryList[i]['_id']
                                                 ? primary
-                                                : Color(0xFFf0F0F0),
-                                            border: Border.all(
-                                                color: Color(0xFFDFDFDF)),
-                                            borderRadius: BorderRadius.all(
-                                              Radius.circular(4),
-                                            ),
-                                          ),
-                                          child: Text(
-                                            '${subCategryList[i]['title'][0].toUpperCase()}${subCategryList[i]['title'].substring(1)}',
-                                            textAlign: TextAlign.center,
-                                            style: textbarlowMediumBlackm(),
-                                          ),
-                                        ),
-                                      );
+                                                : Color(0xFFf0F0F0)));
                               },
                             ),
                           ),
@@ -357,10 +311,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                   Stack(
                                     children: <Widget>[
                                       subCategryByProduct.length == 0
-                                          ? Center(
-                                              child: Image.asset(
-                                                  'lib/assets/images/no-orders.png'),
-                                            )
+                                          ? noDataImage()
                                           : GridView.builder(
                                               padding: EdgeInsets.symmetric(
                                                   horizontal: 16, vertical: 16),
@@ -392,6 +343,8 @@ class _SubCategoriesState extends State<SubCategories> {
                                                 }
 
                                                 return InkWell(
+                                                  key: ValueKey(
+                                                      '$i-first-product'),
                                                   onTap: () {
                                                     var result = Navigator.push(
                                                       context,
@@ -445,41 +398,18 @@ class _SubCategoriesState extends State<SubCategories> {
                                                         variantList:
                                                             subCategryByProduct[
                                                                 i]['variant'],
+                                                        isHome: false,
                                                       ),
                                                       subCategryByProduct[i][
                                                                   'isDealAvailable'] ==
                                                               true
-                                                          ? Positioned(
-                                                              child: Stack(
-                                                                children: <
-                                                                    Widget>[
-                                                                  Container(
-                                                                    width: 61,
-                                                                    height: 18,
-                                                                    decoration: BoxDecoration(
-                                                                        color: Color(
-                                                                            0xFFFFAF72),
-                                                                        borderRadius: BorderRadius.only(
-                                                                            topLeft:
-                                                                                Radius.circular(10),
-                                                                            bottomRight: Radius.circular(10))),
-                                                                  ),
-                                                                  Text(
-                                                                    " " +
-                                                                        subCategryByProduct[i]['dealPercent']
-                                                                            .toString() +
-                                                                        "% " +
-                                                                        MyLocalizations.of(context)
-                                                                            .getLocalizations("OFF"),
-                                                                    style:
-                                                                        hintSfboldwhitemed(),
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            )
+                                                          ? buildBadge(
+                                                              context,
+                                                              subCategryByProduct[
+                                                                          i][
+                                                                      'dealPercent']
+                                                                  .toString(),
+                                                              "OFF")
                                                           : Container()
                                                     ],
                                                   ),
@@ -498,10 +428,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                   Stack(
                                     children: <Widget>[
                                       catProductsList.length == 0
-                                          ? Center(
-                                              child: Image.asset(
-                                                  'lib/assets/images/no-orders.png'),
-                                            )
+                                          ? noDataImage()
                                           : GridView.builder(
                                               padding: EdgeInsets.symmetric(
                                                   horizontal: 16, vertical: 16),
@@ -532,6 +459,8 @@ class _SubCategoriesState extends State<SubCategories> {
                                                 }
 
                                                 return InkWell(
+                                                  key: ValueKey(
+                                                      '$i-first-product'),
                                                   onTap: () {
                                                     var result = Navigator.push(
                                                       context,
@@ -583,41 +512,18 @@ class _SubCategoriesState extends State<SubCategories> {
                                                         variantList:
                                                             catProductsList[i]
                                                                 ['variant'],
+                                                        isHome: false,
                                                       ),
                                                       catProductsList[i][
                                                                   'isDealAvailable'] ==
                                                               true
-                                                          ? Positioned(
-                                                              child: Stack(
-                                                                children: <
-                                                                    Widget>[
-                                                                  Container(
-                                                                    width: 61,
-                                                                    height: 18,
-                                                                    decoration: BoxDecoration(
-                                                                        color: Color(
-                                                                            0xFFFFAF72),
-                                                                        borderRadius: BorderRadius.only(
-                                                                            topLeft:
-                                                                                Radius.circular(10),
-                                                                            bottomRight: Radius.circular(10))),
-                                                                  ),
-                                                                  Text(
-                                                                    " " +
-                                                                        catProductsList[i]['dealPercent']
-                                                                            .toString() +
-                                                                        "% " +
-                                                                        MyLocalizations.of(context)
-                                                                            .getLocalizations("OFF"),
-                                                                    style:
-                                                                        hintSfboldwhitemed(),
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            )
+                                                          ? buildBadge(
+                                                              context,
+                                                              catProductsList[i]
+                                                                      [
+                                                                      'dealPercent']
+                                                                  .toString(),
+                                                              "OFF")
                                                           : Container()
                                                     ],
                                                   ),
@@ -661,64 +567,7 @@ class _SubCategoriesState extends State<SubCategories> {
                   }
                 });
               },
-              child: Container(
-                height: 55.0,
-                padding: EdgeInsets.only(right: 20),
-                decoration: BoxDecoration(color: primary, boxShadow: [
-                  BoxShadow(
-                      color: Colors.black.withOpacity(0.29), blurRadius: 5)
-                ]),
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Container(
-                          color: Colors.black,
-                          width: MediaQuery.of(context).size.width * 0.35,
-                          height: 55,
-                          child: Column(
-                            children: <Widget>[
-                              SizedBox(height: 7),
-                              new Text(
-                                '(${cartData['products'].length})  ' +
-                                    MyLocalizations.of(context)
-                                        .getLocalizations("ITEMS"),
-                                style: textBarlowRegularWhite(),
-                              ),
-                              new Text(
-                                "$currency${cartData['subTotal'].toStringAsFixed(2)}",
-                                style: textbarlowBoldWhite(),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Column(
-                          children: <Widget>[
-                            Row(
-                              children: <Widget>[
-                                new Text(
-                                  MyLocalizations.of(context)
-                                      .getLocalizations("GO_TO_CART"),
-                                  style: textBarlowRegularBlack(),
-                                ),
-                                SizedBox(width: 4),
-                                Icon(
-                                  const IconData(
-                                    0xe911,
-                                    fontFamily: 'icomoon',
-                                  ),
-                                  color: Colors.black,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+              child: cartInfoButton(context, cartData, currency),
             ),
     );
   }

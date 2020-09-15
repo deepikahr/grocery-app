@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-
-import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -8,6 +6,7 @@ import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -34,7 +33,7 @@ class _SignupState extends State<Signup> {
       isChecked = false,
       _obscureText = true;
   String userName, email, password, firstName, lastName;
-  int mobileNumber;
+  String mobileNumber;
   // Toggles the password
   void _toggle() {
     setState(() {
@@ -229,7 +228,6 @@ class _SignupState extends State<Signup> {
               buildMobileNumberTextField(),
               buildPasswordText(),
               buildPasswordTextField(),
-              // buildTermsAndCondiField(),
               buildsignuplink(),
               buildLoginButton(),
             ],
@@ -240,45 +238,16 @@ class _SignupState extends State<Signup> {
   }
 
   Widget buildwelcometext() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10.0),
-      child: GFTypography(
-        showDivider: false,
-        child: Text(
-          MyLocalizations.of(context).getLocalizations("LETS_GET_STARTED") +
-              " !",
-          style: textbarlowMediumBlack(),
-        ),
-      ),
-    );
+    return buildBoldText(context, "LETS_GET_STARTED");
   }
 
   Widget buildUserFirstName() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 20.0),
-      child: GFTypography(
-        showDivider: false,
-        child: RichText(
-          text: TextSpan(
-            children: <TextSpan>[
-              TextSpan(
-                  text: MyLocalizations.of(context)
-                      .getLocalizations("FIRST_NAME"),
-                  style: textbarlowRegularBlackdull()),
-              TextSpan(
-                text: ' *',
-                style: TextStyle(color: Colors.red),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+    return buildGFTypography(context, "FIRST_NAME", true, true);
   }
 
   Widget buildUserFirstNameField() {
     return Padding(
-      padding: const EdgeInsets.only(top: 5.0, bottom: 10.0),
+      padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Container(
         child: TextFormField(
           style: textBarlowRegularBlack(),
@@ -311,31 +280,12 @@ class _SignupState extends State<Signup> {
   }
 
   Widget buildUserLastName() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 20.0),
-      child: GFTypography(
-        showDivider: false,
-        child: RichText(
-          text: TextSpan(
-            children: <TextSpan>[
-              TextSpan(
-                  text: MyLocalizations.of(context)
-                      .getLocalizations("LAST_NAME", true),
-                  style: textbarlowRegularBlackdull()),
-              TextSpan(
-                text: ' *',
-                style: TextStyle(color: Colors.red),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+    return buildGFTypography(context, "LAST_NAME", true, true);
   }
 
   Widget buildUserLastNameField() {
     return Padding(
-      padding: const EdgeInsets.only(top: 5.0, bottom: 10.0),
+      padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Container(
         child: TextFormField(
           style: textBarlowRegularBlack(),
@@ -368,31 +318,12 @@ class _SignupState extends State<Signup> {
   }
 
   Widget buildEmailText() {
-    return Padding(
-      padding: const EdgeInsets.only(),
-      child: GFTypography(
-        showDivider: false,
-        child: RichText(
-          text: TextSpan(
-            children: <TextSpan>[
-              TextSpan(
-                  text: MyLocalizations.of(context)
-                      .getLocalizations("EMAIL", true),
-                  style: textbarlowRegularBlackdull()),
-              TextSpan(
-                text: ' *',
-                style: TextStyle(color: Color(0xFFF44242)),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+    return buildGFTypography(context, "EMAIL", true, true);
   }
 
   Widget buildEmailTextField() {
     return Padding(
-      padding: const EdgeInsets.only(top: 5.0, bottom: 10.0),
+      padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Container(
         child: TextFormField(
           style: textBarlowRegularBlack(),
@@ -429,28 +360,12 @@ class _SignupState extends State<Signup> {
   }
 
   Widget buildPasswordText() {
-    return GFTypography(
-      showDivider: false,
-      child: RichText(
-        text: TextSpan(
-          children: <TextSpan>[
-            TextSpan(
-                text: MyLocalizations.of(context)
-                    .getLocalizations("PASSWORD", true),
-                style: textbarlowRegularBlackdull()),
-            TextSpan(
-              text: ' *',
-              style: TextStyle(color: Color(0xFFF44242)),
-            ),
-          ],
-        ),
-      ),
-    );
+    return buildGFTypography(context, "PASSWORD", true, true);
   }
 
   Widget buildPasswordTextField() {
     return Container(
-      margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
+      margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: TextFormField(
         style: textBarlowRegularBlack(),
         keyboardType: TextInputType.text,
@@ -501,28 +416,12 @@ class _SignupState extends State<Signup> {
   }
 
   Widget buildMobileNumberText() {
-    return GFTypography(
-      showDivider: false,
-      child: RichText(
-        text: TextSpan(
-          children: <TextSpan>[
-            TextSpan(
-                text: MyLocalizations.of(context)
-                    .getLocalizations("CONTACT_NUMBER", true),
-                style: textbarlowRegularBlack()),
-            TextSpan(
-              text: ' *',
-              style: TextStyle(color: Color(0xFFF44242)),
-            ),
-          ],
-        ),
-      ),
-    );
+    return buildGFTypography(context, "CONTACT_NUMBER", true, true);
   }
 
   Widget buildMobileNumberTextField() {
     return Container(
-      margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
+      margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: TextFormField(
         maxLength: 15,
         style: textBarlowRegularBlack(),
@@ -535,7 +434,7 @@ class _SignupState extends State<Signup> {
             return null;
         },
         onSaved: (String value) {
-          mobileNumber = int.parse(value);
+          mobileNumber = value;
         },
         decoration: InputDecoration(
           counterText: "",
@@ -569,35 +468,11 @@ class _SignupState extends State<Signup> {
 
   Widget buildLoginButton() {
     return InkWell(
-      onTap: () {
-        Navigator.pop(context);
-      },
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 20.0),
-        child: RichText(
-          text: TextSpan(
-            children: <TextSpan>[
-              TextSpan(
-                  text: MyLocalizations.of(context)
-                      .getLocalizations("HAVE_GOT_AN_ACCOUNT"),
-                  style: textbarlowRegularBlack()),
-              TextSpan(
-                text: MyLocalizations.of(context).getLocalizations("LOGIN"),
-                style: textbarlowRegularaPrimary(),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget buildcontinuetext() {
-    return Text(
-      MyLocalizations.of(context).getLocalizations("OR"),
-      textAlign: TextAlign.center,
-      style: textBarlowRegularBlack(),
-    );
+        onTap: () {
+          Navigator.pop(context);
+        },
+        child: buildGFTypographyOtp(context, "HAVE_GOT_AN_ACCOUNT",
+            ' ${MyLocalizations.of(context).getLocalizations("LOGIN")}'));
   }
 
   void showSnackbar(message) {
