@@ -1,6 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/model/addToCart.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
@@ -13,6 +13,7 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/fav-service.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -304,36 +305,36 @@ class _ProductDetailsState extends State<ProductDetails>
                         children: <Widget>[
                           Column(
                             children: <Widget>[
-                              Container(
-                                padding: EdgeInsets.zero,
-                                margin: EdgeInsets.zero,
-                                height: 340,
-                                decoration: new BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(40),
-                                    bottomRight: Radius.circular(40),
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey,
-                                      blurRadius: 10.0,
-                                      offset: Offset(
-                                        2.0,
-                                        2.0,
+                              CachedNetworkImage(
+                                imageUrl: productDetail['filePath'] == null
+                                    ? productDetail['imageUrl']
+                                    : Constants.imageUrlPath +
+                                        "/tr:dpr-auto,tr:w-1000" +
+                                        productDetail['filePath'],
+                                imageBuilder: (context, imageProvider) =>
+                                    Container(
+                                  padding: EdgeInsets.zero,
+                                  margin: EdgeInsets.zero,
+                                  height: 340,
+                                  decoration: new BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(40),
+                                        bottomRight: Radius.circular(40),
                                       ),
-                                    )
-                                  ],
-                                  image: new DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: new NetworkImage(
-                                      productDetail['filePath'] == null
-                                          ? productDetail['imageUrl']
-                                          : Constants.imageUrlPath +
-                                              "/tr:dpr-auto,tr:w-1000" +
-                                              productDetail['filePath'],
-                                    ),
-                                  ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.grey,
+                                            blurRadius: 10.0,
+                                            offset: Offset(2.0, 2.0))
+                                      ],
+                                      image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover)),
                                 ),
+                                placeholder: (context, url) => Container(
+                                    height: 340, child: noDataImage()),
+                                errorWidget: (context, url, error) => Container(
+                                    height: 340, child: noDataImage()),
                               ),
                               SizedBox(
                                 height: 40,
@@ -346,18 +347,12 @@ class _ProductDetailsState extends State<ProductDetails>
                                         MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
                                       Expanded(
-                                        flex: 7,
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 20, right: 20),
-                                          child: Text(
-                                            '${productDetail['title'][0].toUpperCase()}${productDetail['title'].substring(1)}',
-                                            maxLines: 3,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: textBarlowSemiBoldBlack(),
-                                          ),
-                                        ),
-                                      ),
+                                          flex: 7,
+                                          child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 20, right: 20),
+                                              child: titleThreeLine(
+                                                  '${productDetail['title'][0].toUpperCase()}${productDetail['title'].substring(1)}'))),
                                       Expanded(
                                         flex: 3,
                                         child: Padding(
@@ -407,53 +402,31 @@ class _ProductDetailsState extends State<ProductDetails>
                                                       top: 3.0,
                                                     ),
                                                     child: Container(
-                                                      margin: EdgeInsets.only(
-                                                        left: 10,
-                                                      ),
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width -
-                                                              30,
-                                                      child: Text(
-                                                        '${productDetail['description']}',
-                                                        style:
-                                                            textbarlowRegularBlack(),
-                                                      ),
-                                                    )),
+                                                        margin: EdgeInsets.only(
+                                                          left: 10,
+                                                        ),
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width -
+                                                            30,
+                                                        child: discriptionMultipleLine(
+                                                            productDetail[
+                                                                'description']))),
                                             Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 10.0,
-                                                  top: 5.0,
-                                                  right: 10),
-                                              child: Row(
-                                                children: <Widget>[
-                                                  Text(
+                                                padding: const EdgeInsets.only(
+                                                    left: 10.0,
+                                                    top: 5.0,
+                                                    right: 10),
+                                                child: priceMrpText(
                                                     productDetail[
                                                             'isDealAvailable']
                                                         ? "$currency${((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * (productDetail['dealPercent'] / 100))).toDouble().toStringAsFixed(2)}"
                                                         : '$currency${(variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice).toDouble().toStringAsFixed(2)}',
-                                                    style:
-                                                        textbarlowBoldGreen(),
-                                                  ),
-                                                  SizedBox(width: 3),
-                                                  productDetail[
-                                                          'isDealAvailable']
-                                                      ? Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  top: 5.0),
-                                                          child: Text(
-                                                            "$currency${(variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice).toDouble().toStringAsFixed(2)}",
-                                                            style:
-                                                                barlowregularlackstrike(),
-                                                          ),
-                                                        )
-                                                      : Container()
-                                                ],
-                                              ),
-                                            ),
+                                                    productDetail[
+                                                            'isDealAvailable']
+                                                        ? "$currency${(variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice).toDouble().toStringAsFixed(2)}"
+                                                        : null)),
                                           ],
                                         ),
                                       ],
@@ -466,12 +439,8 @@ class _ProductDetailsState extends State<ProductDetails>
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
-                                        Text(
-                                          MyLocalizations.of(context)
-                                              .getLocalizations(
-                                                  "QUANTITY", true),
-                                          style: textBarlowMediumBlack(),
-                                        ),
+                                        buildGFTypography(
+                                            context, "QUANTITY", false, true),
                                         Container(
                                           decoration: BoxDecoration(
                                               color: Colors.grey[300],
@@ -504,7 +473,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                                 padding: const EdgeInsets.only(
                                                     left: 20.0, right: 20),
                                                 child: Container(
-                                                    child: Text(
+                                                    child: titleTwoLine(
                                                         quantity.toString())),
                                               ),
                                               Text(''),
@@ -601,39 +570,19 @@ class _ProductDetailsState extends State<ProductDetails>
                                                         });
                                                       }
                                                     },
-                                                    secondary: Text(
-                                                      '${productDetail['variant'][i]['unit']}',
-                                                      style:
-                                                          textbarlowBoldGreen(),
-                                                    ),
-                                                    title: Row(
-                                                      children: <Widget>[
-                                                        Text(
-                                                          productDetail[
-                                                                  'isDealAvailable']
-                                                              ? "$currency${(productDetail['variant'][i]['price'] - (productDetail['variant'][i]['price'] * (productDetail['dealPercent'] / 100))).toDouble().toStringAsFixed(2)}"
-                                                              : '$currency${productDetail['variant'][i]['price'].toDouble().toStringAsFixed(2)}',
-                                                          style:
-                                                              textbarlowBoldGreen(),
-                                                        ),
-                                                        SizedBox(width: 3),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  top: 5.0),
-                                                          child: productDetail[
-                                                                  'isDealAvailable']
-                                                              ? Text(
-                                                                  '$currency${productDetail['variant'][i]['price'].toDouble().toStringAsFixed(2)}',
-                                                                  style:
-                                                                      barlowregularlackstrike(),
-                                                                )
-                                                              : Container(),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  )
+                                                    secondary: textGreenPrimary(
+                                                        productDetail['variant']
+                                                            [i]['unit'],
+                                                        textbarlowBoldGreen()),
+                                                    title: priceMrpText(
+                                                        productDetail[
+                                                                'isDealAvailable']
+                                                            ? "$currency${(productDetail['variant'][i]['price'] - (productDetail['variant'][i]['price'] * (productDetail['dealPercent'] / 100))).toDouble().toStringAsFixed(2)}"
+                                                            : '$currency${productDetail['variant'][i]['price'].toDouble().toStringAsFixed(2)}',
+                                                        productDetail[
+                                                                'isDealAvailable']
+                                                            ? "$currency${productDetail['variant'][i]['price'].toDouble().toStringAsFixed(2)}"
+                                                            : null))
                                                 : Container();
                                           })
                                       : Container(),

@@ -9,6 +9,7 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
 SentryError sentryError = new SentryError();
@@ -33,12 +34,11 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   final TextEditingController _textController = new TextEditingController();
   bool _isWriting = false, isChatLoading = false, getUserDataLoading = false;
 
-  var userData, pageNumber = 0, chatDataLimit = 50;
+  var userData, pageNumber = 0, chatDataLimit = 100;
   Timer chatTimer;
   var socket = io.io(Constants.apiUrl, <String, dynamic>{
     'transports': ['websocket']
   });
-  // ScrollController _controller = ScrollController();
   @override
   void initState() {
     getUserData();
@@ -156,13 +156,8 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                           if (chatList[index]['sentBy'] == 'USER') {
                             isOwnMessage = true;
                           }
-                          return isOwnMessage
-                              ? _ownMessage(
-                                  chatList[index]['message'],
-                                )
-                              : _message(
-                                  chatList[index]['message'],
-                                );
+                          return chatMessgae(context,
+                              chatList[index]['message'], isOwnMessage);
                         },
                       ),
                     ),
@@ -227,91 +222,6 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                 )
               ],
             ),
-    );
-  }
-
-  Widget _ownMessage(String message) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: <Widget>[
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.only(
-                        top: 12.0, bottom: 14.0, left: 16.0, right: 16.0),
-                    constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width * 0.6,
-                    ),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(40),
-                          topRight: Radius.circular(0),
-                          bottomRight: Radius.circular(40),
-                          bottomLeft: Radius.circular(40),
-                        ),
-                        color: primary.withOpacity(0.60)),
-                    child: Text(
-                      message,
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _message(String message) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: <Widget>[
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.only(
-                        top: 12.0, bottom: 14.0, left: 16.0, right: 16.0),
-                    constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width * 0.6,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(0),
-                        topRight: Radius.circular(40),
-                        bottomRight: Radius.circular(40),
-                        bottomLeft: Radius.circular(40),
-                      ),
-                      color: Color(0xFFF0F0F0),
-                    ),
-                    child: Text(
-                      message,
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 

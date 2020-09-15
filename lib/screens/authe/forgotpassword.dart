@@ -1,8 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import 'package:getflutter/getflutter.dart';
-
 import 'package:readymadeGroceryApp/screens/authe/otp.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -10,6 +7,7 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -110,43 +108,18 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           child: ListView(
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(
-                    top: 40.0, left: 18.0, bottom: 8.0, right: 20.0),
-                child: Text(
-                  MyLocalizations.of(context)
-                      .getLocalizations("PASSWORD_RESET"),
-                  style: textbarlowMediumBlack(),
-                ),
+                padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                child:
+                    buildGFTypography(context, "PASSWORD_RESET", false, false),
               ),
               Padding(
-                padding: const EdgeInsets.only(
-                    left: 18.0, bottom: 25.0, right: 20.0),
-                child: Text(
-                  MyLocalizations.of(context)
-                      .getLocalizations("FORET_PASS_MESSAGE"),
-                  style: textbarlowRegularBlack(),
-                ),
-              ),
+                  padding: const EdgeInsets.only(
+                      left: 20.0, bottom: 25.0, right: 20.0),
+                  child: normalTextWithOutRow(
+                      context, "FORET_PASS_MESSAGE", false)),
               Padding(
-                padding:
-                    const EdgeInsets.only(left: 20.0, bottom: 5.0, right: 20.0),
-                child: GFTypography(
-                  showDivider: false,
-                  child: RichText(
-                    text: TextSpan(
-                      children: <TextSpan>[
-                        TextSpan(
-                            text: MyLocalizations.of(context)
-                                .getLocalizations("EMAIL", true),
-                            style: textbarlowRegularBlack()),
-                        TextSpan(
-                          text: ' *',
-                          style: TextStyle(color: Colors.red),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                child: buildGFTypography(context, "EMAIL", true, true),
               ),
               Padding(
                 padding: const EdgeInsets.only(

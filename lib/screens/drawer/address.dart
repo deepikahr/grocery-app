@@ -14,8 +14,8 @@ import 'package:readymadeGroceryApp/service/address-service.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:flutter_map_picker/flutter_map_picker.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -32,12 +32,9 @@ class _AddressState extends State<Address> {
   bool addressLoading = false, isLocationLoading = false;
   List addressList = List();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
   PlacePickerResult pickedLocation;
   LocationData currentLocation;
   Location _location = new Location();
-  RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
   Map locationInfo;
   PermissionStatus _permissionGranted;
   @override
@@ -55,7 +52,6 @@ class _AddressState extends State<Address> {
     }
 
     await AddressService.getAddress().then((onValue) {
-      _refreshController.refreshCompleted();
       if (mounted) {
         setState(() {
           addressList = onValue['response_data'];
@@ -131,90 +127,66 @@ class _AddressState extends State<Address> {
         appBar: appBarPrimary(context, "ADDRESS"),
         body: addressLoading || isLocationLoading
             ? SquareLoader()
-            : ListView(
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+            : addressList.length == 0
+                ? Center(child: noDataImage())
+                : ListView(
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.only(
                             top: 10.0, bottom: 10.0, left: 20.0, right: 20.0),
-                        child: Text(
-                          MyLocalizations.of(context)
-                              .getLocalizations("SAVED_ADDRESS"),
-                          style: textbarlowSemiBoldBlack(),
-                        ),
+                        child: buildBoldText(context, "SAVED_ADDRESS"),
+                      ),
+                      ListView.builder(
+                        physics: ScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount:
+                            addressList.length == null ? 0 : addressList.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              padding:
+                                  const EdgeInsets.only(top: 5.0, bottom: 5.0),
+                              decoration: BoxDecoration(
+                                  color: Colors.white70,
+                                  borderRadius: BorderRadius.circular(5.0)),
+                              child: Row(
+                                children: <Widget>[
+                                  Container(
+                                    margin:
+                                        EdgeInsets.only(bottom: 100, left: 7),
+                                    child: Text(
+                                      (index + 1).toString() + ".",
+                                    ),
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.9,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 10.0, left: 10.0),
+                                          child: buildAddress(
+                                              '${addressList[index]['flatNo']}, ${addressList[index]['apartmentName']},${addressList[index]['address']}, ${addressList[index]['landmark']} ,${addressList[index]['postalCode']}, ${addressList[index]['mobileNumber'].toString()}',
+                                              null),
+                                        ),
+                                      ),
+                                      SizedBox(height: 20),
+                                      buildEditDelete(addressList[index])
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
-                  addressList.length == 0
-                      ? Center(
-                          child: Image.asset('lib/assets/images/no-orders.png'),
-                        )
-                      : ListView.builder(
-                          physics: ScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: addressList.length == null
-                              ? 0
-                              : addressList.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                padding: const EdgeInsets.only(
-                                    top: 5.0, bottom: 5.0),
-                                decoration: BoxDecoration(
-                                    color: Colors.white70,
-                                    borderRadius: BorderRadius.circular(5.0)),
-                                child: Row(
-                                  children: <Widget>[
-                                    Container(
-                                      margin:
-                                          EdgeInsets.only(bottom: 100, left: 7),
-                                      child: Text(
-                                        (index + 1).toString(),
-                                      ),
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.9,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 10.0, left: 10.0),
-                                            child: Text(
-                                              '${addressList[index]['flatNo']}' +
-                                                  ', ' +
-                                                  '${addressList[index]['apartmentName']}' +
-                                                  ', ' +
-                                                  '${addressList[index]['address']}' +
-                                                  ', ' +
-                                                  '${addressList[index]['landmark']}' +
-                                                  ', '
-                                                      '${addressList[index]['postalCode'].toString()}' +
-                                                  ', ' +
-                                                  '${addressList[index]['mobileNumber'].toString()}',
-                                              style: textBarlowRegularBlack(),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(height: 20),
-                                        buildEditDelete(addressList[index])
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                ],
-              ),
         bottomNavigationBar: InkWell(
             onTap: () async {
               _permissionGranted = await _location.hasPermission();

@@ -10,6 +10,7 @@ import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/dealsCard.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -17,7 +18,7 @@ class AllDealsList extends StatefulWidget {
   final Map localizedValues;
   final bool token;
   final List productsList, favProductList;
-  final String dealType, title, locale, currency;
+  final String title, locale, currency;
 
   AllDealsList(
       {Key key,
@@ -26,7 +27,6 @@ class AllDealsList extends StatefulWidget {
       this.favProductList,
       this.productsList,
       this.currency,
-      this.dealType,
       this.title,
       this.token});
   @override
@@ -46,7 +46,7 @@ class _AllDealsListState extends State<AllDealsList> {
     favProductList = widget.favProductList;
     currency = widget.currency;
     getTokenValue = widget.token;
-    if (widget.dealType == "TopDeals") {
+    if (widget.title == "DEALS_OF_THE_DAYS") {
       getAllTopDealsListMethod();
     } else {
       getAllTodayDealsListMethod();
@@ -129,7 +129,7 @@ class _AllDealsListState extends State<AllDealsList> {
         enablePullUp: false,
         controller: _refreshController,
         onRefresh: () {
-          if (widget.dealType == "TopDeals") {
+          if (widget.title == "DEALS_OF_THE_DAYS") {
             getAllTopDealsListMethod();
           } else {
             getAllTodayDealsListMethod();
@@ -201,15 +201,11 @@ class _AllDealsListState extends State<AllDealsList> {
                             );
                           },
                         ),
-                        SizedBox(
-                          height: 20,
-                        ),
+                        SizedBox(height: 20),
                       ],
                     ),
                   )
-                : Center(
-                    child: Image.asset('lib/assets/images/no-orders.png'),
-                  ),
+                : noDataImage(),
       ),
     );
   }

@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/screens/authe/resetPas.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -9,8 +7,8 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:pin_entry_text_field/pin_entry_text_field.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
-import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
+import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -184,60 +182,22 @@ class _OtpState extends State<Otp> {
       body: ListView(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(top: 40.0, left: 15.0, right: 20.0),
-            child: Text(
-              MyLocalizations.of(context).getLocalizations("VERIFY_OTP"),
-              style: textbarlowMediumBlack(),
-            ),
-          ),
+              padding:
+                  const EdgeInsets.only(top: 40.0, left: 20.0, right: 20.0),
+              child: buildBoldText(context, "VERIFY_OTP")),
           Padding(
-            padding: const EdgeInsets.only(left: 20.0, top: 10.0, right: 20.0),
-            child: RichText(
-              text: TextSpan(
-                children: <TextSpan>[
-                  TextSpan(
-                      text: MyLocalizations.of(context)
-                          .getLocalizations("CODE_MSG"),
-                      style: textBarlowRegularBlack()),
-                  TextSpan(
-                    text: ' ${widget.email}',
-                    style: textBarlowMediumGreen(),
-                  ),
-                ],
-              ),
-            ),
+            padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+            child:
+                buildGFTypographyOtp(context, "CODE_MSG", ' ${widget.email}'),
           ),
           InkWell(
-            onTap: resentOTP,
-            child: Row(
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.only(left: 20.0, top: 10.0, right: 20.0),
-                  child: Text(
-                    MyLocalizations.of(context).getLocalizations("RESENT_OTP"),
-                    style: textBarlowRegularBlack(),
-                  ),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.only(left: 20.0, top: 10.0, right: 20.0),
-                  child: isResentOtpLoading ? SquareLoader() : Container(),
-                ),
-              ],
-            ),
-          ),
+              onTap: resentOTP,
+              child: buildResentOtp(context, "RESENT_OTP", isResentOtpLoading)),
           Padding(
-            padding: const EdgeInsets.only(
-                top: 20.0, bottom: 5.0, left: 20.0, right: 20.0),
-            child: GFTypography(
-              showDivider: false,
-              child: Text(
-                MyLocalizations.of(context)
-                    .getLocalizations("ENTER_VERIFICATION_CODE", true),
-                style: textBarlowRegularBlack(),
-              ),
-            ),
+            padding:
+                const EdgeInsets.only(bottom: 5.0, left: 20.0, right: 20.0),
+            child: buildGFTypography(
+                context, "ENTER_VERIFICATION_CODE", true, true),
           ),
           Form(
             key: _formKey,
