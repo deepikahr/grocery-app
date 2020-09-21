@@ -36,7 +36,8 @@ Widget walletText(BuildContext context, title, subTitle, idOrderId) {
     mainAxisAlignment: MainAxisAlignment.start,
     children: <Widget>[
       Text(
-        MyLocalizations.of(context).getLocalizations(title, true) + subTitle,
+        MyLocalizations.of(context).getLocalizations(title, true) +
+            MyLocalizations.of(context).getLocalizations(subTitle),
         style: idOrderId ? textbarlowmedium() : textSMBarlowRegularrBlack(),
       ),
     ],

@@ -146,6 +146,7 @@ class _PaymentState extends State<Payment> {
         });
       }
       Common.setCartDataCount(0);
+      Common.setCartData(null);
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(

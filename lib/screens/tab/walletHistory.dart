@@ -50,7 +50,8 @@ class _WalletHistoryState extends State<WalletHistory> {
             if (index != totalWalletIndex) {
               walletIndex++;
               getWalletHistory();
-            }}
+            }
+          }
           isWalletHistory = false;
         });
       }
@@ -122,11 +123,11 @@ class _WalletHistoryState extends State<WalletHistory> {
           walletText(
               context,
               "TRANSECTION_TYPE",
-              walletDetails['transactionType'] == "ORDER_PAYMENT"
+              (walletDetails['transactionType'] == "ORDER_PAYMENT"
                   ? "ORDER_PAYMENT"
                   : walletDetails['transactionType'] == "ORDER_CANCELLED"
                       ? "ORDER_CANCELLED"
-                      : walletDetails['transactionType'],
+                      : walletDetails['transactionType']),
               false),
           SizedBox(height: 3),
           walletText(
@@ -135,9 +136,9 @@ class _WalletHistoryState extends State<WalletHistory> {
           walletText(
               context,
               "WALLET",
-              walletDetails['isCredited'] == true
+              (walletDetails['isCredited'] == true
                   ? "CREDIT"
-                  : walletDetails['isCredited'] == false ? "DEBIT" : "",
+                  : walletDetails['isCredited'] == false ? "DEBIT" : ""),
               false),
           SizedBox(height: 3),
           Divider()
