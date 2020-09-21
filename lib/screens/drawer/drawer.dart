@@ -208,7 +208,6 @@ class _DrawerPageState extends State<DrawerPage> {
     Common.getSelectedLanguage().then((selectedLocale) async {
       Map body = {"language": selectedLocale, "playerId": null};
       LoginService.updateUserInfo(body).then((value) async {
-        print(body);
         await Common.setToken(null);
         await Common.setUserID(null);
         main();
