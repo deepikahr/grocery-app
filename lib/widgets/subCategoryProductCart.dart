@@ -12,7 +12,6 @@ import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
-import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 class SubCategoryProductCard extends StatefulWidget {
@@ -208,7 +207,7 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                     placeholder: (context, url) => Container(
                         width: MediaQuery.of(context).size.width * 0.5,
                         height: 123,
-                        child: SquareLoader()),
+                        child: noDataImage()),
                     errorWidget: (context, url, error) => Container(
                         width: MediaQuery.of(context).size.width * 0.5,
                         height: 123,

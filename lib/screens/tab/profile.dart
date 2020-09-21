@@ -310,8 +310,7 @@ class _ProfileState extends State<Profile> {
                                                                   .circular(
                                                                       20.0),
                                                         ),
-                                                        child: SquareLoader(
-                                                            size: 20.0)),
+                                                        child: noDataImage()),
                                                 errorWidget: (context, url,
                                                         error) =>
                                                     Container(

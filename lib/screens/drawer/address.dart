@@ -127,68 +127,66 @@ class _AddressState extends State<Address> {
         appBar: appBarPrimary(context, "ADDRESS"),
         body: addressLoading || isLocationLoading
             ? SquareLoader()
-            : ListView(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        top: 10.0, bottom: 10.0, left: 20.0, right: 20.0),
-                    child: buildBoldText(context, "SAVED_ADDRESS"),
-                  ),
-                  addressList.length == 0
-                      ? noDataImage()
-                      : ListView.builder(
-                          physics: ScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: addressList.length == null
-                              ? 0
-                              : addressList.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                padding: const EdgeInsets.only(
-                                    top: 5.0, bottom: 5.0),
-                                decoration: BoxDecoration(
-                                    color: Colors.white70,
-                                    borderRadius: BorderRadius.circular(5.0)),
-                                child: Row(
-                                  children: <Widget>[
-                                    Container(
-                                      margin:
-                                          EdgeInsets.only(bottom: 100, left: 7),
-                                      child: Text(
-                                        (index + 1).toString() + ".",
-                                      ),
+            : addressList.length == 0
+                ? Center(child: noDataImage())
+                : ListView(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 10.0, bottom: 10.0, left: 20.0, right: 20.0),
+                        child: buildBoldText(context, "SAVED_ADDRESS"),
+                      ),
+                      ListView.builder(
+                        physics: ScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount:
+                            addressList.length == null ? 0 : addressList.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              padding:
+                                  const EdgeInsets.only(top: 5.0, bottom: 5.0),
+                              decoration: BoxDecoration(
+                                  color: Colors.white70,
+                                  borderRadius: BorderRadius.circular(5.0)),
+                              child: Row(
+                                children: <Widget>[
+                                  Container(
+                                    margin:
+                                        EdgeInsets.only(bottom: 100, left: 7),
+                                    child: Text(
+                                      (index + 1).toString() + ".",
                                     ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.9,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 10.0, left: 10.0),
-                                            child: buildAddress(
-                                                '${addressList[index]['flatNo']}, ${addressList[index]['apartmentName']},${addressList[index]['address']}, ${addressList[index]['landmark']} ,${addressList[index]['postalCode']}, ${addressList[index]['mobileNumber'].toString()}',
-                                                null),
-                                          ),
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.9,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 10.0, left: 10.0),
+                                          child: buildAddress(
+                                              '${addressList[index]['flatNo']}, ${addressList[index]['apartmentName']},${addressList[index]['address']}, ${addressList[index]['landmark']} ,${addressList[index]['postalCode']}, ${addressList[index]['mobileNumber'].toString()}',
+                                              null),
                                         ),
-                                        SizedBox(height: 20),
-                                        buildEditDelete(addressList[index])
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                                      ),
+                                      SizedBox(height: 20),
+                                      buildEditDelete(addressList[index])
+                                    ],
+                                  ),
+                                ],
                               ),
-                            );
-                          },
-                        ),
-                ],
-              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
         bottomNavigationBar: InkWell(
             onTap: () async {
               _permissionGranted = await _location.hasPermission();

@@ -332,7 +332,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                           fit: BoxFit.cover)),
                                 ),
                                 placeholder: (context, url) => Container(
-                                    height: 340, child: SquareLoader()),
+                                    height: 340, child: noDataImage()),
                                 errorWidget: (context, url, error) => Container(
                                     height: 340, child: noDataImage()),
                               ),
