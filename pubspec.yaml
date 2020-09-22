@@ -39,7 +39,6 @@ dependencies:
   share: ^0.6.4+3
   device_info: ^0.4.2+6
   cached_network_image: ^2.2.0+1
-  webview_flutter: ^0.3.19+8
   flutter_localizations:
     sdk: flutter
 
@@ -104,8 +103,6 @@ flutter:
     - lib/assets/images/badge.png
     - lib/assets/images/no-orders.png
     - lib/assets/images/profileIcon.png
-    - lib/assets/images/failed.png
-
 
     - lib/assets/icons/tick.svg
     - lib/assets/icons/editt.svg
