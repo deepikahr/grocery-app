@@ -717,3 +717,7 @@ orderPlaceText(BuildContext context, title) {
 thankuImage() {
   return Image.asset('lib/assets/images/thank-you.png');
 }
+
+paymentFailed() {
+  return Image.asset('lib/assets/images/failed.png');
+}

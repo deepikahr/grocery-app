@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:readymadeGroceryApp/screens/payment/payment-webview.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
@@ -146,16 +147,29 @@ class _PaymentState extends State<Payment> {
         });
       }
       Common.setCartDataCount(0);
-      Common.setCartData(null);
-      Navigator.pushAndRemoveUntil(
+      if (widget.data['paymentType'] == "COD" ||
+          widget.data['paymentType'] == "STRIPE") {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => Thankyou(
+                  locale: widget.locale,
+                  localizedValues: widget.localizedValues,
+                  isPaymentFailed: false),
+            ),
+            (Route<dynamic> route) => false);
+      } else {
+        Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (BuildContext context) => Thankyou(
-              locale: widget.locale,
-              localizedValues: widget.localizedValues,
-            ),
+            builder: (BuildContext context) => PaymentWebView(
+                locale: widget.locale,
+                localizedValues: widget.localizedValues,
+                orderId: onValue['response_data']['orderId'],
+                paymentURL: onValue['response_data']['paymentUrl']),
           ),
-          (Route<dynamic> route) => false);
+        );
+      }
     }).catchError((error) {
       if (mounted) {
         setState(() {
@@ -364,11 +378,17 @@ class _PaymentState extends State<Payment> {
                                             ? MyLocalizations.of(context)
                                                 .getLocalizations(
                                                     "CASH_ON_DELIVERY")
-                                            : paymentTypes[index] == 'STRIPE'
+                                            : paymentTypes[index] == 'STRPE'
                                                 ? MyLocalizations.of(context)
                                                     .getLocalizations(
                                                         "PAY_BY_CARD")
-                                                : paymentTypes[index],
+                                                : paymentTypes[index] ==
+                                                        'FAWATERK'
+                                                    ? MyLocalizations.of(
+                                                            context)
+                                                        .getLocalizations(
+                                                            "FAWATERK")
+                                                    : paymentTypes[index],
                                         TextStyle(color: primary),
                                       ),
                                       onChanged: (int selected) {
