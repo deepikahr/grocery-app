@@ -8,8 +8,7 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 class Thankyou extends StatefulWidget {
   final Map localizedValues;
   final String locale;
-  final bool isPaymentFailed;
-  Thankyou({Key key, this.locale, this.localizedValues, this.isPaymentFailed});
+  Thankyou({Key key, this.locale, this.localizedValues});
   @override
   _ThankyouState createState() => _ThankyouState();
 }
@@ -26,13 +25,11 @@ class _ThankyouState extends State<Thankyou> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            widget.isPaymentFailed ? paymentFailed() : thankuImage(),
+            thankuImage(),
             SizedBox(height: 10.0),
-            orderPlaceText(
-                context, widget.isPaymentFailed ? "" : "ORDER_PLACED"),
+            orderPlaceText(context, "ORDER_PLACED"),
             SizedBox(height: 13.0),
-            thankyouText(context,
-                widget.isPaymentFailed ? "PAYMENT_FAILED" : "THANK_YOU"),
+            thankyouText(context, "THANK_YOU"),
             SizedBox(height: 30.0),
             InkWell(
                 onTap: () {
@@ -40,17 +37,19 @@ class _ThankyouState extends State<Thankyou> {
                     context,
                     MaterialPageRoute(
                       builder: (BuildContext context) => Orders(
-                          locale: widget.locale,
-                          localizedValues: widget.localizedValues),
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                      ),
                     ),
                   );
                   reuslt.then((value) => Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
                         builder: (BuildContext context) => Home(
-                            locale: widget.locale,
-                            localizedValues: widget.localizedValues,
-                            currentIndex: 0),
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                          currentIndex: 0,
+                        ),
                       ),
                       (Route<dynamic> route) => false));
                 },
