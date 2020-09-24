@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -35,11 +37,14 @@ class _OrderDetailsState extends State<OrderDetails> {
   var orderHistory;
   String currency;
   double rating;
+  Timer timer;
   var createdAt;
   @override
   void initState() {
     getOrderHistory();
     super.initState();
+    timer =
+        Timer.periodic(Duration(seconds: 15), (Timer t) => getOrderHistory());
   }
 
   getOrderHistory() async {
@@ -52,6 +57,7 @@ class _OrderDetailsState extends State<OrderDetails> {
       currency = value;
     });
     await OrderService.getOrderHistory(widget.orderId).then((onValue) {
+      print(onValue);
       if (mounted) {
         setState(() {
           orderHistory = onValue['response_data'];
@@ -241,8 +247,12 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                             ['paymentType'] ==
                                                         "WALLET"
                                                     ? "WALLET"
-                                                    : orderHistory['order']
-                                                        ['paymentType'])),
+                                                    : orderHistory['order'][
+                                                                'paymentType'] ==
+                                                            "FAWATERK"
+                                                        ? "FAWATERK"
+                                                        : orderHistory['order']
+                                                            ['paymentType'])),
                                     SizedBox(height: 10),
                                     buildOrderDetilsText(
                                         context,
@@ -275,6 +285,11 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                             : orderHistory[
                                                                     'order'][
                                                                 'orderStatus'])),
+                                    SizedBox(height: 10),
+                                    buildOrderDetilsStatusText(
+                                        context,
+                                        "PAYMENT_STATUS",
+                                       MyLocalizations.of(context).getLocalizations(orderHistory['order']['paymentStatus'])),
                                   ],
                                 ),
                               ),
@@ -542,8 +557,14 @@ class _OrderDetailsState extends State<OrderDetails> {
                             child: Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 15.0),
-                              child: buttonPrimary(context, "CANCEL_ORDER",
-                                  isOrderCancleLoading),
+                              child: orderHistory['order']['orderStatus'] ==
+                                      "PENDING"
+                                  ? buttonPrimary(
+                                      context,
+                                      "CANCEL_ORDER",
+                                      isOrderCancleLoading,
+                                    )
+                                  : Container(),
                             )),
                     SizedBox(height: 20),
                   ],

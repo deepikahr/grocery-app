@@ -73,6 +73,7 @@ class _SubCategoriesState extends State<SubCategories> {
   }
 
   getCategoryProduct(id) async {
+    
     await Common.getCurrency().then((value) {
       currency = value;
     });
@@ -80,6 +81,7 @@ class _SubCategoriesState extends State<SubCategories> {
     await ProductService.getProductToCategoryList(
             id, catProductIndex, catProductLimit)
         .then((onValue) {
+          print(onValue);
       _refreshController.refreshCompleted();
       if (mounted) {
         setState(() {
