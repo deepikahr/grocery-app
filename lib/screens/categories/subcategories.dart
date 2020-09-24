@@ -73,6 +73,7 @@ class _SubCategoriesState extends State<SubCategories> {
   }
 
   getCategoryProduct(id) async {
+    
     await Common.getCurrency().then((value) {
       currency = value;
     });
