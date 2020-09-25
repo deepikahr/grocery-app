@@ -83,7 +83,7 @@ class _DrawerPageState extends State<DrawerPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0),
-                  child: _buildMenuTileList('lib/assets/icons/Home.png', "HOME",
+                  child: _buildMenuTileList('lib/assets/icons/Home.png', "HOME_PAGE",
                       route: Home(
                         locale: widget.locale,
                         localizedValues: widget.localizedValues,
@@ -208,7 +208,6 @@ class _DrawerPageState extends State<DrawerPage> {
     Common.getSelectedLanguage().then((selectedLocale) async {
       Map body = {"language": selectedLocale, "playerId": null};
       LoginService.updateUserInfo(body).then((value) async {
-        print(body);
         await Common.setToken(null);
         await Common.setUserID(null);
         main();
