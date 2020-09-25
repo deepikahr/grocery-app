@@ -117,7 +117,11 @@ class _ChangePasswordState extends State<ChangePassword> {
         child: Container(
           child: ListView(
             children: <Widget>[
-              buildGFTypography(context, "ENTER_OLD_PASSWORD", true, true),
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                child: buildGFTypography(
+                    context, "ENTER_OLD_PASSWORD", true, true),
+              ),
               Container(
                 child: Padding(
                   padding: const EdgeInsets.only(
@@ -168,7 +172,11 @@ class _ChangePasswordState extends State<ChangePassword> {
                   ),
                 ),
               ),
-              buildGFTypography(context, "ENTER_NEW_PASSWORD", true, true),
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                child: buildGFTypography(
+                    context, "ENTER_NEW_PASSWORD", true, true),
+              ),
               Container(
                 child: Padding(
                   padding: const EdgeInsets.only(
@@ -220,7 +228,11 @@ class _ChangePasswordState extends State<ChangePassword> {
                   ),
                 ),
               ),
-              buildGFTypography(context, "ENTER_CONFIRM_PASSWORD", true, true),
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                child: buildGFTypography(
+                    context, "ENTER_CONFIRM_PASSWORD", true, true),
+              ),
               Container(
                 child: Padding(
                   padding: const EdgeInsets.only(left: 20.0, right: 20.0),

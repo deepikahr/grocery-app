@@ -80,7 +80,6 @@ class _PaymentState extends State<Payment> {
 
     await Common.getCurrency().then((value) {
       currency = value;
-      print(currency);
     });
   }
 
@@ -147,6 +146,7 @@ class _PaymentState extends State<Payment> {
         });
       }
       Common.setCartDataCount(0);
+      Common.setCartData(null);
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
