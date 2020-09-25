@@ -243,10 +243,6 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                     "STRIPE"
                                                 ? "PAY_BY_CARD"
                                                 : orderHistory['order']
-                                                            ['paymentType'] ==
-                                                        "WALLET"
-                                                    ? "WALLET"
-                                                    : orderHistory['order']
                                                             ['paymentType'])),
                                     SizedBox(height: 10),
                                     buildOrderDetilsText(
