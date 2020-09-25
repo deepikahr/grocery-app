@@ -73,7 +73,6 @@ class _SubCategoriesState extends State<SubCategories> {
   }
 
   getCategoryProduct(id) async {
-    
     await Common.getCurrency().then((value) {
       currency = value;
     });
@@ -87,7 +86,6 @@ class _SubCategoriesState extends State<SubCategories> {
           catProductsList.addAll(onValue['response_data']['products']);
           subCategryList = onValue['response_data']['subCategories'];
           catTotalProduct = onValue["total"];
-          subCategryByProduct = [];
           int index = catProductsList.length;
           if (catLastApiCall == true) {
             catProductIndex++;
@@ -252,7 +250,13 @@ class _SubCategoriesState extends State<SubCategories> {
                                                     isSelected = false;
                                                     isSelectedIndexZero = true;
                                                     isSelectetedId = null;
+                                                    subCategryByProduct = [];
+                                                    subCatProductIndex =
+                                                        subCategryByProduct
+                                                            .length;
                                                     catProductsList = [];
+                                                    catProductIndex =
+                                                        catProductsList.length;
                                                     currentSubCategoryId =
                                                         subCategryList[0]['_id']
                                                             .toString();
@@ -280,6 +284,12 @@ class _SubCategoriesState extends State<SubCategories> {
                                                   true;
                                               isSelectetedId =
                                                   subCategryList[i]['_id'];
+                                              subCategryByProduct = [];
+                                              subCatProductIndex =
+                                                  subCategryByProduct.length;
+                                              catProductsList = [];
+                                              catProductIndex =
+                                                  catProductsList.length;
                                               currentSubCategoryId =
                                                   subCategryList[i]['_id']
                                                       .toString();
@@ -377,8 +387,13 @@ class _SubCategoriesState extends State<SubCategories> {
                                                             catProductIndex =
                                                                 catProductsList
                                                                     .length;
+                                                            currentSubCategoryId =
+                                                                subCategryByProduct[
+                                                                    i]['_id'];
+
                                                             getProductToSubCategory(
-                                                                currentSubCategoryId);
+                                                                subCategryByProduct[
+                                                                    i]['_id']);
                                                           });
                                                         }
                                                       }
@@ -493,6 +508,9 @@ class _SubCategoriesState extends State<SubCategories> {
                                                             catProductIndex =
                                                                 catProductsList
                                                                     .length;
+                                                            catProductIndex =
+                                                                catProductsList
+                                                                    .length;
                                                             getCategoryProduct(
                                                                 widget.catId);
                                                           });
@@ -540,9 +558,7 @@ class _SubCategoriesState extends State<SubCategories> {
               ),
       ),
       bottomNavigationBar: cartData == null
-          ? Container(
-              height: 10.0,
-            )
+          ? Container(height: 10.0)
           : InkWell(
               onTap: () {
                 var result = Navigator.push(
