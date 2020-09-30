@@ -178,6 +178,8 @@ class _ProfileState extends State<Profile> {
       LoginService.updateUserInfo(body).then((value) async {
         await Common.setToken(null);
         await Common.setUserID(null);
+        await Common.setCartData(null);
+        await Common.setCartDataCount(0);
         main();
       });
     });
@@ -348,18 +350,17 @@ class _ProfileState extends State<Profile> {
                                       normalText(context,
                                           '${userInfo['mobileNumber'].toString() ?? ""}'),
                                       SizedBox(height: 6),
-                                      walletAmount != null && walletAmount > 0
-                                          ? normalText(
-                                              context,
-                                              (MyLocalizations.of(context)
+                                      normalText(
+                                          context,
+                                          (MyLocalizations.of(context)
                                                       .getLocalizations(
                                                           "TOTAL_WALLET_AMOUNT",
                                                           true) +
                                                   currency +
                                                   walletAmount
                                                       .toDouble()
-                                                      .toStringAsFixed(2)))
-                                          : Container(),
+                                                      .toStringAsFixed(2) ??
+                                              "0"))
                                     ],
                                   ),
                                 ),
@@ -373,9 +374,8 @@ class _ProfileState extends State<Profile> {
                                           Padding(
                                             padding: EdgeInsets.only(top: 45),
                                             child: SvgPicture.asset(
-                                              'lib/assets/icons/editt.svg',
-                                              color: primary,
-                                            ),
+                                                'lib/assets/icons/editt.svg',
+                                                color: primary),
                                           )
                                         ],
                                       )
@@ -404,7 +404,7 @@ class _ProfileState extends State<Profile> {
                         SizedBox(height: 15),
                         InkWell(
                             onTap: () {
-                              var result = Navigator.push(
+                              Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => Address(
@@ -413,7 +413,6 @@ class _ProfileState extends State<Profile> {
                                   ),
                                 ),
                               );
-                              result.then((value) => getToken());
                             },
                             child: profileText(context, "ADDRESS")),
                         languagesList.length > 0
@@ -445,7 +444,7 @@ class _ProfileState extends State<Profile> {
                         SizedBox(height: 15),
                         InkWell(
                             onTap: () {
-                              var result = Navigator.push(
+                              Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => ChangePassword(
@@ -454,7 +453,6 @@ class _ProfileState extends State<Profile> {
                                   ),
                                 ),
                               );
-                              result.then((value) => getToken());
                             },
                             child: profileText(context, "CHANGE_PASSWORD")),
                         SizedBox(height: 15),

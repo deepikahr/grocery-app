@@ -43,16 +43,24 @@ class _OrderDetailsState extends State<OrderDetails> {
   void initState() {
     getOrderHistory();
     super.initState();
-    timer =
-        Timer.periodic(Duration(seconds: 15), (Timer t) => getOrderHistory());
-  }
-
-  getOrderHistory() async {
     if (mounted) {
       setState(() {
         isLoading = true;
       });
     }
+    timer =
+        Timer.periodic(Duration(seconds: 15), (Timer t) => getOrderHistory());
+  }
+
+  @override
+  void dispose() {
+    if (timer != null && timer.isActive) {
+      timer.cancel();
+    }
+    super.dispose();
+  }
+
+  getOrderHistory() async {
     await Common.getCurrency().then((value) {
       currency = value;
     });
@@ -243,7 +251,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                     "STRIPE"
                                                 ? "PAY_BY_CARD"
                                                 : orderHistory['order']
-                                                            ['paymentType'])),
+                                                    ['paymentType'])),
                                     SizedBox(height: 10),
                                     buildOrderDetilsText(
                                         context,
@@ -254,33 +262,12 @@ class _OrderDetailsState extends State<OrderDetails> {
                                     buildOrderDetilsStatusText(
                                         context,
                                         "ORDER_STAUS",
-                                        (orderHistory['order']['orderStatus'] ==
-                                                "DELIVERED"
-                                            ? "DELIVERED"
-                                            : orderHistory['order']
-                                                        ['orderStatus'] ==
-                                                    "CANCELLED"
-                                                ? "CANCELLED"
-                                                : orderHistory['order']
-                                                            ['orderStatus'] ==
-                                                        "OUT_FOR_DELIVERY"
-                                                    ? "OUT_FOR_DELIVERY"
-                                                    : orderHistory['order'][
-                                                                'orderStatus'] ==
-                                                            "CONFIRMED"
-                                                        ? "CONFIRMED"
-                                                        : orderHistory['order'][
-                                                                    'orderStatus'] ==
-                                                                "PENDING"
-                                                            ? "PENDING"
-                                                            : orderHistory[
-                                                                    'order'][
-                                                                'orderStatus'])),
+                                        orderHistory['order']['orderStatus']),
                                     SizedBox(height: 10),
                                     buildOrderDetilsStatusText(
                                         context,
                                         "PAYMENT_STATUS",
-                                       MyLocalizations.of(context).getLocalizations(orderHistory['order']['paymentStatus'])),
+                                        orderHistory['order']['paymentStatus']),
                                   ],
                                 ),
                               ),
