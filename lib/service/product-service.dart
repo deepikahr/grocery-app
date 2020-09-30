@@ -95,9 +95,10 @@ class ProductService {
   }
 
   // search product
-  static Future<dynamic> getSearchList(status) async {
+  static Future<dynamic> getSearchList(status, index, limit) async {
     return client
-        .get(Constants.apiUrl + '/products/search?q=$status')
+        .get(Constants.apiUrl +
+            '/products/search?q=$status&limit=$limit&page=$index')
         .then((response) {
       return json.decode(response.body);
     });
