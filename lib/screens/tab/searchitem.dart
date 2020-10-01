@@ -184,6 +184,18 @@ class _SearchItemState extends State<SearchItem> {
                         style: new TextStyle(
                           color: Colors.black,
                         ),
+                         onEditingComplete: () {
+                          FocusScopeNode currentScope = FocusScope.of(context);
+                          FocusScopeNode rootScope =
+                              WidgetsBinding.instance.focusManager.rootScope;
+
+                          if (currentScope != rootScope) {
+                            currentScope.unfocus();
+                          }
+                          productIndex = 0;
+                          searchresult = [];
+                          _searchForProducts();
+                        },
                         onSaved: (String value) {
                           searchTerm = value;
                         },
