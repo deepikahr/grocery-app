@@ -7,7 +7,6 @@ import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/otp-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:pin_entry_text_field/pin_entry_text_field.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
@@ -124,42 +123,6 @@ class _ChangeMobileNumberOtpVerifyState
       showSnackbar(
           MyLocalizations.of(context).getLocalizations("OTP_MSG_MOBILE"));
     }
-  }
-
-  showAlert(message) {
-    showDialog<Null>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return new AlertDialog(
-          title: new Text(
-            MyLocalizations.of(context).getLocalizations("ERROR"),
-            style: hintSfMediumredsmall(),
-          ),
-          content: new SingleChildScrollView(
-            child: new ListBody(
-              children: <Widget>[
-                new Text(
-                  '$message',
-                  style: textBarlowRegularBlack(),
-                ),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            new FlatButton(
-              child: new Text(
-                MyLocalizations.of(context).getLocalizations("OK"),
-                style: textbarlowRegularaPrimary(),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
