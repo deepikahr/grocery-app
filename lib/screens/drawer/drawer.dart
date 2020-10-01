@@ -83,7 +83,8 @@ class _DrawerPageState extends State<DrawerPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0),
-                  child: _buildMenuTileList('lib/assets/icons/Home.png', "HOME",
+                  child: _buildMenuTileList(
+                      'lib/assets/icons/Home.png', "HOME_PAGE",
                       route: Home(
                         locale: widget.locale,
                         localizedValues: widget.localizedValues,
@@ -210,6 +211,8 @@ class _DrawerPageState extends State<DrawerPage> {
       LoginService.updateUserInfo(body).then((value) async {
         await Common.setToken(null);
         await Common.setUserID(null);
+        await Common.setCartData(null);
+        await Common.setCartDataCount(0);
         main();
       });
     });

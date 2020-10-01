@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -35,19 +37,30 @@ class _OrderDetailsState extends State<OrderDetails> {
   var orderHistory;
   String currency;
   double rating;
+  Timer timer;
   var createdAt;
   @override
   void initState() {
     getOrderHistory();
     super.initState();
-  }
-
-  getOrderHistory() async {
     if (mounted) {
       setState(() {
         isLoading = true;
       });
     }
+    timer =
+        Timer.periodic(Duration(seconds: 15), (Timer t) => getOrderHistory());
+  }
+
+  @override
+  void dispose() {
+    if (timer != null && timer.isActive) {
+      timer.cancel();
+    }
+    super.dispose();
+  }
+
+  getOrderHistory() async {
     await Common.getCurrency().then((value) {
       currency = value;
     });
@@ -238,11 +251,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                     "STRIPE"
                                                 ? "PAY_BY_CARD"
                                                 : orderHistory['order']
-                                                            ['paymentType'] ==
-                                                        "WALLET"
-                                                    ? "WALLET"
-                                                    : orderHistory['order']
-                                                        ['paymentType'])),
+                                                    ['paymentType'])),
                                     SizedBox(height: 10),
                                     buildOrderDetilsText(
                                         context,
@@ -253,28 +262,12 @@ class _OrderDetailsState extends State<OrderDetails> {
                                     buildOrderDetilsStatusText(
                                         context,
                                         "ORDER_STAUS",
-                                        (orderHistory['order']['orderStatus'] ==
-                                                "DELIVERED"
-                                            ? "DELIVERED"
-                                            : orderHistory['order']
-                                                        ['orderStatus'] ==
-                                                    "CANCELLED"
-                                                ? "CANCELLED"
-                                                : orderHistory['order']
-                                                            ['orderStatus'] ==
-                                                        "OUT_FOR_DELIVERY"
-                                                    ? "OUT_FOR_DELIVERY"
-                                                    : orderHistory['order'][
-                                                                'orderStatus'] ==
-                                                            "CONFIRMED"
-                                                        ? "CONFIRMED"
-                                                        : orderHistory['order'][
-                                                                    'orderStatus'] ==
-                                                                "PENDING"
-                                                            ? "PENDING"
-                                                            : orderHistory[
-                                                                    'order'][
-                                                                'orderStatus'])),
+                                        orderHistory['order']['orderStatus']),
+                                    SizedBox(height: 10),
+                                    buildOrderDetilsStatusText(
+                                        context,
+                                        "PAYMENT_STATUS",
+                                        orderHistory['order']['paymentStatus']),
                                   ],
                                 ),
                               ),
@@ -542,8 +535,14 @@ class _OrderDetailsState extends State<OrderDetails> {
                             child: Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 15.0),
-                              child: buttonPrimary(context, "CANCEL_ORDER",
-                                  isOrderCancleLoading),
+                              child: orderHistory['order']['orderStatus'] ==
+                                      "PENDING"
+                                  ? buttonPrimary(
+                                      context,
+                                      "CANCEL_ORDER",
+                                      isOrderCancleLoading,
+                                    )
+                                  : Container(),
                             )),
                     SizedBox(height: 20),
                   ],

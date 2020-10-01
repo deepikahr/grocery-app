@@ -123,11 +123,7 @@ class _WalletHistoryState extends State<WalletHistory> {
           walletText(
               context,
               "TRANSECTION_TYPE",
-              (walletDetails['transactionType'] == "ORDER_PAYMENT"
-                  ? "ORDER_PAYMENT"
-                  : walletDetails['transactionType'] == "ORDER_CANCELLED"
-                      ? "ORDER_CANCELLED"
-                      : walletDetails['transactionType']),
+               walletDetails['transactionType'],
               false),
           SizedBox(height: 3),
           walletText(

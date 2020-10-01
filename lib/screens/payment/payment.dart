@@ -267,28 +267,28 @@ class _PaymentState extends State<Payment> {
                         false),
                   ),
                 ),
-                walletAmount == null || walletAmount == 0
-                    ? Container()
-                    : Column(
-                        children: [
-                          Container(
-                            color: Colors.grey[100],
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 10, bottom: 10, left: 20.0, right: 20.0),
-                              child: buildPriceBold(
-                                  context,
-                                  null,
-                                  MyLocalizations.of(context)
-                                      .getLocalizations("TOTAL_WALLET_AMOUNT"),
-                                  currency +
-                                      (walletAmount - cartItem['walletAmount'])
-                                          .toDouble()
-                                          .toStringAsFixed(2),
-                                  false),
-                            ),
-                          ),
-                          Container(
+                Column(
+                  children: [
+                    Container(
+                      color: Colors.grey[100],
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            top: 10, bottom: 10, left: 20.0, right: 20.0),
+                        child: buildPriceBold(
+                            context,
+                            null,
+                            MyLocalizations.of(context)
+                                .getLocalizations("TOTAL_WALLET_AMOUNT"),
+                            currency +
+                                (walletAmount - cartItem['walletAmount'])
+                                    .toDouble()
+                                    .toStringAsFixed(2),
+                            false),
+                      ),
+                    ),
+                    walletAmount == null || walletAmount == 0
+                        ? Container()
+                        : Container(
                             color: Colors.grey[100],
                             child: Padding(
                               padding: const EdgeInsets.only(
@@ -337,8 +337,8 @@ class _PaymentState extends State<Payment> {
                               ),
                             ),
                           ),
-                        ],
-                      ),
+                  ],
+                ),
                 SizedBox(height: 10),
                 fullWalletUsedOrNot == true
                     ? Container()
