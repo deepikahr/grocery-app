@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:readymadeGroceryApp/screens/authe/resetPas.dart';
+import 'package:readymadeGroceryApp/screens/authe/login.dart';
+import 'package:readymadeGroceryApp/screens/home/home.dart';
+import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/otp-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
@@ -12,31 +15,26 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
 
-class Otp extends StatefulWidget {
-  Otp(
-      {Key key,
-      this.locale,
-      this.localizedValues,
-      this.signUpTime,
-      this.resentOtptime,
-      this.mobileNumber,
-      this.sId})
+class ChangeMobileNumberOtpVerify extends StatefulWidget {
+  ChangeMobileNumberOtpVerify(
+      {Key key, this.locale, this.localizedValues, this.sId, this.mobileNumber})
       : super(key: key);
   final String locale, mobileNumber, sId;
   final Map localizedValues;
-  final bool signUpTime, resentOtptime;
 
   @override
-  _OtpState createState() => _OtpState();
+  _ChangeMobileNumberOtpVerifyState createState() =>
+      _ChangeMobileNumberOtpVerifyState();
 }
 
-class _OtpState extends State<Otp> {
+class _ChangeMobileNumberOtpVerifyState
+    extends State<ChangeMobileNumberOtpVerify> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   String enteredOtp, sid;
-  bool isOtpVerifyLoading = false, isResentOtpLoading = false;
+  bool isOtpVerifyLoading = false;
   @override
   void initState() {
     sid = widget.sId ?? null;
@@ -60,60 +58,44 @@ class _OtpState extends State<Otp> {
         if (sid != null) {
           body['sId'] = sid;
         }
-        await OtpService.verifyOtpWithNumber(body).then((onValue) {
-          if (onValue['response_data'] != null &&
-              onValue['verificationToken'] != null) {
-            if (mounted) {
-              setState(() {
-                isOtpVerifyLoading = false;
-              });
-            }
-            showDialog<Null>(
-              context: context,
-              barrierDismissible: false, // user must tap button!
-              builder: (BuildContext context) {
-                return new AlertDialog(
-                  content: new SingleChildScrollView(
-                    child: new ListBody(
-                      children: <Widget>[
-                        new Text(onValue['response_data'],
-                            style: textBarlowMediumBlack()),
-                      ],
-                    ),
+
+        await OtpService.changePasswordVerifyOtpWithNumber(body)
+            .then((onValue) {
+          if (onValue['response_data'] != null) {
+            Common.getSelectedLanguage().then((selectedLocale) async {
+              Map body = {"language": selectedLocale, "playerId": null};
+              LoginService.updateUserInfo(body).then((value) async {
+                showSnackbar(onValue['response_data']);
+                await Common.setToken(null);
+                await Common.setUserID(null);
+                await Common.setCartDataCount(0);
+                await Common.setCartData(null);
+                if (mounted) {
+                  setState(() {
+                    isOtpVerifyLoading = false;
+                  });
+                }
+                var result = Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => Login(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues),
                   ),
-                  actions: <Widget>[
-                    new FlatButton(
-                      child: new Text(
-                          MyLocalizations.of(context).getLocalizations("OK"),
-                          style: TextStyle(color: green)),
-                      onPressed: () {
-                        if (widget.signUpTime == true) {
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pop();
-                        } else if (widget.resentOtptime == true) {
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pop();
-                        } else {
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pop();
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ResetPassword(
-                                  token: onValue['verificationToken'],
-                                  mobileNumber: widget.mobileNumber,
-                                  locale: widget.locale,
-                                  localizedValues: widget.localizedValues),
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                  ],
                 );
-              },
-            );
+                result.then((value) {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => Home(
+                            locale: widget.locale,
+                            localizedValues: widget.localizedValues,
+                            currentIndex: 0),
+                      ),
+                      (Route<dynamic> route) => false);
+                });
+              });
+            });
           } else {
             if (mounted) {
               setState(() {
@@ -180,30 +162,6 @@ class _OtpState extends State<Otp> {
     );
   }
 
-  resentOTP() async {
-    if (mounted) {
-      setState(() {
-        isResentOtpLoading = true;
-      });
-    }
-
-    OtpService.resendOtpWithNumber(widget.mobileNumber).then((response) {
-      if (mounted) {
-        setState(() {
-          showSnackbar(response['response_data']);
-          sid = response['sId'] ?? null;
-          isResentOtpLoading = false;
-        });
-      }
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          isResentOtpLoading = false;
-        });
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -220,9 +178,6 @@ class _OtpState extends State<Otp> {
             child: buildGFTypographyOtp(
                 context, "OTP_CODE_MSG", ' ${widget.mobileNumber}'),
           ),
-          InkWell(
-              onTap: resentOTP,
-              child: buildResentOtp(context, "RESENT_OTP", isResentOtpLoading)),
           Padding(
             padding:
                 const EdgeInsets.only(bottom: 5.0, left: 20.0, right: 20.0),

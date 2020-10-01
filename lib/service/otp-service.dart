@@ -27,17 +27,6 @@ class OtpService {
     });
   }
 
-  // forget password
-  static Future forgetPasswordWithNumber(email) async {
-    Map body = {"email": email};
-    return client
-        .post(Constants.apiUrl + "/users/forgot-password",
-            body: json.encode(body))
-        .then((response) {
-      return json.decode(response.body);
-    });
-  }
-
   // verify otp
   static Future verifyOtpWithNumber(body) async {
     return client
@@ -63,6 +52,25 @@ class OtpService {
     return client
         .post(Constants.apiUrl + "/users/reset-password-number",
             body: json.encode(body))
+        .then((response) {
+      return json.decode(response.body);
+    });
+  }
+
+  // change password
+  static Future changeMobileNumber(body) async {
+    return client
+        .put(Constants.apiUrl + "/users/update/mobile-verify",
+            body: json.encode(body))
+        .then((response) {
+      return json.decode(response.body);
+    });
+  }
+
+  // verify otp
+  static Future changePasswordVerifyOtpWithNumber(body) async {
+    return client
+        .put(Constants.apiUrl + "/users/update/mobile", body: json.encode(body))
         .then((response) {
       return json.decode(response.body);
     });

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:readymadeGroceryApp/screens/authe/change-mobile-number.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -36,11 +37,14 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Map<String, dynamic> userInfo;
-  bool isLoading = false, isPicUploading = false, profileEdit = false;
-  String firstName, lastName, currency = "";
-  String mobileNumber;
+  bool isLoading = false,
+      isPicUploading = false,
+      profileEdit = false,
+      isUpdateMobileNumberLoading = false;
+  String firstName, lastName, currency = "", email;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var image;
+
   @override
   void initState() {
     getUserInfo();
@@ -113,8 +117,9 @@ class _EditProfileState extends State<EditProfile> {
       Map<String, dynamic> body = {
         "firstName": firstName,
         "lastName": lastName,
-        "mobileNumber": mobileNumber
+        "email": email.toLowerCase()
       };
+
       await LoginService.updateUserInfo(body).then((onValue) {
         if (mounted) {
           setState(() {
@@ -383,16 +388,32 @@ class _EditProfileState extends State<EditProfile> {
                       ],
                     ),
                   ),
+                  SizedBox(height: 5),
                   Center(
-                    child: Text(userInfo['email'] ?? '',
-                        style: textBarlowRegularBlack()),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Center(
-                    child: Text(userInfo['mobileNumber'].toString(),
-                        style: textBarlowRegularBlack()),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(userInfo['mobileNumber'].toString(),
+                            style: textBarlowRegularBlack()),
+                        InkWell(
+                          onTap: () async {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ChangeMobileNumber(
+                                    locale: widget.locale,
+                                    localizedValues: widget.localizedValues),
+                              ),
+                            );
+                          },
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.only(left: 8.0, right: 8.0),
+                            child: primarySolidButtonSmall(context, "CHANGE"),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(
@@ -413,11 +434,7 @@ class _EditProfileState extends State<EditProfile> {
                         fillColor: Colors.black,
                         focusColor: Colors.black,
                         contentPadding: EdgeInsets.only(
-                          left: 15.0,
-                          right: 15.0,
-                          top: 10.0,
-                          bottom: 10.0,
-                        ),
+                            left: 15.0, right: 15.0, top: 10.0, bottom: 10.0),
                         enabledBorder: const OutlineInputBorder(
                           borderSide:
                               const BorderSide(color: Colors.grey, width: 0.0),
@@ -482,6 +499,51 @@ class _EditProfileState extends State<EditProfile> {
                       },
                     ),
                   ),
+                  Padding(
+                      padding: const EdgeInsets.only(
+                          left: 18.0, right: 18.0, bottom: 5, top: 5),
+                      child: buildGFTypography(
+                          context, "EMAIL_OPTIONAL", false, true)),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                    child: TextFormField(
+                      initialValue: userInfo['email'] ?? "",
+                      style: textBarlowRegularBlack(),
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(
+                        errorBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 0, color: Color(0xFFF44242))),
+                        errorStyle: TextStyle(color: Color(0xFFF44242)),
+                        fillColor: Colors.black,
+                        focusColor: Colors.black,
+                        contentPadding: EdgeInsets.only(
+                            left: 15.0, right: 15.0, top: 10.0, bottom: 10.0),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.grey, width: 0.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: primary),
+                        ),
+                      ),
+                      onSaved: (String value) {
+                        email = value;
+                      },
+                      validator: (String value) {
+                        if (value.isEmpty) {
+                          return null;
+                        } else if (!RegExp(
+                                r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+                            .hasMatch(value)) {
+                          return MyLocalizations.of(context)
+                              .getLocalizations("ERROR_MAIL");
+                        } else
+                          return null;
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 10)
                 ],
               ),
             ),

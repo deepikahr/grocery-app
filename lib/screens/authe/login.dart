@@ -42,7 +42,7 @@ class _LoginState extends State<Login> {
       value = false,
       passwordVisible = true,
       _obscureText = true;
-  String password, mobileNumber;
+  String password, userName;
 
   // Toggles the password
   void _toggle() {
@@ -67,7 +67,7 @@ class _LoginState extends State<Login> {
       }
       await Common.getPlayerID().then((playerID) async {
         Map<String, dynamic> body = {
-          "mobileNumber": mobileNumber,
+          "userName": userName,
           "password": password,
           "playerId": playerID
         };
@@ -78,7 +78,7 @@ class _LoginState extends State<Login> {
             });
           }
           if (onValue['response_code'] == 205) {
-            showAlert(onValue['response_data'], mobileNumber);
+            showAlert(onValue['response_data'], userName);
           } else {
             if (onValue['response_data']['role'] == 'USER') {
               await Common.setToken(onValue['response_data']['token']);
@@ -88,10 +88,9 @@ class _LoginState extends State<Login> {
                     context,
                     MaterialPageRoute(
                       builder: (BuildContext context) => Home(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
-                        currentIndex: 2,
-                      ),
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                          currentIndex: 2),
                     ),
                     (Route<dynamic> route) => false);
               } else if (widget.isProfile == true) {
@@ -99,10 +98,9 @@ class _LoginState extends State<Login> {
                     context,
                     MaterialPageRoute(
                       builder: (BuildContext context) => Home(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
-                        currentIndex: 3,
-                      ),
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                          currentIndex: 3),
                     ),
                     (Route<dynamic> route) => false);
               } else if (widget.isSaveItem == true) {
@@ -110,10 +108,9 @@ class _LoginState extends State<Login> {
                     context,
                     MaterialPageRoute(
                       builder: (BuildContext context) => Home(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
-                        currentIndex: 1,
-                      ),
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                          currentIndex: 1),
                     ),
                     (Route<dynamic> route) => false);
               } else if (widget.isProductDetails == true) {
@@ -123,10 +120,9 @@ class _LoginState extends State<Login> {
                     context,
                     MaterialPageRoute(
                       builder: (BuildContext context) => Home(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
-                        currentIndex: 0,
-                      ),
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                          currentIndex: 0),
                     ),
                     (Route<dynamic> route) => false);
               }
@@ -233,8 +229,8 @@ class _LoginState extends State<Login> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               buildwelcometext(),
-              buildContactNumberText(),
-              buildContactNumberTextField(),
+              buildEmailOrMobileNumberText(),
+              buildEmailOrMobileNumberTextField(),
               buildPasswordText(),
               buildPasswordTextField(),
               buildLoginButton(),
@@ -255,27 +251,27 @@ class _LoginState extends State<Login> {
         child: buildBoldText(context, "WELCOME_BACK"));
   }
 
-  Widget buildContactNumberText() {
-    return buildGFTypography(context, "CONTACT_NUMBER", true, true);
+  Widget buildEmailOrMobileNumberText() {
+    return buildGFTypography(context, "EMAIL_OR_MOBILE_NUMBER", true, true);
   }
 
-  Widget buildContactNumberTextField() {
+  Widget buildEmailOrMobileNumberTextField() {
     return Padding(
       padding: const EdgeInsets.only(top: 5.0, bottom: 10.0),
       child: Container(
         child: TextFormField(
           onSaved: (String value) {
-            mobileNumber = value;
+            userName = value;
           },
           validator: (String value) {
             if (value.isEmpty) {
               return MyLocalizations.of(context)
-                  .getLocalizations("ENTER_YOUR_CONTACT_NUMBER");
+                  .getLocalizations("ENTER_YOUR_EMAIL_OR_MOBILE_NUMBER");
             } else
               return null;
           },
           style: textBarlowRegularBlack(),
-          keyboardType: TextInputType.number,
+          keyboardType: TextInputType.text,
           decoration: InputDecoration(
             errorBorder: OutlineInputBorder(
                 borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),

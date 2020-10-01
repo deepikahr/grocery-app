@@ -1215,6 +1215,14 @@ TextStyle textbarlowRegularad() {
   );
 }
 
+TextStyle textbarlowRegularadark() {
+  return TextStyle(
+    fontSize: 16.0,
+    fontFamily: 'BarlowRegular',
+    color: Colors.black,
+  );
+}
+
 TextStyle textbarlowRegularadd() {
   return TextStyle(
     fontSize: 16.0,

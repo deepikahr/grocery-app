@@ -86,7 +86,7 @@ class ProductService {
   // get all home page data
   static Future<Map<String, dynamic>> getProdCatDealTopDeal() async {
     return client
-        .get(Constants.apiUrl + "/Products/home")
+        .get(Constants.apiUrl + "/products/home")
         .then((response) async {
       await Common.setAllData(json.decode(response.body));
 

@@ -393,9 +393,8 @@ class _ProfileState extends State<Profile> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => WalletHistory(
-                                    locale: widget.locale,
-                                    localizedValues: widget.localizedValues,
-                                  ),
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues),
                                 ),
                               );
                               result.then((value) => getToken());
@@ -408,9 +407,8 @@ class _ProfileState extends State<Profile> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => Address(
-                                    locale: widget.locale,
-                                    localizedValues: widget.localizedValues,
-                                  ),
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues),
                                 ),
                               );
                             },
@@ -432,10 +430,8 @@ class _ProfileState extends State<Profile> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => Orders(
-                                    locale: widget.locale,
-                                    localizedValues: widget.localizedValues,
-                                    userID: userID,
-                                  ),
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues),
                                 ),
                               );
                               result.then((value) => getToken());
@@ -448,9 +444,8 @@ class _ProfileState extends State<Profile> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => ChangePassword(
-                                    locale: widget.locale,
-                                    localizedValues: widget.localizedValues,
-                                  ),
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues),
                                 ),
                               );
                             },

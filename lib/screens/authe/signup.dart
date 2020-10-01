@@ -61,7 +61,7 @@ class _SignupState extends State<Signup> {
         "mobileNumber": mobileNumber
       };
       if (email != null && email != "") {
-        body['email'] = email;
+        body['email'] = email.toLowerCase();
       }
       await OtpService.signUpWithNumber(body).then((onValue) {
         if (mounted) {
@@ -77,19 +77,16 @@ class _SignupState extends State<Signup> {
               content: new SingleChildScrollView(
                 child: new ListBody(
                   children: <Widget>[
-                    new Text(
-                      onValue['response_data'],
-                      style: textBarlowRegularBlack(),
-                    ),
+                    new Text(onValue['response_data'],
+                        style: textBarlowRegularBlack()),
                   ],
                 ),
               ),
               actions: <Widget>[
                 new FlatButton(
                   child: new Text(
-                    MyLocalizations.of(context).getLocalizations("OK"),
-                    style: textbarlowRegularaPrimary(),
-                  ),
+                      MyLocalizations.of(context).getLocalizations("OK"),
+                      style: textbarlowRegularaPrimary()),
                   onPressed: () {
                     Navigator.pop(context);
                     Navigator.push(
@@ -315,12 +312,7 @@ class _SignupState extends State<Signup> {
   }
 
   Widget buildEmailText() {
-    return Row(
-      children: [
-        buildGFTypography(context, "EMAIL", false, true),
-        buildGFTypography(context, "OPTIONAL", false, false),
-      ],
-    );
+    return buildGFTypography(context, "EMAIL_OPTIONAL", false, true);
   }
 
   Widget buildEmailTextField() {
@@ -417,7 +409,7 @@ class _SignupState extends State<Signup> {
   }
 
   Widget buildMobileNumberText() {
-    return buildGFTypography(context, "CONTACT_NUMBER", true, true);
+    return buildGFTypography(context, "MOBILE_NUMBER", true, true);
   }
 
   Widget buildMobileNumberTextField() {
@@ -430,7 +422,7 @@ class _SignupState extends State<Signup> {
         validator: (String value) {
           if (value.isEmpty) {
             return MyLocalizations.of(context)
-                .getLocalizations("ENTER_YOUR_CONTACT_NUMBER");
+                .getLocalizations("ENTER_YOUR_MOBILE_NUMBER");
           } else
             return null;
         },

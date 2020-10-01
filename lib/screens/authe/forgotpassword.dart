@@ -27,7 +27,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool isVerifyMobileLoading = false;
 
-  verifyContactNumber() async {
+  verifyMobileNumber() async {
     final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
@@ -118,10 +118,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   padding: const EdgeInsets.only(
                       left: 20.0, bottom: 25.0, right: 20.0),
                   child: normalTextWithOutRow(
-                      context, "FORET_PASS_MOBILE_MSG", false)),
+                      context, "FORGET_PASS_MOBILE_MSG", false)),
               Padding(
                 padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-                child: buildGFTypography(context, "CONTACT_NUMBER", true, true),
+                child: buildGFTypography(context, "MOBILE_NUMBER", true, true),
               ),
               Padding(
                 padding: const EdgeInsets.only(
@@ -134,12 +134,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     validator: (String value) {
                       if (value.isEmpty) {
                         return MyLocalizations.of(context)
-                            .getLocalizations("ENTER_YOUR_CONTACT_NUMBER");
+                            .getLocalizations("ENTER_YOUR_MOBILE_NUMBER");
                       } else
                         return null;
                     },
                     style: textBarlowRegularBlack(),
-                    keyboardType: TextInputType.emailAddress,
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                         errorBorder: OutlineInputBorder(
                             borderSide:
@@ -157,7 +157,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 ),
               ),
               InkWell(
-                  onTap: verifyContactNumber,
+                  onTap: verifyMobileNumber,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child:
