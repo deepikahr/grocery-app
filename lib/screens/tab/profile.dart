@@ -348,7 +348,7 @@ class _ProfileState extends State<Profile> {
                                           '${userInfo['email'] ?? ""}'),
                                       SizedBox(height: 6),
                                       normalText(context,
-                                          '${userInfo['mobileNumber'] ?? ""}'),
+                                          '${userInfo['countryCode'] ?? ""}${userInfo['mobileNumber'] ?? ""}'),
                                       SizedBox(height: 6),
                                       normalText(
                                           context,

@@ -393,7 +393,8 @@ class _EditProfileState extends State<EditProfile> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(userInfo['mobileNumber'].toString(),
+                        Text(
+                            "${userInfo['countryCode'] ?? ""}${userInfo['mobileNumber'] ?? ""}",
                             style: textBarlowRegularBlack()),
                         InkWell(
                           onTap: () async {
@@ -533,8 +534,7 @@ class _EditProfileState extends State<EditProfile> {
                       validator: (String value) {
                         if (value.isEmpty) {
                           return null;
-                        } else if (!RegExp(
-                                r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+                        } else if (!RegExp(Constants.emailValidation)
                             .hasMatch(value)) {
                           return MyLocalizations.of(context)
                               .getLocalizations("ERROR_MAIL");

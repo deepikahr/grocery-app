@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:readymadeGroceryApp/screens/authe/otp.dart';
+import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/otp-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
@@ -24,14 +28,16 @@ class _SignupState extends State<Signup> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
+  var selectedCountryValue, currentLocale;
+  Map selectedCountry;
   bool isLoading = false,
       registerationLoading = false,
       rememberMe = false,
       value = false,
       passwordVisible = true,
       isChecked = false,
-      _obscureText = true;
+      _obscureText = true,
+      isCuntryLoading = false;
   String userName, email, password, firstName, lastName, mobileNumber;
   // Toggles the password
   void _toggle() {
@@ -42,7 +48,28 @@ class _SignupState extends State<Signup> {
 
   @override
   void initState() {
+    getCuntry();
     super.initState();
+  }
+
+  getCuntry() {
+    setState(() {
+      isCuntryLoading = true;
+    });
+    Common.getCountryInfo().then((value) {
+      setState(() {
+        selectedCountry = Constants.countryCode[0];
+        isCuntryLoading = false;
+        if (value != null) {
+          for (int i = 0; i < Constants.countryCode.length; i++) {
+            if (Constants.countryCode[i]['code'].toString() ==
+                value.toString()) {
+              selectedCountry = Constants.countryCode[i];
+            }
+          }
+        }
+      });
+    });
   }
 
   userSignupwithMobile() async {
@@ -58,7 +85,9 @@ class _SignupState extends State<Signup> {
         "firstName": firstName,
         "lastName": lastName,
         "password": password,
-        "mobileNumber": mobileNumber
+        "mobileNumber": mobileNumber,
+        "countryCode": selectedCountry['dial_code'],
+        "countryName": selectedCountry['name'],
       };
       if (email != null && email != "") {
         body['email'] = email.toLowerCase();
@@ -187,47 +216,35 @@ class _SignupState extends State<Signup> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: appBarPrimary(context, "SIGNUP"),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            buildLoginPageForm(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget buildLoginPageForm() {
-    return Form(
-      key: _formKey,
-      child: Theme(
-        data: ThemeData(
-          brightness: Brightness.dark,
-        ),
-        child: Container(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              buildwelcometext(),
-              buildUserFirstName(),
-              buildUserFirstNameField(),
-              buildUserLastName(),
-              buildUserLastNameField(),
-              buildEmailText(),
-              buildEmailTextField(),
-              buildMobileNumberText(),
-              buildMobileNumberTextField(),
-              buildPasswordText(),
-              buildPasswordTextField(),
-              buildsignuplink(),
-              buildLoginButton(),
-            ],
-          ),
-        ),
-      ),
+      body: isCuntryLoading
+          ? Center(child: SquareLoader())
+          : Form(
+              key: _formKey,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                child: Container(
+                  child: ListView(
+                    children: <Widget>[
+                      buildwelcometext(),
+                      buildUserFirstName(),
+                      buildUserFirstNameField(),
+                      buildUserLastName(),
+                      buildUserLastNameField(),
+                      buildEmailText(),
+                      buildEmailTextField(),
+                      buildCountryNumberText(),
+                      buildCountryNumberTextField(),
+                      buildMobileNumberText(),
+                      buildMobileNumberTextField(),
+                      buildPasswordText(),
+                      buildPasswordTextField(),
+                      buildsignuplink(),
+                      buildLoginButton(),
+                    ],
+                  ),
+                ),
+              ),
+            ),
     );
   }
 
@@ -325,9 +342,7 @@ class _SignupState extends State<Signup> {
           validator: (String value) {
             if (value.isEmpty) {
               return null;
-            } else if (!RegExp(
-                    r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
-                .hasMatch(value)) {
+            } else if (!RegExp(Constants.emailValidation).hasMatch(value)) {
               return MyLocalizations.of(context).getLocalizations("ERROR_MAIL");
             } else
               return null;
@@ -430,24 +445,71 @@ class _SignupState extends State<Signup> {
           mobileNumber = value;
         },
         decoration: InputDecoration(
+          prefixText: selectedCountry['dial_code'].toString(),
           counterText: "",
+          prefixStyle: textBarlowRegularBlack(),
           errorBorder: OutlineInputBorder(
               borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
           errorStyle: TextStyle(color: Color(0xFFF44242)),
           fillColor: Colors.black,
           focusColor: Colors.black,
-          contentPadding: EdgeInsets.only(
-            left: 15.0,
-            right: 15.0,
-            top: 10.0,
-            bottom: 10.0,
-          ),
+          contentPadding:
+              EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0, bottom: 10.0),
           enabledBorder: const OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.grey, width: 0.0),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: primary),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildCountryNumberText() {
+    return buildGFTypography(context, "COUNTRY", true, true);
+  }
+
+  Widget buildCountryNumberTextField() {
+    return Container(
+      margin: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 1, right: 1),
+      padding: EdgeInsets.only(left: 10, right: 10),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(4)),
+          boxShadow: [BoxShadow(color: Colors.black, blurRadius: 0)]),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton(
+          dropdownColor: Colors.white,
+          isExpanded: true,
+          hint: Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                new Text(selectedCountry['name'],
+                    style: textBarlowRegularBlack()),
+                new Text(" (${selectedCountry['dial_code'].toString()})",
+                    style: textBarlowRegularBlack()),
+              ],
+            ),
+          ),
+          value: selectedCountryValue,
+          onChanged: (newValue) async {
+            setState(() {
+              selectedCountry = newValue;
+            });
+          },
+          items: Constants.countryCode.map((country) {
+            return DropdownMenuItem(
+              child: Row(
+                children: [
+                  new Text(country['name']),
+                  new Text("(${country['dial_code']})"),
+                ],
+              ),
+              value: country,
+            );
+          }).toList(),
         ),
       ),
     );

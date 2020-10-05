@@ -156,6 +156,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           isCurrentLoactionLoading = false;
         });
       }
+      await Common.setCountryInfo(first.countryCode);
       await Common.setCurrentLocation(addressData);
       return first;
     });
