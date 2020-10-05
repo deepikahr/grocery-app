@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:readymadeGroceryApp/screens/authe/change-mobile-number.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -36,11 +37,14 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Map<String, dynamic> userInfo;
-  bool isLoading = false, isPicUploading = false, profileEdit = false;
-  String firstName, lastName, currency = "";
-  String mobileNumber;
+  bool isLoading = false,
+      isPicUploading = false,
+      profileEdit = false,
+      isUpdateMobileNumberLoading = false;
+  String firstName, lastName, currency = "", email;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var image;
+
   @override
   void initState() {
     getUserInfo();
@@ -113,8 +117,9 @@ class _EditProfileState extends State<EditProfile> {
       Map<String, dynamic> body = {
         "firstName": firstName,
         "lastName": lastName,
-        "mobileNumber": mobileNumber
+        "email": email.toLowerCase()
       };
+
       await LoginService.updateUserInfo(body).then((onValue) {
         if (mounted) {
           setState(() {
@@ -383,9 +388,33 @@ class _EditProfileState extends State<EditProfile> {
                       ],
                     ),
                   ),
+                  SizedBox(height: 5),
                   Center(
-                    child: Text(userInfo['email'],
-                        style: textBarlowRegularBlack()),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                            "${userInfo['countryCode'] ?? ""}${userInfo['mobileNumber'] ?? ""}",
+                            style: textBarlowRegularBlack()),
+                        InkWell(
+                          onTap: () async {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ChangeMobileNumber(
+                                    locale: widget.locale,
+                                    localizedValues: widget.localizedValues),
+                              ),
+                            );
+                          },
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.only(left: 8.0, right: 8.0),
+                            child: primarySolidButtonSmall(context, "CHANGE"),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(
@@ -406,11 +435,7 @@ class _EditProfileState extends State<EditProfile> {
                         fillColor: Colors.black,
                         focusColor: Colors.black,
                         contentPadding: EdgeInsets.only(
-                          left: 15.0,
-                          right: 15.0,
-                          top: 10.0,
-                          bottom: 10.0,
-                        ),
+                            left: 15.0, right: 15.0, top: 10.0, bottom: 10.0),
                         enabledBorder: const OutlineInputBorder(
                           borderSide:
                               const BorderSide(color: Colors.grey, width: 0.0),
@@ -477,15 +502,15 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                   Padding(
                       padding: const EdgeInsets.only(
-                          left: 18.0, bottom: 5.0, right: 18.0),
+                          left: 18.0, right: 18.0, bottom: 5, top: 5),
                       child: buildGFTypography(
-                          context, "CONTACT_NUMBER", true, true)),
+                          context, "EMAIL_OPTIONAL", false, true)),
                   Padding(
                     padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                     child: TextFormField(
-                      initialValue: userInfo['mobileNumber'].toString() ?? "",
+                      initialValue: userInfo['email'] ?? "",
                       style: textBarlowRegularBlack(),
-                      keyboardType: TextInputType.number,
+                      keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         errorBorder: OutlineInputBorder(
                             borderSide:
@@ -494,11 +519,7 @@ class _EditProfileState extends State<EditProfile> {
                         fillColor: Colors.black,
                         focusColor: Colors.black,
                         contentPadding: EdgeInsets.only(
-                          left: 15.0,
-                          right: 15.0,
-                          top: 10.0,
-                          bottom: 10.0,
-                        ),
+                            left: 15.0, right: 15.0, top: 10.0, bottom: 10.0),
                         enabledBorder: const OutlineInputBorder(
                           borderSide:
                               const BorderSide(color: Colors.grey, width: 0.0),
@@ -508,17 +529,21 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                       ),
                       onSaved: (String value) {
-                        mobileNumber = value;
+                        email = value;
                       },
                       validator: (String value) {
                         if (value.isEmpty) {
+                          return null;
+                        } else if (!RegExp(Constants.emailValidation)
+                            .hasMatch(value)) {
                           return MyLocalizations.of(context)
-                              .getLocalizations("ENTER_CONTACT_NUMBER");
+                              .getLocalizations("ERROR_MAIL");
                         } else
                           return null;
                       },
                     ),
                   ),
+                  SizedBox(height: 10)
                 ],
               ),
             ),

@@ -145,6 +145,23 @@ Widget primaryOutlineButton(BuildContext context, title) {
   );
 }
 
+Widget primarySolidButtonSmall(BuildContext context, title) {
+  return GFButton(
+    borderSide: BorderSide(color: primary),
+    type: GFButtonType.solid,
+    color: primary,
+    size: GFSize.SMALL,
+    onPressed: null,
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text(MyLocalizations.of(context).getLocalizations(title),
+            style: textbarlowRegularadark()),
+      ],
+    ),
+  );
+}
+
 Widget dottedBorderButton(BuildContext context, title) {
   return DottedBorder(
     color: Color(0XFFBBBBBB),

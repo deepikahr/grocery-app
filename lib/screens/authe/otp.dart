@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/authe/resetPas.dart';
-import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/otp-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:pin_entry_text_field/pin_entry_text_field.dart';
@@ -13,10 +13,18 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 SentryError sentryError = new SentryError();
 
 class Otp extends StatefulWidget {
-  Otp({Key key, this.email, this.locale, this.localizedValues})
+  Otp(
+      {Key key,
+      this.locale,
+      this.localizedValues,
+      this.signUpTime,
+      this.resentOtptime,
+      this.mobileNumber,
+      this.sId})
       : super(key: key);
-  final String email, locale;
+  final String locale, mobileNumber, sId;
   final Map localizedValues;
+  final bool signUpTime, resentOtptime;
 
   @override
   _OtpState createState() => _OtpState();
@@ -27,12 +35,15 @@ class _OtpState extends State<Otp> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  String enteredOtp;
-  bool isOtpVerifyLoading = false,
-      isEmailLoading = false,
-      isResentOtpLoading = false;
+  String enteredOtp, sid;
+  bool isOtpVerifyLoading = false, isResentOtpLoading = false;
+  @override
+  void initState() {
+    sid = widget.sId ?? null;
+    super.initState();
+  }
 
-  verifyOTP() async {
+  verifyOTPwithMobile() async {
     if (enteredOtp != null) {
       final form = _formKey.currentState;
       if (form.validate()) {
@@ -42,13 +53,21 @@ class _OtpState extends State<Otp> {
             isOtpVerifyLoading = true;
           });
         }
-        await LoginService.verifyOtp(enteredOtp, widget.email).then((onValue) {
-          if (mounted) {
-            setState(() {
-              isOtpVerifyLoading = false;
-            });
-          }
-          if (onValue['response_data'] != null) {
+        Map body = {
+          "otp": enteredOtp,
+          "mobileNumber": widget.mobileNumber.toString()
+        };
+        if (sid != null) {
+          body['sId'] = sid;
+        }
+        await OtpService.verifyOtpWithNumber(body).then((onValue) {
+          if (onValue['response_data'] != null &&
+              onValue['verificationToken'] != null) {
+            if (mounted) {
+              setState(() {
+                isOtpVerifyLoading = false;
+              });
+            }
             showDialog<Null>(
               context: context,
               barrierDismissible: false, // user must tap button!
@@ -57,33 +76,38 @@ class _OtpState extends State<Otp> {
                   content: new SingleChildScrollView(
                     child: new ListBody(
                       children: <Widget>[
-                        new Text(
-                          '${onValue['response_data']['message'] ?? ""}',
-                          style: textBarlowMediumBlack(),
-                        ),
+                        new Text(onValue['response_data'],
+                            style: textBarlowMediumBlack()),
                       ],
                     ),
                   ),
                   actions: <Widget>[
                     new FlatButton(
                       child: new Text(
-                        'OK',
-                        style: TextStyle(color: green),
-                      ),
+                          MyLocalizations.of(context).getLocalizations("OK"),
+                          style: TextStyle(color: green)),
                       onPressed: () {
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ResetPassword(
-                              verificationToken: onValue['response_data']
-                                  ['verificationToken'],
-                              email: widget.email,
-                              locale: widget.locale,
-                              localizedValues: widget.localizedValues,
+                        if (widget.signUpTime == true) {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        } else if (widget.resentOtptime == true) {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        } else {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ResetPassword(
+                                  token: onValue['verificationToken'],
+                                  mobileNumber: widget.mobileNumber,
+                                  locale: widget.locale,
+                                  localizedValues: widget.localizedValues),
                             ),
-                          ),
-                        );
+                          );
+                        }
                       },
                     ),
                   ],
@@ -91,7 +115,12 @@ class _OtpState extends State<Otp> {
               },
             );
           } else {
-            showSnackbar('${onValue['response_data']}');
+            if (mounted) {
+              setState(() {
+                isOtpVerifyLoading = false;
+                showSnackbar('${onValue['response_data']}');
+              });
+            }
           }
         }).catchError((error) {
           if (mounted) {
@@ -110,7 +139,8 @@ class _OtpState extends State<Otp> {
           isOtpVerifyLoading = false;
         });
       }
-      showSnackbar(MyLocalizations.of(context).getLocalizations("OTP_MSG"));
+      showSnackbar(
+          MyLocalizations.of(context).getLocalizations("OTP_MSG_MOBILE"));
     }
   }
 
@@ -157,12 +187,12 @@ class _OtpState extends State<Otp> {
       });
     }
 
-    await LoginService.forgetPassword(widget.email.toLowerCase())
-        .then((response) {
+    OtpService.resendOtpWithNumber(widget.mobileNumber).then((response) {
       if (mounted) {
         setState(() {
-          isResentOtpLoading = false;
           showSnackbar(response['response_data']);
+          sid = response['sId'] ?? null;
+          isResentOtpLoading = false;
         });
       }
     }).catchError((error) {
@@ -187,8 +217,8 @@ class _OtpState extends State<Otp> {
               child: buildBoldText(context, "VERIFY_OTP")),
           Padding(
             padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-            child:
-                buildGFTypographyOtp(context, "CODE_MSG", ' ${widget.email}'),
+            child: buildGFTypographyOtp(
+                context, "OTP_CODE_MSG", ' ${widget.mobileNumber}'),
           ),
           InkWell(
               onTap: resentOTP,
@@ -206,6 +236,7 @@ class _OtpState extends State<Otp> {
               child: PinEntryTextField(
                 showFieldAsBox: true,
                 fieldWidth: 40.0,
+                fields: 6,
                 onSubmit: (String pin) {
                   if (mounted) {
                     setState(() {
@@ -217,7 +248,7 @@ class _OtpState extends State<Otp> {
             ),
           ),
           InkWell(
-              onTap: verifyOTP,
+              onTap: verifyOTPwithMobile,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: buttonPrimary(context, "SUBMIT", isOtpVerifyLoading),

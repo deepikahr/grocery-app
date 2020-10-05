@@ -126,7 +126,7 @@ class _AboutUsState extends State<AboutUs> {
                 textWithValue(
                     context, "ADDRESS", businessInfo['address'].toString()),
                 SizedBox(height: 5),
-                textWithValue(context, "CONTACT_NUMBER",
+                textWithValue(context, "MOBILE_NUMBER",
                     businessInfo['phoneNumber'].toString()),
                 SizedBox(height: 5),
                 textWithValue(

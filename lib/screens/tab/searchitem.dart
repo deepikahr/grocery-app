@@ -180,11 +180,7 @@ class _SearchItemState extends State<SearchItem> {
                         bottom: 15.0, left: 15.0, right: 15.0, top: 50.0),
                     child: Container(
                       child: new TextFormField(
-                        controller: _controller,
-                        style: new TextStyle(
-                          color: Colors.black,
-                        ),
-                         onEditingComplete: () {
+                        onEditingComplete: () {
                           FocusScopeNode currentScope = FocusScope.of(context);
                           FocusScopeNode rootScope =
                               WidgetsBinding.instance.focusManager.rootScope;
@@ -196,6 +192,10 @@ class _SearchItemState extends State<SearchItem> {
                           searchresult = [];
                           _searchForProducts();
                         },
+                        controller: _controller,
+                        style: new TextStyle(
+                          color: Colors.black,
+                        ),
                         onSaved: (String value) {
                           searchTerm = value;
                         },

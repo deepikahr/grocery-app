@@ -9,7 +9,7 @@ import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/drawer/address.dart';
 import 'package:readymadeGroceryApp/screens/orders/orders.dart';
 import 'package:readymadeGroceryApp/screens/tab/editprofile.dart';
-import 'package:readymadeGroceryApp/screens/tab/walletHistory.dart';
+import 'package:readymadeGroceryApp/screens/tab/wallet.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -348,7 +348,7 @@ class _ProfileState extends State<Profile> {
                                           '${userInfo['email'] ?? ""}'),
                                       SizedBox(height: 6),
                                       normalText(context,
-                                          '${userInfo['mobileNumber'].toString() ?? ""}'),
+                                          '${userInfo['countryCode'] ?? ""}${userInfo['mobileNumber'] ?? ""}'),
                                       SizedBox(height: 6),
                                       normalText(
                                           context,
@@ -392,15 +392,14 @@ class _ProfileState extends State<Profile> {
                               var result = Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => WalletHistory(
-                                    locale: widget.locale,
-                                    localizedValues: widget.localizedValues,
-                                  ),
+                                  builder: (context) => WalletPage(
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues),
                                 ),
                               );
                               result.then((value) => getToken());
                             },
-                            child: profileText(context, "WALLET_HISTORY")),
+                            child: profileText(context, "WALLET")),
                         SizedBox(height: 15),
                         InkWell(
                             onTap: () {
@@ -408,9 +407,8 @@ class _ProfileState extends State<Profile> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => Address(
-                                    locale: widget.locale,
-                                    localizedValues: widget.localizedValues,
-                                  ),
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues),
                                 ),
                               );
                             },
@@ -432,10 +430,8 @@ class _ProfileState extends State<Profile> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => Orders(
-                                    locale: widget.locale,
-                                    localizedValues: widget.localizedValues,
-                                    userID: userID,
-                                  ),
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues),
                                 ),
                               );
                               result.then((value) => getToken());
@@ -448,9 +444,8 @@ class _ProfileState extends State<Profile> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => ChangePassword(
-                                    locale: widget.locale,
-                                    localizedValues: widget.localizedValues,
-                                  ),
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues),
                                 ),
                               );
                             },
