@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:readymadeGroceryApp/screens/tab/wallethistoryy.dart';
+import 'package:readymadeGroceryApp/screens/tab/wallet-history.dart';
+import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
+
+SentryError sentryError = new SentryError();
 
 class WalletPage extends StatefulWidget {
   final Map localizedValues;
@@ -12,58 +18,80 @@ class WalletPage extends StatefulWidget {
 }
 
 class _WalletPageState extends State<WalletPage> {
+  bool isGetWalletInfoLoading = false;
+  Map userInfo;
+  String currency = "";
+  @override
+  void initState() {
+    userInfoMethod();
+    super.initState();
+  }
+
+  userInfoMethod() async {
+    if (mounted) {
+      setState(() {
+        isGetWalletInfoLoading = true;
+      });
+    }
+    await Common.getCurrency().then((value) {
+      currency = value;
+    });
+    await LoginService.getUserInfo().then((onValue) {
+      if (mounted) {
+        setState(() {
+          userInfo = onValue['response_data'];
+          Common.setUserID(userInfo['_id']);
+          isGetWalletInfoLoading = false;
+        });
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isGetWalletInfoLoading = false;
+        });
+      }
+      sentryError.reportError(error, null);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBarPrimary(context, "WALLET"),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            margin: EdgeInsets.only(top: 80, bottom: 40, left: 15, right: 15),
-            child: walletImage(),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              walletCard1(
-                  context,
-                  'WALLET',
-                  'BALANCE',
-                  '\$ 50',
-                  Image.asset(
-                    'lib/assets/images/walleticon.png',
-                    width: 38,
-                    height: 36,
-                  )),
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => WalletHistoryyPage(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
-                      ),
-                    ),
-                  );
-                },
-                child: walletCard2(
-                    context,
-                    'RECENT',
-                    'TRANSACTIONS',
-                    'VIEW',
-                    Image.asset(
-                      'lib/assets/images/walleticon.png',
-                      width: 38,
-                      height: 36,
-                    )),
-              )
-            ],
-          )
-        ],
-      ),
+      body: isGetWalletInfoLoading
+          ? Center(child: SquareLoader())
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  margin:
+                      EdgeInsets.only(top: 80, bottom: 40, left: 15, right: 15),
+                  child: walletImage(),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    walletCard1(context, 'WALLET', 'BALANCE',
+                        '$currency ${userInfo['walletAmount'] ?? 0}'),
+                    InkWell(
+                      onTap: () {
+                        var result = Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => WalletHistoryyPage(
+                                locale: widget.locale,
+                                localizedValues: widget.localizedValues),
+                          ),
+                        );
+                        result.then((value) => userInfoMethod());
+                      },
+                      child: walletCard2(
+                          context, 'RECENT', 'TRANSACTIONS', "VIEW"),
+                    )
+                  ],
+                )
+              ],
+            ),
     );
   }
-
 }

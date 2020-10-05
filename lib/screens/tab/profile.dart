@@ -389,27 +389,17 @@ class _ProfileState extends State<Profile> {
                         SizedBox(height: 10),
                         InkWell(
                             onTap: () {
-                              // var result = Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) => WalletHistory(
-                              //       locale: widget.locale,
-                              //       localizedValues: widget.localizedValues,
-                              //     ),
-                              //   ),
-                              // );
-                              // result.then((value) => getToken());
-                              Navigator.push(
+                              var result = Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => WalletPage(
-                                    locale: widget.locale,
-                                    localizedValues: widget.localizedValues,
-                                  ),
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues),
                                 ),
                               );
+                              result.then((value) => getToken());
                             },
-                            child: profileText(context, "WALLET_HISTORY")),
+                            child: profileText(context, "WALLET")),
                         SizedBox(height: 15),
                         InkWell(
                             onTap: () {

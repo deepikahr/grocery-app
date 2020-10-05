@@ -71,7 +71,7 @@ Widget textTransactionAmount(BuildContext context, title, subTitle) {
       Row(
         children: [
           Text(
-            MyLocalizations.of(context).getLocalizations(title) + ' : ',
+            MyLocalizations.of(context).getLocalizations(title, true),
             style: textBarlowRegularBlackdl(),
           ),
           Text(
@@ -89,8 +89,7 @@ Widget walletTransaction(BuildContext context, title, subTitle) {
     mainAxisAlignment: MainAxisAlignment.start,
     children: <Widget>[
       Text(
-        MyLocalizations.of(context).getLocalizations(title) +
-            ' : ' +
+        MyLocalizations.of(context).getLocalizations(title, true) +
             MyLocalizations.of(context).getLocalizations(subTitle),
         style: textBarlowRegularBlackdl(),
       ),
@@ -784,7 +783,7 @@ walletImage() {
 //   );
 // }
 
-walletCard1(BuildContext context, title, subtitle, price, Image image) {
+walletCard1(BuildContext context, title, subtitle, price) {
   return Container(
     padding: EdgeInsets.all(15),
     decoration: BoxDecoration(
@@ -811,13 +810,13 @@ walletCard1(BuildContext context, title, subtitle, price, Image image) {
           ],
         ),
         SizedBox(width: 30),
-        image
+        Image.asset('lib/assets/images/walleticon.png', width: 38, height: 36)
       ],
     ),
   );
 }
 
-walletCard2(BuildContext context, title, subtitle, text, Image image) {
+walletCard2(BuildContext context, title, subtitle, subtitle1) {
   return Container(
     padding: EdgeInsets.all(15),
     decoration: BoxDecoration(
@@ -828,33 +827,23 @@ walletCard2(BuildContext context, title, subtitle, text, Image image) {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'RECENT',
-              style: textbarlowRegularBlackd(),
-            ),
-            Text(
-              'TRANSACTIONS',
-              style: textbarlowRegularBlackd(),
-            ),
+            Text(MyLocalizations.of(context).getLocalizations(title),
+                style: textbarlowRegularBlackd()),
+            Text(MyLocalizations.of(context).getLocalizations(subtitle),
+                style: textbarlowRegularBlackd()),
             SizedBox(height: 5),
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(
-                  'VIEW',
-                  style: textBarlowSemiboldPrimary(),
-                ),
-                Icon(
-                  Icons.keyboard_arrow_right,
-                  color: primary,
-                  size: 15,
-                )
+                Text(MyLocalizations.of(context).getLocalizations(subtitle1),
+                    style: textBarlowSemiboldPrimary()),
+                Icon(Icons.keyboard_arrow_right, color: primary, size: 15)
               ],
             ),
           ],
         ),
         SizedBox(width: 17),
-        image
+        Image.asset('lib/assets/images/walleticon.png', width: 38, height: 36)
       ],
     ),
   );

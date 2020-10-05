@@ -187,7 +187,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     }
     List<BottomNavigationBarItem> items = [
       BottomNavigationBarItem(
-          title: Text(MyLocalizations.of(context).getLocalizations("STORE")),
+          label: MyLocalizations.of(context).getLocalizations("STORE"),
           icon: buildIcon(
               context,
               const IconData(
@@ -196,7 +196,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               ),
               0)),
       BottomNavigationBarItem(
-          title: Text(MyLocalizations.of(context).getLocalizations("FAVORITE")),
+          label: MyLocalizations.of(context).getLocalizations("FAVORITE"),
           icon: buildIcon(
               context,
               const IconData(
@@ -205,7 +205,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               ),
               0)),
       BottomNavigationBarItem(
-          title: Text(MyLocalizations.of(context).getLocalizations("MY_CART")),
+          label: MyLocalizations.of(context).getLocalizations("MY_CART"),
           icon: buildIcon(
               context,
               const IconData(
@@ -214,7 +214,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               ),
               cartData)),
       BottomNavigationBarItem(
-          title: Text(MyLocalizations.of(context).getLocalizations("PROFILE")),
+          label: MyLocalizations.of(context).getLocalizations("PROFILE"),
           icon: buildIcon(
               context,
               const IconData(
