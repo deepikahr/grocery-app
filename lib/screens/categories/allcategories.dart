@@ -96,7 +96,7 @@ class _AllCategoriesState extends State<AllCategories>
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute( 
+                          MaterialPageRoute(
                             builder: (BuildContext context) => SubCategories(
                                 locale: widget.locale,
                                 localizedValues: widget.localizedValues,

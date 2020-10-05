@@ -44,6 +44,60 @@ Widget walletText(BuildContext context, title, subTitle, idOrderId) {
   );
 }
 
+Widget walletTransaction1(BuildContext context, title, subTitle) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.start,
+    children: <Widget>[
+      Row(
+        children: [
+          Text(
+            MyLocalizations.of(context).getLocalizations(title) + ' : ',
+            style: textBarlowSemiboldblack(),
+          ),
+          Text(
+            MyLocalizations.of(context).getLocalizations(subTitle),
+            style: textBarlowRegularBlackdl(),
+          ),
+        ],
+      ),
+    ],
+  );
+}
+
+Widget textTransactionAmount(BuildContext context, title, subTitle) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.start,
+    children: <Widget>[
+      Row(
+        children: [
+          Text(
+            MyLocalizations.of(context).getLocalizations(title) + ' : ',
+            style: textBarlowRegularBlackdl(),
+          ),
+          Text(
+            MyLocalizations.of(context).getLocalizations(subTitle),
+            style: textBarlowSemiboldGreen(),
+          ),
+        ],
+      ),
+    ],
+  );
+}
+
+Widget walletTransaction(BuildContext context, title, subTitle) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.start,
+    children: <Widget>[
+      Text(
+        MyLocalizations.of(context).getLocalizations(title) +
+            ' : ' +
+            MyLocalizations.of(context).getLocalizations(subTitle),
+        style: textBarlowRegularBlackdl(),
+      ),
+    ],
+  );
+}
+
 Widget normalTextWithOutRow(BuildContext context, title, isCenter) {
   return Text(MyLocalizations.of(context).getLocalizations(title),
       textAlign: isCenter ? TextAlign.center : TextAlign.start,
@@ -716,4 +770,92 @@ orderPlaceText(BuildContext context, title) {
 
 thankuImage() {
   return Image.asset('lib/assets/images/thank-you.png');
+}
+
+walletImage() {
+  return Image.asset('lib/assets/images/wallet.png');
+}
+
+// walletIcon() {
+//   return Image.asset(
+//     'lib/assets/images/walleticon.png',
+//     width: 38,
+//     height: 36,
+//   );
+// }
+
+walletCard1(BuildContext context, title, subtitle, price, Image image) {
+  return Container(
+    padding: EdgeInsets.all(15),
+    decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [BoxShadow(color: Colors.black54, blurRadius: 0)]),
+    child: Row(
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              MyLocalizations.of(context).getLocalizations(title),
+              style: textbarlowRegularBlackd(),
+            ),
+            Text(
+              MyLocalizations.of(context).getLocalizations(subtitle) + ' : ',
+              style: textbarlowRegularBlackd(),
+            ),
+            SizedBox(height: 5),
+            Text(
+              MyLocalizations.of(context).getLocalizations(price),
+              style: textBarlowSemiboldGreen(),
+            ),
+          ],
+        ),
+        SizedBox(width: 30),
+        image
+      ],
+    ),
+  );
+}
+
+walletCard2(BuildContext context, title, subtitle, text, Image image) {
+  return Container(
+    padding: EdgeInsets.all(15),
+    decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [BoxShadow(color: Colors.black54, blurRadius: 0)]),
+    child: Row(
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'RECENT',
+              style: textbarlowRegularBlackd(),
+            ),
+            Text(
+              'TRANSACTIONS',
+              style: textbarlowRegularBlackd(),
+            ),
+            SizedBox(height: 5),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  'VIEW',
+                  style: textBarlowSemiboldPrimary(),
+                ),
+                Icon(
+                  Icons.keyboard_arrow_right,
+                  color: primary,
+                  size: 15,
+                )
+              ],
+            ),
+          ],
+        ),
+        SizedBox(width: 17),
+        image
+      ],
+    ),
+  );
 }

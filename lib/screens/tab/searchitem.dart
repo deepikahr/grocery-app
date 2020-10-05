@@ -184,7 +184,7 @@ class _SearchItemState extends State<SearchItem> {
                         style: new TextStyle(
                           color: Colors.black,
                         ),
-                         onEditingComplete: () {
+                        onEditingComplete: () {
                           FocusScopeNode currentScope = FocusScope.of(context);
                           FocusScopeNode rootScope =
                               WidgetsBinding.instance.focusManager.rootScope;

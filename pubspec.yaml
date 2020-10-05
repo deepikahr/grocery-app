@@ -102,6 +102,8 @@ flutter:
     - lib/assets/images/thank-you.png
     - lib/assets/images/badge.png
     - lib/assets/images/no-orders.png
+    - lib/assets/images/wallet.png
+    - lib/assets/images/walleticon.png
     - lib/assets/images/profileIcon.png
 
     - lib/assets/icons/tick.svg
@@ -121,6 +123,8 @@ flutter:
     - lib/assets/icons/history.png
     - lib/assets/icons/tc.png
     - lib/assets/icons/share.png
+    - lib/assets/icons/red.png
+    - lib/assets/icons/green.png
 
     - lib/assets/splash.png
     - lib/assets/logo.png
