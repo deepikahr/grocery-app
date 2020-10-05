@@ -120,11 +120,8 @@ class _WalletHistoryState extends State<WalletHistory> {
         children: <Widget>[
           walletText(context, "ORDER_ID", '#${walletDetails['orderID']}', true),
           SizedBox(height: 3),
-          walletText(
-              context,
-              "TRANSECTION_TYPE",
-               walletDetails['transactionType'],
-              false),
+          walletText(context, "TRANSECTION_TYPE",
+              walletDetails['transactionType'], false),
           SizedBox(height: 3),
           walletText(
               context, "AMOUNT", '$currency${walletDetails['amount']}', false),

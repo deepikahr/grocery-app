@@ -9,7 +9,7 @@ import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/drawer/address.dart';
 import 'package:readymadeGroceryApp/screens/orders/orders.dart';
 import 'package:readymadeGroceryApp/screens/tab/editprofile.dart';
-import 'package:readymadeGroceryApp/screens/tab/walletHistory.dart';
+import 'package:readymadeGroceryApp/screens/tab/wallet.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -389,15 +389,25 @@ class _ProfileState extends State<Profile> {
                         SizedBox(height: 10),
                         InkWell(
                             onTap: () {
-                              var result = Navigator.push(
+                              // var result = Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) => WalletHistory(
+                              //       locale: widget.locale,
+                              //       localizedValues: widget.localizedValues,
+                              //     ),
+                              //   ),
+                              // );
+                              // result.then((value) => getToken());
+                              Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => WalletHistory(
-                                      locale: widget.locale,
-                                      localizedValues: widget.localizedValues),
+                                  builder: (context) => WalletPage(
+                                    locale: widget.locale,
+                                    localizedValues: widget.localizedValues,
+                                  ),
                                 ),
                               );
-                              result.then((value) => getToken());
                             },
                             child: profileText(context, "WALLET_HISTORY")),
                         SizedBox(height: 15),

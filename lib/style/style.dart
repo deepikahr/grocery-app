@@ -1007,6 +1007,27 @@ TextStyle textBarlowSemiBoldwbig() {
   );
 }
 
+TextStyle textBarlowSemiboldGreen() {
+  return TextStyle(
+    fontSize: 14.0,
+    fontFamily: 'BarlowSemiBold',
+    color: Color(0xFF20C978),
+  );
+}
+
+TextStyle textBarlowSemiboldPrimary() {
+  return TextStyle(
+    fontSize: 14.0,
+    fontFamily: 'BarlowSemiBold',
+    color: primary,
+  );
+}
+
+TextStyle textBarlowSemiboldblack() {
+  return TextStyle(
+      fontSize: 14.0, fontFamily: 'BarlowSemiBold', color: Colors.black);
+}
+
 ///barlow medium///
 
 TextStyle textbarlowMediumBlack() {
