@@ -446,7 +446,6 @@ class _SignupState extends State<Signup> {
           mobileNumber = value;
         },
         decoration: InputDecoration(
-          // prefixText: selectedCountry['dial_code'].toString(),
           prefixIcon: InkWell(
             onTap: () {
               _settingModalBottomSheet(context);
@@ -454,23 +453,19 @@ class _SignupState extends State<Signup> {
             child: Container(
               margin: EdgeInsets.symmetric(vertical: 8),
               padding: EdgeInsets.symmetric(horizontal: 9),
-              width: 80,
+              width: 100,
               decoration: BoxDecoration(
                   border: Border(right: BorderSide(color: Colors.grey[300]))),
               child: Row(
                 children: [
                   Expanded(
                     child: Text(
-                      'IN +91',
-                      overflow: TextOverflow.ellipsis,
-                      style: textBarlowSemiboldPrimaryy(),
-                    ),
+                        "${selectedCountry['code'] ?? ""}${selectedCountry['dial_code'] ?? ""}",
+                        overflow: TextOverflow.ellipsis,
+                        style: textBarlowSemiboldPrimaryy()),
                   ),
-                  Icon(
-                    Icons.keyboard_arrow_down,
-                    size: 17,
-                    color: Colors.grey[400],
-                  )
+                  Icon(Icons.keyboard_arrow_down,
+                      size: 17, color: Colors.grey[400])
                 ],
               ),
             ),
@@ -495,55 +490,6 @@ class _SignupState extends State<Signup> {
     );
   }
 
-  Widget buildCountryNumberText() {
-    return buildGFTypography(context, "COUNTRY", true, true);
-  }
-
-  Widget buildCountryNumberTextField() {
-    return Container(
-      margin: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 1, right: 1),
-      padding: EdgeInsets.only(left: 10, right: 10),
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(4)),
-          boxShadow: [BoxShadow(color: Colors.black, blurRadius: 0)]),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton(
-          dropdownColor: Colors.white,
-          isExpanded: true,
-          hint: Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                new Text(selectedCountry['name'],
-                    style: textBarlowRegularBlack()),
-                new Text(" ${selectedCountry['dial_code'].toString()} ",
-                    style: textBarlowRegularBlack()),
-              ],
-            ),
-          ),
-          value: selectedCountryValue,
-          onChanged: (newValue) async {
-            setState(() {
-              selectedCountry = newValue;
-            });
-          },
-          items: Constants.countryCode.map((country) {
-            return DropdownMenuItem(
-              child: Row(
-                children: [
-                  new Text(country['name']),
-                  new Text("(${country['dial_code']})"),
-                ],
-              ),
-              value: country,
-            );
-          }).toList(),
-        ),
-      ),
-    );
-  }
-
   Widget buildsignuplink() {
     return InkWell(
         onTap: userSignupwithMobile,
@@ -552,17 +498,18 @@ class _SignupState extends State<Signup> {
 
   Widget buildLoginButton() {
     return InkWell(
-        onTap: () {
-          Navigator.pop(context);
-        },
-        child: Center(
-          child: buildGFTypographyOtp(context, "HAVE_GOT_AN_ACCOUNT",
-              ' ${MyLocalizations.of(context).getLocalizations("LOGIN")}'),
-        ));
+      onTap: () {
+        Navigator.pop(context);
+      },
+      child: Center(
+        child: buildGFTypographyOtp(context, "HAVE_GOT_AN_ACCOUNT",
+            ' ${MyLocalizations.of(context).getLocalizations("LOGIN")}'),
+      ),
+    );
   }
 
   void _settingModalBottomSheet(context) {
-    showModalBottomSheet(
+    var result = showModalBottomSheet(
         backgroundColor: Colors.transparent,
         context: context,
         builder: (BuildContext bc) {
@@ -579,7 +526,7 @@ class _SignupState extends State<Signup> {
                   topLeft: Radius.circular(40.0),
                   topRight: Radius.circular(40.0),
                 )),
-            child: new Wrap(
+            child: new ListView(
               children: <Widget>[
                 Container(
                   width: MediaQuery.of(context).size.width,
@@ -592,42 +539,49 @@ class _SignupState extends State<Signup> {
                         topRight: Radius.circular(40.0),
                       )),
                   child: Text(
-                    'SELECT_YOUR_COUNTRY',
+                    MyLocalizations.of(context)
+                        .getLocalizations('SELECT_YOUR_COUNTRY'),
                     style: textbarlowmediumwhitee(),
                   ),
                 ),
-                Container(
-                  child: ListView.builder(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      itemCount: 3,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Padding(
+                ListView.builder(
+                    shrinkWrap: true,
+                    physics: ScrollPhysics(),
+                    scrollDirection: Axis.vertical,
+                    itemCount: Constants.countryCode.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return InkWell(
+                        onTap: () {
+                          Navigator.of(context)
+                              .pop(Constants.countryCode[index]);
+                        },
+                        child: Padding(
                           padding: const EdgeInsets.only(left: 20.0),
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                // margin: EdgeInsets.only(bottom: 15),
-                                padding: EdgeInsets.symmetric(vertical: 5),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      'country name',
-                                      style: textbarlowRegularadd(),
-                                    ),
-                                  ],
-                                ),
+                              Text(
+                                "(${Constants.countryCode[index]['dial_code'] ?? ""}) ${Constants.countryCode[index]['name'] ?? ""}",
+                                style: textbarlowRegularadd(),
                               ),
                               Divider()
                             ],
                           ),
-                        );
-                      }),
-                ),
+                        ),
+                      );
+                    }),
               ],
             ),
           );
         });
+    result.then((value) {
+      if (value != null) {
+        setState(() {
+          selectedCountry = value;
+        });
+      }
+    });
   }
 
   void showSnackbar(message) {
