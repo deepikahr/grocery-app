@@ -232,14 +232,15 @@ class _SignupState extends State<Signup> {
                       buildUserLastNameField(),
                       buildEmailText(),
                       buildEmailTextField(),
-                      buildCountryNumberText(),
-                      buildCountryNumberTextField(),
+                      // buildCountryNumberText(),
+                      // buildCountryNumberTextField(),
                       buildMobileNumberText(),
                       buildMobileNumberTextField(),
                       buildPasswordText(),
                       buildPasswordTextField(),
                       buildsignuplink(),
                       buildLoginButton(),
+                      SizedBox(height: 20),
                     ],
                   ),
                 ),
@@ -445,7 +446,30 @@ class _SignupState extends State<Signup> {
           mobileNumber = value;
         },
         decoration: InputDecoration(
-          prefixText: selectedCountry['dial_code'].toString(),
+          prefixIcon: InkWell(
+            onTap: () {
+              _settingModalBottomSheet(context);
+            },
+            child: Container(
+              margin: EdgeInsets.symmetric(vertical: 8),
+              padding: EdgeInsets.symmetric(horizontal: 9),
+              width: 100,
+              decoration: BoxDecoration(
+                  border: Border(right: BorderSide(color: Colors.grey[300]))),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                        "${selectedCountry['code'] ?? ""}${selectedCountry['dial_code'] ?? ""}",
+                        overflow: TextOverflow.ellipsis,
+                        style: textBarlowSemiboldPrimaryy()),
+                  ),
+                  Icon(Icons.keyboard_arrow_down,
+                      size: 17, color: Colors.grey[400])
+                ],
+              ),
+            ),
+          ),
           counterText: "",
           prefixStyle: textBarlowRegularBlack(),
           errorBorder: OutlineInputBorder(
@@ -454,62 +478,13 @@ class _SignupState extends State<Signup> {
           fillColor: Colors.black,
           focusColor: Colors.black,
           contentPadding:
-              EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0, bottom: 10.0),
+              EdgeInsets.only(left: 25.0, right: 15.0, top: 10.0, bottom: 10.0),
           enabledBorder: const OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.grey, width: 0.0),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: primary),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget buildCountryNumberText() {
-    return buildGFTypography(context, "COUNTRY", true, true);
-  }
-
-  Widget buildCountryNumberTextField() {
-    return Container(
-      margin: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 1, right: 1),
-      padding: EdgeInsets.only(left: 10, right: 10),
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(4)),
-          boxShadow: [BoxShadow(color: Colors.black, blurRadius: 0)]),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton(
-          dropdownColor: Colors.white,
-          isExpanded: true,
-          hint: Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                new Text(selectedCountry['name'],
-                    style: textBarlowRegularBlack()),
-                new Text(" (${selectedCountry['dial_code'].toString()})",
-                    style: textBarlowRegularBlack()),
-              ],
-            ),
-          ),
-          value: selectedCountryValue,
-          onChanged: (newValue) async {
-            setState(() {
-              selectedCountry = newValue;
-            });
-          },
-          items: Constants.countryCode.map((country) {
-            return DropdownMenuItem(
-              child: Row(
-                children: [
-                  new Text(country['name']),
-                  new Text("(${country['dial_code']})"),
-                ],
-              ),
-              value: country,
-            );
-          }).toList(),
         ),
       ),
     );
@@ -523,11 +498,90 @@ class _SignupState extends State<Signup> {
 
   Widget buildLoginButton() {
     return InkWell(
-        onTap: () {
-          Navigator.pop(context);
-        },
+      onTap: () {
+        Navigator.pop(context);
+      },
+      child: Center(
         child: buildGFTypographyOtp(context, "HAVE_GOT_AN_ACCOUNT",
-            ' ${MyLocalizations.of(context).getLocalizations("LOGIN")}'));
+            ' ${MyLocalizations.of(context).getLocalizations("LOGIN")}'),
+      ),
+    );
+  }
+
+  void _settingModalBottomSheet(context) {
+    var result = showModalBottomSheet(
+        backgroundColor: Colors.transparent,
+        context: context,
+        builder: (BuildContext bc) {
+          return Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  new BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 1.0,
+                  ),
+                ],
+                borderRadius: new BorderRadius.only(
+                  topLeft: Radius.circular(40.0),
+                  topRight: Radius.circular(40.0),
+                )),
+            child: new ListView(
+              children: <Widget>[
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 60,
+                  padding: EdgeInsets.only(top: 25, left: 20),
+                  decoration: BoxDecoration(
+                      color: Colors.black,
+                      borderRadius: new BorderRadius.only(
+                        topLeft: Radius.circular(40.0),
+                        topRight: Radius.circular(40.0),
+                      )),
+                  child: Text(
+                    MyLocalizations.of(context)
+                        .getLocalizations('SELECT_YOUR_COUNTRY'),
+                    style: textbarlowmediumwhitee(),
+                  ),
+                ),
+                ListView.builder(
+                    shrinkWrap: true,
+                    physics: ScrollPhysics(),
+                    scrollDirection: Axis.vertical,
+                    itemCount: Constants.countryCode.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return InkWell(
+                        onTap: () {
+                          Navigator.of(context)
+                              .pop(Constants.countryCode[index]);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 20.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "(${Constants.countryCode[index]['dial_code'] ?? ""}) ${Constants.countryCode[index]['name'] ?? ""}",
+                                style: textbarlowRegularadd(),
+                              ),
+                              Divider()
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
+              ],
+            ),
+          );
+        });
+    result.then((value) {
+      if (value != null) {
+        setState(() {
+          selectedCountry = value;
+        });
+      }
+    });
   }
 
   void showSnackbar(message) {
