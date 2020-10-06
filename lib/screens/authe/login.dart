@@ -263,6 +263,9 @@ class _LoginState extends State<Login> {
           onSaved: (String value) {
             userName = value;
           },
+          initialValue: Constants.predefined == "true"
+              ? "user@ionicfirebaseapp.com"
+              : null,
           validator: (String value) {
             if (value.isEmpty) {
               return MyLocalizations.of(context)
@@ -302,6 +305,9 @@ class _LoginState extends State<Login> {
         onSaved: (String value) {
           password = value;
         },
+        Constants.predefined == "true"
+              ? "123456"
+              : null,
         validator: (String value) {
           if (value.isEmpty) {
             return MyLocalizations.of(context)
