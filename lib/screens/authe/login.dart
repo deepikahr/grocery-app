@@ -12,6 +12,8 @@ import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
+import '../../service/constants.dart';
+
 SentryError sentryError = new SentryError();
 
 class Login extends StatefulWidget {
@@ -305,9 +307,7 @@ class _LoginState extends State<Login> {
         onSaved: (String value) {
           password = value;
         },
-        Constants.predefined == "true"
-              ? "123456"
-              : null,
+        initialValue: Constants.predefined == "true" ? "123456" : null,
         validator: (String value) {
           if (value.isEmpty) {
             return MyLocalizations.of(context)

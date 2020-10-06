@@ -825,6 +825,14 @@ TextStyle textbarlowmediumwhite() {
       color: Colors.white);
 }
 
+TextStyle textbarlowmediumwhitee() {
+  return TextStyle(
+      fontSize: 16.0,
+      fontWeight: FontWeight.w500,
+      fontFamily: 'BarlowMedium',
+      color: Colors.white);
+}
+
 TextStyle textbarlowmediumwhitedull() {
   return TextStyle(
       fontSize: 10.0,
@@ -1018,6 +1026,14 @@ TextStyle textBarlowSemiboldGreen() {
 TextStyle textBarlowSemiboldPrimary() {
   return TextStyle(
     fontSize: 14.0,
+    fontFamily: 'BarlowSemiBold',
+    color: primary,
+  );
+}
+
+TextStyle textBarlowSemiboldPrimaryy() {
+  return TextStyle(
+    fontSize: 16.0,
     fontFamily: 'BarlowSemiBold',
     color: primary,
   );

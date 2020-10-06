@@ -232,14 +232,15 @@ class _SignupState extends State<Signup> {
                       buildUserLastNameField(),
                       buildEmailText(),
                       buildEmailTextField(),
-                      buildCountryNumberText(),
-                      buildCountryNumberTextField(),
+                      // buildCountryNumberText(),
+                      // buildCountryNumberTextField(),
                       buildMobileNumberText(),
                       buildMobileNumberTextField(),
                       buildPasswordText(),
                       buildPasswordTextField(),
                       buildsignuplink(),
                       buildLoginButton(),
+                      SizedBox(height: 20),
                     ],
                   ),
                 ),
@@ -445,7 +446,35 @@ class _SignupState extends State<Signup> {
           mobileNumber = value;
         },
         decoration: InputDecoration(
-          prefixText: selectedCountry['dial_code'].toString(),
+          // prefixText: selectedCountry['dial_code'].toString(),
+          prefixIcon: InkWell(
+            onTap: () {
+              _settingModalBottomSheet(context);
+            },
+            child: Container(
+              margin: EdgeInsets.symmetric(vertical: 8),
+              padding: EdgeInsets.symmetric(horizontal: 9),
+              width: 80,
+              decoration: BoxDecoration(
+                  border: Border(right: BorderSide(color: Colors.grey[300]))),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'IN +91',
+                      overflow: TextOverflow.ellipsis,
+                      style: textBarlowSemiboldPrimaryy(),
+                    ),
+                  ),
+                  Icon(
+                    Icons.keyboard_arrow_down,
+                    size: 17,
+                    color: Colors.grey[400],
+                  )
+                ],
+              ),
+            ),
+          ),
           counterText: "",
           prefixStyle: textBarlowRegularBlack(),
           errorBorder: OutlineInputBorder(
@@ -454,7 +483,7 @@ class _SignupState extends State<Signup> {
           fillColor: Colors.black,
           focusColor: Colors.black,
           contentPadding:
-              EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0, bottom: 10.0),
+              EdgeInsets.only(left: 25.0, right: 15.0, top: 10.0, bottom: 10.0),
           enabledBorder: const OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.grey, width: 0.0),
           ),
@@ -488,7 +517,7 @@ class _SignupState extends State<Signup> {
               children: [
                 new Text(selectedCountry['name'],
                     style: textBarlowRegularBlack()),
-                new Text(" (${selectedCountry['dial_code'].toString()})",
+                new Text(" ${selectedCountry['dial_code'].toString()} ",
                     style: textBarlowRegularBlack()),
               ],
             ),
@@ -526,8 +555,79 @@ class _SignupState extends State<Signup> {
         onTap: () {
           Navigator.pop(context);
         },
-        child: buildGFTypographyOtp(context, "HAVE_GOT_AN_ACCOUNT",
-            ' ${MyLocalizations.of(context).getLocalizations("LOGIN")}'));
+        child: Center(
+          child: buildGFTypographyOtp(context, "HAVE_GOT_AN_ACCOUNT",
+              ' ${MyLocalizations.of(context).getLocalizations("LOGIN")}'),
+        ));
+  }
+
+  void _settingModalBottomSheet(context) {
+    showModalBottomSheet(
+        backgroundColor: Colors.transparent,
+        context: context,
+        builder: (BuildContext bc) {
+          return Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  new BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 1.0,
+                  ),
+                ],
+                borderRadius: new BorderRadius.only(
+                  topLeft: Radius.circular(40.0),
+                  topRight: Radius.circular(40.0),
+                )),
+            child: new Wrap(
+              children: <Widget>[
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 60,
+                  padding: EdgeInsets.only(top: 25, left: 20),
+                  decoration: BoxDecoration(
+                      color: Colors.black,
+                      borderRadius: new BorderRadius.only(
+                        topLeft: Radius.circular(40.0),
+                        topRight: Radius.circular(40.0),
+                      )),
+                  child: Text(
+                    'SELECT_YOUR_COUNTRY',
+                    style: textbarlowmediumwhitee(),
+                  ),
+                ),
+                Container(
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      itemCount: 3,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(left: 20.0),
+                          child: Column(
+                            children: [
+                              Container(
+                                // margin: EdgeInsets.only(bottom: 15),
+                                padding: EdgeInsets.symmetric(vertical: 5),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      'country name',
+                                      style: textbarlowRegularadd(),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Divider()
+                            ],
+                          ),
+                        );
+                      }),
+                ),
+              ],
+            ),
+          );
+        });
   }
 
   void showSnackbar(message) {
