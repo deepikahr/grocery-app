@@ -104,6 +104,7 @@ flutter:
     - lib/assets/images/no-orders.png
     - lib/assets/images/wallet.png
     - lib/assets/images/walleticon.png
+    - lib/assets/images/rate.png
     - lib/assets/images/profileIcon.png
 
     - lib/assets/icons/tick.svg
