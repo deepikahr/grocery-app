@@ -1118,6 +1118,15 @@ TextStyle textBarlowMediumsmBlack() {
   );
 }
 
+TextStyle textBarlowMediumsmBlackk() {
+  return TextStyle(
+    fontSize: 16.0,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'BarlowMedium',
+    color: Colors.black.withOpacity(0.87),
+  );
+}
+
 TextStyle textBarlowMediumsmWhite() {
   return TextStyle(
     fontSize: 10.0,
@@ -1249,6 +1258,14 @@ TextStyle textbarlowRegularad() {
     fontSize: 16.0,
     fontFamily: 'BarlowRegular',
     color: Colors.black.withOpacity(0.50),
+  );
+}
+
+TextStyle textbarlowRegularaddwithop() {
+  return TextStyle(
+    fontSize: 16.0,
+    fontFamily: 'BarlowRegular',
+    color: Colors.black.withOpacity(0.37),
   );
 }
 
