@@ -349,7 +349,6 @@ class _ProductDetailsState extends State<ProductDetails>
                                         height: 340,
                                         viewportFraction: 1.0,
                                         pagination: true,
-                                        autoPlay: true,
                                         activeIndicator: primary,
                                         passiveIndicator: Colors.grey,
                                         onPageChanged: (_) {
