@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:getflutter/getwidget.dart';
 import 'package:readymadeGroceryApp/model/addToCart.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
@@ -71,6 +72,15 @@ class _ProductDetailsState extends State<ProductDetails>
       }
     }
   }
+
+  final List<String> imageList = [
+    "https://cdn.pixabay.com/photo/2017/12/03/18/04/christmas-balls-2995437_960_720.jpg",
+    "https://cdn.pixabay.com/photo/2017/12/13/00/23/christmas-3015776_960_720.jpg",
+    "https://cdn.pixabay.com/photo/2019/12/19/10/55/christmas-market-4705877_960_720.jpg",
+    "https://cdn.pixabay.com/photo/2019/12/20/00/03/road-4707345_960_720.jpg",
+    "https://cdn.pixabay.com/photo/2019/12/22/04/18/x-mas-4711785__340.jpg",
+    "https://cdn.pixabay.com/photo/2016/11/22/07/09/spruce-1848543__340.jpg"
+  ];
 
   @override
   void initState() {
@@ -305,36 +315,80 @@ class _ProductDetailsState extends State<ProductDetails>
                         children: <Widget>[
                           Column(
                             children: <Widget>[
-                              CachedNetworkImage(
-                                imageUrl: productDetail['filePath'] == null
-                                    ? productDetail['imageUrl']
-                                    : Constants.imageUrlPath +
-                                        "/tr:dpr-auto,tr:w-1000" +
-                                        productDetail['filePath'],
-                                imageBuilder: (context, imageProvider) =>
-                                    Container(
-                                  padding: EdgeInsets.zero,
-                                  margin: EdgeInsets.zero,
-                                  height: 340,
-                                  decoration: new BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(40),
-                                        bottomRight: Radius.circular(40),
-                                      ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.grey,
-                                            blurRadius: 10.0,
-                                            offset: Offset(2.0, 2.0))
-                                      ],
-                                      image: DecorationImage(
-                                          image: imageProvider,
-                                          fit: BoxFit.cover)),
+                              // CachedNetworkImage(
+                              //   imageUrl: productDetail['filePath'] == null
+                              //       ? productDetail['imageUrl']
+                              //       : Constants.imageUrlPath +
+                              //           "/tr:dpr-auto,tr:w-1000" +
+                              //           productDetail['filePath'],
+                              //   imageBuilder: (context, imageProvider) =>
+                              //       Container(
+                              //     padding: EdgeInsets.zero,
+                              //     margin: EdgeInsets.zero,
+                              //     height: 340,
+                              //     decoration: new BoxDecoration(
+                              //         borderRadius: BorderRadius.only(
+                              //           bottomLeft: Radius.circular(40),
+                              //           bottomRight: Radius.circular(40),
+                              //         ),
+                              //         boxShadow: [
+                              //           BoxShadow(
+                              //               color: Colors.grey,
+                              //               blurRadius: 10.0,
+                              //               offset: Offset(2.0, 2.0))
+                              //         ],
+                              //         image: DecorationImage(
+                              //             image: imageProvider,
+                              //             fit: BoxFit.cover)),
+                              //   ),
+                              //   placeholder: (context, url) => Container(
+                              //       height: 340, child: noDataImage()),
+                              //   errorWidget: (context, url, error) => Container(
+                              //       height: 340, child: noDataImage()),
+                              // ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white10,
+                                  borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(40),
+                                    bottomRight: Radius.circular(40),
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.grey,
+                                        blurRadius: 10.0,
+                                        offset: Offset(2.0, 2.0))
+                                  ],
                                 ),
-                                placeholder: (context, url) => Container(
-                                    height: 340, child: noDataImage()),
-                                errorWidget: (context, url, error) => Container(
-                                    height: 340, child: noDataImage()),
+                                child: GFCarousel(
+                                  height: 340,
+                                  viewportFraction: 1.0,
+                                  pagination: true,
+                                  activeIndicator: primary,
+                                  passiveIndicator: Colors.grey,
+                                  items: imageList.map(
+                                    (url) {
+                                      return Container(
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.only(
+                                            bottomLeft: Radius.circular(40),
+                                            bottomRight: Radius.circular(40),
+                                          ),
+                                          child: Image.network(url,
+                                              fit: BoxFit.cover,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width),
+                                        ),
+                                      );
+                                    },
+                                  ).toList(),
+                                  onPageChanged: (index) {
+                                    setState(() {
+                                      index;
+                                    });
+                                  },
+                                ),
                               ),
                               SizedBox(
                                 height: 40,
