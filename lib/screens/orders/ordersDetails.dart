@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
+import 'package:readymadeGroceryApp/screens/orders/rateDelivery.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -527,23 +528,45 @@ class _OrderDetailsState extends State<OrderDetails> {
                           false),
                     ),
                     SizedBox(height: 6),
-                    orderHistory['order']['orderStatus'] == "DELIVERED" ||
-                            orderHistory['order']['orderStatus'] == "CANCELLED"
-                        ? Container()
-                        : InkWell(
-                            onTap: orderCancelMethod,
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 15.0),
-                              child: orderHistory['order']['orderStatus'] ==
-                                      "PENDING"
-                                  ? buttonPrimary(
-                                      context,
-                                      "CANCEL_ORDER",
-                                      isOrderCancleLoading,
-                                    )
-                                  : Container(),
-                            )),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      child:
+                          orderHistory['order']['orderStatus'] == "DELIVERED" ||
+                                  orderHistory['order']['orderStatus'] ==
+                                      "CANCELLED"
+                              ? Container()
+                              : InkWell(
+                                  onTap: orderCancelMethod,
+                                  child: orderHistory['order']['orderStatus'] ==
+                                          "PENDING"
+                                      ? buttonPrimary(
+                                          context,
+                                          "CANCEL_ORDER",
+                                          isOrderCancleLoading,
+                                        )
+                                      : Container(),
+                                ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RateDelivery(
+                                  locale: widget.locale,
+                                  localizedValues: widget.localizedValues),
+                            ),
+                          );
+                        },
+                        child: buttonPrimary(
+                          context,
+                          "DELIVERY_BOY_RATING",
+                          isOrderCancleLoading,
+                        ),
+                      ),
+                    ),
                     SizedBox(height: 20),
                   ],
                 ),

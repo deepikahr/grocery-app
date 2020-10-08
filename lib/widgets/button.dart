@@ -25,13 +25,15 @@ Widget buttonPrimary(BuildContext context, title, isLoading) {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              MyLocalizations.of(context).getLocalizations(title),
-              style: textBarlowRegularBlack(),
+            Expanded(
+              child: Text(
+                MyLocalizations.of(context).getLocalizations(title),
+                style: textBarlowRegularBlack(),
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
             ),
-            SizedBox(
-              height: 10,
-            ),
+            SizedBox(height: 10),
             isLoading ? GFLoader(type: GFLoaderType.ios) : Text("")
           ],
         ),

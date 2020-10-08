@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:readymadeGroceryApp/screens/home/home.dart';
-import 'package:readymadeGroceryApp/screens/orders/orders.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
-import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 class RateDelivery extends StatefulWidget {
   final Map localizedValues;
@@ -36,12 +34,13 @@ class _RateDeliveryState extends State<RateDelivery> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'YOUR_ORDER_WAS_DELIVERED_BY',
+                  MyLocalizations.of(context)
+                      .getLocalizations('YOUR_ORDER_WAS_DELIVERED_BY'),
                   style: textBarlowMediumsmBlackk(),
                 ),
                 Flexible(
                   child: Text(
-                    'john doe',
+                    MyLocalizations.of(context).getLocalizations('john doe'),
                     style: textBarlowMediumsmBlackk(),
                   ),
                 ),
@@ -50,7 +49,8 @@ class _RateDeliveryState extends State<RateDelivery> {
           ),
           SizedBox(height: 10),
           Text(
-            'PLEASE_SUBMIT_YOUR_FEEDBACK',
+            MyLocalizations.of(context)
+                .getLocalizations('PLEASE_SUBMIT_YOUR_FEEDBACK'),
             style: textBarlowRegularBlackdl(),
           ),
           Padding(
@@ -77,9 +77,10 @@ class _RateDeliveryState extends State<RateDelivery> {
             child: TextFormField(
               style: textBarlowRegularBlack(),
               keyboardType: TextInputType.text,
-              maxLines: 3,
+              maxLines: 5,
               decoration: InputDecoration(
-                hintText: "TELL_US_YOUR_EXPERIENCE",
+                hintText: MyLocalizations.of(context)
+                    .getLocalizations("TELL_US_YOUR_EXPERIENCE"),
                 hintStyle: textbarlowRegularaddwithop(),
                 errorStyle: TextStyle(color: Color(0xFFF44242)),
                 fillColor: Colors.black,
