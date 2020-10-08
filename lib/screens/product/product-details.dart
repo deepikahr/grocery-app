@@ -55,6 +55,7 @@ class _ProductDetailsState extends State<ProductDetails>
       isProductAlredayInCart = false;
   var quantity = 1, variantPrice, variantStock;
   var rating;
+  List productImages = [];
   void _changeProductQuantity(bool increase) {
     if (increase) {
       if (mounted) {
@@ -72,15 +73,6 @@ class _ProductDetailsState extends State<ProductDetails>
       }
     }
   }
-
-  final List<String> imageList = [
-    "https://cdn.pixabay.com/photo/2017/12/03/18/04/christmas-balls-2995437_960_720.jpg",
-    "https://cdn.pixabay.com/photo/2017/12/13/00/23/christmas-3015776_960_720.jpg",
-    "https://cdn.pixabay.com/photo/2019/12/19/10/55/christmas-market-4705877_960_720.jpg",
-    "https://cdn.pixabay.com/photo/2019/12/20/00/03/road-4707345_960_720.jpg",
-    "https://cdn.pixabay.com/photo/2019/12/22/04/18/x-mas-4711785__340.jpg",
-    "https://cdn.pixabay.com/photo/2016/11/22/07/09/spruce-1848543__340.jpg"
-  ];
 
   @override
   void initState() {
@@ -116,6 +108,28 @@ class _ProductDetailsState extends State<ProductDetails>
       if (mounted) {
         setState(() {
           productDetail = value['response_data'];
+          productImages = [];
+          if (productDetail['productImages'] != null &&
+              productDetail['productImages'].length > 0) {
+            for (int i = 0; i < productDetail['productImages'].length; i++) {
+              if (productDetail['productImages'][i]['filePath'] == null) {
+                productImages
+                    .add(productDetail['productImages'][i]['imageUrl']);
+              } else {
+                productImages.add(Constants.imageUrlPath +
+                    "/tr:dpr-auto,tr:w-1000" +
+                    productDetail['productImages'][i]['filePath']);
+              }
+            }
+          } else {
+            if (productDetail['filePath'] == null) {
+              productImages.add(productDetail['imageUrl']);
+            } else {
+              productImages.add(Constants.imageUrlPath +
+                  "/tr:dpr-auto,tr:w-1000" +
+                  productDetail['filePath']);
+            }
+          }
           if (productDetail['quantityToCart'] != null) {
             quantity = productDetail['quantityToCart'];
             isProductAlredayInCart = productDetail['isAddedToCart'];
@@ -315,37 +329,6 @@ class _ProductDetailsState extends State<ProductDetails>
                         children: <Widget>[
                           Column(
                             children: <Widget>[
-                              // CachedNetworkImage(
-                              //   imageUrl: productDetail['filePath'] == null
-                              //       ? productDetail['imageUrl']
-                              //       : Constants.imageUrlPath +
-                              //           "/tr:dpr-auto,tr:w-1000" +
-                              //           productDetail['filePath'],
-                              //   imageBuilder: (context, imageProvider) =>
-                              //       Container(
-                              //     padding: EdgeInsets.zero,
-                              //     margin: EdgeInsets.zero,
-                              //     height: 340,
-                              //     decoration: new BoxDecoration(
-                              //         borderRadius: BorderRadius.only(
-                              //           bottomLeft: Radius.circular(40),
-                              //           bottomRight: Radius.circular(40),
-                              //         ),
-                              //         boxShadow: [
-                              //           BoxShadow(
-                              //               color: Colors.grey,
-                              //               blurRadius: 10.0,
-                              //               offset: Offset(2.0, 2.0))
-                              //         ],
-                              //         image: DecorationImage(
-                              //             image: imageProvider,
-                              //             fit: BoxFit.cover)),
-                              //   ),
-                              //   placeholder: (context, url) => Container(
-                              //       height: 340, child: noDataImage()),
-                              //   errorWidget: (context, url, error) => Container(
-                              //       height: 340, child: noDataImage()),
-                              // ),
                               Container(
                                 decoration: BoxDecoration(
                                   color: Colors.white10,
@@ -360,39 +343,102 @@ class _ProductDetailsState extends State<ProductDetails>
                                         offset: Offset(2.0, 2.0))
                                   ],
                                 ),
-                                child: GFCarousel(
-                                  height: 340,
-                                  viewportFraction: 1.0,
-                                  pagination: true,
-                                  activeIndicator: primary,
-                                  passiveIndicator: Colors.grey,
-                                  items: imageList.map(
-                                    (url) {
-                                      return Container(
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.only(
-                                            bottomLeft: Radius.circular(40),
-                                            bottomRight: Radius.circular(40),
-                                          ),
-                                          child: Image.network(url,
-                                              fit: BoxFit.cover,
-                                              width: MediaQuery.of(context)
-                                                  .size
-                                                  .width),
+                                child: (productImages != null &&
+                                        productImages.length > 0)
+                                    ? GFCarousel(
+                                        height: 340,
+                                        viewportFraction: 1.0,
+                                        pagination: true,
+                                        autoPlay: true,
+                                        activeIndicator: primary,
+                                        passiveIndicator: Colors.grey,
+                                        onPageChanged: (_) {
+                                          setState(() {
+                                            //do not remove this setstate
+                                          });
+                                        },
+                                        items: productImages.map(
+                                          (url) {
+                                            return CachedNetworkImage(
+                                              imageUrl: url,
+                                              imageBuilder:
+                                                  (context, imageProvider) =>
+                                                      Container(
+                                                padding: EdgeInsets.zero,
+                                                margin: EdgeInsets.zero,
+                                                height: 340,
+                                                decoration: new BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      bottomLeft:
+                                                          Radius.circular(40),
+                                                      bottomRight:
+                                                          Radius.circular(40),
+                                                    ),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                          color: Colors.grey,
+                                                          blurRadius: 10.0,
+                                                          offset:
+                                                              Offset(2.0, 2.0))
+                                                    ],
+                                                    image: DecorationImage(
+                                                        image: imageProvider,
+                                                        fit: BoxFit.cover)),
+                                              ),
+                                              placeholder: (context, url) =>
+                                                  Container(
+                                                      height: 340,
+                                                      child: noDataImage()),
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      Container(
+                                                          height: 340,
+                                                          child: noDataImage()),
+                                            );
+                                          },
+                                        ).toList(),
+                                      )
+                                    : CachedNetworkImage(
+                                        imageUrl:
+                                            productDetail['filePath'] == null
+                                                ? productDetail['imageUrl']
+                                                : Constants.imageUrlPath +
+                                                    "/tr:dpr-auto,tr:w-1000" +
+                                                    productDetail['filePath'],
+                                        imageBuilder:
+                                            (context, imageProvider) =>
+                                                Container(
+                                          padding: EdgeInsets.zero,
+                                          margin: EdgeInsets.zero,
+                                          height: 340,
+                                          decoration: new BoxDecoration(
+                                              borderRadius: BorderRadius.only(
+                                                bottomLeft: Radius.circular(40),
+                                                bottomRight:
+                                                    Radius.circular(40),
+                                              ),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    color: Colors.grey,
+                                                    blurRadius: 10.0,
+                                                    offset: Offset(2.0, 2.0))
+                                              ],
+                                              image: DecorationImage(
+                                                  image: imageProvider,
+                                                  fit: BoxFit.cover)),
                                         ),
-                                      );
-                                    },
-                                  ).toList(),
-                                  onPageChanged: (index) {
-                                    setState(() {
-                                      index;
-                                    });
-                                  },
-                                ),
+                                        placeholder: (context, url) =>
+                                            Container(
+                                                height: 340,
+                                                child: noDataImage()),
+                                        errorWidget: (context, url, error) =>
+                                            Container(
+                                                height: 340,
+                                                child: noDataImage()),
+                                      ),
                               ),
-                              SizedBox(
-                                height: 40,
-                              ),
+                              SizedBox(height: 40),
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: <Widget>[

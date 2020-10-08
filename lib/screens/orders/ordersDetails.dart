@@ -295,44 +295,21 @@ class _OrderDetailsState extends State<OrderDetails> {
                                   horizontal: 10, vertical: 3),
                               child: Row(
                                 children: <Widget>[
-                                  CachedNetworkImage(
-                                    imageUrl: order['filePath'] == null
-                                        ? order['imageUrl']
-                                        : Constants.imageUrlPath +
-                                            "/tr:dpr-auto,tr:w-500" +
-                                            order['filePath'],
-                                    imageBuilder: (context, imageProvider) =>
-                                        Container(
-                                      height: 75,
-                                      width: 99,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5)),
-                                        boxShadow: [
-                                          BoxShadow(
-                                              color: Color(0xFF0000000A),
-                                              blurRadius: 0.40)
-                                        ],
-                                        image: DecorationImage(
-                                            image: imageProvider,
-                                            fit: BoxFit.cover),
-                                      ),
-                                    ),
-                                    placeholder: (context, url) => Container(
-                                        height: 75,
-                                        width: 99,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(5)),
-                                          boxShadow: [
-                                            BoxShadow(
-                                                color: Color(0xFF0000000A),
-                                                blurRadius: 0.40)
-                                          ],
-                                        ),
-                                        child: noDataImage()),
-                                    errorWidget: (context, url, error) =>
-                                        Container(
+                                  (order["productImages"] != null &&
+                                          order["productImages"].length > 0)
+                                      ? CachedNetworkImage(
+                                          imageUrl: order["productImages"][0]
+                                                      ['filePath'] ==
+                                                  null
+                                              ? order["productImages"][0]
+                                                  ['imageUrl']
+                                              : Constants.imageUrlPath +
+                                                  "/tr:dpr-auto,tr:w-500" +
+                                                  order["productImages"][0]
+                                                      ['filePath'],
+                                          imageBuilder:
+                                              (context, imageProvider) =>
+                                                  Container(
                                             height: 75,
                                             width: 99,
                                             decoration: BoxDecoration(
@@ -343,9 +320,101 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                     color: Color(0xFF0000000A),
                                                     blurRadius: 0.40)
                                               ],
+                                              image: DecorationImage(
+                                                  image: imageProvider,
+                                                  fit: BoxFit.cover),
                                             ),
-                                            child: noDataImage()),
-                                  ),
+                                          ),
+                                          placeholder: (context, url) =>
+                                              Container(
+                                                  height: 75,
+                                                  width: 99,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(5)),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                          color: Color(
+                                                              0xFF0000000A),
+                                                          blurRadius: 0.40)
+                                                    ],
+                                                  ),
+                                                  child: noDataImage()),
+                                          errorWidget: (context, url, error) =>
+                                              Container(
+                                                  height: 75,
+                                                  width: 99,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(5)),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                          color: Color(
+                                                              0xFF0000000A),
+                                                          blurRadius: 0.40)
+                                                    ],
+                                                  ),
+                                                  child: noDataImage()),
+                                        )
+                                      : CachedNetworkImage(
+                                          imageUrl: order['filePath'] == null
+                                              ? order['imageUrl']
+                                              : Constants.imageUrlPath +
+                                                  "/tr:dpr-auto,tr:w-500" +
+                                                  order['filePath'],
+                                          imageBuilder:
+                                              (context, imageProvider) =>
+                                                  Container(
+                                            height: 75,
+                                            width: 99,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(5)),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    color: Color(0xFF0000000A),
+                                                    blurRadius: 0.40)
+                                              ],
+                                              image: DecorationImage(
+                                                  image: imageProvider,
+                                                  fit: BoxFit.cover),
+                                            ),
+                                          ),
+                                          placeholder: (context, url) =>
+                                              Container(
+                                                  height: 75,
+                                                  width: 99,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(5)),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                          color: Color(
+                                                              0xFF0000000A),
+                                                          blurRadius: 0.40)
+                                                    ],
+                                                  ),
+                                                  child: noDataImage()),
+                                          errorWidget: (context, url, error) =>
+                                              Container(
+                                                  height: 75,
+                                                  width: 99,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(5)),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                          color: Color(
+                                                              0xFF0000000A),
+                                                          blurRadius: 0.40)
+                                                    ],
+                                                  ),
+                                                  child: noDataImage()),
+                                        ),
                                   SizedBox(width: 17),
                                   Container(
                                     width:
@@ -539,34 +608,38 @@ class _OrderDetailsState extends State<OrderDetails> {
                                   onTap: orderCancelMethod,
                                   child: orderHistory['order']['orderStatus'] ==
                                           "PENDING"
-                                      ? buttonPrimary(
-                                          context,
-                                          "CANCEL_ORDER",
-                                          isOrderCancleLoading,
-                                        )
+                                      ? buttonPrimary(context, "CANCEL_ORDER",
+                                          isOrderCancleLoading)
                                       : Container(),
                                 ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => RateDelivery(
-                                  locale: widget.locale,
-                                  localizedValues: widget.localizedValues),
+                    orderHistory['order']['isDeliveryBoyRated'] == false &&
+                            orderHistory['order']['orderStatus'] == "DELIVERED"
+                        ? Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 15.0),
+                            child: InkWell(
+                              onTap: () {
+                                var result = Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => RateDelivery(
+                                        locale: widget.locale,
+                                        localizedValues: widget.localizedValues,
+                                        orderHistory: orderHistory),
+                                  ),
+                                );
+                                result.then((value) {
+                                  if (value != null && value == true) {
+                                    getOrderHistory();
+                                  }
+                                });
+                              },
+                              child: buttonPrimary(context, "RATE_DELIVERY",
+                                  isOrderCancleLoading),
                             ),
-                          );
-                        },
-                        child: buttonPrimary(
-                          context,
-                          "DELIVERY_BOY_RATING",
-                          isOrderCancleLoading,
-                        ),
-                      ),
-                    ),
+                          )
+                        : Container(),
                     SizedBox(height: 20),
                   ],
                 ),
