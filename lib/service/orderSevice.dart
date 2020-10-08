@@ -45,4 +45,14 @@ class OrderService {
       return json.decode(response.body);
     });
   }
+
+  // delivery boy rating
+  static Future<Map<String, dynamic>> deliveryRating(body) async {
+    return client
+        .post(Constants.apiUrl + '/delivery-boy-ratings/rate',
+            body: json.encode(body))
+        .then((response) {
+      return json.decode(response.body);
+    });
+  }
 }

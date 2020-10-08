@@ -117,8 +117,8 @@ class _AllProductsState extends State<AllProducts> {
       }
       setState(() {
         isNewProductsLoading = true;
+        getProductListMethod(productIndex);
       });
-      getProductListMethod(productIndex);
     }).catchError((error) {
       if (mounted) {
         setState(() {
