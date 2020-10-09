@@ -61,10 +61,10 @@ class _ChangeMobileNumberOtpVerifyState
         await OtpService.changePasswordVerifyOtpWithNumber(body)
             .then((onValue) {
           if (onValue['response_data'] != null) {
+            showSnackbar(onValue['response_data'] ?? "");
             Common.getSelectedLanguage().then((selectedLocale) async {
               Map body = {"language": selectedLocale, "playerId": null};
               LoginService.updateUserInfo(body).then((value) async {
-                showSnackbar(onValue['response_data']);
                 await Common.setToken(null);
                 await Common.setUserID(null);
                 await Common.setCartDataCount(0);
@@ -74,24 +74,26 @@ class _ChangeMobileNumberOtpVerifyState
                     isOtpVerifyLoading = false;
                   });
                 }
-                var result = Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => Login(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues),
-                  ),
-                );
-                result.then((value) {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => Home(
-                            locale: widget.locale,
-                            localizedValues: widget.localizedValues,
-                            currentIndex: 0),
-                      ),
-                      (Route<dynamic> route) => false);
+                Future.delayed(Duration(milliseconds: 1500), () {
+                  var result = Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Login(
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues),
+                    ),
+                  );
+                  result.then((value) {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => Home(
+                              locale: widget.locale,
+                              localizedValues: widget.localizedValues,
+                              currentIndex: 0),
+                        ),
+                        (Route<dynamic> route) => false);
+                  });
                 });
               });
             });

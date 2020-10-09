@@ -16,6 +16,7 @@ import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
@@ -31,6 +32,8 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   var userInfo, walletAmount;
   bool isGetTokenLoading = false,
       isLanguageSelecteLoading = false,
@@ -176,33 +179,37 @@ class _ProfileState extends State<Profile> {
     Common.getSelectedLanguage().then((selectedLocale) async {
       Map body = {"language": selectedLocale, "playerId": null};
       LoginService.updateUserInfo(body).then((value) async {
-        await Common.setToken(null);
-        await Common.setUserID(null);
-        await Common.setCartData(null);
-        await Common.setCartDataCount(0);
-        main();
+        showSnackbar(
+            MyLocalizations.of(context).getLocalizations("LOGOUT_SUCCESSFULL"));
+        Future.delayed(Duration(milliseconds: 1500), () async {
+          await Common.setToken(null);
+          await Common.setUserID(null);
+          await Common.setCartData(null);
+          await Common.setCartDataCount(0);
+          main();
+        });
       });
     });
+  }
+
+  void showSnackbar(message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(milliseconds: 3000),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Color(0xFFFDFDFD),
       appBar: isGetTokenLoading
           ? null
           : token == null
               ? null
-              : GFAppBar(
-                  elevation: 0,
-                  title: Text(
-                    MyLocalizations.of(context).getLocalizations("PROFILE"),
-                    style: textbarlowSemiBoldBlack(),
-                  ),
-                  centerTitle: true,
-                  backgroundColor: primary,
-                  automaticallyImplyLeading: false,
-                ),
+              : appBarPrimary(context, "PROFILE"),
       body: isGetTokenLoading || isGetLanguagesListLoading
           ? SquareLoader()
           : token == null
@@ -354,8 +361,7 @@ class _ProfileState extends State<Profile> {
                                           context,
                                           (MyLocalizations.of(context)
                                                       .getLocalizations(
-                                                          "TOTAL_WALLET_AMOUNT",
-                                                          true) +
+                                                          "WALLET", true) +
                                                   currency +
                                                   walletAmount
                                                       .toDouble()

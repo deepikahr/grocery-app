@@ -872,9 +872,9 @@ class _MyCartState extends State<MyCart> {
                                   MyLocalizations.of(context)
                                           .getLocalizations("COUPON_APPLIED") +
                                       " (" +
-                                      "${MyLocalizations.of(context).getLocalizations("DISCOUNT")}"
+                                      "${cartItem['couponCode']}"
                                           ")",
-                                  '$currency${cartItem['couponAmount'].toDouble().toStringAsFixed(2)}',
+                                  '-$currency${cartItem['couponAmount'].toDouble().toStringAsFixed(2)}',
                                   false)),
                       cartItem['couponCode'] == null
                           ? Container()
