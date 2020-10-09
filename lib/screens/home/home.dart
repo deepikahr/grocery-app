@@ -39,6 +39,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> with TickerProviderStateMixin {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   TabController tabController;
   bool currencyLoading = false,
       isCurrentLoactionLoading = false,
@@ -233,6 +235,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     ];
 
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Colors.white,
       appBar: currentIndex == 0
           ? appBarWhite(
@@ -265,7 +268,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         child: DrawerPage(
             locale: widget.locale,
             localizedValues: widget.localizedValues,
-            addressData: addressData ?? ""),
+            addressData: addressData ?? "",
+            scaffoldKey: _scaffoldKey),
       ),
       body: currencyLoading ? SquareLoader() : _screens[currentIndex],
       bottomNavigationBar: BottomNavigationBar(

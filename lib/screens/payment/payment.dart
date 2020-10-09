@@ -74,10 +74,6 @@ class _PaymentState extends State<Payment> {
     getUserInfo();
     paymentTypes = widget.locationInfo["paymentMethod"];
 
-    if (paymentTypes.length > 0) {
-      widget.data['paymentType'] = paymentTypes[groupValue];
-    }
-
     await Common.getCurrency().then((value) {
       currency = value;
     });
@@ -117,23 +113,29 @@ class _PaymentState extends State<Payment> {
       showSnackbar(
           MyLocalizations.of(context).getLocalizations("SELECT_PAYMENT_FIRST"));
     } else {
-      if (widget.data['paymentType'] == "STRIPE") {
-        StripePayment.paymentRequestWithCardForm(CardFormPaymentRequest())
-            .then((pm) {
-          setState(() {
-            widget.data['paymentId'] = pm.id.toString();
-            palceOrderMethod(widget.data);
-          });
-        }).catchError((e) {
-          if (mounted) {
-            setState(() {
-              isPlaceOrderLoading = false;
-            });
-          }
-          showSnackbar(e.toString());
-        });
-      } else {
+      if (fullWalletUsedOrNot == true) {
+        widget.data['paymentType'] = "COD";
         palceOrderMethod(widget.data);
+      } else {
+        widget.data['paymentType'] = paymentTypes[groupValue];
+        if (widget.data['paymentType'] == "STRIPE") {
+          StripePayment.paymentRequestWithCardForm(CardFormPaymentRequest())
+              .then((pm) {
+            setState(() {
+              widget.data['paymentId'] = pm.id.toString();
+              palceOrderMethod(widget.data);
+            });
+          }).catchError((e) {
+            if (mounted) {
+              setState(() {
+                isPlaceOrderLoading = false;
+                showSnackbar(e.toString());
+              });
+            }
+          });
+        } else {
+          palceOrderMethod(widget.data);
+        }
       }
     }
   }
@@ -229,170 +231,176 @@ class _PaymentState extends State<Payment> {
       appBar: appBarTransparent(context, "PAYMENT"),
       body: isCardListLoading
           ? SquareLoader()
-          : ListView(
-              children: <Widget>[
-                cartItem['deliveryCharges'] == 0 ||
-                        cartItem['deliveryCharges'] == "0"
-                    ? Container()
-                    : Container(
-                        color: Colors.grey[100],
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              top: 10, bottom: 10, left: 20.0, right: 20.0),
-                          child: buildPriceBold(
-                              context,
-                              null,
-                              MyLocalizations.of(context)
-                                  .getLocalizations("DELIVERY_CHARGES"),
-                              currency +
-                                  cartItem['deliveryCharges']
-                                      .toDouble()
-                                      .toStringAsFixed(2),
-                              false),
-                        ),
-                      ),
-                Container(
-                  color: Colors.grey[100],
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        top: 10, bottom: 10, left: 20.0, right: 20.0),
-                    child: buildPriceBold(
-                        context,
-                        null,
-                        MyLocalizations.of(context).getLocalizations("TOTAL"),
-                        currency +
-                            cartItem['grandTotal']
-                                .toDouble()
-                                .toStringAsFixed(2),
-                        false),
-                  ),
-                ),
-                Column(
-                  children: [
-                    Container(
-                      color: Colors.grey[100],
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            top: 10, bottom: 10, left: 20.0, right: 20.0),
-                        child: buildPriceBold(
-                            context,
-                            null,
-                            MyLocalizations.of(context)
-                                .getLocalizations("TOTAL_WALLET_AMOUNT"),
-                            currency +
-                                (walletAmount - cartItem['walletAmount'])
-                                    .toDouble()
-                                    .toStringAsFixed(2),
-                            false),
-                      ),
-                    ),
-                    walletAmount == null || walletAmount == 0
-                        ? Container()
-                        : Container(
-                            color: Colors.grey[100],
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 8.0, bottom: 8.0, left: 20, right: 20),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  buildPriceBold(
-                                      context,
-                                      null,
-                                      cartItem['walletAmount'] == 0
-                                          ? MyLocalizations.of(context)
-                                              .getLocalizations(
-                                                  "USE_WALLET_AMOUNT")
-                                          : MyLocalizations.of(context)
-                                                  .getLocalizations(
-                                                      "USED_WALLET_AMOUNT") +
-                                              " " +
-                                              currency +
-                                              cartItem['walletAmount']
-                                                  .toDouble()
-                                                  .toStringAsFixed(2),
-                                      null,
-                                      false),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: <Widget>[
-                                      isWalletLoading == true
-                                          ? Container(child: SquareLoader())
-                                          : new Checkbox(
-                                              value: walletUsedOrNotValue,
-                                              activeColor: Colors.green,
-                                              onChanged: (bool walleValue) {
-                                                setState(() {
-                                                  if (walleValue == true) {
-                                                    applyWallet(walleValue);
-                                                  } else {
-                                                    removeWallet(walleValue);
-                                                  }
-                                                });
-                                              }),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                  ],
-                ),
-                SizedBox(height: 10),
-                fullWalletUsedOrNot == true
-                    ? Container()
-                    : paymentTypes.length > 0
-                        ? Column(
-                            children: [
-                              ListView.builder(
-                                physics: ScrollPhysics(),
-                                shrinkWrap: true,
-                                padding: EdgeInsets.only(right: 0.0),
-                                itemCount: paymentTypes.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return Container(
-                                    margin: EdgeInsets.all(8.0),
-                                    color: Colors.white,
-                                    child: RadioListTile(
-                                      value: index,
-                                      groupValue: groupValue,
-                                      selected: isSelected,
-                                      activeColor: primary,
-                                      title: textGreenPrimary(
-                                        paymentTypes[index] == 'COD'
-                                            ? MyLocalizations.of(context)
-                                                .getLocalizations(
-                                                    "CASH_ON_DELIVERY")
-                                            : paymentTypes[index] == 'STRIPE'
-                                                ? MyLocalizations.of(context)
-                                                    .getLocalizations(
-                                                        "PAY_BY_CARD")
-                                                : paymentTypes[index],
-                                        TextStyle(color: primary),
-                                      ),
-                                      onChanged: (int selected) {
-                                        if (mounted) {
-                                          setState(() {
-                                            groupValue = selected;
-                                            widget.data['paymentType'] =
-                                                paymentTypes[groupValue];
-                                          });
+          : Padding(
+              padding: const EdgeInsets.only(
+                  top: 10, bottom: 10, left: 20.0, right: 20.0),
+              child: ListView(
+                children: <Widget>[
+                  buildBoldText(context, "CART_SUMMARY"),
+                  SizedBox(height: 10),
+                  buildPrice(
+                      context,
+                      null,
+                      MyLocalizations.of(context)
+                              .getLocalizations("SUB_TOTAL") +
+                          ' ( ${cartItem['products'].length} ' +
+                          MyLocalizations.of(context)
+                              .getLocalizations("ITEMS") +
+                          ')',
+                      '$currency${cartItem['subTotal'].toDouble().toStringAsFixed(2)}',
+                      false),
+                  cartItem['couponCode'] != null
+                      ? SizedBox(height: 10)
+                      : Container(),
+                  cartItem['couponCode'] != null
+                      ? buildPrice(
+                          context,
+                          null,
+                          MyLocalizations.of(context)
+                              .getLocalizations("COUPON_DISCOUNT"),
+                          '-$currency${cartItem['couponAmount'].toDouble().toStringAsFixed(2)}',
+                          false)
+                      : Container(),
+                  cartItem['tax'] == 0 ? Container() : SizedBox(height: 10),
+                  cartItem['tax'] == 0
+                      ? Container()
+                      : buildPrice(
+                          context,
+                          null,
+                          MyLocalizations.of(context).getLocalizations("TAX"),
+                          '$currency${cartItem['tax'].toDouble().toStringAsFixed(2)}',
+                          false),
+                  SizedBox(height: 10),
+                  buildPrice(
+                      context,
+                      null,
+                      MyLocalizations.of(context)
+                          .getLocalizations("DELIVERY_CHARGES"),
+                      cartItem['deliveryCharges'] == 0 ||
+                              cartItem['deliveryCharges'] == "0"
+                          ? MyLocalizations.of(context).getLocalizations("FREE")
+                          : '$currency${cartItem['deliveryCharges'].toDouble().toStringAsFixed(2)}',
+                      false),
+                  SizedBox(height: 10),
+                  cartItem['walletAmount'] > 0
+                      ? buildPrice(
+                          context,
+                          null,
+                          MyLocalizations.of(context)
+                              .getLocalizations("PAID_FORM_WALLET"),
+                          '-$currency${cartItem['walletAmount'].toDouble().toStringAsFixed(2)}',
+                          false)
+                      : Container(),
+                  cartItem['walletAmount'] > 0
+                      ? SizedBox(height: 10)
+                      : Container(),
+                  buildPrice(
+                      context,
+                      null,
+                      MyLocalizations.of(context).getLocalizations("WALLET"),
+                      '$currency${(walletAmount - cartItem['walletAmount']).toDouble().toStringAsFixed(2)}',
+                      false),
+                  walletAmount == null || walletAmount == 0
+                      ? Container()
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            buildPrice(
+                                context,
+                                null,
+                                cartItem['walletAmount'] == 0
+                                    ? MyLocalizations.of(context)
+                                        .getLocalizations("APPLY_WALLET")
+                                    : MyLocalizations.of(context)
+                                        .getLocalizations("REMOVE_WALLET"),
+                                "",
+                                isWalletLoading),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                new Checkbox(
+                                    value: walletUsedOrNotValue,
+                                    activeColor: Colors.green,
+                                    onChanged: (bool walleValue) {
+                                      setState(() {
+                                        if (walleValue == true) {
+                                          applyWallet(walleValue);
+                                        } else {
+                                          removeWallet(walleValue);
                                         }
-                                      },
-                                      secondary: paymentTypes[index] == "COD"
-                                          ? Text(currency,
-                                              style: TextStyle(color: primary))
-                                          : Icon(Icons.credit_card,
-                                              color: primary, size: 16.0),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
-                          )
-                        : noDataImage()
-              ],
+                                      });
+                                    }),
+                              ],
+                            ),
+                          ],
+                        ),
+                  Divider(
+                      color: Color(0xFF707070).withOpacity(0.20), thickness: 1),
+                  buildPrice(
+                      context,
+                      null,
+                      MyLocalizations.of(context)
+                          .getLocalizations("PAYABLE_AMOUNT"),
+                      '$currency${cartItem['grandTotal'].toDouble().toStringAsFixed(2)}',
+                      false),
+                  Divider(
+                      color: Color(0xFF707070).withOpacity(0.20), thickness: 1),
+                  fullWalletUsedOrNot == true
+                      ? Container()
+                      : paymentTypes.length > 0
+                          ? Column(
+                              children: [
+                                buildBoldText(context, "CHOOSE_PAYMENT_METHOD"),
+                                SizedBox(height: 10),
+                                ListView.builder(
+                                  physics: ScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: paymentTypes.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return Container(
+                                      margin:
+                                          EdgeInsets.only(top: 5, bottom: 5),
+                                      color: Colors.white,
+                                      child: RadioListTile(
+                                        value: index,
+                                        groupValue: groupValue,
+                                        selected: isSelected,
+                                        activeColor: primary,
+                                        title: textGreenPrimary(
+                                          paymentTypes[index] == 'COD'
+                                              ? MyLocalizations.of(context)
+                                                  .getLocalizations(
+                                                      "CASH_ON_DELIVERY")
+                                              : paymentTypes[index] == 'STRIPE'
+                                                  ? MyLocalizations.of(context)
+                                                      .getLocalizations(
+                                                          "PAY_BY_CARD")
+                                                  : paymentTypes[index],
+                                          TextStyle(color: primary),
+                                        ),
+                                        onChanged: (int selected) {
+                                          if (mounted) {
+                                            setState(() {
+                                              groupValue = selected;
+                                            });
+                                          }
+                                        },
+                                        secondary: paymentTypes[index] == "COD"
+                                            ? Text(currency,
+                                                style:
+                                                    TextStyle(color: primary))
+                                            : Icon(Icons.credit_card,
+                                                color: primary, size: 16.0),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            )
+                          : noDataImage()
+                ],
+              ),
             ),
       bottomNavigationBar: paymentTypes.length > 0
           ? InkWell(
@@ -400,7 +408,8 @@ class _PaymentState extends State<Payment> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: buttonPrimary(context, "PAY_NOW", isPlaceOrderLoading),
-              ))
+              ),
+            )
           : Container(height: 1),
     );
   }

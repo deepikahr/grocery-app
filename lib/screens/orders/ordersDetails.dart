@@ -545,8 +545,9 @@ class _OrderDetailsState extends State<OrderDetails> {
                                   context,
                                   null,
                                   MyLocalizations.of(context)
-                                      .getLocalizations("USED_WALLET_AMOUNT"),
-                                  currency +
+                                      .getLocalizations("PAID_FORM_WALLET"),
+                                  "-" +
+                                      currency +
                                       orderHistory['cart']['walletAmount']
                                           .toStringAsFixed(2),
                                   false),
@@ -566,11 +567,12 @@ class _OrderDetailsState extends State<OrderDetails> {
                                     buildPriceBold(
                                         context,
                                         null,
-                                        currency +
-                                            MyLocalizations.of(context)
-                                                .getLocalizations("DISCOUNT"),
-                                        orderHistory['cart']['couponAmount']
-                                            .toStringAsFixed(2),
+                                        MyLocalizations.of(context)
+                                            .getLocalizations("DISCOUNT"),
+                                        "-" +
+                                            currency +
+                                            orderHistory['cart']['couponAmount']
+                                                .toStringAsFixed(2),
                                         false),
                                   ],
                                 ),

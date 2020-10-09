@@ -75,35 +75,25 @@ class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
       body: isWalletHistory
           ? Center(child: SquareLoader())
           : walletHistoryList.length > 0
-              ? ListView(
-                  children: [
-                    Container(
-                      height: MediaQuery.of(context).size.height,
-                      margin: EdgeInsets.only(top: 15),
-                      child: ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          itemCount: walletHistoryList.length == null
-                              ? 0
-                              : walletHistoryList.length,
-                          itemBuilder: (BuildContext context, int index) =>
-                              InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => OrderDetails(
-                                            locale: widget.locale,
-                                            localizedValues:
-                                                widget.localizedValues,
-                                            orderId: walletHistoryList[index]
-                                                ["orderId"]),
-                                      ),
-                                    );
-                                  },
-                                  child:
-                                      wallethistory(walletHistoryList[index]))),
-                    ),
-                  ],
+              ? ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  itemCount: walletHistoryList.length == null
+                      ? 0
+                      : walletHistoryList.length,
+                  itemBuilder: (BuildContext context, int index) => InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => OrderDetails(
+                              locale: widget.locale,
+                              localizedValues: widget.localizedValues,
+                              orderId: walletHistoryList[index]["orderId"]),
+                        ),
+                      );
+                    },
+                    child: wallethistory(walletHistoryList[index]),
+                  ),
                 )
               : noDataImage(),
     );
