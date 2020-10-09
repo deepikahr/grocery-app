@@ -277,11 +277,11 @@ class _OrdersState extends State<Orders> {
                                 .getLocalizations("MORE_ITEMS"),
                       ),
                 SizedBox(height: 10),
-                orderDetails['grandTotal'] > 0
+                orderDetails['usedWalletAmount'] != null
                     ? buildBoldText(context,
-                        '$currency${orderDetails['grandTotal'].toStringAsFixed(2)}')
+                        '$currency${(orderDetails['grandTotal'] + orderDetails['usedWalletAmount']).toStringAsFixed(2)}')
                     : buildBoldText(context,
-                        '$currency${orderDetails['usedWalletAmount'].toStringAsFixed(2)}'),
+                        '$currency${orderDetails['grandTotal'].toStringAsFixed(2)}'),
                 SizedBox(height: 10),
                 textLightSmall(MyLocalizations.of(context)
                         .getLocalizations("ORDERED", true) +
