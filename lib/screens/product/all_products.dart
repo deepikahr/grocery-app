@@ -117,8 +117,8 @@ class _AllProductsState extends State<AllProducts> {
       }
       setState(() {
         isNewProductsLoading = true;
+        getProductListMethod(productIndex);
       });
-      getProductListMethod(productIndex);
     }).catchError((error) {
       if (mounted) {
         setState(() {
@@ -142,12 +142,12 @@ class _AllProductsState extends State<AllProducts> {
             if (lastApiCall == true) {
               productIndex++;
               if (index < totalProduct) {
-                getProductListMethod(index);
+                getProductListMethod(productIndex);
               } else {
                 if (index == totalProduct) {
                   if (mounted) {
                     lastApiCall = false;
-                    getProductListMethod(index);
+                    getProductListMethod(productIndex);
                   }
                 }
               }
@@ -168,11 +168,6 @@ class _AllProductsState extends State<AllProducts> {
   }
 
   getProductToSubCategory(catId, subCatProductIndex) async {
-    if (mounted) {
-      setState(() {
-        isLoadingSubCatProductsList = true;
-      });
-    }
     await ProductService.getProductToSubCategoryList(
             catId, subCatProductIndex, subCatProductLimt)
         .then((onValue) {
@@ -267,7 +262,7 @@ class _AllProductsState extends State<AllProducts> {
           productIndex = productsList.length;
           getTokenValueMethod();
         },
-        child: isNewProductsLoading || isLoadingSubCatProductsList
+        child: isNewProductsLoading
             ? SquareLoader()
             : ListView(children: <Widget>[
                 subCategryList.length > 0
@@ -333,6 +328,8 @@ class _AllProductsState extends State<AllProducts> {
                                                   subCatProductIndex =
                                                       subCategryByProduct
                                                           .length;
+                                                  isLoadingSubCatProductsList =
+                                                      true;
                                                 });
                                               }
 
@@ -364,6 +361,7 @@ class _AllProductsState extends State<AllProducts> {
                                             subCategryByProduct = [];
                                             subCatProductIndex =
                                                 subCategryByProduct.length;
+                                            isLoadingSubCatProductsList = true;
                                           });
                                         }
 
@@ -450,6 +448,8 @@ class _AllProductsState extends State<AllProducts> {
                                                           subCatProductIndex =
                                                               subCategryByProduct
                                                                   .length;
+                                                          isLoadingSubCatProductsList =
+                                                              true;
                                                         });
                                                       }
                                                       getProductToSubCategory(
@@ -592,9 +592,7 @@ class _AllProductsState extends State<AllProducts> {
               ]),
       ),
       bottomNavigationBar: cartData == null
-          ? Container(
-              height: 10.0,
-            )
+          ? Container(height: 10.0)
           : InkWell(
               onTap: () {
                 var result = Navigator.push(

@@ -9,13 +9,13 @@ Client client =
 
 class LoginService {
   // register user
-  static Future signUp(body) async {
-    return client
-        .post(Constants.apiUrl + "/users/register", body: json.encode(body))
-        .then((response) {
-      return json.decode(response.body);
-    });
-  }
+  // static Future signUp(body) async {
+  //   return client
+  //       .post(Constants.apiUrl + "/users/register", body: json.encode(body))
+  //       .then((response) {
+  //     return json.decode(response.body);
+  //   });
+  // }
 
   // user login
   static Future signIn(body) async {
@@ -147,7 +147,6 @@ class LoginService {
 
   // get all wallet history
   static Future<Map<String, dynamic>> getWalletsHistory(index, limit) async {
-    print(Constants.apiUrl + "/wallets/history?limit=$limit&page=$index");
     return client
         .get(Constants.apiUrl + "/wallets/history?limit=$limit&page=$index")
         .then((response) {

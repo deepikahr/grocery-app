@@ -86,7 +86,7 @@ class ProductService {
   // get all home page data
   static Future<Map<String, dynamic>> getProdCatDealTopDeal() async {
     return client
-        .get(Constants.apiUrl + "/Products/home")
+        .get(Constants.apiUrl + "/products/home")
         .then((response) async {
       await Common.setAllData(json.decode(response.body));
 
@@ -95,9 +95,10 @@ class ProductService {
   }
 
   // search product
-  static Future<dynamic> getSearchList(status) async {
+  static Future<dynamic> getSearchList(status, index, limit) async {
     return client
-        .get(Constants.apiUrl + '/products/search?q=$status')
+        .get(Constants.apiUrl +
+            '/products/search?q=$status&limit=$limit&page=$index')
         .then((response) {
       return json.decode(response.body);
     });

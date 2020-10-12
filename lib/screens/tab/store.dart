@@ -405,11 +405,10 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                             ],
                             shape: BoxShape.circle,
                             image: DecorationImage(
-                                image: imageProvider,
-                                fit: BoxFit.cover),
+                                image: imageProvider, fit: BoxFit.cover),
                           ),
                         ),
-                        placeholder: (context, url) =>Container(
+                        placeholder: (context, url) => Container(
                             decoration: BoxDecoration(
                               boxShadow: [
                                 BoxShadow(
@@ -421,7 +420,6 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                             height: 134,
                             width: 134,
                             child: noDataImage()),
-                      
                         errorWidget: (context, url, error) => Container(
                             decoration: BoxDecoration(
                               boxShadow: [
@@ -601,8 +599,10 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                       "% " +
                                       MyLocalizations.of(context)
                                           .getLocalizations("OFF"))))),
-                  placeholder: (context, url) =>
-                      Container(width: 150, margin: EdgeInsets.only(right: 15), child: noDataImage()),
+                  placeholder: (context, url) => Container(
+                      width: 150,
+                      margin: EdgeInsets.only(right: 15),
+                      child: noDataImage()),
                   errorWidget: (context, url, error) => Container(
                       width: 150,
                       margin: EdgeInsets.only(right: 15),

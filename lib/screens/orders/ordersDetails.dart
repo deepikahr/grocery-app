@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
+import 'package:readymadeGroceryApp/screens/orders/rateDelivery.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -35,19 +38,30 @@ class _OrderDetailsState extends State<OrderDetails> {
   var orderHistory;
   String currency;
   double rating;
+  Timer timer;
   var createdAt;
   @override
   void initState() {
     getOrderHistory();
     super.initState();
-  }
-
-  getOrderHistory() async {
     if (mounted) {
       setState(() {
         isLoading = true;
       });
     }
+    timer =
+        Timer.periodic(Duration(seconds: 15), (Timer t) => getOrderHistory());
+  }
+
+  @override
+  void dispose() {
+    if (timer != null && timer.isActive) {
+      timer.cancel();
+    }
+    super.dispose();
+  }
+
+  getOrderHistory() async {
     await Common.getCurrency().then((value) {
       currency = value;
     });
@@ -238,11 +252,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                     "STRIPE"
                                                 ? "PAY_BY_CARD"
                                                 : orderHistory['order']
-                                                            ['paymentType'] ==
-                                                        "WALLET"
-                                                    ? "WALLET"
-                                                    : orderHistory['order']
-                                                        ['paymentType'])),
+                                                    ['paymentType'])),
                                     SizedBox(height: 10),
                                     buildOrderDetilsText(
                                         context,
@@ -253,28 +263,12 @@ class _OrderDetailsState extends State<OrderDetails> {
                                     buildOrderDetilsStatusText(
                                         context,
                                         "ORDER_STAUS",
-                                        (orderHistory['order']['orderStatus'] ==
-                                                "DELIVERED"
-                                            ? "DELIVERED"
-                                            : orderHistory['order']
-                                                        ['orderStatus'] ==
-                                                    "CANCELLED"
-                                                ? "CANCELLED"
-                                                : orderHistory['order']
-                                                            ['orderStatus'] ==
-                                                        "OUT_FOR_DELIVERY"
-                                                    ? "OUT_FOR_DELIVERY"
-                                                    : orderHistory['order'][
-                                                                'orderStatus'] ==
-                                                            "CONFIRMED"
-                                                        ? "CONFIRMED"
-                                                        : orderHistory['order'][
-                                                                    'orderStatus'] ==
-                                                                "PENDING"
-                                                            ? "PENDING"
-                                                            : orderHistory[
-                                                                    'order'][
-                                                                'orderStatus'])),
+                                        orderHistory['order']['orderStatus']),
+                                    SizedBox(height: 10),
+                                    buildOrderDetilsStatusText(
+                                        context,
+                                        "PAYMENT_STATUS",
+                                        orderHistory['order']['paymentStatus']),
                                   ],
                                 ),
                               ),
@@ -301,44 +295,21 @@ class _OrderDetailsState extends State<OrderDetails> {
                                   horizontal: 10, vertical: 3),
                               child: Row(
                                 children: <Widget>[
-                                  CachedNetworkImage(
-                                    imageUrl: order['filePath'] == null
-                                        ? order['imageUrl']
-                                        : Constants.imageUrlPath +
-                                            "/tr:dpr-auto,tr:w-500" +
-                                            order['filePath'],
-                                    imageBuilder: (context, imageProvider) =>
-                                        Container(
-                                      height: 75,
-                                      width: 99,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5)),
-                                        boxShadow: [
-                                          BoxShadow(
-                                              color: Color(0xFF0000000A),
-                                              blurRadius: 0.40)
-                                        ],
-                                        image: DecorationImage(
-                                            image: imageProvider,
-                                            fit: BoxFit.cover),
-                                      ),
-                                    ),
-                                    placeholder: (context, url) => Container(
-                                        height: 75,
-                                        width: 99,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(5)),
-                                          boxShadow: [
-                                            BoxShadow(
-                                                color: Color(0xFF0000000A),
-                                                blurRadius: 0.40)
-                                          ],
-                                        ),
-                                        child: noDataImage()),
-                                    errorWidget: (context, url, error) =>
-                                        Container(
+                                  (order["productImages"] != null &&
+                                          order["productImages"].length > 0)
+                                      ? CachedNetworkImage(
+                                          imageUrl: order["productImages"][0]
+                                                      ['filePath'] ==
+                                                  null
+                                              ? order["productImages"][0]
+                                                  ['imageUrl']
+                                              : Constants.imageUrlPath +
+                                                  "/tr:dpr-auto,tr:w-500" +
+                                                  order["productImages"][0]
+                                                      ['filePath'],
+                                          imageBuilder:
+                                              (context, imageProvider) =>
+                                                  Container(
                                             height: 75,
                                             width: 99,
                                             decoration: BoxDecoration(
@@ -349,9 +320,101 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                     color: Color(0xFF0000000A),
                                                     blurRadius: 0.40)
                                               ],
+                                              image: DecorationImage(
+                                                  image: imageProvider,
+                                                  fit: BoxFit.cover),
                                             ),
-                                            child: noDataImage()),
-                                  ),
+                                          ),
+                                          placeholder: (context, url) =>
+                                              Container(
+                                                  height: 75,
+                                                  width: 99,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(5)),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                          color: Color(
+                                                              0xFF0000000A),
+                                                          blurRadius: 0.40)
+                                                    ],
+                                                  ),
+                                                  child: noDataImage()),
+                                          errorWidget: (context, url, error) =>
+                                              Container(
+                                                  height: 75,
+                                                  width: 99,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(5)),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                          color: Color(
+                                                              0xFF0000000A),
+                                                          blurRadius: 0.40)
+                                                    ],
+                                                  ),
+                                                  child: noDataImage()),
+                                        )
+                                      : CachedNetworkImage(
+                                          imageUrl: order['filePath'] == null
+                                              ? order['imageUrl']
+                                              : Constants.imageUrlPath +
+                                                  "/tr:dpr-auto,tr:w-500" +
+                                                  order['filePath'],
+                                          imageBuilder:
+                                              (context, imageProvider) =>
+                                                  Container(
+                                            height: 75,
+                                            width: 99,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(5)),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    color: Color(0xFF0000000A),
+                                                    blurRadius: 0.40)
+                                              ],
+                                              image: DecorationImage(
+                                                  image: imageProvider,
+                                                  fit: BoxFit.cover),
+                                            ),
+                                          ),
+                                          placeholder: (context, url) =>
+                                              Container(
+                                                  height: 75,
+                                                  width: 99,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(5)),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                          color: Color(
+                                                              0xFF0000000A),
+                                                          blurRadius: 0.40)
+                                                    ],
+                                                  ),
+                                                  child: noDataImage()),
+                                          errorWidget: (context, url, error) =>
+                                              Container(
+                                                  height: 75,
+                                                  width: 99,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(5)),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                          color: Color(
+                                                              0xFF0000000A),
+                                                          blurRadius: 0.40)
+                                                    ],
+                                                  ),
+                                                  child: noDataImage()),
+                                        ),
                                   SizedBox(width: 17),
                                   Container(
                                     width:
@@ -482,8 +545,9 @@ class _OrderDetailsState extends State<OrderDetails> {
                                   context,
                                   null,
                                   MyLocalizations.of(context)
-                                      .getLocalizations("USED_WALLET_AMOUNT"),
-                                  currency +
+                                      .getLocalizations("PAID_FORM_WALLET"),
+                                  "-" +
+                                      currency +
                                       orderHistory['cart']['walletAmount']
                                           .toStringAsFixed(2),
                                   false),
@@ -503,11 +567,12 @@ class _OrderDetailsState extends State<OrderDetails> {
                                     buildPriceBold(
                                         context,
                                         null,
-                                        currency +
-                                            MyLocalizations.of(context)
-                                                .getLocalizations("DISCOUNT"),
-                                        orderHistory['cart']['couponAmount']
-                                            .toStringAsFixed(2),
+                                        MyLocalizations.of(context)
+                                            .getLocalizations("DISCOUNT"),
+                                        "-" +
+                                            currency +
+                                            orderHistory['cart']['couponAmount']
+                                                .toStringAsFixed(2),
                                         false),
                                   ],
                                 ),
@@ -534,17 +599,49 @@ class _OrderDetailsState extends State<OrderDetails> {
                           false),
                     ),
                     SizedBox(height: 6),
-                    orderHistory['order']['orderStatus'] == "DELIVERED" ||
-                            orderHistory['order']['orderStatus'] == "CANCELLED"
-                        ? Container()
-                        : InkWell(
-                            onTap: orderCancelMethod,
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 15.0),
-                              child: buttonPrimary(context, "CANCEL_ORDER",
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      child:
+                          orderHistory['order']['orderStatus'] == "DELIVERED" ||
+                                  orderHistory['order']['orderStatus'] ==
+                                      "CANCELLED"
+                              ? Container()
+                              : InkWell(
+                                  onTap: orderCancelMethod,
+                                  child: orderHistory['order']['orderStatus'] ==
+                                          "PENDING"
+                                      ? buttonPrimary(context, "CANCEL_ORDER",
+                                          isOrderCancleLoading)
+                                      : Container(),
+                                ),
+                    ),
+                    orderHistory['order']['isDeliveryBoyRated'] == false &&
+                            orderHistory['order']['orderStatus'] == "DELIVERED"
+                        ? Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 15.0),
+                            child: InkWell(
+                              onTap: () {
+                                var result = Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => RateDelivery(
+                                        locale: widget.locale,
+                                        localizedValues: widget.localizedValues,
+                                        orderHistory: orderHistory),
+                                  ),
+                                );
+                                result.then((value) {
+                                  if (value != null && value == true) {
+                                    getOrderHistory();
+                                  }
+                                });
+                              },
+                              child: buttonPrimary(context, "RATE_DELIVERY",
                                   isOrderCancleLoading),
-                            )),
+                            ),
+                          )
+                        : Container(),
                     SizedBox(height: 20),
                   ],
                 ),

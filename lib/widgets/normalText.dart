@@ -36,8 +36,62 @@ Widget walletText(BuildContext context, title, subTitle, idOrderId) {
     mainAxisAlignment: MainAxisAlignment.start,
     children: <Widget>[
       Text(
-        MyLocalizations.of(context).getLocalizations(title, true) + subTitle,
+        MyLocalizations.of(context).getLocalizations(title, true) +
+            MyLocalizations.of(context).getLocalizations(subTitle),
         style: idOrderId ? textbarlowmedium() : textSMBarlowRegularrBlack(),
+      ),
+    ],
+  );
+}
+
+Widget walletTransaction1(BuildContext context, title, subTitle) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.start,
+    children: <Widget>[
+      Row(
+        children: [
+          Text(
+            MyLocalizations.of(context).getLocalizations(title) + ' : ',
+            style: textBarlowSemiboldblack(),
+          ),
+          Text(
+            MyLocalizations.of(context).getLocalizations(subTitle),
+            style: textBarlowRegularBlackdl(),
+          ),
+        ],
+      ),
+    ],
+  );
+}
+
+Widget textTransactionAmount(BuildContext context, title, subTitle) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.start,
+    children: <Widget>[
+      Row(
+        children: [
+          Text(
+            MyLocalizations.of(context).getLocalizations(title, true),
+            style: textBarlowRegularBlackdl(),
+          ),
+          Text(
+            MyLocalizations.of(context).getLocalizations(subTitle),
+            style: textBarlowSemiboldGreen(),
+          ),
+        ],
+      ),
+    ],
+  );
+}
+
+Widget walletTransaction(BuildContext context, title, subTitle) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.start,
+    children: <Widget>[
+      Text(
+        MyLocalizations.of(context).getLocalizations(title, true) +
+            MyLocalizations.of(context).getLocalizations(subTitle),
+        style: textBarlowRegularBlackdl(),
       ),
     ],
   );
@@ -715,4 +769,82 @@ orderPlaceText(BuildContext context, title) {
 
 thankuImage() {
   return Image.asset('lib/assets/images/thank-you.png');
+}
+
+walletImage() {
+  return Image.asset('lib/assets/images/wallet.png');
+}
+
+// walletIcon() {
+//   return Image.asset(
+//     'lib/assets/images/walleticon.png',
+//     width: 38,
+//     height: 36,
+//   );
+// }
+
+walletCard1(BuildContext context, title, subtitle, price) {
+  return Container(
+    padding: EdgeInsets.all(15),
+    decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [BoxShadow(color: Colors.black54, blurRadius: 0)]),
+    child: Row(
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              MyLocalizations.of(context).getLocalizations(title),
+              style: textbarlowRegularBlackd(),
+            ),
+            Text(
+              MyLocalizations.of(context).getLocalizations(subtitle) + ' : ',
+              style: textbarlowRegularBlackd(),
+            ),
+            SizedBox(height: 5),
+            Text(
+              MyLocalizations.of(context).getLocalizations(price),
+              style: textBarlowSemiboldGreen(),
+            ),
+          ],
+        ),
+        SizedBox(width: 30),
+        Image.asset('lib/assets/images/walleticon.png', width: 38, height: 36)
+      ],
+    ),
+  );
+}
+
+walletCard2(BuildContext context, title, subtitle, subtitle1) {
+  return Container(
+    padding: EdgeInsets.all(15),
+    decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [BoxShadow(color: Colors.black54, blurRadius: 0)]),
+    child: Row(
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(MyLocalizations.of(context).getLocalizations(title),
+                style: textbarlowRegularBlackd()),
+            Text(MyLocalizations.of(context).getLocalizations(subtitle),
+                style: textbarlowRegularBlackd()),
+            SizedBox(height: 5),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(MyLocalizations.of(context).getLocalizations(subtitle1),
+                    style: textBarlowSemiboldPrimary()),
+                Icon(Icons.keyboard_arrow_right, color: primary, size: 15)
+              ],
+            ),
+          ],
+        ),
+        SizedBox(width: 17),
+        Image.asset('lib/assets/images/walleticon.png', width: 38, height: 36)
+      ],
+    ),
+  );
 }

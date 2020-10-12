@@ -9,13 +9,14 @@ import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/drawer/address.dart';
 import 'package:readymadeGroceryApp/screens/orders/orders.dart';
 import 'package:readymadeGroceryApp/screens/tab/editprofile.dart';
-import 'package:readymadeGroceryApp/screens/tab/walletHistory.dart';
+import 'package:readymadeGroceryApp/screens/tab/wallet.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
+import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
@@ -31,6 +32,8 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   var userInfo, walletAmount;
   bool isGetTokenLoading = false,
       isLanguageSelecteLoading = false,
@@ -176,32 +179,37 @@ class _ProfileState extends State<Profile> {
     Common.getSelectedLanguage().then((selectedLocale) async {
       Map body = {"language": selectedLocale, "playerId": null};
       LoginService.updateUserInfo(body).then((value) async {
-        print(value);
-        await Common.setToken(null);
-        await Common.setUserID(null);
-        main();
+        showSnackbar(
+            MyLocalizations.of(context).getLocalizations("LOGOUT_SUCCESSFULL"));
+        Future.delayed(Duration(milliseconds: 1500), () async {
+          await Common.setToken(null);
+          await Common.setUserID(null);
+          await Common.setCartData(null);
+          await Common.setCartDataCount(0);
+          main();
+        });
       });
     });
+  }
+
+  void showSnackbar(message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(milliseconds: 3000),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Color(0xFFFDFDFD),
       appBar: isGetTokenLoading
           ? null
           : token == null
               ? null
-              : GFAppBar(
-                  elevation: 0,
-                  title: Text(
-                    MyLocalizations.of(context).getLocalizations("PROFILE"),
-                    style: textbarlowSemiBoldBlack(),
-                  ),
-                  centerTitle: true,
-                  backgroundColor: primary,
-                  automaticallyImplyLeading: false,
-                ),
+              : appBarPrimary(context, "PROFILE"),
       body: isGetTokenLoading || isGetLanguagesListLoading
           ? SquareLoader()
           : token == null
@@ -347,20 +355,18 @@ class _ProfileState extends State<Profile> {
                                           '${userInfo['email'] ?? ""}'),
                                       SizedBox(height: 6),
                                       normalText(context,
-                                          '${userInfo['mobileNumber'].toString() ?? ""}'),
+                                          '${userInfo['countryCode'] ?? ""}${userInfo['mobileNumber'] ?? ""}'),
                                       SizedBox(height: 6),
-                                      walletAmount != null && walletAmount > 0
-                                          ? normalText(
-                                              context,
-                                              (MyLocalizations.of(context)
+                                      normalText(
+                                          context,
+                                          (MyLocalizations.of(context)
                                                       .getLocalizations(
-                                                          "TOTAL_WALLET_AMOUNT",
-                                                          true) +
+                                                          "WALLET", true) +
                                                   currency +
                                                   walletAmount
                                                       .toDouble()
-                                                      .toStringAsFixed(2)))
-                                          : Container(),
+                                                      .toStringAsFixed(2) ??
+                                              "0"))
                                     ],
                                   ),
                                 ),
@@ -374,9 +380,8 @@ class _ProfileState extends State<Profile> {
                                           Padding(
                                             padding: EdgeInsets.only(top: 45),
                                             child: SvgPicture.asset(
-                                              'lib/assets/icons/editt.svg',
-                                              color: primary,
-                                            ),
+                                                'lib/assets/icons/editt.svg',
+                                                color: primary),
                                           )
                                         ],
                                       )
@@ -393,28 +398,25 @@ class _ProfileState extends State<Profile> {
                               var result = Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => WalletHistory(
-                                    locale: widget.locale,
-                                    localizedValues: widget.localizedValues,
-                                  ),
+                                  builder: (context) => WalletPage(
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues),
                                 ),
                               );
                               result.then((value) => getToken());
                             },
-                            child: profileText(context, "WALLET_HISTORY")),
+                            child: profileText(context, "WALLET")),
                         SizedBox(height: 15),
                         InkWell(
                             onTap: () {
-                              var result = Navigator.push(
+                              Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => Address(
-                                    locale: widget.locale,
-                                    localizedValues: widget.localizedValues,
-                                  ),
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues),
                                 ),
                               );
-                              result.then((value) => getToken());
                             },
                             child: profileText(context, "ADDRESS")),
                         languagesList.length > 0
@@ -434,10 +436,8 @@ class _ProfileState extends State<Profile> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => Orders(
-                                    locale: widget.locale,
-                                    localizedValues: widget.localizedValues,
-                                    userID: userID,
-                                  ),
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues),
                                 ),
                               );
                               result.then((value) => getToken());
@@ -446,16 +446,14 @@ class _ProfileState extends State<Profile> {
                         SizedBox(height: 15),
                         InkWell(
                             onTap: () {
-                              var result = Navigator.push(
+                              Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => ChangePassword(
-                                    locale: widget.locale,
-                                    localizedValues: widget.localizedValues,
-                                  ),
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues),
                                 ),
                               );
-                              result.then((value) => getToken());
                             },
                             child: profileText(context, "CHANGE_PASSWORD")),
                         SizedBox(height: 15),
