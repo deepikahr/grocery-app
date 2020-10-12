@@ -122,7 +122,9 @@ class _SavedItemsState extends State<SavedItems> {
     return Scaffold(
       appBar: isGetTokenLoading
           ? null
-          : token == null ? null : appBarTransparent(context, "FAVORITE"),
+          : token == null
+              ? null
+              : appBarTransparent(context, "FAVORITE"),
       body: isGetTokenLoading
           ? SquareLoader()
           : token == null

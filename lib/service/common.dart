@@ -118,4 +118,14 @@ class Common {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return Future(() => prefs.getString('currency'));
   }
+
+  static Future<bool> setCountryInfo(String data) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setString('countryInfo', data);
+  }
+
+  static Future<String> getCountryInfo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return Future(() => prefs.getString("countryInfo"));
+  }
 }

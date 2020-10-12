@@ -16,7 +16,6 @@ class ApiInterceptor implements InterceptorContract {
     await Common.getToken().then((onValue) {
       token = onValue;
     });
-
     try {
       data.headers['Content-Type'] = 'application/json';
       data.headers['language'] = languageCode;

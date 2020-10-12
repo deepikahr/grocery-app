@@ -21,11 +21,17 @@ import '../../main.dart';
 SentryError sentryError = new SentryError();
 
 class DrawerPage extends StatefulWidget {
-  DrawerPage({Key key, this.locale, this.localizedValues, this.addressData})
+  DrawerPage(
+      {Key key,
+      this.locale,
+      this.localizedValues,
+      this.addressData,
+      this.scaffoldKey})
       : super(key: key);
 
   final Map localizedValues;
   final String locale, addressData;
+  final scaffoldKey;
   @override
   _DrawerPageState createState() => _DrawerPageState();
 }
@@ -83,7 +89,8 @@ class _DrawerPageState extends State<DrawerPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0),
-                  child: _buildMenuTileList('lib/assets/icons/Home.png', "HOME_PAGE",
+                  child: _buildMenuTileList(
+                      'lib/assets/icons/Home.png', "HOME_PAGE",
                       route: Home(
                         locale: widget.locale,
                         localizedValues: widget.localizedValues,
@@ -208,11 +215,26 @@ class _DrawerPageState extends State<DrawerPage> {
     Common.getSelectedLanguage().then((selectedLocale) async {
       Map body = {"language": selectedLocale, "playerId": null};
       LoginService.updateUserInfo(body).then((value) async {
-        await Common.setToken(null);
-        await Common.setUserID(null);
-        main();
+        Navigator.pop(context);
+        showSnackbar(
+            MyLocalizations.of(context).getLocalizations("LOGOUT_SUCCESSFULL"));
+        Future.delayed(Duration(milliseconds: 1500), () async {
+          await Common.setToken(null);
+          await Common.setUserID(null);
+          await Common.setCartData(null);
+          await Common.setCartDataCount(0);
+          main();
+        });
       });
     });
+  }
+
+  void showSnackbar(message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(milliseconds: 3000),
+    );
+    widget.scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   Widget _buildMenuTileList(icon, name, {Widget route}) {

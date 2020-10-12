@@ -825,6 +825,14 @@ TextStyle textbarlowmediumwhite() {
       color: Colors.white);
 }
 
+TextStyle textbarlowmediumwhitee() {
+  return TextStyle(
+      fontSize: 16.0,
+      fontWeight: FontWeight.w500,
+      fontFamily: 'BarlowMedium',
+      color: Colors.white);
+}
+
 TextStyle textbarlowmediumwhitedull() {
   return TextStyle(
       fontSize: 10.0,
@@ -1007,6 +1015,35 @@ TextStyle textBarlowSemiBoldwbig() {
   );
 }
 
+TextStyle textBarlowSemiboldGreen() {
+  return TextStyle(
+    fontSize: 14.0,
+    fontFamily: 'BarlowSemiBold',
+    color: Color(0xFF20C978),
+  );
+}
+
+TextStyle textBarlowSemiboldPrimary() {
+  return TextStyle(
+    fontSize: 14.0,
+    fontFamily: 'BarlowSemiBold',
+    color: primary,
+  );
+}
+
+TextStyle textBarlowSemiboldPrimaryy() {
+  return TextStyle(
+    fontSize: 16.0,
+    fontFamily: 'BarlowSemiBold',
+    color: primary,
+  );
+}
+
+TextStyle textBarlowSemiboldblack() {
+  return TextStyle(
+      fontSize: 14.0, fontFamily: 'BarlowSemiBold', color: Colors.black);
+}
+
 ///barlow medium///
 
 TextStyle textbarlowMediumBlack() {
@@ -1078,6 +1115,15 @@ TextStyle textBarlowMediumsmBlack() {
     fontWeight: FontWeight.w400,
     fontFamily: 'BarlowMedium',
     color: Colors.black,
+  );
+}
+
+TextStyle textBarlowMediumsmBlackk() {
+  return TextStyle(
+    fontSize: 16.0,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'BarlowMedium',
+    color: Colors.black.withOpacity(0.87),
   );
 }
 
@@ -1212,6 +1258,22 @@ TextStyle textbarlowRegularad() {
     fontSize: 16.0,
     fontFamily: 'BarlowRegular',
     color: Colors.black.withOpacity(0.50),
+  );
+}
+
+TextStyle textbarlowRegularaddwithop() {
+  return TextStyle(
+    fontSize: 16.0,
+    fontFamily: 'BarlowRegular',
+    color: Colors.black.withOpacity(0.37),
+  );
+}
+
+TextStyle textbarlowRegularadark() {
+  return TextStyle(
+    fontSize: 16.0,
+    fontFamily: 'BarlowRegular',
+    color: Colors.black,
   );
 }
 

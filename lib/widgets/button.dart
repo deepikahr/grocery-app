@@ -8,7 +8,7 @@ import 'package:readymadeGroceryApp/widgets/loader.dart';
 Widget buttonPrimary(BuildContext context, title, isLoading) {
   return Container(
     height: 55,
-    margin: EdgeInsets.only(top: 30, bottom: 20),
+    margin: EdgeInsets.only(top: 10, bottom: 10),
     decoration: BoxDecoration(color: primary, boxShadow: [
       BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 5)
     ]),
@@ -25,13 +25,9 @@ Widget buttonPrimary(BuildContext context, title, isLoading) {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              MyLocalizations.of(context).getLocalizations(title),
-              style: textBarlowRegularBlack(),
-            ),
-            SizedBox(
-              height: 10,
-            ),
+            Text(MyLocalizations.of(context).getLocalizations(title),
+                style: textBarlowRegularBlack()),
+            SizedBox(height: 10),
             isLoading ? GFLoader(type: GFLoaderType.ios) : Text("")
           ],
         ),
@@ -140,6 +136,23 @@ Widget primaryOutlineButton(BuildContext context, title) {
           MyLocalizations.of(context).getLocalizations(title),
           style: textbarlowRegularaPrimar(),
         ),
+      ],
+    ),
+  );
+}
+
+Widget primarySolidButtonSmall(BuildContext context, title) {
+  return GFButton(
+    borderSide: BorderSide(color: primary),
+    type: GFButtonType.solid,
+    color: primary,
+    size: GFSize.SMALL,
+    onPressed: null,
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text(MyLocalizations.of(context).getLocalizations(title),
+            style: textbarlowRegularadark()),
       ],
     ),
   );
@@ -294,9 +307,7 @@ Widget checkoutButton(
         boxShadow: [
           BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 6)
         ],
-        borderRadius: BorderRadius.all(
-          Radius.circular(5),
-        ),
+        borderRadius: BorderRadius.all(Radius.circular(5)),
       ),
       child: RawMaterialButton(
         onPressed: null,
@@ -321,20 +332,12 @@ Widget checkoutButton(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  SizedBox(
-                    height: 8.0,
-                  ),
-                  Text(
-                    total,
-                    style: textBarlowRegularWhite(),
-                  ),
-                  SizedBox(
-                    height: 1.0,
-                  ),
-                  new Text(
-                    price,
-                    style: textbarlowBoldWhite(),
-                  ),
+                  SizedBox(height: 8.0),
+                  Text(MyLocalizations.of(context).getLocalizations(total),
+                      style: textBarlowRegularWhite()),
+                  SizedBox(height: 1.0),
+                  new Text(MyLocalizations.of(context).getLocalizations(price),
+                      style: textbarlowBoldWhite()),
                 ],
               ),
             ),

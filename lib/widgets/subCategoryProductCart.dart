@@ -190,29 +190,58 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                 ClipRRect(
                   borderRadius:
                       const BorderRadius.vertical(top: Radius.circular(12)),
-                  child: CachedNetworkImage(
-                    imageUrl: widget.productData['filePath'] != null
-                        ? Constants.imageUrlPath +
-                            "/tr:dpr-auto,tr:w-500" +
-                            widget.productData['filePath']
-                        : widget.productData['imageUrl'],
-                    imageBuilder: (context, imageProvider) => Container(
-                      width: MediaQuery.of(context).size.width * 0.5,
-                      height: 123,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: imageProvider, fit: BoxFit.cover),
-                      ),
-                    ),
-                    placeholder: (context, url) => Container(
-                        width: MediaQuery.of(context).size.width * 0.5,
-                        height: 123,
-                        child: noDataImage()),
-                    errorWidget: (context, url, error) => Container(
-                        width: MediaQuery.of(context).size.width * 0.5,
-                        height: 123,
-                        child: noDataImage()),
-                  ),
+                  child: (widget.productData['productImages'] != null &&
+                          widget.productData['productImages'].length > 0)
+                      ? CachedNetworkImage(
+                          imageUrl: widget.productData['productImages'][0]
+                                      ['filePath'] !=
+                                  null
+                              ? Constants.imageUrlPath +
+                                  "/tr:dpr-auto,tr:w-500" +
+                                  widget.productData['productImages'][0]
+                                      ['filePath']
+                              : widget.productData['productImages'][0]
+                                  ['imageUrl'],
+                          imageBuilder: (context, imageProvider) => Container(
+                            width: MediaQuery.of(context).size.width * 0.5,
+                            height: 123,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: imageProvider, fit: BoxFit.cover),
+                            ),
+                          ),
+                          placeholder: (context, url) => Container(
+                              width: MediaQuery.of(context).size.width * 0.5,
+                              height: 123,
+                              child: noDataImage()),
+                          errorWidget: (context, url, error) => Container(
+                              width: MediaQuery.of(context).size.width * 0.5,
+                              height: 123,
+                              child: noDataImage()),
+                        )
+                      : CachedNetworkImage(
+                          imageUrl: widget.productData['filePath'] != null
+                              ? Constants.imageUrlPath +
+                                  "/tr:dpr-auto,tr:w-500" +
+                                  widget.productData['filePath']
+                              : widget.productData['imageUrl'],
+                          imageBuilder: (context, imageProvider) => Container(
+                            width: MediaQuery.of(context).size.width * 0.5,
+                            height: 123,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: imageProvider, fit: BoxFit.cover),
+                            ),
+                          ),
+                          placeholder: (context, url) => Container(
+                              width: MediaQuery.of(context).size.width * 0.5,
+                              height: 123,
+                              child: noDataImage()),
+                          errorWidget: (context, url, error) => Container(
+                              width: MediaQuery.of(context).size.width * 0.5,
+                              height: 123,
+                              child: noDataImage()),
+                        ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 8, right: 8, top: 8),

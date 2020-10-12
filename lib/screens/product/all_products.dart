@@ -117,8 +117,8 @@ class _AllProductsState extends State<AllProducts> {
       }
       setState(() {
         isNewProductsLoading = true;
+        getProductListMethod(productIndex);
       });
-      getProductListMethod(productIndex);
     }).catchError((error) {
       if (mounted) {
         setState(() {
@@ -142,12 +142,12 @@ class _AllProductsState extends State<AllProducts> {
             if (lastApiCall == true) {
               productIndex++;
               if (index < totalProduct) {
-                getProductListMethod(index);
+                getProductListMethod(productIndex);
               } else {
                 if (index == totalProduct) {
                   if (mounted) {
                     lastApiCall = false;
-                    getProductListMethod(index);
+                    getProductListMethod(productIndex);
                   }
                 }
               }
