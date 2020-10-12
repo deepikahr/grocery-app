@@ -235,6 +235,9 @@ class _CheckoutState extends State<Checkout> {
                 addressRadioValueChanged(i);
               }
             }
+          } else if (addressList.length > 0 &&
+              cartItem['deliveryAddress'] == null) {
+            addressRadioValueChanged(0);
           }
         });
       }
@@ -497,8 +500,7 @@ class _CheckoutState extends State<Checkout> {
                                       ? Container()
                                       : buildPrice(
                                           context,
-                                          Image.asset(
-                                              'lib/assets/icons/sale.png'),
+                                          null,
                                           cartItem['taxInfo'] == null
                                               ? MyLocalizations.of(context)
                                                   .getLocalizations("TAX")
@@ -531,7 +533,7 @@ class _CheckoutState extends State<Checkout> {
                                                         MyLocalizations.of(
                                                                     context)
                                                                 .getLocalizations(
-                                                                    "COUPON_APPLIED") +
+                                                                    "COUPON_DISCOUNT") +
                                                             " (" +
                                                             "${cartItem['couponCode']}"
                                                                 ")",
@@ -559,7 +561,7 @@ class _CheckoutState extends State<Checkout> {
                                                         context,
                                                         null,
                                                         "",
-                                                        '$currency${cartItem['couponAmount'].toDouble().toStringAsFixed(2)}',
+                                                        '-$currency${cartItem['couponAmount'].toDouble().toStringAsFixed(2)}',
                                                         false),
                                                   ],
                                                 ),
@@ -644,9 +646,9 @@ class _CheckoutState extends State<Checkout> {
                                   ),
                                   SizedBox(height: 20),
                                   Divider(
-                                    color: Color(0xFF707070).withOpacity(0.20),
-                                    thickness: 1,
-                                  ),
+                                      color:
+                                          Color(0xFF707070).withOpacity(0.20),
+                                      thickness: 1),
                                   SizedBox(height: 10),
                                   isDeliveryChargeFree == true
                                       ? buildPrice(
@@ -676,21 +678,29 @@ class _CheckoutState extends State<Checkout> {
                                           null,
                                           MyLocalizations.of(context)
                                               .getLocalizations(
-                                                  "USED_WALLET_AMOUNT"),
-                                          '$currency${cartItem['walletAmount'].toDouble().toStringAsFixed(2)}',
+                                                  "PAID_FORM_WALLET"),
+                                          '-$currency${cartItem['walletAmount'].toDouble().toStringAsFixed(2)}',
                                           false)
                                       : Container(),
                                   cartItem['walletAmount'] > 0
                                       ? SizedBox(height: 10)
                                       : Container(),
+                                  Divider(
+                                      color:
+                                          Color(0xFF707070).withOpacity(0.20),
+                                      thickness: 1),
                                   buildPrice(
                                       context,
                                       null,
                                       MyLocalizations.of(context)
-                                          .getLocalizations("TOTAL"),
+                                          .getLocalizations("PAYABLE_AMOUNT"),
                                       '$currency${cartItem['grandTotal'].toDouble().toStringAsFixed(2)}',
                                       false),
-                                  SizedBox(height: 20),
+                                  Divider(
+                                      color:
+                                          Color(0xFF707070).withOpacity(0.20),
+                                      thickness: 1),
+                                  SizedBox(height: 5),
                                   buildBoldText(context, "DELIVERY_ADDESS"),
                                 ],
                               ),

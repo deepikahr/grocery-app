@@ -435,40 +435,33 @@ class _MyCartState extends State<MyCart> {
                                           Flexible(
                                             flex: 3,
                                             fit: FlexFit.tight,
-                                            child: CachedNetworkImage(
-                                              imageUrl: cartItem['products'][i]
-                                                          ['filePath'] ==
-                                                      null
-                                                  ? cartItem['products'][i]
-                                                      ['imageUrl']
-                                                  : Constants.imageUrlPath +
-                                                      "/tr:dpr-auto,tr:w-500" +
-                                                      cartItem['products'][i]
-                                                          ['filePath'],
-                                              imageBuilder:
-                                                  (context, imageProvider) =>
-                                                      Container(
-                                                height: 90,
-                                                width: 117,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(6)),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.black
-                                                          .withOpacity(0.10),
-                                                      blurRadius: 5,
-                                                    )
-                                                  ],
-                                                  image: DecorationImage(
-                                                      image: imageProvider,
-                                                      fit: BoxFit.cover),
-                                                ),
-                                              ),
-                                              placeholder: (context, url) =>
-                                                  Container(
+                                            child: (cartItem['products'][i]
+                                                            ['productImages'] !=
+                                                        null &&
+                                                    cartItem['products'][i][
+                                                                'productImages']
+                                                            .length >
+                                                        0)
+                                                ? CachedNetworkImage(
+                                                    imageUrl: cartItem['products']
+                                                                        [i]
+                                                                    ['productImages'][0]
+                                                                ['filePath'] ==
+                                                            null
+                                                        ? cartItem['products']
+                                                                    [i]
+                                                                ['productImages']
+                                                            [0]['imageUrl']
+                                                        : Constants
+                                                                .imageUrlPath +
+                                                            "/tr:dpr-auto,tr:w-500" +
+                                                            cartItem['products']
+                                                                        [i]
+                                                                    ['productImages']
+                                                                [0]['filePath'],
+                                                    imageBuilder: (context,
+                                                            imageProvider) =>
+                                                        Container(
                                                       height: 90,
                                                       width: 117,
                                                       decoration: BoxDecoration(
@@ -485,11 +478,80 @@ class _MyCartState extends State<MyCart> {
                                                             blurRadius: 5,
                                                           )
                                                         ],
+                                                        image: DecorationImage(
+                                                            image:
+                                                                imageProvider,
+                                                            fit: BoxFit.cover),
                                                       ),
-                                                      child: noDataImage()),
-                                              errorWidget: (context, url,
-                                                      error) =>
-                                                  Container(
+                                                    ),
+                                                    placeholder: (context,
+                                                            url) =>
+                                                        Container(
+                                                            height: 90,
+                                                            width: 117,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color:
+                                                                  Colors.white,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .all(Radius
+                                                                          .circular(
+                                                                              6)),
+                                                              boxShadow: [
+                                                                BoxShadow(
+                                                                  color: Colors
+                                                                      .black
+                                                                      .withOpacity(
+                                                                          0.10),
+                                                                  blurRadius: 5,
+                                                                )
+                                                              ],
+                                                            ),
+                                                            child:
+                                                                noDataImage()),
+                                                    errorWidget: (context, url,
+                                                            error) =>
+                                                        Container(
+                                                            height: 90,
+                                                            width: 117,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color:
+                                                                  Colors.white,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .all(Radius
+                                                                          .circular(
+                                                                              6)),
+                                                              boxShadow: [
+                                                                BoxShadow(
+                                                                  color: Colors
+                                                                      .black
+                                                                      .withOpacity(
+                                                                          0.10),
+                                                                  blurRadius: 5,
+                                                                )
+                                                              ],
+                                                            ),
+                                                            child:
+                                                                noDataImage()),
+                                                  )
+                                                : CachedNetworkImage(
+                                                    imageUrl: cartItem['products']
+                                                                    [i]
+                                                                ['filePath'] ==
+                                                            null
+                                                        ? cartItem['products']
+                                                            [i]['imageUrl']
+                                                        : Constants
+                                                                .imageUrlPath +
+                                                            "/tr:dpr-auto,tr:w-500" +
+                                                            cartItem['products']
+                                                                [i]['filePath'],
+                                                    imageBuilder: (context,
+                                                            imageProvider) =>
+                                                        Container(
                                                       height: 90,
                                                       width: 117,
                                                       decoration: BoxDecoration(
@@ -506,9 +568,65 @@ class _MyCartState extends State<MyCart> {
                                                             blurRadius: 5,
                                                           )
                                                         ],
+                                                        image: DecorationImage(
+                                                            image:
+                                                                imageProvider,
+                                                            fit: BoxFit.cover),
                                                       ),
-                                                      child: noDataImage()),
-                                            ),
+                                                    ),
+                                                    placeholder: (context,
+                                                            url) =>
+                                                        Container(
+                                                            height: 90,
+                                                            width: 117,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color:
+                                                                  Colors.white,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .all(Radius
+                                                                          .circular(
+                                                                              6)),
+                                                              boxShadow: [
+                                                                BoxShadow(
+                                                                  color: Colors
+                                                                      .black
+                                                                      .withOpacity(
+                                                                          0.10),
+                                                                  blurRadius: 5,
+                                                                )
+                                                              ],
+                                                            ),
+                                                            child:
+                                                                noDataImage()),
+                                                    errorWidget: (context, url,
+                                                            error) =>
+                                                        Container(
+                                                            height: 90,
+                                                            width: 117,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color:
+                                                                  Colors.white,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .all(Radius
+                                                                          .circular(
+                                                                              6)),
+                                                              boxShadow: [
+                                                                BoxShadow(
+                                                                  color: Colors
+                                                                      .black
+                                                                      .withOpacity(
+                                                                          0.10),
+                                                                  blurRadius: 5,
+                                                                )
+                                                              ],
+                                                            ),
+                                                            child:
+                                                                noDataImage()),
+                                                  ),
                                           ),
                                           SizedBox(width: 10),
                                           Flexible(
@@ -754,9 +872,9 @@ class _MyCartState extends State<MyCart> {
                                   MyLocalizations.of(context)
                                           .getLocalizations("COUPON_APPLIED") +
                                       " (" +
-                                      "${MyLocalizations.of(context).getLocalizations("DISCOUNT")}"
+                                      "${cartItem['couponCode']}"
                                           ")",
-                                  '$currency${cartItem['couponAmount'].toDouble().toStringAsFixed(2)}',
+                                  '-$currency${cartItem['couponAmount'].toDouble().toStringAsFixed(2)}',
                                   false)),
                       cartItem['couponCode'] == null
                           ? Container()

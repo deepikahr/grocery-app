@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
-import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/otp-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
@@ -12,14 +12,14 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 SentryError sentryError = new SentryError();
 
 class ResetPassword extends StatefulWidget {
-  final String verificationToken, locale, email;
+  final String locale, mobileNumber, token;
   final Map localizedValues;
   ResetPassword(
       {Key key,
-      this.verificationToken,
+      this.token,
       this.localizedValues,
       this.locale,
-      this.email})
+      this.mobileNumber})
       : super(key: key);
 
   @override
@@ -31,8 +31,8 @@ class _ResetPasswordState extends State<ResetPassword> {
   final TextEditingController _passwordTextController = TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  String password1;
-  String password2;
+  String newpassword;
+  String confirmpassword;
   bool success = false, passwordVisible = true, passwordVisible1 = true;
 
   bool isResetPasswordLoading = false;
@@ -47,11 +47,11 @@ class _ResetPasswordState extends State<ResetPassword> {
         });
       }
       Map<String, dynamic> body = {
-        "newPassword": password1,
-        "email": widget.email,
-        "verificationToken": widget.verificationToken
+        "newPassword": newpassword,
+        "mobileNumber": widget.mobileNumber,
+        "verificationToken": widget.token
       };
-      await LoginService.resetPassword(body).then((onValue) {
+      await OtpService.resetPasswordWithNumber(body).then((onValue) {
         if (mounted) {
           setState(() {
             isResetPasswordLoading = false;
@@ -65,27 +65,23 @@ class _ResetPasswordState extends State<ResetPassword> {
               content: new SingleChildScrollView(
                 child: new ListBody(
                   children: <Widget>[
-                    new Text(
-                      '${onValue['response_data']}',
-                      style: textBarlowRegularBlack(),
-                    ),
+                    new Text('${onValue['response_data']}',
+                        style: textBarlowRegularBlack()),
                   ],
                 ),
               ),
               actions: <Widget>[
                 new FlatButton(
                   child: new Text(
-                    MyLocalizations.of(context).getLocalizations("OK"),
-                    style: textbarlowRegularaPrimary(),
-                  ),
+                      MyLocalizations.of(context).getLocalizations("OK"),
+                      style: textbarlowRegularaPrimary()),
                   onPressed: () {
                     Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
                           builder: (BuildContext context) => Login(
-                            locale: widget.locale,
-                            localizedValues: widget.localizedValues,
-                          ),
+                              locale: widget.locale,
+                              localizedValues: widget.localizedValues),
                         ),
                         (Route<dynamic> route) => false);
                   },
@@ -132,50 +128,46 @@ class _ResetPasswordState extends State<ResetPassword> {
                   padding: const EdgeInsets.only(
                       left: 20.0, right: 20.0, bottom: 10.0),
                   child: TextFormField(
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      errorBorder: OutlineInputBorder(
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
+                        errorBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 0, color: Color(0xFFF44242))),
+                        errorStyle: TextStyle(color: Color(0xFFF44242)),
+                        contentPadding: EdgeInsets.all(10),
+                        enabledBorder: const OutlineInputBorder(
                           borderSide:
-                              BorderSide(width: 0, color: Color(0xFFF44242))),
-                      errorStyle: TextStyle(color: Color(0xFFF44242)),
-                      contentPadding: EdgeInsets.all(10),
-                      enabledBorder: const OutlineInputBorder(
-                        borderSide:
-                            const BorderSide(color: Colors.grey, width: 0.0),
-                      ),
-                      suffixIcon: InkWell(
-                        onTap: () {
-                          if (mounted) {
-                            setState(() {
-                              passwordVisible1 = !passwordVisible1;
-                            });
-                          }
-                        },
-                        child: Icon(
-                          Icons.remove_red_eye,
-                          color: Colors.grey,
+                              const BorderSide(color: Colors.grey, width: 0.0),
+                        ),
+                        suffixIcon: InkWell(
+                          onTap: () {
+                            if (mounted) {
+                              setState(() {
+                                passwordVisible1 = !passwordVisible1;
+                              });
+                            }
+                          },
+                          child: Icon(Icons.remove_red_eye, color: Colors.grey),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: primary),
                         ),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: primary),
-                      ),
-                    ),
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return MyLocalizations.of(context)
-                            .getLocalizations("ENTER_PASSWORD");
-                      } else if (value.length < 6) {
-                        return MyLocalizations.of(context)
-                            .getLocalizations("ERROR_PASS");
-                      } else
-                        return null;
-                    },
-                    controller: _passwordTextController,
-                    onSaved: (String value) {
-                      password1 = value;
-                    },
-                    obscureText: passwordVisible1,
-                  ),
+                      validator: (String value) {
+                        if (value.isEmpty) {
+                          return MyLocalizations.of(context)
+                              .getLocalizations("ENTER_PASSWORD");
+                        } else if (value.length < 6) {
+                          return MyLocalizations.of(context)
+                              .getLocalizations("ERROR_PASS");
+                        } else
+                          return null;
+                      },
+                      controller: _passwordTextController,
+                      onSaved: (String value) {
+                        newpassword = value;
+                      },
+                      obscureText: passwordVisible1),
                 ),
               ),
               Padding(
@@ -188,55 +180,51 @@ class _ResetPasswordState extends State<ResetPassword> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 20.0, right: 20.0),
                   child: TextFormField(
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      errorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 0,
-                          color: Color(0xFFF44242),
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 0,
+                            color: Color(0xFFF44242),
+                          ),
+                        ),
+                        errorStyle: TextStyle(color: Color(0xFFF44242)),
+                        contentPadding: EdgeInsets.all(10),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.grey, width: 0.0),
+                        ),
+                        suffixIcon: InkWell(
+                          onTap: () {
+                            if (mounted) {
+                              setState(() {
+                                passwordVisible = !passwordVisible;
+                              });
+                            }
+                          },
+                          child: Icon(Icons.remove_red_eye, color: Colors.grey),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: primary),
                         ),
                       ),
-                      errorStyle: TextStyle(color: Color(0xFFF44242)),
-                      contentPadding: EdgeInsets.all(10),
-                      enabledBorder: const OutlineInputBorder(
-                        borderSide:
-                            const BorderSide(color: Colors.grey, width: 0.0),
-                      ),
-                      suffixIcon: InkWell(
-                        onTap: () {
-                          if (mounted) {
-                            setState(() {
-                              passwordVisible = !passwordVisible;
-                            });
-                          }
-                        },
-                        child: Icon(
-                          Icons.remove_red_eye,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: primary),
-                      ),
-                    ),
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return MyLocalizations.of(context)
-                            .getLocalizations("ENTER_PASSWORD");
-                      } else if (value.length < 6) {
-                        return MyLocalizations.of(context)
-                            .getLocalizations("ERROR_PASS");
-                      } else if (_passwordTextController.text != value) {
-                        return MyLocalizations.of(context)
-                            .getLocalizations("PASS_NOT_MATCH");
-                      } else
-                        return null;
-                    },
-                    onSaved: (String value) {
-                      password2 = value;
-                    },
-                    obscureText: passwordVisible,
-                  ),
+                      validator: (String value) {
+                        if (value.isEmpty) {
+                          return MyLocalizations.of(context)
+                              .getLocalizations("ENTER_PASSWORD");
+                        } else if (value.length < 6) {
+                          return MyLocalizations.of(context)
+                              .getLocalizations("ERROR_PASS");
+                        } else if (_passwordTextController.text != value) {
+                          return MyLocalizations.of(context)
+                              .getLocalizations("PASS_NOT_MATCH");
+                        } else
+                          return null;
+                      },
+                      onSaved: (String value) {
+                        confirmpassword = value;
+                      },
+                      obscureText: passwordVisible),
                 ),
               ),
               InkWell(

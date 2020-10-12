@@ -379,7 +379,7 @@ class _AddAddressState extends State<AddAddress> {
                 Padding(
                     padding: const EdgeInsets.only(
                         left: 20.0, bottom: 5.0, right: 20.0),
-                    child: addressPage(context, "CONTACT_NUMBER")),
+                    child: addressPage(context, "MOBILE_NUMBER")),
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
@@ -406,7 +406,7 @@ class _AddAddressState extends State<AddAddress> {
                     validator: (String value) {
                       if (value.isEmpty) {
                         return MyLocalizations.of(context)
-                            .getLocalizations("ENTER_CONTACT_NUMBER");
+                            .getLocalizations("ENTER_MOBILE_NUMBER");
                       } else
                         return null;
                     },

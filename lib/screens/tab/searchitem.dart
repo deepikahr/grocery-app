@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/model/counterModel.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
@@ -28,15 +30,18 @@ class SearchItem extends StatefulWidget {
 class _SearchItemState extends State<SearchItem> {
   final globalKey = new GlobalKey<ScaffoldState>();
   final TextEditingController _controller = new TextEditingController();
+  final GlobalKey<FormState> _formKeyForSearch = GlobalKey<FormState>();
   bool isSearching = false,
       isFirstTime = true,
       getTokenValue = false,
-      isTokenGetLoading = false;
-  List searchresult = new List();
+      isTokenGetLoading = false,
+      lastApiCall = true;
+  List searchresult = [];
   String cartId, searchTerm;
   var cartData;
   String currency;
-
+  int productLimt = 10, productIndex = 0, totalProduct = 1;
+  Timer timer;
   @override
   void initState() {
     getCurrency();
@@ -79,40 +84,70 @@ class _SearchItemState extends State<SearchItem> {
     });
   }
 
-  void _searchForProducts(String query) async {
-    searchTerm = query;
-    if (query.length > 2) {
+  @override
+  void dispose() {
+    if (timer != null && timer.isActive) {
+      timer.cancel();
+    }
+    super.dispose();
+  }
+
+  void _searchForProducts() async {
+    final form = _formKeyForSearch.currentState;
+    if (form.validate()) {
+      form.save();
       if (mounted) {
         setState(() {
           isFirstTime = false;
           isSearching = true;
-        });
-      }
-      ProductService.getSearchList(query).then((onValue) {
-        if (mounted) {
-          setState(() {
-            searchresult = onValue['response_data'];
-            isSearching = false;
+          searchData();
+          if (timer != null && timer.isActive) timer.cancel();
+          timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+            if (lastApiCall == false) {
+              productIndex++;
+              searchData();
+            }
           });
-        }
-      }).catchError((error) {
-        searchresult = [];
-        if (mounted) {
-          setState(() {
-            isSearching = false;
-          });
-        }
-        sentryError.reportError(error, null);
-      });
-    } else {
-      searchresult = [];
-      if (mounted) {
-        setState(() {
-          isFirstTime = true;
-          isSearching = false;
+          FocusScopeNode currentScope = FocusScope.of(context);
+          FocusScopeNode rootScope =
+              WidgetsBinding.instance.focusManager.rootScope;
+
+          if (currentScope != rootScope) {
+            currentScope.unfocus();
+          }
         });
       }
     }
+  }
+
+  searchData() {
+    setState(() {
+      lastApiCall = true;
+    });
+    ProductService.getSearchList(searchTerm, productIndex, productLimt)
+        .then((onValue) {
+      if (mounted) {
+        setState(() {
+          setState(() {
+            lastApiCall = false;
+          });
+          if (onValue['response_data'].length > 0) {
+            searchresult.addAll(onValue['response_data']);
+          } else {
+            if (timer != null && timer.isActive) timer.cancel();
+          }
+          isSearching = false;
+        });
+      }
+    }).catchError((error) {
+      searchresult = [];
+      if (mounted) {
+        setState(() {
+          isSearching = false;
+        });
+      }
+      sentryError.reportError(error, null);
+    });
   }
 
   @override
@@ -136,184 +171,239 @@ class _SearchItemState extends State<SearchItem> {
       key: globalKey,
       body: isTokenGetLoading
           ? SquareLoader()
-          : ListView(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(
-                      bottom: 15.0, left: 15.0, right: 15.0, top: 50.0),
-                  child: Container(
-                    child: new TextField(
-                      controller: _controller,
-                      style: new TextStyle(
-                        color: Colors.black,
-                      ),
-                      decoration: new InputDecoration(
-                        prefixIcon: InkWell(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child:
-                              new Icon(Icons.arrow_back, color: Colors.black),
-                        ),
-                        hintText: MyLocalizations.of(context)
-                            .getLocalizations("WHAT_ARE_YOU_BUING_TODAY"),
-                        fillColor: Color(0xFFF0F0F0),
-                        filled: true,
-                        focusColor: Colors.black,
-                        contentPadding: EdgeInsets.only(
-                          left: 15.0,
-                          right: 15.0,
-                          top: 10.0,
-                          bottom: 10.0,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary, width: 0.0),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
-                        ),
-                      ),
-                      onSubmitted: (String term) {
-                        searchTerm = term;
+          : Form(
+              key: _formKeyForSearch,
+              child: ListView(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        bottom: 15.0, left: 15.0, right: 15.0, top: 50.0),
+                    child: Container(
+                      child: new TextFormField(
+                        onEditingComplete: () {
+                          FocusScopeNode currentScope = FocusScope.of(context);
+                          FocusScopeNode rootScope =
+                              WidgetsBinding.instance.focusManager.rootScope;
 
-                        _searchForProducts(term);
-                      },
-                      onChanged: _searchForProducts,
+                          if (currentScope != rootScope) {
+                            currentScope.unfocus();
+                          }
+                          productIndex = 0;
+                          searchresult = [];
+                          _searchForProducts();
+                        },
+                        controller: _controller,
+                        style: new TextStyle(
+                          color: Colors.black,
+                        ),
+                        onSaved: (String value) {
+                          searchTerm = value;
+                        },
+                        validator: (String value) {
+                          if (value.isEmpty) {
+                            return MyLocalizations.of(context)
+                                .getLocalizations("WHAT_ARE_YOU_BUING_TODAY");
+                          } else
+                            return null;
+                        },
+                        decoration: new InputDecoration(
+                          suffixIcon: InkWell(
+                            onTap: () {
+                              FocusScopeNode currentScope =
+                                  FocusScope.of(context);
+                              FocusScopeNode rootScope = WidgetsBinding
+                                  .instance.focusManager.rootScope;
+
+                              if (currentScope != rootScope) {
+                                currentScope.unfocus();
+                              }
+                              productIndex = 0;
+                              searchresult = [];
+                              _searchForProducts();
+                            },
+                            child: new Icon(Icons.search, color: Colors.black),
+                          ),
+                          prefixIcon: InkWell(
+                            onTap: () {
+                              FocusScopeNode currentScope =
+                                  FocusScope.of(context);
+                              FocusScopeNode rootScope = WidgetsBinding
+                                  .instance.focusManager.rootScope;
+
+                              if (currentScope != rootScope) {
+                                currentScope.unfocus();
+                              }
+                              Navigator.pop(context);
+                            },
+                            child:
+                                new Icon(Icons.arrow_back, color: Colors.black),
+                          ),
+                          hintText: MyLocalizations.of(context)
+                              .getLocalizations("WHAT_ARE_YOU_BUING_TODAY"),
+                          fillColor: Color(0xFFF0F0F0),
+                          filled: true,
+                          focusColor: Colors.black,
+                          contentPadding: EdgeInsets.only(
+                              left: 15.0, right: 15.0, top: 10.0, bottom: 10.0),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: primary, width: 0.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: primary),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-                isFirstTime
-                    ? searchPage(
-                        context,
-                        "TYPE_TO_SEARCH",
-                        Icon(Icons.search, size: 50.0, color: primary),
-                      )
-                    : searchresult.length > 0
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 18.0,
-                                    bottom: 18.0,
-                                    left: 20.0,
-                                    right: 20),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text(
-                                        searchresult.length.toString() +
-                                            " " +
-                                            MyLocalizations.of(context)
-                                                .getLocalizations(
-                                                    "ITEMS_FOUNDS"),
-                                        style: textBarlowMediumBlack()),
-                                  ],
+                  isFirstTime
+                      ? searchPage(context, "TYPE_TO_SEARCH",
+                          Icon(Icons.search, size: 50.0, color: primary))
+                      : searchresult.length > 0
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 18.0,
+                                      bottom: 18.0,
+                                      left: 20.0,
+                                      right: 20),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text(
+                                          searchresult.length.toString() +
+                                              " " +
+                                              MyLocalizations.of(context)
+                                                  .getLocalizations(
+                                                      "ITEMS_FOUNDS"),
+                                          style: textBarlowMediumBlack()),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              GridView.builder(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 16, horizontal: 16),
-                                physics: ScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: searchresult.length == null
-                                    ? 0
-                                    : searchresult.length,
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2,
-                                        childAspectRatio:
-                                            MediaQuery.of(context).size.width /
-                                                520,
-                                        crossAxisSpacing: 16,
-                                        mainAxisSpacing: 16),
-                                itemBuilder: (BuildContext context, int index) {
-                                  if (searchresult[index]['averageRating'] ==
-                                      null) {
-                                    searchresult[index]['averageRating'] = 0;
-                                  }
-                                  return InkWell(
-                                    onTap: () {
-                                      var result = Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => ProductDetails(
-                                            locale: widget.locale,
-                                            localizedValues:
-                                                widget.localizedValues,
-                                            productID: searchresult[index]
-                                                ['_id'],
-                                          ),
-                                        ),
-                                      );
-                                      result.then((value) {
-                                        if (value != null) {
-                                          searchresult = [];
-                                          _searchForProducts(searchTerm);
+                                GridView.builder(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 16, horizontal: 16),
+                                  physics: ScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: searchresult.length == null
+                                      ? 0
+                                      : searchresult.length,
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 2,
+                                          childAspectRatio:
+                                              MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  520,
+                                          crossAxisSpacing: 16,
+                                          mainAxisSpacing: 16),
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    if (searchresult[index]['averageRating'] ==
+                                        null) {
+                                      searchresult[index]['averageRating'] = 0;
+                                    }
+                                    return InkWell(
+                                      onTap: () {
+                                        FocusScopeNode currentScope =
+                                            FocusScope.of(context);
+                                        FocusScopeNode rootScope =
+                                            WidgetsBinding.instance.focusManager
+                                                .rootScope;
+
+                                        if (currentScope != rootScope) {
+                                          currentScope.unfocus();
                                         }
-                                      });
-                                    },
-                                    child: Stack(
-                                      children: <Widget>[
-                                        SubCategoryProductCard(
-                                          currency: currency,
-                                          price: searchresult[index]['variant']
-                                              [0]['price'],
-                                          productData: searchresult[index],
-                                          variantList: searchresult[index]
-                                              ['variant'],
-                                          isHome: false,
-                                        ),
-                                        searchresult[index]
-                                                    ['isDealAvailable'] ==
-                                                true
-                                            ? buildBadge(
-                                                context,
-                                                searchresult[index]
-                                                        ['dealPercent']
-                                                    .toString(),
-                                                "OFF")
-                                            : Container()
-                                      ],
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
-                          )
-                        : isSearching
-                            ? Center(
-                                child: SquareLoader(),
-                              )
-                            : searchPage(
-                                context,
-                                "NO_RESULT_FOUNDS",
-                                Icon(Icons.hourglass_empty,
-                                    size: 50.0, color: primary),
-                              )
-              ],
+                                        var result = Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                ProductDetails(
+                                              locale: widget.locale,
+                                              localizedValues:
+                                                  widget.localizedValues,
+                                              productID: searchresult[index]
+                                                  ['_id'],
+                                            ),
+                                          ),
+                                        );
+                                        result.then((value) {
+                                          if (value != null) {
+                                            if (searchTerm.length > 0) {
+                                              productIndex = 0;
+                                              searchresult = [];
+                                              _searchForProducts();
+                                            }
+                                          }
+                                        });
+                                      },
+                                      child: Stack(
+                                        children: <Widget>[
+                                          SubCategoryProductCard(
+                                            currency: currency,
+                                            price: searchresult[index]
+                                                ['variant'][0]['price'],
+                                            productData: searchresult[index],
+                                            variantList: searchresult[index]
+                                                ['variant'],
+                                            isHome: false,
+                                          ),
+                                          searchresult[index]
+                                                      ['isDealAvailable'] ==
+                                                  true
+                                              ? buildBadge(
+                                                  context,
+                                                  searchresult[index]
+                                                          ['dealPercent']
+                                                      .toString(),
+                                                  "OFF")
+                                              : Container()
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            )
+                          : isSearching
+                              ? Center(child: SquareLoader())
+                              : searchPage(
+                                  context,
+                                  "NO_RESULT_FOUNDS",
+                                  Icon(Icons.hourglass_empty,
+                                      size: 50.0, color: primary),
+                                )
+                ],
+              ),
             ),
       bottomNavigationBar: cartData == null
           ? Container(height: 1)
           : InkWell(
               onTap: () {
+                FocusScopeNode currentScope = FocusScope.of(context);
+                FocusScopeNode rootScope =
+                    WidgetsBinding.instance.focusManager.rootScope;
+
+                if (currentScope != rootScope) {
+                  currentScope.unfocus();
+                }
                 var result = Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (BuildContext context) => Home(
-                      locale: widget.locale,
-                      localizedValues: widget.localizedValues,
-                      currentIndex: 2,
-                    ),
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                        currentIndex: 2),
                   ),
                 );
                 result.then((value) {
-                  if (searchTerm == null) {
-                    getCurrency();
-                  } else {
+                  if (searchTerm.length > 0) {
+                    productIndex = 0;
                     searchresult = [];
-                    _searchForProducts(searchTerm);
+                    _searchForProducts();
                   }
                 });
               },
