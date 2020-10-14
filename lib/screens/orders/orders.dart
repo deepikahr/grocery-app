@@ -265,23 +265,23 @@ class _OrdersState extends State<Orders> {
                     '${MyLocalizations.of(context).getLocalizations("ORDER_ID", true)}  #${orderDetails['orderID']}'),
                 orderPageText(context,
                     '${orderDetails['product']['title'][0].toUpperCase()}${orderDetails['product']['title'].substring(1)}'),
-                orderDetails['totalProduct'] == 1
-                    ? Container()
-                    : SizedBox(height: 5),
-                orderDetails['totalProduct'] == 1
-                    ? Container()
-                    : textLightSmall(
+                orderDetails['totalProduct'] > 1
+                    ? SizedBox(height: 5)
+                    : Container(),
+                orderDetails['totalProduct'] > 1
+                    ? textLightSmall(
                         MyLocalizations.of(context).getLocalizations("AND") +
-                            ' ${orderDetails['totalProduct'].toString()} ' +
+                            ' ${(orderDetails['totalProduct'] - 1).toString()} ' +
                             MyLocalizations.of(context)
                                 .getLocalizations("MORE_ITEMS"),
-                      ),
+                      )
+                    : Container(),
                 SizedBox(height: 10),
-                orderDetails['usedWalletAmount'] != null
+                orderDetails['grandTotal'] > 0
                     ? buildBoldText(context,
-                        '$currency${(orderDetails['grandTotal'] + orderDetails['usedWalletAmount']).toStringAsFixed(2)}')
+                        '$currency${orderDetails['grandTotal'].toStringAsFixed(2)}')
                     : buildBoldText(context,
-                        '$currency${orderDetails['grandTotal'].toStringAsFixed(2)}'),
+                        '$currency${orderDetails['usedWalletAmount'].toStringAsFixed(2)}'),
                 SizedBox(height: 10),
                 textLightSmall(MyLocalizations.of(context)
                         .getLocalizations("ORDERED", true) +

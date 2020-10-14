@@ -169,9 +169,7 @@ class _SavedItemsState extends State<SavedItems> {
                                   ),
                                 );
                                 result.then((value) {
-                                  if (value != null) {
-                                    getToken();
-                                  }
+                                  getToken();
                                 });
                               },
                               child: Stack(

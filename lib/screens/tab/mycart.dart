@@ -646,7 +646,7 @@ class _MyCartState extends State<MyCart> {
                                                 Row(
                                                   children: <Widget>[
                                                     priceMrpText(
-                                                        cartItem['products'][i][
+                                                     currency+   cartItem['products'][i][
                                                                     'productTotal']
                                                                 .toDouble()
                                                                 .toStringAsFixed(
