@@ -4,6 +4,7 @@ PODS:
   - Flutter (1.0.0)
   - fluttertoast (0.0.2):
     - Flutter
+    - Toast
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
@@ -21,10 +22,10 @@ PODS:
     - Flutter
   - location (0.0.1):
     - Flutter
-  - OneSignal (2.14.3)
-  - onesignal_flutter (2.6.0):
+  - OneSignal (2.15.2)
+  - onesignal_flutter (2.6.1):
     - Flutter
-    - OneSignal (= 2.14.3)
+    - OneSignal (= 2.15.2)
   - path_provider (0.0.1):
     - Flutter
   - screen (0.0.1):
@@ -40,6 +41,7 @@ PODS:
   - stripe_payment (1.0.0):
     - Flutter
     - Stripe (>= 19.0.1)
+  - Toast (4.0.0)
   - url_launcher (0.0.1):
     - Flutter
   - video_player (0.0.1):
@@ -75,6 +77,7 @@ SPEC REPOS:
     - GoogleMaps
     - OneSignal
     - Stripe
+    - Toast
 
 EXTERNAL SOURCES:
   device_info:
@@ -117,15 +120,15 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  fluttertoast: b644586ef3b16f67fae9a1f8754cef6b2d6b634b
+  fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geocoder: 3cfab70531a0b367e917bafe82df4c30f6d4c45a
   google_maps_flutter: c7f9c73576de1fbe152a227bfd6e6c4ae8088619
   GoogleMaps: f79af95cb24d869457b1f961c93d3ce8b2f3b848
   image_picker: 9c3312491f862b28d21ecd8fdf0ee14e601b3f09
   location: 3a2eed4dd2fab25e7b7baf2a9efefe82b512d740
-  OneSignal: 7dfe466265c05f02b95a274b9c997a0619ad2117
-  onesignal_flutter: 129551f13dc887d88aaf837e2cd823e1926e8159
+  OneSignal: 9531e385388565f4d31797ddadbe0fcc786430ec
+  onesignal_flutter: b4412973eac419ccce07363e43e0d6057c583a96
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   screen: abd91ca7bf3426e1cc3646d27e9b2358d6bf07b0
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410
@@ -133,6 +136,7 @@ SPEC CHECKSUMS:
   sqflite: 4001a31ff81d210346b500c55b17f4d6c7589dd0
   Stripe: 82a3aab0b1a66866eef581139a00adadcb2e6dc4
   stripe_payment: ad86f099179edb7b9fe12b9b62ac3746d5e56802
+  Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
   wakelock: 0d4a70faf8950410735e3f61fb15d517c8a6efc4
