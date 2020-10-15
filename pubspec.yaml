@@ -1,7 +1,7 @@
 name: readymadeGroceryApp
 description: Grocery user app
 
-version: 2.2.0+30
+version: 2.2.2+32
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
