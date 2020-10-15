@@ -1,9 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:http/http.dart';
+import 'package:http_interceptor/http_interceptor.dart';
 import 'package:readymadeGroceryApp/screens/authe/forgotpassword.dart';
 import 'package:readymadeGroceryApp/screens/authe/otp.dart';
 import 'package:readymadeGroceryApp/screens/authe/signup.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
+import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/intercepter.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/otp-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -13,6 +20,7 @@ import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 import '../../service/constants.dart';
+import 'facebook_register_details_page.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -240,6 +248,10 @@ class _LoginState extends State<Login> {
               buildcontinuetext(),
               SizedBox(height: 10),
               buildsignuplink(),
+              SizedBox(
+                height: 20,
+              ),
+              buildFacebookLoginButtonView()
             ],
           ),
         ),
@@ -398,5 +410,109 @@ class _LoginState extends State<Login> {
       duration: Duration(milliseconds: 3000),
     );
     _scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+
+  buildFacebookLoginButtonView() {
+    return InkWell(
+      onTap: loginFacebook,
+      child: Container(
+        decoration: BoxDecoration(
+            color: Colors.blue.shade700,
+            borderRadius: BorderRadius.all(Radius.circular(6))),
+        height: 50,
+        width: MediaQuery.of(context).size.width * 0.8,
+        child: Center(
+            child: Text(
+          MyLocalizations.of(context).getLocalizations("LOGIN_WITH_FACEBOOK"),
+          textAlign: TextAlign.center,
+          style: textbarlowmediumwhitee(),
+        )),
+      ),
+    );
+  }
+
+  void loginFacebook() async {
+    final facebookLogin = FacebookLogin();
+    facebookLogin.loginBehavior = FacebookLoginBehavior.webViewOnly;
+    final result = await facebookLogin.logIn(['email', 'public_profile']);
+    print(result.toString());
+    switch (result.status) {
+      case FacebookLoginStatus.loggedIn:
+        print(result.accessToken.token);
+        await LoginService.facebookLogin(result.accessToken.token)
+            .then((onValue) async {
+          if (onValue['response_code'] == 200) {
+            if (onValue['response_data']['role'] == 'USER') {
+              await Common.setToken(onValue['response_data']['token']);
+              if (widget.isCart == true) {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Home(
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                          currentIndex: 2),
+                    ),
+                    (Route<dynamic> route) => false);
+              } else if (widget.isProfile == true) {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Home(
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                          currentIndex: 3),
+                    ),
+                    (Route<dynamic> route) => false);
+              } else if (widget.isSaveItem == true) {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Home(
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                          currentIndex: 1),
+                    ),
+                    (Route<dynamic> route) => false);
+              } else if (widget.isProductDetails == true) {
+                Navigator.pop(context);
+              } else {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Home(
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                          currentIndex: 0),
+                    ),
+                    (Route<dynamic> route) => false);
+              }
+            } else {
+              showSnackbar(
+                  MyLocalizations.of(context).getLocalizations("INVAILD_USER"));
+            }
+          } else if (onValue['status'] == 400) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => FaceBookRegisterDetail(
+                  locale: widget.locale,
+                  localizedValues: widget.localizedValues,
+                  accessToken: result.accessToken.token,
+                ),
+              ),
+            );
+          }
+        }).catchError((onError) {
+          print("sakjfkas${onError.toString()}");
+        });
+        break;
+      case FacebookLoginStatus.cancelledByUser:
+        await facebookLogin.logOut();
+        break;
+      case FacebookLoginStatus.error:
+        print(result.errorMessage);
+        break;
+    }
   }
 }

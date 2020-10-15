@@ -46,6 +46,24 @@ class LoginService {
     });
   }
 
+  static Future facebookLogin(accessToken, {email, mobileNumber}) async {
+    return Client()
+        .get(Constants.apiUrl + "/users/fb-login?accessToken=$accessToken")
+        .then((response) {
+      return json.decode(response.body);
+    });
+  }
+
+  static Future facebookLoginMobile(
+      {accessToken,countryCode, countryName, mobileNumber}) async {
+    return Client()
+        .get(Constants.apiUrl +
+            "/users/fb-login?accessToken=$accessToken&countryCode=$countryCode&countryName=$countryName&mobileNumber=$mobileNumber")
+        .then((response) {
+      return json.decode(response.body);
+    });
+  }
+
   // reset password
   static Future resetPassword(body) async {
     return client
