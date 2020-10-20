@@ -1531,3 +1531,12 @@ TextStyle textbarlowRegularaddRed() {
     color: Colors.red,
   );
 }
+
+TextStyle textAddressLocationLow() {
+  return TextStyle(
+    fontSize: 20.0,
+    fontFamily: 'BarlowRegular',
+    fontWeight: FontWeight.w400,
+    color: Colors.black.withOpacity(0.6),
+  );
+}

@@ -39,6 +39,7 @@ dependencies:
   share: ^0.6.4+3
   device_info: ^0.4.2+6
   cached_network_image: ^2.2.0+1
+  connectivity: ^0.4.9+5
   flutter_localizations:
     sdk: flutter
 
@@ -106,6 +107,8 @@ flutter:
     - lib/assets/images/walleticon.png
     - lib/assets/images/rate.png
     - lib/assets/images/profileIcon.png
+    - lib/assets/images/noconnection.png
+
 
     - lib/assets/icons/tick.svg
     - lib/assets/icons/editt.svg
