@@ -1,10 +1,7 @@
 import 'dart:convert';
-
-import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http_interceptor/http_interceptor.dart';
+import 'package:readymadeGroceryApp/service/alert-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
 
 class ApiInterceptor implements InterceptorContract {
   @override
@@ -34,14 +31,7 @@ class ApiInterceptor implements InterceptorContract {
       for (int i = 0, l = errorData['errors'].length; i < l; i++) {
         msg += errorData['errors'][i] + '\n';
       }
-      Fluttertoast.showToast(
-          msg: msg,
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: primary,
-          textColor: Colors.black,
-          fontSize: 16.0);
+      AlertService().showToast(msg);
       return Future.error('Unexpected error 😢');
     } else if (data.statusCode == 401) {
       await Common.setToken(null);
