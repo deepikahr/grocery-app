@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -7,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
+import 'package:readymadeGroceryApp/service/alert-service.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
@@ -14,10 +14,8 @@ import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 
-import 'model/no-connection.dart';
-
 SentryError sentryError = new SentryError();
-Timer oneSignalTimer, connectivityTimer;
+Timer oneSignalTimer;
 
 void main() {
   initializeMain(isTest: false);
@@ -29,15 +27,16 @@ void initializeMain({bool isTest}) async {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarBrightness: Brightness.dark,
       statusBarIconBrightness: Brightness.dark));
-  runZoned<Future>(() {
-    runApp(MaterialApp(
-      home: AnimatedScreen(),
-      debugShowCheckedModeBanner: false,
-    ));
-    return Future.value(null);
-  }, onError: (error, stackTrace) {
-    sentryError.reportError(error, stackTrace);
-  });
+  AlertService().checkConnectionMethod();
+  if (isTest != null && !isTest) {
+    runZoned<Future>(() {
+      runApp(MaterialApp(
+          home: AnimatedScreen(), debugShowCheckedModeBanner: false));
+      return Future.value(null);
+    }, onError: (error, stackTrace) {
+      sentryError.reportError(error, stackTrace);
+    });
+  }
   initializeLanguage(isTest: isTest);
 }
 
@@ -48,10 +47,7 @@ void initializeLanguage({bool isTest}) async {
     });
     configLocalNotification();
   }
-  checkInternatConnection();
-  connectivityTimer = Timer.periodic(Duration(seconds: 10), (timer) {
-    checkInternatConnection();
-  });
+
   await Common.getSelectedLanguage().then((selectedLocale) async {
     Map localizedValues;
     String defaultLocale = '';
@@ -59,62 +55,25 @@ void initializeLanguage({bool isTest}) async {
     await LoginService.getLanguageJson(locale).then((value) async {
       localizedValues = value['response_data']['json'];
       locale = value['response_data']['languageCode'];
+      Common.setNoConnection({
+        "NO_INTERNET": value['response_data']['json'][locale]["NO_INTERNET"],
+        "ONLINE_MSG": value['response_data']['json'][locale]["ONLINE_MSG"],
+        "NO_INTERNET_MSG": value['response_data']['json'][locale]
+            ["NO_INTERNET_MSG"]
+      });
       await Common.setSelectedLanguage(locale);
-      String title, msg;
-      if (value['response_data']['json'][locale]['NO_INTERNET'] == null) {
-        title = "No Internet connection";
-      } else {
-        title = value['response_data']['json'][locale]['NO_INTERNET'];
-      }
-      if (value['response_data']['json'][locale]['NO_INTERNET_MSG'] == null) {
-        msg =
-            "requires an internet connection. Chcek you connection then try again.";
-      } else {
-        msg = value['response_data']['json'][locale]['NO_INTERNET_MSG'];
-      }
-      await Common.setNoConnection(
-          {"NO_INTERNET": title, "NO_INTERNET_MSG": msg});
       runZoned<Future>(() {
         runApp(MainScreen(
-          isTest: isTest,
-          locale: locale,
-          localizedValues: localizedValues,
-        ));
+            isTest: isTest,
+            locale: locale,
+            localizedValues: localizedValues,
+            isFirstTime: true));
         return Future.value(null);
       }, onError: (error, stackTrace) {
         sentryError.reportError(error, stackTrace);
       });
     });
   });
-}
-
-checkInternatConnection() async {
-  var connectivityResult = await (Connectivity().checkConnectivity());
-  if (connectivityResult == ConnectivityResult.none) {
-    Common.getNoConnection().then((value) {
-      String title, msg;
-      if (value == null) {
-        title = "No Internet connection";
-        msg =
-            "requires an internet connection. Chcek you connection then try again.";
-      } else {
-        title = value["NO_INTERNET"];
-        msg = value["NO_INTERNET_MSG"];
-      }
-      Common.setNoConnection({"NO_INTERNET": title, "NO_INTERNET_MSG": msg});
-      Common.getNoConnection().then((value) {
-        runZoned<Future<Null>>(() {
-          runApp(MaterialApp(
-              home: ConnectivityPage(
-                  title: value['NO_INTERNET'], msg: value['NO_INTERNET_MSG']),
-              debugShowCheckedModeBanner: false));
-          return Future.value(null);
-        }, onError: (error, stackTrace) {
-          sentryError.reportError(error, stackTrace);
-        });
-      });
-    });
-  }
 }
 
 void getToken() async {
@@ -165,38 +124,70 @@ Future<void> configLocalNotification() async {
   }
 }
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   final String locale;
   final Map localizedValues;
-  final bool isTest;
+  final bool isTest, isFirstTime;
 
-  MainScreen({Key key, this.locale, this.localizedValues, this.isTest});
+  MainScreen(
+      {Key key,
+      this.locale,
+      this.localizedValues,
+      this.isTest,
+      this.isFirstTime});
+
+  @override
+  _MainScreenState createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  void initState() {
+    Common.setSplash(false);
+    super.initState();
+  }
+
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      locale: Locale(locale),
+      locale: Locale(widget.locale),
       localizationsDelegates: [
-        MyLocalizationsDelegate(localizedValues, [locale]),
+        MyLocalizationsDelegate(widget.localizedValues, [widget.locale]),
         GlobalWidgetsLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
         DefaultCupertinoLocalizations.delegate
       ],
-      supportedLocales: [Locale(locale)],
+      supportedLocales: [Locale(widget.locale)],
       debugShowCheckedModeBanner: false,
       title: Constants.appName,
       theme: ThemeData(primaryColor: primary, accentColor: primary),
       home: Home(
-        isTest: isTest,
-        locale: locale,
-        localizedValues: localizedValues,
-      ),
+          isTest: widget.isTest,
+          locale: widget.locale,
+          localizedValues: widget.localizedValues),
     );
   }
 }
 
-class AnimatedScreen extends StatelessWidget {
+class AnimatedScreen extends StatefulWidget {
+  @override
+  _AnimatedScreenState createState() => _AnimatedScreenState();
+}
+
+class _AnimatedScreenState extends State<AnimatedScreen> {
+  void initState() {
+    Common.setSplash(true);
+    super.initState();
+  }
+
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

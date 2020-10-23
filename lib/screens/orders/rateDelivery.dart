@@ -22,7 +22,7 @@ class _RateDeliveryState extends State<RateDelivery> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKeyForLogin = GlobalKey<FormState>();
   String discription;
-  double ratingValue;
+  double ratingValue = 1.0;
   orderCancelMethod() async {
     final form = _formKeyForLogin.currentState;
     if (form.validate()) {

@@ -107,8 +107,6 @@ flutter:
     - lib/assets/images/walleticon.png
     - lib/assets/images/rate.png
     - lib/assets/images/profileIcon.png
-    - lib/assets/images/noconnection.png
-
 
     - lib/assets/icons/tick.svg
     - lib/assets/icons/editt.svg

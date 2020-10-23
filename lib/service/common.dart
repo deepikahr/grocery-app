@@ -143,4 +143,16 @@ class Common {
       return Future(() => null);
     }
   }
+
+  // save setSplash on storage
+  static Future<bool> setSplash(bool location) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setBool('setSplash', location);
+  }
+
+  // get setSplash from storage
+  static Future<bool> getSplash() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return Future(() => prefs.getBool('setSplash'));
+  }
 }
