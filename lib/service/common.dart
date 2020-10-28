@@ -128,4 +128,31 @@ class Common {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return Future(() => prefs.getString("countryInfo"));
   }
+
+  static Future<bool> setNoConnection(Map<String, dynamic> data) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setString('connection', json.encode(data));
+  }
+
+  static Future<Map<String, dynamic>> getNoConnection() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String info = prefs.getString('connection');
+    try {
+      return json.decode(info) as Map<String, dynamic>;
+    } catch (err) {
+      return Future(() => null);
+    }
+  }
+
+  // save setSplash on storage
+  static Future<bool> setSplash(bool location) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setBool('setSplash', location);
+  }
+
+  // get setSplash from storage
+  static Future<bool> getSplash() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return Future(() => prefs.getBool('setSplash'));
+  }
 }

@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
+import 'package:readymadeGroceryApp/service/alert-service.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
@@ -26,17 +27,16 @@ void initializeMain({bool isTest}) async {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarBrightness: Brightness.dark,
       statusBarIconBrightness: Brightness.dark));
-  // if (isTest != null && !isTest) {
-  runZoned<Future>(() {
-    runApp(MaterialApp(
-      home: AnimatedScreen(),
-      debugShowCheckedModeBanner: false,
-    ));
-    return Future.value(null);
-  }, onError: (error, stackTrace) {
-    sentryError.reportError(error, stackTrace);
-  });
-  // }
+  AlertService().checkConnectionMethod();
+  if (isTest != null && !isTest) {
+    runZoned<Future>(() {
+      runApp(MaterialApp(
+          home: AnimatedScreen(), debugShowCheckedModeBanner: false));
+      return Future.value(null);
+    }, onError: (error, stackTrace) {
+      sentryError.reportError(error, stackTrace);
+    });
+  }
   initializeLanguage(isTest: isTest);
 }
 
@@ -47,6 +47,7 @@ void initializeLanguage({bool isTest}) async {
     });
     configLocalNotification();
   }
+
   await Common.getSelectedLanguage().then((selectedLocale) async {
     Map localizedValues;
     String defaultLocale = '';
@@ -54,13 +55,19 @@ void initializeLanguage({bool isTest}) async {
     await LoginService.getLanguageJson(locale).then((value) async {
       localizedValues = value['response_data']['json'];
       locale = value['response_data']['languageCode'];
+      Common.setNoConnection({
+        "NO_INTERNET": value['response_data']['json'][locale]["NO_INTERNET"],
+        "ONLINE_MSG": value['response_data']['json'][locale]["ONLINE_MSG"],
+        "NO_INTERNET_MSG": value['response_data']['json'][locale]
+            ["NO_INTERNET_MSG"]
+      });
       await Common.setSelectedLanguage(locale);
       runZoned<Future>(() {
         runApp(MainScreen(
-          isTest: isTest,
-          locale: locale,
-          localizedValues: localizedValues,
-        ));
+            isTest: isTest,
+            locale: locale,
+            localizedValues: localizedValues,
+            isFirstTime: true));
         return Future.value(null);
       }, onError: (error, stackTrace) {
         sentryError.reportError(error, stackTrace);
@@ -117,38 +124,70 @@ Future<void> configLocalNotification() async {
   }
 }
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   final String locale;
   final Map localizedValues;
-  final bool isTest;
+  final bool isTest, isFirstTime;
 
-  MainScreen({Key key, this.locale, this.localizedValues, this.isTest});
+  MainScreen(
+      {Key key,
+      this.locale,
+      this.localizedValues,
+      this.isTest,
+      this.isFirstTime});
+
+  @override
+  _MainScreenState createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  void initState() {
+    Common.setSplash(false);
+    super.initState();
+  }
+
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      locale: Locale(locale),
+      locale: Locale(widget.locale),
       localizationsDelegates: [
-        MyLocalizationsDelegate(localizedValues, [locale]),
+        MyLocalizationsDelegate(widget.localizedValues, [widget.locale]),
         GlobalWidgetsLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
         DefaultCupertinoLocalizations.delegate
       ],
-      supportedLocales: [Locale(locale)],
+      supportedLocales: [Locale(widget.locale)],
       debugShowCheckedModeBanner: false,
       title: Constants.appName,
       theme: ThemeData(primaryColor: primary, accentColor: primary),
       home: Home(
-        isTest: isTest,
-        locale: locale,
-        localizedValues: localizedValues,
-      ),
+          isTest: widget.isTest,
+          locale: widget.locale,
+          localizedValues: widget.localizedValues),
     );
   }
 }
 
-class AnimatedScreen extends StatelessWidget {
+class AnimatedScreen extends StatefulWidget {
+  @override
+  _AnimatedScreenState createState() => _AnimatedScreenState();
+}
+
+class _AnimatedScreenState extends State<AnimatedScreen> {
+  void initState() {
+    Common.setSplash(true);
+    super.initState();
+  }
+
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
