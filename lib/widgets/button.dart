@@ -96,6 +96,35 @@ Widget productAddButton(BuildContext context, title, isLoading) {
   );
 }
 
+Widget subscribeButton(BuildContext context, title, isLoading) {
+  return Container(
+    height: 35,
+    padding: EdgeInsets.only(left: 15, right: 15, bottom: 5),
+    margin: EdgeInsets.only(top: 5),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.all(
+        Radius.circular(5),
+      ),
+      color: Color(0xFFF0F0F0),
+    ),
+    child: GFButton(
+      size: GFSize.LARGE,
+      color: Color(0xFFF0F0F0),
+      onPressed: null,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            MyLocalizations.of(context).getLocalizations(title),
+            style: textbarlowMediumBlackm(),
+          ),
+          isLoading ? GFLoader(type: GFLoaderType.ios) : Text("")
+        ],
+      ),
+    ),
+  );
+}
+
 Widget transparenttButton(BuildContext context, title, icon) {
   return Container(
     height: 35,

@@ -16,6 +16,15 @@ Widget appBarPrimary(BuildContext context, title) {
       iconTheme: IconThemeData(color: Colors.black));
 }
 
+Widget appBarPrimarynoradius(BuildContext context, title) {
+  return GFAppBar(
+      title: Text(MyLocalizations.of(context).getLocalizations(title),
+          style: textbarlowSemiBoldBlack()),
+      centerTitle: true,
+      backgroundColor: primary,
+      iconTheme: IconThemeData(color: Colors.black));
+}
+
 Widget appBarWhite(BuildContext context, title, bool changeUi,
     actionTrueOrFalse, Widget actionProcess) {
   return GFAppBar(

@@ -111,11 +111,13 @@ flutter:
     - lib/assets/images/copy.png
     - lib/assets/images/wapp.png
     - lib/assets/images/sms.png
+    - lib/assets/icons/map.png
     - lib/assets/images/copylink.png
 
     - lib/assets/icons/tick.svg
     - lib/assets/icons/editt.svg
     - lib/assets/icons/add1.svg
+    - lib/assets/icons/Refer.svg
 
     - lib/assets/icons/sale.png
     - lib/assets/icons/Home.png

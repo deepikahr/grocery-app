@@ -415,6 +415,15 @@ Widget referText(BuildContext context, title) {
   ));
 }
 
+Widget normallText(BuildContext context, title) {
+  return Container(
+    child: Text(
+      MyLocalizations.of(context).getLocalizations(title),
+      style: textbarlowMediumBlackmm(),
+    ),
+  );
+}
+
 Widget addressPage(BuildContext context, title) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.start,
@@ -867,10 +876,25 @@ regularText(BuildContext context, title) {
   );
 }
 
+regularTextatStart(BuildContext context, title) {
+  return Text(
+    MyLocalizations.of(context).getLocalizations(title),
+    style: textbarlowRegularBlackd(),
+  );
+}
+
 regularTextblack87(BuildContext context, title) {
   return Text(
     MyLocalizations.of(context).getLocalizations(title),
     textAlign: TextAlign.center,
     style: textbarlowRegularBlack87Font14(),
+  );
+}
+
+regularTextblackbold(BuildContext context, title) {
+  return Text(
+    MyLocalizations.of(context).getLocalizations(title),
+    textAlign: TextAlign.start,
+    style: textbarlowmediumwblack(),
   );
 }

@@ -8,6 +8,7 @@ import 'package:readymadeGroceryApp/screens/drawer/chatpage.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/orders/orders.dart';
 import 'package:readymadeGroceryApp/screens/product/all_deals.dart';
+import 'package:readymadeGroceryApp/screens/product/all_subscribed.dart';
 import 'package:readymadeGroceryApp/screens/product/all_products.dart';
 import 'package:readymadeGroceryApp/screens/drawer/TandC-PP.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
@@ -181,6 +182,14 @@ class _DrawerPageState extends State<DrawerPage> {
                       localizedValues: widget.localizedValues,
                       endPoint: "/pages/terms-and-conditions",
                       title: "TERMS_CONDITIONS"),
+                ),
+                _buildMenuTileList(
+                  '',
+                  "Subscription",
+                  route: AllSubscribed(
+                    locale: widget.locale,
+                    localizedValues: widget.localizedValues,
+                  ),
                 ),
                 _buildMenuTileList(
                   'lib/assets/icons/share.png',
