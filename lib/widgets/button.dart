@@ -37,6 +37,37 @@ Widget buttonPrimary(BuildContext context, title, isLoading) {
   );
 }
 
+Widget regularbuttonPrimary(BuildContext context, title) {
+  return Container(
+    height: 55,
+    margin: EdgeInsets.only(top: 10, bottom: 10),
+    decoration: BoxDecoration(color: primary, boxShadow: [
+      BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 5)
+    ]),
+    child: Padding(
+      padding: const EdgeInsets.only(
+        left: 0.0,
+        right: 0.0,
+      ),
+      child: GFButton(
+        size: GFSize.LARGE,
+        color: primary,
+        blockButton: true,
+        onPressed: null,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(MyLocalizations.of(context).getLocalizations(title),
+                style: textBarlowRegularBlack()),
+            SizedBox(height: 10),
+          ],
+        ),
+        textStyle: textBarlowRegularrBlack(),
+      ),
+    ),
+  );
+}
+
 Widget productAddButton(BuildContext context, title, isLoading) {
   return Container(
     height: 35,
@@ -177,6 +208,39 @@ Widget dottedBorderButton(BuildContext context, title) {
             style: textBarlowRegularBb(),
           ),
         ],
+      ),
+    ),
+  );
+}
+
+Widget dottedBorderButtonn(BuildContext context, title) {
+  return Container(
+    width: 193.0,
+    height: 45.0,
+    child: DottedBorder(
+      color: Color(0XFFBBBBBB),
+      dashPattern: [4, 2],
+      strokeWidth: 2,
+      padding: EdgeInsets.only(left: 10, right: 10),
+      child: GFButton(
+        type: GFButtonType.transparent,
+        color: GFColors.LIGHT,
+        // blockButton: false,
+        onPressed: null,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text(
+              MyLocalizations.of(context).getLocalizations(title),
+              style: textBarlowRegularBlackwithOpa(),
+            ),
+            Image.asset(
+              "lib/assets/images/copy.png",
+              width: 19,
+              height: 19,
+            )
+          ],
+        ),
       ),
     ),
   );

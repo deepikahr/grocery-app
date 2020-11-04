@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/categories/allcategories.dart';
 import 'package:readymadeGroceryApp/screens/drawer/about-us.dart';
+import 'package:readymadeGroceryApp/screens/drawer/referral.dart';
 import 'package:readymadeGroceryApp/screens/drawer/address.dart';
 import 'package:readymadeGroceryApp/screens/drawer/chatpage.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
@@ -180,6 +181,14 @@ class _DrawerPageState extends State<DrawerPage> {
                       localizedValues: widget.localizedValues,
                       endPoint: "/pages/terms-and-conditions",
                       title: "TERMS_CONDITIONS"),
+                ),
+                _buildMenuTileList(
+                  'lib/assets/icons/share.png',
+                  "REFERRAL",
+                  route: ReferralPage(
+                    locale: widget.locale,
+                    localizedValues: widget.localizedValues,
+                  ),
                 ),
                 InkWell(
                     onTap: () {

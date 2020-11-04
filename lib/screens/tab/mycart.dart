@@ -646,12 +646,14 @@ class _MyCartState extends State<MyCart> {
                                                 Row(
                                                   children: <Widget>[
                                                     priceMrpText(
-                                                     currency+   cartItem['products'][i][
-                                                                    'productTotal']
-                                                                .toDouble()
-                                                                .toStringAsFixed(
-                                                                    2)
-                                                                .toString() ??
+                                                        currency +
+                                                                cartItem['products']
+                                                                            [i][
+                                                                        'productTotal']
+                                                                    .toDouble()
+                                                                    .toStringAsFixed(
+                                                                        2)
+                                                                    .toString() ??
                                                             "",
                                                         cartItem['products'][i][
                                                                 'isDealAvailable']

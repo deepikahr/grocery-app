@@ -107,6 +107,11 @@ flutter:
     - lib/assets/images/walleticon.png
     - lib/assets/images/rate.png
     - lib/assets/images/profileIcon.png
+    - lib/assets/images/ref.png
+    - lib/assets/images/copy.png
+    - lib/assets/images/wapp.png
+    - lib/assets/images/sms.png
+    - lib/assets/images/copylink.png
 
     - lib/assets/icons/tick.svg
     - lib/assets/icons/editt.svg
