@@ -50,7 +50,7 @@ class Styles {
             unselectedItemColor: greyc2,
             selectedItemColor: primarybg),
         textSelectionTheme: TextSelectionThemeData(
-          cursorColor: isDarkTheme ? lightbg : darkbg,
+          cursorColor: isDarkTheme ? greyb2 : darkbg,
         ),
         appBarTheme: isDarkTheme
             ? AppBarTheme(brightness: Brightness.dark)

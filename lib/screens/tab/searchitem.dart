@@ -195,7 +195,7 @@ class _SearchItemState extends State<SearchItem> {
                         },
                         controller: _controller,
                         style: new TextStyle(
-                          color: dark(context),
+                          color: Colors.black,
                         ),
                         onSaved: (String value) {
                           searchTerm = value;
@@ -222,7 +222,7 @@ class _SearchItemState extends State<SearchItem> {
                               searchresult = [];
                               _searchForProducts();
                             },
-                            child: new Icon(Icons.search, color: dark(context)),
+                            child: new Icon(Icons.search, color: Colors.black),
                           ),
                           prefixIcon: InkWell(
                             onTap: () {
@@ -237,13 +237,16 @@ class _SearchItemState extends State<SearchItem> {
                               Navigator.pop(context);
                             },
                             child: new Icon(Icons.arrow_back,
-                                color: dark(context)),
+                                color: Colors.black),
                           ),
                           hintText: MyLocalizations.of(context)
                               .getLocalizations("WHAT_ARE_YOU_BUING_TODAY"),
+                          hintStyle:  new TextStyle(
+                            color: greyb2,
+                          ),
                           fillColor: Color(0xFFF0F0F0),
                           filled: true,
-                          focusColor: dark(context),
+                          focusColor: Colors.black,
                           contentPadding: EdgeInsets.only(
                               left: 15.0, right: 15.0, top: 10.0, bottom: 10.0),
                           enabledBorder: OutlineInputBorder(
