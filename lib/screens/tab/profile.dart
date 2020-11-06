@@ -142,7 +142,7 @@ class _ProfileState extends State<Profile> {
               height: 250,
               width: MediaQuery.of(context).size.width * 0.7,
               decoration: new BoxDecoration(
-                color: Colors.white,
+                color: cartCardBg(context),
                 borderRadius: new BorderRadius.all(
                   new Radius.circular(24.0),
                 ),
@@ -203,13 +203,13 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bg(context),
       key: _scaffoldKey,
-      backgroundColor: Color(0xFFFDFDFD),
       appBar: isGetTokenLoading
           ? null
           : token == null
               ? null
-              : appBarPrimary(context, "PROFILE"),
+              : appBarprimary(context, "PROFILE"),
       body: isGetTokenLoading || isGetLanguagesListLoading
           ? SquareLoader()
           : token == null
@@ -256,7 +256,7 @@ class _ProfileState extends State<Profile> {
                                               Radius.circular(27)),
                                           boxShadow: [
                                             BoxShadow(
-                                                color: Colors.black
+                                                color: dark(context)
                                                     .withOpacity(0.29),
                                                 blurRadius: 6)
                                           ]),
@@ -381,7 +381,7 @@ class _ProfileState extends State<Profile> {
                                             padding: EdgeInsets.only(top: 45),
                                             child: SvgPicture.asset(
                                                 'lib/assets/icons/editt.svg',
-                                                color: primary),
+                                                color: primarybg),
                                           )
                                         ],
                                       )

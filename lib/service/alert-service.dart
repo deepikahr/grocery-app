@@ -50,7 +50,7 @@ class AlertService {
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 1,
-        backgroundColor: primary,
+        backgroundColor: primarybg,
         textColor: Colors.black,
         fontSize: 16.0);
   }

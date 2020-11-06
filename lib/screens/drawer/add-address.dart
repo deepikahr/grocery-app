@@ -128,8 +128,9 @@ class _AddAddressState extends State<AddAddress> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarPrimary(context, "ADD_NEW_ADDRESS"),
+      appBar: appBarprimary(context, "ADD_NEW_ADDRESS"),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -145,7 +146,7 @@ class _AddAddressState extends State<AddAddress> {
                   child: TextFormField(
                       maxLines: 3,
                       controller: addressController,
-                      style: textBarlowRegularBlack(),
+                      style: textBarlowRegularBlack(context),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                         counterText: "",
@@ -158,8 +159,8 @@ class _AddAddressState extends State<AddAddress> {
                         errorStyle: TextStyle(
                           color: Color(0xFFF44242),
                         ),
-                        fillColor: Colors.black,
-                        focusColor: Colors.black,
+                        fillColor: dark(context),
+                        focusColor: dark(context),
                         contentPadding: EdgeInsets.only(
                           left: 15.0,
                           right: 15.0,
@@ -171,7 +172,7 @@ class _AddAddressState extends State<AddAddress> {
                               const BorderSide(color: Colors.grey, width: 0.0),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
+                          borderSide: BorderSide(color: primary(context)),
                         ),
                       ),
                       validator: (String value) {
@@ -196,7 +197,7 @@ class _AddAddressState extends State<AddAddress> {
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
                     maxLength: 14,
-                    style: textBarlowRegularBlack(),
+                    style: textBarlowRegularBlack(context),
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
                         errorBorder: OutlineInputBorder(
@@ -206,8 +207,8 @@ class _AddAddressState extends State<AddAddress> {
                           ),
                         ),
                         errorStyle: TextStyle(color: Color(0xFFF44242)),
-                        fillColor: Colors.black,
-                        focusColor: Colors.black,
+                        fillColor: dark(context),
+                        focusColor: dark(context),
                         contentPadding: EdgeInsets.only(
                           left: 15.0,
                           right: 15.0,
@@ -219,7 +220,7 @@ class _AddAddressState extends State<AddAddress> {
                               const BorderSide(color: Colors.grey, width: 0.0),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
+                          borderSide: BorderSide(color: primary(context)),
                         )),
                     validator: (String value) {
                       if (value.isEmpty) {
@@ -241,7 +242,7 @@ class _AddAddressState extends State<AddAddress> {
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
-                      style: textBarlowRegularBlack(),
+                      style: textBarlowRegularBlack(context),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                         errorBorder: OutlineInputBorder(
@@ -253,8 +254,8 @@ class _AddAddressState extends State<AddAddress> {
                         errorStyle: TextStyle(
                           color: Color(0xFFF44242),
                         ),
-                        fillColor: Colors.black,
-                        focusColor: Colors.black,
+                        fillColor: dark(context),
+                        focusColor: dark(context),
                         contentPadding: EdgeInsets.only(
                           left: 15.0,
                           right: 15.0,
@@ -266,7 +267,7 @@ class _AddAddressState extends State<AddAddress> {
                               const BorderSide(color: Colors.grey, width: 0.0),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
+                          borderSide: BorderSide(color: primary(context)),
                         ),
                       ),
                       validator: (String value) {
@@ -288,7 +289,7 @@ class _AddAddressState extends State<AddAddress> {
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
-                      style: textBarlowRegularBlack(),
+                      style: textBarlowRegularBlack(context),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                         errorBorder: OutlineInputBorder(
@@ -300,8 +301,8 @@ class _AddAddressState extends State<AddAddress> {
                         errorStyle: TextStyle(
                           color: Color(0xFFF44242),
                         ),
-                        fillColor: Colors.black,
-                        focusColor: Colors.black,
+                        fillColor: dark(context),
+                        focusColor: dark(context),
                         contentPadding: EdgeInsets.only(
                           left: 15.0,
                           right: 15.0,
@@ -313,7 +314,7 @@ class _AddAddressState extends State<AddAddress> {
                               const BorderSide(color: Colors.grey, width: 0.0),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
+                          borderSide: BorderSide(color: primary(context)),
                         ),
                       ),
                       validator: (String value) {
@@ -335,7 +336,7 @@ class _AddAddressState extends State<AddAddress> {
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
-                      style: textBarlowRegularBlack(),
+                      style: textBarlowRegularBlack(context),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                         counterText: "",
@@ -348,8 +349,8 @@ class _AddAddressState extends State<AddAddress> {
                         errorStyle: TextStyle(
                           color: Color(0xFFF44242),
                         ),
-                        fillColor: Colors.black,
-                        focusColor: Colors.black,
+                        fillColor: dark(context),
+                        focusColor: dark(context),
                         contentPadding: EdgeInsets.only(
                           left: 15.0,
                           right: 15.0,
@@ -361,7 +362,7 @@ class _AddAddressState extends State<AddAddress> {
                               const BorderSide(color: Colors.grey, width: 0.0),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
+                          borderSide: BorderSide(color: primary(context)),
                         ),
                       ),
                       validator: (String value) {
@@ -384,12 +385,12 @@ class _AddAddressState extends State<AddAddress> {
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
                     maxLength: 15,
-                    style: labelStyle(),
+                    style: labelStyle(context),
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                         counterText: "",
-                        fillColor: Colors.black,
-                        focusColor: Colors.black,
+                        fillColor: dark(context),
+                        focusColor: dark(context),
                         contentPadding: EdgeInsets.only(
                           left: 15.0,
                           right: 15.0,
@@ -401,7 +402,7 @@ class _AddAddressState extends State<AddAddress> {
                               const BorderSide(color: Colors.grey, width: 0.0),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
+                          borderSide: BorderSide(color: primary(context)),
                         )),
                     validator: (String value) {
                       if (value.isEmpty) {
@@ -449,7 +450,7 @@ class _AddAddressState extends State<AddAddress> {
                           Radio(
                             value: i,
                             groupValue: selectedAddressType,
-                            activeColor: primary,
+                            activeColor: primary(context),
                             onChanged: (value) {
                               setSelectedRadio(value);
                             },
@@ -465,7 +466,7 @@ class _AddAddressState extends State<AddAddress> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child:
-                          buttonPrimary(context, "SUBMIT", isAddAddressLoading),
+                          buttonprimary(context, "SUBMIT", isAddAddressLoading),
                     )),
               ],
             ),

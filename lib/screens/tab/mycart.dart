@@ -365,7 +365,7 @@ class _MyCartState extends State<MyCart> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFFDFDFD),
+      // backgroundColor: bg(context),
       key: _scaffoldKey,
       appBar: isGetTokenLoading || isMinAmountCheckLoading
           ? null
@@ -397,22 +397,24 @@ class _MyCartState extends State<MyCart> {
                                         MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
                                       cartItem == null
-                                          ? textMediumSmall('0 ' +
-                                              MyLocalizations.of(context)
-                                                  .getLocalizations("ITEM"))
+                                          ? textMediumSmall(
+                                              '0 ' +
+                                                  MyLocalizations.of(context)
+                                                      .getLocalizations("ITEM"),
+                                              context)
                                           : textMediumSmall(
                                               '(${cartItem['products'].length}) ' +
                                                   MyLocalizations.of(context)
-                                                      .getLocalizations(
-                                                          "ITEM")),
+                                                      .getLocalizations("ITEM"),
+                                              context),
                                       InkWell(
                                         onTap: () {
                                           deleteAllCart();
                                         },
                                         child: textMediumSmall(
                                             MyLocalizations.of(context)
-                                                .getLocalizations(
-                                                    "CLEAR_CART")),
+                                                .getLocalizations("CLEAR_CART"),
+                                            context),
                                       ),
                                     ],
                                   ),
@@ -428,8 +430,7 @@ class _MyCartState extends State<MyCart> {
                                       margin: EdgeInsets.only(bottom: 5),
                                       padding: EdgeInsets.all(10),
                                       decoration: BoxDecoration(
-                                        color: Color(0xFFF7F7F7),
-                                      ),
+                                          color: cartCardBg(context)),
                                       child: Row(
                                         children: <Widget>[
                                           Flexible(
@@ -472,7 +473,7 @@ class _MyCartState extends State<MyCart> {
                                                                     6)),
                                                         boxShadow: [
                                                           BoxShadow(
-                                                            color: Colors.black
+                                                            color: dark(context)
                                                                 .withOpacity(
                                                                     0.10),
                                                             blurRadius: 5,
@@ -562,7 +563,7 @@ class _MyCartState extends State<MyCart> {
                                                                     6)),
                                                         boxShadow: [
                                                           BoxShadow(
-                                                            color: Colors.black
+                                                            color: dark(context)
                                                                 .withOpacity(
                                                                     0.10),
                                                             blurRadius: 5,
@@ -639,35 +640,52 @@ class _MyCartState extends State<MyCart> {
                                                   MainAxisAlignment
                                                       .spaceBetween,
                                               children: <Widget>[
-                                                titleTwoLine(
-                                                    cartItem['products'][i]
-                                                        ['productName']),
+                                                Text(
+                                                  cartItem['products'][i]
+                                                      ['productName'],
+                                                  maxLines: 2,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                      fontSize: 16.0,
+                                                      fontFamily:
+                                                          'BarlowRegular',
+                                                      color: blackText(context),
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                ),
+                                                // titleTwoLine(
+                                                //     cartItem['products'][i]
+                                                //         ['productName'], context),
                                                 SizedBox(height: 10),
                                                 Row(
                                                   children: <Widget>[
                                                     priceMrpText(
-                                                     currency+   cartItem['products'][i][
-                                                                    'productTotal']
-                                                                .toDouble()
-                                                                .toStringAsFixed(
-                                                                    2)
-                                                                .toString() ??
+                                                        currency +
+                                                                cartItem['products']
+                                                                            [i][
+                                                                        'productTotal']
+                                                                    .toDouble()
+                                                                    .toStringAsFixed(
+                                                                        2)
+                                                                    .toString() ??
                                                             "",
                                                         cartItem['products'][i][
                                                                 'isDealAvailable']
                                                             ? '$currency${((cartItem['products'][i]['price']) * (cartItem['products'][i]['quantity'])).toDouble().toStringAsFixed(2)}'
-                                                            : null),
+                                                            : null,
+                                                        context),
                                                     Padding(
                                                         padding:
                                                             const EdgeInsets
                                                                 .only(top: 5.0),
                                                         child: textLightSmall(
-                                                          " / " +
-                                                              cartItem['products']
-                                                                          [i]
-                                                                      ['unit']
-                                                                  .toString(),
-                                                        )),
+                                                            " / " +
+                                                                cartItem['products']
+                                                                            [i]
+                                                                        ['unit']
+                                                                    .toString(),
+                                                            context)),
                                                   ],
                                                 ),
                                                 SizedBox(height: 10),
@@ -689,7 +707,7 @@ class _MyCartState extends State<MyCart> {
                                                                     context)
                                                                 .getLocalizations(
                                                                     "OFF"),
-                                                      )
+                                                        context)
                                                     : Text("")
                                               ],
                                             ),
@@ -715,7 +733,7 @@ class _MyCartState extends State<MyCart> {
                                                     width: 32,
                                                     height: 32,
                                                     decoration: BoxDecoration(
-                                                      color: primary,
+                                                      color: primarybg,
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               20),
@@ -743,7 +761,11 @@ class _MyCartState extends State<MyCart> {
                                                               type: GFLoaderType
                                                                   .ios,
                                                               size: 35)
-                                                          : Icon(Icons.add),
+                                                          : Icon(
+                                                              Icons.add,
+                                                              color:
+                                                                  Colors.black,
+                                                            ),
                                                     ),
                                                   ),
                                                   cartItem['products'][i]
@@ -754,7 +776,8 @@ class _MyCartState extends State<MyCart> {
                                                           cartItem['products']
                                                                       [i]
                                                                   ['quantity']
-                                                              .toString()),
+                                                              .toString(),
+                                                          context),
                                                   Container(
                                                     width: 32,
                                                     height: 32,
@@ -765,7 +788,7 @@ class _MyCartState extends State<MyCart> {
                                                                   true &&
                                                               quantityUpdateType ==
                                                                   '-'
-                                                          ? primary
+                                                          ? primarybg
                                                           : Colors.black,
                                                       borderRadius:
                                                           BorderRadius.circular(
@@ -795,7 +818,7 @@ class _MyCartState extends State<MyCart> {
                                                                   .ios,
                                                               size: 35)
                                                           : Icon(Icons.remove,
-                                                              color: primary),
+                                                              color: primarybg),
                                                     ),
                                                   ),
                                                 ],
@@ -911,7 +934,10 @@ class _MyCartState extends State<MyCart> {
                             "TOTAL",
                             '$currency${cartItem['grandTotal'].toDouble().toStringAsFixed(2)}',
                             "CHECKOUT",
-                            Icon(Icons.arrow_forward),
+                            Icon(
+                              Icons.arrow_forward,
+                              color: Colors.black,
+                            ),
                             isCheckProductAvailableOrNot),
                       ),
                     ],

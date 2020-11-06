@@ -67,7 +67,7 @@ class Constants {
       "dial_code": "+246",
       "code": "IO"
     },
-    {"name": "Bulgaria", "dial_code": "+359", "code": "BG"},
+    {"name": "Bulgaria", "dial_code": "+359", "code": "bg(context)"},
     {"name": "Burkina Faso", "dial_code": "+226", "code": "BF"},
     {"name": "Burundi", "dial_code": "+257", "code": "BI"},
     {"name": "Cambodia", "dial_code": "+855", "code": "KH"},

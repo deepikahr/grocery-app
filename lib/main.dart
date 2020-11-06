@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +14,13 @@ import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+// import 'dart:ui' show Color;
+import 'package:flutter/widgets.dart';
+
+export 'package:flutter/services.dart' show Brightness;
 
 SentryError sentryError = new SentryError();
 Timer oneSignalTimer;
@@ -141,9 +149,17 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  DarkThemeProvider themeChangeProvider = new DarkThemeProvider();
+
   void initState() {
     Common.setSplash(false);
     super.initState();
+    getCurrentAppTheme();
+  }
+
+  void getCurrentAppTheme() async {
+    themeChangeProvider.darkTheme =
+        await themeChangeProvider.darkThemePreference.getTheme();
   }
 
   void dispose() {
@@ -152,24 +168,59 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      locale: Locale(widget.locale),
-      localizationsDelegates: [
-        MyLocalizationsDelegate(widget.localizedValues, [widget.locale]),
-        GlobalWidgetsLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        DefaultCupertinoLocalizations.delegate
-      ],
-      supportedLocales: [Locale(widget.locale)],
-      debugShowCheckedModeBanner: false,
-      title: Constants.appName,
-      theme: ThemeData(primaryColor: primary, accentColor: primary),
-      home: Home(
-          isTest: widget.isTest,
-          locale: widget.locale,
-          localizedValues: widget.localizedValues),
+    return ChangeNotifierProvider(
+      create: (_) {
+        return themeChangeProvider;
+      },
+      child: Consumer<DarkThemeProvider>(
+        builder: (BuildContext context, value, Widget child) {
+          return MaterialApp(
+            locale: Locale(widget.locale),
+            localizationsDelegates: [
+              MyLocalizationsDelegate(widget.localizedValues, [widget.locale]),
+              GlobalWidgetsLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+              DefaultCupertinoLocalizations.delegate
+            ],
+            supportedLocales: [Locale(widget.locale)],
+            debugShowCheckedModeBanner: false,
+            title: Constants.appName,
+            theme: Styles.themeData(themeChangeProvider.darkTheme, context),
+            home: Home(
+                isTest: widget.isTest,
+                locale: widget.locale,
+                localizedValues: widget.localizedValues),
+          );
+        },
+      ),
     );
+
+    // return MaterialApp(
+    //   locale: Locale(widget.locale),
+    //   localizationsDelegates: [
+    //     MyLocalizationsDelegate(widget.localizedValues, [widget.locale]),
+    //     GlobalWidgetsLocalizations.delegate,
+    //     GlobalMaterialLocalizations.delegate,
+    //     GlobalCupertinoLocalizations.delegate,
+    //     DefaultCupertinoLocalizations.delegate
+    //   ],
+    //   supportedLocales: [Locale(widget.locale)],
+    //   debugShowCheckedModeBanner: false,
+    //   title: Constants.appName,
+    //   theme: ThemeData(
+    //     primary(context)Color: primary(context),
+    //     accentColor: primary(context),
+    //     brightness: Brightness.light,
+    //   ),
+    //   darkTheme: ThemeData(
+    //     brightness: Brightness.dark,
+    //   ),
+    //   home: Home(
+    //       isTest: widget.isTest,
+    //       locale: widget.locale,
+    //       localizedValues: widget.localizedValues),
+    // );
   }
 }
 
@@ -191,8 +242,9 @@ class _AnimatedScreenState extends State<AnimatedScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bg(context),
       body: Container(
-        color: primary,
+        color: primary(context),
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         child: Image.asset(
@@ -203,5 +255,32 @@ class _AnimatedScreenState extends State<AnimatedScreen> {
         ),
       ),
     );
+  }
+}
+
+class DarkThemePreference {
+  static const THEME_STATUS = "THEME STATUS";
+
+  setDarkTheme(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool(THEME_STATUS, value);
+  }
+
+  Future<bool> getTheme() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(THEME_STATUS) ?? false;
+  }
+}
+
+class DarkThemeProvider with ChangeNotifier {
+  DarkThemePreference darkThemePreference = DarkThemePreference();
+  bool _darkTheme = false;
+
+  bool get darkTheme => _darkTheme;
+
+  set darkTheme(bool value) {
+    _darkTheme = value;
+    darkThemePreference.setDarkTheme(value);
+    notifyListeners();
   }
 }

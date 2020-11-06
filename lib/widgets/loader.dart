@@ -10,9 +10,9 @@ class SquareLoader extends StatelessWidget {
     return Center(
       child: GFLoader(
         type: GFLoaderType.square,
-        loaderColorOne: primary,
-        loaderColorTwo: darkGrey,
-        loaderColorThree: primaryLight,
+        loaderColorOne: primary(context),
+        loaderColorTwo: darkgrey(context),
+        loaderColorThree: primaryLight(context),
         size: size ?? 45,
       ),
     );

@@ -52,7 +52,7 @@ class _ChangeMobileNumberState extends State<ChangeMobileNumber> {
                 child: new ListBody(
                   children: <Widget>[
                     new Text(onValue['response_data'],
-                        style: textBarlowRegularBlack()),
+                        style: textBarlowRegularBlack(context)),
                   ],
                 ),
               ),
@@ -60,7 +60,7 @@ class _ChangeMobileNumberState extends State<ChangeMobileNumber> {
                 new FlatButton(
                   child: new Text(
                       MyLocalizations.of(context).getLocalizations("OK"),
-                      style: textbarlowRegularaPrimary()),
+                      style: textbarlowRegularaprimary(context)),
                   onPressed: () {
                     Navigator.pop(context);
                     Navigator.push(
@@ -101,8 +101,9 @@ class _ChangeMobileNumberState extends State<ChangeMobileNumber> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarPrimary(context, "CHANGE_MOBILE_NUMBER"),
+      appBar: appBarprimary(context, "CHANGE_MOBILE_NUMBER"),
       body: Form(
         key: _formKey,
         child: Container(
@@ -130,7 +131,7 @@ class _ChangeMobileNumberState extends State<ChangeMobileNumber> {
                             const BorderSide(color: Colors.grey, width: 0.0),
                       ),
                       focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary)),
+                          borderSide: BorderSide(color: primary(context))),
                     ),
                     validator: (String value) {
                       if (value.isEmpty) {
@@ -149,7 +150,7 @@ class _ChangeMobileNumberState extends State<ChangeMobileNumber> {
                 onTap: updateMobileNumber,
                 child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: buttonPrimary(
+                    child: buttonprimary(
                         context, "SUBMIT", isUpdateMobileNumberLoading)),
               ),
             ],

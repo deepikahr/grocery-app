@@ -221,7 +221,7 @@ class _AllProductsState extends State<AllProducts> {
     }
 
     return Scaffold(
-      backgroundColor: bg,
+      backgroundColor: bg(context),
       appBar: appBarWhite(
         context,
         "PRODUCTS",
@@ -310,7 +310,7 @@ class _AllProductsState extends State<AllProducts> {
                                                 MyLocalizations.of(context)
                                                     .getLocalizations("ALL"),
                                                 isSelected
-                                                    ? primary
+                                                    ? primary(context)
                                                     : Color(0xFFf0F0F0))),
                                         InkWell(
                                             onTap: () {
@@ -342,7 +342,7 @@ class _AllProductsState extends State<AllProducts> {
                                                 context,
                                                 '${subCategryList[0]['title'][0].toUpperCase()}${subCategryList[0]['title'].substring(1)}',
                                                 isSelectedIndexZero
-                                                    ? primary
+                                                    ? primary(context)
                                                     : Color(0xFFf0F0F0)))
                                       ],
                                     )
@@ -374,7 +374,7 @@ class _AllProductsState extends State<AllProducts> {
                                           '${subCategryList[i]['title'][0].toUpperCase()}${subCategryList[i]['title'].substring(1)}',
                                           isSelectetedId ==
                                                   subCategryList[i]['_id']
-                                              ? primary
+                                              ? primary(context)
                                               : Color(0xFFf0F0F0)));
                             },
                           ),

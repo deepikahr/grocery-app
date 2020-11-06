@@ -359,7 +359,7 @@ class _CheckoutState extends State<Checkout> {
           ),
           title: new Text(
             "$error",
-            style: hintSfsemiboldb(),
+            style: hintSfsemiboldb(context),
             textAlign: TextAlign.center,
           ),
           content: Container(
@@ -371,7 +371,7 @@ class _CheckoutState extends State<Checkout> {
                   padding: const EdgeInsets.symmetric(horizontal: 14.0),
                   child: new Text(
                     "$message",
-                    style: hintSfLightsm(),
+                    style: hintSfLightsm(context),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -395,7 +395,7 @@ class _CheckoutState extends State<Checkout> {
                                 child: Text(
                                   MyLocalizations.of(context)
                                       .getLocalizations("OK"),
-                                  style: hintSfLightbig(),
+                                  style: hintSfLightbig(context),
                                 ),
                               ),
                             ),
@@ -421,7 +421,7 @@ class _CheckoutState extends State<Checkout> {
                   googlePlacesApiKey: Constants.googleMapApiKey,
                   initialPosition: LatLng(locationlatlong['latitude'],
                       locationlatlong['longitude']),
-                  mainColor: primary,
+                  mainColor: primary(context),
                   mapStrings: MapPickerStrings.english(),
                   placeAutoCompleteLanguage: 'en',
                 )));
@@ -448,7 +448,7 @@ class _CheckoutState extends State<Checkout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFFDFDFD),
+      // backgroundColor: bg(context),
       key: _scaffoldKey,
       appBar: appBarTransparent(context, "CHECKOUT"),
       body: SmartRefresher(
@@ -467,10 +467,10 @@ class _CheckoutState extends State<Checkout> {
                 : ListView(
                     children: <Widget>[
                       Container(
-                        padding: EdgeInsets.only(top: 15, bottom: 10),
-                        margin: EdgeInsets.only(top: 10),
+                        padding: EdgeInsets.only(top: 25, bottom: 10),
+                        // margin: EdgeInsets.only(top: 10),
                         decoration: BoxDecoration(
-                          color: Color(0xFFF7F7F7),
+                          color: bg(context),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -598,13 +598,14 @@ class _CheckoutState extends State<Checkout> {
                                                             .getLocalizations(
                                                                 "ENTER_COUPON_CODE"),
                                                         hintStyle:
-                                                            textBarlowRegularBlacklight(),
+                                                            textBarlowRegularBlacklight(
+                                                                context),
                                                         labelStyle: TextStyle(
                                                             color:
-                                                                Colors.black),
+                                                                dark(context)),
                                                         border:
                                                             InputBorder.none),
-                                                    cursorColor: primary,
+                                                    cursorColor: primarybg,
                                                     validator: (String value) {
                                                       if (value.isEmpty) {
                                                         return MyLocalizations
@@ -616,7 +617,8 @@ class _CheckoutState extends State<Checkout> {
                                                       }
                                                     },
                                                     style:
-                                                        textBarlowRegularBlacklight(),
+                                                        textBarlowRegularBlacklight(
+                                                            context),
                                                     onSaved: (String value) {
                                                       couponCode = value;
                                                     },
@@ -706,9 +708,22 @@ class _CheckoutState extends State<Checkout> {
                               ),
                             ),
                             GFAccordion(
-                              collapsedTitlebackgroundColor: Color(0xFFF0F0F0),
+                              expandedTitlebackgroundColor:
+                                  Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? greyb2
+                                      : Color(0xFFF0F0F0),
+                              collapsedTitlebackgroundColor:
+                                  Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? greyc2
+                                      : Color(0xFFF0F0F0),
                               titleborder: Border.all(color: Color(0xffD6D6D6)),
-                              contentbackgroundColor: Colors.white,
+                              contentbackgroundColor:
+                                  Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? greyc2
+                                      : Colors.white,
                               contentPadding:
                                   EdgeInsets.only(top: 5, bottom: 5),
                               titleChild: Text(
@@ -718,7 +733,7 @@ class _CheckoutState extends State<Checkout> {
                                     : '${selectedAddress['flatNo']}, ${selectedAddress['apartmentName']},${selectedAddress['address']}',
                                 overflow: TextOverflow.clip,
                                 maxLines: 1,
-                                style: textBarlowRegularBlack(),
+                                style: textBarlowRegularBlack(context),
                               ),
                               contentChild: Column(
                                 children: <Widget>[
@@ -735,11 +750,12 @@ class _CheckoutState extends State<Checkout> {
                                         children: <Widget>[
                                           RadioListTile(
                                             groupValue: selecteAddressValue,
-                                            activeColor: primary,
+                                            activeColor: primary(context),
                                             value: i,
                                             title: buildAddress(
                                                 '${addressList[i]['flatNo']}, ${addressList[i]['apartmentName']},${addressList[i]['address']},',
-                                                "${addressList[i]['landmark']} ,'${addressList[i]['postalCode']}, ${addressList[i]['mobileNumber'].toString()}"),
+                                                "${addressList[i]['landmark']} ,'${addressList[i]['postalCode']}, ${addressList[i]['mobileNumber'].toString()}",
+                                                context),
                                             onChanged: addressRadioValueChanged,
                                           ),
                                           Row(
@@ -899,7 +915,11 @@ class _CheckoutState extends State<Checkout> {
                                                     (BuildContext context,
                                                         int index) {
                                                   return Container(
-                                                    color: Colors.grey[200],
+                                                    color: Theme.of(context)
+                                                                .brightness ==
+                                                            Brightness.dark
+                                                        ? greyc2
+                                                        : Colors.grey[200],
                                                     width: 70,
                                                     child: Row(
                                                       children: <Widget>[
@@ -921,7 +941,7 @@ class _CheckoutState extends State<Checkout> {
                                                                           null &&
                                                                       dateSelectedValue ==
                                                                           index
-                                                                  ? primary
+                                                                  ? primarybg
                                                                   : Colors
                                                                       .transparent,
                                                               borderRadius:
@@ -955,7 +975,7 @@ class _CheckoutState extends State<Checkout> {
                                         ],
                                       ),
                                       Container(
-                                        color: Color(0xFFF7F7F7),
+                                        color: cartCardBg(context),
                                         child: ListView.builder(
                                           physics: ScrollPhysics(),
                                           shrinkWrap: true,
@@ -979,7 +999,7 @@ class _CheckoutState extends State<Checkout> {
                                                   child: RadioListTile(
                                                       value: i,
                                                       groupValue: selectSlot,
-                                                      activeColor: primary,
+                                                      activeColor: primarybg,
                                                       onChanged: (value) {
                                                         selectedSlotSelected(
                                                             value);
@@ -1007,7 +1027,7 @@ class _CheckoutState extends State<Checkout> {
                         onTap: placeOrder,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                          child: buttonPrimary(context, "PROCEED", false),
+                          child: buttonprimary(context, "PROCEED", false),
                         ),
                       ),
                     ],

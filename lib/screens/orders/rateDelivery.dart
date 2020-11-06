@@ -70,13 +70,14 @@ class _RateDeliveryState extends State<RateDelivery> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarPrimary(context, "RATE_DELIVERY"),
+      appBar: appBarprimary(context, "RATE_DELIVERY"),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
         child: InkWell(
             onTap: orderCancelMethod,
-            child: buttonPrimary(context, "SUBMIT_FEEDBACK", isRatingLoading)),
+            child: buttonprimary(context, "SUBMIT_FEEDBACK", isRatingLoading)),
       ),
       body: SingleChildScrollView(
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
@@ -92,13 +93,13 @@ class _RateDeliveryState extends State<RateDelivery> {
                 Text(
                   MyLocalizations.of(context)
                       .getLocalizations('YOUR_ORDER_WAS_DELIVERED_BY'),
-                  style: textBarlowMediumsmBlackk(),
+                  style: textBarlowMediumsmBlackk(context),
                 ),
                 Flexible(
                   child: Text(
                     MyLocalizations.of(context).getLocalizations(
                         widget.orderHistory['order']["assignedToName"]),
-                    style: textBarlowMediumsmBlackk(),
+                    style: textBarlowMediumsmBlackk(context),
                   ),
                 ),
               ],
@@ -108,7 +109,7 @@ class _RateDeliveryState extends State<RateDelivery> {
           Text(
             MyLocalizations.of(context)
                 .getLocalizations('PLEASE_SUBMIT_YOUR_FEEDBACK'),
-            style: textBarlowRegularBlackdl(),
+            style: textBarlowRegularBlackdl(context),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20.0),
@@ -121,7 +122,7 @@ class _RateDeliveryState extends State<RateDelivery> {
               itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
               itemBuilder: (context, _) => Icon(
                 Icons.star,
-                color: primary,
+                color: primary(context),
               ),
               onRatingUpdate: (rating) {
                 setState(() {
@@ -136,7 +137,7 @@ class _RateDeliveryState extends State<RateDelivery> {
               margin:
                   EdgeInsets.only(top: 5.0, bottom: 10.0, left: 20, right: 20),
               child: TextFormField(
-                style: textBarlowRegularBlack(),
+                style: textBarlowRegularBlack(context),
                 keyboardType: TextInputType.text,
                 maxLines: 5,
                 onSaved: (String value) {
@@ -151,10 +152,10 @@ class _RateDeliveryState extends State<RateDelivery> {
                 decoration: InputDecoration(
                   hintText: MyLocalizations.of(context)
                       .getLocalizations("TELL_US_YOUR_EXPERIENCE"),
-                  hintStyle: textbarlowRegularaddwithop(),
+                  hintStyle: textbarlowRegularaddwithop(context),
                   errorStyle: TextStyle(color: Color(0xFFF44242)),
-                  fillColor: Colors.black,
-                  focusColor: Colors.black,
+                  fillColor: dark(context),
+                  focusColor: dark(context),
                   contentPadding: EdgeInsets.only(
                       left: 15.0, right: 15.0, top: 10.0, bottom: 10.0),
                   enabledBorder: const OutlineInputBorder(
@@ -162,7 +163,7 @@ class _RateDeliveryState extends State<RateDelivery> {
                         const BorderSide(color: Colors.grey, width: 0.0),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: primary),
+                    borderSide: BorderSide(color: primary(context)),
                   ),
                 ),
               ),

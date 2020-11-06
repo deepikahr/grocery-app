@@ -1,29 +1,192 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
+import 'package:readymadeGroceryApp/main.dart';
 
-final primary = const Color(0xFFFFCF2D);
-final primaryLight = const Color(0xFFE6EFF7);
+class Styles {
+  static ThemeData themeData(bool isDarkTheme, BuildContext context) {
+    return ThemeData(
+        // primary(context)Swatch: Colors.red,
+        // primary(context)Color: isDarkTheme ? Colors.white : dark(context),
+        // backgroundColor:isDarkTheme ? dark(context)12 : Colors.white,
+        // indicatorColor: isDarkTheme ? dark(context)54 : Color(0xffF1F5FB),
+        // buttonColor: isDarkTheme ? Colors.white : dark(context),
+        // hintColor: isDarkTheme ? dark(context)54 : Color(0xffF1F5FB),
+        // highlightColor: isDarkTheme ? dark(context)54 : Color(0xffF1F5FB),
+        // disabledColor: isDarkTheme ? dark(context)54 : Color(0xffF1F5FB),
+        // cardColor: isDarkTheme ? Colors.grey.shade200 : Colors.white,
+        // canvasColor: isDarkTheme ? dark(context) : Colors.grey[50],
+        // brightness: isDarkTheme ? Brightness.dark : Brightness.light,
+        // buttonTheme: Theme.of(context).buttonTheme.copyWith(
+        //     colorScheme: isDarkTheme ? ColorScheme.light() : ColorScheme.dark()
+        // ),
+        // appBarTheme: AppBarTheme(
+        //   elevation: 0.0,
+        // ),
 
-final blacktext = const Color(0xFF272A3F);
+        // primary(context)Swatch : Colors.red,
+        // primaryColor: isDarkTheme ? darkbg : primary(context),
+        // primaryColorLight:
+        //     isDarkTheme ? bg(context) : primary(context).withOpacity(0.7),
+        // primaryColorDark: isDarkTheme ? bg(context) : primary(context).withOpacity(0.7),
+        brightness: isDarkTheme ? Brightness.dark : Brightness.light,
+        // toggleableActiveColor:
+        //     isDarkTheme ? Colors.tealAccent[200] : primary(context).withOpacity(0.6),
+        // accentColor: isDarkTheme ? primary(context) : primary(context).withOpacity(0.5),
+        // canvasColor: isDarkTheme ? bg(context) : Colors.grey[50],
+        // shadowColor: dark(context),
+        // scaffoldBackgroundColor: isDarkTheme ? darkbg : Color(0xFFF4FFFA),
+        // bottomAppBarColor: isDarkTheme ? Colors.black : Colors.white,
+        cardColor: isDarkTheme ? Colors.grey[800] : Colors.white,
+        // dividerColor:
+        //     isDarkTheme ? const Color(0x1FFFFFFF) : const Color(0x1F000000),
+        // backgroundColor:
+        //     isDarkTheme ? bg(context) : primary(context).withOpacity(0.2),
+        // dialogBackgroundColor: isDarkTheme ? bg(context) : Colors.white,
+        // indicatorColor: isDarkTheme ? Colors.white : primary(context),
+        // hintColor: isDarkTheme ? Colors.white60 : Colors.black.withOpacity(0.6),
+        // errorColor: Colors.red[700],
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+            backgroundColor: isDarkTheme ? Color(0xFF1e2024) : Colors.black,
+            unselectedItemColor: greyc2,
+            selectedItemColor: primarybg),
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: isDarkTheme ? lightbg : darkbg,
+        ),
+        appBarTheme: isDarkTheme
+            ? AppBarTheme(brightness: Brightness.dark)
+            : AppBarTheme(brightness: Brightness.light));
+  }
+}
+
+final primarybg = const Color(0xFFFFCF2D);
+final darkbg = const Color(0xFF10161f);
+final lightbg = const Color(0xFFF4F7FA);
+
+final blackText2 = const Color(0xFF272A3F);
+final bg2 = const Color(0xFFFDFDFD);
+final primaryLight2 = const Color(0xFFE6EFF7);
+final border2 = const Color(0xFFD4D4E0);
+final grey2 = const Color(0xFFdddddd);
+final greya2 = const Color(0xFFDCDCDC);
+final greyb2 = const Color(0xFF707070);
+final greyc2 = const Color(0xFF8E8E93);
+final darkgrey2 = const Color(0xFF708090);
 
 final red = const Color(0xFFF34949);
-
-final grey = const Color(0xFFdddddd);
-
-final darkGrey = const Color(0xFF708090);
-
 final star = const Color(0xFFff8064);
-
-final greya = const Color(0xFFDCDCDC);
-
-final border = const Color(0xFFD4D4E0);
-
-final bg = const Color(0xFFF4F7FA);
-
-final bg2 = const Color(0xFFFDFDFD);
 final green = const Color(0xFF20C978);
-final greyb = const Color(0xFF707070);
 
-final greyc = const Color(0xFF8E8E93);
+dynamic primary(context) {
+  if (Theme.of(context).brightness == Brightness.dark) {
+    return Color(0xFFFFCF2D);
+  } else {
+    return Color(0xFFFFCF2D);
+  }
+}
+
+dynamic cartCardBg(context) {
+  if (Theme.of(context).brightness == Brightness.dark) {
+    return Color(0xFF282b30);
+  } else {
+    return Color(0xFFF7F7F7);
+  }
+}
+
+dynamic whiteBg(context) {
+  if (Theme.of(context).brightness == Brightness.dark) {
+    return greyb2;
+  } else {
+    return Colors.white;
+  }
+}
+
+dynamic blackText(context) {
+  if (Theme.of(context).brightness == Brightness.dark) {
+    return Color(0xFFF4FFFA);
+  } else {
+    return Colors.black87;
+  }
+}
+
+dynamic dark(context) {
+  if (Theme.of(context).brightness == Brightness.dark) {
+    return Colors.white;
+  } else {
+    return Colors.black;
+  }
+}
+
+dynamic bg(context) {
+  if (Theme.of(context).brightness == Brightness.dark) {
+    return darkbg;
+  } else {
+    return lightbg;
+  }
+}
+
+dynamic primaryLight(context) {
+  if (Theme.of(context).brightness == Brightness.dark) {
+    return Color(0xFF151b24);
+  } else {
+    return primaryLight2;
+  }
+}
+
+dynamic border(context) {
+  if (Theme.of(context).brightness == Brightness.dark) {
+    return Color(0xFF151b24);
+  } else {
+    return border2;
+  }
+}
+
+dynamic grey(context) {
+  if (Theme.of(context).brightness == Brightness.dark) {
+    return Color(0xFF9a9da1);
+  } else {
+    return grey2;
+  }
+}
+
+dynamic greya(context) {
+  if (Theme.of(context).brightness == Brightness.dark) {
+    return Color(0xFF80858a);
+  } else {
+    return greya2;
+  }
+}
+
+dynamic greyb(context) {
+  if (Theme.of(context).brightness == Brightness.dark) {
+    return Color(0xFF484a4d);
+  } else {
+    return greyb2;
+  }
+}
+
+dynamic greyc(context) {
+  if (Theme.of(context).brightness == Brightness.dark) {
+    return Color(0xFF37393b);
+  } else {
+    return greyc2;
+  }
+}
+
+dynamic darkgrey(context) {
+  if (Theme.of(context).brightness == Brightness.dark) {
+    return Color(0xFF282c30);
+  } else {
+    return darkgrey2;
+  }
+}
+
+dynamic greyd(context) {
+  if (Theme.of(context).brightness == Brightness.dark) {
+    return Colors.grey;
+  } else {
+    return Colors.grey;
+  }
+}
 
 double screenHeight(context) {
   return MediaQuery.of(context).size.height;
@@ -35,34 +198,34 @@ double screenWidth(context) {
 
 //..................................sf-ui-light ....................................
 
-TextStyle hintSfLightprimary() {
+TextStyle hintSfLightprimary(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 28.0,
-    color: primary,
+    color: primary(context),
     fontFamily: 'SfUiDLight',
   );
 }
 
-TextStyle hintSfLightsmall() {
+TextStyle hintSfLightsmall(context) {
   return TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 12.0,
-    color: blacktext,
+    color: blackText(context),
     fontFamily: 'SfUiDLight',
   );
 }
 
-TextStyle subtitleBold() {
+TextStyle subtitleBold(context) {
   return TextStyle(
     fontSize: 17.0,
     fontWeight: FontWeight.w400,
     fontFamily: 'OpenSansSemiBold',
-    color: Colors.black,
+    color: dark(context),
   );
 }
 
-TextStyle hintSfLight() {
+TextStyle hintSfLight(context) {
   return TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 16.0,
@@ -71,7 +234,7 @@ TextStyle hintSfLight() {
   );
 }
 
-TextStyle hintSfLightsm() {
+TextStyle hintSfLightsm(context) {
   return TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 13.0,
@@ -80,27 +243,27 @@ TextStyle hintSfLightsm() {
   );
 }
 
-TextStyle hintSfLightbig() {
+TextStyle hintSfLightbig(context) {
   return TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 16.0,
-    color: blacktext,
+    color: blackText(context),
     fontFamily: 'SfUiDLight',
   );
 }
 
 //..................................sf-ui-medium ....................................
 
-TextStyle hintSfMediumbig() {
+TextStyle hintSfMediumbig(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 28.0,
-    color: blacktext,
+    color: blackText(context),
     fontFamily: 'SfUiDMedium',
   );
 }
 
-TextStyle hintSfMediumsmall() {
+TextStyle hintSfMediumsmall(context) {
   return TextStyle(
     fontWeight: FontWeight.w100,
     fontSize: 14.0,
@@ -109,61 +272,61 @@ TextStyle hintSfMediumsmall() {
   );
 }
 
-TextStyle hintSfMediumblack() {
+TextStyle hintSfMediumblack(context) {
   return TextStyle(
     fontWeight: FontWeight.w100,
     fontSize: 18.0,
-    color: blacktext,
+    color: blackText(context),
     fontFamily: 'SfUiDMedium',
   );
 }
 
-TextStyle hintSmallSfMediumblack() {
+TextStyle hintSmallSfMediumblack(context) {
   return TextStyle(
     fontWeight: FontWeight.w100,
     fontSize: 13.0,
-    color: blacktext,
+    color: blackText(context),
     fontFamily: 'SfUiDMedium',
   );
 }
 
-TextStyle hintSfMediumblackbig() {
+TextStyle hintSfMediumblackbig(context) {
   return TextStyle(
     fontWeight: FontWeight.w300,
     fontSize: 16.0,
-    color: blacktext,
+    color: blackText(context),
     fontFamily: 'SfUiDMedium',
   );
 }
 
-TextStyle hintSfmediumblack() {
+TextStyle hintSfmediumblack(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 14.0,
-    color: blacktext,
+    color: blackText(context),
     fontFamily: 'SfUiDMedium',
   );
 }
 
-TextStyle hintSfMediumprimaryb() {
+TextStyle hintSfMediumprimaryb(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 17.0,
-    color: primary,
+    color: primary(context),
     fontFamily: 'SfUiDMedium',
   );
 }
 
-TextStyle hintSfMediumprimarysmall() {
+TextStyle hintSfMediumprimarysmall(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 14.0,
-    color: primary,
+    color: primary(context),
     fontFamily: 'SfUiDMedium',
   );
 }
 
-TextStyle hintSfMediumgreysmall() {
+TextStyle hintSfMediumgreysmall(context) {
   return TextStyle(
     fontWeight: FontWeight.w100,
     fontSize: 14.0,
@@ -172,34 +335,34 @@ TextStyle hintSfMediumgreysmall() {
   );
 }
 
-TextStyle hintSfMediumgreyersmall() {
+TextStyle hintSfMediumgreyersmall(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 16.0,
-    color: blacktext,
+    color: blackText(context),
     fontFamily: 'SfUiDMedium',
   );
 }
 
-TextStyle hintSfMediumgreyersmallLight() {
+TextStyle hintSfMediumgreyersmallLight(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 16.0,
-    color: grey,
+    color: grey(context),
     fontFamily: 'SfUiDMedium',
   );
 }
 
-TextStyle hintSfletterspacingMediumgreyersmall() {
+TextStyle hintSfletterspacingMediumgreyersmall(context) {
   return TextStyle(
       fontWeight: FontWeight.w400,
       fontSize: 16.0,
-      color: Color(0xFF272A3F),
+      color: blackText2,
       fontFamily: 'SfUiDMedium',
       letterSpacing: 7.0);
 }
 
-TextStyle hintSfMediumredsmall() {
+TextStyle hintSfMediumredsmall(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 16.0,
@@ -208,7 +371,7 @@ TextStyle hintSfMediumredsmall() {
   );
 }
 
-TextStyle hintSfMediumgreysmaller() {
+TextStyle hintSfMediumgreysmaller(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 13.0,
@@ -217,25 +380,25 @@ TextStyle hintSfMediumgreysmaller() {
   );
 }
 
-TextStyle hintSfMediumprimarysm() {
+TextStyle hintSfMediumprimarysm(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 11.0,
-    color: primary,
+    color: primary(context),
     fontFamily: 'SfUiDMedium',
   );
 }
 
-TextStyle hintSfMediumblacksmaller() {
+TextStyle hintSfMediumblacksmaller(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 13.0,
-    color: blacktext,
+    color: blackText(context),
     fontFamily: 'SfUiDMedium',
   );
 }
 
-TextStyle hintSfMediumgrey() {
+TextStyle hintSfMediumgrey(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 14.7,
@@ -244,7 +407,7 @@ TextStyle hintSfMediumgrey() {
   );
 }
 
-TextStyle hintSfMediumgreysml() {
+TextStyle hintSfMediumgreysml(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 14,
@@ -253,7 +416,7 @@ TextStyle hintSfMediumgreysml() {
   );
 }
 
-TextStyle hintSfMediumgreysl() {
+TextStyle hintSfMediumgreysl(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 14,
@@ -262,16 +425,16 @@ TextStyle hintSfMediumgreysl() {
   );
 }
 
-TextStyle hintSfMediumsmaller() {
+TextStyle hintSfMediumsmaller(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 12.0,
-    color: blacktext,
+    color: blackText(context),
     fontFamily: 'SfUiDMedium',
   );
 }
 
-TextStyle hintSfMediumwhitesmaller() {
+TextStyle hintSfMediumwhitesmaller(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 14.0,
@@ -280,7 +443,7 @@ TextStyle hintSfMediumwhitesmaller() {
   );
 }
 
-TextStyle hintSfMediumgreysm() {
+TextStyle hintSfMediumgreysm(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 12.0,
@@ -289,16 +452,16 @@ TextStyle hintSfMediumgreysm() {
   );
 }
 
-TextStyle hintSfMediumprimary() {
+TextStyle hintSfMediumprimary(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 14.0,
-    color: primary,
+    color: primary(context),
     fontFamily: 'SfUiDMedium',
   );
 }
 
-TextStyle hintSfMediumpsmallgrey() {
+TextStyle hintSfMediumpsmallgrey(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 12.0,
@@ -307,16 +470,16 @@ TextStyle hintSfMediumpsmallgrey() {
   );
 }
 
-TextStyle hintSfMediumblck() {
+TextStyle hintSfMediumblck(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 15.0,
-    color: blacktext,
+    color: blackText(context),
     fontFamily: 'SfUiDMedium',
   );
 }
 
-TextStyle hintSfMediumblckLight() {
+TextStyle hintSfMediumblckLight(context) {
   return TextStyle(
     fontWeight: FontWeight.w300,
     fontSize: 13.0,
@@ -325,7 +488,7 @@ TextStyle hintSfMediumblckLight() {
   );
 }
 
-TextStyle hintSfmediumgreenish() {
+TextStyle hintSfmediumgreenish(context) {
   return TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 14.0,
@@ -334,7 +497,7 @@ TextStyle hintSfmediumgreenish() {
   );
 }
 
-TextStyle hintSfmediumglightgrey() {
+TextStyle hintSfmediumglightgrey(context) {
   return TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 16.0,
@@ -343,7 +506,7 @@ TextStyle hintSfmediumglightgrey() {
   );
 }
 
-TextStyle hintSfmediumsmallestgrey() {
+TextStyle hintSfmediumsmallestgrey(context) {
   return TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 10.0,
@@ -354,61 +517,61 @@ TextStyle hintSfmediumsmallestgrey() {
 
 //..................................sf-ui-bold....................................
 
-TextStyle hintSfbold() {
+TextStyle hintSfbold(context) {
   return TextStyle(
     fontWeight: FontWeight.w600,
     fontSize: 30.0,
-    color: blacktext,
+    color: blackText(context),
     fontFamily: 'SfUiDBold',
   );
 }
 
-TextStyle hintSfboldsm() {
+TextStyle hintSfboldsm(context) {
   return TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 13.0,
-    color: blacktext,
+    color: blackText(context),
     fontFamily: 'SfUiDBold',
   );
 }
 
-TextStyle hintSfboldtext() {
+TextStyle hintSfboldtext(context) {
   return TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 18.0,
-    color: blacktext,
+    color: blackText(context),
     fontFamily: 'SfUiDBold',
   );
 }
 
-TextStyle hintSfboldprimary() {
+TextStyle hintSfboldprimary(context) {
   return TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 16.0,
-    color: primary,
+    color: primary(context),
     fontFamily: 'SfUiDBold',
   );
 }
 
-TextStyle hintSfboldprimaryb() {
+TextStyle hintSfboldprimaryb(context) {
   return TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 14.0,
-    color: primary,
+    color: primary(context),
     fontFamily: 'SfUiDBold',
   );
 }
 
-TextStyle hintSfboldblack() {
+TextStyle hintSfboldblack(context) {
   return TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 11.0,
-    color: blacktext,
+    color: blackText(context),
     fontFamily: 'SfUiDBold',
   );
 }
 
-TextStyle hintSfboldwhitesmall() {
+TextStyle hintSfboldwhitesmall(context) {
   return TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 9.0,
@@ -417,7 +580,7 @@ TextStyle hintSfboldwhitesmall() {
   );
 }
 
-TextStyle hintSfboldwhitemed() {
+TextStyle hintSfboldwhitemed(context) {
   return TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 13.0,
@@ -426,107 +589,107 @@ TextStyle hintSfboldwhitemed() {
   );
 }
 
-TextStyle hintSfboldprimarysm() {
+TextStyle hintSfboldprimarysm(context) {
   return TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 11.0,
-    color: primary,
+    color: primary(context),
     fontFamily: 'SfUiDBold',
   );
 }
 
-TextStyle hintSfboldblackbold() {
+TextStyle hintSfboldblackbold(context) {
   return TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 14.0,
-    color: blacktext,
+    color: blackText(context),
     fontFamily: 'SfUiDBold',
   );
 }
 
-TextStyle hintSfboldb() {
+TextStyle hintSfboldb(context) {
   return TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 14.0,
-    color: blacktext,
+    color: blackText(context),
     fontFamily: 'SfUiDBold',
   );
 }
 
-TextStyle hintSfboldsmll() {
+TextStyle hintSfboldsmll(context) {
   return TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 11.0,
-    color: blacktext,
+    color: blackText(context),
     fontFamily: 'SfUiDBold',
   );
 }
 
-TextStyle hintSfboldBig() {
+TextStyle hintSfboldBig(context) {
   return TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 16.0,
-    color: blacktext,
+    color: blackText(context),
     fontFamily: 'SfUiDBold',
   );
 }
 
-TextStyle hintSfboldmedium() {
+TextStyle hintSfboldmedium(context) {
   return TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 19.0,
-    color: blacktext,
+    color: blackText(context),
     fontFamily: 'SfUiDBold',
   );
 }
 
-TextStyle hintSfboldBigprimary() {
+TextStyle hintSfboldBigprimary(context) {
   return TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 28.0,
-    color: primary,
+    color: primary(context),
     fontFamily: 'SfUiDBold',
   );
 }
 
-TextStyle hintSfboldsmallprimary() {
+TextStyle hintSfboldsmallprimary(context) {
   return TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 11.0,
-    color: primary,
+    color: primary(context),
     fontFamily: 'SfUiDBold',
   );
 }
 
-TextStyle hintSfboldblacktext() {
+TextStyle hintSfboldblackText(context) {
   return TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 15.0,
-    color: blacktext,
+    color: blackText(context),
     fontFamily: 'SfUiDBold',
   );
 }
 //..................................sf-ui-semibold ....................................
 
-TextStyle hintSfsemibold() {
+TextStyle hintSfsemibold(context) {
   return TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 15.0,
-    color: blacktext,
+    color: blackText(context),
     fontFamily: 'SfUiDSemiBold',
   );
 }
 
-TextStyle hintSfsemiboldblacktext() {
+TextStyle hintSfsemiboldblackText(context) {
   return TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 14.0,
-    color: blacktext,
+    color: blackText(context),
     fontFamily: 'SfUiDSemiBold',
   );
 }
 
-TextStyle hintSfsemiboldwhite() {
+TextStyle hintSfsemiboldwhite(context) {
   return TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 16.0,
@@ -535,7 +698,7 @@ TextStyle hintSfsemiboldwhite() {
   );
 }
 
-TextStyle hintSfsemiboldred() {
+TextStyle hintSfsemiboldred(context) {
   return TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 16.0,
@@ -544,7 +707,7 @@ TextStyle hintSfsemiboldred() {
   );
 }
 
-TextStyle hintSfsemiwhite() {
+TextStyle hintSfsemiwhite(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 14.0,
@@ -553,7 +716,7 @@ TextStyle hintSfsemiwhite() {
   );
 }
 
-TextStyle hintSfsemigreysmaller() {
+TextStyle hintSfsemigreysmaller(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 13.0,
@@ -562,43 +725,43 @@ TextStyle hintSfsemigreysmaller() {
   );
 }
 
-TextStyle hintSfsemiblack() {
+TextStyle hintSfsemiblack(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 18.0,
-    color: blacktext,
+    color: blackText(context),
     fontFamily: 'SfUiDSemiBold',
   );
 }
 
-TextStyle hintSfsemiprimarysm() {
+TextStyle hintSfsemiprimarysm(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 12.0,
-    color: primary,
+    color: primary(context),
     fontFamily: 'SfUiDSemiBold',
   );
 }
 
-TextStyle hintSfsemiprimarySm() {
+TextStyle hintSfsemiprimarySm(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 14.0,
-    color: primary,
+    color: primary(context),
     fontFamily: 'SfUiDSemiBold',
   );
 }
 
-TextStyle hintSfsemiboldBig() {
+TextStyle hintSfsemiboldBig(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 29.0,
-    color: blacktext,
+    color: blackText(context),
     fontFamily: 'SfUiDSemiBold',
   );
 }
 
-TextStyle hintSfsemiboldwhitish() {
+TextStyle hintSfsemiboldwhitish(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 16.0,
@@ -607,16 +770,16 @@ TextStyle hintSfsemiboldwhitish() {
   );
 }
 
-TextStyle hintSfsemiboldb() {
+TextStyle hintSfsemiboldb(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 16.0,
-    color: blacktext,
+    color: blackText(context),
     fontFamily: 'SfUiDSemiBold',
   );
 }
 
-TextStyle hintSfsemiboldwhitishgrey() {
+TextStyle hintSfsemiboldwhitishgrey(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 16.0,
@@ -625,7 +788,7 @@ TextStyle hintSfsemiboldwhitishgrey() {
   );
 }
 
-TextStyle hintSfsemiboldsmallest() {
+TextStyle hintSfsemiboldsmallest(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 11.0,
@@ -634,7 +797,7 @@ TextStyle hintSfsemiboldsmallest() {
   );
 }
 
-TextStyle hintSfsemiboldsmall() {
+TextStyle hintSfsemiboldsmall(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 12.0,
@@ -643,7 +806,7 @@ TextStyle hintSfsemiboldsmall() {
   );
 }
 
-TextStyle hintSfsemigrey() {
+TextStyle hintSfsemigrey(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 17.0,
@@ -652,7 +815,7 @@ TextStyle hintSfsemigrey() {
   );
 }
 
-TextStyle hintSfsemiboldsmallestwhite() {
+TextStyle hintSfsemiboldsmallestwhite(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 12.0,
@@ -661,7 +824,7 @@ TextStyle hintSfsemiboldsmallestwhite() {
   );
 }
 
-TextStyle hintSfsemiboldsmalltwhite() {
+TextStyle hintSfsemiboldsmalltwhite(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 14.0,
@@ -670,25 +833,25 @@ TextStyle hintSfsemiboldsmalltwhite() {
   );
 }
 
-TextStyle hintSfsemiboldblack() {
+TextStyle hintSfsemiboldblack(context) {
   return TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 12.0,
-    color: blacktext,
+    color: blackText(context),
     fontFamily: 'SfUiDSemiBold',
   );
 }
 
-TextStyle boldHeading() {
+TextStyle boldHeading(context) {
   return TextStyle(
     fontSize: 20.0,
     fontWeight: FontWeight.w600,
     fontFamily: 'OpenSansSemiBold',
-    color: Colors.black,
+    color: dark(context),
   );
 }
 
-TextStyle authHeader() {
+TextStyle authHeader(context) {
   return TextStyle(
     fontSize: 22.0,
     fontWeight: FontWeight.w400,
@@ -697,25 +860,25 @@ TextStyle authHeader() {
   );
 }
 
-TextStyle emailTextNormal() {
+TextStyle emailTextNormal(context) {
   return TextStyle(
     fontSize: 16.0,
     fontWeight: FontWeight.w300,
     fontFamily: 'OpenSansSemiBold',
-    color: Colors.black,
+    color: dark(context),
   );
 }
 
-TextStyle titleBold() {
+TextStyle titleBold(context) {
   return TextStyle(
     fontSize: 15.0,
     fontWeight: FontWeight.w500,
     fontFamily: 'OpenSansSemiBold',
-    color: Colors.black,
+    color: dark(context),
   );
 }
 
-TextStyle subtitleBoldgreen() {
+TextStyle subtitleBoldgreen(context) {
   return TextStyle(
     fontSize: 17.0,
     fontWeight: FontWeight.w400,
@@ -724,34 +887,34 @@ TextStyle subtitleBoldgreen() {
   );
 }
 
-TextStyle descriptionSemibold() {
+TextStyle descriptionSemibold(context) {
   return TextStyle(
       fontSize: 11.0,
       fontWeight: FontWeight.w300,
       fontFamily: 'OpenSansSemiBold',
-      color: Colors.black,
+      color: dark(context),
       letterSpacing: 0.7);
 }
 
-TextStyle comments() {
+TextStyle comments(context) {
   return TextStyle(
     fontSize: 17.0,
     fontWeight: FontWeight.w500,
     fontFamily: 'OpenSansSemiBold',
-    color: Colors.black,
+    color: dark(context),
   );
 }
 
-TextStyle regular() {
+TextStyle regular(context) {
   return TextStyle(
     fontSize: 13.0,
     fontWeight: FontWeight.w300,
     fontFamily: 'OpenSansSemiBold',
-    color: Colors.black,
+    color: dark(context),
   );
 }
 
-TextStyle categoryHeading() {
+TextStyle categoryHeading(context) {
   return TextStyle(
     fontSize: 20.0,
     fontWeight: FontWeight.w500,
@@ -760,35 +923,35 @@ TextStyle categoryHeading() {
   );
 }
 
-TextStyle profiledetails() {
+TextStyle profiledetails(context) {
   return TextStyle(
     fontSize: 18.0,
     fontWeight: FontWeight.w300,
     fontFamily: 'OpenSansSemiBold',
-    color: Colors.black,
+    color: dark(context),
   );
 }
 
-TextStyle heading() {
+TextStyle heading(context) {
   return TextStyle(
       fontSize: 17.0,
       fontWeight: FontWeight.w400,
       fontFamily: 'OpenSansSemiBold',
       decoration: TextDecoration.none,
-      color: Colors.black,
+      color: dark(context),
       letterSpacing: 0.5);
 }
 
-TextStyle labelStyle() {
+TextStyle labelStyle(context) {
   return TextStyle(
       fontSize: 15.0,
       fontWeight: FontWeight.w300,
       fontFamily: 'OpenSansSemiBold',
-      color: Colors.black,
+      color: dark(context),
       letterSpacing: 0.5);
 }
 
-TextStyle drawertext() {
+TextStyle drawertext(context) {
   return TextStyle(
     fontSize: 14.0,
     fontWeight: FontWeight.w300,
@@ -797,27 +960,27 @@ TextStyle drawertext() {
   );
 }
 
-TextStyle textSemibold() {
+TextStyle textSemibold(context) {
   return TextStyle(
       fontSize: 11.0,
       fontWeight: FontWeight.w500,
       fontFamily: 'OpenSansSemiBold',
-      color: Colors.black,
+      color: dark(context),
       letterSpacing: 0.7);
 }
 
 //////barlowmedium///////////
 
-TextStyle textbarlowmedium() {
+TextStyle textbarlowmedium(context) {
   return TextStyle(
     fontSize: 14.0,
     fontWeight: FontWeight.w600,
     fontFamily: 'BarlowMedium',
-    color: Colors.black.withOpacity(0.60),
+    color: dark(context).withOpacity(0.60),
   );
 }
 
-TextStyle textbarlowmediumwhite() {
+TextStyle textbarlowmediumwhite(context) {
   return TextStyle(
       fontSize: 10.0,
       fontWeight: FontWeight.w500,
@@ -825,7 +988,7 @@ TextStyle textbarlowmediumwhite() {
       color: Colors.white);
 }
 
-TextStyle textbarlowmediumwhitee() {
+TextStyle textbarlowmediumwhitee(context) {
   return TextStyle(
       fontSize: 16.0,
       fontWeight: FontWeight.w500,
@@ -833,7 +996,7 @@ TextStyle textbarlowmediumwhitee() {
       color: Colors.white);
 }
 
-TextStyle textbarlowmediumwhitedull() {
+TextStyle textbarlowmediumwhitedull(context) {
   return TextStyle(
       fontSize: 10.0,
       fontWeight: FontWeight.w500,
@@ -841,7 +1004,7 @@ TextStyle textbarlowmediumwhitedull() {
       color: Colors.white.withOpacity(0.60));
 }
 
-TextStyle textbarlowmediumwred() {
+TextStyle textbarlowmediumwred(context) {
   return TextStyle(
       fontSize: 30.0,
       fontWeight: FontWeight.w500,
@@ -849,24 +1012,24 @@ TextStyle textbarlowmediumwred() {
       color: Color(0xFFF44242));
 }
 
-TextStyle textbarlowmediumwblack() {
+TextStyle textbarlowmediumwblack(context) {
   return TextStyle(
       fontSize: 16.0,
       fontWeight: FontWeight.w500,
       fontFamily: 'BarlowMedium',
-      color: Colors.black);
+      color: dark(context));
 }
 
-TextStyle textbarlowmediumwprimary() {
+TextStyle textbarlowmediumwprimary(context) {
   return TextStyle(
       fontSize: 16.0,
       fontWeight: FontWeight.w500,
       fontFamily: 'BarlowMedium',
-      color: primary);
+      color: primary(context));
 }
 //////futuraBold//////
 
-TextStyle textbarlowBoldWhitebig() {
+TextStyle textbarlowBoldWhitebig(context) {
   return TextStyle(
     fontSize: 25.0,
     fontWeight: FontWeight.bold,
@@ -877,16 +1040,16 @@ TextStyle textbarlowBoldWhitebig() {
 
 //////barlowBold//////
 
-TextStyle textbarlowBoldBlack() {
+TextStyle textbarlowBoldBlack(context) {
   return TextStyle(
     fontSize: 20.0,
     fontWeight: FontWeight.bold,
     fontFamily: 'BarlowBold',
-    color: Colors.black,
+    color: dark(context),
   );
 }
 
-TextStyle textbarlowBoldGreen() {
+TextStyle textbarlowBoldGreen(context) {
   return TextStyle(
     fontSize: 18.0,
     fontWeight: FontWeight.bold,
@@ -895,7 +1058,7 @@ TextStyle textbarlowBoldGreen() {
   );
 }
 
-TextStyle textbarlowBoldgreen() {
+TextStyle textbarlowBoldgreen(context) {
   return TextStyle(
     fontSize: 16.0,
     fontWeight: FontWeight.bold,
@@ -904,7 +1067,7 @@ TextStyle textbarlowBoldgreen() {
   );
 }
 
-TextStyle textbarlowBoldWhite() {
+TextStyle textbarlowBoldWhite(context) {
   return TextStyle(
     fontSize: 16.0,
     fontWeight: FontWeight.bold,
@@ -913,34 +1076,34 @@ TextStyle textbarlowBoldWhite() {
   );
 }
 
-TextStyle textBarlowBoldBlack() {
+TextStyle textBarlowBoldBlack(context) {
   return TextStyle(
     fontSize: 18.0,
     fontWeight: FontWeight.bold,
     fontFamily: 'BarlowBold',
-    color: Colors.black,
+    color: dark(context),
   );
 }
 
-TextStyle textBarlowBoldPrimary() {
+TextStyle textBarlowBoldprimary(context) {
   return TextStyle(
     fontSize: 18.0,
     fontWeight: FontWeight.bold,
     fontFamily: 'BarlowBold',
-    color: primary,
+    color: primary(context),
   );
 }
 
-TextStyle textbarlowBoldsmBlack() {
+TextStyle textbarlowBoldsmBlack(context) {
   return TextStyle(
     fontSize: 15.0,
     fontWeight: FontWeight.bold,
     fontFamily: 'BarlowBold',
-    color: Colors.black,
+    color: dark(context),
   );
 }
 
-TextStyle textbarlowBoldwhite() {
+TextStyle textbarlowBoldwhite(context) {
   return TextStyle(
     fontSize: 30.0,
     fontWeight: FontWeight.bold,
@@ -951,35 +1114,44 @@ TextStyle textbarlowBoldwhite() {
 
 ////barlow semibold/////
 
-TextStyle textbarlowSemiBoldBlack() {
+TextStyle appbarText(context) {
   return TextStyle(
     fontSize: 17.0,
     fontFamily: 'BarlowSemiBold',
-    color: Colors.black,
+    color: dark(context),
     fontWeight: FontWeight.w700,
   );
 }
 
-TextStyle textBarlowSemiBoldBlack() {
+TextStyle textbarlowSemiBoldBlack(context) {
+  return TextStyle(
+    fontSize: 17.0,
+    fontFamily: 'BarlowSemiBold',
+    color: dark(context),
+    fontWeight: FontWeight.w700,
+  );
+}
+
+TextStyle textBarlowSemiBoldBlack(context) {
   return TextStyle(
 //////barlowBold//////
     fontSize: 20.0,
     fontWeight: FontWeight.bold,
     fontFamily: 'BarlowSemiBold',
-    color: Colors.black,
+    color: dark(context),
   );
 }
 
-TextStyle textBarlowSemiBoldBlackbigg() {
+TextStyle textBarlowSemiBoldBlackbigg(context) {
   return TextStyle(
     fontSize: 20.0,
     fontWeight: FontWeight.bold,
     fontFamily: 'BarlowSemiBold',
-    color: Colors.black,
+    color: dark(context),
   );
 }
 
-TextStyle textBarlowSemiBoldwhite() {
+TextStyle textBarlowSemiBoldwhite(context) {
   return TextStyle(
     fontSize: 22.0,
     fontWeight: FontWeight.w600,
@@ -988,25 +1160,25 @@ TextStyle textBarlowSemiBoldwhite() {
   );
 }
 
-TextStyle textBarlowSemiBoldBlackbig() {
+TextStyle textBarlowSemiBoldBlackbig(context) {
   return TextStyle(
     fontSize: 22.0,
     fontWeight: FontWeight.bold,
     fontFamily: 'BarlowSemiBold',
-    color: Colors.black,
+    color: dark(context),
   );
 }
 
-TextStyle textAddressLocation() {
+TextStyle textAddressLocation(context) {
   return TextStyle(
     fontSize: 20.0,
     fontWeight: FontWeight.bold,
     fontFamily: 'BarlowSemiBold',
-    color: Colors.black,
+    color: dark(context),
   );
 }
 
-TextStyle textBarlowSemiBoldwbig() {
+TextStyle textBarlowSemiBoldwbig(context) {
   return TextStyle(
     fontSize: 14.0,
     fontWeight: FontWeight.bold,
@@ -1015,7 +1187,7 @@ TextStyle textBarlowSemiBoldwbig() {
   );
 }
 
-TextStyle textBarlowSemiboldGreen() {
+TextStyle textBarlowSemiboldGreen(context) {
   return TextStyle(
     fontSize: 14.0,
     fontFamily: 'BarlowSemiBold',
@@ -1023,84 +1195,83 @@ TextStyle textBarlowSemiboldGreen() {
   );
 }
 
-TextStyle textBarlowSemiboldPrimary() {
+TextStyle textBarlowSemiboldprimary(context) {
   return TextStyle(
     fontSize: 14.0,
     fontFamily: 'BarlowSemiBold',
-    color: primary,
+    color: primary(context),
   );
 }
 
-TextStyle textBarlowSemiboldPrimaryy() {
+TextStyle textBarlowSemiboldprimaryy(context) {
   return TextStyle(
     fontSize: 16.0,
     fontFamily: 'BarlowSemiBold',
-    color: primary,
+    color: primary(context),
   );
 }
 
-TextStyle textBarlowSemiboldblack() {
+TextStyle textBarlowSemiboldblack(context) {
   return TextStyle(
-      fontSize: 14.0, fontFamily: 'BarlowSemiBold', color: Colors.black);
+      fontSize: 14.0, fontFamily: 'BarlowSemiBold', color: dark(context));
 }
 
 ///barlow medium///
 
-TextStyle textbarlowMediumBlack() {
+TextStyle textbarlowMediumBlack(context) {
   return TextStyle(
     fontSize: 20.0,
     fontWeight: FontWeight.w400,
     fontFamily: 'BarlowMedium',
-    color: Colors.black,
+    color: dark(context),
   );
 }
 
-TextStyle textbarlowMediumPrimary() {
+TextStyle textbarlowMediumprimary(context) {
   return TextStyle(
     fontSize: 20.0,
     fontWeight: FontWeight.w400,
     fontFamily: 'BarlowMedium',
-    color: primary,
+    color: primary(context),
   );
 }
 
-TextStyle textbarlowMediumBlackm() {
+TextStyle textbarlowMediumBlackm(context) {
   return TextStyle(
-    fontSize: 14.0,
-    fontWeight: FontWeight.w400,
-    fontFamily: 'BarlowMedium',
-    color: Colors.black,
-  );
+      fontSize: 14.0,
+      fontWeight: FontWeight.w400,
+      fontFamily: 'BarlowMedium',
+      color: Colors.black);
 }
 
-TextStyle textbarlowMediumlgBlack() {
+TextStyle textbarlowMediumlgBlack(context) {
   return TextStyle(
     fontSize: 45.0,
     fontWeight: FontWeight.w400,
     fontFamily: 'BarlowMedium',
-    color: Colors.black,
+    color: dark(context),
   );
 }
 
-TextStyle textBarlowMediumBlack() {
+TextStyle textBarlowMediumBlack(context) {
   return TextStyle(
     fontSize: 17.0,
     fontWeight: FontWeight.w500,
     fontFamily: 'BarlowMedium',
-    color: Colors.black,
+    color: dark(context),
   );
 }
 
-TextStyle textBarlowMediumPrimary() {
+TextStyle textBarlowMediumprimary(context) {
   return TextStyle(
     fontSize: 15.0,
     fontWeight: FontWeight.w400,
     fontFamily: 'BarlowMedium',
-    color: primary,
+    color: primary(context),
   );
 }
 
-TextStyle textBarlowMediumGreen() {
+TextStyle textBarlowMediumGreen(context) {
   return TextStyle(
     fontSize: 16.0,
     fontWeight: FontWeight.w400,
@@ -1109,34 +1280,34 @@ TextStyle textBarlowMediumGreen() {
   );
 }
 
-TextStyle textBarlowMediumsmBlack() {
+TextStyle textBarlowMediumsmBlack(context) {
   return TextStyle(
     fontSize: 10.0,
     fontWeight: FontWeight.w400,
     fontFamily: 'BarlowMedium',
-    color: Colors.black,
+    color: dark(context),
   );
 }
 
-TextStyle textBarlowMediumsmBlackk() {
+TextStyle textBarlowMediumsmBlackk(context) {
   return TextStyle(
     fontSize: 16.0,
     fontWeight: FontWeight.w400,
     fontFamily: 'BarlowMedium',
-    color: Colors.black.withOpacity(0.87),
+    color: dark(context).withOpacity(0.87),
   );
 }
 
-TextStyle textBarlowMediumsmWhite() {
+TextStyle textBarlowMediumsmWhite(context) {
   return TextStyle(
     fontSize: 10.0,
     fontWeight: FontWeight.w400,
     fontFamily: 'BarlowMedium',
-    color: Color(0xFF8E8E93),
+    color: greyc2,
   );
 }
 
-TextStyle textBarlowMediumsmallWhite() {
+TextStyle textBarlowMediumsmallWhite(context) {
   return TextStyle(
     fontSize: 19.0,
     fontWeight: FontWeight.w400,
@@ -1145,7 +1316,7 @@ TextStyle textBarlowMediumsmallWhite() {
   );
 }
 
-TextStyle textBarlowmediumsmallWhite() {
+TextStyle textBarlowmediumsmallWhite(context) {
   return TextStyle(
     fontSize: 12.0,
     fontWeight: FontWeight.w400,
@@ -1154,7 +1325,7 @@ TextStyle textBarlowmediumsmallWhite() {
   );
 }
 
-TextStyle textBarlowmediumLink() {
+TextStyle textBarlowmediumLink(context) {
   return TextStyle(
     fontSize: 12.0,
     fontWeight: FontWeight.w400,
@@ -1165,135 +1336,135 @@ TextStyle textBarlowmediumLink() {
 
 ///barlow regular /////
 ///
-TextStyle barlowregularlackstrike() {
+TextStyle barlowregularlackstrike(context) {
   return TextStyle(
     fontSize: 10.0,
-    color: Colors.black.withOpacity(0.60),
+    color: dark(context).withOpacity(0.60),
     decoration: TextDecoration.lineThrough,
     fontFamily: 'BarlowRegular',
   );
 }
 
-TextStyle barlowregularlack() {
+TextStyle barlowregularlack(context) {
   return TextStyle(
     fontSize: 10.0,
-    color: Colors.black.withOpacity(0.60),
+    color: dark(context).withOpacity(0.60),
     fontFamily: 'BarlowRegular',
   );
 }
 
-TextStyle textbarlowRegularBlack() {
+TextStyle textbarlowRegularBlack(context) {
   return TextStyle(
     fontSize: 15.0,
     fontFamily: 'BarlowRegular',
-    color: Colors.black,
+    color: dark(context),
   );
 }
 
-TextStyle textbarlowRegularBlackbold() {
+TextStyle textbarlowRegularBlackbold(context) {
   return TextStyle(
     fontSize: 15.0,
     fontWeight: FontWeight.bold,
     fontFamily: 'BarlowRegular',
-    color: Colors.black,
+    color: dark(context),
   );
 }
 
-TextStyle textbarlowRegularBlackb() {
+TextStyle textbarlowRegularBlackb(context) {
   return TextStyle(
     fontSize: 13.0,
     fontFamily: 'BarlowRegular',
-    color: Colors.black,
+    color: dark(context),
   );
 }
 
-TextStyle textbarlowRegularBlackd() {
+TextStyle textbarlowRegularBlackd(context) {
   return TextStyle(
     fontSize: 12.0,
     fontFamily: 'BarlowRegular',
-    color: Colors.black.withOpacity(0.60),
+    color: dark(context).withOpacity(0.60),
   );
 }
 
-TextStyle textbarlowRegularBlackFont() {
+TextStyle textbarlowRegularBlackFont(context) {
   return TextStyle(
     fontSize: 15.0,
     fontFamily: 'BarlowRegular',
-    color: Colors.black.withOpacity(0.60),
+    color: dark(context).withOpacity(0.60),
   );
 }
 
-TextStyle textbarlowRegulardull() {
+TextStyle textbarlowRegulardull(context) {
   return TextStyle(
       fontSize: 13.0, fontFamily: 'BarlowRegular', color: Color(0xFFBBBBBB));
 }
 
-TextStyle textbarlowRegularBlackdull() {
+TextStyle textbarlowRegularBlackdull(context) {
   return TextStyle(
     fontSize: 15.0,
     fontFamily: 'BarlowRegular',
-    color: Colors.black.withOpacity(0.60),
+    color: dark(context).withOpacity(0.60),
   );
 }
 
-TextStyle textbarlowRegularaPrimary() {
+TextStyle textbarlowRegularaprimary(context) {
   return TextStyle(
     fontSize: 16.0,
     fontFamily: 'BarlowRegular',
     fontWeight: FontWeight.w600,
-    color: primary,
+    color: primary(context),
   );
 }
 
-TextStyle textbarlowRegularaPrimar() {
+TextStyle textbarlowRegularaPrimar(context) {
   return TextStyle(
     fontSize: 16.0,
     fontFamily: 'BarlowRegular',
-    color: primary,
+    color: primary(context),
   );
 }
 
-TextStyle textbarlowRegularad() {
+TextStyle textbarlowRegularad(context) {
   return TextStyle(
     fontSize: 16.0,
     fontFamily: 'BarlowRegular',
-    color: Colors.black.withOpacity(0.50),
+    color: dark(context).withOpacity(0.50),
   );
 }
 
-TextStyle textbarlowRegularaddwithop() {
+TextStyle textbarlowRegularaddwithop(context) {
   return TextStyle(
     fontSize: 16.0,
     fontFamily: 'BarlowRegular',
-    color: Colors.black.withOpacity(0.37),
+    color: dark(context).withOpacity(0.37),
   );
 }
 
-TextStyle textbarlowRegularadark() {
+TextStyle textbarlowRegularadark(context) {
   return TextStyle(
     fontSize: 16.0,
     fontFamily: 'BarlowRegular',
-    color: Colors.black,
+    color: dark(context),
   );
 }
 
-TextStyle textbarlowRegularadd() {
+TextStyle textbarlowRegularadd(context) {
   return TextStyle(
     fontSize: 16.0,
     fontFamily: 'BarlowRegular',
-    color: Colors.black.withOpacity(0.60),
+    color: dark(context).withOpacity(0.60),
   );
 }
 
-TextStyle textBarlowRegularBlack() {
+TextStyle textBarlowRegularBlack(context) {
   return TextStyle(
       fontSize: 16.0,
       fontFamily: 'BarlowRegular',
-      color: Colors.black,
+      color: dark(context),
       fontWeight: FontWeight.w500);
 }
 
-TextStyle textBarlowRegularBb() {
+TextStyle textBarlowRegularBb(context) {
   return TextStyle(
       fontSize: 13.0,
       fontFamily: 'BarlowRegular',
@@ -1301,39 +1472,41 @@ TextStyle textBarlowRegularBb() {
       fontWeight: FontWeight.w500);
 }
 
-TextStyle textBarlowRegularBlackdl() {
+TextStyle textBarlowRegularBlackdl(context) {
   return TextStyle(
       fontSize: 14.0,
       fontFamily: 'BarlowRegular',
-      color: Colors.black.withOpacity(0.60),
+      color: dark(context).withOpacity(0.60),
       fontWeight: FontWeight.w500);
 }
 
-TextStyle textBarlowRegularBlacklight() {
+TextStyle textBarlowRegularBlacklight(context) {
   return TextStyle(
       fontSize: 16.0,
       fontFamily: 'BarlowRegular',
-      color: Colors.black.withOpacity(0.20),
+      color: Theme.of(context).brightness == Brightness.dark
+          ? Colors.white70
+          : Colors.black.withOpacity(0.20),
       fontWeight: FontWeight.w500);
 }
 
-TextStyle textBarlowRegularBlackwithOpacity() {
+TextStyle textBarlowRegularBlackwithOpacity(context) {
   return TextStyle(
     fontSize: 16.0,
     fontFamily: 'BarlowRegular',
-    color: Colors.black.withOpacity(0.30),
+    color: dark(context).withOpacity(0.30),
   );
 }
 
-TextStyle textBarlowRegularBlackwithOpa() {
+TextStyle textBarlowRegularBlackwithOpa(context) {
   return TextStyle(
     fontSize: 16.0,
     fontFamily: 'BarlowRegular',
-    color: Colors.black.withOpacity(0.50),
+    color: dark(context).withOpacity(0.50),
   );
 }
 
-TextStyle textBarlowRegularWhite() {
+TextStyle textBarlowRegularWhite(context) {
   return TextStyle(
     fontSize: 16.0,
     fontFamily: 'BarlowRegular',
@@ -1341,7 +1514,7 @@ TextStyle textBarlowRegularWhite() {
   );
 }
 
-TextStyle textBarlowRegularWhit() {
+TextStyle textBarlowRegularWhit(context) {
   return TextStyle(
     fontSize: 15.0,
     fontFamily: 'BarlowRegular',
@@ -1349,15 +1522,15 @@ TextStyle textBarlowRegularWhit() {
   );
 }
 
-TextStyle textBarlowregbkck() {
+TextStyle textBarlowregbkck(context) {
   return TextStyle(
     fontSize: 20.0,
     fontFamily: 'BarlowRegular',
-    color: Colors.black,
+    color: dark(context),
   );
 }
 
-TextStyle textBarlowregwhite() {
+TextStyle textBarlowregwhite(context) {
   return TextStyle(
     fontSize: 11.0,
     fontFamily: 'BarlowRegular',
@@ -1365,34 +1538,34 @@ TextStyle textBarlowregwhite() {
   );
 }
 
-TextStyle textSMBarlowRegularrBlack() {
+TextStyle textSMBarlowRegularrBlack(context) {
   return TextStyle(
       fontSize: 13.0,
       fontFamily: 'BarlowRegular',
       fontWeight: FontWeight.w400,
-      color: Colors.black.withOpacity(0.6),
+      color: dark(context).withOpacity(0.6),
       letterSpacing: 0.1);
 }
 
-TextStyle textSMBarlowRegularrGreyb() {
+TextStyle textSMBarlowRegularrgreyb(context) {
   return TextStyle(
       fontSize: 13.0,
       fontFamily: 'BarlowRegular',
       fontWeight: FontWeight.w400,
-      color: greyb,
+      color: greyb(context),
       letterSpacing: 0.1);
 }
 
-TextStyle titleLargeSegoeBlack() {
+TextStyle titleLargeSegoeBlack(context) {
   return TextStyle(
       fontSize: 20.0,
       fontWeight: FontWeight.bold,
       fontFamily: 'BarlowBold',
-      color: Colors.black.withOpacity(0.6),
+      color: dark(context).withOpacity(0.6),
       letterSpacing: 0.1);
 }
 
-TextStyle titleSegoeGreen() {
+TextStyle titleSegoeGreen(context) {
   return TextStyle(
       fontSize: 16.0,
       fontFamily: 'BarlowRegular',
@@ -1401,34 +1574,34 @@ TextStyle titleSegoeGreen() {
       letterSpacing: 0.1);
 }
 
-TextStyle titleSegoeGrey() {
+TextStyle titleSegoegrey(context) {
   return TextStyle(
       fontSize: 16.0,
       fontFamily: 'BarlowRegular',
       fontWeight: FontWeight.w500,
-      color: greyb.withOpacity(0.5),
+      color: greyb(context).withOpacity(0.5),
       letterSpacing: 0.1);
 }
 
-TextStyle appbarTitle() {
+TextStyle appbarTitle(context) {
   return TextStyle(
     fontSize: 17.0,
     fontFamily: 'BarlowSemiBold',
     fontWeight: FontWeight.w500,
-    color: Colors.black,
+    color: dark(context),
   );
 }
 
-TextStyle textBarlowRegularrBlack() {
+TextStyle textBarlowRegularrBlack(context) {
   return TextStyle(
     fontSize: 20.0,
     fontFamily: 'BarlowRegular',
     fontWeight: FontWeight.w400,
-    color: Colors.black,
+    color: dark(context),
   );
 }
 
-TextStyle textBarlowRegularrWhite() {
+TextStyle textBarlowRegularrWhite(context) {
   return TextStyle(
     fontSize: 18.0,
     fontFamily: 'BarlowRegular',
@@ -1437,25 +1610,25 @@ TextStyle textBarlowRegularrWhite() {
   );
 }
 
-TextStyle textBarlowRegularrdark() {
+TextStyle textBarlowRegularrdark(context) {
   return TextStyle(
     fontSize: 18.0,
     fontFamily: 'BarlowRegular',
     fontWeight: FontWeight.w300,
-    color: Colors.black,
+    color: dark(context),
   );
 }
 
-TextStyle textBarlowRegularrdarkdull() {
+TextStyle textBarlowRegularrdarkdull(context) {
   return TextStyle(
     fontSize: 15.0,
     fontFamily: 'BarlowRegular',
     fontWeight: FontWeight.w400,
-    color: Colors.black.withOpacity(0.40),
+    color: dark(context).withOpacity(0.40),
   );
 }
 
-TextStyle textBarlowRegularGreen() {
+TextStyle textBarlowRegularGreen(context) {
   return TextStyle(
     fontSize: 16.0,
     fontFamily: 'BarlowRegular',
@@ -1463,16 +1636,16 @@ TextStyle textBarlowRegularGreen() {
   );
 }
 
-TextStyle textBarlowRegularrBlacksm() {
+TextStyle textBarlowRegularrBlacksm(context) {
   return TextStyle(
     fontSize: 12.0,
     fontFamily: 'BarlowRegular',
     fontWeight: FontWeight.w400,
-    color: Colors.black.withOpacity(0.6),
+    color: dark(context).withOpacity(0.6),
   );
 }
 
-TextStyle textBarlowRegularrwhsm() {
+TextStyle textBarlowRegularrwhsm(context) {
   return TextStyle(
     fontSize: 10.0,
     fontFamily: 'BarlowRegular',
@@ -1481,7 +1654,7 @@ TextStyle textBarlowRegularrwhsm() {
   );
 }
 
-TextStyle textBarlowregwhitelg() {
+TextStyle textBarlowregwhitelg(context) {
   return TextStyle(
     fontSize: 20.0,
     fontFamily: 'BarlowRegular',
@@ -1489,7 +1662,7 @@ TextStyle textBarlowregwhitelg() {
   );
 }
 
-TextStyle textBarlowregredlg() {
+TextStyle textBarlowregredlg(context) {
   return TextStyle(
     fontSize: 20.0,
     fontFamily: 'BarlowRegular',
@@ -1497,7 +1670,7 @@ TextStyle textBarlowregredlg() {
   );
 }
 
-TextStyle textBarlowregredGreen() {
+TextStyle textBarlowregredGreen(context) {
   return TextStyle(
     fontSize: 20.0,
     fontFamily: 'BarlowRegular',
@@ -1506,7 +1679,7 @@ TextStyle textBarlowregredGreen() {
 }
 
 ////////////////////////oswald bold//////////////////
-TextStyle textoswaldboldwhite() {
+TextStyle textoswaldboldwhite(context) {
   return TextStyle(
     fontSize: 20.0,
     fontFamily: 'OswaldBold',
@@ -1515,7 +1688,7 @@ TextStyle textoswaldboldwhite() {
   );
 }
 
-TextStyle textBarlowMediumBlackRed() {
+TextStyle textBarlowMediumBlackRed(context) {
   return TextStyle(
     fontSize: 17.0,
     fontWeight: FontWeight.w500,
@@ -1524,7 +1697,7 @@ TextStyle textBarlowMediumBlackRed() {
   );
 }
 
-TextStyle textbarlowRegularaddRed() {
+TextStyle textbarlowRegularaddRed(context) {
   return TextStyle(
     fontSize: 16.0,
     fontFamily: 'BarlowRegular',
@@ -1532,11 +1705,11 @@ TextStyle textbarlowRegularaddRed() {
   );
 }
 
-TextStyle textAddressLocationLow() {
+TextStyle textAddressLocationLow(context) {
   return TextStyle(
     fontSize: 20.0,
     fontFamily: 'BarlowRegular',
     fontWeight: FontWeight.w400,
-    color: Colors.black.withOpacity(0.6),
+    color: dark(context).withOpacity(0.6),
   );
 }

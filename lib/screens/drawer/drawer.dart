@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/categories/allcategories.dart';
 import 'package:readymadeGroceryApp/screens/drawer/about-us.dart';
@@ -14,6 +15,7 @@ import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import 'package:share/share.dart';
 import '../../main.dart';
@@ -43,6 +45,10 @@ class _DrawerPageState extends State<DrawerPage> {
   @override
   void initState() {
     getToken();
+    Common.getTheme().then((isDark) {
+      print('dark $isDark');
+      isDark ? Color(0xFAAACF2D) : Color(0xFFFFCF2D);
+    });
     super.initState();
   }
 
@@ -69,6 +75,8 @@ class _DrawerPageState extends State<DrawerPage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeChange = Provider.of<DarkThemeProvider>(context);
+
     return Container(
         child: Drawer(
       child: Stack(
@@ -194,6 +202,18 @@ class _DrawerPageState extends State<DrawerPage> {
                     },
                     child: buildDrawer(
                         context, "SHARE", "lib/assets/icons/share.png")),
+                SwitchListTile(
+                    activeColor: primary(context),
+                    inactiveTrackColor: greyb(context),
+                    title: Text(
+                      'Dark Theme',
+                      style: textBarlowregwhitelg(context),
+                    ),
+                    value: themeChange.darkTheme,
+                    onChanged: (bool value) {
+                      themeChange.darkTheme = value;
+                      Common.setTheme(value);
+                    }),
                 SizedBox(height: 20.0),
                 getTokenValue
                     ? _buildMenuTileList1('lib/assets/icons/lg.png', "LOGOUT",

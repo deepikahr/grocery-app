@@ -52,7 +52,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 child: new ListBody(
                   children: <Widget>[
                     new Text('${onValue['response_data']}',
-                        style: textBarlowRegularBlack()),
+                        style: textBarlowRegularBlack(context)),
                   ],
                 ),
               ),
@@ -60,7 +60,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 new FlatButton(
                   child: new Text(
                     MyLocalizations.of(context).getLocalizations("SUBMIT"),
-                    style: textbarlowRegularaPrimary(),
+                    style: textbarlowRegularaprimary(context),
                   ),
                   onPressed: () {
                     Navigator.pop(context);
@@ -102,8 +102,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarPrimary(context, "FORGET_PASSWORD"),
+      appBar: appBarprimary(context, "FORGET_PASSWORD"),
       body: Form(
         key: _formKey,
         child: Container(
@@ -138,7 +139,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       } else
                         return null;
                     },
-                    style: textBarlowRegularBlack(),
+                    style: textBarlowRegularBlack(context),
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                         errorBorder: OutlineInputBorder(
@@ -151,7 +152,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               const BorderSide(color: Colors.grey, width: 0.0),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
+                          borderSide: BorderSide(color: primary(context)),
                         )),
                   ),
                 ),
@@ -161,7 +162,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child:
-                        buttonPrimary(context, "SUBMIT", isVerifyMobileLoading),
+                        buttonprimary(context, "SUBMIT", isVerifyMobileLoading),
                   )),
             ],
           ),

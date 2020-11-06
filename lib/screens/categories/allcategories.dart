@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/categories/subcategories.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/categoryBlock.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
@@ -68,6 +69,7 @@ class _AllCategoriesState extends State<AllCategories>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bg(context),
       appBar: appBarTransparent(context, "ALL_CATEGROIES"),
       body: SmartRefresher(
         enablePullDown: true,
