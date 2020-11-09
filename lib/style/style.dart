@@ -5,56 +5,19 @@ import 'package:readymadeGroceryApp/main.dart';
 class Styles {
   static ThemeData themeData(bool isDarkTheme, BuildContext context) {
     return ThemeData(
-        // primary(context)Swatch: Colors.red,
-        // primary(context)Color: isDarkTheme ? Colors.white : dark(context),
-        // backgroundColor:isDarkTheme ? dark(context)12 : Colors.white,
-        // indicatorColor: isDarkTheme ? dark(context)54 : Color(0xffF1F5FB),
-        // buttonColor: isDarkTheme ? Colors.white : dark(context),
-        // hintColor: isDarkTheme ? dark(context)54 : Color(0xffF1F5FB),
-        // highlightColor: isDarkTheme ? dark(context)54 : Color(0xffF1F5FB),
-        // disabledColor: isDarkTheme ? dark(context)54 : Color(0xffF1F5FB),
-        // cardColor: isDarkTheme ? Colors.grey.shade200 : Colors.white,
-        // canvasColor: isDarkTheme ? dark(context) : Colors.grey[50],
-        // brightness: isDarkTheme ? Brightness.dark : Brightness.light,
-        // buttonTheme: Theme.of(context).buttonTheme.copyWith(
-        //     colorScheme: isDarkTheme ? ColorScheme.light() : ColorScheme.dark()
-        // ),
-        // appBarTheme: AppBarTheme(
-        //   elevation: 0.0,
-        // ),
-
-        // primary(context)Swatch : Colors.red,
-        // primaryColor: isDarkTheme ? darkbg : primary(context),
-        // primaryColorLight:
-        //     isDarkTheme ? bg(context) : primary(context).withOpacity(0.7),
-        // primaryColorDark: isDarkTheme ? bg(context) : primary(context).withOpacity(0.7),
-        brightness: isDarkTheme ? Brightness.dark : Brightness.light,
-        // toggleableActiveColor:
-        //     isDarkTheme ? Colors.tealAccent[200] : primary(context).withOpacity(0.6),
-        // accentColor: isDarkTheme ? primary(context) : primary(context).withOpacity(0.5),
-        // canvasColor: isDarkTheme ? bg(context) : Colors.grey[50],
-        // shadowColor: dark(context),
-        // scaffoldBackgroundColor: isDarkTheme ? darkbg : Color(0xFFF4FFFA),
-        // bottomAppBarColor: isDarkTheme ? Colors.black : Colors.white,
-        cardColor: isDarkTheme ? Colors.grey[800] : Colors.white,
-        // dividerColor:
-        //     isDarkTheme ? const Color(0x1FFFFFFF) : const Color(0x1F000000),
-        // backgroundColor:
-        //     isDarkTheme ? bg(context) : primary(context).withOpacity(0.2),
-        // dialogBackgroundColor: isDarkTheme ? bg(context) : Colors.white,
-        // indicatorColor: isDarkTheme ? Colors.white : primary(context),
-        // hintColor: isDarkTheme ? Colors.white60 : Colors.black.withOpacity(0.6),
-        // errorColor: Colors.red[700],
-        bottomNavigationBarTheme: BottomNavigationBarThemeData(
-            backgroundColor: isDarkTheme ? Color(0xFF1e2024) : Colors.black,
-            unselectedItemColor: greyc2,
-            selectedItemColor: primarybg),
-        textSelectionTheme: TextSelectionThemeData(
-          cursorColor: isDarkTheme ? greyb2 : darkbg,
-        ),
-        appBarTheme: isDarkTheme
-            ? AppBarTheme(brightness: Brightness.dark)
-            : AppBarTheme(brightness: Brightness.light));
+      brightness: isDarkTheme ? Brightness.dark : Brightness.light,
+      cardColor: isDarkTheme ? Colors.grey[800] : Colors.white,
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          backgroundColor: isDarkTheme ? Color(0xFF1e2024) : Colors.black,
+          unselectedItemColor: greyc2,
+          selectedItemColor: primarybg),
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: isDarkTheme ? greyb2 : darkbg,
+      ),
+      appBarTheme: isDarkTheme
+          ? AppBarTheme(brightness: Brightness.dark)
+          : AppBarTheme(brightness: Brightness.light),
+    );
   }
 }
 

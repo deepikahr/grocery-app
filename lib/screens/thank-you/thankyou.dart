@@ -21,7 +21,10 @@ class _ThankyouState extends State<Thankyou> {
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(color: Theme.of(context).brightness == Brightness.dark ? Color(0xFFa88d2f) : primarybg),
+        decoration: BoxDecoration(
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Color(0xFFa88d2f)
+                : primarybg),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,

@@ -236,12 +236,12 @@ class _SearchItemState extends State<SearchItem> {
                               }
                               Navigator.pop(context);
                             },
-                            child: new Icon(Icons.arrow_back,
-                                color: Colors.black),
+                            child:
+                                new Icon(Icons.arrow_back, color: Colors.black),
                           ),
                           hintText: MyLocalizations.of(context)
                               .getLocalizations("WHAT_ARE_YOU_BUING_TODAY"),
-                          hintStyle:  new TextStyle(
+                          hintStyle: new TextStyle(
                             color: greyb2,
                           ),
                           fillColor: Color(0xFFF0F0F0),

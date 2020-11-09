@@ -869,7 +869,10 @@ class _MyCartState extends State<MyCart> {
                                   left: 20.0, right: 20.0),
                               child: buildPrice(
                                   context,
-                                  Image.asset('lib/assets/icons/sale.png', color: dark(context),),
+                                  Image.asset(
+                                    'lib/assets/icons/sale.png',
+                                    color: dark(context),
+                                  ),
                                   cartItem['taxInfo'] == null
                                       ? MyLocalizations.of(context)
                                           .getLocalizations("TAX")
