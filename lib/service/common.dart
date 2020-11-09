@@ -155,4 +155,16 @@ class Common {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return Future(() => prefs.getBool('setSplash'));
   }
+
+  // save setTheme on storage
+  static Future<bool> setTheme(bool isDark) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setBool('setTheme', isDark);
+  }
+
+  // get setTheme from storage
+  static Future<bool> getTheme() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return Future(() => prefs.getBool('setTheme'));
+  }
 }

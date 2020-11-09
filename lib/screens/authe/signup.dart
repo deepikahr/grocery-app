@@ -107,7 +107,7 @@ class _SignupState extends State<Signup> {
                 child: new ListBody(
                   children: <Widget>[
                     new Text(onValue['response_data'],
-                        style: textBarlowRegularBlack()),
+                        style: textBarlowRegularBlack(context)),
                   ],
                 ),
               ),
@@ -115,7 +115,7 @@ class _SignupState extends State<Signup> {
                 new FlatButton(
                   child: new Text(
                       MyLocalizations.of(context).getLocalizations("OK"),
-                      style: textbarlowRegularaPrimary()),
+                      style: textbarlowRegularaprimary(context)),
                   onPressed: () {
                     Navigator.pop(context);
                     Navigator.push(
@@ -165,7 +165,7 @@ class _SignupState extends State<Signup> {
           ),
           title: new Text(
             MyLocalizations.of(context).getLocalizations("ERROR"),
-            style: textBarlowRegularBlack(),
+            style: textBarlowRegularBlack(context),
             textAlign: TextAlign.center,
           ),
           content: Container(
@@ -174,7 +174,7 @@ class _SignupState extends State<Signup> {
               children: <Widget>[
                 new Text(
                   "$message",
-                  style: textBarlowRegularBlack(),
+                  style: textBarlowRegularBlack(context),
                   textAlign: TextAlign.center,
                 ),
                 Padding(padding: EdgeInsets.only(top: 20.0)),
@@ -195,7 +195,7 @@ class _SignupState extends State<Signup> {
                             child: Text(
                               MyLocalizations.of(context)
                                   .getLocalizations("OK"),
-                              style: textbarlowRegularaPrimary(),
+                              style: textbarlowRegularaprimary(context),
                             ),
                           ),
                         ),
@@ -214,8 +214,9 @@ class _SignupState extends State<Signup> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarPrimary(context, "SIGNUP"),
+      appBar: appBarprimary(context, "SIGNUP"),
       body: isCuntryLoading
           ? Center(child: SquareLoader())
           : Form(
@@ -262,7 +263,7 @@ class _SignupState extends State<Signup> {
       padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Container(
         child: TextFormField(
-          style: textBarlowRegularBlack(),
+          style: textBarlowRegularBlack(context),
           keyboardType: TextInputType.emailAddress,
           validator: (String value) {
             if (value.isEmpty) {
@@ -283,7 +284,7 @@ class _SignupState extends State<Signup> {
               borderSide: const BorderSide(color: Colors.grey, width: 0.0),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: primary),
+              borderSide: BorderSide(color: primary(context)),
             ),
           ),
         ),
@@ -300,7 +301,7 @@ class _SignupState extends State<Signup> {
       padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Container(
         child: TextFormField(
-          style: textBarlowRegularBlack(),
+          style: textBarlowRegularBlack(context),
           keyboardType: TextInputType.emailAddress,
           validator: (String value) {
             if (value.isEmpty) {
@@ -321,7 +322,7 @@ class _SignupState extends State<Signup> {
               borderSide: const BorderSide(color: Colors.grey, width: 0.0),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: primary),
+              borderSide: BorderSide(color: primary(context)),
             ),
           ),
         ),
@@ -338,7 +339,7 @@ class _SignupState extends State<Signup> {
       padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Container(
         child: TextFormField(
-          style: textBarlowRegularBlack(),
+          style: textBarlowRegularBlack(context),
           keyboardType: TextInputType.emailAddress,
           validator: (String value) {
             if (value.isEmpty) {
@@ -360,7 +361,7 @@ class _SignupState extends State<Signup> {
               borderSide: const BorderSide(color: Colors.grey, width: 0.0),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: primary),
+              borderSide: BorderSide(color: primary(context)),
             ),
           ),
         ),
@@ -376,7 +377,7 @@ class _SignupState extends State<Signup> {
     return Container(
       margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: TextFormField(
-        style: textBarlowRegularBlack(),
+        style: textBarlowRegularBlack(context),
         keyboardType: TextInputType.text,
         validator: (String value) {
           if (value.isEmpty) {
@@ -398,8 +399,8 @@ class _SignupState extends State<Signup> {
             ),
           ),
           errorStyle: TextStyle(color: Color(0xFFF44242)),
-          fillColor: Colors.black,
-          focusColor: Colors.black,
+          fillColor: dark(context),
+          focusColor: dark(context),
           contentPadding: EdgeInsets.only(
             left: 15.0,
             right: 15.0,
@@ -407,16 +408,20 @@ class _SignupState extends State<Signup> {
             bottom: 10.0,
           ),
           suffixIcon: InkWell(
-            onTap: _toggle,
-            child: _obscureText
-                ? Icon(Icons.remove_red_eye, color: Colors.black54)
-                : Icon(Icons.remove_red_eye, color: Colors.black26),
-          ),
+              onTap: _toggle,
+              child: Icon(Icons.remove_red_eye,
+                  color: _obscureText
+                      ? Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white54
+                          : Colors.black54
+                      : Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white24
+                          : Colors.black26)),
           enabledBorder: const OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.grey, width: 0.0),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: primary),
+            borderSide: BorderSide(color: primary(context)),
           ),
         ),
         obscureText: _obscureText,
@@ -433,7 +438,7 @@ class _SignupState extends State<Signup> {
       margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: TextFormField(
         maxLength: 15,
-        style: textBarlowRegularBlack(),
+        style: textBarlowRegularBlack(context),
         keyboardType: TextInputType.number,
         validator: (String value) {
           if (value.isEmpty) {
@@ -462,7 +467,7 @@ class _SignupState extends State<Signup> {
                     child: Text(
                         "${selectedCountry['code'] ?? ""}${selectedCountry['dial_code'] ?? ""}",
                         overflow: TextOverflow.ellipsis,
-                        style: textBarlowSemiboldPrimaryy()),
+                        style: textBarlowSemiboldprimaryy(context)),
                   ),
                   Icon(Icons.keyboard_arrow_down,
                       size: 17, color: Colors.grey[400])
@@ -471,19 +476,19 @@ class _SignupState extends State<Signup> {
             ),
           ),
           counterText: "",
-          prefixStyle: textBarlowRegularBlack(),
+          prefixStyle: textBarlowRegularBlack(context),
           errorBorder: OutlineInputBorder(
               borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
           errorStyle: TextStyle(color: Color(0xFFF44242)),
-          fillColor: Colors.black,
-          focusColor: Colors.black,
+          fillColor: dark(context),
+          focusColor: dark(context),
           contentPadding:
               EdgeInsets.only(left: 25.0, right: 15.0, top: 10.0, bottom: 10.0),
           enabledBorder: const OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.grey, width: 0.0),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: primary),
+            borderSide: BorderSide(color: primary(context)),
           ),
         ),
       ),
@@ -493,7 +498,7 @@ class _SignupState extends State<Signup> {
   Widget buildsignuplink() {
     return InkWell(
         onTap: userSignupwithMobile,
-        child: buttonPrimary(context, "SIGNUP", registerationLoading));
+        child: buttonprimary(context, "SIGNUP", registerationLoading));
   }
 
   Widget buildLoginButton() {
@@ -533,7 +538,7 @@ class _SignupState extends State<Signup> {
                   height: 60,
                   padding: EdgeInsets.only(top: 25, left: 20),
                   decoration: BoxDecoration(
-                      color: Colors.black,
+                      color: dark(context),
                       borderRadius: new BorderRadius.only(
                         topLeft: Radius.circular(40.0),
                         topRight: Radius.circular(40.0),
@@ -541,7 +546,7 @@ class _SignupState extends State<Signup> {
                   child: Text(
                     MyLocalizations.of(context)
                         .getLocalizations('SELECT_YOUR_COUNTRY'),
-                    style: textbarlowmediumwhitee(),
+                    style: textbarlowmediumwhitee(context),
                   ),
                 ),
                 ListView.builder(
@@ -563,7 +568,7 @@ class _SignupState extends State<Signup> {
                             children: [
                               Text(
                                 "(${Constants.countryCode[index]['dial_code'] ?? ""}) ${Constants.countryCode[index]['name'] ?? ""}",
-                                style: textbarlowRegularadd(),
+                                style: textbarlowRegularadd(context),
                               ),
                               Divider()
                             ],

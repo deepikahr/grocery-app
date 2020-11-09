@@ -81,10 +81,10 @@ class DealsCard extends StatelessWidget {
                           child: buildCatTitle(
                               '${title[0].toUpperCase()}${title.substring(1)}',
                               false,
-                              textBarlowRegularrdarkdull()))
+                              textBarlowRegularrdarkdull(context)))
                     ],
                   ),
-                  priceMrpText(price, null)
+                  priceMrpText(price, null, context)
                 ],
               ),
             ),

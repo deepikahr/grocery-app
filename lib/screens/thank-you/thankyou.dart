@@ -17,10 +17,14 @@ class _ThankyouState extends State<Thankyou> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // backgroundColor: bg(context),
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(color: primary),
+        decoration: BoxDecoration(
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Color(0xFFa88d2f)
+                : primarybg),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -53,7 +57,7 @@ class _ThankyouState extends State<Thankyou> {
                       ),
                       (Route<dynamic> route) => false));
                 },
-                child: defaultButton(context, "ORDERS", Colors.black)),
+                child: defaultButton(context, "ORDERS", dark(context))),
           ],
         ),
       ),

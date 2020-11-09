@@ -127,7 +127,7 @@ class _OrderDetailsState extends State<OrderDetails> {
           title: Text(
             MyLocalizations.of(context).getLocalizations("RATE_PRODUCT"),
             style: TextStyle(
-                color: Colors.black,
+                color: dark(context),
                 fontSize: 20,
                 decoration: TextDecoration.none),
           ),
@@ -156,7 +156,7 @@ class _OrderDetailsState extends State<OrderDetails> {
               itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
               itemBuilder: (context, _) => Icon(
                 Icons.star,
-                color: primary,
+                color: primary(context),
                 size: 10.0,
               ),
               onRatingUpdate: (rate) {
@@ -187,9 +187,9 @@ class _OrderDetailsState extends State<OrderDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bg(context),
       key: _scaffoldKey,
-      backgroundColor: Color(0xFFFDFDFD),
-      appBar: appBarPrimary(context, "ORDER_DETAILS"),
+      appBar: appBarprimary(context, "ORDER_DETAILS"),
       body: isLoading
           ? SquareLoader()
           : orderHistory == null
@@ -197,7 +197,7 @@ class _OrderDetailsState extends State<OrderDetails> {
               : ListView(
                   children: <Widget>[
                     Container(
-                      color: Color(0xFFF7F7F7),
+                      color: cartCardBg(context),
                       padding: EdgeInsets.only(
                           left: 15, right: 15, top: 15, bottom: 15),
                       child: Column(
@@ -290,7 +290,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width,
-                              color: Color(0xFFF7F7F7),
+                              color: cartCardBg(context),
                               padding: EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 3),
                               child: Row(
@@ -426,23 +426,28 @@ class _OrderDetailsState extends State<OrderDetails> {
                                           CrossAxisAlignment.start,
                                       children: <Widget>[
                                         textMediumSmall(
-                                            order['productName'] ?? ""),
+                                            order['productName'] ?? "",
+                                            context),
                                         SizedBox(height: 10),
                                         textLightSmall(
-                                            '${order['unit']} (${order['quantity']}) *  $currency${order['price'].toStringAsFixed(2)}'),
+                                            '${order['unit']} (${order['quantity']}) *  $currency${order['price'].toStringAsFixed(2)}',
+                                            context),
                                         order['dealTotalAmount'] == 0
                                             ? Container()
                                             : SizedBox(height: 5),
                                         order['dealTotalAmount'] == 0
                                             ? Container()
-                                            : textLightSmall(MyLocalizations.of(
-                                                        context)
-                                                    .getLocalizations(
-                                                        "DEAL_AMOUNT", true) +
-                                                ' $currency${order['dealTotalAmount'].toStringAsFixed(2)}'),
+                                            : textLightSmall(
+                                                MyLocalizations.of(context)
+                                                        .getLocalizations(
+                                                            "DEAL_AMOUNT",
+                                                            true) +
+                                                    ' $currency${order['dealTotalAmount'].toStringAsFixed(2)}',
+                                                context),
                                         SizedBox(height: 10),
                                         textMediumSmall(
-                                            "$currency ${order['productTotal'].toStringAsFixed(2)}"),
+                                            "$currency ${order['productTotal'].toStringAsFixed(2)}",
+                                            context),
                                         orderHistory['order']['orderStatus'] ==
                                                 "DELIVERED"
                                             ? Padding(
@@ -478,7 +483,8 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                             order["isRated"] ==
                                                                     true
                                                                 ? green
-                                                                : primary,
+                                                                : primary(
+                                                                    context),
                                                             "RATE_PRODUCT",
                                                             order))
                                                   ],
@@ -610,7 +616,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                   onTap: orderCancelMethod,
                                   child: orderHistory['order']['orderStatus'] ==
                                           "PENDING"
-                                      ? buttonPrimary(context, "CANCEL_ORDER",
+                                      ? buttonprimary(context, "CANCEL_ORDER",
                                           isOrderCancleLoading)
                                       : Container(),
                                 ),
@@ -637,7 +643,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                   }
                                 });
                               },
-                              child: buttonPrimary(context, "RATE_DELIVERY",
+                              child: buttonprimary(context, "RATE_DELIVERY",
                                   isOrderCancleLoading),
                             ),
                           )

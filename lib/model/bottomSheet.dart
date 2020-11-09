@@ -160,6 +160,7 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: bg(context),
         key: _scaffoldKey,
         body: SingleChildScrollView(
           child: Column(
@@ -183,7 +184,7 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                             width: 32,
                             height: 32,
                             decoration: BoxDecoration(
-                              color: Colors.black,
+                              color: dark(context),
                               borderRadius: BorderRadius.circular(20.0),
                             ),
                             child: InkWell(
@@ -192,7 +193,7 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                               },
                               child: Icon(
                                 Icons.remove,
-                                color: primary,
+                                color: primary(context),
                               ),
                             ),
                           ),
@@ -200,7 +201,8 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                             padding:
                                 const EdgeInsets.only(left: 20.0, right: 20),
                             child: Container(
-                                child: titleTwoLine(quantity.toString())),
+                                child:
+                                    titleTwoLine(quantity.toString(), context)),
                           ),
                           Text(''),
                           Padding(
@@ -209,7 +211,7 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                               width: 32,
                               height: 32,
                               decoration: BoxDecoration(
-                                color: primary,
+                                color: primary(context),
                                 borderRadius: BorderRadius.circular(20.0),
                               ),
                               child: InkWell(
@@ -266,17 +268,18 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                           });
                         }
                       },
-                      activeColor: primary,
-                      secondary: textGreenPrimary(
+                      activeColor: primary(context),
+                      secondary: textGreenprimary(
                           '${widget.variantsList[index]['unit']} ',
-                          textbarlowBoldGreen()),
+                          textbarlowBoldGreen(context)),
                       title: priceMrpText(
                           widget.dealPercentage != null
                               ? "${widget.currency}${((widget.variantsList[index]['price'] - (widget.variantsList[index]['price'] * (widget.dealPercentage / 100)))).toStringAsFixed(2)}"
                               : '${widget.currency}${(widget.variantsList[index]['price']).toStringAsFixed(2)}',
                           widget.dealPercentage != null
                               ? '${widget.currency}${(widget.variantsList[index]['price']).toStringAsFixed(2)}'
-                              : null),
+                              : null,
+                          context),
                     );
                   }),
               SizedBox(height: 5),
@@ -292,7 +295,7 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                   ? '${widget.currency}${((variantPrice == null ? (widget.variantsList[0]['price'] * quantity) : (variantPrice * quantity)) - ((variantPrice == null ? (widget.variantsList[0]['price'] * quantity) : (variantPrice * quantity)) * (widget.dealPercentage / 100))).toStringAsFixed(2)}'
                   : '${widget.currency}${variantPrice == null ? (widget.variantsList[0]['price'] * quantity) : (variantPrice * quantity).toStringAsFixed(2)}',
               "ADD_TO_CART",
-              Icon(Icons.shopping_cart, color: Colors.black),
+              Icon(Icons.shopping_cart, color: dark(context)),
               addProductTocart),
         ));
   }

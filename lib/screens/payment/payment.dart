@@ -227,6 +227,7 @@ class _PaymentState extends State<Payment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bg(context),
       key: _scaffoldKey,
       appBar: appBarTransparent(context, "PAYMENT"),
       body: isCardListLoading
@@ -361,13 +362,13 @@ class _PaymentState extends State<Payment> {
                                     return Container(
                                       margin:
                                           EdgeInsets.only(top: 5, bottom: 5),
-                                      color: Colors.white,
+                                      color: whiteBg(context),
                                       child: RadioListTile(
                                         value: index,
                                         groupValue: groupValue,
                                         selected: isSelected,
-                                        activeColor: primary,
-                                        title: textGreenPrimary(
+                                        activeColor: primary(context),
+                                        title: textGreenprimary(
                                           paymentTypes[index] == 'COD'
                                               ? MyLocalizations.of(context)
                                                   .getLocalizations(
@@ -377,7 +378,7 @@ class _PaymentState extends State<Payment> {
                                                       .getLocalizations(
                                                           "PAY_BY_CARD")
                                                   : paymentTypes[index],
-                                          TextStyle(color: primary),
+                                          TextStyle(color: primarybg),
                                         ),
                                         onChanged: (int selected) {
                                           if (mounted) {
@@ -389,9 +390,9 @@ class _PaymentState extends State<Payment> {
                                         secondary: paymentTypes[index] == "COD"
                                             ? Text(currency,
                                                 style:
-                                                    TextStyle(color: primary))
+                                                    TextStyle(color: primarybg))
                                             : Icon(Icons.credit_card,
-                                                color: primary, size: 16.0),
+                                                color: primarybg, size: 16.0),
                                       ),
                                     );
                                   },
@@ -407,7 +408,7 @@ class _PaymentState extends State<Payment> {
               onTap: placeOrder,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                child: buttonPrimary(context, "PAY_NOW", isPlaceOrderLoading),
+                child: buttonprimary(context, "PAY_NOW", isPlaceOrderLoading),
               ),
             )
           : Container(height: 1),

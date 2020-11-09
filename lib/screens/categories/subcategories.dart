@@ -171,6 +171,7 @@ class _SubCategoriesState extends State<SubCategories> {
       }
     }
     return Scaffold(
+      backgroundColor: bg(context),
       appBar: appBarTransparent(context, widget.catTitle),
       body: SmartRefresher(
         enablePullDown: true,
@@ -239,7 +240,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                                   MyLocalizations.of(context)
                                                       .getLocalizations("ALL"),
                                                   isSelected
-                                                      ? primary
+                                                      ? primary(context)
                                                       : Color(0xFFf0F0F0))),
                                           InkWell(
                                               onTap: () {
@@ -270,7 +271,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                                   context,
                                                   '${subCategryList[0]['title'][0].toUpperCase()}${subCategryList[0]['title'].substring(1)}',
                                                   isSelectedIndexZero
-                                                      ? primary
+                                                      ? primary(context)
                                                       : Color(0xFFf0F0F0))),
                                         ],
                                       )
@@ -305,7 +306,7 @@ class _SubCategoriesState extends State<SubCategories> {
                                             '${subCategryList[i]['title'][0].toUpperCase()}${subCategryList[i]['title'].substring(1)}',
                                             isSelectetedId ==
                                                     subCategryList[i]['_id']
-                                                ? primary
+                                                ? primary(context)
                                                 : Color(0xFFf0F0F0)));
                               },
                             ),

@@ -292,8 +292,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       autoPlay: true,
       pagination: true,
       viewportFraction: 1.0,
-      activeIndicator: primary,
-      passiveIndicator: primaryLight,
+      activeIndicator: primarybg,
+      passiveIndicator: primaryLight2,
       height: 150,
       aspectRatio: 2,
       onPageChanged: (_) {
@@ -332,14 +332,14 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
           },
           child: Stack(
             children: <Widget>[
-              Container(height: 130, color: bg),
+              Container(height: 130, color: bg(context)),
               Container(
                 height: 115,
                 margin: EdgeInsets.only(top: 10),
                 padding: EdgeInsets.only(top: 5, left: 20, right: 20),
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
-                    color: primary,
+                    color: primary(context),
                     borderRadius: BorderRadius.all(Radius.circular(5))),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -350,7 +350,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                           left: locale == 'ar' ? 100 : 0,
                         ),
                         child: bannerTitle(
-                            '${url['title'][0].toUpperCase()}${url['title'].substring(1)}')),
+                            '${url['title'][0].toUpperCase()}${url['title'].substring(1)}',
+                            context)),
                     InkWell(
                         onTap: () {
                           if (url['bannerType'] == "PRODUCT") {
@@ -400,7 +401,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                           decoration: BoxDecoration(
                             boxShadow: [
                               BoxShadow(
-                                  color: Colors.black.withOpacity(0.33),
+                                  color: dark(context).withOpacity(0.33),
                                   blurRadius: 6)
                             ],
                             shape: BoxShape.circle,
@@ -412,7 +413,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                             decoration: BoxDecoration(
                               boxShadow: [
                                 BoxShadow(
-                                    color: Colors.black.withOpacity(0.33),
+                                    color: dark(context).withOpacity(0.33),
                                     blurRadius: 6)
                               ],
                               shape: BoxShape.circle,
@@ -424,7 +425,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                             decoration: BoxDecoration(
                               boxShadow: [
                                 BoxShadow(
-                                    color: Colors.black.withOpacity(0.33),
+                                    color: dark(context).withOpacity(0.33),
                                     blurRadius: 6)
                               ],
                               shape: BoxShape.circle,
@@ -585,9 +586,10 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                   "/tr:dpr-auto,tr:w-500" +
                                   list[i]['filePath']),
                           boxFit: BoxFit.cover,
-                          color: Colors.black,
+                          color: dark(context),
                           colorFilter: ColorFilter.mode(
-                              Colors.black.withOpacity(0.40), BlendMode.darken),
+                              dark(context).withOpacity(0.40),
+                              BlendMode.darken),
                           borderRadius:
                               const BorderRadius.all(Radius.circular(4)),
                           child: Padding(
@@ -598,7 +600,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                   list[i]['dealPercent'].toString() +
                                       "% " +
                                       MyLocalizations.of(context)
-                                          .getLocalizations("OFF"))))),
+                                          .getLocalizations("OFF"),
+                                  context)))),
                   placeholder: (context, url) => Container(
                       width: 150,
                       margin: EdgeInsets.only(right: 15),
@@ -610,7 +613,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                           image: AssetImage("lib/assets/images/no-orders.png"),
                           boxFit: BoxFit.cover,
                           colorFilter: ColorFilter.mode(
-                              Colors.black.withOpacity(0.40), BlendMode.darken),
+                              dark(context).withOpacity(0.40),
+                              BlendMode.darken),
                           borderRadius:
                               const BorderRadius.all(Radius.circular(4)),
                           child: Padding(
@@ -621,7 +625,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                   list[i]['dealPercent'].toString() +
                                       "% " +
                                       MyLocalizations.of(context)
-                                          .getLocalizations("OFF"))))),
+                                          .getLocalizations("OFF"),
+                                  context)))),
                 ),
               );
             },
@@ -695,9 +700,10 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                   "/tr:dpr-auto,tr:w-500" +
                                   list[i]['filePath']),
                           boxFit: BoxFit.cover,
-                          color: Colors.black,
+                          color: dark(context),
                           colorFilter: ColorFilter.mode(
-                              Colors.black.withOpacity(0.40), BlendMode.darken),
+                              dark(context).withOpacity(0.40),
+                              BlendMode.darken),
                           borderRadius:
                               const BorderRadius.all(Radius.circular(4)),
                           child: Padding(
@@ -708,7 +714,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                   list[i]['dealPercent'].toString() +
                                       "% " +
                                       MyLocalizations.of(context)
-                                          .getLocalizations("OFF"))))),
+                                          .getLocalizations("OFF"),
+                                  context)))),
                   errorWidget: (context, url, error) => Container(
                     width: 150,
                     margin: EdgeInsets.only(right: 15),
@@ -716,18 +723,18 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       image: AssetImage("lib/assets/images/no-orders.png"),
                       boxFit: BoxFit.cover,
                       colorFilter: ColorFilter.mode(
-                          Colors.black.withOpacity(0.40), BlendMode.darken),
+                          dark(context).withOpacity(0.40), BlendMode.darken),
                       borderRadius: const BorderRadius.all(Radius.circular(4)),
                       child: Padding(
                         padding: const EdgeInsets.only(
                             bottom: 10, left: 10, right: 10),
                         child: todayDeal(
-                          '${list[i]['title'][0].toUpperCase()}${list[i]['title'].substring(1)}',
-                          list[i]['dealPercent'].toString() +
-                              "% " +
-                              MyLocalizations.of(context)
-                                  .getLocalizations("OFF"),
-                        ),
+                            '${list[i]['title'][0].toUpperCase()}${list[i]['title'].substring(1)}',
+                            list[i]['dealPercent'].toString() +
+                                "% " +
+                                MyLocalizations.of(context)
+                                    .getLocalizations("OFF"),
+                            context),
                       ),
                     ),
                   ),
@@ -743,7 +750,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: bg,
+      backgroundColor: bg(context),
       key: _scaffoldKeydrawer,
       body: SmartRefresher(
         enablePullDown: true,

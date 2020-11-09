@@ -235,8 +235,9 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     ];
 
     return Scaffold(
+      backgroundColor: bg(context),
       key: _scaffoldKey,
-      backgroundColor: Colors.white,
+      // backgroundColor: Colors.white,
       appBar: currentIndex == 0
           ? appBarWhite(
               context,
@@ -273,11 +274,10 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       ),
       body: currencyLoading ? SquareLoader() : _screens[currentIndex],
       bottomNavigationBar: BottomNavigationBar(
+          elevation: 1,
           currentIndex: currentIndex,
-          backgroundColor: Colors.black,
-          unselectedItemColor: greyc,
           type: BottomNavigationBarType.fixed,
-          fixedColor: primary,
+          // fixedColor: primary(context),
           onTap: _onTapped,
           items: items),
     );

@@ -5,12 +5,12 @@ import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 
-Widget buttonPrimary(BuildContext context, title, isLoading) {
+Widget buttonprimary(BuildContext context, title, isLoading) {
   return Container(
     height: 55,
     margin: EdgeInsets.only(top: 10, bottom: 10),
-    decoration: BoxDecoration(color: primary, boxShadow: [
-      BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 5)
+    decoration: BoxDecoration(color: primary(context), boxShadow: [
+      BoxShadow(color: dark(context).withOpacity(0.29), blurRadius: 5)
     ]),
     child: Padding(
       padding: const EdgeInsets.only(
@@ -19,19 +19,27 @@ Widget buttonPrimary(BuildContext context, title, isLoading) {
       ),
       child: GFButton(
         size: GFSize.LARGE,
-        color: primary,
+        color: primary(context),
         blockButton: true,
         onPressed: null,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(MyLocalizations.of(context).getLocalizations(title),
-                style: textBarlowRegularBlack()),
+                style: TextStyle(
+                    fontSize: 16.0,
+                    fontFamily: 'BarlowRegular',
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500)),
             SizedBox(height: 10),
             isLoading ? GFLoader(type: GFLoaderType.ios) : Text("")
           ],
         ),
-        textStyle: textBarlowRegularrBlack(),
+        textStyle: TextStyle(
+            fontSize: 16.0,
+            fontFamily: 'BarlowRegular',
+            color: Colors.black,
+            fontWeight: FontWeight.w500),
       ),
     ),
   );
@@ -46,17 +54,17 @@ Widget productAddButton(BuildContext context, title, isLoading) {
         borderRadius: BorderRadius.all(
           Radius.circular(5),
         ),
-        color: primary),
+        color: primary(context)),
     child: GFButton(
       size: GFSize.LARGE,
-      color: primary,
+      color: primary(context),
       onPressed: null,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
             MyLocalizations.of(context).getLocalizations(title),
-            style: textbarlowMediumBlackm(),
+            style: textbarlowMediumBlackm(context),
           ),
           isLoading ? GFLoader(type: GFLoaderType.ios) : Text("")
         ],
@@ -70,14 +78,14 @@ Widget transparenttButton(BuildContext context, title, icon) {
     height: 35,
     child: GFButton(
       size: GFSize.LARGE,
-      color: bg,
+      color: bg(context),
       onPressed: null,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
             MyLocalizations.of(context).getLocalizations(title),
-            style: hintSfboldBig(),
+            style: hintSfboldBig(context),
           ),
           icon
         ],
@@ -90,8 +98,8 @@ Widget editProfileButton(BuildContext context, title, isLoading) {
   return Container(
     height: 55,
     margin: EdgeInsets.only(bottom: 20),
-    decoration: BoxDecoration(color: primary, boxShadow: [
-      BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 5)
+    decoration: BoxDecoration(color: primary(context), boxShadow: [
+      BoxShadow(color: dark(context).withOpacity(0.29), blurRadius: 5)
     ]),
     child: Padding(
       padding: const EdgeInsets.only(
@@ -100,7 +108,7 @@ Widget editProfileButton(BuildContext context, title, isLoading) {
       ),
       child: GFButton(
         size: GFSize.LARGE,
-        color: primary,
+        color: primary(context),
         blockButton: true,
         onPressed: null,
         child: Row(
@@ -108,7 +116,7 @@ Widget editProfileButton(BuildContext context, title, isLoading) {
           children: <Widget>[
             Text(
               MyLocalizations.of(context).getLocalizations(title),
-              style: textBarlowRegularrBlack(),
+              style: textBarlowRegularrBlack(context),
             ),
             SizedBox(
               height: 10,
@@ -116,7 +124,7 @@ Widget editProfileButton(BuildContext context, title, isLoading) {
             isLoading ? GFLoader(type: GFLoaderType.ios) : Text("")
           ],
         ),
-        textStyle: textBarlowRegularrBlack(),
+        textStyle: textBarlowRegularrBlack(context),
       ),
     ),
   );
@@ -124,9 +132,9 @@ Widget editProfileButton(BuildContext context, title, isLoading) {
 
 Widget primaryOutlineButton(BuildContext context, title) {
   return GFButton(
-    borderSide: BorderSide(color: primary),
+    borderSide: BorderSide(color: primary(context)),
     type: GFButtonType.outline2x,
-    color: primary,
+    color: primary(context),
     size: GFSize.MEDIUM,
     onPressed: null,
     child: Row(
@@ -134,7 +142,7 @@ Widget primaryOutlineButton(BuildContext context, title) {
       children: <Widget>[
         Text(
           MyLocalizations.of(context).getLocalizations(title),
-          style: textbarlowRegularaPrimar(),
+          style: textbarlowRegularaPrimar(context),
         ),
       ],
     ),
@@ -143,16 +151,16 @@ Widget primaryOutlineButton(BuildContext context, title) {
 
 Widget primarySolidButtonSmall(BuildContext context, title) {
   return GFButton(
-    borderSide: BorderSide(color: primary),
+    borderSide: BorderSide(color: primary(context)),
     type: GFButtonType.solid,
-    color: primary,
+    color: primary(context),
     size: GFSize.SMALL,
     onPressed: null,
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Text(MyLocalizations.of(context).getLocalizations(title),
-            style: textbarlowRegularadark()),
+            style: textbarlowRegularadark(context)),
       ],
     ),
   );
@@ -174,7 +182,7 @@ Widget dottedBorderButton(BuildContext context, title) {
         children: <Widget>[
           Text(
             MyLocalizations.of(context).getLocalizations(title),
-            style: textBarlowRegularBb(),
+            style: textBarlowRegularBb(context),
           ),
         ],
       ),
@@ -190,7 +198,7 @@ Widget transparentIconButton(BuildContext context, title, Icon icon) {
       children: <Widget>[
         Text(
           MyLocalizations.of(context).getLocalizations(title),
-          style: hintSfboldBig(),
+          style: hintSfboldBig(context),
         ),
         icon
       ],
@@ -209,7 +217,7 @@ Widget transparentButton(BuildContext context, title) {
         children: <Widget>[
           Text(
             MyLocalizations.of(context).getLocalizations(title),
-            style: hintSfboldBig(),
+            style: hintSfboldBig(context),
           ),
         ],
       ),
@@ -222,15 +230,15 @@ Widget addToCartButton(
   return Container(
       height: 55,
       decoration: BoxDecoration(
-        color: primary,
+        color: primary(context),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 3)
+          BoxShadow(color: dark(context).withOpacity(0.29), blurRadius: 3)
         ],
       ),
       child: RawMaterialButton(
         onPressed: null,
         padding: EdgeInsetsDirectional.only(start: .0, end: 1.0),
-        fillColor: primary,
+        fillColor: primary(context),
         constraints: const BoxConstraints(minHeight: 44.0),
         shape: RoundedRectangleBorder(
           borderRadius: new BorderRadius.circular(5.0),
@@ -258,12 +266,12 @@ Widget addToCartButton(
                       children: <TextSpan>[
                         TextSpan(
                           text: '$items',
-                          style: textBarlowRegularWhite(),
+                          style: textBarlowRegularWhite(context),
                         ),
                         TextSpan(
                             text: MyLocalizations.of(context)
                                 .getLocalizations("ITEMS"),
-                            style: textBarlowRegularWhite()),
+                            style: textBarlowRegularWhite(context)),
                       ],
                     ),
                   ),
@@ -272,7 +280,7 @@ Widget addToCartButton(
                   ),
                   new Text(
                     price,
-                    style: textbarlowBoldWhite(),
+                    style: textbarlowBoldWhite(context),
                   ),
                 ],
               ),
@@ -284,7 +292,11 @@ Widget addToCartButton(
                   children: [
                     isLoading ? GFLoader(type: GFLoaderType.ios) : Text(""),
                     Text(MyLocalizations.of(context).getLocalizations(title),
-                        style: textBarlowRegularBlack()),
+                        style: TextStyle(
+                            fontSize: 16.0,
+                            fontFamily: 'BarlowRegular',
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500)),
                     SizedBox(width: 10),
                     icon,
                     SizedBox(width: 10)
@@ -303,16 +315,16 @@ Widget checkoutButton(
       height: 60,
       margin: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
       decoration: BoxDecoration(
-        color: primary,
+        color: primary(context),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 6)
+          BoxShadow(color: dark(context).withOpacity(0.29), blurRadius: 6)
         ],
         borderRadius: BorderRadius.all(Radius.circular(5)),
       ),
       child: RawMaterialButton(
         onPressed: null,
         padding: EdgeInsetsDirectional.only(start: .0, end: 1.0),
-        fillColor: primary,
+        fillColor: primary(context),
         constraints: const BoxConstraints(minHeight: 44.0),
         shape: RoundedRectangleBorder(
           borderRadius: new BorderRadius.circular(5.0),
@@ -334,10 +346,10 @@ Widget checkoutButton(
                 children: <Widget>[
                   SizedBox(height: 8.0),
                   Text(MyLocalizations.of(context).getLocalizations(total),
-                      style: textBarlowRegularWhite()),
+                      style: textBarlowRegularWhite(context)),
                   SizedBox(height: 1.0),
                   new Text(MyLocalizations.of(context).getLocalizations(price),
-                      style: textbarlowBoldWhite()),
+                      style: textbarlowBoldWhite(context)),
                 ],
               ),
             ),
@@ -347,7 +359,11 @@ Widget checkoutButton(
                 children: [
                   isLoading ? GFLoader(type: GFLoaderType.ios) : Text(""),
                   Text(MyLocalizations.of(context).getLocalizations(title),
-                      style: textBarlowRegularBlack()),
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          fontFamily: 'BarlowRegular',
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500)),
                   SizedBox(width: 10),
                   icon,
                   SizedBox(width: 10)
@@ -371,25 +387,25 @@ Widget applyCoupon(BuildContext context, title, isLoading) {
             ? SquareLoader()
             : Text(
                 MyLocalizations.of(context).getLocalizations(title) + " ",
-                style: textbarlowRegularBlack(),
+                style: textBarlowRegularBlack(context),
               ),
       ),
-      color: primary,
+      color: primarybg,
     ),
   );
 }
 
 Widget alertSubmitButton(BuildContext context, title) {
   return Container(
-    color: primary,
+    color: primary(context),
     height: 35,
     margin: EdgeInsets.symmetric(vertical: 5),
     child: GFButton(
       onPressed: null,
       text: MyLocalizations.of(context).getLocalizations(title),
-      color: primary,
+      color: primary(context),
       size: GFSize.SMALL,
-      textStyle: textBarlowRegularrWhite(),
+      textStyle: textBarlowRegularrWhite(context),
     ),
   );
 }
@@ -403,10 +419,10 @@ Widget defaultButton(BuildContext context, title, color) {
     ),
     child: GFButton(
       onPressed: null,
-      color: Colors.black,
+      color: dark(context),
       child: Text(
         MyLocalizations.of(context).getLocalizations(title),
-        style: textbarlowMediumPrimary(),
+        style: textbarlowMediumprimary(context),
       ),
     ),
   );
@@ -418,7 +434,7 @@ Widget iconButton(BuildContext context, Icon icon, isLoading) {
     width: 50.0,
     decoration: BoxDecoration(boxShadow: [
       new BoxShadow(
-        color: Colors.black.withOpacity(0.29),
+        color: dark(context).withOpacity(0.29),
         blurRadius: 6.0,
       ),
     ], color: Colors.white, borderRadius: BorderRadius.circular(50.0)),
@@ -491,8 +507,8 @@ Widget cartInfoButton(BuildContext context, Map cartData, currency) {
   return Container(
     height: 55.0,
     padding: EdgeInsets.only(right: 20),
-    decoration: BoxDecoration(color: primary, boxShadow: [
-      BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 5)
+    decoration: BoxDecoration(color: primary(context), boxShadow: [
+      BoxShadow(color: dark(context).withOpacity(0.29), blurRadius: 5)
     ]),
     child: Column(
       children: <Widget>[
@@ -509,11 +525,11 @@ Widget cartInfoButton(BuildContext context, Map cartData, currency) {
                   new Text(
                     '(${cartData['products'].length})  ' +
                         MyLocalizations.of(context).getLocalizations("ITEMS"),
-                    style: textBarlowRegularWhite(),
+                    style: textBarlowRegularWhite(context),
                   ),
                   new Text(
                     "$currency${cartData['subTotal'].toStringAsFixed(2)}",
-                    style: textbarlowBoldWhite(),
+                    style: textbarlowBoldWhite(context),
                   ),
                 ],
               ),
@@ -525,7 +541,11 @@ Widget cartInfoButton(BuildContext context, Map cartData, currency) {
                     new Text(
                       MyLocalizations.of(context)
                           .getLocalizations("GO_TO_CART"),
-                      style: textBarlowRegularBlack(),
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          fontFamily: 'BarlowRegular',
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500),
                     ),
                     SizedBox(width: 4),
                     Icon(

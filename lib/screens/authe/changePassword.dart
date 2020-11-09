@@ -110,8 +110,9 @@ class _ChangePasswordState extends State<ChangePassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarPrimary(context, "CHANGE_PASSWORD"),
+      appBar: appBarprimary(context, "CHANGE_PASSWORD"),
       body: Form(
         key: _formKey,
         child: Container(
@@ -152,7 +153,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: primary),
+                        borderSide: BorderSide(color: primary(context)),
                       ),
                     ),
                     validator: (String value) {
@@ -207,7 +208,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: primary),
+                        borderSide: BorderSide(color: primary(context)),
                       ),
                     ),
                     validator: (String value) {
@@ -265,7 +266,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: primary),
+                        borderSide: BorderSide(color: primary(context)),
                       ),
                     ),
                     validator: (String value) {
@@ -292,7 +293,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                 onTap: changePassword,
                 child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: buttonPrimary(
+                    child: buttonprimary(
                         context, "SUBMIT", isChangePasswordLoading)),
               ),
             ],

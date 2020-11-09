@@ -122,7 +122,7 @@ class _AllDealsListState extends State<AllDealsList> {
       }
     }
     return Scaffold(
-      backgroundColor: bg,
+      backgroundColor: bg(context),
       appBar: appBarWhite(context, widget.title, false, false, null),
       body: SmartRefresher(
         enablePullDown: true,

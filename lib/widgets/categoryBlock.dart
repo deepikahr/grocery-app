@@ -24,7 +24,7 @@ class CategoryBlock extends StatelessWidget {
             padding: EdgeInsets.all(5),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(8)),
-              border: Border.all(color: Colors.black.withOpacity(0.20)),
+              border: Border.all(color: dark(context).withOpacity(0.20)),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -45,7 +45,8 @@ class CategoryBlock extends StatelessWidget {
             ),
           ),
           Expanded(
-              child: buildCatTitle(title, true, textBarlowRegularrdarkdull()))
+              child: buildCatTitle(
+                  title, true, textBarlowRegularrdarkdull(context)))
         ],
       ),
     );
