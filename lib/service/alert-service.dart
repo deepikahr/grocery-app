@@ -1,9 +1,7 @@
 import 'dart:async';
-
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:readymadeGroceryApp/main.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -33,11 +31,6 @@ class AlertService {
               AlertService().showToast(onlineMsg);
               isFirstTime = false;
             }
-            Common.getSplash().then((isFirstTimeSplash) {
-              if (isFirstTimeSplash) {
-                main();
-              }
-            });
           }
         });
       }
