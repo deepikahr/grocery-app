@@ -11,7 +11,6 @@ import 'package:readymadeGroceryApp/service/alert-service.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
-import 'package:readymadeGroceryApp/service/json-data.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -138,12 +137,13 @@ class _MainScreenState extends State<MainScreen> {
         setState(() {
           isGetJsonLoading = false;
         });
-        localizedValues = JsonData.englishJson;
-        locale = JsonData.englishJsonCode;
+        localizedValues = value['response_data']['json'];
+        locale = value['response_data']['languageCode'];
         Common.setNoConnection({
-          "NO_INTERNET": JsonData.englishJson[locale]["NO_INTERNET"],
-          "ONLINE_MSG": JsonData.englishJson[locale]["ONLINE_MSG"],
-          "NO_INTERNET_MSG": JsonData.englishJson[locale]["NO_INTERNET_MSG"]
+          "NO_INTERNET": value['response_data']['json'][locale]["NO_INTERNET"],
+          "ONLINE_MSG": value['response_data']['json'][locale]["ONLINE_MSG"],
+          "NO_INTERNET_MSG": value['response_data']['json'][locale]
+              ["NO_INTERNET_MSG"]
         });
         await Common.setSelectedLanguage(locale);
       });
