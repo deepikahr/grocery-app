@@ -16,10 +16,7 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-// import 'dart:ui' show Color;
 import 'package:flutter/widgets.dart';
-
 export 'package:flutter/services.dart' show Brightness;
 
 SentryError sentryError = new SentryError();
@@ -36,15 +33,12 @@ void initializeMain({bool isTest}) async {
       statusBarBrightness: Brightness.dark,
       statusBarIconBrightness: Brightness.dark));
   AlertService().checkConnectionMethod();
-  if (isTest != null && !isTest) {
-    runZoned<Future>(() {
-      runApp(MaterialApp(
-          home: AnimatedScreen(), debugShowCheckedModeBanner: false));
-      return Future.value(null);
-    }, onError: (error, stackTrace) {
-      sentryError.reportError(error, stackTrace);
-    });
-  }
+  runZoned<Future>(() {
+    runApp(MainScreen());
+    return Future.value(null);
+  }, onError: (error, stackTrace) {
+    sentryError.reportError(error, stackTrace);
+  });
   initializeLanguage(isTest: isTest);
 }
 
@@ -55,33 +49,7 @@ void initializeLanguage({bool isTest}) async {
     });
     configLocalNotification();
   }
-
-  await Common.getSelectedLanguage().then((selectedLocale) async {
-    Map localizedValues;
-    String defaultLocale = '';
-    String locale = selectedLocale ?? defaultLocale;
-    await LoginService.getLanguageJson(locale).then((value) async {
-      localizedValues = value['response_data']['json'];
-      locale = value['response_data']['languageCode'];
-      Common.setNoConnection({
-        "NO_INTERNET": value['response_data']['json'][locale]["NO_INTERNET"],
-        "ONLINE_MSG": value['response_data']['json'][locale]["ONLINE_MSG"],
-        "NO_INTERNET_MSG": value['response_data']['json'][locale]
-            ["NO_INTERNET_MSG"]
-      });
-      await Common.setSelectedLanguage(locale);
-      runZoned<Future>(() {
-        runApp(MainScreen(
-            isTest: isTest,
-            locale: locale,
-            localizedValues: localizedValues,
-            isFirstTime: true));
-        return Future.value(null);
-      }, onError: (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
-      });
-    });
-  });
+  getToken();
 }
 
 void getToken() async {
@@ -133,17 +101,6 @@ Future<void> configLocalNotification() async {
 }
 
 class MainScreen extends StatefulWidget {
-  final String locale;
-  final Map localizedValues;
-  final bool isTest, isFirstTime;
-
-  MainScreen(
-      {Key key,
-      this.locale,
-      this.localizedValues,
-      this.isTest,
-      this.isFirstTime});
-
   @override
   _MainScreenState createState() => _MainScreenState();
 }
@@ -151,9 +108,12 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   DarkThemeProvider themeChangeProvider = new DarkThemeProvider();
 
+  String locale;
+  Map localizedValues;
+  bool isGetJsonLoading = false;
   void initState() {
-    Common.setSplash(false);
     super.initState();
+    getJson();
     getCurrentAppTheme();
   }
 
@@ -166,6 +126,30 @@ class _MainScreenState extends State<MainScreen> {
     super.dispose();
   }
 
+  getJson() async {
+    setState(() {
+      isGetJsonLoading = true;
+    });
+    await Common.getSelectedLanguage().then((selectedLocale) async {
+      String defaultLocale = '';
+      locale = selectedLocale ?? defaultLocale;
+      await LoginService.getLanguageJson(locale).then((value) async {
+        setState(() {
+          isGetJsonLoading = false;
+        });
+        localizedValues = value['response_data']['json'];
+        locale = value['response_data']['languageCode'];
+        Common.setNoConnection({
+          "NO_INTERNET": value['response_data']['json'][locale]["NO_INTERNET"],
+          "ONLINE_MSG": value['response_data']['json'][locale]["ONLINE_MSG"],
+          "NO_INTERNET_MSG": value['response_data']['json'][locale]
+              ["NO_INTERNET_MSG"]
+        });
+        await Common.setSelectedLanguage(locale);
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -174,71 +158,36 @@ class _MainScreenState extends State<MainScreen> {
       },
       child: Consumer<DarkThemeProvider>(
         builder: (BuildContext context, value, Widget child) {
-          return MaterialApp(
-            locale: Locale(widget.locale),
-            localizationsDelegates: [
-              MyLocalizationsDelegate(widget.localizedValues, [widget.locale]),
-              GlobalWidgetsLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-              DefaultCupertinoLocalizations.delegate
-            ],
-            supportedLocales: [Locale(widget.locale)],
-            debugShowCheckedModeBanner: false,
-            title: Constants.appName,
-            theme: Styles.themeData(themeChangeProvider.darkTheme, context),
-            home: Home(
-                isTest: widget.isTest,
-                locale: widget.locale,
-                localizedValues: widget.localizedValues),
-          );
+          return isGetJsonLoading
+              ? MaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  title: Constants.appName,
+                  theme:
+                      Styles.themeData(themeChangeProvider.darkTheme, context),
+                  home: AnimatedScreen())
+              : MaterialApp(
+                  locale: Locale(locale),
+                  localizationsDelegates: [
+                    MyLocalizationsDelegate(localizedValues, [locale]),
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                    DefaultCupertinoLocalizations.delegate
+                  ],
+                  supportedLocales: [Locale(locale)],
+                  debugShowCheckedModeBanner: false,
+                  title: Constants.appName,
+                  theme:
+                      Styles.themeData(themeChangeProvider.darkTheme, context),
+                  home: Home(locale: locale, localizedValues: localizedValues),
+                );
         },
       ),
     );
-
-    // return MaterialApp(
-    //   locale: Locale(widget.locale),
-    //   localizationsDelegates: [
-    //     MyLocalizationsDelegate(widget.localizedValues, [widget.locale]),
-    //     GlobalWidgetsLocalizations.delegate,
-    //     GlobalMaterialLocalizations.delegate,
-    //     GlobalCupertinoLocalizations.delegate,
-    //     DefaultCupertinoLocalizations.delegate
-    //   ],
-    //   supportedLocales: [Locale(widget.locale)],
-    //   debugShowCheckedModeBanner: false,
-    //   title: Constants.appName,
-    //   theme: ThemeData(
-    //     primary(context)Color: primary(context),
-    //     accentColor: primary(context),
-    //     brightness: Brightness.light,
-    //   ),
-    //   darkTheme: ThemeData(
-    //     brightness: Brightness.dark,
-    //   ),
-    //   home: Home(
-    //       isTest: widget.isTest,
-    //       locale: widget.locale,
-    //       localizedValues: widget.localizedValues),
-    // );
   }
 }
 
-class AnimatedScreen extends StatefulWidget {
-  @override
-  _AnimatedScreenState createState() => _AnimatedScreenState();
-}
-
-class _AnimatedScreenState extends State<AnimatedScreen> {
-  void initState() {
-    Common.setSplash(true);
-    super.initState();
-  }
-
-  void dispose() {
-    super.dispose();
-  }
-
+class AnimatedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -247,12 +196,10 @@ class _AnimatedScreenState extends State<AnimatedScreen> {
         color: primary(context),
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        child: Image.asset(
-          'lib/assets/splash.png',
-          fit: BoxFit.cover,
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-        ),
+        child: Image.asset('lib/assets/splash.png',
+            fit: BoxFit.cover,
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width),
       ),
     );
   }

@@ -217,10 +217,8 @@ class _OtpState extends State<Otp> {
                   const EdgeInsets.only(top: 40.0, left: 20.0, right: 20.0),
               child: buildBoldText(context, "VERIFY_OTP")),
           Padding(
-            padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-            child: buildGFTypographyOtp(
-                context, "OTP_CODE_MSG", ' ${widget.mobileNumber}'),
-          ),
+              padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+              child: buildGFTypographyOtp(context, "OTP_CODE_MSG", '')),
           InkWell(
               onTap: resentOTP,
               child: buildResentOtp(context, "RESENT_OTP", isResentOtpLoading)),
