@@ -138,14 +138,6 @@ class _MainScreenState extends State<MainScreen> {
         setState(() {
           isGetJsonLoading = false;
         });
-        // localizedValues = value['response_data']['json'];
-        // locale = value['response_data']['languageCode'];
-        // Common.setNoConnection({
-        //   "NO_INTERNET": value['response_data']['json'][locale]["NO_INTERNET"],
-        //   "ONLINE_MSG": value['response_data']['json'][locale]["ONLINE_MSG"],
-        //   "NO_INTERNET_MSG": value['response_data']['json'][locale]
-        //       ["NO_INTERNET_MSG"]
-        // });
         localizedValues = JsonData.englishJson;
         locale = JsonData.englishJsonCode;
         Common.setNoConnection({
@@ -154,18 +146,6 @@ class _MainScreenState extends State<MainScreen> {
           "NO_INTERNET_MSG": JsonData.englishJson[locale]["NO_INTERNET_MSG"]
         });
         await Common.setSelectedLanguage(locale);
-      });
-    }).catchError((onError) {
-      setState(() {
-        isGetJsonLoading = false;
-        localizedValues = JsonData.englishJson;
-        locale = JsonData.englishJsonCode;
-        Common.setNoConnection({
-          "NO_INTERNET": JsonData.englishJson[locale]["NO_INTERNET"],
-          "ONLINE_MSG": JsonData.englishJson[locale]["ONLINE_MSG"],
-          "NO_INTERNET_MSG": JsonData.englishJson[locale]["NO_INTERNET_MSG"]
-        });
-        Common.setSelectedLanguage(locale);
       });
     });
   }
