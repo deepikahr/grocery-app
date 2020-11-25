@@ -557,6 +557,19 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                             token: getTokenValue),
                       ),
                     );
+                  } else if (list[i]['dealType'] == "PRODUCT" &&
+                      list[i]['productId'] == null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AllProducts(
+                            locale: widget.locale,
+                            localizedValues: widget.localizedValues,
+                            currency: currency,
+                            token: getTokenValue,
+                            dealId: list[i]['_id']),
+                      ),
+                    );
                   } else {
                     Navigator.push(
                       context,
@@ -671,6 +684,19 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                             token: getTokenValue),
                       ),
                     );
+                  } else if (list[i]['dealType'] == "PRODUCT" &&
+                      list[i]['productId'] == null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AllProducts(
+                            locale: widget.locale,
+                            localizedValues: widget.localizedValues,
+                            currency: currency,
+                            token: getTokenValue,
+                            dealId: list[i]['_id']),
+                      ),
+                    );
                   } else {
                     Navigator.push(
                       context,
@@ -682,6 +708,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                         ),
                       ),
                     );
+
                   }
                 },
                 child: CachedNetworkImage(

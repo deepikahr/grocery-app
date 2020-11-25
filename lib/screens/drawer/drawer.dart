@@ -46,7 +46,6 @@ class _DrawerPageState extends State<DrawerPage> {
   void initState() {
     getToken();
     Common.getTheme().then((isDark) {
-      print('dark $isDark');
       isDark ? Color(0xFAAACF2D) : Color(0xFFFFCF2D);
     });
     super.initState();

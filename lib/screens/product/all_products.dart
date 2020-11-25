@@ -20,7 +20,7 @@ SentryError sentryError = new SentryError();
 
 class AllProducts extends StatefulWidget {
   final Map localizedValues;
-  final String locale, currency;
+  final String locale, currency, dealId;
   final bool token;
   final List productsList;
 
@@ -30,7 +30,8 @@ class AllProducts extends StatefulWidget {
       this.localizedValues,
       this.productsList,
       this.currency,
-      this.token});
+      this.token,
+      this.dealId});
   @override
   _AllProductsState createState() => _AllProductsState();
 }
@@ -63,7 +64,9 @@ class _AllProductsState extends State<AllProducts> {
   @override
   void initState() {
     getTokenValueMethod();
-    getSubCatList();
+    if (widget.dealId == null) {
+      getSubCatList();
+    }
     super.initState();
   }
 
@@ -117,7 +120,11 @@ class _AllProductsState extends State<AllProducts> {
       }
       setState(() {
         isNewProductsLoading = true;
-        getProductListMethod(productIndex);
+        if (widget.dealId == null) {
+          getProductListMethod(productIndex);
+        } else {
+          getDealProductListMethod(productIndex);
+        }
       });
     }).catchError((error) {
       if (mounted) {
@@ -148,6 +155,48 @@ class _AllProductsState extends State<AllProducts> {
                   if (mounted) {
                     lastApiCall = false;
                     getProductListMethod(productIndex);
+                  }
+                }
+              }
+            }
+          }
+          isNewProductsLoading = false;
+        });
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          productsList = [];
+          isNewProductsLoading = false;
+        });
+      }
+      sentryError.reportError(error, null);
+    });
+  }
+
+  getDealProductListMethod(productIndex) async {
+    setState(() {
+      subCategryList = [];
+    });
+    await ProductService.getDealProductListAll(
+            productIndex, productLimt, widget.dealId)
+        .then((onValue) {
+      _refreshController.refreshCompleted();
+      if (mounted) {
+        setState(() {
+          if (onValue['response_data'] != []) {
+            productsList.addAll(onValue['response_data']);
+            totalProduct = onValue["total"];
+            int index = productsList.length;
+            if (lastApiCall == true) {
+              productIndex++;
+              if (index < totalProduct) {
+                getDealProductListMethod(productIndex);
+              } else {
+                if (index == totalProduct) {
+                  if (mounted) {
+                    lastApiCall = false;
+                    getDealProductListMethod(productIndex);
                   }
                 }
               }
