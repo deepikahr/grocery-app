@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/otp-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
@@ -76,14 +75,9 @@ class _ResetPasswordState extends State<ResetPassword> {
                       MyLocalizations.of(context).getLocalizations("OK"),
                       style: textbarlowRegularaprimary(context)),
                   onPressed: () {
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => Login(
-                              locale: widget.locale,
-                              localizedValues: widget.localizedValues),
-                        ),
-                        (Route<dynamic> route) => false);
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
                   },
                 ),
               ],

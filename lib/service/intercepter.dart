@@ -29,7 +29,11 @@ class ApiInterceptor implements InterceptorContract {
     if (data.statusCode == 400) {
       var msg = '';
       for (int i = 0, l = errorData['errors'].length; i < l; i++) {
-        msg += errorData['errors'][i] + '\n';
+        if (l != i + 1) {
+          msg += errorData['errors'][i] + "\n";
+        } else {
+          msg += errorData['errors'][i];
+        }
       }
       AlertService().showToast(msg);
       return Future.error('Unexpected error 😢');
