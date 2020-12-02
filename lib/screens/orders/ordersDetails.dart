@@ -220,7 +220,8 @@ class _OrderDetailsState extends State<OrderDetails> {
                                     buildOrderDetilsText(
                                         context,
                                         "DATE",
-                                        DateFormat('dd/MM/yyyy, hh:mm a')
+                                        DateFormat('dd/MM/yyyy, hh:mm a',
+                                                widget.locale ?? "en")
                                             .format(DateTime.parse(
                                                     orderHistory['order']
                                                             ['createdAt']

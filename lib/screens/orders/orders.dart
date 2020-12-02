@@ -286,8 +286,9 @@ class _OrdersState extends State<Orders> {
                 textLightSmall(
                     MyLocalizations.of(context)
                             .getLocalizations("ORDERED", true) +
-                        DateFormat('dd/MM/yyyy, hh:mm a').format(
-                            DateTime.parse(orderDetails['createdAt'].toString())
+                        DateFormat('dd/MM/yyyy, hh:mm a', widget.locale ?? "en")
+                            .format(DateTime.parse(
+                                    orderDetails['createdAt'].toString())
                                 .toLocal()),
                     context)
               ],
