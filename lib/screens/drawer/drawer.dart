@@ -242,7 +242,11 @@ class _DrawerPageState extends State<DrawerPage> {
           await Common.setUserID(null);
           await Common.setCartData(null);
           await Common.setCartDataCount(0);
-          main();
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => MainScreen()),
+              (Route<dynamic> route) => false);
         });
       });
     });

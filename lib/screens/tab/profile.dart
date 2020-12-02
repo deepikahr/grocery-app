@@ -40,7 +40,7 @@ class _ProfileState extends State<Profile> {
       isGetLanguagesListLoading = false;
   String token, userID, currency = "";
   List languagesList;
-
+  var selectedLanguages;
   @override
   void initState() {
     getToken();
@@ -119,6 +119,11 @@ class _ProfileState extends State<Profile> {
       if (mounted) {
         setState(() {
           languagesList = onValue['response_data'];
+          for (int i = 0; i < languagesList.length; i++) {
+            if (languagesList[i]['languageCode'] == widget.locale) {
+              selectedLanguages = languagesList[i]['languageName'];
+            }
+          }
           isGetLanguagesListLoading = false;
         });
       }
@@ -160,9 +165,18 @@ class _ProfileState extends State<Profile> {
                       itemBuilder: (BuildContext context, int i) {
                         return GFButton(
                             onPressed: () async {
+                              setState(() {
+                                selectedLanguages =
+                                    languagesList[i]['languageName'];
+                              });
                               await Common.setSelectedLanguage(
                                   languagesList[i]['languageCode']);
-                              main();
+                              Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          MainScreen()),
+                                  (Route<dynamic> route) => false);
                             },
                             type: GFButtonType.transparent,
                             child: alertText(context,
@@ -186,7 +200,11 @@ class _ProfileState extends State<Profile> {
           await Common.setUserID(null);
           await Common.setCartData(null);
           await Common.setCartDataCount(0);
-          main();
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => MainScreen()),
+              (Route<dynamic> route) => false);
         });
       });
     });
@@ -424,10 +442,9 @@ class _ProfileState extends State<Profile> {
                             : Container(),
                         languagesList.length > 0
                             ? InkWell(
-                                onTap: () {
-                                  selectLanguagesMethod();
-                                },
-                                child: profileText(context, "SELECT_LANGUAGE"))
+                                onTap: selectLanguagesMethod,
+                                child: profileTextRow(context,
+                                    "CHANGE_LANGUAGE", selectedLanguages ?? ""))
                             : Container(),
                         SizedBox(height: 15),
                         InkWell(
