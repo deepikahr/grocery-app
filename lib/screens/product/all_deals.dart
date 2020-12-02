@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/model/counterModel.dart';
 import 'package:readymadeGroceryApp/screens/categories/subcategories.dart';
+import 'package:readymadeGroceryApp/screens/product/all_products.dart';
 import 'package:readymadeGroceryApp/screens/product/product-details.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
@@ -173,15 +174,30 @@ class _AllDealsListState extends State<AllDealsList> {
                                           token: getTokenValue),
                                     ),
                                   );
+                                } else if (dealsList[i]['dealType'] ==
+                                        "PRODUCT" &&
+                                    dealsList[i]['productId'] == null) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => AllProducts(
+                                          locale: widget.locale,
+                                          localizedValues:
+                                              widget.localizedValues,
+                                          currency: currency,
+                                          token: getTokenValue,
+                                          dealId: dealsList[i]['_id']),
+                                    ),
+                                  );
                                 } else {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => ProductDetails(
-                                        locale: widget.locale,
-                                        localizedValues: widget.localizedValues,
-                                        productID: dealsList[i]['productId'],
-                                      ),
+                                          locale: widget.locale,
+                                          localizedValues:
+                                              widget.localizedValues,
+                                          productID: dealsList[i]['productId']),
                                     ),
                                   );
                                 }

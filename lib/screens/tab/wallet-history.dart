@@ -112,7 +112,7 @@ class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
           walletTransaction(
               context,
               'DATE',
-              DateFormat('dd/MM/yyyy, hh:mm a').format(
+              DateFormat('dd/MM/yyyy, hh:mm a', widget.locale ?? "en").format(
                   DateTime.parse(walletDetails['createdAt'].toString())
                       .toLocal())),
           SizedBox(height: 3),
