@@ -280,7 +280,7 @@ Widget profileText(BuildContext context, title) {
 Widget profileTextRow(BuildContext context, title, subTitle) {
   return Container(
     height: 55,
-    decoration: BoxDecoration(color: Color(0xFFF7F7F7)),
+    decoration: BoxDecoration(color: cartCardBg(context)),
     child: Padding(
       padding:
           const EdgeInsets.only(top: 8.0, bottom: 9.0, left: 20.0, right: 20.0),
