@@ -801,6 +801,10 @@ thankuImage() {
   return Image.asset('lib/assets/images/thank-you.png');
 }
 
+failedImage() {
+  return Image.asset('lib/assets/images/failed.png');
+}
+
 walletImage() {
   return Image.asset('lib/assets/images/wallet.png');
 }
