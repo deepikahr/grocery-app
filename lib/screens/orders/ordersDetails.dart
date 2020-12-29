@@ -245,15 +245,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                     buildOrderDetilsText(
                                         context,
                                         "PAYMENT_TYPE",
-                                        (orderHistory['order']['paymentType'] ==
-                                                'COD'
-                                            ? "CASH_ON_DELIVERY"
-                                            : orderHistory['order']
-                                                        ['paymentType'] ==
-                                                    "STRIPE"
-                                                ? "PAY_BY_CARD"
-                                                : orderHistory['order']
-                                                    ['paymentType'])),
+                                        orderHistory['order']['paymentType']),
                                     SizedBox(height: 10),
                                     buildOrderDetilsText(
                                         context,

@@ -295,6 +295,7 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                               context),
                           SizedBox(width: 3),
                           textGreenprimary(
+                              context,
                               '${variantUnit == null ? widget.productData['variant'][0]['unit'] : variantUnit}',
                               barlowregularlack(context))
                         ],
