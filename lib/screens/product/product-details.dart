@@ -677,6 +677,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                                       }
                                                     },
                                                     secondary: textGreenprimary(
+                                                        context,
                                                         productDetail['variant']
                                                             [i]['unit'],
                                                         textbarlowBoldGreen(

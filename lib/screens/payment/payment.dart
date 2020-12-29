@@ -359,17 +359,9 @@ class _PaymentState extends State<Payment> {
                                         selected: isSelected,
                                         activeColor: primary(context),
                                         title: textGreenprimary(
-                                          paymentTypes[index] == 'COD'
-                                              ? MyLocalizations.of(context)
-                                                  .getLocalizations(
-                                                      "CASH_ON_DELIVERY")
-                                              : paymentTypes[index] == 'STRIPE'
-                                                  ? MyLocalizations.of(context)
-                                                      .getLocalizations(
-                                                          "PAY_BY_CARD")
-                                                  : paymentTypes[index],
-                                          TextStyle(color: primarybg),
-                                        ),
+                                            context,
+                                            paymentTypes[index],
+                                            TextStyle(color: primarybg)),
                                         onChanged: (int selected) {
                                           if (mounted) {
                                             setState(() {

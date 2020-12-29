@@ -616,8 +616,9 @@ Widget priceMrpText(title, subtitle, context) {
   ]);
 }
 
-Widget textGreenprimary(title, style) {
-  return Text(title, style: style);
+Widget textGreenprimary(BuildContext context, title, style) {
+  return Text(MyLocalizations.of(context).getLocalizations(title ?? ""),
+      style: style);
 }
 
 Widget titleThreeLine(title, context) {
