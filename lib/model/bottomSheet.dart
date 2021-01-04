@@ -270,6 +270,7 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                       },
                       activeColor: primary(context),
                       secondary: textGreenprimary(
+                          context,
                           '${widget.variantsList[index]['unit']} ',
                           textbarlowBoldGreen(context)),
                       title: priceMrpText(
