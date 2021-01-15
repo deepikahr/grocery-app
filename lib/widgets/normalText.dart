@@ -577,6 +577,11 @@ Widget buildOrderDetilsText(BuildContext context, title, subTitle) {
   );
 }
 
+Widget buildOrderDetilsNormalText(BuildContext context, title) {
+  return Text(MyLocalizations.of(context).getLocalizations(title ?? ""),
+      style: textBarlowMediumGreen(context));
+}
+
 Widget buildOrderDetilsStatusText(BuildContext context, title, subTitle) {
   return GFTypography(
     showDivider: false,
@@ -593,14 +598,20 @@ Widget buildOrderDetilsStatusText(BuildContext context, title, subTitle) {
 }
 
 Widget textLightSmall(title, context) {
-  return Text(title, style: textSMBarlowRegularrBlack(context));
+  return Text(MyLocalizations.of(context).getLocalizations(title ?? ""),
+      style: textSMBarlowRegularrBlack(context));
 }
 
 Widget textMediumSmall(title, context) {
   return Text(title ?? "",
       overflow: TextOverflow.ellipsis,
       maxLines: 1,
-      style: textBarlowRegularrdark(context));
+      style: textBarlowRegularrGreen(context));
+}
+
+Widget textMediumSmallGreen(title, context) {
+  return Text(MyLocalizations.of(context).getLocalizations(title ?? ""),
+      style: textBarlowRegularrGreenS(context));
 }
 
 Widget priceMrpText(title, subtitle, context) {
