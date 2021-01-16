@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/otp-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
@@ -66,7 +65,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                 child: new ListBody(
                   children: <Widget>[
                     new Text('${onValue['response_data']}',
-                        style: textBarlowRegularBlack()),
+                        style: textBarlowRegularBlack(context)),
                   ],
                 ),
               ),
@@ -74,16 +73,11 @@ class _ResetPasswordState extends State<ResetPassword> {
                 new FlatButton(
                   child: new Text(
                       MyLocalizations.of(context).getLocalizations("OK"),
-                      style: textbarlowRegularaPrimary()),
+                      style: textbarlowRegularaprimary(context)),
                   onPressed: () {
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => Login(
-                              locale: widget.locale,
-                              localizedValues: widget.localizedValues),
-                        ),
-                        (Route<dynamic> route) => false);
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
                   },
                 ),
               ],
@@ -111,8 +105,9 @@ class _ResetPasswordState extends State<ResetPassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarPrimary(context, "RESET"),
+      appBar: appBarprimary(context, "RESET"),
       body: Form(
         key: _formKey,
         child: Container(
@@ -150,7 +145,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                           child: Icon(Icons.remove_red_eye, color: Colors.grey),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
+                          borderSide: BorderSide(color: primary(context)),
                         ),
                       ),
                       validator: (String value) {
@@ -205,7 +200,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                           child: Icon(Icons.remove_red_eye, color: Colors.grey),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
+                          borderSide: BorderSide(color: primary(context)),
                         ),
                       ),
                       validator: (String value) {
@@ -231,7 +226,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                   onTap: resetPassword,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: buttonPrimary(
+                    child: buttonprimary(
                         context, "SUBMIT", isResetPasswordLoading),
                   )),
             ],

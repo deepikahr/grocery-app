@@ -282,8 +282,8 @@ class _ProductDetailsState extends State<ProductDetails>
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title:
-              Text(responseData['message'], style: textBarlowRegularrBlack()),
+          title: Text(responseData['message'],
+              style: textBarlowRegularrBlack(context)),
           actions: <Widget>[
             FlatButton(
               child:
@@ -316,12 +316,13 @@ class _ProductDetailsState extends State<ProductDetails>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: bg(context),
         key: _scaffoldKey,
         body: isProductDetails
             ? SquareLoader()
             : Container(
                 height: MediaQuery.of(context).size.height,
-                color: Colors.white,
+                color: bg(context),
                 child: SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
@@ -349,7 +350,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                         height: 340,
                                         viewportFraction: 1.0,
                                         pagination: true,
-                                        activeIndicator: primary,
+                                        activeIndicator: primary(context),
                                         passiveIndicator: Colors.grey,
                                         onPageChanged: (_) {
                                           setState(() {
@@ -451,7 +452,8 @@ class _ProductDetailsState extends State<ProductDetails>
                                               padding: const EdgeInsets.only(
                                                   left: 20, right: 20),
                                               child: titleThreeLine(
-                                                  '${productDetail['title'][0].toUpperCase()}${productDetail['title'].substring(1)}'))),
+                                                  '${productDetail['title'][0].toUpperCase()}${productDetail['title'].substring(1)}',
+                                                  context))),
                                       Expanded(
                                         flex: 3,
                                         child: Padding(
@@ -470,10 +472,11 @@ class _ProductDetailsState extends State<ProductDetails>
                                             itemSize: 15.0,
                                             itemPadding: EdgeInsets.symmetric(
                                                 horizontal: 1.0),
+                                            unratedColor: greyc2,
                                             itemBuilder: (context, _) => Icon(
                                               Icons.star,
                                               color: Colors.red,
-                                              size: 10.0,
+                                              size: 12.0,
                                             ),
                                             onRatingUpdate: null,
                                           ),
@@ -511,7 +514,8 @@ class _ProductDetailsState extends State<ProductDetails>
                                                             30,
                                                         child: discriptionMultipleLine(
                                                             productDetail[
-                                                                'description']))),
+                                                                'description'],
+                                                            context))),
                                             Padding(
                                                 padding: const EdgeInsets.only(
                                                     left: 10.0,
@@ -525,7 +529,8 @@ class _ProductDetailsState extends State<ProductDetails>
                                                     productDetail[
                                                             'isDealAvailable']
                                                         ? "$currency${(variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice).toDouble().toStringAsFixed(2)}"
-                                                        : null)),
+                                                        : null,
+                                                    context)),
                                           ],
                                         ),
                                       ],
@@ -564,7 +569,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                                   },
                                                   child: Icon(
                                                     Icons.remove,
-                                                    color: primary,
+                                                    color: primary(context),
                                                   ),
                                                 ),
                                               ),
@@ -573,7 +578,8 @@ class _ProductDetailsState extends State<ProductDetails>
                                                     left: 20.0, right: 20),
                                                 child: Container(
                                                     child: titleTwoLine(
-                                                        quantity.toString())),
+                                                        quantity.toString(),
+                                                        context)),
                                               ),
                                               Text(''),
                                               Padding(
@@ -583,7 +589,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                                   width: 32,
                                                   height: 32,
                                                   decoration: BoxDecoration(
-                                                    color: primary,
+                                                    color: primarybg,
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             20.0),
@@ -639,7 +645,8 @@ class _ProductDetailsState extends State<ProductDetails>
                                                     value: i,
                                                     groupValue: groupValue,
                                                     selected: sizeSelect,
-                                                    activeColor: primary,
+                                                    activeColor:
+                                                        primary(context),
                                                     onChanged: (int value) {
                                                       if (mounted) {
                                                         setState(() {
@@ -669,10 +676,12 @@ class _ProductDetailsState extends State<ProductDetails>
                                                         });
                                                       }
                                                     },
-                                                    secondary: textGreenPrimary(
+                                                    secondary: textGreenprimary(
+                                                        context,
                                                         productDetail['variant']
                                                             [i]['unit'],
-                                                        textbarlowBoldGreen()),
+                                                        textbarlowBoldGreen(
+                                                            context)),
                                                     title: priceMrpText(
                                                         productDetail[
                                                                 'isDealAvailable']
@@ -681,7 +690,8 @@ class _ProductDetailsState extends State<ProductDetails>
                                                         productDetail[
                                                                 'isDealAvailable']
                                                             ? "$currency${productDetail['variant'][i]['price'].toDouble().toStringAsFixed(2)}"
-                                                            : null))
+                                                            : null,
+                                                        context))
                                                 : Container();
                                           })
                                       : Container(),

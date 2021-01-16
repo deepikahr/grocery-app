@@ -6,6 +6,7 @@ import 'package:readymadeGroceryApp/screens/product/product-details.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/fav-service.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
@@ -120,6 +121,7 @@ class _SavedItemsState extends State<SavedItems> {
       }
     }
     return Scaffold(
+      backgroundColor: bg(context),
       appBar: isGetTokenLoading
           ? null
           : token == null
@@ -169,9 +171,7 @@ class _SavedItemsState extends State<SavedItems> {
                                   ),
                                 );
                                 result.then((value) {
-                                  if (value != null) {
-                                    getToken();
-                                  }
+                                  getToken();
                                 });
                               },
                               child: Stack(

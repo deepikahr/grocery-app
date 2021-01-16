@@ -149,8 +149,9 @@ class _EditAddressState extends State<EditAddress> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarPrimary(context, "EDIT_ADDRESS"),
+      appBar: appBarprimary(context, "EDIT_ADDRESS"),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -167,7 +168,7 @@ class _EditAddressState extends State<EditAddress> {
                   child: TextFormField(
                       maxLines: 3,
                       controller: addressController,
-                      style: textBarlowRegularBlack(),
+                      style: textBarlowRegularBlack(context),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                         counterText: "",
@@ -180,8 +181,8 @@ class _EditAddressState extends State<EditAddress> {
                         errorStyle: TextStyle(
                           color: Color(0xFFF44242),
                         ),
-                        fillColor: Colors.black,
-                        focusColor: Colors.black,
+                        fillColor: dark(context),
+                        focusColor: dark(context),
                         contentPadding: EdgeInsets.only(
                           left: 15.0,
                           right: 15.0,
@@ -193,7 +194,7 @@ class _EditAddressState extends State<EditAddress> {
                               const BorderSide(color: Colors.grey, width: 0.0),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
+                          borderSide: BorderSide(color: primary(context)),
                         ),
                       ),
                       validator: (String value) {
@@ -224,7 +225,7 @@ class _EditAddressState extends State<EditAddress> {
                             builder: (context) => PlacePickerScreen(
                                   googlePlacesApiKey: Constants.googleMapApiKey,
                                   initialPosition: LatLng(lat, long),
-                                  mainColor: primary,
+                                  mainColor: primary(context),
                                   mapStrings: MapPickerStrings.english(),
                                   placeAutoCompleteLanguage: 'en',
                                 )));
@@ -235,7 +236,7 @@ class _EditAddressState extends State<EditAddress> {
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                    child: buttonPrimary(context, "CHANGE", false),
+                    child: buttonprimary(context, "CHANGE", false),
                   ),
                 ),
                 Padding(
@@ -247,11 +248,11 @@ class _EditAddressState extends State<EditAddress> {
                   child: TextFormField(
                     initialValue: widget.updateAddressID['flatNo'],
                     maxLength: 14,
-                    style: labelStyle(),
+                    style: labelStyle(context),
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                        fillColor: Colors.black,
-                        focusColor: Colors.black,
+                        fillColor: dark(context),
+                        focusColor: dark(context),
                         contentPadding: EdgeInsets.only(
                           left: 15.0,
                           right: 15.0,
@@ -263,7 +264,7 @@ class _EditAddressState extends State<EditAddress> {
                               const BorderSide(color: Colors.grey, width: 0.0),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
+                          borderSide: BorderSide(color: primary(context)),
                         )),
                     validator: (String value) {
                       if (value.isEmpty) {
@@ -286,11 +287,11 @@ class _EditAddressState extends State<EditAddress> {
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
                       initialValue: widget.updateAddressID['apartmentName'],
-                      style: labelStyle(),
+                      style: labelStyle(context),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
-                        fillColor: Colors.black,
-                        focusColor: Colors.black,
+                        fillColor: dark(context),
+                        focusColor: dark(context),
                         contentPadding: EdgeInsets.only(
                           left: 15.0,
                           right: 15.0,
@@ -302,7 +303,7 @@ class _EditAddressState extends State<EditAddress> {
                               const BorderSide(color: Colors.grey, width: 0.0),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
+                          borderSide: BorderSide(color: primary(context)),
                         ),
                       ),
                       validator: (String value) {
@@ -325,11 +326,11 @@ class _EditAddressState extends State<EditAddress> {
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
                       initialValue: widget.updateAddressID['landmark'],
-                      style: labelStyle(),
+                      style: labelStyle(context),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
-                        fillColor: Colors.black,
-                        focusColor: Colors.black,
+                        fillColor: dark(context),
+                        focusColor: dark(context),
                         contentPadding: EdgeInsets.only(
                           left: 15.0,
                           right: 15.0,
@@ -341,7 +342,7 @@ class _EditAddressState extends State<EditAddress> {
                               const BorderSide(color: Colors.grey, width: 0.0),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
+                          borderSide: BorderSide(color: primary(context)),
                         ),
                       ),
                       validator: (String value) {
@@ -365,11 +366,11 @@ class _EditAddressState extends State<EditAddress> {
                   child: TextFormField(
                       initialValue:
                           widget.updateAddressID['postalCode'].toString(),
-                      style: labelStyle(),
+                      style: labelStyle(context),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
-                        fillColor: Colors.black,
-                        focusColor: Colors.black,
+                        fillColor: dark(context),
+                        focusColor: dark(context),
                         contentPadding: EdgeInsets.only(
                           left: 15.0,
                           right: 15.0,
@@ -381,7 +382,7 @@ class _EditAddressState extends State<EditAddress> {
                               const BorderSide(color: Colors.grey, width: 0.0),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
+                          borderSide: BorderSide(color: primary(context)),
                         ),
                       ),
                       validator: (String value) {
@@ -406,12 +407,12 @@ class _EditAddressState extends State<EditAddress> {
                     initialValue:
                         widget.updateAddressID['mobileNumber'].toString() ?? "",
                     maxLength: 15,
-                    style: labelStyle(),
+                    style: labelStyle(context),
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                         counterText: "",
-                        fillColor: Colors.black,
-                        focusColor: Colors.black,
+                        fillColor: dark(context),
+                        focusColor: dark(context),
                         contentPadding: EdgeInsets.only(
                           left: 15.0,
                           right: 15.0,
@@ -423,7 +424,7 @@ class _EditAddressState extends State<EditAddress> {
                               const BorderSide(color: Colors.grey, width: 0.0),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
+                          borderSide: BorderSide(color: primary(context)),
                         )),
                     validator: (String value) {
                       if (value.isEmpty) {
@@ -470,7 +471,7 @@ class _EditAddressState extends State<EditAddress> {
                           Radio(
                             value: i,
                             groupValue: selectedAddressType,
-                            activeColor: primary,
+                            activeColor: primary(context),
                             onChanged: (value) {
                               setSelectedRadio(value);
                             },
@@ -485,7 +486,7 @@ class _EditAddressState extends State<EditAddress> {
                   onTap: updateAddress,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                    child: buttonPrimary(
+                    child: buttonprimary(
                         context, "UPDATE", isUpdateAddressLoading),
                   ),
                 ),

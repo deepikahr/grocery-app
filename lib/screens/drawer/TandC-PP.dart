@@ -4,6 +4,7 @@ import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import '../../service/auth-service.dart';
 import '../../service/sentry-service.dart';
 import '../../widgets/loader.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -64,7 +65,7 @@ class _TandCandPrivacyPolicyState extends State<TandCandPrivacyPolicy> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: bg(context),
       appBar: appBarTransparent(context, widget.title),
       body: isTandCandPPloading
           ? SquareLoader()

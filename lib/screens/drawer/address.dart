@@ -123,8 +123,9 @@ class _AddressState extends State<Address> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: bg(context),
         key: _scaffoldKey,
-        appBar: appBarPrimary(context, "ADDRESS"),
+        appBar: appBarprimary(context, "ADDRESS"),
         body: addressLoading || isLocationLoading
             ? SquareLoader()
             : addressList.length == 0
@@ -172,7 +173,8 @@ class _AddressState extends State<Address> {
                                               top: 10.0, left: 10.0),
                                           child: buildAddress(
                                               '${addressList[index]['flatNo']}, ${addressList[index]['apartmentName']},${addressList[index]['address']}, ${addressList[index]['landmark']} ,${addressList[index]['postalCode']}, ${addressList[index]['mobileNumber'].toString()}',
-                                              null),
+                                              null,
+                                              context),
                                         ),
                                       ),
                                       SizedBox(height: 20),
@@ -226,7 +228,7 @@ class _AddressState extends State<Address> {
                   googlePlacesApiKey: Constants.googleMapApiKey,
                   initialPosition: LatLng(locationlatlong['latitude'],
                       locationlatlong['longitude']),
-                  mainColor: primary,
+                  mainColor: primary(context),
                   mapStrings: MapPickerStrings.english(),
                   placeAutoCompleteLanguage: 'en',
                 )));
@@ -299,7 +301,7 @@ class _AddressState extends State<Address> {
           ),
           title: new Text(
             "$error",
-            style: hintSfsemiboldb(),
+            style: hintSfsemiboldb(context),
             textAlign: TextAlign.center,
           ),
           content: Container(
@@ -311,7 +313,7 @@ class _AddressState extends State<Address> {
                   padding: const EdgeInsets.symmetric(horizontal: 14.0),
                   child: new Text(
                     "$message",
-                    style: hintSfLightsm(),
+                    style: hintSfLightsm(context),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -335,7 +337,7 @@ class _AddressState extends State<Address> {
                                 child: Text(
                                   MyLocalizations.of(context)
                                       .getLocalizations("OK"),
-                                  style: hintSfLightbig(),
+                                  style: hintSfLightbig(context),
                                 ),
                               ),
                             ),

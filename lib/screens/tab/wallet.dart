@@ -3,6 +3,7 @@ import 'package:readymadeGroceryApp/screens/tab/wallet-history.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
@@ -57,7 +58,8 @@ class _WalletPageState extends State<WalletPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarPrimary(context, "WALLET"),
+      backgroundColor: bg(context),
+      appBar: appBarprimary(context, "WALLET"),
       body: isGetWalletInfoLoading
           ? Center(child: SquareLoader())
           : Column(

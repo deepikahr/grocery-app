@@ -8,6 +8,7 @@ import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/otp-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:pin_entry_text_field/pin_entry_text_field.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
@@ -130,8 +131,9 @@ class _ChangeMobileNumberOtpVerifyState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarPrimary(context, "WELCOME"),
+      appBar: appBarprimary(context, "WELCOME"),
       body: ListView(
         children: <Widget>[
           Padding(
@@ -171,7 +173,7 @@ class _ChangeMobileNumberOtpVerifyState
               onTap: verifyOTPwithMobile,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: buttonPrimary(context, "SUBMIT", isOtpVerifyLoading),
+                child: buttonprimary(context, "SUBMIT", isOtpVerifyLoading),
               )),
         ],
       ),

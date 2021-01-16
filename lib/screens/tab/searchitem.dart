@@ -168,6 +168,7 @@ class _SearchItemState extends State<SearchItem> {
       }
     }
     return new Scaffold(
+      backgroundColor: bg(context),
       key: globalKey,
       body: isTokenGetLoading
           ? SquareLoader()
@@ -240,24 +241,31 @@ class _SearchItemState extends State<SearchItem> {
                           ),
                           hintText: MyLocalizations.of(context)
                               .getLocalizations("WHAT_ARE_YOU_BUING_TODAY"),
+                          hintStyle: new TextStyle(
+                            color: greyb2,
+                          ),
                           fillColor: Color(0xFFF0F0F0),
                           filled: true,
                           focusColor: Colors.black,
                           contentPadding: EdgeInsets.only(
                               left: 15.0, right: 15.0, top: 10.0, bottom: 10.0),
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: primary, width: 0.0),
+                            borderSide:
+                                BorderSide(color: primary(context), width: 0.0),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: primary),
+                            borderSide: BorderSide(color: primary(context)),
                           ),
                         ),
                       ),
                     ),
                   ),
                   isFirstTime
-                      ? searchPage(context, "TYPE_TO_SEARCH",
-                          Icon(Icons.search, size: 50.0, color: primary))
+                      ? searchPage(
+                          context,
+                          "TYPE_TO_SEARCH",
+                          Icon(Icons.search,
+                              size: 50.0, color: primary(context)))
                       : searchresult.length > 0
                           ? Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -278,7 +286,8 @@ class _SearchItemState extends State<SearchItem> {
                                               MyLocalizations.of(context)
                                                   .getLocalizations(
                                                       "ITEMS_FOUNDS"),
-                                          style: textBarlowMediumBlack()),
+                                          style:
+                                              textBarlowMediumBlack(context)),
                                     ],
                                   ),
                                 ),
@@ -374,7 +383,7 @@ class _SearchItemState extends State<SearchItem> {
                                   context,
                                   "NO_RESULT_FOUNDS",
                                   Icon(Icons.hourglass_empty,
-                                      size: 50.0, color: primary),
+                                      size: 50.0, color: primary(context)),
                                 )
                 ],
               ),

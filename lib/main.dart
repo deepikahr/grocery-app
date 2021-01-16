@@ -1,17 +1,23 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
+import 'package:readymadeGroceryApp/service/alert-service.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/widgets.dart';
+export 'package:flutter/services.dart' show Brightness;
 
 SentryError sentryError = new SentryError();
 Timer oneSignalTimer;
@@ -26,17 +32,13 @@ void initializeMain({bool isTest}) async {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarBrightness: Brightness.dark,
       statusBarIconBrightness: Brightness.dark));
-  // if (isTest != null && !isTest) {
+  AlertService().checkConnectionMethod();
   runZoned<Future>(() {
-    runApp(MaterialApp(
-      home: AnimatedScreen(),
-      debugShowCheckedModeBanner: false,
-    ));
+    runApp(MainScreen());
     return Future.value(null);
   }, onError: (error, stackTrace) {
     sentryError.reportError(error, stackTrace);
   });
-  // }
   initializeLanguage(isTest: isTest);
 }
 
@@ -47,26 +49,7 @@ void initializeLanguage({bool isTest}) async {
     });
     configLocalNotification();
   }
-  await Common.getSelectedLanguage().then((selectedLocale) async {
-    Map localizedValues;
-    String defaultLocale = '';
-    String locale = selectedLocale ?? defaultLocale;
-    await LoginService.getLanguageJson(locale).then((value) async {
-      localizedValues = value['response_data']['json'];
-      locale = value['response_data']['languageCode'];
-      await Common.setSelectedLanguage(locale);
-      runZoned<Future>(() {
-        runApp(MainScreen(
-          isTest: isTest,
-          locale: locale,
-          localizedValues: localizedValues,
-        ));
-        return Future.value(null);
-      }, onError: (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
-      });
-    });
-  });
+  getToken();
 }
 
 void getToken() async {
@@ -117,32 +100,88 @@ Future<void> configLocalNotification() async {
   }
 }
 
-class MainScreen extends StatelessWidget {
-  final String locale;
-  final Map localizedValues;
-  final bool isTest;
+class MainScreen extends StatefulWidget {
+  @override
+  _MainScreenState createState() => _MainScreenState();
+}
 
-  MainScreen({Key key, this.locale, this.localizedValues, this.isTest});
+class _MainScreenState extends State<MainScreen> {
+  DarkThemeProvider themeChangeProvider = new DarkThemeProvider();
+
+  String locale;
+  Map localizedValues;
+  bool isGetJsonLoading = false;
+  void initState() {
+    super.initState();
+    getJson();
+    getCurrentAppTheme();
+  }
+
+  void getCurrentAppTheme() async {
+    themeChangeProvider.darkTheme =
+        await themeChangeProvider.darkThemePreference.getTheme();
+  }
+
+  void dispose() {
+    super.dispose();
+  }
+
+  getJson() async {
+    setState(() {
+      isGetJsonLoading = true;
+    });
+    await Common.getSelectedLanguage().then((selectedLocale) async {
+      String defaultLocale = '';
+      locale = selectedLocale ?? defaultLocale;
+      await LoginService.getLanguageJson(locale).then((value) async {
+        setState(() {
+          isGetJsonLoading = false;
+        });
+        localizedValues = value['response_data']['json'];
+        locale = value['response_data']['languageCode'];
+        Common.setNoConnection({
+          "NO_INTERNET": value['response_data']['json'][locale]["NO_INTERNET"],
+          "ONLINE_MSG": value['response_data']['json'][locale]["ONLINE_MSG"],
+          "NO_INTERNET_MSG": value['response_data']['json'][locale]
+              ["NO_INTERNET_MSG"]
+        });
+        await Common.setSelectedLanguage(locale);
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      locale: Locale(locale),
-      localizationsDelegates: [
-        MyLocalizationsDelegate(localizedValues, [locale]),
-        GlobalWidgetsLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        DefaultCupertinoLocalizations.delegate
-      ],
-      supportedLocales: [Locale(locale)],
-      debugShowCheckedModeBanner: false,
-      title: Constants.appName,
-      theme: ThemeData(primaryColor: primary, accentColor: primary),
-      home: Home(
-        isTest: isTest,
-        locale: locale,
-        localizedValues: localizedValues,
+    return ChangeNotifierProvider(
+      create: (_) {
+        return themeChangeProvider;
+      },
+      child: Consumer<DarkThemeProvider>(
+        builder: (BuildContext context, value, Widget child) {
+          return isGetJsonLoading
+              ? MaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  title: Constants.appName,
+                  theme:
+                      Styles.themeData(themeChangeProvider.darkTheme, context),
+                  home: AnimatedScreen())
+              : MaterialApp(
+                  locale: Locale(locale),
+                  localizationsDelegates: [
+                    MyLocalizationsDelegate(localizedValues, [locale]),
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                    DefaultCupertinoLocalizations.delegate
+                  ],
+                  supportedLocales: [Locale(locale)],
+                  debugShowCheckedModeBanner: false,
+                  title: Constants.appName,
+                  theme:
+                      Styles.themeData(themeChangeProvider.darkTheme, context),
+                  home: Home(locale: locale, localizedValues: localizedValues),
+                );
+        },
       ),
     );
   }
@@ -152,17 +191,43 @@ class AnimatedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bg(context),
       body: Container(
-        color: primary,
+        color: primary(context),
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        child: Image.asset(
-          'lib/assets/splash.png',
-          fit: BoxFit.cover,
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-        ),
+        child: Image.asset('lib/assets/splash.png',
+            fit: BoxFit.cover,
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width),
       ),
     );
+  }
+}
+
+class DarkThemePreference {
+  static const THEME_STATUS = "THEME STATUS";
+
+  setDarkTheme(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool(THEME_STATUS, value);
+  }
+
+  Future<bool> getTheme() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(THEME_STATUS) ?? false;
+  }
+}
+
+class DarkThemeProvider with ChangeNotifier {
+  DarkThemePreference darkThemePreference = DarkThemePreference();
+  bool _darkTheme = false;
+
+  bool get darkTheme => _darkTheme;
+
+  set darkTheme(bool value) {
+    _darkTheme = value;
+    darkThemePreference.setDarkTheme(value);
+    notifyListeners();
   }
 }

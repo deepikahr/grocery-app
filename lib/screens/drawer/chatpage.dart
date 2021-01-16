@@ -137,7 +137,8 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: appBarPrimary(context, "CHAT"),
+      backgroundColor: bg(context),
+      appBar: appBarprimary(context, "CHAT"),
       body: isChatLoading || getUserDataLoading
           ? SquareLoader()
           : Stack(
@@ -164,7 +165,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                     new Divider(height: 1.0),
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.grey,
+                        color: greya(context),
                       ),
                       child: new IconTheme(
                         data: new IconThemeData(
@@ -196,12 +197,12 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                                 ),
                                 new Container(
                                   decoration: BoxDecoration(
-                                    color: Colors.grey,
+                                    color: greyb2,
                                   ),
                                   child: new IconButton(
                                     icon: new Icon(
                                       Icons.send,
-                                      color: primary,
+                                      color: primarybg,
                                       size: 30,
                                     ),
                                     onPressed: _isWriting
@@ -212,7 +213,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                               ],
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: whiteBg(context),
                             ),
                           ),
                         ),
