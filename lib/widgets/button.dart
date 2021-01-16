@@ -40,6 +40,7 @@ Widget buttonPrimary(BuildContext context, title, isLoading) {
 Widget regularbuttonPrimary(BuildContext context, title) {
   return Container(
     height: 55,
+    width: MediaQuery.of(context).size.width,
     margin: EdgeInsets.only(top: 10, bottom: 10),
     decoration: BoxDecoration(color: primary, boxShadow: [
       BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 5)
@@ -52,6 +53,38 @@ Widget regularbuttonPrimary(BuildContext context, title) {
       child: GFButton(
         size: GFSize.LARGE,
         color: primary,
+        blockButton: true,
+        onPressed: null,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(MyLocalizations.of(context).getLocalizations(title),
+                style: textBarlowRegularBlack()),
+            SizedBox(height: 10),
+          ],
+        ),
+        textStyle: textBarlowRegularrBlack(),
+      ),
+    ),
+  );
+}
+
+Widget regularGreyButton(BuildContext context, title) {
+  return Container(
+    height: 55,
+    width: MediaQuery.of(context).size.width,
+    margin: EdgeInsets.only(top: 10, bottom: 10),
+    decoration: BoxDecoration(color: Color(0xFFF0F0F0), boxShadow: [
+      BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 5)
+    ]),
+    child: Padding(
+      padding: const EdgeInsets.only(
+        left: 0.0,
+        right: 0.0,
+      ),
+      child: GFButton(
+        size: GFSize.LARGE,
+        color: Color(0xFFF0F0F0),
         blockButton: true,
         onPressed: null,
         child: Row(

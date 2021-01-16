@@ -10,18 +10,18 @@ import '../../service/sentry-service.dart';
 
 SentryError sentryError = new SentryError();
 
-class SubscriptionPage extends StatefulWidget {
-  SubscriptionPage({Key key, this.locale, this.localizedValues})
+class ModifySubscription extends StatefulWidget {
+  ModifySubscription({Key key, this.locale, this.localizedValues})
       : super(key: key);
 
   final Map localizedValues;
   final String locale;
 
   @override
-  _SubscriptionPageState createState() => _SubscriptionPageState();
+  _ModifySubscriptionState createState() => _ModifySubscriptionState();
 }
 
-class _SubscriptionPageState extends State<SubscriptionPage> {
+class _ModifySubscriptionState extends State<ModifySubscription> {
   bool isSelected = false;
   @override
   void initState() {
@@ -32,7 +32,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: appBarPrimary(context, "SUBSCRIBE"),
+      appBar: appBarPrimary(context, "MODIFY"),
       body: ListView(
         children: <Widget>[
           SizedBox(height: 20),
@@ -167,89 +167,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                     },
                   ),
                 ),
-                Divider(),
                 SizedBox(height: 15),
-                regularTextatStart(context, "SUBSCRIPTION_STARTS_ON"),
-                SizedBox(height: 5),
-                Padding(
-                  padding: const EdgeInsets.only(left: 2.0, right: 0),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.grey[300]),
-                        borderRadius: BorderRadius.circular(5.0)),
-                    child: FlatButton(
-                        onPressed: () {},
-                        child: Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text('12/12/1234'),
-                              Icon(Icons.calendar_today, color: Colors.black),
-                            ],
-                          ),
-                        )),
-                  ),
-                ),
-                SizedBox(height: 15),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    buildProductTitle("SERVICE_CHARGES"),
-                    buildProductTitle("\$1"),
-                  ],
-                ),
-                SizedBox(height: 15),
-              ],
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            child: regularTextblackbold(context, "COUPON_CODE"),
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 15),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Container(
-                  width: 193,
-                  height: 44,
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.only(left: 0.0, bottom: 3),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Color(0xFFD4D4E0),
-                    ),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(4),
-                    ),
-                  ),
-                  child: TextFormField(
-                    textAlign: TextAlign.center,
-                    textCapitalization: TextCapitalization.words,
-                    decoration: InputDecoration(
-                        hintText: MyLocalizations.of(context)
-                            .getLocalizations("ENTER_COUPON_CODE"),
-                        hintStyle: textBarlowRegularBlacklight(),
-                        labelStyle: TextStyle(color: Colors.black),
-                        border: InputBorder.none),
-                    cursorColor: primary,
-                    style: textBarlowRegularBlacklight(),
-                  ),
-                ),
-                Flexible(
-                  flex: 3,
-                  fit: FlexFit.tight,
-                  child: InkWell(
-                    onTap: () {},
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: applyCoupon(context, "APPLY", false),
-                    ),
-                  ),
-                )
               ],
             ),
           ),
@@ -345,11 +263,12 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
         ],
       ),
       bottomNavigationBar: Container(
-        height: 100.0,
+        height: 155.0,
         color: Colors.transparent,
         margin: EdgeInsets.symmetric(vertical: 5, horizontal: 14),
         child: Column(
           children: [
+            regularGreyButton(context, "CANCEL_SUBSCRIPTION"),
             InkWell(
                 onTap: () {
                   Navigator.push(
@@ -357,9 +276,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                     MaterialPageRoute(builder: (context) => Thankyou()),
                   );
                 },
-                child: regularbuttonPrimary(context, "Suscribe(\$210/month)")),
-            SizedBox(height: 4),
-            regularTextblack87(context, "DEBIT_MSG"),
+                child: regularbuttonPrimary(context, "UPDATE_CHANGES")),
             SizedBox(height: 4),
           ],
         ),

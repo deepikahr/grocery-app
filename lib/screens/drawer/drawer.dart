@@ -9,6 +9,7 @@ import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/orders/orders.dart';
 import 'package:readymadeGroceryApp/screens/product/all_deals.dart';
 import 'package:readymadeGroceryApp/screens/product/all_subscribed.dart';
+import 'package:readymadeGroceryApp/screens/product/subscriptionList.dart';
 import 'package:readymadeGroceryApp/screens/product/all_products.dart';
 import 'package:readymadeGroceryApp/screens/drawer/TandC-PP.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
@@ -185,8 +186,16 @@ class _DrawerPageState extends State<DrawerPage> {
                 ),
                 _buildMenuTileList(
                   '',
-                  "Subscription",
+                  "SUBSCRIPTION",
                   route: AllSubscribed(
+                    locale: widget.locale,
+                    localizedValues: widget.localizedValues,
+                  ),
+                ),
+                _buildMenuTileList(
+                  '',
+                  "SUBSCRIPTION_LIST",
+                  route: SubScriptionList(
                     locale: widget.locale,
                     localizedValues: widget.localizedValues,
                   ),

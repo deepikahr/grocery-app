@@ -1081,6 +1081,14 @@ TextStyle textbarlowMediumBlackmm() {
   );
 }
 
+TextStyle textbarlowMediumwhitemm() {
+  return TextStyle(
+    fontSize: 17.0,
+    fontFamily: 'BarlowMedium',
+    color: Colors.white,
+  );
+}
+
 TextStyle textbarlowMediumlgBlack() {
   return TextStyle(
     fontSize: 45.0,

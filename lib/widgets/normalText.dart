@@ -415,6 +415,16 @@ Widget referText(BuildContext context, title) {
   ));
 }
 
+Widget whiteText(BuildContext context, title) {
+  return Container(
+      child: Center(
+    child: Text(
+      MyLocalizations.of(context).getLocalizations(title),
+      style: textbarlowMediumwhitemm(),
+    ),
+  ));
+}
+
 Widget normallText(BuildContext context, title) {
   return Container(
     child: Text(
