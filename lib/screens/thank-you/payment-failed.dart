@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
-import 'package:readymadeGroceryApp/screens/orders/orders.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
-class Thankyou extends StatefulWidget {
+class PaymentFailed extends StatefulWidget {
   final Map localizedValues;
   final String locale;
-  Thankyou({Key key, this.locale, this.localizedValues});
+  PaymentFailed({Key key, this.locale, this.localizedValues});
   @override
-  _ThankyouState createState() => _ThankyouState();
+  _PaymentFailedState createState() => _PaymentFailedState();
 }
 
-class _ThankyouState extends State<Thankyou> {
+class _PaymentFailedState extends State<PaymentFailed> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: bg(context),
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
@@ -29,35 +27,25 @@ class _ThankyouState extends State<Thankyou> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            thankuImage(),
+            failedImage(),
             SizedBox(height: 10.0),
-            orderPlaceText(context, "ORDER_PLACED"),
+            orderPlaceText(context, "PAYMENT_FAILED"),
             SizedBox(height: 13.0),
-            thankyouText(context, "THANK_YOU"),
+            thankyouText(context, "PLEASE_TRY_AGAIN_LATER"),
             SizedBox(height: 30.0),
             InkWell(
                 onTap: () {
-                  var reuslt = Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => Orders(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
-                      ),
-                    ),
-                  );
-                  reuslt.then((value) => Navigator.pushAndRemoveUntil(
+                  Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
                         builder: (BuildContext context) => Home(
-                          locale: widget.locale,
-                          localizedValues: widget.localizedValues,
-                          currentIndex: 0,
-                        ),
+                            locale: widget.locale,
+                            localizedValues: widget.localizedValues,
+                            currentIndex: 0),
                       ),
-                      (Route<dynamic> route) => false));
+                      (Route<dynamic> route) => false);
                 },
-                child: defaultButton(context, "ORDERS", dark(context))),
+                child: defaultButton(context, "HOME", dark(context))),
           ],
         ),
       ),

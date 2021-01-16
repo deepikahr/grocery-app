@@ -160,13 +160,13 @@ class _LoginState extends State<Login> {
         return new AlertDialog(
           title: new Text(
             message,
-            style: hintSfMediumredsmall(),
+            style: hintSfMediumredsmall(context),
           ),
           actions: <Widget>[
             new FlatButton(
               child: new Text(
                 MyLocalizations.of(context).getLocalizations("CANCEL"),
-                style: textbarlowRegularaPrimary(),
+                style: textbarlowRegularaprimary(context),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -175,7 +175,7 @@ class _LoginState extends State<Login> {
             new FlatButton(
               child: new Text(
                 MyLocalizations.of(context).getLocalizations("SEND_OTP"),
-                style: textbarlowRegularaPrimary(),
+                style: textbarlowRegularaprimary(context),
               ),
               onPressed: () {
                 OtpService.resendOtpWithNumber(mobileNumber).then((response) {
@@ -204,8 +204,9 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarPrimary(context, "LOGIN"),
+      appBar: appBarprimary(context, "LOGIN"),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -275,7 +276,7 @@ class _LoginState extends State<Login> {
             } else
               return null;
           },
-          style: textBarlowRegularBlack(),
+          style: textBarlowRegularBlack(context),
           keyboardType: TextInputType.text,
           decoration: InputDecoration(
             errorBorder: OutlineInputBorder(
@@ -286,7 +287,7 @@ class _LoginState extends State<Login> {
               borderSide: const BorderSide(color: Colors.grey, width: 0.0),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: primary),
+              borderSide: BorderSide(color: primary(context)),
             ),
           ),
         ),
@@ -302,7 +303,7 @@ class _LoginState extends State<Login> {
     return Container(
       margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
       child: TextFormField(
-        style: textBarlowRegularBlack(),
+        style: textBarlowRegularBlack(context),
         keyboardType: TextInputType.text,
         onSaved: (String value) {
           password = value;
@@ -325,8 +326,8 @@ class _LoginState extends State<Login> {
             ),
           ),
           errorStyle: TextStyle(color: Color(0xFFF44242)),
-          fillColor: Colors.black,
-          focusColor: Colors.black,
+          fillColor: dark(context),
+          focusColor: dark(context),
           contentPadding: EdgeInsets.only(
             left: 15.0,
             right: 15.0,
@@ -334,16 +335,20 @@ class _LoginState extends State<Login> {
             bottom: 10.0,
           ),
           suffixIcon: InkWell(
-            onTap: _toggle,
-            child: _obscureText
-                ? Icon(Icons.remove_red_eye, color: Colors.black54)
-                : Icon(Icons.remove_red_eye, color: Colors.black26),
-          ),
+              onTap: _toggle,
+              child: Icon(Icons.remove_red_eye,
+                  color: _obscureText
+                      ? Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white54
+                          : Colors.black54
+                      : Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white24
+                          : Colors.black26)),
           enabledBorder: const OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.grey, width: 0.0),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: primary),
+            borderSide: BorderSide(color: primary(context)),
           ),
         ),
         obscureText: _obscureText,
@@ -354,7 +359,7 @@ class _LoginState extends State<Login> {
   Widget buildLoginButton() {
     return InkWell(
         onTap: userLoginwithMobile,
-        child: buttonPrimary(context, "LOGIN", isUserLoaginLoading));
+        child: buttonprimary(context, "LOGIN", isUserLoaginLoading));
   }
 
   Widget buildForgotPasswordLink() {

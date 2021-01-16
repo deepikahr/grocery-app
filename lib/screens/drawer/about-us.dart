@@ -6,6 +6,7 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import '../../service/auth-service.dart';
 import '../../service/sentry-service.dart';
 import '../../widgets/loader.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -97,7 +98,7 @@ class _AboutUsState extends State<AboutUs> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: bg(context),
       appBar: appBarTransparent(context, "ABOUT_US"),
       body: isAboutUsData || isBusinessInfoData
           ? SquareLoader()

@@ -170,6 +170,7 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
     final double _defaultElevation = 1;
     final Clip _defaultClipBehavior = Clip.none;
     return Scaffold(
+        backgroundColor: bg(context),
         key: _scaffoldKey,
         body: Container(
           width: MediaQuery.of(context).size.width * 0.5,
@@ -253,7 +254,8 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                         children: <Widget>[
                           Expanded(
                               child: buildProductTitle(
-                                  '${widget.productData['title'][0].toUpperCase()}${widget.productData['title'].substring(1)}')),
+                                  '${widget.productData['title'][0].toUpperCase()}${widget.productData['title'].substring(1)}',
+                                  context)),
                           widget.productData['averageRating'] == null ||
                                   widget.productData['averageRating'] == 0.0 ||
                                   widget.productData['averageRating'] == '0.0'
@@ -272,7 +274,7 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                       Text(
                                           widget.productData['averageRating']
                                               .toStringAsFixed(1),
-                                          style: textBarlowregwhite()),
+                                          style: textBarlowregwhite(context)),
                                       Icon(Icons.star,
                                           color: Colors.white, size: 10),
                                     ],
@@ -289,11 +291,13 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                   : '${widget.currency}${((variantPrice == null ? widget.price : variantPrice) - ((variantPrice == null ? widget.price : variantPrice) * (dealPercentage / 100))).toDouble().toStringAsFixed(2)}',
                               dealPercentage != null
                                   ? '${widget.currency}${(variantPrice == null ? widget.price : variantPrice).toDouble().toStringAsFixed(2)}'
-                                  : null),
+                                  : null,
+                              context),
                           SizedBox(width: 3),
-                          textGreenPrimary(
+                          textGreenprimary(
+                              context,
                               '${variantUnit == null ? widget.productData['variant'][0]['unit'] : variantUnit}',
-                              barlowregularlack())
+                              barlowregularlack(context))
                         ],
                       ),
                       widget.isHome
@@ -481,8 +485,8 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                         MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
                                       Container(
-                                        width: 32,
-                                        height: 32,
+                                        width: 35,
+                                        height: 35,
                                         decoration: BoxDecoration(
                                           color: isQuantityUpdating &&
                                                   quantityChangeType == '-'
@@ -505,17 +509,18 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                                   size: 35,
                                                 )
                                               : Icon(Icons.remove,
-                                                  color: primary),
+                                                  color: primary(context)),
                                         ),
                                       ),
-                                      titleTwoLine(widget
-                                          .productData['quantityToCart']
-                                          .toString()),
+                                      titleTwoLine(
+                                          widget.productData['quantityToCart']
+                                              .toString(),
+                                          context),
                                       Container(
-                                        width: 32,
-                                        height: 32,
+                                        width: 35,
+                                        height: 35,
                                         decoration: BoxDecoration(
-                                          color: primary,
+                                          color: primarybg,
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(5)),
                                         ),
@@ -531,7 +536,10 @@ class _SubCategoryProductCardState extends State<SubCategoryProductCard> {
                                               ? GFLoader(
                                                   type: GFLoaderType.ios,
                                                   size: 35)
-                                              : Icon(Icons.add),
+                                              : Icon(
+                                                  Icons.add,
+                                                  color: Colors.black,
+                                                ),
                                         ),
                                       ),
                                     ],

@@ -40,7 +40,7 @@ class _ProfileState extends State<Profile> {
       isGetLanguagesListLoading = false;
   String token, userID, currency = "";
   List languagesList;
-
+  var selectedLanguages;
   @override
   void initState() {
     getToken();
@@ -119,6 +119,11 @@ class _ProfileState extends State<Profile> {
       if (mounted) {
         setState(() {
           languagesList = onValue['response_data'];
+          for (int i = 0; i < languagesList.length; i++) {
+            if (languagesList[i]['languageCode'] == widget.locale) {
+              selectedLanguages = languagesList[i]['languageName'];
+            }
+          }
           isGetLanguagesListLoading = false;
         });
       }
@@ -142,7 +147,7 @@ class _ProfileState extends State<Profile> {
               height: 250,
               width: MediaQuery.of(context).size.width * 0.7,
               decoration: new BoxDecoration(
-                color: Colors.white,
+                color: cartCardBg(context),
                 borderRadius: new BorderRadius.all(
                   new Radius.circular(24.0),
                 ),
@@ -160,9 +165,18 @@ class _ProfileState extends State<Profile> {
                       itemBuilder: (BuildContext context, int i) {
                         return GFButton(
                             onPressed: () async {
+                              setState(() {
+                                selectedLanguages =
+                                    languagesList[i]['languageName'];
+                              });
                               await Common.setSelectedLanguage(
                                   languagesList[i]['languageCode']);
-                              main();
+                              Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          MainScreen()),
+                                  (Route<dynamic> route) => false);
                             },
                             type: GFButtonType.transparent,
                             child: alertText(context,
@@ -186,7 +200,11 @@ class _ProfileState extends State<Profile> {
           await Common.setUserID(null);
           await Common.setCartData(null);
           await Common.setCartDataCount(0);
-          main();
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => MainScreen()),
+              (Route<dynamic> route) => false);
         });
       });
     });
@@ -203,13 +221,13 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bg(context),
       key: _scaffoldKey,
-      backgroundColor: Color(0xFFFDFDFD),
       appBar: isGetTokenLoading
           ? null
           : token == null
               ? null
-              : appBarPrimary(context, "PROFILE"),
+              : appBarprimary(context, "PROFILE"),
       body: isGetTokenLoading || isGetLanguagesListLoading
           ? SquareLoader()
           : token == null
@@ -256,7 +274,7 @@ class _ProfileState extends State<Profile> {
                                               Radius.circular(27)),
                                           boxShadow: [
                                             BoxShadow(
-                                                color: Colors.black
+                                                color: dark(context)
                                                     .withOpacity(0.29),
                                                 blurRadius: 6)
                                           ]),
@@ -381,7 +399,7 @@ class _ProfileState extends State<Profile> {
                                             padding: EdgeInsets.only(top: 45),
                                             child: SvgPicture.asset(
                                                 'lib/assets/icons/editt.svg',
-                                                color: primary),
+                                                color: primarybg),
                                           )
                                         ],
                                       )
@@ -424,10 +442,9 @@ class _ProfileState extends State<Profile> {
                             : Container(),
                         languagesList.length > 0
                             ? InkWell(
-                                onTap: () {
-                                  selectLanguagesMethod();
-                                },
-                                child: profileText(context, "SELECT_LANGUAGE"))
+                                onTap: selectLanguagesMethod,
+                                child: profileTextRow(context,
+                                    "CHANGE_LANGUAGE", selectedLanguages ?? ""))
                             : Container(),
                         SizedBox(height: 15),
                         InkWell(

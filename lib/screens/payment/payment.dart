@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:readymadeGroceryApp/screens/payment/payment-webview.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/orderSevice.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
-
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
-import 'package:stripe_payment/stripe_payment.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -51,10 +49,6 @@ class _PaymentState extends State<Payment> {
   @override
   void initState() {
     fetchCardInfo();
-    StripePayment.setOptions(StripeOptions(
-        publishableKey: Constants.stripKey,
-        merchantId: "Test",
-        androidPayMode: 'test'));
     cartItem = widget.cartItems;
     if (cartItem['walletAmount'] > 0) {
       walletUsedOrNotValue = true;
@@ -118,24 +112,7 @@ class _PaymentState extends State<Payment> {
         palceOrderMethod(widget.data);
       } else {
         widget.data['paymentType'] = paymentTypes[groupValue];
-        if (widget.data['paymentType'] == "STRIPE") {
-          StripePayment.paymentRequestWithCardForm(CardFormPaymentRequest())
-              .then((pm) {
-            setState(() {
-              widget.data['paymentId'] = pm.id.toString();
-              palceOrderMethod(widget.data);
-            });
-          }).catchError((e) {
-            if (mounted) {
-              setState(() {
-                isPlaceOrderLoading = false;
-                showSnackbar(e.toString());
-              });
-            }
-          });
-        } else {
-          palceOrderMethod(widget.data);
-        }
+        palceOrderMethod(widget.data);
       }
     }
   }
@@ -149,15 +126,28 @@ class _PaymentState extends State<Payment> {
       }
       Common.setCartDataCount(0);
       Common.setCartData(null);
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) => Thankyou(
-              locale: widget.locale,
-              localizedValues: widget.localizedValues,
+      if (cartData['paymentType'] == 'STRIPE') {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => PaymentWeViewPage(
+                  locale: widget.locale,
+                  localizedValues: widget.localizedValues,
+                  sessionId: onValue['response_data']['sessionId'],
+                  orderId: onValue['response_data']['id']),
             ),
-          ),
-          (Route<dynamic> route) => false);
+            (Route<dynamic> route) => false);
+      } else {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => Thankyou(
+                locale: widget.locale,
+                localizedValues: widget.localizedValues,
+              ),
+            ),
+            (Route<dynamic> route) => false);
+      }
     }).catchError((error) {
       if (mounted) {
         setState(() {
@@ -227,6 +217,7 @@ class _PaymentState extends State<Payment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bg(context),
       key: _scaffoldKey,
       appBar: appBarTransparent(context, "PAYMENT"),
       body: isCardListLoading
@@ -361,24 +352,16 @@ class _PaymentState extends State<Payment> {
                                     return Container(
                                       margin:
                                           EdgeInsets.only(top: 5, bottom: 5),
-                                      color: Colors.white,
+                                      color: whiteBg(context),
                                       child: RadioListTile(
                                         value: index,
                                         groupValue: groupValue,
                                         selected: isSelected,
-                                        activeColor: primary,
-                                        title: textGreenPrimary(
-                                          paymentTypes[index] == 'COD'
-                                              ? MyLocalizations.of(context)
-                                                  .getLocalizations(
-                                                      "CASH_ON_DELIVERY")
-                                              : paymentTypes[index] == 'STRIPE'
-                                                  ? MyLocalizations.of(context)
-                                                      .getLocalizations(
-                                                          "PAY_BY_CARD")
-                                                  : paymentTypes[index],
-                                          TextStyle(color: primary),
-                                        ),
+                                        activeColor: primary(context),
+                                        title: textGreenprimary(
+                                            context,
+                                            paymentTypes[index],
+                                            TextStyle(color: primarybg)),
                                         onChanged: (int selected) {
                                           if (mounted) {
                                             setState(() {
@@ -389,9 +372,9 @@ class _PaymentState extends State<Payment> {
                                         secondary: paymentTypes[index] == "COD"
                                             ? Text(currency,
                                                 style:
-                                                    TextStyle(color: primary))
+                                                    TextStyle(color: primarybg))
                                             : Icon(Icons.credit_card,
-                                                color: primary, size: 16.0),
+                                                color: primarybg, size: 16.0),
                                       ),
                                     );
                                   },
@@ -407,7 +390,7 @@ class _PaymentState extends State<Payment> {
               onTap: placeOrder,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                child: buttonPrimary(context, "PAY_NOW", isPlaceOrderLoading),
+                child: buttonprimary(context, "PAY_NOW", isPlaceOrderLoading),
               ),
             )
           : Container(height: 1),

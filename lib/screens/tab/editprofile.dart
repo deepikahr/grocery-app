@@ -215,7 +215,7 @@ class _EditProfileState extends State<EditProfile> {
               height: 220,
               width: MediaQuery.of(context).size.width * 0.8,
               decoration: new BoxDecoration(
-                color: Colors.white,
+                color: whiteBg(context),
                 borderRadius: new BorderRadius.all(
                   new Radius.circular(24.0),
                 ),
@@ -284,8 +284,9 @@ class _EditProfileState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarPrimary(context, "EDIT_PROFILE"),
+      appBar: appBarprimary(context, "EDIT_PROFILE"),
       body: isLoading
           ? SquareLoader()
           : Form(
@@ -375,7 +376,7 @@ class _EditProfileState extends State<EditProfile> {
                             height: 40,
                             width: 40,
                             decoration: BoxDecoration(
-                                color: primary,
+                                color: primary(context),
                                 borderRadius: BorderRadius.circular(30.0)),
                             child: IconButton(
                               onPressed: () {
@@ -395,7 +396,7 @@ class _EditProfileState extends State<EditProfile> {
                       children: [
                         Text(
                             "${userInfo['countryCode'] ?? ""}${userInfo['mobileNumber'] ?? ""}",
-                            style: textBarlowRegularBlack()),
+                            style: textBarlowRegularBlack(context)),
                         InkWell(
                           onTap: () async {
                             Navigator.push(
@@ -425,15 +426,15 @@ class _EditProfileState extends State<EditProfile> {
                     padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                     child: TextFormField(
                       initialValue: userInfo['firstName'] ?? "",
-                      style: textBarlowRegularBlack(),
+                      style: textBarlowRegularBlack(context),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                         errorBorder: OutlineInputBorder(
                             borderSide:
                                 BorderSide(width: 0, color: Color(0xFFF44242))),
                         errorStyle: TextStyle(color: Color(0xFFF44242)),
-                        fillColor: Colors.black,
-                        focusColor: Colors.black,
+                        fillColor: dark(context),
+                        focusColor: dark(context),
                         contentPadding: EdgeInsets.only(
                             left: 15.0, right: 15.0, top: 10.0, bottom: 10.0),
                         enabledBorder: const OutlineInputBorder(
@@ -441,7 +442,7 @@ class _EditProfileState extends State<EditProfile> {
                               const BorderSide(color: Colors.grey, width: 0.0),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
+                          borderSide: BorderSide(color: primary(context)),
                         ),
                       ),
                       onSaved: (String value) {
@@ -465,15 +466,15 @@ class _EditProfileState extends State<EditProfile> {
                     padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                     child: TextFormField(
                       initialValue: userInfo['lastName'] ?? "",
-                      style: textBarlowRegularBlack(),
+                      style: textBarlowRegularBlack(context),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                         errorBorder: OutlineInputBorder(
                             borderSide:
                                 BorderSide(width: 0, color: Color(0xFFF44242))),
                         errorStyle: TextStyle(color: Color(0xFFF44242)),
-                        fillColor: Colors.black,
-                        focusColor: Colors.black,
+                        fillColor: dark(context),
+                        focusColor: dark(context),
                         contentPadding: EdgeInsets.only(
                           left: 15.0,
                           right: 15.0,
@@ -485,7 +486,7 @@ class _EditProfileState extends State<EditProfile> {
                               const BorderSide(color: Colors.grey, width: 0.0),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
+                          borderSide: BorderSide(color: primary(context)),
                         ),
                       ),
                       onSaved: (String value) {
@@ -509,15 +510,15 @@ class _EditProfileState extends State<EditProfile> {
                     padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                     child: TextFormField(
                       initialValue: userInfo['email'] ?? "",
-                      style: textBarlowRegularBlack(),
+                      style: textBarlowRegularBlack(context),
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         errorBorder: OutlineInputBorder(
                             borderSide:
                                 BorderSide(width: 0, color: Color(0xFFF44242))),
                         errorStyle: TextStyle(color: Color(0xFFF44242)),
-                        fillColor: Colors.black,
-                        focusColor: Colors.black,
+                        fillColor: dark(context),
+                        focusColor: dark(context),
                         contentPadding: EdgeInsets.only(
                             left: 15.0, right: 15.0, top: 10.0, bottom: 10.0),
                         enabledBorder: const OutlineInputBorder(
@@ -525,7 +526,7 @@ class _EditProfileState extends State<EditProfile> {
                               const BorderSide(color: Colors.grey, width: 0.0),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primary),
+                          borderSide: BorderSide(color: primary(context)),
                         ),
                       ),
                       onSaved: (String value) {

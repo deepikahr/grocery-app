@@ -27,6 +27,17 @@ class ProductService {
     });
   }
 
+  // get all deal products
+  static Future<Map<String, dynamic>> getDealProductListAll(
+      index, limit, dealId) async {
+    return client
+        .get(Constants.apiUrl +
+            "/deals/products/$dealId?limit=$limit&page=$index")
+        .then((response) {
+      return json.decode(response.body);
+    });
+  }
+
   // get all banner
   static Future<Map<String, dynamic>> getBanner() async {
     return client

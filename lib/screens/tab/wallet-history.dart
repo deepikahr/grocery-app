@@ -70,8 +70,8 @@ class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: appBarPrimary(context, "RECENT_TRANSACTIONS"),
+      backgroundColor: bg(context),
+      appBar: appBarprimary(context, "RECENT_TRANSACTIONS"),
       body: isWalletHistory
           ? Center(child: SquareLoader())
           : walletHistoryList.length > 0
@@ -103,7 +103,7 @@ class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
     return Container(
       padding: EdgeInsets.all(16),
       margin: EdgeInsets.only(bottom: 10),
-      decoration: BoxDecoration(color: Color(0xFFF7F7F7)),
+      decoration: BoxDecoration(color: cartCardBg(context)),
       child: Column(
         children: [
           walletTransaction1(
@@ -112,7 +112,7 @@ class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
           walletTransaction(
               context,
               'DATE',
-              DateFormat('dd/MM/yyyy, hh:mm a').format(
+              DateFormat('dd/MM/yyyy, hh:mm a', widget.locale ?? "en").format(
                   DateTime.parse(walletDetails['createdAt'].toString())
                       .toLocal())),
           SizedBox(height: 3),
@@ -130,7 +130,7 @@ class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
                   Text(
                       MyLocalizations.of(context)
                           .getLocalizations('WALLET', true),
-                      style: textBarlowRegularBlackdl()),
+                      style: textBarlowRegularBlackdl(context)),
                   Text(
                       MyLocalizations.of(context)
                           .getLocalizations((walletDetails['isCredited']
@@ -138,7 +138,7 @@ class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
                               : !walletDetails['isCredited']
                                   ? "DEBIT"
                                   : "")),
-                      style: textBarlowRegularBlackdl()),
+                      style: textBarlowRegularBlackdl(context)),
                   SizedBox(width: 5),
                   Image.asset(
                       walletDetails['isCredited']

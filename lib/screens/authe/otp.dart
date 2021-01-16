@@ -77,7 +77,7 @@ class _OtpState extends State<Otp> {
                     child: new ListBody(
                       children: <Widget>[
                         new Text(onValue['response_data'],
-                            style: textBarlowMediumBlack()),
+                            style: textBarlowMediumBlack(context)),
                       ],
                     ),
                   ),
@@ -152,14 +152,14 @@ class _OtpState extends State<Otp> {
         return new AlertDialog(
           title: new Text(
             MyLocalizations.of(context).getLocalizations("ERROR"),
-            style: hintSfMediumredsmall(),
+            style: hintSfMediumredsmall(context),
           ),
           content: new SingleChildScrollView(
             child: new ListBody(
               children: <Widget>[
                 new Text(
                   '$message',
-                  style: textBarlowRegularBlack(),
+                  style: textBarlowRegularBlack(context),
                 ),
               ],
             ),
@@ -168,7 +168,7 @@ class _OtpState extends State<Otp> {
             new FlatButton(
               child: new Text(
                 MyLocalizations.of(context).getLocalizations("OK"),
-                style: textbarlowRegularaPrimary(),
+                style: textbarlowRegularaprimary(context),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -207,8 +207,9 @@ class _OtpState extends State<Otp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarPrimary(context, "WELCOME"),
+      appBar: appBarprimary(context, "WELCOME"),
       body: ListView(
         children: <Widget>[
           Padding(
@@ -216,10 +217,8 @@ class _OtpState extends State<Otp> {
                   const EdgeInsets.only(top: 40.0, left: 20.0, right: 20.0),
               child: buildBoldText(context, "VERIFY_OTP")),
           Padding(
-            padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-            child: buildGFTypographyOtp(
-                context, "OTP_CODE_MSG", ' ${widget.mobileNumber}'),
-          ),
+              padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+              child: buildGFTypographyOtp(context, "OTP_CODE_MSG", '')),
           InkWell(
               onTap: resentOTP,
               child: buildResentOtp(context, "RESENT_OTP", isResentOtpLoading)),
@@ -251,7 +250,7 @@ class _OtpState extends State<Otp> {
               onTap: verifyOTPwithMobile,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: buttonPrimary(context, "SUBMIT", isOtpVerifyLoading),
+                child: buttonprimary(context, "SUBMIT", isOtpVerifyLoading),
               )),
         ],
       ),
