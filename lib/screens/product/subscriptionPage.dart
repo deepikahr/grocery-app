@@ -32,7 +32,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: appBarPrimary(context, "SUBSCRIBE"),
+      appBar: appBarPrimarynoradius(context, "SUBSCRIBE"),
       body: ListView(
         children: <Widget>[
           SizedBox(height: 20),

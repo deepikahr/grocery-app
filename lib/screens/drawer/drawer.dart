@@ -6,7 +6,7 @@ import 'package:readymadeGroceryApp/screens/drawer/referral.dart';
 import 'package:readymadeGroceryApp/screens/drawer/address.dart';
 import 'package:readymadeGroceryApp/screens/drawer/chatpage.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
-import 'package:readymadeGroceryApp/screens/orders/orders.dart';
+import 'package:readymadeGroceryApp/screens/orders/tab.dart';
 import 'package:readymadeGroceryApp/screens/product/all_deals.dart';
 import 'package:readymadeGroceryApp/screens/product/all_subscribed.dart';
 import 'package:readymadeGroceryApp/screens/product/subscriptionList.dart';
@@ -134,10 +134,10 @@ class _DrawerPageState extends State<DrawerPage> {
                 getTokenValue
                     ? _buildMenuTileList(
                         'lib/assets/icons/history.png', "MY_ORDERS",
-                        route: Orders(
-                          locale: widget.locale,
-                          localizedValues: widget.localizedValues,
-                        ))
+                        route: OrdersTab(
+                            // locale: widget.locale,
+                            // localizedValues: widget.localizedValues,
+                            ))
                     : Container(),
                 getTokenValue
                     ? _buildMenuTileList(

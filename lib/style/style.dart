@@ -817,12 +817,37 @@ TextStyle textbarlowmedium() {
   );
 }
 
+TextStyle textbarlowmediumpri() {
+  return TextStyle(
+    fontSize: 14.0,
+    fontWeight: FontWeight.w600,
+    fontFamily: 'BarlowMedium',
+    color: primary,
+  );
+}
+
 TextStyle textbarlowmediumwhite() {
   return TextStyle(
       fontSize: 10.0,
       fontWeight: FontWeight.w500,
       fontFamily: 'BarlowMedium',
       color: Colors.white);
+}
+
+TextStyle textbarlowmedium12() {
+  return TextStyle(
+      fontSize: 12.0,
+      fontWeight: FontWeight.w300,
+      fontFamily: 'BarlowMedium',
+      color: green);
+}
+
+TextStyle textbarlowmedium12star() {
+  return TextStyle(
+      fontSize: 12.0,
+      fontWeight: FontWeight.w300,
+      fontFamily: 'BarlowMedium',
+      color: star);
 }
 
 TextStyle textbarlowmediumwhitee() {

@@ -32,7 +32,7 @@ class _ModifySubscriptionState extends State<ModifySubscription> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: appBarPrimary(context, "MODIFY"),
+      appBar: appBarPrimarynoradius(context, "MODIFY"),
       body: ListView(
         children: <Widget>[
           SizedBox(height: 20),

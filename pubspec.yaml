@@ -134,6 +134,8 @@ flutter:
     - lib/assets/icons/share.png
     - lib/assets/icons/red.png
     - lib/assets/icons/green.png
+    - lib/assets/icons/back.png
+    - lib/assets/icons/front.png
 
     - lib/assets/splash.png
     - lib/assets/logo.png

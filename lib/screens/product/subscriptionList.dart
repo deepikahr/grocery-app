@@ -29,7 +29,7 @@ class _SubScriptionListState extends State<SubScriptionList> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFF7F7F7),
-      appBar: appBarPrimary(context, "SUBSCRIPTIONS"),
+      appBar: appBarPrimarynoradius(context, "SUBSCRIPTIONS"),
       body: ListView(
         children: <Widget>[
           SizedBox(
