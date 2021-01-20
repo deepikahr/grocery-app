@@ -299,9 +299,13 @@ Widget profileTextRow(BuildContext context, title, subTitle) {
 
 Widget subCatTab(BuildContext context, title, Color color) {
   return Container(
-    height: 35,
-    padding: EdgeInsets.only(left: 25, right: 25, top: 8),
-    margin: EdgeInsets.only(right: 15),
+    height: 45,
+    padding: EdgeInsets.only(
+      left: 25,
+      right: 25,
+      top: 8,
+    ),
+    margin: EdgeInsets.only(right: 5, left: 5, bottom: 10),
     decoration: BoxDecoration(
       color: color,
       borderRadius: BorderRadius.all(

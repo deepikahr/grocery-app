@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/screens/categories/allcategories.dart';
-import 'package:readymadeGroceryApp/screens/categories/subcategories.dart';
 import 'package:readymadeGroceryApp/screens/product/all_deals.dart';
 import 'package:readymadeGroceryApp/screens/product/all_products.dart';
 import 'package:readymadeGroceryApp/screens/product/product-details.dart';
@@ -18,8 +17,7 @@ import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:readymadeGroceryApp/widgets/categoryBlock.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
-import 'package:readymadeGroceryApp/widgets/cardOverlay.dart';
-import 'package:readymadeGroceryApp/widgets/subCategoryProductCart.dart';
+import 'package:readymadeGroceryApp/widgets/product_gridcard.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -258,16 +256,12 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SubCategories(
-                          locale: widget.locale,
-                          localizedValues: widget.localizedValues,
-                          catId: categoryList[index]['_id'],
-                          isSubCategoryAvailable: categoryList[index]
-                                  ['isSubCategoryAvailable'] ??
-                              false,
-                          catTitle:
-                              '${categoryList[index]['title'][0].toUpperCase()}${categoryList[index]['title'].substring(1)}',
-                          token: getTokenValue),
+                      builder: (context) => AllProducts(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                        categoryId: categoryList[index]['_id'],
+                        pageTitle: categoryList[index]['title'],
+                      ),
                     ),
                   );
                 },
@@ -319,13 +313,12 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SubCategories(
-                      locale: widget.locale,
-                      localizedValues: widget.localizedValues,
-                      catId: url['categoryId'],
-                      catTitle:
-                          '${url['title'][0].toUpperCase()}${url['title'].substring(1)}',
-                      token: getTokenValue),
+                  builder: (context) => AllProducts(
+                    locale: widget.locale,
+                    localizedValues: widget.localizedValues,
+                    categoryId: url['categoryId'],
+                    pageTitle: url['title'],
+                  ),
                 ),
               );
             }
@@ -369,13 +362,12 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => SubCategories(
-                                    locale: widget.locale,
-                                    localizedValues: widget.localizedValues,
-                                    catId: url['categoryId'],
-                                    catTitle:
-                                        '${url['title'][0].toUpperCase()}${url['title'].substring(1)}',
-                                    token: getTokenValue),
+                                builder: (context) => AllProducts(
+                                  locale: widget.locale,
+                                  localizedValues: widget.localizedValues,
+                                  categoryId: url['categoryId'],
+                                  pageTitle: url['title'],
+                                ),
                               ),
                             );
                           }
@@ -450,9 +442,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
           route: AllProducts(
             locale: widget.locale,
             localizedValues: widget.localizedValues,
-            productsList: list,
-            currency: currency,
-            token: getTokenValue,
+            pageTitle: MyLocalizations.of(context).getLocalizations("PRODUCTS"),
           ),
         ),
         SizedBox(height: 20),
@@ -487,32 +477,16 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                           ),
                         );
                       },
-                      child: Stack(
-                        children: <Widget>[
-                          SubCategoryProductCard(
-                              currency: currency,
-                              price: list[i]['variant'][0]['price'],
-                              productData: list[i],
-                              variantList: list[i]['variant'],
-                              isHome: true),
-                          list[i]['isDealAvailable'] == true
-                              ? buildBadge(context,
-                                  list[i]['dealPercent'].toString(), "OFF")
-                              : Container(),
-                        ],
-                      ),
+                      child: ProductGridCard(
+                          currency: currency,
+                          productData: list[i],
+                          isHome: true),
                     ),
                   )
-                : Stack(
-                    children: <Widget>[
-                      SubCategoryProductCard(
-                          currency: currency,
-                          price: list[i]['variant'][0]['price'],
-                          productData: list[i],
-                          variantList: list[i]['variant'],
-                          isHome: true),
-                      CardOverlay()
-                    ],
+                : ProductGridCard(
+                    currency: currency,
+                    productData: list[i],
+                    isHome: true,
                   );
           },
         ),
@@ -548,13 +522,12 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SubCategories(
-                            locale: widget.locale,
-                            localizedValues: widget.localizedValues,
-                            catId: list[i]['categoryId'],
-                            catTitle:
-                                '${list[i]['title'][0].toUpperCase()}${list[i]['title'].substring(1)}',
-                            token: getTokenValue),
+                        builder: (context) => AllProducts(
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                          categoryId: list[i]['categoryId'],
+                          pageTitle: list[i]['title'],
+                        ),
                       ),
                     );
                   } else if (list[i]['dealType'] == "PRODUCT" &&
@@ -563,11 +536,11 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       context,
                       MaterialPageRoute(
                         builder: (context) => AllProducts(
-                            locale: widget.locale,
-                            localizedValues: widget.localizedValues,
-                            currency: currency,
-                            token: getTokenValue,
-                            dealId: list[i]['_id']),
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                          dealId: list[i]['_id'],
+                          pageTitle: list[i]['title'],
+                        ),
                       ),
                     );
                   } else {
@@ -675,13 +648,12 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SubCategories(
-                            locale: widget.locale,
-                            localizedValues: widget.localizedValues,
-                            catId: list[i]['categoryId'],
-                            catTitle:
-                                '${list[i]['title'][0].toUpperCase()}${list[i]['title'].substring(1)}',
-                            token: getTokenValue),
+                        builder: (context) => AllProducts(
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                          categoryId: list[i]['categoryId'],
+                          pageTitle: list[i]['title'],
+                        ),
                       ),
                     );
                   } else if (list[i]['dealType'] == "PRODUCT" &&
@@ -690,11 +662,11 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       context,
                       MaterialPageRoute(
                         builder: (context) => AllProducts(
-                            locale: widget.locale,
-                            localizedValues: widget.localizedValues,
-                            currency: currency,
-                            token: getTokenValue,
-                            dealId: list[i]['_id']),
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                          dealId: list[i]['_id'],
+                          pageTitle: list[i]['title'],
+                        ),
                       ),
                     );
                   } else {
@@ -708,7 +680,6 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                         ),
                       ),
                     );
-
                   }
                 },
                 child: CachedNetworkImage(

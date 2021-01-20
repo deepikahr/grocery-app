@@ -29,7 +29,10 @@ class ProductService {
 
   // get all deal products
   static Future<Map<String, dynamic>> getDealProductListAll(
-      index, limit, dealId) async {
+    dealId,
+    index,
+    limit,
+  ) async {
     return client
         .get(Constants.apiUrl +
             "/deals/products/$dealId?limit=$limit&page=$index")

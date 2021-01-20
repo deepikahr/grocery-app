@@ -108,7 +108,6 @@ class _DrawerPageState extends State<DrawerPage> {
                     route: AllProducts(
                       locale: widget.locale,
                       localizedValues: widget.localizedValues,
-                      currency: currency,
                     )),
                 _buildMenuTileList(
                   'lib/assets/icons/categories.png',

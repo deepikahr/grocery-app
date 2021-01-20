@@ -241,7 +241,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       appBar: currentIndex == 0
           ? appBarWhite(
               context,
-              deliveryAddress(),
+              '-',
               true,
               true,
               InkWell(
@@ -263,7 +263,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                   child: Icon(Icons.search),
                 ),
               ),
-            )
+              titleWidget: deliveryAddress())
           : null,
       drawer: Drawer(
         child: DrawerPage(
@@ -274,12 +274,12 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       ),
       body: currencyLoading ? SquareLoader() : _screens[currentIndex],
       bottomNavigationBar: BottomNavigationBar(
-          elevation: 1,
-          currentIndex: currentIndex,
-          type: BottomNavigationBarType.fixed,
-          // fixedColor: primary(context),
-          onTap: _onTapped,
-          items: items),
+        elevation: 1,
+        currentIndex: currentIndex,
+        type: BottomNavigationBarType.fixed,
+        onTap: _onTapped,
+        items: items,
+      ),
     );
   }
 }

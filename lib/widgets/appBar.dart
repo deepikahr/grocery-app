@@ -21,13 +21,20 @@ Widget appBarprimary(BuildContext context, title) {
       iconTheme: IconThemeData(color: Colors.black87));
 }
 
-Widget appBarWhite(BuildContext context, title, bool changeUi,
-    actionTrueOrFalse, Widget actionProcess) {
+Widget appBarWhite(BuildContext context, String title, bool changeUi,
+    actionTrueOrFalse, Widget actionProcess,
+    {Widget titleWidget}) {
+  if (title == null) title = '--';
   return GFAppBar(
-    title: changeUi
-        ? title
-        : Text(MyLocalizations.of(context).getLocalizations(title),
-            style: appbarText(context)),
+    title: titleWidget != null
+        ? titleWidget
+        : changeUi
+            ? title.substring(0, 1).toUpperCase() +
+                title.substring(1, title.length)
+            : Text(
+                title.substring(0, 1).toUpperCase() +
+                    title.substring(1, title.length),
+                style: appbarText(context)),
     centerTitle: true,
     backgroundColor: Theme.of(context).brightness == Brightness.dark
         ? Color(0xFF1e2024)
