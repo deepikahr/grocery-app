@@ -24,16 +24,17 @@ Widget appBarprimary(BuildContext context, title) {
 Widget appBarWhite(BuildContext context, String title, bool changeUi,
     actionTrueOrFalse, Widget actionProcess,
     {Widget titleWidget}) {
-  if (title == null) title = '--';
+  String tempTitle = '';
+  tempTitle = MyLocalizations.of(context).getLocalizations(title ?? "--");
   return GFAppBar(
     title: titleWidget != null
         ? titleWidget
         : changeUi
-            ? title.substring(0, 1).toUpperCase() +
-                title.substring(1, title.length)
+            ? tempTitle.substring(0, 1).toUpperCase() +
+                tempTitle.substring(1, tempTitle.length)
             : Text(
-                title.substring(0, 1).toUpperCase() +
-                    title.substring(1, title.length),
+                tempTitle.substring(0, 1).toUpperCase() +
+                    tempTitle.substring(1, tempTitle.length),
                 style: appbarText(context)),
     centerTitle: true,
     backgroundColor: Theme.of(context).brightness == Brightness.dark
