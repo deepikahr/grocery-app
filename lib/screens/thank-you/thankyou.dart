@@ -37,9 +37,9 @@ class _ThankyouState extends State<Thankyou> {
                     context,
                     MaterialPageRoute(
                       builder: (BuildContext context) => OrdersTab(
-                        // locale: widget.locale,
-                        // localizedValues: widget.localizedValues,
-                      ),
+                          // locale: widget.locale,
+                          // localizedValues: widget.localizedValues,
+                          ),
                     ),
                   );
                   reuslt.then((value) => Navigator.pushAndRemoveUntil(

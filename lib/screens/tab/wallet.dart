@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:readymadeGroceryApp/screens/tab/addmoney.dart';
 import 'package:readymadeGroceryApp/screens/tab/wallet-history.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
+import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
@@ -57,7 +59,7 @@ class _WalletPageState extends State<WalletPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarPrimary(context, "WALLET"),
+      appBar: appBarPrimarynoradius(context, "WALLET"),
       body: isGetWalletInfoLoading
           ? Center(child: SquareLoader())
           : Column(
@@ -92,6 +94,24 @@ class _WalletPageState extends State<WalletPage> {
                 )
               ],
             ),
+      bottomNavigationBar: Container(
+        height: 80.0,
+        color: Colors.transparent,
+        margin: EdgeInsets.symmetric(vertical: 5, horizontal: 14),
+        child: Column(
+          children: [
+            InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AddMoney()),
+                  );
+                },
+                child: regularbuttonPrimary(context, "ADD_MONEY")),
+            SizedBox(height: 4),
+          ],
+        ),
+      ),
     );
   }
 }
