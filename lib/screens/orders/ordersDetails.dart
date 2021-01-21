@@ -39,7 +39,7 @@ class _OrderDetailsState extends State<OrderDetails> {
   String currency;
   double rating;
   Timer timer;
-  int productInfoIndex;
+  int productInfoIndex = -1;
   @override
   void initState() {
     getOrderHistory();
