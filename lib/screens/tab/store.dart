@@ -442,7 +442,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
           route: AllProducts(
             locale: widget.locale,
             localizedValues: widget.localizedValues,
-            pageTitle: MyLocalizations.of(context).getLocalizations("PRODUCTS"),
+            pageTitle: "PRODUCTS",
           ),
         ),
         SizedBox(height: 20),
