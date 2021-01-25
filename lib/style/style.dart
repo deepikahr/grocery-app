@@ -1066,6 +1066,15 @@ TextStyle textbarlowBoldsmBlack(context) {
   );
 }
 
+TextStyle textbarlowBoldsmGreen(context) {
+  return TextStyle(
+    fontSize: 15.0,
+    fontWeight: FontWeight.bold,
+    fontFamily: 'BarlowBold',
+    color: green,
+  );
+}
+
 TextStyle textbarlowBoldwhite(context) {
   return TextStyle(
     fontSize: 30.0,

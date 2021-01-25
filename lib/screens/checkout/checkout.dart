@@ -42,9 +42,16 @@ class _CheckoutState extends State<Checkout> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Map userInfo, address, cartItem, locationInfo;
 
-  List addressList, deliverySlotList;
-  int selecteAddressValue, dateSelectedValue = 0, selectSlot;
-  String selectedDeliveryType, locationNotFound, currency, couponCode;
+  List addressList, deliverySlotList, shippingMethodsList;
+  int selecteAddressValue,
+      dateSelectedValue = 0,
+      selectSlot,
+      shippingMethodValue = 0;
+  String selectedDeliveryType,
+      locationNotFound,
+      currency,
+      couponCode,
+      storeAddress;
   var selectedAddress;
   bool isLoading = false,
       addressLoading = false,
@@ -55,7 +62,9 @@ class _CheckoutState extends State<Checkout> {
       deliverySlot = false,
       isLoadingCart = false,
       isDeliveryChargeLoading = false,
-      isDeliveryChargeFree = false;
+      isDeliveryChargeFree = false,
+      isGetShippingLoading = false,
+      isUpdateShippingMethodLoading = false;
   LocationData currentLocation;
   Location _location = new Location();
   RefreshController _refreshController =
@@ -78,12 +87,15 @@ class _CheckoutState extends State<Checkout> {
       if (mounted) {
         setState(() {
           locationInfo = onValue['response_data'];
+          shippingMethodsList = locationInfo['shippingMethod'] ?? [];
+          storeAddress = locationInfo['storeAddress']['address'] ?? "";
         });
       }
     }).catchError((error) {
       if (mounted) {
         setState(() {
           locationInfo = null;
+          shippingMethodsList = [];
         });
       }
       sentryError.reportError(error, null);
@@ -104,7 +116,17 @@ class _CheckoutState extends State<Checkout> {
           mounted) {
         setState(() {
           cartItem = onValue['response_data'];
+          if (cartItem['shipping_method'] == "DELIVERY") {
+            for (int i = 0; i < shippingMethodsList.length; i++) {
+              if (shippingMethodsList[i] == cartItem['shipping_method']) {
+                setState(() {
+                  shippingMethodValue = i;
+                });
+              }
+            }
+          }
           Common.setCartData(onValue['response_data']);
+
           isLoadingCart = false;
         });
       } else {
@@ -162,6 +184,41 @@ class _CheckoutState extends State<Checkout> {
             selectedAddress = null;
             isDeliveryChargeFree = false;
             isDeliveryChargeLoading = true;
+          });
+        }
+        sentryError.reportError(error, null);
+      });
+    }
+    return value;
+  }
+
+  shippingMethodRadioValueChanged(int value) async {
+    if (mounted) {
+      setState(() {
+        shippingMethodValue = value;
+        isUpdateShippingMethodLoading = true;
+      });
+      var body = {"shippingMethod": shippingMethodsList[value]};
+      await CartService.getShippingMethodAndSave(body).then((value) {
+        if (mounted) {
+          setState(() {
+            cartItem = value['response_data'];
+            isUpdateShippingMethodLoading = false;
+            if (shippingMethodsList[shippingMethodValue] == "DELIVERY") {
+              if (addressList.length > 0) {
+                addressRadioValueChanged(0);
+              }
+            } else {
+              selecteAddressValue = null;
+              selectedAddress = null;
+            }
+          });
+        }
+      }).catchError((error) {
+        if (mounted) {
+          setState(() {
+            shippingMethodValue = 0;
+            isUpdateShippingMethodLoading = false;
           });
         }
         sentryError.reportError(error, null);
@@ -229,15 +286,16 @@ class _CheckoutState extends State<Checkout> {
       if (mounted) {
         setState(() {
           addressList = onValue['response_data'];
-          if (addressList.length > 0 && cartItem['deliveryAddress'] != null) {
-            for (int i = 0; i < addressList.length; i++) {
-              if (addressList[i]['_id'] == cartItem['deliveryAddress']) {
-                addressRadioValueChanged(i);
+          if (shippingMethodsList.length > 0 &&
+              cartItem['shippingMethod'] != null) {
+            for (int i = 0; i < shippingMethodsList.length; i++) {
+              if (shippingMethodsList[i] == cartItem['shippingMethod']) {
+                shippingMethodRadioValueChanged(i);
               }
             }
-          } else if (addressList.length > 0 &&
-              cartItem['deliveryAddress'] == null) {
-            addressRadioValueChanged(0);
+          } else if (shippingMethodsList.length > 0 &&
+              cartItem['shippingMethod'] == null) {
+            shippingMethodRadioValueChanged(0);
           }
         });
       }
@@ -266,7 +324,11 @@ class _CheckoutState extends State<Checkout> {
   }
 
   placeOrder() async {
-    if (selecteAddressValue == null) {
+    if (shippingMethodValue == null) {
+      showSnackbar(MyLocalizations.of(context)
+          .getLocalizations("SELECT_SHIPPING_METHOD"));
+    } else if (selecteAddressValue == null &&
+        shippingMethodsList[shippingMethodValue] != "PICK_UP") {
       showSnackbar(
           MyLocalizations.of(context).getLocalizations("SELECT_ADDESS_MSG"));
     } else if (selectSlot == null) {
@@ -276,7 +338,8 @@ class _CheckoutState extends State<Checkout> {
       Map<String, dynamic> data = {
         "deliverySlotId": deliverySlotList[dateSelectedValue]['timings']
             [selectSlot]['_id'],
-        "orderFrom": "USER_APP"
+        "orderFrom": "USER_APP",
+        "shippingMethod": shippingMethodsList[shippingMethodValue],
       };
       var result = Navigator.push(
         context,
@@ -703,184 +766,249 @@ class _CheckoutState extends State<Checkout> {
                                           Color(0xFF707070).withOpacity(0.20),
                                       thickness: 1),
                                   SizedBox(height: 5),
-                                  buildBoldText(context, "DELIVERY_ADDESS"),
+                                  buildBoldText(context, "SHIPPING_METHOD"),
+                                  SizedBox(height: 10),
+                                  Container(
+                                    height: 60,
+                                    child: ListView.builder(
+                                      physics: ScrollPhysics(),
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount:
+                                          shippingMethodsList.length == null
+                                              ? 0
+                                              : shippingMethodsList.length,
+                                      itemBuilder:
+                                          (BuildContext context, int i) {
+                                        return InkWell(
+                                            onTap: () {
+                                              shippingMethodRadioValueChanged(
+                                                  i);
+                                            },
+                                            child: Row(children: [
+                                              Radio(
+                                                  value: i,
+                                                  activeColor: primary(context),
+                                                  groupValue:
+                                                      shippingMethodValue,
+                                                  onChanged:
+                                                      shippingMethodRadioValueChanged),
+                                              buildShippingMethodText(
+                                                  shippingMethodsList[i] ?? "",
+                                                  context),
+                                            ]));
+                                      },
+                                    ),
+                                  ),
+                                  isUpdateShippingMethodLoading
+                                      ? SquareLoader()
+                                      : Container(),
+                                  shippingMethodsList[shippingMethodValue] ==
+                                          "PICK_UP"
+                                      ? Column(
+                                          children: [
+                                            buildBoldText(context, "ADDRESS"),
+                                            SizedBox(height: 10),
+                                            buildAddress(
+                                                storeAddress, "", context),
+                                          ],
+                                        )
+                                      : buildBoldText(
+                                          context, "DELIVERY_ADDESS"),
                                 ],
                               ),
                             ),
-                            GFAccordion(
-                              expandedTitlebackgroundColor:
-                                  Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? greyb2
-                                      : Color(0xFFF0F0F0),
-                              collapsedTitlebackgroundColor:
-                                  Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? greyc2
-                                      : Color(0xFFF0F0F0),
-                              titleborder: Border.all(color: Color(0xffD6D6D6)),
-                              contentbackgroundColor:
-                                  Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? greyc2
-                                      : Colors.white,
-                              contentPadding:
-                                  EdgeInsets.only(top: 5, bottom: 5),
-                              titleChild: Text(
-                                selectedAddress == null
-                                    ? MyLocalizations.of(context)
-                                        .getLocalizations("ADDRESS_MSG")
-                                    : '${selectedAddress['flatNo']}, ${selectedAddress['apartmentName']},${selectedAddress['address']}',
-                                overflow: TextOverflow.clip,
-                                maxLines: 1,
-                                style: textBarlowRegularBlack(context),
-                              ),
-                              contentChild: Column(
-                                children: <Widget>[
-                                  ListView.builder(
-                                    physics: ScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemCount: addressList.length == null
-                                        ? 0
-                                        : addressList.length,
-                                    itemBuilder: (BuildContext context, int i) {
-                                      return Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: <Widget>[
-                                          RadioListTile(
-                                            groupValue: selecteAddressValue,
-                                            activeColor: primary(context),
-                                            value: i,
-                                            title: buildAddress(
-                                                '${addressList[i]['flatNo']}, ${addressList[i]['apartmentName']},${addressList[i]['address']},',
-                                                "${addressList[i]['landmark']} ,'${addressList[i]['postalCode']}, ${addressList[i]['mobileNumber'].toString()}",
-                                                context),
-                                            onChanged: addressRadioValueChanged,
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 0.0),
-                                                child: Row(
+                            shippingMethodsList[shippingMethodValue] ==
+                                        "PICK_UP" ||
+                                    isUpdateShippingMethodLoading
+                                ? Container()
+                                : GFAccordion(
+                                    expandedTitlebackgroundColor:
+                                        Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? greyb2
+                                            : Color(0xFFF0F0F0),
+                                    collapsedTitlebackgroundColor:
+                                        Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? greyc2
+                                            : Color(0xFFF0F0F0),
+                                    titleborder:
+                                        Border.all(color: Color(0xffD6D6D6)),
+                                    contentbackgroundColor:
+                                        Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? greyc2
+                                            : Colors.white,
+                                    contentPadding:
+                                        EdgeInsets.only(top: 5, bottom: 5),
+                                    titleChild: Text(
+                                      selectedAddress == null
+                                          ? MyLocalizations.of(context)
+                                              .getLocalizations("ADDRESS_MSG")
+                                          : '${selectedAddress['flatNo']}, ${selectedAddress['apartmentName']},${selectedAddress['address']}',
+                                      overflow: TextOverflow.clip,
+                                      maxLines: 1,
+                                      style: textBarlowRegularBlack(context),
+                                    ),
+                                    contentChild: Column(
+                                      children: <Widget>[
+                                        ListView.builder(
+                                          physics: ScrollPhysics(),
+                                          shrinkWrap: true,
+                                          itemCount: addressList.length == null
+                                              ? 0
+                                              : addressList.length,
+                                          itemBuilder:
+                                              (BuildContext context, int i) {
+                                            return Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: <Widget>[
+                                                RadioListTile(
+                                                  groupValue:
+                                                      selecteAddressValue,
+                                                  activeColor: primary(context),
+                                                  value: i,
+                                                  title: buildAddress(
+                                                      '${addressList[i]['flatNo']}, ${addressList[i]['apartmentName']},${addressList[i]['address']},',
+                                                      "${addressList[i]['landmark']} ,'${addressList[i]['postalCode']}, ${addressList[i]['mobileNumber'].toString()}",
+                                                      context),
+                                                  onChanged:
+                                                      addressRadioValueChanged,
+                                                ),
+                                                Row(
                                                   mainAxisAlignment:
-                                                      MainAxisAlignment.start,
+                                                      MainAxisAlignment.center,
                                                   children: <Widget>[
-                                                    InkWell(
-                                                      onTap: () async {
-                                                        await Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                            builder:
-                                                                (context) =>
-                                                                    EditAddress(
-                                                              locale:
-                                                                  widget.locale,
-                                                              localizedValues:
-                                                                  widget
-                                                                      .localizedValues,
-                                                              isCheckout: true,
-                                                              updateAddressID:
-                                                                  addressList[
-                                                                      i],
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 0.0),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: <Widget>[
+                                                          InkWell(
+                                                            onTap: () async {
+                                                              await Navigator
+                                                                  .push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                  builder:
+                                                                      (context) =>
+                                                                          EditAddress(
+                                                                    locale: widget
+                                                                        .locale,
+                                                                    localizedValues:
+                                                                        widget
+                                                                            .localizedValues,
+                                                                    isCheckout:
+                                                                        true,
+                                                                    updateAddressID:
+                                                                        addressList[
+                                                                            i],
+                                                                  ),
+                                                                ),
+                                                              );
+                                                              getAddress();
+                                                            },
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left:
+                                                                          8.0),
+                                                              child:
+                                                                  primaryOutlineButton(
+                                                                      context,
+                                                                      "EDIT"),
                                                             ),
                                                           ),
-                                                        );
-                                                        getAddress();
-                                                      },
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                left: 8.0),
-                                                        child:
-                                                            primaryOutlineButton(
-                                                                context,
-                                                                "EDIT"),
+                                                          InkWell(
+                                                              onTap: () {
+                                                                deleteAddress(
+                                                                    addressList[
+                                                                            i][
+                                                                        '_id']);
+                                                              },
+                                                              child: Padding(
+                                                                padding: const EdgeInsets
+                                                                        .symmetric(
+                                                                    horizontal:
+                                                                        20.0),
+                                                                child:
+                                                                    primaryOutlineButton(
+                                                                        context,
+                                                                        "DELETE"),
+                                                              )),
+                                                        ],
                                                       ),
                                                     ),
-                                                    InkWell(
-                                                        onTap: () {
-                                                          deleteAddress(
-                                                              addressList[i]
-                                                                  ['_id']);
-                                                        },
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      20.0),
-                                                          child:
-                                                              primaryOutlineButton(
-                                                                  context,
-                                                                  "DELETE"),
-                                                        )),
                                                   ],
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                                left: 20, right: 20),
-                                            child: Divider(thickness: 1),
-                                          ),
-                                        ],
-                                      );
-                                    },
+                                                Padding(
+                                                  padding: EdgeInsets.only(
+                                                      left: 20, right: 20),
+                                                  child: Divider(thickness: 1),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        ),
+                                        SizedBox(height: 20),
+                                        InkWell(
+                                            onTap: () async {
+                                              _permissionGranted =
+                                                  await _location
+                                                      .hasPermission();
+                                              if (_permissionGranted ==
+                                                  PermissionStatus.denied) {
+                                                _permissionGranted =
+                                                    await _location
+                                                        .requestPermission();
+                                                if (_permissionGranted !=
+                                                    PermissionStatus.granted) {
+                                                  Map locationLatLong = {
+                                                    "latitude":
+                                                        locationInfo['location']
+                                                            ['latitude'],
+                                                    "longitude":
+                                                        locationInfo['location']
+                                                            ['longitude']
+                                                  };
+
+                                                  addAddressPageMethod(
+                                                      locationLatLong);
+                                                  return;
+                                                }
+                                              }
+                                              currentLocation =
+                                                  await _location.getLocation();
+
+                                              if (currentLocation != null) {
+                                                Map locationLatLong = {
+                                                  "latitude":
+                                                      currentLocation.latitude,
+                                                  "longitude":
+                                                      currentLocation.longitude
+                                                };
+                                                addAddressPageMethod(
+                                                    locationLatLong);
+                                              }
+                                            },
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 80.0),
+                                              child: dottedBorderButton(
+                                                  context, "ADD_NEW_ADDRESS"),
+                                            )),
+                                        SizedBox(height: 20),
+                                      ],
+                                    ),
                                   ),
-                                  SizedBox(height: 20),
-                                  InkWell(
-                                      onTap: () async {
-                                        _permissionGranted =
-                                            await _location.hasPermission();
-                                        if (_permissionGranted ==
-                                            PermissionStatus.denied) {
-                                          _permissionGranted = await _location
-                                              .requestPermission();
-                                          if (_permissionGranted !=
-                                              PermissionStatus.granted) {
-                                            Map locationLatLong = {
-                                              "latitude":
-                                                  locationInfo['location']
-                                                      ['latitude'],
-                                              "longitude":
-                                                  locationInfo['location']
-                                                      ['longitude']
-                                            };
-
-                                            addAddressPageMethod(
-                                                locationLatLong);
-                                            return;
-                                          }
-                                        }
-                                        currentLocation =
-                                            await _location.getLocation();
-
-                                        if (currentLocation != null) {
-                                          Map locationLatLong = {
-                                            "latitude":
-                                                currentLocation.latitude,
-                                            "longitude":
-                                                currentLocation.longitude
-                                          };
-                                          addAddressPageMethod(locationLatLong);
-                                        }
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 80.0),
-                                        child: dottedBorderButton(
-                                            context, "ADD_NEW_ADDRESS"),
-                                      )),
-                                  SizedBox(height: 20),
-                                ],
-                              ),
-                            ),
                             SizedBox(height: 15),
                             Constants.predefined == "true"
                                 ? timeZoneMessage(context, "TIME_ZONE_MESSAGE")

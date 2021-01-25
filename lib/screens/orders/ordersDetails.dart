@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -238,14 +237,32 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                         .toString())
                                                 .toLocal())),
                                     SizedBox(height: 10),
+                                    buildOrderDetilsStatusText(
+                                        context,
+                                        "SHIPPING_METHOD",
+                                        (orderHistory['order']
+                                                    ['shippingMethod'] ==
+                                                null
+                                            ? "DELIVERY"
+                                            : orderHistory['order']
+                                                ['shippingMethod'])),
+                                    SizedBox(height: 10),
                                     buildOrderDetilsText(
                                         context,
-                                        "DELIVERY_DATE",
+                                        (orderHistory['order']
+                                                    ['shippingMethod'] ==
+                                                "PICK_UP"
+                                            ? "PICK_UP_DATE"
+                                            : "DELIVERY_DATE"),
                                         orderHistory['order']['deliveryDate']),
                                     SizedBox(height: 10),
                                     buildOrderDetilsText(
                                         context,
-                                        "DELIVERY_TIME",
+                                        (orderHistory['order']
+                                                    ['shippingMethod'] ==
+                                                "PICK_UP"
+                                            ? "PICK_UP_TIME"
+                                            : "DELIVERY_TIME"),
                                         orderHistory['order']['deliveryTime']),
                                     SizedBox(height: 10),
                                     Constants.predefined == "true"
@@ -259,9 +276,18 @@ class _OrderDetailsState extends State<OrderDetails> {
                                     SizedBox(height: 10),
                                     buildOrderDetilsText(
                                         context,
-                                        "ADDRESS",
-                                        orderHistory['order']['address']
-                                            ['address']),
+                                        (orderHistory['order']
+                                                    ['shippingMethod'] ==
+                                                "PICK_UP"
+                                            ? "PICK_UP_ADDRESS"
+                                            : "ADDRESS"),
+                                        (orderHistory['order']
+                                                    ['shippingMethod'] ==
+                                                "PICK_UP"
+                                            ? orderHistory['order']
+                                                ['storeAddress']['address']
+                                            : orderHistory['order']['address']
+                                                ['address'])),
                                     SizedBox(height: 10),
                                     buildOrderDetilsStatusText(
                                         context,

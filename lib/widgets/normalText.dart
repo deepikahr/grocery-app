@@ -229,7 +229,7 @@ Widget buildBoldText(BuildContext context, title) {
   return GFTypography(
     showDivider: false,
     child: Expanded(
-        child: Text(MyLocalizations.of(context).getLocalizations(title),
+        child: Text(MyLocalizations.of(context).getLocalizations(title ?? ""),
             style: textBarlowSemiBoldBlackbigg(context))),
   );
 }
@@ -354,7 +354,8 @@ Widget buildPrice(
       Row(
         children: [
           icon == null ? Container() : icon,
-          Text(title, style: textBarlowRegularBlack(context)),
+          Text(MyLocalizations.of(context).getLocalizations(title ?? ""),
+              style: textBarlowRegularBlack(context)),
         ],
       ),
       isDeliveryChargeLoading
@@ -364,7 +365,39 @@ Widget buildPrice(
               : Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
-                    Text(value, style: textbarlowBoldsmBlack(context))
+                    Text(
+                        MyLocalizations.of(context)
+                            .getLocalizations(value ?? ""),
+                        style: textbarlowBoldsmBlack(context))
+                  ],
+                ),
+    ],
+  );
+}
+
+Widget buildPriceGreen(
+    BuildContext context, icon, title, value, isDeliveryChargeLoading) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: <Widget>[
+      Row(
+        children: [
+          icon == null ? Container() : icon,
+          Text(MyLocalizations.of(context).getLocalizations(title ?? ""),
+              style: textBarlowRegularBlack(context)),
+        ],
+      ),
+      isDeliveryChargeLoading
+          ? SquareLoader()
+          : value == null
+              ? Container()
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Text(
+                        MyLocalizations.of(context)
+                            .getLocalizations(value ?? ""),
+                        style: textbarlowBoldsmGreen(context))
                   ],
                 ),
     ],
@@ -401,11 +434,18 @@ Widget buildAddress(title, subTitle, context) {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Text(title, style: textBarlowRegularBlack(context)),
+        Text(MyLocalizations.of(context).getLocalizations(title ?? ""),
+            style: textBarlowRegularBlack(context)),
         subTitle == null
             ? Container()
-            : Text(subTitle, style: textBarlowRegularBlackdl(context)),
+            : Text(MyLocalizations.of(context).getLocalizations(subTitle ?? ""),
+                style: textBarlowRegularBlackdl(context)),
       ]);
+}
+
+Widget buildShippingMethodText(title, context) {
+  return Text(MyLocalizations.of(context).getLocalizations(title ?? ""),
+      style: textBarlowRegularBlack(context));
 }
 
 Widget timeZoneMessage(BuildContext context, title) {
