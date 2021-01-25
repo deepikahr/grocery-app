@@ -240,6 +240,16 @@ class _PaymentState extends State<Payment> {
                           ')',
                       '$currency${cartItem['subTotal'].toDouble().toStringAsFixed(2)}',
                       false),
+                  SizedBox(height: 10),
+                  cartItem['shippingMethod'] == 0
+                      ? Container()
+                      : buildPriceGreen(
+                          context,
+                          null,
+                          MyLocalizations.of(context)
+                              .getLocalizations("SHIPPING_METHOD"),
+                          '${cartItem['shippingMethod']}',
+                          false),
                   cartItem['couponCode'] != null
                       ? SizedBox(height: 10)
                       : Container(),

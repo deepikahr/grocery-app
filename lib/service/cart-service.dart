@@ -49,6 +49,15 @@ class CartService {
     });
   }
 
+  static Future<Map<String, dynamic>> getShippingMethodAndSave(body) async {
+    return client
+        .post(Constants.apiUrl + "/carts/update-shipping-method",
+            body: json.encode(body))
+        .then((response) {
+      return json.decode(response.body);
+    });
+  }
+
   static Future<Map<String, dynamic>> checkCartVerifyOrNot() async {
     return client.get(Constants.apiUrl + "/carts/verify").then((response) {
       return json.decode(response.body);
