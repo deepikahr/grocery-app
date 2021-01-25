@@ -33,8 +33,7 @@ class _OrderDetailsState extends State<OrderDetails> {
 
   bool isLoading = false,
       isRatingSubmitting = false,
-      isOrderCancleLoading = false,
-      isAboutUsData = false;
+      isOrderCancleLoading = false;
   var orderHistory;
   String currency;
   double rating;
@@ -193,7 +192,7 @@ class _OrderDetailsState extends State<OrderDetails> {
       backgroundColor: bg(context),
       key: _scaffoldKey,
       appBar: appBarprimary(context, "ORDER_DETAILS"),
-      body: isLoading || isAboutUsData
+      body: isLoading
           ? SquareLoader()
           : orderHistory == null
               ? noDataImage()
@@ -244,7 +243,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                         (orderHistory['order']
                                                     ['shippingMethod'] ==
                                                 null
-                                            ? "PICK_UP"
+                                            ? "DELIVERY"
                                             : orderHistory['order']
                                                 ['shippingMethod'])),
                                     SizedBox(height: 10),
