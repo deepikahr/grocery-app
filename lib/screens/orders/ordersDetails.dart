@@ -36,7 +36,7 @@ class _OrderDetailsState extends State<OrderDetails> {
       isOrderCancleLoading = false,
       isAboutUsData = false;
   var orderHistory;
-  String currency, resturantAddress;
+  String currency;
   double rating;
   Timer timer;
   int productInfoIndex = -1;

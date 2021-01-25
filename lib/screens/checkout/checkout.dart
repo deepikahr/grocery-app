@@ -51,7 +51,7 @@ class _CheckoutState extends State<Checkout> {
       locationNotFound,
       currency,
       couponCode,
-      resturantAddress;
+      storeAddress;
   var selectedAddress;
   bool isLoading = false,
       addressLoading = false,
@@ -88,7 +88,7 @@ class _CheckoutState extends State<Checkout> {
         setState(() {
           locationInfo = onValue['response_data'];
           shippingMethodsList = locationInfo['shippingMethod'] ?? [];
-          resturantAddress = locationInfo['storeAddress']['address'] ?? "";
+          storeAddress = locationInfo['storeAddress']['address'] ?? "";
         });
       }
     }).catchError((error) {
@@ -810,7 +810,7 @@ class _CheckoutState extends State<Checkout> {
                                             buildBoldText(context, "ADDRESS"),
                                             SizedBox(height: 10),
                                             buildAddress(
-                                                resturantAddress, "", context),
+                                                storeAddress, "", context),
                                           ],
                                         )
                                       : buildBoldText(
