@@ -298,6 +298,20 @@ class _OrderDetailsState extends State<OrderDetails> {
                                         context,
                                         "PAYMENT_STATUS",
                                         orderHistory['order']['paymentStatus']),
+                                    orderHistory['order']
+                                                ['deliveryInstruction'] ==
+                                            null
+                                        ? Container()
+                                        : SizedBox(height: 10),
+                                    orderHistory['order']
+                                                ['deliveryInstruction'] ==
+                                            null
+                                        ? Container()
+                                        : buildOrderDetilsText(
+                                            context,
+                                            "INSTRUCTION",
+                                            orderHistory['order']
+                                                ['deliveryInstruction']),
                                   ],
                                 ),
                               ),

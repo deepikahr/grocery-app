@@ -16,17 +16,16 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 SentryError sentryError = new SentryError();
 
 class Payment extends StatefulWidget {
-  final String locale;
-
+  final String locale, instruction;
   final Map data, locationInfo, localizedValues, cartItems;
-
   Payment(
       {Key key,
       this.data,
       this.locale,
       this.localizedValues,
       this.locationInfo,
-      this.cartItems})
+      this.cartItems,
+      this.instruction})
       : super(key: key);
   @override
   _PaymentState createState() => _PaymentState();
@@ -107,6 +106,8 @@ class _PaymentState extends State<Payment> {
       showSnackbar(
           MyLocalizations.of(context).getLocalizations("SELECT_PAYMENT_FIRST"));
     } else {
+      widget.data['deliveryInstruction'] = widget.instruction ?? "";
+      print(widget.data);
       if (fullWalletUsedOrNot == true) {
         widget.data['paymentType'] = "COD";
         palceOrderMethod(widget.data);

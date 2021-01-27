@@ -226,7 +226,13 @@ class _EditAddressState extends State<EditAddress> {
                                   googlePlacesApiKey: Constants.googleMapApiKey,
                                   initialPosition: LatLng(lat, long),
                                   mainColor: primary(context),
-                                  mapStrings: MapPickerStrings.english(),
+                                  mapStrings: MapPickerStrings.english(
+                                      selectAddress: MyLocalizations.of(context)
+                                          .getLocalizations("SELECT_ADDRESS"),
+                                      cancel: MyLocalizations.of(context)
+                                          .getLocalizations("CANCEL"),
+                                      address: MyLocalizations.of(context)
+                                          .getLocalizations("ADDRESS")),
                                   placeAutoCompleteLanguage: 'en',
                                 )));
                     setState(() {
