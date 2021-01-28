@@ -403,9 +403,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                                                   child:
                                                                       PhotoView(
                                                                     imageProvider:
-                                                                        NetworkImage(url.replaceAll(
-                                                                            'w-1000/',
-                                                                            'w-1000/hd/')),
+                                                                        NetworkImage(url),
                                                                     minScale:
                                                                         PhotoViewComputedScale.contained *
                                                                             0.8,
