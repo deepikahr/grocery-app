@@ -395,7 +395,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                                           padding:
                                                               EdgeInsets.all(
                                                                   20),
-                                                          color: Colors.white,
+                                                          color: bg(context),
                                                           child: Column(
                                                             children: [
                                                               Container(
