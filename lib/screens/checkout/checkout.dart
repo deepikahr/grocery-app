@@ -69,7 +69,7 @@ class _CheckoutState extends State<Checkout> {
   Location _location = new Location();
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-
+  TextEditingController instructionController = TextEditingController();
   PermissionStatus _permissionGranted;
   @override
   void initState() {
@@ -349,7 +349,8 @@ class _CheckoutState extends State<Checkout> {
               localizedValues: widget.localizedValues,
               data: data,
               cartItems: cartItem,
-              locationInfo: locationInfo),
+              locationInfo: locationInfo,
+              instruction: instructionController.text),
         ),
       );
       result.then((value) {
@@ -485,7 +486,13 @@ class _CheckoutState extends State<Checkout> {
                   initialPosition: LatLng(locationlatlong['latitude'],
                       locationlatlong['longitude']),
                   mainColor: primary(context),
-                  mapStrings: MapPickerStrings.english(),
+                  mapStrings: MapPickerStrings.english(
+                      selectAddress: MyLocalizations.of(context)
+                          .getLocalizations("SELECT_ADDRESS"),
+                      cancel: MyLocalizations.of(context)
+                          .getLocalizations("CANCEL"),
+                      address: MyLocalizations.of(context)
+                          .getLocalizations("ADDRESS")),
                   placeAutoCompleteLanguage: 'en',
                 )));
     if (pickerResult != null) {
@@ -506,6 +513,37 @@ class _CheckoutState extends State<Checkout> {
         });
       });
     }
+  }
+
+  Widget buildInstructionTextField() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 5.0, bottom: 10.0),
+      child: Container(
+        child: TextFormField(
+          controller: instructionController,
+          maxLength: 100,
+          maxLines: 5,
+          onSaved: (String value) {
+            instructionController.text = value;
+          },
+          style: textBarlowRegularBlack(context),
+          keyboardType: TextInputType.text,
+          decoration: InputDecoration(
+            counterText: "",
+            errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
+            errorStyle: TextStyle(color: Color(0xFFF44242)),
+            contentPadding: EdgeInsets.all(10),
+            enabledBorder: const OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: primary(context)),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -1150,6 +1188,14 @@ class _CheckoutState extends State<Checkout> {
                                 : Container(),
                           ],
                         ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 15, right: 15),
+                        child: buildBoldText(context, "INSTRUCTION"),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 15, right: 15),
+                        child: buildInstructionTextField(),
                       ),
                       InkWell(
                         onTap: placeOrder,
