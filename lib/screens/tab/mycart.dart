@@ -653,9 +653,10 @@ class _MyCartState extends State<MyCart> {
                                                       cartItem['products'][i][
                                                               'isDealAvailable']
                                                           ? '$currency${((cartItem['products'][i]['price']) * (cartItem['products'][i]['quantity'])).toDouble().toStringAsFixed(2)}'
-                                                          : cartItem['products']
-                                                                      [i][
-                                                                  'isOfferAvailable']
+                                                          : (cartItem['products']
+                                                                          [i][
+                                                                      'isOfferAvailable'] ??
+                                                                  false)
                                                               ? '$currency${((cartItem['products'][i]['price']) * (cartItem['products'][i]['quantity'])).toDouble().toStringAsFixed(2)}'
                                                               : null,
                                                       context),
@@ -677,41 +678,29 @@ class _MyCartState extends State<MyCart> {
                                                           ['isDealAvailable'] ==
                                                       true
                                                   ? textLightSmall(
-                                                      MyLocalizations.of(
-                                                                  context)
+                                                      MyLocalizations.of(context)
                                                               .getLocalizations(
                                                                   "DEAL") +
                                                           " " +
-                                                          (cartItem['products']
-                                                                      [i][
-                                                                  'dealPercent'])
+                                                          (cartItem['products'][i]['dealPercent'])
                                                               .toString() +
                                                           "% " +
-                                                          MyLocalizations.of(
-                                                                  context)
+                                                          MyLocalizations.of(context)
                                                               .getLocalizations(
                                                                   "OFF"),
                                                       context)
-                                                  :cartItem['products'][i]
-                                              ['isOfferAvailable'] ==
-                                                  true
-                                                  ? textLightSmall(
-                                                  MyLocalizations.of(
-                                                      context)
-                                                      .getLocalizations(
-                                                      "OFFER") +
-                                                      " " +
-                                                      (cartItem['products']
-                                                      [i][
-                                                      'offerPercent'])
-                                                          .toString() +
-                                                      "% " +
-                                                      MyLocalizations.of(
+                                                  : cartItem['products'][i]['isOfferAvailable'] ==
+                                                          true
+                                                      ? textLightSmall(
+                                                          MyLocalizations.of(context).getLocalizations("OFFER") +
+                                                              " " +
+                                                              (cartItem['products'][i]['offerPercent'])
+                                                                  .toString() +
+                                                              "% " +
+                                                              MyLocalizations.of(context)
+                                                                  .getLocalizations("OFF"),
                                                           context)
-                                                          .getLocalizations(
-                                                          "OFF"),
-                                                  context)
-                                                  : Text("")
+                                                      : Text("")
                                             ],
                                           ),
                                         ),

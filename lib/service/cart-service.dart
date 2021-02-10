@@ -19,9 +19,13 @@ class CartService {
 
   // get product in cart
   static Future<Map<String, dynamic>> getProductToCart() async {
-    return client.get(Constants.apiUrl + "/carts/my").then((response) {
-      return json.decode(response.body);
-    });
+    try{
+      return client.get(Constants.apiUrl + "/carts/my").then((response) {
+        return json.decode(response.body);
+      });
+    }catch(error){
+      print(error.toString());
+    }
   }
 
   // delete form cart
