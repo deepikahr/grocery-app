@@ -8,7 +8,7 @@ class CardOverlay extends StatelessWidget {
     return Positioned(
       child: Container(
           alignment: Alignment.center,
-          height: 171,
+          height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(12)),

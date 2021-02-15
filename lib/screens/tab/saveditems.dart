@@ -11,7 +11,7 @@ import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
-import 'package:readymadeGroceryApp/widgets/subCategoryProductCart.dart';
+import 'package:readymadeGroceryApp/widgets/product_gridcard.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -159,41 +159,26 @@ class _SavedItemsState extends State<SavedItems> {
                             }
 
                             return InkWell(
-                              onTap: () {
-                                var result = Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ProductDetails(
-                                      locale: widget.locale,
-                                      localizedValues: widget.localizedValues,
-                                      productID: favProductList[i]['_id'],
+                                onTap: () {
+                                  var result = Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ProductDetails(
+                                        locale: widget.locale,
+                                        localizedValues: widget.localizedValues,
+                                        productID: favProductList[i]['_id'],
+                                      ),
                                     ),
-                                  ),
-                                );
-                                result.then((value) {
-                                  getToken();
-                                });
-                              },
-                              child: Stack(
-                                children: <Widget>[
-                                  SubCategoryProductCard(
-                                    currency: currency,
-                                    price: favProductList[i]['variant'][0]
-                                        ['price'],
-                                    productData: favProductList[i],
-                                    variantList: favProductList[i]['variant'],
-                                    isHome: false,
-                                  ),
-                                  favProductList[i]['isDealAvailable'] == true
-                                      ? buildBadge(
-                                          context,
-                                          favProductList[i]['dealPercent']
-                                              .toString(),
-                                          "OFF")
-                                      : Container()
-                                ],
-                              ),
-                            );
+                                  );
+                                  result.then((value) {
+                                    getToken();
+                                  });
+                                },
+                                child: ProductGridCard(
+                                  currency: currency,
+                                  productData: favProductList[i],
+                                  isHome: false,
+                                ));
                           },
                         )
                       : noDataImage(),

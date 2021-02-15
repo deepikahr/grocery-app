@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +38,7 @@ class _OrderDetailsState extends State<OrderDetails> {
   String currency;
   double rating;
   Timer timer;
-  var createdAt;
+  int productInfoIndex = -1;
   @override
   void initState() {
     getOrderHistory();
@@ -69,6 +68,9 @@ class _OrderDetailsState extends State<OrderDetails> {
       if (mounted) {
         setState(() {
           orderHistory = onValue['response_data'];
+          productInfoIndex = orderHistory['order']['cart']
+              .toList()
+              .indexWhere((product) => product['isOrderModified'] == true);
           if (orderHistory['walletAmount'] == null) {
             orderHistory['walletAmount'] = 0.0;
           }
@@ -203,6 +205,13 @@ class _OrderDetailsState extends State<OrderDetails> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
+                          productInfoIndex == -1
+                              ? Container()
+                              : buildOrderDetilsNormalText(
+                                  context, "ORDER_MODIFIED"),
+                          productInfoIndex == -1
+                              ? Container()
+                              : SizedBox(height: 10),
                           Row(
                             children: <Widget>[
                               Flexible(
@@ -228,14 +237,32 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                         .toString())
                                                 .toLocal())),
                                     SizedBox(height: 10),
+                                    buildOrderDetilsStatusText(
+                                        context,
+                                        "SHIPPING_METHOD",
+                                        (orderHistory['order']
+                                                    ['shippingMethod'] ==
+                                                null
+                                            ? "DELIVERY"
+                                            : orderHistory['order']
+                                                ['shippingMethod'])),
+                                    SizedBox(height: 10),
                                     buildOrderDetilsText(
                                         context,
-                                        "DELIVERY_DATE",
+                                        (orderHistory['order']
+                                                    ['shippingMethod'] ==
+                                                "PICK_UP"
+                                            ? "PICK_UP_DATE"
+                                            : "DELIVERY_DATE"),
                                         orderHistory['order']['deliveryDate']),
                                     SizedBox(height: 10),
                                     buildOrderDetilsText(
                                         context,
-                                        "DELIVERY_TIME",
+                                        (orderHistory['order']
+                                                    ['shippingMethod'] ==
+                                                "PICK_UP"
+                                            ? "PICK_UP_TIME"
+                                            : "DELIVERY_TIME"),
                                         orderHistory['order']['deliveryTime']),
                                     SizedBox(height: 10),
                                     Constants.predefined == "true"
@@ -249,9 +276,18 @@ class _OrderDetailsState extends State<OrderDetails> {
                                     SizedBox(height: 10),
                                     buildOrderDetilsText(
                                         context,
-                                        "ADDRESS",
-                                        orderHistory['order']['address']
-                                            ['address']),
+                                        (orderHistory['order']
+                                                    ['shippingMethod'] ==
+                                                "PICK_UP"
+                                            ? "PICK_UP_ADDRESS"
+                                            : "ADDRESS"),
+                                        (orderHistory['order']
+                                                    ['shippingMethod'] ==
+                                                "PICK_UP"
+                                            ? orderHistory['order']
+                                                ['storeAddress']['address']
+                                            : orderHistory['order']['address']
+                                                ['address'])),
                                     SizedBox(height: 10),
                                     buildOrderDetilsStatusText(
                                         context,
@@ -262,6 +298,20 @@ class _OrderDetailsState extends State<OrderDetails> {
                                         context,
                                         "PAYMENT_STATUS",
                                         orderHistory['order']['paymentStatus']),
+                                    orderHistory['order']
+                                                ['deliveryInstruction'] ==
+                                            null
+                                        ? Container()
+                                        : SizedBox(height: 10),
+                                    orderHistory['order']
+                                                ['deliveryInstruction'] ==
+                                            null
+                                        ? Container()
+                                        : buildOrderDetilsText(
+                                            context,
+                                            "INSTRUCTION",
+                                            orderHistory['order']
+                                                ['deliveryInstruction']),
                                   ],
                                 ),
                               ),
@@ -274,11 +324,11 @@ class _OrderDetailsState extends State<OrderDetails> {
                     ListView.builder(
                       physics: ScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: orderHistory['cart']['products'].length == null
+                      itemCount: orderHistory['order']['cart'].length == null
                           ? 0
-                          : orderHistory['cart']['products'].length,
+                          : orderHistory['order']['cart'].length,
                       itemBuilder: (BuildContext context, int i) {
-                        Map order = orderHistory['cart']['products'][i];
+                        Map order = orderHistory['order']['cart'][i];
                         return Column(
                           children: [
                             Container(
@@ -421,7 +471,22 @@ class _OrderDetailsState extends State<OrderDetails> {
                                         textMediumSmall(
                                             order['productName'] ?? "",
                                             context),
-                                        SizedBox(height: 10),
+                                        SizedBox(height: 5),
+                                        order['isOrderModified'] == true
+                                            ? Column(
+                                                children: [
+                                                  textMediumSmallGreen(
+                                                      MyLocalizations.of(
+                                                                  context)
+                                                              .getLocalizations(
+                                                                  "ORIGINAL_PRICE",
+                                                                  true) +
+                                                          ' $currency${order['originalPrice'] == null ? order['price'].toStringAsFixed(2) : order['originalPrice'].toStringAsFixed(2)}',
+                                                      context),
+                                                  SizedBox(height: 5)
+                                                ],
+                                              )
+                                            : Container(),
                                         textLightSmall(
                                             '${order['unit']} (${order['quantity']}) *  $currency${order['price'].toStringAsFixed(2)}',
                                             context),
@@ -509,11 +574,11 @@ class _OrderDetailsState extends State<OrderDetails> {
                               MyLocalizations.of(context)
                                   .getLocalizations("SUB_TOTAL"),
                               currency +
-                                  orderHistory['cart']['subTotal']
+                                  orderHistory['order']['subTotal']
                                       .toStringAsFixed(2),
                               false),
                           SizedBox(height: 6),
-                          orderHistory['cart']['tax'] == 0
+                          orderHistory['order']['tax'] == 0
                               ? Container()
                               : buildPriceBold(
                                   context,
@@ -521,7 +586,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                   MyLocalizations.of(context)
                                       .getLocalizations("TAX"),
                                   currency +
-                                      orderHistory['cart']['tax']
+                                      orderHistory['order']['tax']
                                           .toStringAsFixed(2),
                                   false),
                           SizedBox(height: 6),
@@ -530,15 +595,16 @@ class _OrderDetailsState extends State<OrderDetails> {
                               null,
                               MyLocalizations.of(context)
                                   .getLocalizations("DELIVERY_CHARGES"),
-                              orderHistory['cart']['deliveryCharges'] == 0
+                              orderHistory['order']['deliveryCharges'] == 0
                                   ? MyLocalizations.of(context)
                                       .getLocalizations("FREE")
-                                  : orderHistory['cart']['deliveryCharges']
+                                  : orderHistory['order']['deliveryCharges']
                                       .toStringAsFixed(2),
                               false),
                           SizedBox(height: 6),
-                          orderHistory['cart']['walletAmount'] == 0 ||
-                                  orderHistory['cart']['walletAmount'] == 0.0
+                          orderHistory['order']['usedWalletAmount'] == 0 ||
+                                  orderHistory['order']['usedWalletAmount'] ==
+                                      0.0
                               ? Container()
                               : buildPriceBold(
                                   context,
@@ -547,11 +613,11 @@ class _OrderDetailsState extends State<OrderDetails> {
                                       .getLocalizations("PAID_FORM_WALLET"),
                                   "-" +
                                       currency +
-                                      orderHistory['cart']['walletAmount']
+                                      orderHistory['order']['usedWalletAmount']
                                           .toStringAsFixed(2),
                                   false),
                           SizedBox(height: 6),
-                          orderHistory['cart']['couponCode'] == null
+                          orderHistory['order']['couponCode'] == null
                               ? Container()
                               : Column(
                                   children: <Widget>[
@@ -560,7 +626,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                         null,
                                         MyLocalizations.of(context)
                                             .getLocalizations("COUPON_APPLIED"),
-                                        orderHistory['cart']['couponCode'],
+                                        orderHistory['order']['couponCode'],
                                         false),
                                     SizedBox(height: 6),
                                     buildPriceBold(
@@ -570,7 +636,8 @@ class _OrderDetailsState extends State<OrderDetails> {
                                             .getLocalizations("DISCOUNT"),
                                         "-" +
                                             currency +
-                                            orderHistory['cart']['couponAmount']
+                                            orderHistory['order']
+                                                    ['couponAmount']
                                                 .toStringAsFixed(2),
                                         false),
                                   ],
@@ -593,7 +660,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                           null,
                           MyLocalizations.of(context).getLocalizations("TOTAL"),
                           currency +
-                              orderHistory['cart']['grandTotal']
+                              orderHistory['order']['grandTotal']
                                   .toStringAsFixed(2),
                           false),
                     ),

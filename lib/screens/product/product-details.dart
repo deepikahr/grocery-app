@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:getflutter/getwidget.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:readymadeGroceryApp/model/addToCart.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
@@ -359,84 +360,128 @@ class _ProductDetailsState extends State<ProductDetails>
                                         },
                                         items: productImages.map(
                                           (url) {
-                                            return CachedNetworkImage(
-                                              imageUrl: url,
-                                              imageBuilder:
-                                                  (context, imageProvider) =>
-                                                      Container(
-                                                padding: EdgeInsets.zero,
-                                                margin: EdgeInsets.zero,
-                                                height: 340,
-                                                decoration: new BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                      bottomLeft:
-                                                          Radius.circular(40),
-                                                      bottomRight:
-                                                          Radius.circular(40),
-                                                    ),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                          color: Colors.grey,
-                                                          blurRadius: 10.0,
-                                                          offset:
-                                                              Offset(2.0, 2.0))
-                                                    ],
-                                                    image: DecorationImage(
-                                                        image: imageProvider,
-                                                        fit: BoxFit.cover)),
+                                            return InkWell(
+                                              onTap: () {
+                                                print(url);
+                                                showGeneralDialog(
+                                                    context: context,
+                                                    barrierDismissible: true,
+                                                    barrierLabel:
+                                                        MaterialLocalizations
+                                                                .of(context)
+                                                            .modalBarrierDismissLabel,
+                                                    barrierColor:
+                                                        Colors.black45,
+                                                    transitionDuration:
+                                                        const Duration(
+                                                            milliseconds: 200),
+                                                    pageBuilder: (BuildContext
+                                                            buildContext,
+                                                        Animation animation,
+                                                        Animation
+                                                            secondaryAnimation) {
+                                                      return Center(
+                                                        child: Container(
+                                                          width: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width -
+                                                              10,
+                                                          height: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .height -
+                                                              80,
+                                                          padding:
+                                                              EdgeInsets.all(
+                                                                  20),
+                                                          color: bg(context),
+                                                          child: Column(
+                                                            children: [
+                                                              Container(
+                                                                  height: 380,
+                                                                  child:
+                                                                      PhotoView(
+                                                                    imageProvider:
+                                                                        NetworkImage(url),
+                                                                    minScale:
+                                                                        PhotoViewComputedScale.contained *
+                                                                            0.8,
+                                                                    maxScale:
+                                                                        PhotoViewComputedScale.covered *
+                                                                            2,
+                                                                  )),
+                                                              Expanded(
+                                                                  child: Align(
+                                                                      alignment:
+                                                                          Alignment
+                                                                              .bottomCenter,
+                                                                      child:
+                                                                          RaisedButton(
+                                                                        color:
+                                                                            primarybg,
+                                                                        onPressed:
+                                                                            () {
+                                                                          Navigator.of(context)
+                                                                              .pop();
+                                                                        },
+                                                                        child:
+                                                                            Text(
+                                                                          MyLocalizations.of(context)
+                                                                              .getLocalizations("CLOSE"),
+                                                                          style:
+                                                                              TextStyle(color: Colors.white),
+                                                                        ),
+                                                                      )))
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      );
+                                                    });
+                                              },
+                                              child: CachedNetworkImage(
+                                                imageUrl: url,
+                                                imageBuilder:
+                                                    (context, imageProvider) =>
+                                                        Container(
+                                                  padding: EdgeInsets.zero,
+                                                  margin: EdgeInsets.zero,
+                                                  height: 340,
+                                                  decoration: new BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.only(
+                                                        bottomLeft:
+                                                            Radius.circular(40),
+                                                        bottomRight:
+                                                            Radius.circular(40),
+                                                      ),
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                            color: Colors.grey,
+                                                            blurRadius: 10.0,
+                                                            offset: Offset(
+                                                                2.0, 2.0))
+                                                      ],
+                                                      image: DecorationImage(
+                                                          image: imageProvider,
+                                                          fit: BoxFit.cover)),
+                                                ),
+                                                placeholder: (context, url) =>
+                                                    Container(
+                                                        height: 340,
+                                                        child: noDataImage()),
+                                                errorWidget: (context, url,
+                                                        error) =>
+                                                    Container(
+                                                        height: 340,
+                                                        child: noDataImage()),
                                               ),
-                                              placeholder: (context, url) =>
-                                                  Container(
-                                                      height: 340,
-                                                      child: noDataImage()),
-                                              errorWidget:
-                                                  (context, url, error) =>
-                                                      Container(
-                                                          height: 340,
-                                                          child: noDataImage()),
                                             );
                                           },
                                         ).toList(),
                                       )
-                                    : CachedNetworkImage(
-                                        imageUrl:
-                                            productDetail['filePath'] == null
-                                                ? productDetail['imageUrl']
-                                                : Constants.imageUrlPath +
-                                                    "/tr:dpr-auto,tr:w-1000" +
-                                                    productDetail['filePath'],
-                                        imageBuilder:
-                                            (context, imageProvider) =>
-                                                Container(
-                                          padding: EdgeInsets.zero,
-                                          margin: EdgeInsets.zero,
-                                          height: 340,
-                                          decoration: new BoxDecoration(
-                                              borderRadius: BorderRadius.only(
-                                                bottomLeft: Radius.circular(40),
-                                                bottomRight:
-                                                    Radius.circular(40),
-                                              ),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                    color: Colors.grey,
-                                                    blurRadius: 10.0,
-                                                    offset: Offset(2.0, 2.0))
-                                              ],
-                                              image: DecorationImage(
-                                                  image: imageProvider,
-                                                  fit: BoxFit.cover)),
-                                        ),
-                                        placeholder: (context, url) =>
-                                            Container(
-                                                height: 340,
-                                                child: noDataImage()),
-                                        errorWidget: (context, url, error) =>
-                                            Container(
-                                                height: 340,
-                                                child: noDataImage()),
-                                      ),
+                                    : Container(
+                                        height: 340, child: noDataImage()),
                               ),
                               SizedBox(height: 40),
                               Column(

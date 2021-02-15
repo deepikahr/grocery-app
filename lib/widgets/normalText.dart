@@ -229,7 +229,7 @@ Widget buildBoldText(BuildContext context, title) {
   return GFTypography(
     showDivider: false,
     child: Expanded(
-        child: Text(MyLocalizations.of(context).getLocalizations(title),
+        child: Text(MyLocalizations.of(context).getLocalizations(title ?? ""),
             style: textBarlowSemiBoldBlackbigg(context))),
   );
 }
@@ -299,9 +299,13 @@ Widget profileTextRow(BuildContext context, title, subTitle) {
 
 Widget subCatTab(BuildContext context, title, Color color) {
   return Container(
-    height: 35,
-    padding: EdgeInsets.only(left: 25, right: 25, top: 8),
-    margin: EdgeInsets.only(right: 15),
+    height: 45,
+    padding: EdgeInsets.only(
+      left: 25,
+      right: 25,
+      top: 8,
+    ),
+    margin: EdgeInsets.only(right: 5, left: 5, bottom: 10),
     decoration: BoxDecoration(
       color: color,
       borderRadius: BorderRadius.all(
@@ -350,7 +354,8 @@ Widget buildPrice(
       Row(
         children: [
           icon == null ? Container() : icon,
-          Text(title, style: textBarlowRegularBlack(context)),
+          Text(MyLocalizations.of(context).getLocalizations(title ?? ""),
+              style: textBarlowRegularBlack(context)),
         ],
       ),
       isDeliveryChargeLoading
@@ -360,7 +365,39 @@ Widget buildPrice(
               : Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
-                    Text(value, style: textbarlowBoldsmBlack(context))
+                    Text(
+                        MyLocalizations.of(context)
+                            .getLocalizations(value ?? ""),
+                        style: textbarlowBoldsmBlack(context))
+                  ],
+                ),
+    ],
+  );
+}
+
+Widget buildPriceGreen(
+    BuildContext context, icon, title, value, isDeliveryChargeLoading) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: <Widget>[
+      Row(
+        children: [
+          icon == null ? Container() : icon,
+          Text(MyLocalizations.of(context).getLocalizations(title ?? ""),
+              style: textBarlowRegularBlack(context)),
+        ],
+      ),
+      isDeliveryChargeLoading
+          ? SquareLoader()
+          : value == null
+              ? Container()
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Text(
+                        MyLocalizations.of(context)
+                            .getLocalizations(value ?? ""),
+                        style: textbarlowBoldsmGreen(context))
                   ],
                 ),
     ],
@@ -397,11 +434,18 @@ Widget buildAddress(title, subTitle, context) {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Text(title, style: textBarlowRegularBlack(context)),
+        Text(MyLocalizations.of(context).getLocalizations(title ?? ""),
+            style: textBarlowRegularBlack(context)),
         subTitle == null
             ? Container()
-            : Text(subTitle, style: textBarlowRegularBlackdl(context)),
+            : Text(MyLocalizations.of(context).getLocalizations(subTitle ?? ""),
+                style: textBarlowRegularBlackdl(context)),
       ]);
+}
+
+Widget buildShippingMethodText(title, context) {
+  return Text(MyLocalizations.of(context).getLocalizations(title ?? ""),
+      style: textBarlowRegularBlack(context));
 }
 
 Widget timeZoneMessage(BuildContext context, title) {
@@ -577,6 +621,11 @@ Widget buildOrderDetilsText(BuildContext context, title, subTitle) {
   );
 }
 
+Widget buildOrderDetilsNormalText(BuildContext context, title) {
+  return Text(MyLocalizations.of(context).getLocalizations(title ?? ""),
+      style: textBarlowMediumGreen(context));
+}
+
 Widget buildOrderDetilsStatusText(BuildContext context, title, subTitle) {
   return GFTypography(
     showDivider: false,
@@ -593,14 +642,20 @@ Widget buildOrderDetilsStatusText(BuildContext context, title, subTitle) {
 }
 
 Widget textLightSmall(title, context) {
-  return Text(title, style: textSMBarlowRegularrBlack(context));
+  return Text(MyLocalizations.of(context).getLocalizations(title ?? ""),
+      style: textSMBarlowRegularrBlack(context));
 }
 
 Widget textMediumSmall(title, context) {
   return Text(title ?? "",
       overflow: TextOverflow.ellipsis,
       maxLines: 1,
-      style: textBarlowRegularrdark(context));
+      style: textBarlowRegularrGreen(context));
+}
+
+Widget textMediumSmallGreen(title, context) {
+  return Text(MyLocalizations.of(context).getLocalizations(title ?? ""),
+      style: textBarlowRegularrGreenS(context));
 }
 
 Widget priceMrpText(title, subtitle, context) {

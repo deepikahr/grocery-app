@@ -1066,6 +1066,15 @@ TextStyle textbarlowBoldsmBlack(context) {
   );
 }
 
+TextStyle textbarlowBoldsmGreen(context) {
+  return TextStyle(
+    fontSize: 15.0,
+    fontWeight: FontWeight.bold,
+    fontFamily: 'BarlowBold',
+    color: green,
+  );
+}
+
 TextStyle textbarlowBoldwhite(context) {
   return TextStyle(
     fontSize: 30.0,
@@ -1579,6 +1588,24 @@ TextStyle textBarlowRegularrdark(context) {
     fontFamily: 'BarlowRegular',
     fontWeight: FontWeight.w300,
     color: dark(context),
+  );
+}
+
+TextStyle textBarlowRegularrGreen(context) {
+  return TextStyle(
+    fontSize: 18.0,
+    fontFamily: 'BarlowRegular',
+    fontWeight: FontWeight.w300,
+    color: green,
+  );
+}
+
+TextStyle textBarlowRegularrGreenS(context) {
+  return TextStyle(
+    fontSize: 13.0,
+    fontFamily: 'BarlowRegular',
+    fontWeight: FontWeight.w300,
+    color: green,
   );
 }
 
