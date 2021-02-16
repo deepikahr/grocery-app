@@ -65,7 +65,7 @@ class _AddMoneyState extends State<AddMoney> {
       margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
       child: TextFormField(
         style: textBarlowRegularBlack(context),
-        keyboardType: TextInputType.text,
+        keyboardType: TextInputType.number,
         decoration: InputDecoration(
           errorBorder: OutlineInputBorder(
             borderSide: BorderSide(

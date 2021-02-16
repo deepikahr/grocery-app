@@ -192,7 +192,7 @@ class _DrawerPageState extends State<DrawerPage> {
                       title: "TERMS_CONDITIONS"),
                 ),
                 _buildMenuTileList(
-                  '',
+                  'lib/assets/icons/tc.png',
                   "SUBSCRIPTION",
                   route: AllSubscribed(
                     locale: widget.locale,
@@ -200,7 +200,7 @@ class _DrawerPageState extends State<DrawerPage> {
                   ),
                 ),
                 _buildMenuTileList(
-                  '',
+                  'lib/assets/icons/tc.png',
                   "SUBSCRIPTION_LIST",
                   route: SubScriptionList(
                     locale: widget.locale,

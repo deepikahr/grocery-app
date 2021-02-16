@@ -37,11 +37,11 @@ class _ReferralPageState extends State<ReferralPage> {
           SizedBox(height: 10),
           Container(
             margin: EdgeInsets.symmetric(horizontal: 25),
-            child: regularText(context, "REFERRAL_TEXT"),
+            child: regularText(context, "REFER_US_to a friend and get \$3 credited to your wallet, Your friends will receive the same amount on signing up as well."),
           ),
           SizedBox(height: 30),
           regularTextblack87(context, "REFERRAL_CODE"),
-          SizedBox(height: 5),
+          SizedBox(height: 8),
           Container(
             margin: EdgeInsets.symmetric(horizontal: 100),
             child: dottedBorderButtonn(context, "12345678"),
