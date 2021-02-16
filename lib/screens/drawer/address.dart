@@ -125,7 +125,7 @@ class _AddressState extends State<Address> {
     return Scaffold(
         backgroundColor: bg(context),
         key: _scaffoldKey,
-        appBar: appBarprimary(context, "ADDRESS"),
+        appBar: appBarPrimary(context, "ADDRESS"),
         body: addressLoading || isLocationLoading
             ? SquareLoader()
             : addressList.length == 0

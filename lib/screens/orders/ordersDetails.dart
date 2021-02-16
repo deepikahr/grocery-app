@@ -191,7 +191,7 @@ class _OrderDetailsState extends State<OrderDetails> {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarprimary(context, "ORDER_DETAILS"),
+      appBar: appBarPrimary(context, "ORDER_DETAILS"),
       body: isLoading
           ? SquareLoader()
           : orderHistory == null

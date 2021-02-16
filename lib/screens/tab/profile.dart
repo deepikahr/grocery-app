@@ -227,7 +227,7 @@ class _ProfileState extends State<Profile> {
           ? null
           : token == null
               ? null
-              : appBarprimary(context, "PROFILE"),
+              : appBarPrimary(context, "PROFILE"),
       body: isGetTokenLoading || isGetLanguagesListLoading
           ? SquareLoader()
           : token == null

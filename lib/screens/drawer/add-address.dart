@@ -130,7 +130,7 @@ class _AddAddressState extends State<AddAddress> {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarprimary(context, "ADD_NEW_ADDRESS"),
+      appBar: appBarPrimary(context, "ADD_NEW_ADDRESS"),
       body: Form(
         key: _formKey,
         child: ListView(

@@ -138,7 +138,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return new Scaffold(
       backgroundColor: bg(context),
-      appBar: appBarprimary(context, "CHAT"),
+      appBar: appBarPrimary(context, "CHAT"),
       body: isChatLoading || getUserDataLoading
           ? SquareLoader()
           : Stack(

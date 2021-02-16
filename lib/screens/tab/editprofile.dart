@@ -286,7 +286,7 @@ class _EditProfileState extends State<EditProfile> {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarprimary(context, "EDIT_PROFILE"),
+      appBar: appBarPrimary(context, "EDIT_PROFILE"),
       body: isLoading
           ? SquareLoader()
           : Form(

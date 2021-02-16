@@ -31,6 +31,7 @@ dependencies:
   pull_to_refresh: ^1.5.7
   url_launcher: ^5.4.5
   flutter_map_picker: ^0.1.2
+  stripe_payment: ^1.0.7
   flutter_dotenv: ^2.1.0
   http_interceptor: ^0.3.2
   fluttertoast: ^7.0.2
@@ -111,10 +112,18 @@ flutter:
     - lib/assets/images/rate.png
     - lib/assets/images/profileIcon.png
     - lib/assets/images/failed.png
+    - lib/assets/images/ref.png
+    - lib/assets/images/copy.png
+    - lib/assets/images/wapp.png
+    - lib/assets/images/sms.png
+    - lib/assets/icons/map.png
+    - lib/assets/images/copylink.png
+    - lib/assets/images/addMoney.png
 
     - lib/assets/icons/tick.svg
     - lib/assets/icons/editt.svg
     - lib/assets/icons/add1.svg
+    - lib/assets/icons/Refer.svg
 
     - lib/assets/icons/sale.png
     - lib/assets/icons/Home.png
@@ -131,6 +140,8 @@ flutter:
     - lib/assets/icons/share.png
     - lib/assets/icons/red.png
     - lib/assets/icons/green.png
+    - lib/assets/icons/back.png
+    - lib/assets/icons/front.png
 
     - lib/assets/splash.png
     - lib/assets/logo.png

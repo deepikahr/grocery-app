@@ -3,45 +3,39 @@ import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 
-Widget appBarprimary(BuildContext context, title) {
+Widget appBarPrimary(BuildContext context, title) {
   return GFAppBar(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
       ),
       title: Text(MyLocalizations.of(context).getLocalizations(title),
-          style: TextStyle(
-            fontSize: 17.0,
-            fontFamily: 'BarlowSemiBold',
-            color: Colors.black87,
-            fontWeight: FontWeight.w700,
-          )),
+          style: textbarlowSemiBoldBlack(context)),
       centerTitle: true,
       backgroundColor: primary(context),
-      iconTheme: IconThemeData(color: Colors.black87));
+      iconTheme: IconThemeData(color: Colors.black));
 }
 
-Widget appBarWhite(BuildContext context, String title, bool changeUi,
-    actionTrueOrFalse, Widget actionProcess,
-    {Widget titleWidget}) {
-  String tempTitle = '';
-  tempTitle = MyLocalizations.of(context).getLocalizations(title ?? "--");
+Widget appBarPrimarynoradius(BuildContext context, title) {
   return GFAppBar(
-    title: titleWidget != null
-        ? titleWidget
-        : changeUi
-            ? tempTitle.substring(0, 1).toUpperCase() +
-                tempTitle.substring(1, tempTitle.length)
-            : Text(
-                tempTitle.substring(0, 1).toUpperCase() +
-                    tempTitle.substring(1, tempTitle.length),
-                style: appbarText(context)),
+      title: Text(MyLocalizations.of(context).getLocalizations(title),
+          style: textbarlowSemiBoldBlack(context)),
+      centerTitle: true,
+      backgroundColor: primary(context),
+      iconTheme: IconThemeData(color: Colors.black));
+}
+
+Widget appBarWhite(BuildContext context, title, bool changeUi,
+    actionTrueOrFalse, Widget actionProcess) {
+  return GFAppBar(
+    title: changeUi
+        ? title
+        : Text(MyLocalizations.of(context).getLocalizations(title),
+            style: textbarlowSemiBoldBlack(context)),
     centerTitle: true,
-    backgroundColor: Theme.of(context).brightness == Brightness.dark
-        ? Color(0xFF1e2024)
-        : lightbg,
+    backgroundColor: bg(context),
     elevation: 0,
-    iconTheme: IconThemeData(color: dark(context)),
+    iconTheme: IconThemeData(color: Colors.black),
     actions: <Widget>[actionTrueOrFalse ? actionProcess : Container()],
   );
 }
@@ -49,15 +43,12 @@ Widget appBarWhite(BuildContext context, String title, bool changeUi,
 Widget appBarTransparent(BuildContext context, title) {
   return GFAppBar(
       title: Text(MyLocalizations.of(context).getLocalizations(title),
-          style: appbarText(context)),
+          style: textbarlowSemiBoldBlack(context)),
       centerTitle: true,
-      backgroundColor: Theme.of(context).brightness == Brightness.dark
-          ? Color(0xFF1e2024)
-          : Colors.transparent,
-      iconTheme: IconThemeData(color: dark(context)),
+      backgroundColor: Colors.transparent,
+      iconTheme: IconThemeData(color: Colors.black),
       elevation: 0);
 }
-
 Widget appBarTransparentWithoutBack(BuildContext context, title) {
   return GFAppBar(
       automaticallyImplyLeading: false,

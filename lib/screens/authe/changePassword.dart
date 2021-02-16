@@ -112,7 +112,7 @@ class _ChangePasswordState extends State<ChangePassword> {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarprimary(context, "CHANGE_PASSWORD"),
+      appBar: appBarPrimary(context, "CHANGE_PASSWORD"),
       body: Form(
         key: _formKey,
         child: Container(
