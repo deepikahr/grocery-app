@@ -30,6 +30,7 @@ class AllSubscribed extends StatefulWidget {
       this.productsList,
       this.currency,
       this.token});
+
   @override
   _AllSubscribedState createState() => _AllSubscribedState();
 }
@@ -45,6 +46,7 @@ class _AllSubscribedState extends State<AllSubscribed> {
       RefreshController(initialRefresh: false);
   ScrollController controller;
   ScrollController _scrollController = ScrollController();
+
   // int index = 0, totalIndex = 1;
   bool productListApiCall = false,
       isNewProductsLoading = false,
@@ -129,8 +131,9 @@ class _AllSubscribedState extends State<AllSubscribed> {
   }
 
   getProductListMethod(productIndex) async {
-    await ProductService.getProductListAll(productIndex, productLimt)
+    await ProductService.getSubscriptionList(productIndex, productLimt)
         .then((onValue) {
+      print(onValue['response_data'].toString());
       _refreshController.refreshCompleted();
       if (mounted) {
         setState(() {
@@ -156,6 +159,7 @@ class _AllSubscribedState extends State<AllSubscribed> {
         });
       }
     }).catchError((error) {
+      print(error.toString());
       if (mounted) {
         setState(() {
           productsList = [];
@@ -218,7 +222,6 @@ class _AllSubscribedState extends State<AllSubscribed> {
         });
       }
     }
-
     return Scaffold(
       backgroundColor: bg(context),
       appBar: appBarPrimarynoradius(
@@ -266,127 +269,128 @@ class _AllSubscribedState extends State<AllSubscribed> {
                     ),
                   ),
                 ),
-                subCategryList.length > 0
-                    ? Container(
-                        height: 70,
-                        child: Container(
-                          margin: EdgeInsets.only(left: 15, right: 15),
-                          height: 35,
-                          child: ListView.builder(
-                            padding: EdgeInsets.symmetric(vertical: 16),
-                            physics: ScrollPhysics(),
-                            scrollDirection: Axis.horizontal,
-                            shrinkWrap: true,
-                            itemCount: subCategryList.length == null
-                                ? 0
-                                : subCategryList.length,
-                            itemBuilder: (BuildContext context, int i) {
-                              if (subCategryList[i]['isSelected'] == null) {
-                                subCategryList[i]['isSelected'] = false;
-                              }
-                              return i == 0
-                                  ? Row(
-                                      children: <Widget>[
-                                        InkWell(
-                                            onTap: () {
-                                              subCategryByProduct = null;
-                                              if (mounted) {
-                                                setState(() {
-                                                  isSelected = true;
-                                                  isSelectedIndexZero = false;
-                                                  isSelectetedId = null;
-                                                  lastApiCall = true;
-                                                });
-                                              }
-
-                                              productsList = [];
-                                              productIndex =
-                                                  productsList.length;
-
-                                              getTokenValueMethod();
-                                            },
-                                            child: subCatTab(
-                                                context,
-                                                MyLocalizations.of(context)
-                                                    .getLocalizations("ALL"),
-                                                isSelected
-                                                    ? primary
-                                                    : Color(0xFFf0F0F0))),
-                                        InkWell(
-                                            onTap: () {
-                                              if (mounted) {
-                                                setState(() {
-                                                  isLoadingSubCatProductsList =
-                                                      true;
-                                                  isSelected = false;
-                                                  isSelectedIndexZero = true;
-                                                  isSelectetedId = null;
-                                                  currentSubCategoryId =
-                                                      subCategryList[0]['_id']
-                                                          .toString();
-                                                  subCategryByProduct = [];
-                                                  subCatProductIndex =
-                                                      subCategryByProduct
-                                                          .length;
-                                                  isLoadingSubCatProductsList =
-                                                      true;
-                                                });
-                                              }
-
-                                              getProductToSubCategory(
-                                                  subCategryList[0]['_id']
-                                                      .toString(),
-                                                  subCatProductIndex);
-                                            },
-                                            child: subCatTab(
-                                                context,
-                                                '${subCategryList[0]['title'][0].toUpperCase()}${subCategryList[0]['title'].substring(1)}',
-                                                isSelectedIndexZero
-                                                    ? primary
-                                                    : Color(0xFFf0F0F0)))
-                                      ],
-                                    )
-                                  : InkWell(
-                                      onTap: () {
-                                        if (mounted) {
-                                          setState(() {
-                                            isSelected = false;
-                                            isSelectedIndexZero = false;
-                                            isLoadingSubCatProductsList = true;
-                                            currentSubCategoryId =
-                                                subCategryList[i]['_id']
-                                                    .toString();
-                                            isSelectetedId =
-                                                subCategryList[i]['_id'];
-                                            subCategryByProduct = [];
-                                            subCatProductIndex =
-                                                subCategryByProduct.length;
-                                            isLoadingSubCatProductsList = true;
-                                          });
-                                        }
-
-                                        getProductToSubCategory(
-                                            subCategryList[i]['_id'].toString(),
-                                            subCatProductIndex);
-                                      },
-                                      child: subCatTab(
-                                          context,
-                                          '${subCategryList[i]['title'][0].toUpperCase()}${subCategryList[i]['title'].substring(1)}',
-                                          isSelectetedId ==
-                                                  subCategryList[i]['_id']
-                                              ? primary
-                                              : Color(0xFFf0F0F0)));
-                            },
-                          ),
-                        ),
-                      )
-                    : Container(),
+                // subCategryList.length > 0
+                //     ? Container(
+                //         height: 70,
+                //         child: Container(
+                //           margin: EdgeInsets.only(left: 15, right: 15),
+                //           height: 35,
+                //           child: ListView.builder(
+                //             padding: EdgeInsets.symmetric(vertical: 16),
+                //             physics: ScrollPhysics(),
+                //             scrollDirection: Axis.horizontal,
+                //             shrinkWrap: true,
+                //             itemCount: subCategryList.length == null
+                //                 ? 0
+                //                 : subCategryList.length,
+                //             itemBuilder: (BuildContext context, int i) {
+                //               if (subCategryList[i]['isSelected'] == null) {
+                //                 subCategryList[i]['isSelected'] = false;
+                //               }
+                //               return i == 0
+                //                   ? Row(
+                //                       children: <Widget>[
+                //                         InkWell(
+                //                             onTap: () {
+                //                               subCategryByProduct = null;
+                //                               if (mounted) {
+                //                                 setState(() {
+                //                                   isSelected = true;
+                //                                   isSelectedIndexZero = false;
+                //                                   isSelectetedId = null;
+                //                                   lastApiCall = true;
+                //                                 });
+                //                               }
+                //
+                //                               productsList = [];
+                //                               productIndex =
+                //                                   productsList.length;
+                //
+                //                               getTokenValueMethod();
+                //                             },
+                //                             child: subCatTab(
+                //                                 context,
+                //                                 MyLocalizations.of(context)
+                //                                     .getLocalizations("ALL"),
+                //                                 isSelected
+                //                                     ? primary
+                //                                     : Color(0xFFf0F0F0))),
+                //                         InkWell(
+                //                             onTap: () {
+                //                               if (mounted) {
+                //                                 setState(() {
+                //                                   isLoadingSubCatProductsList =
+                //                                       true;
+                //                                   isSelected = false;
+                //                                   isSelectedIndexZero = true;
+                //                                   isSelectetedId = null;
+                //                                   currentSubCategoryId =
+                //                                       subCategryList[0]['_id']
+                //                                           .toString();
+                //                                   subCategryByProduct = [];
+                //                                   subCatProductIndex =
+                //                                       subCategryByProduct
+                //                                           .length;
+                //                                   isLoadingSubCatProductsList =
+                //                                       true;
+                //                                 });
+                //                               }
+                //
+                //                               getProductToSubCategory(
+                //                                   subCategryList[0]['_id']
+                //                                       .toString(),
+                //                                   subCatProductIndex);
+                //                             },
+                //                             child: subCatTab(
+                //                                 context,
+                //                                 '${subCategryList[0]['title'][0].toUpperCase()}${subCategryList[0]['title'].substring(1)}',
+                //                                 isSelectedIndexZero
+                //                                     ? primary
+                //                                     : Color(0xFFf0F0F0)))
+                //                       ],
+                //                     )
+                //                   : InkWell(
+                //                       onTap: () {
+                //                         if (mounted) {
+                //                           setState(() {
+                //                             isSelected = false;
+                //                             isSelectedIndexZero = false;
+                //                             isLoadingSubCatProductsList = true;
+                //                             currentSubCategoryId =
+                //                                 subCategryList[i]['_id']
+                //                                     .toString();
+                //                             isSelectetedId =
+                //                                 subCategryList[i]['_id'];
+                //                             subCategryByProduct = [];
+                //                             subCatProductIndex =
+                //                                 subCategryByProduct.length;
+                //                             isLoadingSubCatProductsList = true;
+                //                           });
+                //                         }
+                //
+                //                         getProductToSubCategory(
+                //                             subCategryList[i]['_id'].toString(),
+                //                             subCatProductIndex);
+                //                       },
+                //                       child: subCatTab(
+                //                           context,
+                //                           '${subCategryList[i]['title'][0].toUpperCase()}${subCategryList[i]['title'].substring(1)}',
+                //                           isSelectetedId ==
+                //                                   subCategryList[i]['_id']
+                //                               ? primary
+                //                               : Color(0xFFf0F0F0)));
+                //             },
+                //           ),
+                //         ),
+                //       )
+                //     : Container(),
                 isLoadingSubCatProductsList
                     ? SquareLoader()
                     : subCategryByProduct != null
                         ? Container(
                             height: MediaQuery.of(context).size.height - 180,
                             child: ListView(
+                              shrinkWrap: true,
                               children: <Widget>[
                                 Stack(
                                   children: <Widget>[
@@ -495,62 +499,69 @@ class _AllSubscribedState extends State<AllSubscribed> {
                               ],
                             ),
                           )
-                        : Padding(
-                            padding:
-                                EdgeInsets.only(left: 15, right: 15, top: 15),
-                            child: GridView.builder(
-                              padding: EdgeInsets.only(bottom: 25),
-                              physics: ScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: productsList.length == null
-                                  ? 0
-                                  : productsList.length,
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2,
-                                      childAspectRatio:
-                                          MediaQuery.of(context).size.width /
-                                              609,
-                                      crossAxisSpacing: 16,
-                                      mainAxisSpacing: 16),
-                              itemBuilder: (BuildContext context, int i) {
-                                if (productsList[i]['averageRating'] == null) {
-                                  productsList[i]['averageRating'] = 0;
-                                }
+                        : Column(
+                            children: [
+                              Text(productsList.first.toString()),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    left: 15, right: 15, top: 15),
+                                child: GridView.builder(
+                                  padding: EdgeInsets.only(bottom: 25),
+                                  physics: ScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: productsList.length == null
+                                      ? 0
+                                      : productsList.length,
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 2,
+                                          childAspectRatio:
+                                              MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  609,
+                                          crossAxisSpacing: 16,
+                                          mainAxisSpacing: 16),
+                                  itemBuilder: (BuildContext context, int i) {
+                                    if (productsList[i]['averageRating'] ==
+                                        null) {
+                                      productsList[i]['averageRating'] = 0;
+                                    }
 
-                                return productsList[i]['outOfStock'] != null ||
-                                        productsList[i]['outOfStock'] != false
-                                    ? InkWell(
-                                        onTap: () {
-                                          var result = Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ProductDetails(
-                                                locale: widget.locale,
-                                                localizedValues:
-                                                    widget.localizedValues,
-                                                productID: productsList[i]
-                                                    ['_id'],
-                                              ),
-                                            ),
-                                          );
-                                          result.then((value) {
-                                            if (value != null) {
-                                              if (mounted) {
-                                                setState(() {
-                                                  isNewProductsLoading = true;
-                                                });
-                                              }
-                                              productIndex = 0;
-                                              productsList = [];
-                                              getTokenValueMethod();
-                                            }
-                                          });
-                                        },
-                                        child: Stack(
-                                          children: <Widget>[
-                                            SubscriptionCard(
+                                    return productsList[i]['outOfStock'] !=
+                                                null ||
+                                            productsList[i]['outOfStock'] !=
+                                                false
+                                        ? InkWell(
+                                            onTap: () {
+                                              var result = Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ProductDetails(
+                                                    locale: widget.locale,
+                                                    localizedValues:
+                                                        widget.localizedValues,
+                                                    productID: productsList[i]
+                                                        ['_id'],
+                                                  ),
+                                                ),
+                                              );
+                                              result.then((value) {
+                                                if (value != null) {
+                                                  if (mounted) {
+                                                    setState(() {
+                                                      isNewProductsLoading =
+                                                          true;
+                                                    });
+                                                  }
+                                                  productIndex = 0;
+                                                  productsList = [];
+                                                  getTokenValueMethod();
+                                                }
+                                              });
+                                            },
+                                            child: SubscriptionCard(
                                               currency: currency,
                                               price: productsList[i]['variant']
                                                   [0]['price'],
@@ -559,35 +570,25 @@ class _AllSubscribedState extends State<AllSubscribed> {
                                                   ['variant'],
                                               isHome: false,
                                             ),
-                                            productsList[i]
-                                                        ['isDealAvailable'] ==
-                                                    true
-                                                ? buildBadge(
-                                                    context,
-                                                    productsList[i]
-                                                            ['dealPercent']
-                                                        .toString(),
-                                                    "OFF")
-                                                : Container()
-                                          ],
-                                        ),
-                                      )
-                                    : Stack(
-                                        children: <Widget>[
-                                          SubscriptionCard(
-                                            currency: currency,
-                                            price: productsList[i]['variant'][0]
-                                                ['price'],
-                                            productData: productsList[i],
-                                            variantList: productsList[i]
-                                                ['variant'],
-                                            isHome: false,
-                                          ),
-                                          CardOverlay()
-                                        ],
-                                      );
-                              },
-                            ),
+                                          )
+                                        : Stack(
+                                            children: <Widget>[
+                                              SubscriptionCard(
+                                                currency: currency,
+                                                price: productsList[i]
+                                                    ['variant'][0]['price'],
+                                                productData: productsList[i],
+                                                variantList: productsList[i]
+                                                    ['variant'],
+                                                isHome: false,
+                                              ),
+                                              CardOverlay()
+                                            ],
+                                          );
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
               ]),
       ),

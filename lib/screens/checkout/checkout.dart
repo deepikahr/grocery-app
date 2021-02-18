@@ -1050,7 +1050,6 @@ class _CheckoutState extends State<Checkout> {
                                                   currentLocation =
                                                       await _location
                                                           .getLocation();
-
                                                   if (currentLocation != null) {
                                                     Map locationLatLong = {
                                                       "latitude":

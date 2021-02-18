@@ -41,7 +41,7 @@ class SubscriptionCard extends StatefulWidget {
 
 class _SubscriptionCardState extends State<SubscriptionCard> {
   bool cardAdded = false, isAddInProgress = false, isQuantityUpdating = false;
-  var variantPrice, variantUnit, dealPercentage;
+  var variantPrice, variantUnit;
   String cartId, quantityChangeType = '+';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -51,18 +51,6 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
       cardAdded = widget.productData['isAddedToCart'];
     } else {
       cardAdded = false;
-    }
-
-    if (widget.productData['isDealAvailable'] != null &&
-        widget.productData['isDealAvailable'] == true) {
-      if (widget.productData['dealPercent'] != null) {
-        dealPercentage =
-            double.parse(widget.productData['dealPercent'].toStringAsFixed(1));
-      } else {
-        dealPercentage = null;
-      }
-    } else {
-      dealPercentage = null;
     }
 
     widget.productData['quantityToCart'] =
@@ -193,401 +181,278 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
               height: 390,
               child: Column(
                 children: <Widget>[
-                  ClipRRect(
-                    borderRadius:
-                        const BorderRadius.vertical(top: Radius.circular(12)),
-                    child: (widget.productData['productImages'] != null &&
-                            widget.productData['productImages'].length > 0)
-                        ? CachedNetworkImage(
-                            imageUrl: widget.productData['productImages'][0]
-                                        ['filePath'] !=
-                                    null
-                                ? Constants.imageUrlPath +
-                                    "/tr:dpr-auto,tr:w-500" +
-                                    widget.productData['productImages'][0]
-                                        ['filePath']
-                                : widget.productData['productImages'][0]
-                                    ['imageUrl'],
-                            imageBuilder: (context, imageProvider) => Container(
-                              width: MediaQuery.of(context).size.width * 0.5,
-                              height: 95,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: imageProvider, fit: BoxFit.cover),
-                              ),
-                            ),
-                            placeholder: (context, url) => Container(
-                                width: MediaQuery.of(context).size.width * 0.5,
-                                height: 95,
-                                child: noDataImage()),
-                            errorWidget: (context, url, error) => Container(
-                                width: MediaQuery.of(context).size.width * 0.5,
-                                height: 95,
-                                child: noDataImage()),
-                          )
-                        : CachedNetworkImage(
-                            imageUrl: widget.productData['filePath'] != null
-                                ? Constants.imageUrlPath +
-                                    "/tr:dpr-auto,tr:w-500" +
-                                    widget.productData['filePath']
-                                : widget.productData['imageUrl'],
-                            imageBuilder: (context, imageProvider) => Container(
-                              width: MediaQuery.of(context).size.width * 0.5,
-                              height: 95,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: imageProvider, fit: BoxFit.cover),
-                              ),
-                            ),
-                            placeholder: (context, url) => Container(
-                                width: MediaQuery.of(context).size.width * 0.5,
-                                height: 95,
-                                child: noDataImage()),
-                            errorWidget: (context, url, error) => Container(
-                                width: MediaQuery.of(context).size.width * 0.5,
-                                height: 95,
-                                child: noDataImage()),
-                          ),
-                  ),
+                  buildImageView(),
                   Container(
                     child: Padding(
                       padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Expanded(
-                                  child: buildProductTitle(
-                                      '${widget.productData['title'][0].toUpperCase()}${widget.productData['title'].substring(1)}',
-                                      context)),
-                              textGreenPrimary(
-                                  '${variantUnit == null ? widget.productData['variant'][0]['unit'] : variantUnit}',
-                                  barlowregularlack(context)),
-                            ],
-                          ),
-                          Center(
-                              child: Text(
-                            'Sed ut perspiciatis unde omnis iste natus error sit.',
-                            style: textbarlowRegularBlackd(context),
-                          )),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              priceMrpText(
-                                  dealPercentage == null
-                                      ? '${widget.currency}${(variantPrice == null ? widget.price : variantPrice).toDouble().toStringAsFixed(2)}'
-                                      : '${widget.currency}${((variantPrice == null ? widget.price : variantPrice) - ((variantPrice == null ? widget.price : variantPrice) * (dealPercentage / 100))).toDouble().toStringAsFixed(2)}',
-                                  dealPercentage != null
-                                      ? '${widget.currency}${(variantPrice == null ? widget.price : variantPrice).toDouble().toStringAsFixed(2)}'
-                                      : null,
-                                  context),
-                              SizedBox(width: 3),
-                              Container(
-                                height: 19,
-                                decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(2)),
-                                  color: Color(0xFF20C978),
-                                ),
-                                padding: EdgeInsets.only(left: 5, right: 5),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: <Widget>[
-                                    Text(
-                                        widget.productData['averageRating']
-                                            .toStringAsFixed(1),
-                                        style: textBarlowregwhite(context)),
-                                    Icon(Icons.star,
-                                        color: Colors.white, size: 10),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
+                          buildTitleView(),
+                          buildPriceView(),
                           SizedBox(height: 3),
                           Container(
                             height: 35,
                             child: InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => SubscriptionPage()),
-                                );
-                              },
+                              onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SubscriptionPage(
+                                          currency: widget.currency,
+                                          localizedValues:
+                                              widget.localizedValues,
+                                          locale: widget.locale,
+                                          productData: widget.productData,
+                                        )),
+                              ),
                               child: subscribeButton(
-                                  context, "Subscribe @ \$7", isAddInProgress),
+                                  context,
+                                  "${MyLocalizations.of(context).getLocalizations("SUBSCRIBE")} @ \$${widget.productData['variant'][0]['subScriptionAmount']}",
+                                  isAddInProgress),
                             ),
                           ),
                           SizedBox(height: 4),
-                          widget.isHome
-                              ? Container()
-                              : !cardAdded
-                                  ? InkWell(
-                                      onTap: () async {
-                                        if (widget.variantList.length > 1) {
-                                          if (widget.productData != null &&
-                                              widget.variantList != null) {
-                                            var bottomSheet =
-                                                showModalBottomSheet(
-                                                    context: context,
-                                                    builder: (BuildContext bc) {
-                                                      return BottonSheetClassDryClean(
-                                                          locale: widget.locale,
-                                                          localizedValues: widget
-                                                              .localizedValues,
-                                                          currency:
-                                                              widget.currency,
-                                                          productData: widget
-                                                              .productData,
-                                                          dealPercentage:
-                                                              dealPercentage,
-                                                          variantsList: widget
-                                                              .variantList,
-                                                          productQuantity: widget
-                                                                  .productData[
-                                                              'quantityToCart']);
+                          !cardAdded
+                              ? InkWell(
+                                  onTap: () async {
+                                    if (widget.variantList.length > 1) {
+                                      if (widget.productData != null &&
+                                          widget.variantList != null) {
+                                        var bottomSheet = showModalBottomSheet(
+                                            context: context,
+                                            builder: (BuildContext bc) {
+                                              return BottonSheetClassDryClean(
+                                                  locale: widget.locale,
+                                                  localizedValues:
+                                                      widget.localizedValues,
+                                                  currency: widget.currency,
+                                                  productData:
+                                                      widget.productData,
+                                                  variantsList:
+                                                      widget.variantList,
+                                                  productQuantity:
+                                                      widget.productData[
+                                                          'quantityToCart']);
+                                            });
+                                        bottomSheet.then((onValue) {
+                                          if (onValue != null) {
+                                            for (int i = 0;
+                                                i < onValue['products'].length;
+                                                i++) {
+                                              if (widget.productData["_id"] ==
+                                                  onValue['products'][i]
+                                                      ["productId"]) {
+                                                if (mounted) {
+                                                  setState(() {
+                                                    widget.productData[
+                                                            'quantityToCart'] =
+                                                        onValue['products'][i]
+                                                            ['quantity'];
+                                                    variantPrice =
+                                                        onValue['products'][i]
+                                                            ['price'];
+                                                    cartId = onValue['_id'];
+                                                    variantUnit =
+                                                        onValue['products'][i]
+                                                            ['unit'];
+                                                    cardAdded = true;
+                                                  });
+                                                }
+                                              }
+                                            }
+                                          }
+                                        });
+                                      }
+                                    } else {
+                                      await Common.getToken().then((onValue) {
+                                        if (onValue != null) {
+                                          if (mounted) {
+                                            setState(() {
+                                              if (widget.variantList[0]
+                                                      ['productStock'] >
+                                                  widget.productData[
+                                                      'quantityToCart']) {
+                                                if (!isAddInProgress) {
+                                                  Map<String, dynamic>
+                                                      productAddBody = {
+                                                    'productId': widget
+                                                        .productData['_id']
+                                                        .toString(),
+                                                    'quantity': 1,
+                                                    "unit": widget
+                                                        .variantList[0]['unit']
+                                                        .toString()
+                                                  };
+                                                  setState(() {
+                                                    isAddInProgress = true;
+                                                  });
+                                                  AddToCart
+                                                          .addAndUpdateProductMethod(
+                                                              productAddBody)
+                                                      .then((onValue) {
+                                                    if (onValue['response_data']
+                                                        is Map) {
+                                                      Common.setCartData(
+                                                          onValue[
+                                                              'response_data']);
+                                                    } else {
+                                                      Common.setCartData(null);
+                                                    }
+                                                    for (int i = 0;
+                                                        i <
+                                                            onValue['response_data']
+                                                                    ['products']
+                                                                .length;
+                                                        i++) {
+                                                      if (widget.productData[
+                                                              "_id"] ==
+                                                          onValue['response_data']
+                                                                  ['products'][
+                                                              i]["productId"]) {
+                                                        if (mounted) {
+                                                          setState(() {
+                                                            widget.productData[
+                                                                'quantityToCart'] = onValue[
+                                                                        'response_data']
+                                                                    ['products']
+                                                                [i]['quantity'];
+
+                                                            variantPrice = onValue[
+                                                                        'response_data']
+                                                                    ['products']
+                                                                [i]['price'];
+                                                            variantUnit = onValue[
+                                                                        'response_data']
+                                                                    ['products']
+                                                                [i]['unit'];
+
+                                                            cardAdded = true;
+                                                          });
+                                                        }
+                                                      }
+                                                    }
+                                                    setState(() {
+                                                      isAddInProgress = false;
                                                     });
-                                            bottomSheet.then((onValue) {
-                                              if (onValue != null) {
-                                                for (int i = 0;
-                                                    i <
-                                                        onValue['products']
-                                                            .length;
-                                                    i++) {
-                                                  if (widget
-                                                          .productData["_id"] ==
-                                                      onValue['products'][i]
-                                                          ["productId"]) {
+                                                  }).catchError((error) {
                                                     if (mounted) {
                                                       setState(() {
-                                                        widget.productData[
-                                                                'quantityToCart'] =
-                                                            onValue['products']
-                                                                [i]['quantity'];
-                                                        variantPrice =
-                                                            onValue['products']
-                                                                [i]['price'];
-                                                        cartId = onValue['_id'];
-                                                        variantUnit =
-                                                            onValue['products']
-                                                                [i]['unit'];
-                                                        cardAdded = true;
+                                                        isAddInProgress = false;
                                                       });
                                                     }
-                                                  }
+                                                  });
                                                 }
+                                              } else {
+                                                showSnackbar(MyLocalizations.of(
+                                                            context)
+                                                        .getLocalizations(
+                                                            "LIMITED_STOCK") +
+                                                    " ${widget.variantList[0]['productStock']} " +
+                                                    MyLocalizations.of(context)
+                                                        .getLocalizations(
+                                                            "OF_THIS_ITEM"));
                                               }
                                             });
                                           }
                                         } else {
-                                          await Common.getToken()
-                                              .then((onValue) {
-                                            if (onValue != null) {
-                                              if (mounted) {
-                                                setState(() {
-                                                  if (widget.variantList[0]
-                                                          ['productStock'] >
-                                                      widget.productData[
-                                                          'quantityToCart']) {
-                                                    if (!isAddInProgress) {
-                                                      Map<String, dynamic>
-                                                          productAddBody = {
-                                                        'productId': widget
-                                                            .productData['_id']
-                                                            .toString(),
-                                                        'quantity': 1,
-                                                        "unit": widget
-                                                            .variantList[0]
-                                                                ['unit']
-                                                            .toString()
-                                                      };
-                                                      setState(() {
-                                                        isAddInProgress = true;
-                                                      });
-                                                      AddToCart.addAndUpdateProductMethod(
-                                                              productAddBody)
-                                                          .then((onValue) {
-                                                        if (onValue[
-                                                                'response_data']
-                                                            is Map) {
-                                                          Common.setCartData(
-                                                              onValue[
-                                                                  'response_data']);
-                                                        } else {
-                                                          Common.setCartData(
-                                                              null);
-                                                        }
-                                                        for (int i = 0;
-                                                            i <
-                                                                onValue['response_data']
-                                                                        [
-                                                                        'products']
-                                                                    .length;
-                                                            i++) {
-                                                          if (widget.productData[
-                                                                  "_id"] ==
-                                                              onValue['response_data']
-                                                                      [
-                                                                      'products'][i]
-                                                                  [
-                                                                  "productId"]) {
-                                                            if (mounted) {
-                                                              setState(() {
-                                                                widget.productData[
-                                                                    'quantityToCart'] = onValue[
-                                                                            'response_data']
-                                                                        [
-                                                                        'products'][i]
-                                                                    [
-                                                                    'quantity'];
-
-                                                                variantPrice = onValue[
-                                                                            'response_data']
-                                                                        [
-                                                                        'products']
-                                                                    [
-                                                                    i]['price'];
-                                                                variantUnit = onValue[
-                                                                            'response_data']
-                                                                        [
-                                                                        'products']
-                                                                    [i]['unit'];
-
-                                                                cardAdded =
-                                                                    true;
-                                                              });
-                                                            }
-                                                          }
-                                                        }
-                                                        setState(() {
-                                                          isAddInProgress =
-                                                              false;
-                                                        });
-                                                      }).catchError((error) {
-                                                        if (mounted) {
-                                                          setState(() {
-                                                            isAddInProgress =
-                                                                false;
-                                                          });
-                                                        }
-                                                      });
-                                                    }
-                                                  } else {
-                                                    showSnackbar(MyLocalizations
-                                                                .of(context)
-                                                            .getLocalizations(
-                                                                "LIMITED_STOCK") +
-                                                        " ${widget.variantList[0]['productStock']} " +
-                                                        MyLocalizations.of(
-                                                                context)
-                                                            .getLocalizations(
-                                                                "OF_THIS_ITEM"));
-                                                  }
-                                                });
-                                              }
-                                            } else {
-                                              if (mounted) {
-                                                setState(() {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (BuildContext
-                                                              context) =>
+                                          if (mounted) {
+                                            setState(() {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder:
+                                                      (BuildContext context) =>
                                                           Login(
-                                                        locale: widget.locale,
-                                                        localizedValues: widget
-                                                            .localizedValues,
-                                                        isBottomSheet: true,
-                                                      ),
-                                                    ),
-                                                  );
-                                                });
-                                              }
-                                            }
-                                          });
+                                                    locale: widget.locale,
+                                                    localizedValues:
+                                                        widget.localizedValues,
+                                                    isBottomSheet: true,
+                                                  ),
+                                                ),
+                                              );
+                                            });
+                                          }
                                         }
-                                      },
-                                      child: Container(
-                                        height: 35,
-                                        child: productAddButton(
-                                            context, "ADD", isAddInProgress),
+                                      });
+                                    }
+                                  },
+                                  child: Container(
+                                    height: 35,
+                                    child: productAddButton(
+                                        context, "ADD", isAddInProgress),
+                                  ),
+                                )
+                              : Container(
+                                  height: 35,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(5),
                                       ),
-                                    )
-                                  : Container(
-                                      height: 35,
-                                      decoration: BoxDecoration(
+                                      color: Color(0XFFF0F0F0)),
+                                  padding: EdgeInsets.only(),
+                                  margin: EdgeInsets.only(top: 5),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Container(
+                                        width: 32,
+                                        height: 32,
+                                        decoration: BoxDecoration(
+                                          color: isQuantityUpdating &&
+                                                  quantityChangeType == '-'
+                                              ? Colors.grey.shade100
+                                              : Colors.black,
                                           borderRadius: BorderRadius.all(
-                                            Radius.circular(5),
-                                          ),
-                                          color: Color(0XFFF0F0F0)),
-                                      padding: EdgeInsets.only(),
-                                      margin: EdgeInsets.only(top: 5),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Container(
-                                            width: 32,
-                                            height: 32,
-                                            decoration: BoxDecoration(
-                                              color: isQuantityUpdating &&
-                                                      quantityChangeType == '-'
-                                                  ? Colors.grey.shade100
-                                                  : Colors.black,
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(5)),
-                                            ),
-                                            child: InkWell(
-                                              onTap: () {
-                                                if (!isQuantityUpdating) {
-                                                  quantityChangeType = '-';
-                                                  _changeProductQuantity(false);
-                                                }
-                                              },
-                                              child: isQuantityUpdating &&
-                                                      quantityChangeType == '-'
-                                                  ? GFLoader(
-                                                      type: GFLoaderType.ios,
-                                                      size: 35,
-                                                    )
-                                                  : Icon(Icons.remove,
-                                                      color: primary(context)),
-                                            ),
-                                          ),
-                                          titleTwoLine(
-                                              widget
-                                                  .productData['quantityToCart']
-                                                  .toString(),
-                                              context),
-                                          Container(
-                                            width: 32,
-                                            height: 32,
-                                            decoration: BoxDecoration(
-                                              color: primary(context),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(5)),
-                                            ),
-                                            child: InkWell(
-                                              onTap: () {
-                                                if (!isQuantityUpdating) {
-                                                  quantityChangeType = '+';
-                                                  _changeProductQuantity(true);
-                                                }
-                                              },
-                                              child: isQuantityUpdating &&
-                                                      quantityChangeType == '+'
-                                                  ? GFLoader(
-                                                      type: GFLoaderType.ios,
-                                                      size: 35)
-                                                  : Icon(Icons.add),
-                                            ),
-                                          ),
-                                        ],
+                                              Radius.circular(5)),
+                                        ),
+                                        child: InkWell(
+                                          onTap: () {
+                                            if (!isQuantityUpdating) {
+                                              quantityChangeType = '-';
+                                              _changeProductQuantity(false);
+                                            }
+                                          },
+                                          child: isQuantityUpdating &&
+                                                  quantityChangeType == '-'
+                                              ? GFLoader(
+                                                  type: GFLoaderType.ios,
+                                                  size: 35,
+                                                )
+                                              : Icon(Icons.remove,
+                                                  color: primary(context)),
+                                        ),
                                       ),
-                                    ),
+                                      titleTwoLine(
+                                          widget.productData['quantityToCart']
+                                              .toString(),
+                                          context),
+                                      Container(
+                                        width: 32,
+                                        height: 32,
+                                        decoration: BoxDecoration(
+                                          color: primary(context),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(5)),
+                                        ),
+                                        child: InkWell(
+                                          onTap: () {
+                                            if (!isQuantityUpdating) {
+                                              quantityChangeType = '+';
+                                              _changeProductQuantity(true);
+                                            }
+                                          },
+                                          child: isQuantityUpdating &&
+                                                  quantityChangeType == '+'
+                                              ? GFLoader(
+                                                  type: GFLoaderType.ios,
+                                                  size: 35)
+                                              : Icon(Icons.add),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                         ],
                       ),
                     ),
@@ -606,4 +471,97 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
     );
     _scaffoldKey.currentState.showSnackBar(snackBar);
   }
+
+  buildImageView() => ClipRRect(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+        child: (widget.productData['productImages'] != null &&
+                widget.productData['productImages'].length > 0)
+            ? CachedNetworkImage(
+                imageUrl:
+                    widget.productData['productImages'][0]['filePath'] != null
+                        ? Constants.imageUrlPath +
+                            "/tr:dpr-auto,tr:w-500" +
+                            widget.productData['productImages'][0]['filePath']
+                        : widget.productData['productImages'][0]['imageUrl'],
+                imageBuilder: (context, imageProvider) => Container(
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  height: 95,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: imageProvider, fit: BoxFit.cover),
+                  ),
+                ),
+                placeholder: (context, url) => Container(
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    height: 95,
+                    child: noDataImage()),
+                errorWidget: (context, url, error) => Container(
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    height: 95,
+                    child: noDataImage()),
+              )
+            : CachedNetworkImage(
+                imageUrl: widget.productData['filePath'] != null
+                    ? Constants.imageUrlPath +
+                        "/tr:dpr-auto,tr:w-500" +
+                        widget.productData['filePath']
+                    : widget.productData['imageUrl'],
+                imageBuilder: (context, imageProvider) => Container(
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  height: 95,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: imageProvider, fit: BoxFit.cover),
+                  ),
+                ),
+                placeholder: (context, url) => Container(
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    height: 95,
+                    child: noDataImage()),
+                errorWidget: (context, url, error) => Container(
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    height: 95,
+                    child: noDataImage()),
+              ),
+      );
+
+  buildTitleView() => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Expanded(
+              child: buildProductTitle(
+                  '${widget.productData['title'][0].toUpperCase()}${widget.productData['title'].substring(1)}',
+                  context)),
+          textGreenPrimary(
+              '${variantUnit == null ? widget.productData['variant'][0]['unit'] : variantUnit}',
+              barlowregularlack(context)),
+        ],
+      );
+
+  buildPriceView() => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          priceMrpText(
+              '${widget.currency}${(variantPrice == null ? widget.price : variantPrice).toDouble().toStringAsFixed(2)}',
+              null,
+              context),
+          SizedBox(width: 3),
+          Container(
+            height: 19,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(2)),
+              color: Color(0xFF20C978),
+            ),
+            padding: EdgeInsets.only(left: 5, right: 5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                Text(widget.productData['averageRating'].toStringAsFixed(1),
+                    style: textBarlowregwhite(context)),
+                Icon(Icons.star, color: Colors.white, size: 10),
+              ],
+            ),
+          )
+        ],
+      );
 }

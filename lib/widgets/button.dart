@@ -109,8 +109,7 @@ Widget regularGreyButton(BuildContext context, title) {
   );
 }
 
-Widget productAddButton(BuildContext context, title, isLoading) {
-  return Container(
+Widget productAddButton(BuildContext context, title, isLoading) => Container(
     height: 35,
     padding: EdgeInsets.only(left: 15, right: 15, bottom: 5),
     margin: EdgeInsets.only(top: 5),
@@ -135,12 +134,11 @@ Widget productAddButton(BuildContext context, title, isLoading) {
       ),
     ),
   );
-}
 
 Widget subscribeButton(BuildContext context, title, isLoading) {
   return Container(
     height: 35,
-    padding: EdgeInsets.only(left: 15, right: 15, bottom: 5),
+    padding: EdgeInsets.only(left: 8, right: 8, bottom: 5),
     margin: EdgeInsets.only(top: 5),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.all(

@@ -130,13 +130,11 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   @override
   void dispose() {
     if (_scrollController != null) _scrollController.dispose();
-
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
+  Widget build(BuildContext context) => new Scaffold(
       backgroundColor: bg(context),
       appBar: appBarPrimary(context, "CHAT"),
       body: isChatLoading || getUserDataLoading
@@ -224,7 +222,6 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
               ],
             ),
     );
-  }
 
   void _submitMsg(String txt) async {
     Timer(Duration(milliseconds: 300), () {
