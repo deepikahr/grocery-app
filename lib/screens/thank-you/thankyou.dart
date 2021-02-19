@@ -6,9 +6,11 @@ import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 class Thankyou extends StatefulWidget {
+  Thankyou({Key key, this.locale, this.localizedValues});
+
   final Map localizedValues;
   final String locale;
-  Thankyou({Key key, this.locale, this.localizedValues});
+
   @override
   _ThankyouState createState() => _ThankyouState();
 }

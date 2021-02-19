@@ -9,6 +9,7 @@ import 'package:location/location.dart';
 import 'package:readymadeGroceryApp/screens/drawer/add-address.dart';
 import 'package:readymadeGroceryApp/screens/drawer/edit-address.dart';
 import 'package:readymadeGroceryApp/service/address-service.dart';
+import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
@@ -16,6 +17,7 @@ import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
+import 'package:readymadeGroceryApp/widgets/utils.dart';
 import '../../service/sentry-service.dart';
 
 SentryError sentryError = new SentryError();
@@ -72,7 +74,13 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
             buildDeliveryView()
           ],
         ),
-        bottomNavigationBar: buttonprimary(context, "SUBSCRIBE", false),
+        bottomNavigationBar: InkWell(
+          onTap: doSubscription,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: buttonprimary(context, "SUBSCRIBE", false),
+          ),
+        ),
       );
 
   buildImageView() => Container(
@@ -333,85 +341,87 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
             ),
             contentChild: Column(
               children: <Widget>[
-                ListView.builder(
-                  physics: ScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount:
-                      addressList.length == null ? 0 : addressList.length,
-                  itemBuilder: (BuildContext context, int i) {
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        RadioListTile(
-                          groupValue: selectedAddressValue,
-                          activeColor: primary(context),
-                          value: i,
-                          title: buildAddress(
-                              '${addressList[i]['flatNo']}, ${addressList[i]['apartmentName']},${addressList[i]['address']},',
-                              "${addressList[i]['landmark']} ,'${addressList[i]['postalCode']}, ${addressList[i]['mobileNumber'].toString()}",
-                              context),
-                          onChanged: (value) {
-                            if (mounted) {
-                              setState(() {
-                                selectedAddressValue = value;
-                                selectedAddress = addressList[value];
-                              });
-                            }
-                          },
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                ((addressList?.length ?? 0) > 0)
+                    ? ListView.builder(
+                        physics: ScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount:
+                            addressList.length == null ? 0 : addressList.length,
+                        itemBuilder: (BuildContext context, int i) => Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(left: 0.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  InkWell(
-                                    onTap: () async {
-                                      await Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => EditAddress(
-                                            locale: widget.locale,
-                                            localizedValues:
-                                                widget.localizedValues,
-                                            isCheckout: true,
-                                            updateAddressID: addressList[i],
-                                          ),
+                            RadioListTile(
+                              groupValue: selectedAddressValue,
+                              activeColor: primary(context),
+                              value: i,
+                              title: buildAddress(
+                                  '${addressList[i]['flatNo']}, ${addressList[i]['apartmentName']},${addressList[i]['address']},',
+                                  "${addressList[i]['landmark']} ,'${addressList[i]['postalCode']}, ${addressList[i]['mobileNumber'].toString()}",
+                                  context),
+                              onChanged: (value) {
+                                if (mounted) {
+                                  setState(() {
+                                    selectedAddressValue = value;
+                                    selectedAddress = addressList[value];
+                                  });
+                                }
+                              },
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 0.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      InkWell(
+                                        onTap: () async {
+                                          await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => EditAddress(
+                                                locale: widget.locale,
+                                                localizedValues:
+                                                    widget.localizedValues,
+                                                isCheckout: true,
+                                                updateAddressID: addressList[i],
+                                              ),
+                                            ),
+                                          );
+                                          getAddress();
+                                        },
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 8.0),
+                                          child: primaryOutlineButton(
+                                              context, "EDIT"),
                                         ),
-                                      );
-                                      getAddress();
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 8.0),
-                                      child:
-                                          primaryOutlineButton(context, "EDIT"),
-                                    ),
+                                      ),
+                                      InkWell(
+                                          onTap: () {
+                                            deleteAddress(
+                                                addressList[i]['_id']);
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 20.0),
+                                            child: primaryOutlineButton(
+                                                context, "DELETE"),
+                                          )),
+                                    ],
                                   ),
-                                  InkWell(
-                                      onTap: () {
-                                        deleteAddress(addressList[i]['_id']);
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20.0),
-                                        child: primaryOutlineButton(
-                                            context, "DELETE"),
-                                      )),
-                                ],
-                              ),
+                                ),
+                              ],
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 20, right: 20),
+                              child: Divider(thickness: 1),
                             ),
                           ],
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 20, right: 20),
-                          child: Divider(thickness: 1),
-                        ),
-                      ],
-                    );
-                  },
-                ),
+                      )
+                    : Container(),
                 SizedBox(height: 20),
                 InkWell(
                     onTap: () async {
@@ -501,6 +511,10 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
       if (mounted) {
         setState(() {
           addressList = onValue['response_data'];
+          if ((addressList?.length ?? 0) > 0) {
+            selectedAddress = addressList.first;
+            selectedAddressValue = 0;
+          }
         });
       }
     }).catchError((error) {
@@ -533,5 +547,34 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
       duration: Duration(milliseconds: 3000),
     );
     _scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+
+  void doSubscription() {
+    if (selectedAddress != null) {
+      var body = {
+        "productId": widget.productData['_id'],
+        "unit": widget.productData['variant'][0]['unit'],
+        "quantity": quantity,
+        "startDate": selectedDate.toString(),
+        "deliveryAddress": selectedAddress['_id'],
+        "subscriptionFrequency": pickUpScheduleList[selectedIndex]
+      };
+      CartService.subscribeProduct(body).then((value) {
+        print(value.toString());
+        if (value['response_code'] == 200) {
+          UtilService.navigateTo(
+              context,
+              Thankyou(
+                locale: widget.locale,
+                localizedValues: widget.localizedValues,
+              ));
+        }
+      }).catchError((onError) {
+        print(onError.toString());
+      });
+    } else {
+      showSnackbar(
+          MyLocalizations.of(context).getLocalizations("SELECT_ADDESS_MSG"));
+    }
   }
 }

@@ -38,6 +38,7 @@ class ProductService {
     });
   }
 
+
   // get all deal products
   static Future<Map<String, dynamic>> getDealProductListAll(
     dealId,
