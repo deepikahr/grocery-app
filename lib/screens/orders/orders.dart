@@ -95,7 +95,7 @@ class _OrdersState extends State<Orders> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bg(context),
-      appBar: appBarprimary(context, "MY_ORDERS"),
+      appBar: appBarPrimary(context, "MY_ORDERS"),
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,

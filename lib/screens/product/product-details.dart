@@ -21,6 +21,7 @@ SentryError sentryError = new SentryError();
 
 class Variants {
   const Variants(this.id, this.price, this.unit, this.productstock);
+
   final String id, unit;
   final int price, productstock;
 }
@@ -30,6 +31,7 @@ class ProductDetails extends StatefulWidget {
 
   final Map localizedValues;
   final String locale, productID;
+
   ProductDetails(
       {Key key,
       this.productID,
@@ -37,6 +39,7 @@ class ProductDetails extends StatefulWidget {
       this.localizedValues,
       this.locale})
       : super(key: key);
+
   @override
   _ProductDetailsState createState() => _ProductDetailsState();
 }
@@ -57,6 +60,7 @@ class _ProductDetailsState extends State<ProductDetails>
   var quantity = 1, variantPrice, variantStock;
   var rating;
   List productImages = [];
+
   void _changeProductQuantity(bool increase) {
     if (increase) {
       if (mounted) {
@@ -106,6 +110,7 @@ class _ProductDetailsState extends State<ProductDetails>
       });
     }
     ProductService.productDetails(widget.productID).then((value) {
+      print(value.toString());
       if (mounted) {
         setState(() {
           productDetail = value['response_data'];
@@ -403,7 +408,8 @@ class _ProductDetailsState extends State<ProductDetails>
                                                                   child:
                                                                       PhotoView(
                                                                     imageProvider:
-                                                                        NetworkImage(url),
+                                                                        NetworkImage(
+                                                                            url),
                                                                     minScale:
                                                                         PhotoViewComputedScale.contained *
                                                                             0.8,
@@ -567,14 +573,10 @@ class _ProductDetailsState extends State<ProductDetails>
                                                     top: 5.0,
                                                     right: 10),
                                                 child: priceMrpText(
-                                                    productDetail[
-                                                            'isDealAvailable']
-                                                        ? "$currency${((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * (productDetail['dealPercent'] / 100))).toDouble().toStringAsFixed(2)}"
-                                                        : '$currency${(variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice).toDouble().toStringAsFixed(2)}',
-                                                    productDetail[
-                                                            'isDealAvailable']
-                                                        ? "$currency${(variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice).toDouble().toStringAsFixed(2)}"
-                                                        : null,
+                                                    getDiscountedValue(
+                                                        index: 0),
+                                                    getPercentageValue(
+                                                        index: 0),
                                                     context)),
                                           ],
                                         ),
@@ -728,14 +730,10 @@ class _ProductDetailsState extends State<ProductDetails>
                                                         textbarlowBoldGreen(
                                                             context)),
                                                     title: priceMrpText(
-                                                        productDetail[
-                                                                'isDealAvailable']
-                                                            ? "$currency${(productDetail['variant'][i]['price'] - (productDetail['variant'][i]['price'] * (productDetail['dealPercent'] / 100))).toDouble().toStringAsFixed(2)}"
-                                                            : '$currency${productDetail['variant'][i]['price'].toDouble().toStringAsFixed(2)}',
-                                                        productDetail[
-                                                                'isDealAvailable']
-                                                            ? "$currency${productDetail['variant'][i]['price'].toDouble().toStringAsFixed(2)}"
-                                                            : null,
+                                                        getDiscountedValue(
+                                                            index: i),
+                                                        getPercentageValue(
+                                                            index: i),
                                                         context))
                                                 : Container();
                                           })
@@ -786,9 +784,7 @@ class _ProductDetailsState extends State<ProductDetails>
                             top: 45,
                             left: 20,
                             child: InkWell(
-                              onTap: () {
-                                Navigator.pop(context);
-                              },
+                              onTap: () => Navigator.pop(context),
                               child: Container(
                                   height: 40,
                                   width: 40,
@@ -824,9 +820,7 @@ class _ProductDetailsState extends State<ProductDetails>
                   child: addToCartButton(
                       context,
                       '(${quantity.toString()})  ',
-                      productDetail['isDealAvailable']
-                          ? "$currency${((((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * (productDetail['dealPercent'] / 100)))) * quantity).toDouble().toStringAsFixed(2)}"
-                          : '$currency${((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * quantity).toDouble().toStringAsFixed(2)}',
+                      calculateTotal(),
                       "ADD_TO_CART",
                       Icon(Icons.shopping_cart, color: Colors.black),
                       addProductTocart),
@@ -841,4 +835,30 @@ class _ProductDetailsState extends State<ProductDetails>
     );
     _scaffoldKey.currentState.showSnackBar(snackBar);
   }
+
+  getDiscountedValue({index = 0}) => productDetail['isDealAvailable'] &&
+              productDetail['variant'][index]['isOfferAvailable'] ||
+          productDetail['isDealAvailable']
+      ? "$currency${((variantPrice == null ? productDetail['variant'][index]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][index]['price'] : variantPrice) * (productDetail['dealPercent'] / 100))).toDouble().toStringAsFixed(2)}"
+      : (productDetail['variant'][index]['isOfferAvailable'] ?? false) &&
+              productDetail['variant'][index]['offerPercent'] != null
+          ? "$currency${((variantPrice == null ? productDetail['variant'][index]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][index]['price'] : variantPrice) * (productDetail['variant'][index]['offerPercent'] / 100))).toDouble().toStringAsFixed(2)}"
+          : '$currency${(variantPrice == null ? productDetail['variant'][index]['price'] : variantPrice).toDouble().toStringAsFixed(2)}';
+
+  getPercentageValue({index = 0}) => productDetail['isDealAvailable'] &&
+              productDetail['variant'][index]['isOfferAvailable'] ||
+          productDetail['isDealAvailable']
+      ? "$currency${(variantPrice == null ? productDetail['variant'][index]['price'] : variantPrice).toDouble().toStringAsFixed(2)}"
+      : (productDetail['variant'][index]['isOfferAvailable'] ?? false) &&
+              productDetail['variant'][index]['offerPercent'] != null
+          ? "$currency${(variantPrice == null ? productDetail['variant'][index]['price'] : variantPrice).toDouble().toStringAsFixed(2)}"
+          : null;
+
+  calculateTotal() => productDetail['isDealAvailable'] &&
+              productDetail['variant'][0]['isOfferAvailable'] ||
+          productDetail['isDealAvailable']
+      ? "$currency${((((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * (productDetail['dealPercent'] / 100)))) * quantity).toDouble().toStringAsFixed(2)}"
+      : productDetail['variant'][0]['isOfferAvailable']
+          ? "$currency${((((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * (productDetail['variant'][0]['offerPercent'] / 100)))) * quantity).toDouble().toStringAsFixed(2)}"
+          : '$currency${((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * quantity).toDouble().toStringAsFixed(2)}';
 }

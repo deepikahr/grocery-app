@@ -104,7 +104,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarprimary(context, "FORGET_PASSWORD"),
+      appBar: appBarPrimary(context, "FORGET_PASSWORD"),
       body: Form(
         key: _formKey,
         child: Container(

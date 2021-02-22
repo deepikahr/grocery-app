@@ -45,8 +45,71 @@ Widget buttonprimary(BuildContext context, title, isLoading) {
   );
 }
 
-Widget productAddButton(BuildContext context, title, isLoading) {
+Widget regularbuttonPrimary(BuildContext context, title) {
   return Container(
+    height: 55,
+    width: MediaQuery.of(context).size.width,
+    margin: EdgeInsets.only(top: 10, bottom: 10),
+    decoration: BoxDecoration(color: primary(context), boxShadow: [
+      BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 5)
+    ]),
+    child: Padding(
+      padding: const EdgeInsets.only(
+        left: 0.0,
+        right: 0.0,
+      ),
+      child: GFButton(
+        size: GFSize.LARGE,
+        color: primary(context),
+        blockButton: true,
+        onPressed: null,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(MyLocalizations.of(context).getLocalizations(title),
+                style: textBarlowRegularBlack(context)),
+            SizedBox(height: 10),
+          ],
+        ),
+        textStyle: textBarlowRegularrBlack(context),
+      ),
+    ),
+  );
+}
+
+Widget regularGreyButton(BuildContext context, title) {
+  return Container(
+    height: 55,
+    width: MediaQuery.of(context).size.width,
+    margin: EdgeInsets.only(top: 10, bottom: 10),
+    decoration: BoxDecoration(color: Color(0xFFF0F0F0), boxShadow: [
+      BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 5)
+    ]),
+    child: Padding(
+      padding: const EdgeInsets.only(
+        left: 0.0,
+        right: 0.0,
+      ),
+      child: GFButton(
+        size: GFSize.LARGE,
+        color: Color(0xFFF0F0F0),
+        blockButton: true,
+        onPressed: null,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(MyLocalizations.of(context).getLocalizations(title),
+                style: textBarlowRegularBlack(context)),
+            SizedBox(height: 10),
+          ],
+        ),
+        textStyle: textBarlowRegularrBlack(context),
+      ),
+    ),
+  );
+}
+
+Widget productAddButton(BuildContext context, title, isLoading) => Container(
     height: 35,
     padding: EdgeInsets.only(left: 15, right: 15, bottom: 5),
     margin: EdgeInsets.only(top: 5),
@@ -58,6 +121,34 @@ Widget productAddButton(BuildContext context, title, isLoading) {
     child: GFButton(
       size: GFSize.LARGE,
       color: primary(context),
+      onPressed: null,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            MyLocalizations.of(context).getLocalizations(title),
+            style: textbarlowMediumBlackm(context),
+          ),
+          isLoading ? GFLoader(type: GFLoaderType.ios) : Text("")
+        ],
+      ),
+    ),
+  );
+
+Widget subscribeButton(BuildContext context, title, isLoading) {
+  return Container(
+    height: 35,
+    padding: EdgeInsets.only(left: 8, right: 8, bottom: 5),
+    margin: EdgeInsets.only(top: 5),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.all(
+        Radius.circular(5),
+      ),
+      color: Color(0xFFF0F0F0),
+    ),
+    child: GFButton(
+      size: GFSize.LARGE,
+      color: Color(0xFFF0F0F0),
       onPressed: null,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -185,6 +276,39 @@ Widget dottedBorderButton(BuildContext context, title) {
             style: textBarlowRegularBb(context),
           ),
         ],
+      ),
+    ),
+  );
+}
+
+Widget dottedBorderButtonn(BuildContext context, title) {
+  return Container(
+    width: 193.0,
+    height: 45.0,
+    child: DottedBorder(
+      color: Color(0XFFBBBBBB),
+      dashPattern: [4, 2],
+      strokeWidth: 2,
+      padding: EdgeInsets.only(left: 10, right: 10),
+      child: GFButton(
+        type: GFButtonType.transparent,
+        color: GFColors.LIGHT,
+        // blockButton: false,
+        onPressed: null,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text(
+              MyLocalizations.of(context).getLocalizations(title),
+              style: textBarlowRegularBlackwithOpa(context),
+            ),
+            Image.asset(
+              "lib/assets/images/copy.png",
+              width: 19,
+              height: 19,
+            )
+          ],
+        ),
       ),
     ),
   );

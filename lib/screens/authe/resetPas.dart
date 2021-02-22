@@ -107,7 +107,7 @@ class _ResetPasswordState extends State<ResetPassword> {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarprimary(context, "RESET"),
+      appBar: appBarPrimary(context, "RESET"),
       body: Form(
         key: _formKey,
         child: Container(

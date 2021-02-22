@@ -103,7 +103,7 @@ class _ChangeMobileNumberState extends State<ChangeMobileNumber> {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarprimary(context, "CHANGE_MOBILE_NUMBER"),
+      appBar: appBarPrimary(context, "CHANGE_MOBILE_NUMBER"),
       body: Form(
         key: _formKey,
         child: Container(

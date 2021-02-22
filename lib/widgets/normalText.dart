@@ -473,6 +473,35 @@ Widget textWithValue(BuildContext context, title, value) {
   );
 }
 
+Widget referText(BuildContext context, title) {
+  return Container(
+      child: Center(
+    child: Text(
+      MyLocalizations.of(context).getLocalizations(title),
+      style: textbarlowMediumBlackmm(context),
+    ),
+  ));
+}
+
+Widget whiteText(BuildContext context, title) {
+  return Container(
+      child: Center(
+    child: Text(
+      MyLocalizations.of(context).getLocalizations(title),
+      style: textbarlowMediumwhitemm(context),
+    ),
+  ));
+}
+
+Widget normallText(BuildContext context, title) {
+  return Container(
+    child: Text(
+      MyLocalizations.of(context).getLocalizations(title),
+      style: textbarlowMediumBlackmm(context),
+    ),
+  );
+}
+
 Widget addressPage(BuildContext context, title) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.start,
@@ -937,5 +966,38 @@ walletCard2(BuildContext context, title, subtitle, subtitle1) {
         Image.asset('lib/assets/images/walleticon.png', width: 38, height: 36)
       ],
     ),
+  );
+}
+Widget textGreenPrimary(title, style) {
+  return Text(title, style: style);
+}
+regularText(BuildContext context, title) {
+  return Text(
+    MyLocalizations.of(context).getLocalizations(title),
+    textAlign: TextAlign.center,
+    style: textbarlowRegularBlackFont14(context),
+  );
+}
+
+regularTextatStart(BuildContext context, title) {
+  return Text(
+    MyLocalizations.of(context).getLocalizations(title),
+    style: textbarlowRegularBlackd(context),
+  );
+}
+
+regularTextblack87(BuildContext context, title) {
+  return Text(
+    MyLocalizations.of(context).getLocalizations(title),
+    textAlign: TextAlign.center,
+    style: textbarlowRegularBlack87Font14(context),
+  );
+}
+
+regularTextblackbold(BuildContext context, title) {
+  return Text(
+    MyLocalizations.of(context).getLocalizations(title),
+    textAlign: TextAlign.start,
+    style: textbarlowmediumwblack(context),
   );
 }

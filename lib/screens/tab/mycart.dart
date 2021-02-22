@@ -25,7 +25,9 @@ SentryError sentryError = new SentryError();
 class MyCart extends StatefulWidget {
   final Map localizedValues;
   final String locale;
+
   MyCart({Key key, this.locale, this.localizedValues}) : super(key: key);
+
   @override
   _MyCartState createState() => _MyCartState();
 }
@@ -45,6 +47,7 @@ class _MyCartState extends State<MyCart> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   var minAmout;
+
   @override
   void initState() {
     getToken();
@@ -424,410 +427,397 @@ class _MyCartState extends State<MyCart> {
                                   itemCount: cartItem == null
                                       ? 0
                                       : cartItem['products'].length,
-                                  itemBuilder: (BuildContext context, int i) {
-                                    return Container(
-                                      margin: EdgeInsets.only(bottom: 5),
-                                      padding: EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                          color: cartCardBg(context)),
-                                      child: Row(
-                                        children: <Widget>[
-                                          Flexible(
-                                            flex: 3,
-                                            fit: FlexFit.tight,
-                                            child: (cartItem['products'][i]
-                                                            ['productImages'] !=
-                                                        null &&
-                                                    cartItem['products'][i][
-                                                                'productImages']
-                                                            .length >
-                                                        0)
-                                                ? CachedNetworkImage(
-                                                    imageUrl: cartItem['products']
-                                                                        [i]
-                                                                    ['productImages'][0]
-                                                                ['filePath'] ==
-                                                            null
-                                                        ? cartItem['products']
-                                                                    [i]
-                                                                ['productImages']
-                                                            [0]['imageUrl']
-                                                        : Constants
-                                                                .imageUrlPath +
-                                                            "/tr:dpr-auto,tr:w-500" +
-                                                            cartItem['products']
-                                                                        [i]
-                                                                    ['productImages']
-                                                                [0]['filePath'],
-                                                    imageBuilder: (context,
-                                                            imageProvider) =>
-                                                        Container(
-                                                      height: 90,
-                                                      width: 117,
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.white,
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    6)),
-                                                        boxShadow: [
-                                                          BoxShadow(
-                                                            color: dark(context)
-                                                                .withOpacity(
-                                                                    0.10),
-                                                            blurRadius: 5,
-                                                          )
-                                                        ],
-                                                        image: DecorationImage(
-                                                            image:
-                                                                imageProvider,
-                                                            fit: BoxFit.cover),
-                                                      ),
+                                  itemBuilder: (BuildContext context, int i) =>
+                                      Container(
+                                    margin: EdgeInsets.only(bottom: 5),
+                                    padding: EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                        color: cartCardBg(context)),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Flexible(
+                                          flex: 3,
+                                          fit: FlexFit.tight,
+                                          child: (cartItem['products'][i]
+                                                          ['productImages'] !=
+                                                      null &&
+                                                  cartItem['products'][i]
+                                                              ['productImages']
+                                                          .length >
+                                                      0)
+                                              ? CachedNetworkImage(
+                                                  imageUrl: cartItem['products']
+                                                                      [i][
+                                                                  'productImages']
+                                                              [0]['filePath'] ==
+                                                          null
+                                                      ? cartItem['products'][i]
+                                                              ['productImages']
+                                                          [0]['imageUrl']
+                                                      : Constants.imageUrlPath +
+                                                          "/tr:dpr-auto,tr:w-500" +
+                                                          cartItem['products']
+                                                                      [i]
+                                                                  ['productImages']
+                                                              [0]['filePath'],
+                                                  imageBuilder: (context,
+                                                          imageProvider) =>
+                                                      Container(
+                                                    height: 90,
+                                                    width: 117,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  6)),
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: dark(context)
+                                                              .withOpacity(
+                                                                  0.10),
+                                                          blurRadius: 5,
+                                                        )
+                                                      ],
+                                                      image: DecorationImage(
+                                                          image: imageProvider,
+                                                          fit: BoxFit.cover),
                                                     ),
-                                                    placeholder: (context,
-                                                            url) =>
-                                                        Container(
-                                                            height: 90,
-                                                            width: 117,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color:
-                                                                  Colors.white,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .all(Radius
-                                                                          .circular(
-                                                                              6)),
-                                                              boxShadow: [
-                                                                BoxShadow(
-                                                                  color: Colors
-                                                                      .black
-                                                                      .withOpacity(
-                                                                          0.10),
-                                                                  blurRadius: 5,
-                                                                )
-                                                              ],
-                                                            ),
-                                                            child:
-                                                                noDataImage()),
-                                                    errorWidget: (context, url,
-                                                            error) =>
-                                                        Container(
-                                                            height: 90,
-                                                            width: 117,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color:
-                                                                  Colors.white,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .all(Radius
-                                                                          .circular(
-                                                                              6)),
-                                                              boxShadow: [
-                                                                BoxShadow(
-                                                                  color: Colors
-                                                                      .black
-                                                                      .withOpacity(
-                                                                          0.10),
-                                                                  blurRadius: 5,
-                                                                )
-                                                              ],
-                                                            ),
-                                                            child:
-                                                                noDataImage()),
-                                                  )
-                                                : CachedNetworkImage(
-                                                    imageUrl: cartItem['products']
-                                                                    [i]
-                                                                ['filePath'] ==
-                                                            null
-                                                        ? cartItem['products']
-                                                            [i]['imageUrl']
-                                                        : Constants
-                                                                .imageUrlPath +
-                                                            "/tr:dpr-auto,tr:w-500" +
-                                                            cartItem['products']
-                                                                [i]['filePath'],
-                                                    imageBuilder: (context,
-                                                            imageProvider) =>
-                                                        Container(
-                                                      height: 90,
-                                                      width: 117,
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.white,
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    6)),
-                                                        boxShadow: [
-                                                          BoxShadow(
-                                                            color: dark(context)
-                                                                .withOpacity(
-                                                                    0.10),
-                                                            blurRadius: 5,
-                                                          )
-                                                        ],
-                                                        image: DecorationImage(
-                                                            image:
-                                                                imageProvider,
-                                                            fit: BoxFit.cover),
-                                                      ),
-                                                    ),
-                                                    placeholder: (context,
-                                                            url) =>
-                                                        Container(
-                                                            height: 90,
-                                                            width: 117,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color:
-                                                                  Colors.white,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .all(Radius
-                                                                          .circular(
-                                                                              6)),
-                                                              boxShadow: [
-                                                                BoxShadow(
-                                                                  color: Colors
-                                                                      .black
-                                                                      .withOpacity(
-                                                                          0.10),
-                                                                  blurRadius: 5,
-                                                                )
-                                                              ],
-                                                            ),
-                                                            child:
-                                                                noDataImage()),
-                                                    errorWidget: (context, url,
-                                                            error) =>
-                                                        Container(
-                                                            height: 90,
-                                                            width: 117,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color:
-                                                                  Colors.white,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .all(Radius
-                                                                          .circular(
-                                                                              6)),
-                                                              boxShadow: [
-                                                                BoxShadow(
-                                                                  color: Colors
-                                                                      .black
-                                                                      .withOpacity(
-                                                                          0.10),
-                                                                  blurRadius: 5,
-                                                                )
-                                                              ],
-                                                            ),
-                                                            child:
-                                                                noDataImage()),
                                                   ),
+                                                  placeholder: (context, url) =>
+                                                      Container(
+                                                          height: 90,
+                                                          width: 117,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: Colors.white,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            6)),
+                                                            boxShadow: [
+                                                              BoxShadow(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.10),
+                                                                blurRadius: 5,
+                                                              )
+                                                            ],
+                                                          ),
+                                                          child: noDataImage()),
+                                                  errorWidget: (context, url,
+                                                          error) =>
+                                                      Container(
+                                                          height: 90,
+                                                          width: 117,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: Colors.white,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            6)),
+                                                            boxShadow: [
+                                                              BoxShadow(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.10),
+                                                                blurRadius: 5,
+                                                              )
+                                                            ],
+                                                          ),
+                                                          child: noDataImage()),
+                                                )
+                                              : CachedNetworkImage(
+                                                  imageUrl: cartItem['products']
+                                                              [i]['filePath'] ==
+                                                          null
+                                                      ? cartItem['products'][i]
+                                                          ['imageUrl']
+                                                      : Constants.imageUrlPath +
+                                                          "/tr:dpr-auto,tr:w-500" +
+                                                          cartItem['products']
+                                                              [i]['filePath'],
+                                                  imageBuilder: (context,
+                                                          imageProvider) =>
+                                                      Container(
+                                                    height: 90,
+                                                    width: 117,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  6)),
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: dark(context)
+                                                              .withOpacity(
+                                                                  0.10),
+                                                          blurRadius: 5,
+                                                        )
+                                                      ],
+                                                      image: DecorationImage(
+                                                          image: imageProvider,
+                                                          fit: BoxFit.cover),
+                                                    ),
+                                                  ),
+                                                  placeholder: (context, url) =>
+                                                      Container(
+                                                          height: 90,
+                                                          width: 117,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: Colors.white,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            6)),
+                                                            boxShadow: [
+                                                              BoxShadow(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.10),
+                                                                blurRadius: 5,
+                                                              )
+                                                            ],
+                                                          ),
+                                                          child: noDataImage()),
+                                                  errorWidget: (context, url,
+                                                          error) =>
+                                                      Container(
+                                                          height: 90,
+                                                          width: 117,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: Colors.white,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            6)),
+                                                            boxShadow: [
+                                                              BoxShadow(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.10),
+                                                                blurRadius: 5,
+                                                              )
+                                                            ],
+                                                          ),
+                                                          child: noDataImage()),
+                                                ),
+                                        ),
+                                        SizedBox(width: 10),
+                                        Flexible(
+                                          flex: 6,
+                                          fit: FlexFit.tight,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              Text(
+                                                cartItem['products'][i]
+                                                    ['productName'],
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                    fontSize: 16.0,
+                                                    fontFamily: 'BarlowRegular',
+                                                    color: blackText(context),
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                              SizedBox(height: 10),
+                                              Row(
+                                                children: <Widget>[
+                                                  priceMrpText(
+                                                      currency +
+                                                              cartItem['products']
+                                                                          [i][
+                                                                      'productTotal']
+                                                                  .toDouble()
+                                                                  .toStringAsFixed(
+                                                                      2)
+                                                                  .toString() ??
+                                                          "",
+                                                      cartItem['products'][i][
+                                                              'isDealAvailable']
+                                                          ? '$currency${((cartItem['products'][i]['price']) * (cartItem['products'][i]['quantity'])).toDouble().toStringAsFixed(2)}'
+                                                          : (cartItem['products']
+                                                                          [i][
+                                                                      'isOfferAvailable'] ??
+                                                                  false)
+                                                              ? '$currency${((cartItem['products'][i]['price']) * (cartItem['products'][i]['quantity'])).toDouble().toStringAsFixed(2)}'
+                                                              : null,
+                                                      context),
+                                                  Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 5.0),
+                                                      child: textLightSmall(
+                                                          " / " +
+                                                              cartItem['products']
+                                                                          [i]
+                                                                      ['unit']
+                                                                  .toString(),
+                                                          context)),
+                                                ],
+                                              ),
+                                              SizedBox(height: 10),
+                                              cartItem['products'][i]
+                                                          ['isDealAvailable'] ==
+                                                      true
+                                                  ? textLightSmall(
+                                                      MyLocalizations.of(context)
+                                                              .getLocalizations(
+                                                                  "DEAL") +
+                                                          " " +
+                                                          (cartItem['products'][i]['dealPercent'])
+                                                              .toString() +
+                                                          "% " +
+                                                          MyLocalizations.of(context)
+                                                              .getLocalizations(
+                                                                  "OFF"),
+                                                      context)
+                                                  : cartItem['products'][i]['isOfferAvailable'] ==
+                                                          true
+                                                      ? textLightSmall(
+                                                          MyLocalizations.of(context).getLocalizations("OFFER") +
+                                                              " " +
+                                                              (cartItem['products'][i]['offerPercent'])
+                                                                  .toString() +
+                                                              "% " +
+                                                              MyLocalizations.of(context)
+                                                                  .getLocalizations("OFF"),
+                                                          context)
+                                                      : Text("")
+                                            ],
                                           ),
-                                          SizedBox(width: 10),
-                                          Flexible(
-                                            flex: 6,
-                                            fit: FlexFit.tight,
+                                        ),
+                                        Flexible(
+                                          flex: 1,
+                                          fit: FlexFit.tight,
+                                          child: Container(
+                                            height: 110,
+                                            width: 43,
+                                            decoration: BoxDecoration(
+                                              color: Color(0xFFF0F0F0),
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(22),
+                                              ),
+                                            ),
                                             child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
                                               mainAxisAlignment:
                                                   MainAxisAlignment
                                                       .spaceBetween,
                                               children: <Widget>[
-                                                Text(
-                                                  cartItem['products'][i]
-                                                      ['productName'],
-                                                  maxLines: 2,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                      fontSize: 16.0,
-                                                      fontFamily:
-                                                          'BarlowRegular',
-                                                      color: blackText(context),
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                ),
-                                                // titleTwoLine(
-                                                //     cartItem['products'][i]
-                                                //         ['productName'], context),
-                                                SizedBox(height: 10),
-                                                Row(
-                                                  children: <Widget>[
-                                                    priceMrpText(
-                                                        currency +
-                                                                cartItem['products']
-                                                                            [i][
-                                                                        'productTotal']
-                                                                    .toDouble()
-                                                                    .toStringAsFixed(
-                                                                        2)
-                                                                    .toString() ??
-                                                            "",
-                                                        cartItem['products'][i][
-                                                                'isDealAvailable']
-                                                            ? '$currency${((cartItem['products'][i]['price']) * (cartItem['products'][i]['quantity'])).toDouble().toStringAsFixed(2)}'
-                                                            : null,
-                                                        context),
-                                                    Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(top: 5.0),
-                                                        child: textLightSmall(
-                                                            " / " +
-                                                                cartItem['products']
-                                                                            [i]
-                                                                        ['unit']
-                                                                    .toString(),
-                                                            context)),
-                                                  ],
-                                                ),
-                                                SizedBox(height: 10),
-                                                cartItem['products'][i][
-                                                            'isDealAvailable'] ==
-                                                        true
-                                                    ? textLightSmall(
-                                                        MyLocalizations.of(
-                                                                    context)
-                                                                .getLocalizations(
-                                                                    "DEAL") +
-                                                            " " +
-                                                            (cartItem['products']
+                                                Container(
+                                                  width: 32,
+                                                  height: 32,
+                                                  decoration: BoxDecoration(
+                                                    color: primarybg,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                  ),
+                                                  child: InkWell(
+                                                    onTap: () {
+                                                      if (cartItem['products']
+                                                                      [i][
+                                                                  'isQuantityUpdating'] ==
+                                                              null ||
+                                                          cartItem['products']
+                                                                      [i][
+                                                                  'isQuantityUpdating'] ==
+                                                              false) {
+                                                        _incrementCount(i);
+                                                      }
+                                                    },
+                                                    child: cartItem['products']
                                                                         [i][
-                                                                    'dealPercent'])
-                                                                .toString() +
-                                                            "% " +
-                                                            MyLocalizations.of(
-                                                                    context)
-                                                                .getLocalizations(
-                                                                    "OFF"),
-                                                        context)
-                                                    : Text("")
+                                                                    'isQuantityUpdating'] ==
+                                                                true &&
+                                                            quantityUpdateType ==
+                                                                '+'
+                                                        ? GFLoader(
+                                                            type: GFLoaderType
+                                                                .ios,
+                                                            size: 35)
+                                                        : Icon(
+                                                            Icons.add,
+                                                            color: Colors.black,
+                                                          ),
+                                                  ),
+                                                ),
+                                                cartItem['products'][i]
+                                                            ['quantity'] ==
+                                                        null
+                                                    ? Text('0')
+                                                    : titleTwoLine(
+                                                        cartItem['products'][i]
+                                                                ['quantity']
+                                                            .toString(),
+                                                        context),
+                                                Container(
+                                                  width: 32,
+                                                  height: 32,
+                                                  decoration: BoxDecoration(
+                                                    color: cartItem['products']
+                                                                        [i][
+                                                                    'isQuantityUpdating'] ==
+                                                                true &&
+                                                            quantityUpdateType ==
+                                                                '-'
+                                                        ? primarybg
+                                                        : Colors.black,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                  ),
+                                                  child: InkWell(
+                                                    onTap: () {
+                                                      if (cartItem['products']
+                                                                      [i][
+                                                                  'isQuantityUpdating'] ==
+                                                              null ||
+                                                          cartItem['products']
+                                                                      [i][
+                                                                  'isQuantityUpdating'] ==
+                                                              false) {
+                                                        _decrementCount(i);
+                                                      }
+                                                    },
+                                                    child: cartItem['products']
+                                                                        [i][
+                                                                    'isQuantityUpdating'] ==
+                                                                true &&
+                                                            quantityUpdateType ==
+                                                                '-'
+                                                        ? GFLoader(
+                                                            type: GFLoaderType
+                                                                .ios,
+                                                            size: 35)
+                                                        : Icon(Icons.remove,
+                                                            color: primarybg),
+                                                  ),
+                                                ),
                                               ],
                                             ),
                                           ),
-                                          Flexible(
-                                            flex: 1,
-                                            fit: FlexFit.tight,
-                                            child: Container(
-                                              height: 110,
-                                              width: 43,
-                                              decoration: BoxDecoration(
-                                                color: Color(0xFFF0F0F0),
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(22),
-                                                ),
-                                              ),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: <Widget>[
-                                                  Container(
-                                                    width: 32,
-                                                    height: 32,
-                                                    decoration: BoxDecoration(
-                                                      color: primarybg,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20),
-                                                    ),
-                                                    child: InkWell(
-                                                      onTap: () {
-                                                        if (cartItem['products']
-                                                                        [i][
-                                                                    'isQuantityUpdating'] ==
-                                                                null ||
-                                                            cartItem['products']
-                                                                        [i][
-                                                                    'isQuantityUpdating'] ==
-                                                                false) {
-                                                          _incrementCount(i);
-                                                        }
-                                                      },
-                                                      child: cartItem['products']
-                                                                          [i][
-                                                                      'isQuantityUpdating'] ==
-                                                                  true &&
-                                                              quantityUpdateType ==
-                                                                  '+'
-                                                          ? GFLoader(
-                                                              type: GFLoaderType
-                                                                  .ios,
-                                                              size: 35)
-                                                          : Icon(
-                                                              Icons.add,
-                                                              color:
-                                                                  Colors.black,
-                                                            ),
-                                                    ),
-                                                  ),
-                                                  cartItem['products'][i]
-                                                              ['quantity'] ==
-                                                          null
-                                                      ? Text('0')
-                                                      : titleTwoLine(
-                                                          cartItem['products']
-                                                                      [i]
-                                                                  ['quantity']
-                                                              .toString(),
-                                                          context),
-                                                  Container(
-                                                    width: 32,
-                                                    height: 32,
-                                                    decoration: BoxDecoration(
-                                                      color: cartItem['products']
-                                                                          [i][
-                                                                      'isQuantityUpdating'] ==
-                                                                  true &&
-                                                              quantityUpdateType ==
-                                                                  '-'
-                                                          ? primarybg
-                                                          : Colors.black,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20),
-                                                    ),
-                                                    child: InkWell(
-                                                      onTap: () {
-                                                        if (cartItem['products']
-                                                                        [i][
-                                                                    'isQuantityUpdating'] ==
-                                                                null ||
-                                                            cartItem['products']
-                                                                        [i][
-                                                                    'isQuantityUpdating'] ==
-                                                                false) {
-                                                          _decrementCount(i);
-                                                        }
-                                                      },
-                                                      child: cartItem['products']
-                                                                          [i][
-                                                                      'isQuantityUpdating'] ==
-                                                                  true &&
-                                                              quantityUpdateType ==
-                                                                  '-'
-                                                          ? GFLoader(
-                                                              type: GFLoaderType
-                                                                  .ios,
-                                                              size: 35)
-                                                          : Icon(Icons.remove,
-                                                              color: primarybg),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),

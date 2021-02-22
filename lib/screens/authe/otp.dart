@@ -209,7 +209,7 @@ class _OtpState extends State<Otp> {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarprimary(context, "WELCOME"),
+      appBar: appBarPrimary(context, "WELCOME"),
       body: ListView(
         children: <Widget>[
           Padding(
