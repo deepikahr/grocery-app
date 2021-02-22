@@ -216,7 +216,7 @@ class _SignupState extends State<Signup> {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarprimary(context, "SIGNUP"),
+      appBar: appBarPrimary(context, "SIGNUP"),
       body: isCuntryLoading
           ? Center(child: SquareLoader())
           : Form(

@@ -103,8 +103,8 @@ class _PaymentWeViewPageState extends State<PaymentWeViewPage> {
 
   String get initialUrl =>
       'data:text/html;base64,${base64Encode(Utf8Encoder().convert(kStripeHtmlPage))}';
+
   void _redirectToStripe() {
-    //<--- prepare the JS in a normal string
     final redirectToCheckoutJs = '''
 var stripe = Stripe(\'${Constants.stripKey}\');
 stripe.redirectToCheckout({
@@ -122,6 +122,7 @@ stripe.redirectToCheckout({
 const kStripeHtmlPage = '''
 <!DOCTYPE html>
 <html>
+<head><meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com/v3/ "></head>
 <script src="https://js.stripe.com/v3/"></script>
 <head><title>Payment</title></head>
 <body>

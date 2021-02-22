@@ -151,7 +151,7 @@ class _EditAddressState extends State<EditAddress> {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarprimary(context, "EDIT_ADDRESS"),
+      appBar: appBarPrimary(context, "EDIT_ADDRESS"),
       body: Form(
         key: _formKey,
         child: ListView(

@@ -27,6 +27,18 @@ class ProductService {
     });
   }
 
+
+  static Future<dynamic> getSubscriptionList(index, limit) async {
+    return client
+        .get(Constants.apiUrl + "/products/list/subscription")
+        .then((response) {
+      return json.decode(response.body);
+    }).catchError((error){
+      print(error.toString());
+    });
+  }
+
+
   // get all deal products
   static Future<Map<String, dynamic>> getDealProductListAll(
     dealId,

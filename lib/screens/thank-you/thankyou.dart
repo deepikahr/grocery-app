@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
-import 'package:readymadeGroceryApp/screens/orders/orders.dart';
+import 'package:readymadeGroceryApp/screens/orders/tab.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 class Thankyou extends StatefulWidget {
+  Thankyou({Key key, this.locale, this.localizedValues});
+
   final Map localizedValues;
   final String locale;
-  Thankyou({Key key, this.locale, this.localizedValues});
+
   @override
   _ThankyouState createState() => _ThankyouState();
 }
@@ -40,10 +42,10 @@ class _ThankyouState extends State<Thankyou> {
                   var reuslt = Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (BuildContext context) => Orders(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
-                      ),
+                      builder: (BuildContext context) => OrdersTab(
+                          // locale: widget.locale,
+                          // localizedValues: widget.localizedValues,
+                          ),
                     ),
                   );
                   reuslt.then((value) => Navigator.pushAndRemoveUntil(
