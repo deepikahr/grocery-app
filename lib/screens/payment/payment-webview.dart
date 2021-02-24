@@ -77,7 +77,6 @@ class _PaymentWeViewPageState extends State<PaymentWeViewPage> {
             javascriptMode: JavascriptMode.unrestricted,
             onWebViewCreated: (controller) => _controller = controller,
             navigationDelegate: (NavigationRequest request) {
-              print("request.url--------------------${request.url}");
               if (request.url.startsWith('${Constants.baseUrl}/thank-you')) {
                 Navigator.pushAndRemoveUntil(
                     context,
@@ -113,7 +112,6 @@ stripe.redirectToCheckout({
   result.error.message = 'Error'
 });
 ''';
-    print("redirectToCheckoutJs---$redirectToCheckoutJs");
     _controller.evaluateJavascript(
         redirectToCheckoutJs); //<--- call the JS function on controller
   }

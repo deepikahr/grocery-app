@@ -26,26 +26,17 @@ Widget buttonprimary(BuildContext context, title, isLoading) {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(MyLocalizations.of(context).getLocalizations(title),
-                style: TextStyle(
-                    fontSize: 16.0,
-                    fontFamily: 'BarlowRegular',
-                    color: Colors.black,
-                    fontWeight: FontWeight.w500)),
+                style: textBarlowRegularBlack(context)),
             SizedBox(height: 10),
-            isLoading ? GFLoader(type: GFLoaderType.ios) : Text("")
+            isLoading ? GFLoader(type: GFLoaderType.ios) : Container()
           ],
         ),
-        textStyle: TextStyle(
-            fontSize: 16.0,
-            fontFamily: 'BarlowRegular',
-            color: Colors.black,
-            fontWeight: FontWeight.w500),
       ),
     ),
   );
 }
 
-Widget regularbuttonPrimary(BuildContext context, title) {
+Widget regularbuttonPrimary(BuildContext context, title, isLoading) {
   return Container(
     height: 55,
     width: MediaQuery.of(context).size.width,
@@ -54,10 +45,7 @@ Widget regularbuttonPrimary(BuildContext context, title) {
       BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 5)
     ]),
     child: Padding(
-      padding: const EdgeInsets.only(
-        left: 0.0,
-        right: 0.0,
-      ),
+      padding: const EdgeInsets.only(left: 0.0, right: 0.0),
       child: GFButton(
         size: GFSize.LARGE,
         color: primary(context),
@@ -69,6 +57,7 @@ Widget regularbuttonPrimary(BuildContext context, title) {
             Text(MyLocalizations.of(context).getLocalizations(title),
                 style: textBarlowRegularBlack(context)),
             SizedBox(height: 10),
+            isLoading ? GFLoader(type: GFLoaderType.ios) : Container()
           ],
         ),
         textStyle: textBarlowRegularrBlack(context),
@@ -77,7 +66,7 @@ Widget regularbuttonPrimary(BuildContext context, title) {
   );
 }
 
-Widget regularGreyButton(BuildContext context, title) {
+Widget regularGreyButton(BuildContext context, title, isLoading) {
   return Container(
     height: 55,
     width: MediaQuery.of(context).size.width,
@@ -86,13 +75,10 @@ Widget regularGreyButton(BuildContext context, title) {
       BoxShadow(color: Colors.black.withOpacity(0.29), blurRadius: 5)
     ]),
     child: Padding(
-      padding: const EdgeInsets.only(
-        left: 0.0,
-        right: 0.0,
-      ),
+      padding: const EdgeInsets.only(left: 0.0, right: 0.0),
       child: GFButton(
         size: GFSize.LARGE,
-        color: Color(0xFFF0F0F0),
+        color: cartCardBg(context),
         blockButton: true,
         onPressed: null,
         child: Row(
@@ -101,6 +87,7 @@ Widget regularGreyButton(BuildContext context, title) {
             Text(MyLocalizations.of(context).getLocalizations(title),
                 style: textBarlowRegularBlack(context)),
             SizedBox(height: 10),
+            isLoading ? GFLoader(type: GFLoaderType.ios) : Container()
           ],
         ),
         textStyle: textBarlowRegularrBlack(context),
@@ -110,17 +97,41 @@ Widget regularGreyButton(BuildContext context, title) {
 }
 
 Widget productAddButton(BuildContext context, title, isLoading) => Container(
-    height: 35,
-    padding: EdgeInsets.only(left: 15, right: 15, bottom: 5),
-    margin: EdgeInsets.only(top: 5),
-    decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(
-          Radius.circular(5),
+      height: 35,
+      padding: EdgeInsets.only(left: 15, right: 15, bottom: 5),
+      margin: EdgeInsets.only(top: 5),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(
+            Radius.circular(5),
+          ),
+          color: primary(context)),
+      child: GFButton(
+        size: GFSize.LARGE,
+        color: primary(context),
+        onPressed: null,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              MyLocalizations.of(context).getLocalizations(title),
+              style: textbarlowMediumBlackm(context),
+            ),
+            isLoading ? GFLoader(type: GFLoaderType.ios) : Text("")
+          ],
         ),
-        color: primary(context)),
+      ),
+    );
+
+Widget subscribeButton(BuildContext context, title, isLoading) {
+  return Container(
+    height: 35,
+    padding: EdgeInsets.only(left: 8, right: 8),
+    decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(5)),
+        color: Color(0xFFF0F0F0)),
     child: GFButton(
       size: GFSize.LARGE,
-      color: primary(context),
+      color: Color(0xFFF0F0F0),
       onPressed: null,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -134,28 +145,24 @@ Widget productAddButton(BuildContext context, title, isLoading) => Container(
       ),
     ),
   );
+}
 
-Widget subscribeButton(BuildContext context, title, isLoading) {
+Widget subscribePrimary(BuildContext context, title, isLoading) {
   return Container(
     height: 35,
-    padding: EdgeInsets.only(left: 8, right: 8, bottom: 5),
-    margin: EdgeInsets.only(top: 5),
+    padding: EdgeInsets.only(left: 8, right: 8),
     decoration: BoxDecoration(
-      borderRadius: BorderRadius.all(
-        Radius.circular(5),
-      ),
-      color: Color(0xFFF0F0F0),
-    ),
+        borderRadius: BorderRadius.all(Radius.circular(5)), color: primarybg),
     child: GFButton(
       size: GFSize.LARGE,
-      color: Color(0xFFF0F0F0),
+      color: primarybg,
       onPressed: null,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
             MyLocalizations.of(context).getLocalizations(title),
-            style: textbarlowMediumBlackm(context),
+            style: textBarlowSemiboldblack(context),
           ),
           isLoading ? GFLoader(type: GFLoaderType.ios) : Text("")
         ],

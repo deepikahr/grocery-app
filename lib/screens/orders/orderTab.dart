@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:readymadeGroceryApp/screens/orders/subscription_list.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/screens/orders/orders.dart';
-import 'package:readymadeGroceryApp/screens/orders/subscriptionsList.dart';
 
 class OrdersTab extends StatefulWidget {
+  final String locale;
+  final Map localizedValues;
+
+  OrdersTab({Key key, this.locale, this.localizedValues}) : super(key: key);
   @override
   _OrdersTabState createState() => _OrdersTabState();
 }
@@ -28,25 +33,32 @@ class _OrdersTabState extends State<OrdersTab>
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        backgroundColor: Color(0xFFFDFDFD),
+        backgroundColor: bg(context),
         appBar: appBarPrimarynoradius(context, "ORDERS"),
         body: ListView(
           children: <Widget>[
             Container(
-              height: 40,
-              margin: const EdgeInsets.only(top: 20, left: 45, right: 45),
+              height: 35,
+              margin:
+                  const EdgeInsets.only(left: 45, right: 45, top: 5, bottom: 5),
               child: GFSegmentTabs(
                 tabController: tabController,
                 width: 280,
-                // initialIndex: 0,
                 length: 2,
-                tabs: const <Widget>[
-                  Text(
-                    'Purchases',
+                tabs: <Widget>[
+                  Tab(
+                    child: Text(
+                      MyLocalizations.of(context).getLocalizations("PURCHASES"),
+                      style: textbarlowRegularBlackb(context),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                   Tab(
                     child: Text(
-                      'Subscriptions',
+                      MyLocalizations.of(context)
+                          .getLocalizations("SUBSCRIPTION"),
+                      style: textbarlowRegularBlackb(context),
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 ],
@@ -58,12 +70,11 @@ class _OrdersTabState extends State<OrdersTab>
                 unselectedLabelColor: Colors.black45,
                 indicator: BoxDecoration(
                     color: primary(context).withOpacity(0.2),
-                    // border: Border(bottom: BorderSide(color: primary)),
                     border: Border.all(color: primary(context)),
                     borderRadius: BorderRadius.circular(20)),
                 indicatorPadding: const EdgeInsets.all(8),
                 indicatorWeight: 3,
-                border: Border.all(color: Colors.white, width: 2),
+                border: Border.all(color: Colors.transparent, width: 2),
               ),
             ),
             Container(
@@ -72,10 +83,16 @@ class _OrdersTabState extends State<OrdersTab>
                 controller: tabController,
                 children: <Widget>[
                   Center(
-                    child: Orders(),
+                    child: Orders(
+                      locale: widget.locale,
+                      localizedValues: widget.localizedValues,
+                    ),
                   ),
                   Center(
-                    child: SubScriptionList(),
+                    child: SubScriptionListOrder(
+                      locale: widget.locale,
+                      localizedValues: widget.localizedValues,
+                    ),
                   ),
                 ],
               ),

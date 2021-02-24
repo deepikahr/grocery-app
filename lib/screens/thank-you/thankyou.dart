@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
-import 'package:readymadeGroceryApp/screens/orders/tab.dart';
+import 'package:readymadeGroceryApp/screens/orders/orderTab.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
@@ -43,9 +43,9 @@ class _ThankyouState extends State<Thankyou> {
                     context,
                     MaterialPageRoute(
                       builder: (BuildContext context) => OrdersTab(
-                          // locale: widget.locale,
-                          // localizedValues: widget.localizedValues,
-                          ),
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                      ),
                     ),
                   );
                   reuslt.then((value) => Navigator.pushAndRemoveUntil(

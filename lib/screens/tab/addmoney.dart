@@ -49,7 +49,7 @@ class _AddMoneyState extends State<AddMoney> {
                     //   MaterialPageRoute(builder: (context) => Thankyou()),
                     // );
                   },
-                  child: regularbuttonPrimary(context, "ADD_MONEY")),
+                  child: regularbuttonPrimary(context, "ADD_MONEY", false)),
               SizedBox(height: 4),
             ],
           ),

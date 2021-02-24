@@ -13,7 +13,7 @@ Widget appBarPrimary(BuildContext context, title) {
           style: textbarlowSemiBoldBlack(context)),
       centerTitle: true,
       backgroundColor: primary(context),
-      iconTheme: IconThemeData(color: Colors.black));
+      iconTheme: IconThemeData(color: dark(context)));
 }
 
 Widget appBarPrimarynoradius(BuildContext context, title) {
@@ -22,7 +22,7 @@ Widget appBarPrimarynoradius(BuildContext context, title) {
           style: textbarlowSemiBoldBlack(context)),
       centerTitle: true,
       backgroundColor: primary(context),
-      iconTheme: IconThemeData(color: Colors.black));
+      iconTheme: IconThemeData(color: dark(context)));
 }
 
 Widget appBarWhite(BuildContext context, title, bool changeUi,
@@ -35,7 +35,7 @@ Widget appBarWhite(BuildContext context, title, bool changeUi,
     centerTitle: true,
     backgroundColor: bg(context),
     elevation: 0,
-    iconTheme: IconThemeData(color: Colors.black),
+    iconTheme: IconThemeData(color: dark(context)),
     actions: <Widget>[actionTrueOrFalse ? actionProcess : Container()],
   );
 }
@@ -46,9 +46,10 @@ Widget appBarTransparent(BuildContext context, title) {
           style: textbarlowSemiBoldBlack(context)),
       centerTitle: true,
       backgroundColor: Colors.transparent,
-      iconTheme: IconThemeData(color: Colors.black),
+      iconTheme: IconThemeData(color: dark(context)),
       elevation: 0);
 }
+
 Widget appBarTransparentWithoutBack(BuildContext context, title) {
   return GFAppBar(
       automaticallyImplyLeading: false,

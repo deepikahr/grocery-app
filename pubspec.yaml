@@ -4,7 +4,7 @@ description: Grocery user app
 version: 3.0.1+33
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -24,7 +24,7 @@ dependencies:
   onesignal_flutter: ^2.4.1
   flutter_rating_bar: ^3.0.1+1
   dotted_border: ^1.0.5
-  flutter_svg: ^0.18.0
+  flutter_svg: 
   pagination: ^0.1.0
   geocoder: ^0.2.1
   image: ^2.1.4
@@ -143,6 +143,9 @@ flutter:
     - lib/assets/icons/green.png
     - lib/assets/icons/back.png
     - lib/assets/icons/front.png
+    - lib/assets/icons/refer.png
+    - lib/assets/icons/subscription_list.png
+    - lib/assets/icons/subscription.png
 
     - lib/assets/splash.png
     - lib/assets/logo.png

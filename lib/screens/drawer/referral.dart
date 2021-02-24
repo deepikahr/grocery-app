@@ -37,7 +37,8 @@ class _ReferralPageState extends State<ReferralPage> {
           SizedBox(height: 10),
           Container(
             margin: EdgeInsets.symmetric(horizontal: 25),
-            child: regularText(context, "REFER_US_to a friend and get \$3 credited to your wallet, Your friends will receive the same amount on signing up as well."),
+            child: regularText(context,
+                "REFER_US_to a friend and get \$3 credited to your wallet, Your friends will receive the same amount on signing up as well."),
           ),
           SizedBox(height: 30),
           regularTextblack87(context, "REFERRAL_CODE"),
@@ -54,7 +55,7 @@ class _ReferralPageState extends State<ReferralPage> {
             onTap: () {
               _settingModalBottomSheet(context);
             },
-            child: regularbuttonPrimary(context, "REFER")),
+            child: regularbuttonPrimary(context, "REFER", false)),
       ),
     );
   }

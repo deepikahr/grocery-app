@@ -8,39 +8,44 @@ import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:readymadeGroceryApp/screens/drawer/add-address.dart';
 import 'package:readymadeGroceryApp/screens/drawer/edit-address.dart';
+import 'package:readymadeGroceryApp/screens/thank-you/thanku-subscription.dart';
 import 'package:readymadeGroceryApp/service/address-service.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
+import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
-import 'package:readymadeGroceryApp/widgets/utils.dart';
 import '../../service/sentry-service.dart';
 
 SentryError sentryError = new SentryError();
 
-class SubscriptionPage extends StatefulWidget {
-  SubscriptionPage(
+class AddEditSubscriptionPage extends StatefulWidget {
+  AddEditSubscriptionPage(
       {Key key,
       this.locale,
       this.localizedValues,
+      this.subProductData,
       this.productData,
-      this.currency})
+      this.currency,
+      this.isEdit = false})
       : super(key: key);
 
-  final Map localizedValues, productData;
+  final Map localizedValues, subProductData, productData;
   final String locale, currency;
+  final bool isEdit;
 
   @override
-  _SubscriptionPageState createState() => _SubscriptionPageState();
+  _AddEditSubscriptionPageState createState() =>
+      _AddEditSubscriptionPageState();
 }
 
-class _SubscriptionPageState extends State<SubscriptionPage> {
+class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  int selectedIndex = 0, quantity = 1, selectedAddressValue;
+  int selectedPickSecheduleIndex = 0, selectedAddressValue, quantity = 1;
   DateTime selectedDate = DateTime.now();
   List pickUpScheduleList = [
         'DAILY',
@@ -51,7 +56,9 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
       ],
       addressList;
   var selectedAddress, locationInfo;
-  bool addressLoading = false;
+  bool addressLoading = false,
+      isSubscriptionLoading = false,
+      isSubscriptionCancelLoading = false;
   Location _location = new Location();
   PermissionStatus _permissionGranted;
 
@@ -63,29 +70,56 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        backgroundColor: Colors.white,
-        appBar: appBarPrimarynoradius(context, "SUBSCRIBE"),
-        body: ListView(
-          children: <Widget>[
-            SizedBox(height: 20),
-            buildImageView(),
-            SizedBox(height: 20),
-            buildPickUpSchedule(),
-            buildDeliveryView()
-          ],
-        ),
-        bottomNavigationBar: InkWell(
-          onTap: doSubscription,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: buttonprimary(context, "SUBSCRIBE", false),
-          ),
-        ),
+        key: _scaffoldKey,
+        backgroundColor: bg(context),
+        appBar: appBarPrimarynoradius(
+            context, widget.isEdit ? "UPDATE_SUBSCRIPTION" : "SUBSCRIBE"),
+        body: addressLoading
+            ? SquareLoader()
+            : ListView(
+                children: <Widget>[
+                  SizedBox(height: 20),
+                  buildImageView(),
+                  SizedBox(height: 20),
+                  buildPickUpSchedule(),
+                  buildDeliveryView()
+                ],
+              ),
+        bottomNavigationBar: addressLoading
+            ? Container(height: 1)
+            : Container(
+                height: widget.isEdit ? 150 : 75,
+                child: Column(
+                  children: [
+                    widget.isEdit
+                        ? InkWell(
+                            onTap: subscriptionCancelled,
+                            child: Padding(
+                                padding: EdgeInsets.only(left: 20, right: 20),
+                                child: regularGreyButton(
+                                    context,
+                                    "CANCEL_SUBSCRIPTION",
+                                    isSubscriptionCancelLoading)))
+                        : Container(),
+                    InkWell(
+                      onTap:
+                          widget.isEdit ? updateSubscription : doSubscription,
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 10, right: 10),
+                        child: buttonprimary(
+                            context,
+                            widget.isEdit ? "UPDATE_CHANGES" : "SUBSCRIBE",
+                            isSubscriptionLoading),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
       );
 
   buildImageView() => Container(
         padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-        decoration: BoxDecoration(color: Color(0xFFF7F7F7)),
+        decoration: BoxDecoration(color: cartCardBg(context)),
         child: Row(
           children: [
             Flexible(
@@ -147,21 +181,30 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  normallText(
-                    context,
-                    '${widget.productData['title'][0].toUpperCase()}${widget.productData['title'].substring(1)}',
+                  Text(
+                    '${widget.subProductData['products'][0]['productName'][0].toUpperCase()}${widget.subProductData['products'][0]['productName'].substring(1)}',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        fontSize: 16.0,
+                        fontFamily: 'BarlowRegular',
+                        color: blackText(context),
+                        fontWeight: FontWeight.w500),
                   ),
                   SizedBox(height: 10),
-                  regularTextblack87(context,
-                      '${widget.productData['variant'][0]['unit'] ?? ''}'),
+                  textLightSmall(
+                      '${widget.subProductData['products'][0]['unit'] ?? ''}',
+                      context),
                   SizedBox(height: 10),
-                  Row(
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       regularTextatStart(context, "SUBSCRIPTION_PRICE"),
                       priceMrpText(
-                          " ${widget.currency} ${widget.productData['variant'][0]['subScriptionAmount']}",
+                          "${widget.currency}${widget.subProductData['products'][0]['subscriptionTotal']}  (${quantity.toString()}*${widget.currency}${widget.subProductData['products'][0]['subScriptionAmount']})",
                           "",
-                          context)
+                          context),
                     ],
                   ),
                 ],
@@ -194,12 +237,17 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                         onTap: () {
                           setState(() {
                             quantity++;
+                            widget.subProductData['products'][0]
+                                    ["subscriptionTotal"] =
+                                widget.subProductData['products'][0]
+                                        ['subScriptionAmount'] *
+                                    quantity;
                           });
                         },
                         child: Icon(Icons.add),
                       ),
                     ),
-                    Text(quantity.toString()),
+                    titleTwoLine(quantity.toString(), context),
                     Container(
                       width: 32,
                       height: 32,
@@ -210,7 +258,14 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                       child: InkWell(
                         onTap: () {
                           setState(() {
-                            if (quantity > 1) quantity--;
+                            if (quantity > 1) {
+                              quantity--;
+                              widget.subProductData['products'][0]
+                                      ["subscriptionTotal"] =
+                                  widget.subProductData['products'][0]
+                                          ['subScriptionAmount'] *
+                                      quantity;
+                            }
                           });
                         },
                         child: Icon(Icons.remove, color: primary(context)),
@@ -226,7 +281,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
 
   buildPickUpSchedule() => Container(
         padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-        decoration: BoxDecoration(color: Color(0xFFF7F7F7)),
+        decoration: BoxDecoration(color: cartCardBg(context)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -247,15 +302,12 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                 itemBuilder: (BuildContext context, int index) => InkWell(
                   onTap: () {
                     setState(() {
-                      selectedIndex = index;
+                      selectedPickSecheduleIndex = index;
                     });
                   },
                   child: Container(
                     decoration: BoxDecoration(
-                        color: (selectedIndex == index)
-                            ? primary(context).withOpacity(0.3)
-                            : Colors.white,
-                        border: (selectedIndex == index)
+                        border: (selectedPickSecheduleIndex == index)
                             ? Border.all(color: primary(context))
                             : Border.all(color: Colors.grey[300]),
                         borderRadius: BorderRadius.circular(17)),
@@ -271,40 +323,53 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                 ),
               ),
             ),
-            Divider(),
-            SizedBox(height: 15),
-            regularTextatStart(context, "SUBSCRIPTION_STARTS_ON"),
-            SizedBox(height: 5),
-            Padding(
-              padding: const EdgeInsets.only(left: 2.0, right: 0),
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: Colors.grey[300]),
-                    borderRadius: BorderRadius.circular(5.0)),
-                child: FlatButton(
-                    onPressed: () {
-                      DatePicker.showDatePicker(context,
-                          showTitleActions: true,
-                          minTime: DateTime.now(), onConfirm: (date) {
-                        if (mounted) {
-                          setState(() {
-                            selectedDate = date;
-                          });
-                        }
-                      }, currentTime: DateTime.now(), locale: LocaleType.en);
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(DateFormat('dd/MM/yyyy').format(selectedDate)),
-                        Icon(Icons.calendar_today, color: Colors.black),
-                      ],
-                    )),
-              ),
-            ),
-            SizedBox(height: 15),
+            widget.isEdit
+                ? Container()
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Divider(),
+                      SizedBox(height: 15),
+                      regularTextblackbold(context, "SUBSCRIPTION_STARTS_ON"),
+                      SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 2.0, right: 0),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                              color: cartCardBg(context),
+                              border: Border.all(color: Colors.grey[300]),
+                              borderRadius: BorderRadius.circular(5.0)),
+                          child: FlatButton(
+                              onPressed: () {
+                                DatePicker.showDatePicker(context,
+                                    showTitleActions: true,
+                                    minTime: DateTime.now(), onConfirm: (date) {
+                                  if (mounted) {
+                                    setState(() {
+                                      selectedDate = date;
+                                    });
+                                  }
+                                },
+                                    currentTime: DateTime.now(),
+                                    locale: LocaleType.en);
+                              },
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(DateFormat('dd/MM/yyyy')
+                                      .format(selectedDate)),
+                                  Icon(Icons.calendar_today,
+                                      color: dark(context)),
+                                ],
+                              )),
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                    ],
+                  )
           ],
         ),
       );
@@ -511,9 +576,29 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
       if (mounted) {
         setState(() {
           addressList = onValue['response_data'];
+          if (widget.isEdit) {
+            for (int i = 0; i < pickUpScheduleList.length; i++) {
+              if (widget.subProductData['schedule'] == pickUpScheduleList[i]) {
+                selectedPickSecheduleIndex = i;
+              }
+            }
+          }
+          if (widget.isEdit) {
+            quantity = widget.subProductData['products'][0]["quantity"];
+          }
           if ((addressList?.length ?? 0) > 0) {
-            selectedAddress = addressList.first;
-            selectedAddressValue = 0;
+            if (widget.isEdit) {
+              for (int j = 0; j < addressList.length; j++) {
+                if (widget.subProductData['address']['_id'] ==
+                    addressList[j]['_id']) {
+                  selectedAddress = addressList[j];
+                  selectedAddressValue = j;
+                }
+              }
+            } else {
+              selectedAddress = addressList.first;
+              selectedAddressValue = 0;
+            }
           }
         });
       }
@@ -549,32 +634,107 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
     _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
-  void doSubscription() {
+  void updateSubscription() {
     if (selectedAddress != null) {
-      var body = {
-        "productId": widget.productData['_id'],
-        "unit": widget.productData['variant'][0]['unit'],
+      Map updateSubscriptionBody = {
+        "address": selectedAddress['_id'],
         "quantity": quantity,
-        "startDate": selectedDate.toString(),
-        "deliveryAddress": selectedAddress['_id'],
-        "subscriptionFrequency": pickUpScheduleList[selectedIndex]
+        "schedule": pickUpScheduleList[selectedPickSecheduleIndex],
       };
-      CartService.subscribeProduct(body).then((value) {
-        print(value.toString());
-        if (value['response_code'] == 200) {
-          UtilService.navigateTo(
-              context,
-              Thankyou(
-                locale: widget.locale,
-                localizedValues: widget.localizedValues,
-              ));
-        }
+      setState(() {
+        isSubscriptionLoading = true;
+      });
+      widget.subProductData['products'][0]["quantity"] = quantity;
+      widget.subProductData['products'][0]["subscriptionTotal"] =
+          widget.subProductData['products'][0]["subScriptionAmount"] * quantity;
+      widget.subProductData['grandTotal'] =
+          widget.subProductData['products'][0]["subscriptionTotal"];
+      widget.subProductData["address"] = selectedAddress;
+      widget.subProductData["schedule"] =
+          pickUpScheduleList[selectedPickSecheduleIndex];
+
+      CartService.subscribeProductUpdate(
+              updateSubscriptionBody, widget.subProductData['_id'])
+          .then((value) {
+        setState(() {
+          isSubscriptionLoading = false;
+          showSnackbar(value['response_data']);
+          Future.delayed(Duration(milliseconds: 1500), () {
+            Navigator.of(context).pop(widget.subProductData);
+          });
+        });
       }).catchError((onError) {
-        print(onError.toString());
+        setState(() {
+          isSubscriptionLoading = false;
+        });
       });
     } else {
       showSnackbar(
           MyLocalizations.of(context).getLocalizations("SELECT_ADDESS_MSG"));
     }
+  }
+
+  void doSubscription() {
+    if (selectedAddress != null) {
+      widget.subProductData['products'][0]["quantity"] = quantity;
+      widget.subProductData['grandTotal'] =
+          widget.subProductData['products'][0]["subscriptionTotal"];
+      widget.subProductData["address"] = selectedAddress['_id'];
+      widget.subProductData["schedule"] =
+          pickUpScheduleList[selectedPickSecheduleIndex];
+      widget.subProductData["subscriptionStartDate"] =
+          selectedDate.millisecondsSinceEpoch;
+      setState(() {
+        isSubscriptionLoading = true;
+      });
+      CartService.subscribeProductAdd(widget.subProductData).then((value) {
+        setState(() {
+          isSubscriptionLoading = false;
+        });
+        Navigator.of(context).pop();
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => ThankyouSubscription(
+              locale: widget.locale,
+              localizedValues: widget.localizedValues,
+            ),
+          ),
+        );
+      }).catchError((onError) {
+        setState(() {
+          isSubscriptionLoading = false;
+        });
+      });
+    } else {
+      showSnackbar(
+          MyLocalizations.of(context).getLocalizations("SELECT_ADDESS_MSG"));
+    }
+  }
+
+  void subscriptionCancelled() async {
+    setState(() {
+      isSubscriptionCancelLoading = true;
+    });
+    await ProductService.getSubscriptionResumeAndCancel(
+            widget.subProductData['_id'], false)
+        .then((onValue) {
+      if (mounted) {
+        setState(() {
+          isSubscriptionCancelLoading = false;
+          showSnackbar(onValue['response_data']);
+          Future.delayed(Duration(milliseconds: 1500), () {
+            Navigator.of(context).pop(true);
+          });
+        });
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isSubscriptionCancelLoading = false;
+        });
+      }
+      sentryError.reportError(error, null);
+    });
   }
 }

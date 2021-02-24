@@ -3,14 +3,13 @@ import 'package:provider/provider.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/categories/allcategories.dart';
 import 'package:readymadeGroceryApp/screens/drawer/about-us.dart';
-import 'package:readymadeGroceryApp/screens/drawer/referral.dart';
 import 'package:readymadeGroceryApp/screens/drawer/address.dart';
 import 'package:readymadeGroceryApp/screens/drawer/chatpage.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
-import 'package:readymadeGroceryApp/screens/orders/tab.dart';
+import 'package:readymadeGroceryApp/screens/orders/orderTab.dart';
 import 'package:readymadeGroceryApp/screens/product/all_deals.dart';
-import 'package:readymadeGroceryApp/screens/product/all_subscribed.dart';
-import 'package:readymadeGroceryApp/screens/product/subscriptionList.dart';
+import 'package:readymadeGroceryApp/screens/subsription/all_subscribed.dart';
+import 'package:readymadeGroceryApp/screens/subsription/subscriptionList.dart';
 import 'package:readymadeGroceryApp/screens/product/all_products.dart';
 import 'package:readymadeGroceryApp/screens/drawer/TandC-PP.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
@@ -142,9 +141,9 @@ class _DrawerPageState extends State<DrawerPage> {
                     ? _buildMenuTileList(
                         'lib/assets/icons/history.png', "MY_ORDERS",
                         route: OrdersTab(
-                            // locale: widget.locale,
-                            // localizedValues: widget.localizedValues,
-                            ))
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                        ))
                     : Container(),
                 getTokenValue
                     ? _buildMenuTileList(
@@ -192,29 +191,31 @@ class _DrawerPageState extends State<DrawerPage> {
                       title: "TERMS_CONDITIONS"),
                 ),
                 _buildMenuTileList(
-                  'lib/assets/icons/tc.png',
+                  'lib/assets/icons/subscription.png',
                   "SUBSCRIPTION",
                   route: AllSubscribed(
                     locale: widget.locale,
                     localizedValues: widget.localizedValues,
                   ),
                 ),
-                _buildMenuTileList(
-                  'lib/assets/icons/tc.png',
-                  "SUBSCRIPTION_LIST",
-                  route: SubScriptionList(
-                    locale: widget.locale,
-                    localizedValues: widget.localizedValues,
-                  ),
-                ),
-                _buildMenuTileList(
-                  'lib/assets/icons/share.png',
-                  "REFERRAL",
-                  route: ReferralPage(
-                    locale: widget.locale,
-                    localizedValues: widget.localizedValues,
-                  ),
-                ),
+                getTokenValue
+                    ? _buildMenuTileList(
+                        'lib/assets/icons/subscription_list.png',
+                        "SUBSCRIPTION_LIST",
+                        route: SubScriptionList(
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                        ),
+                      )
+                    : Container(),
+                // _buildMenuTileList(
+                //   'lib/assets/icons/refer.png',
+                //   "REFERRAL",
+                //   route: ReferralPage(
+                //     locale: widget.locale,
+                //     localizedValues: widget.localizedValues,
+                //   ),
+                // ),
                 InkWell(
                     onTap: () {
                       final RenderBox box = context.findRenderObject();

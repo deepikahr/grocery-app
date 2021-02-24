@@ -110,7 +110,6 @@ class _ProductDetailsState extends State<ProductDetails>
       });
     }
     ProductService.productDetails(widget.productID).then((value) {
-      print(value.toString());
       if (mounted) {
         setState(() {
           productDetail = value['response_data'];
@@ -367,7 +366,6 @@ class _ProductDetailsState extends State<ProductDetails>
                                           (url) {
                                             return InkWell(
                                               onTap: () {
-                                                print(url);
                                                 showGeneralDialog(
                                                     context: context,
                                                     barrierDismissible: true,
