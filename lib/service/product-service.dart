@@ -27,17 +27,14 @@ class ProductService {
     });
   }
 
-
   static Future<dynamic> getSubscriptionList(index, limit) async {
     return client
-        .get(Constants.apiUrl + "/products/list/subscription")
+        .get(Constants.apiUrl +
+            "/products/list/subscription?limit=$limit&page=$index")
         .then((response) {
       return json.decode(response.body);
-    }).catchError((error){
-      print(error.toString());
     });
   }
-
 
   // get all deal products
   static Future<Map<String, dynamic>> getDealProductListAll(
@@ -115,7 +112,6 @@ class ProductService {
         .get(Constants.apiUrl + "/products/home")
         .then((response) async {
       await Common.setAllData(json.decode(response.body));
-
       return json.decode(response.body);
     });
   }
@@ -143,6 +139,57 @@ class ProductService {
   static Future<dynamic> productRating(body) async {
     return client
         .post(Constants.apiUrl + '/ratings/rate', body: json.encode(body))
+        .then((response) {
+      return json.decode(response.body);
+    });
+  }
+
+  //getSubscriptionListByUser
+  static Future<dynamic> getSubscriptionListByUser(index, limit) async {
+    return client
+        .get(Constants.apiUrl + "/subscriptions/list?limit=$limit&page=$index")
+        .then((response) {
+      return json.decode(response.body);
+    });
+  }
+
+  //getSubscription deatils
+  static Future<dynamic> getSubscriptionDetails(subscriptionId) async {
+    return client
+        .get(Constants.apiUrl + "/subscriptions/detail/$subscriptionId")
+        .then((response) {
+      return json.decode(response.body);
+    });
+  }
+
+  //getSubscriptionList orders
+  static Future<dynamic> getSubscriptionListOrder(index, limit) async {
+    return client
+        .get(Constants.apiUrl +
+            "/subscriptions/order/list?limit=$limit&page=$index")
+        .then((response) {
+      return json.decode(response.body);
+    });
+  }
+
+  //Subscription pause
+  static Future<dynamic> getSubscriptionPause(subscriptionId, body) async {
+    return client
+        .put(Constants.apiUrl + "/subscriptions/status/pause/$subscriptionId",
+            body: json.encode(body))
+        .then((response) {
+      return json.decode(response.body);
+    });
+  }
+
+  //Subscription resume
+  static Future<dynamic> getSubscriptionResumeAndCancel(
+      subscriptionId, isResume) async {
+    return client
+        .put(Constants.apiUrl +
+            (isResume
+                ? "/subscriptions/status/active/$subscriptionId"
+                : "/subscriptions/status/cancelled/$subscriptionId"))
         .then((response) {
       return json.decode(response.body);
     });

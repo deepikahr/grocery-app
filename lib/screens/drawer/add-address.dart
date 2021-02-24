@@ -427,20 +427,6 @@ class _AddAddressState extends State<AddAddress> {
                   itemCount:
                       addressType.length == null ? 0 : addressType.length,
                   itemBuilder: (BuildContext context, int i) {
-                    String type;
-                    if (addressType[i] == 'HOME') {
-                      type =
-                          MyLocalizations.of(context).getLocalizations("HOME");
-                    } else if (addressType[i] == 'WORK') {
-                      type =
-                          MyLocalizations.of(context).getLocalizations("WORK");
-                    } else if (addressType[i] == 'OTHERS') {
-                      type = MyLocalizations.of(context)
-                          .getLocalizations("OTHERS");
-                    } else {
-                      type = addressType[i];
-                    }
-
                     return Padding(
                       padding: const EdgeInsets.only(left: 10.0),
                       child: Row(
@@ -455,7 +441,7 @@ class _AddAddressState extends State<AddAddress> {
                               setSelectedRadio(value);
                             },
                           ),
-                          normalTextWithOutRow(context, type, false)
+                          normalTextWithOutRow(context, addressType[i], false)
                         ],
                       ),
                     );

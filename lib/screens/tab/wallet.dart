@@ -3,7 +3,6 @@ import 'package:readymadeGroceryApp/screens/tab/wallet-history.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
@@ -109,7 +108,7 @@ class _WalletPageState extends State<WalletPage> {
                     MaterialPageRoute(builder: (context) => AddMoney()),
                   );
                 },
-                child: regularbuttonPrimary(context, "ADD_MONEY")),
+                child: regularbuttonPrimary(context, "ADD_MONEY", false)),
             SizedBox(height: 4),
           ],
         ),

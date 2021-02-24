@@ -26,6 +26,7 @@ class ApiInterceptor implements InterceptorContract {
   @override
   Future<ResponseData> interceptResponse({ResponseData data}) async {
     var errorData = json.decode(data.body);
+    print(errorData);
     if (data.statusCode == 400) {
       var msg = '';
       for (int i = 0, l = errorData['errors'].length; i < l; i++) {

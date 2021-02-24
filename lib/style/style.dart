@@ -1208,7 +1208,6 @@ TextStyle textbarlowmediumpri(context) {
   );
 }
 
-
 TextStyle textbarlowMediumprimary(context) {
   return TextStyle(
     fontSize: 20.0,
@@ -1653,6 +1652,7 @@ TextStyle textBarlowRegularrwhsm(context) {
     color: Colors.white.withOpacity(0.87),
   );
 }
+
 TextStyle textbarlowMediumwhitemm(context) {
   return TextStyle(
     fontSize: 17.0,
@@ -1660,6 +1660,15 @@ TextStyle textbarlowMediumwhitemm(context) {
     color: Colors.white,
   );
 }
+
+TextStyle textbarlowMediumwhitemmDark(context) {
+  return TextStyle(
+    fontSize: 17.0,
+    fontFamily: 'BarlowMedium',
+    color: dark(context),
+  );
+}
+
 TextStyle textbarlowMediumBlackmm(context) {
   return TextStyle(
     fontSize: 16.0,
@@ -1676,6 +1685,14 @@ TextStyle textbarlowmedium12(context) {
       color: green);
 }
 
+TextStyle textbarlowmedium12Red(context) {
+  return TextStyle(
+      fontSize: 12.0,
+      fontWeight: FontWeight.w300,
+      fontFamily: 'BarlowMedium',
+      color: red);
+}
+
 TextStyle textbarlowMediumPrimary(context) {
   return TextStyle(
     fontSize: 20.0,
@@ -1685,7 +1702,6 @@ TextStyle textbarlowMediumPrimary(context) {
   );
 }
 
-
 TextStyle textbarlowmedium12star(context) {
   return TextStyle(
       fontSize: 12.0,
@@ -1694,12 +1710,11 @@ TextStyle textbarlowmedium12star(context) {
       color: star);
 }
 
-
 TextStyle textbarlowRegularBlackFont14(context) {
   return TextStyle(
     fontSize: 14.0,
     fontFamily: 'BarlowRegular',
-    color: Colors.black.withOpacity(0.60),
+    color: dark(context).withOpacity(0.60),
   );
 }
 
@@ -1710,7 +1725,6 @@ TextStyle textbarlowRegularBlack87Font14(context) {
     color: Colors.black.withOpacity(0.87),
   );
 }
-
 
 TextStyle textBarlowregwhitelg(context) {
   return TextStyle(

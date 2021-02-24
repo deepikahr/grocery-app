@@ -100,7 +100,7 @@ Widget walletTransaction(BuildContext context, title, subTitle) {
 }
 
 Widget normalTextWithOutRow(BuildContext context, title, isCenter) {
-  return Text(MyLocalizations.of(context).getLocalizations(title),
+  return Text(MyLocalizations.of(context).getLocalizations(title ?? ""),
       textAlign: isCenter ? TextAlign.center : TextAlign.start,
       style: textBarlowRegularBlack(context));
 }
@@ -226,11 +226,9 @@ Widget buildResentOtp(BuildContext context, title, isResentOtpLoading) {
 }
 
 Widget buildBoldText(BuildContext context, title) {
-  return GFTypography(
-    showDivider: false,
-    child: Expanded(
-        child: Text(MyLocalizations.of(context).getLocalizations(title ?? ""),
-            style: textBarlowSemiBoldBlackbigg(context))),
+  return Text(
+    MyLocalizations.of(context).getLocalizations(title ?? ""),
+    style: textBarlowSemiBoldBlackbigg(context),
   );
 }
 
@@ -488,7 +486,7 @@ Widget whiteText(BuildContext context, title) {
       child: Center(
     child: Text(
       MyLocalizations.of(context).getLocalizations(title),
-      style: textbarlowMediumwhitemm(context),
+      style: textbarlowMediumwhitemmDark(context),
     ),
   ));
 }
@@ -968,9 +966,12 @@ walletCard2(BuildContext context, title, subtitle, subtitle1) {
     ),
   );
 }
-Widget textGreenPrimary(title, style) {
-  return Text(title, style: style);
+
+Widget textGreenPrimary(context, title, style) {
+  return Text(MyLocalizations.of(context).getLocalizations(title ?? ""),
+      style: style);
 }
+
 regularText(BuildContext context, title) {
   return Text(
     MyLocalizations.of(context).getLocalizations(title),
@@ -999,5 +1000,19 @@ regularTextblackbold(BuildContext context, title) {
     MyLocalizations.of(context).getLocalizations(title),
     textAlign: TextAlign.start,
     style: textbarlowmediumwblack(context),
+  );
+}
+
+builddTextbarlowmediumwblack(BuildContext context, title) {
+  return Text(
+    MyLocalizations.of(context).getLocalizations(title),
+    style: textbarlowmediumwblack(context),
+  );
+}
+
+builddTextbarlowRegularBlackFont14(BuildContext context, title) {
+  return Text(
+    MyLocalizations.of(context).getLocalizations(title),
+    style: textbarlowRegularBlackFont14(context),
   );
 }
