@@ -18,13 +18,14 @@ class AlertService {
       state = WidgetsBinding.instance.lifecycleState;
       if (state != AppLifecycleState.paused) {
         Common.getNoConnection().then((value) {
-          String noInternet = (value['NO_INTERNET'] == null
+          String noInternet = (value == null || value['NO_INTERNET'] == null
               ? "No Internet connection"
               : value['NO_INTERNET']);
-          String onlineMsg = (value['ONLINE_MSG'] == null
+          String onlineMsg = (value == null || value['ONLINE_MSG'] == null
               ? "Now you are online."
               : value['ONLINE_MSG']);
-          String noInternetMsg = (value["NO_INTERNET_MSG"] == null
+          String noInternetMsg = (value == null ||
+                  value["NO_INTERNET_MSG"] == null
               ? "requires an internet connection. Chcek you connection then try again."
               : value["NO_INTERNET_MSG"]);
           if (connectivityResult == ConnectivityResult.none) {
