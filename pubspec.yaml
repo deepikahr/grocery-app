@@ -44,7 +44,6 @@ dependencies:
   photo_view: ^0.10.2
   webview_flutter:
   flutter_datetime_picker: ^1.5.0
-
   flutter_localizations:
     sdk: flutter
 
@@ -145,7 +144,6 @@ flutter:
     - lib/assets/icons/front.png
     - lib/assets/icons/refer.png
     - lib/assets/icons/subscription_list.png
-    - lib/assets/icons/subscription.png
 
     - lib/assets/splash.png
     - lib/assets/logo.png

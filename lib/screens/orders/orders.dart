@@ -19,9 +19,14 @@ SentryError sentryError = new SentryError();
 class Orders extends StatefulWidget {
   final String userID, locale;
   final Map localizedValues;
-
-  Orders({Key key, this.userID, this.locale, this.localizedValues})
-      : super(key: key);
+  final bool isSubscription;
+  Orders({
+    Key key,
+    this.userID,
+    this.locale,
+    this.localizedValues,
+    this.isSubscription = false,
+  }) : super(key: key);
 
   @override
   _OrdersState createState() => _OrdersState();
@@ -81,7 +86,8 @@ class _OrdersState extends State<Orders> {
           isNextPageLoading = true;
         });
       }
-      await OrderService.getOrderByUserID(ordersPageNumber, ordersPerPage)
+      await OrderService.getOrderByUserID(ordersPageNumber, ordersPerPage,
+              widget.isSubscription ? "SUBSCRIPTIONS" : "PURCHASES")
           .then((onValue) {
         _refreshController.refreshCompleted();
         if (onValue['response_data'] != null &&

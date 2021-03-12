@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:readymadeGroceryApp/screens/orders/subscription_list.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -89,9 +88,10 @@ class _OrdersTabState extends State<OrdersTab>
                     ),
                   ),
                   Center(
-                    child: SubScriptionListOrder(
+                    child: Orders(
                       locale: widget.locale,
                       localizedValues: widget.localizedValues,
+                      isSubscription: true,
                     ),
                   ),
                 ],

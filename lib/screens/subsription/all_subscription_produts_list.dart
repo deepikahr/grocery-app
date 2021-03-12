@@ -12,20 +12,22 @@ import '../../widgets/loader.dart';
 
 SentryError sentryError = new SentryError();
 
-class AllSubscribed extends StatefulWidget {
+class AllSubscriptionProductsListPage extends StatefulWidget {
   final Map localizedValues;
   final String locale;
 
-  AllSubscribed({
+  AllSubscriptionProductsListPage({
     Key key,
     this.locale,
     this.localizedValues,
   });
   @override
-  _AllSubscribedState createState() => _AllSubscribedState();
+  _AllSubscriptionProductsListPageState createState() =>
+      _AllSubscriptionProductsListPageState();
 }
 
-class _AllSubscribedState extends State<AllSubscribed> {
+class _AllSubscriptionProductsListPageState
+    extends State<AllSubscriptionProductsListPage> {
   bool isUserLoaggedIn = false,
       isFirstPageLoading = true,
       isNextPageLoading = false;
@@ -111,9 +113,10 @@ class _AllSubscribedState extends State<AllSubscribed> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bg(context),
-      appBar: appBarPrimarynoradius(context, "SUBSCRIBED"),
+      appBar: appBarPrimarynoradius(context, "SUBSCRIPTION_PRODUCTS"),
       body: Column(
         children: [
+          SizedBox(height: 10),
           // Container(
           //   padding: const EdgeInsets.only(
           //       bottom: 0.0, left: 15.0, right: 15.0, top: 15.0),
@@ -165,7 +168,7 @@ class _AllSubscribedState extends State<AllSubscribed> {
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           childAspectRatio:
-                              MediaQuery.of(context).size.width / 550,
+                              MediaQuery.of(context).size.width / 500,
                           crossAxisSpacing: 12,
                           mainAxisSpacing: 12,
                         ),
@@ -173,7 +176,6 @@ class _AllSubscribedState extends State<AllSubscribed> {
                           return SubscriptionCard(
                             currency: currency,
                             productData: productsList[i],
-                            isHome: false,
                           );
                         },
                       ),

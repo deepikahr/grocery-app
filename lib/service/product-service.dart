@@ -32,6 +32,7 @@ class ProductService {
         .get(Constants.apiUrl +
             "/products/list/subscription?limit=$limit&page=$index")
         .then((response) {
+      Common.setSubcriptionData(json.decode(response.body));
       return json.decode(response.body);
     });
   }
@@ -175,7 +176,9 @@ class ProductService {
   //Subscription pause
   static Future<dynamic> getSubscriptionPause(subscriptionId, body) async {
     return client
-        .put(Constants.apiUrl + "/subscriptions/status/pause/$subscriptionId",
+        .put(
+            Constants.apiUrl +
+                "/subscriptions/update-status-pause/$subscriptionId",
             body: json.encode(body))
         .then((response) {
       return json.decode(response.body);
@@ -188,8 +191,8 @@ class ProductService {
     return client
         .put(Constants.apiUrl +
             (isResume
-                ? "/subscriptions/status/active/$subscriptionId"
-                : "/subscriptions/status/cancelled/$subscriptionId"))
+                ? "/subscriptions/update-status-active/$subscriptionId"
+                : "/subscriptions/update-status-cancel/$subscriptionId"))
         .then((response) {
       return json.decode(response.body);
     });

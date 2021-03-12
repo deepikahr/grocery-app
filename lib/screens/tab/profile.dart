@@ -473,7 +473,7 @@ class _ProfileState extends State<Profile> {
                                 ),
                               );
                             },
-                            child: profileText(context, "SUBSCRIPTION_LIST")),
+                            child: profileText(context, "SUBSCRIPTION")),
                         SizedBox(height: 15),
                         InkWell(
                             onTap: () {

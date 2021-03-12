@@ -70,7 +70,6 @@ class _OrderDetailsState extends State<OrderDetails> {
     await Common.getCurrency().then((value) {
       currency = value;
     });
-    print(widget.orderId);
     await OrderService.getOrderHistory(widget.orderId).then((onValue) {
       if (mounted) {
         setState(() {
