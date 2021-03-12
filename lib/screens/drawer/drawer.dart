@@ -6,8 +6,9 @@ import 'package:readymadeGroceryApp/screens/drawer/about-us.dart';
 import 'package:readymadeGroceryApp/screens/drawer/address.dart';
 import 'package:readymadeGroceryApp/screens/drawer/chatpage.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
-import 'package:readymadeGroceryApp/screens/orders/orders.dart';
+import 'package:readymadeGroceryApp/screens/orders/orderTab.dart';
 import 'package:readymadeGroceryApp/screens/product/all_deals.dart';
+import 'package:readymadeGroceryApp/screens/subsription/subscriptionList.dart';
 import 'package:readymadeGroceryApp/screens/product/all_products.dart';
 import 'package:readymadeGroceryApp/screens/drawer/TandC-PP.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
@@ -138,7 +139,7 @@ class _DrawerPageState extends State<DrawerPage> {
                 getTokenValue
                     ? _buildMenuTileList(
                         'lib/assets/icons/history.png', "MY_ORDERS",
-                        route: Orders(
+                        route: OrdersTab(
                           locale: widget.locale,
                           localizedValues: widget.localizedValues,
                         ))
@@ -188,6 +189,24 @@ class _DrawerPageState extends State<DrawerPage> {
                       endPoint: "/pages/terms-and-conditions",
                       title: "TERMS_CONDITIONS"),
                 ),
+                getTokenValue
+                    ? _buildMenuTileList(
+                        'lib/assets/icons/subscription_list.png',
+                        "SUBSCRIPTION",
+                        route: SubScriptionList(
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                        ),
+                      )
+                    : Container(),
+                // _buildMenuTileList(
+                //   'lib/assets/icons/refer.png',
+                //   "REFERRAL",
+                //   route: ReferralPage(
+                //     locale: widget.locale,
+                //     localizedValues: widget.localizedValues,
+                //   ),
+                // ),
                 InkWell(
                     onTap: () {
                       final RenderBox box = context.findRenderObject();

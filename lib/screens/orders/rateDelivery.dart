@@ -72,7 +72,7 @@ class _RateDeliveryState extends State<RateDelivery> {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarprimary(context, "RATE_DELIVERY"),
+      appBar: appBarPrimary(context, "RATE_DELIVERY"),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
         child: InkWell(

@@ -71,7 +71,7 @@ class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bg(context),
-      appBar: appBarprimary(context, "RECENT_TRANSACTIONS"),
+      appBar: appBarPrimary(context, "RECENT_TRANSACTIONS"),
       body: isWalletHistory
           ? Center(child: SquareLoader())
           : walletHistoryList.length > 0

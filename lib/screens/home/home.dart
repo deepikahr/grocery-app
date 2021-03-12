@@ -26,6 +26,7 @@ class Home extends StatefulWidget {
   final Map localizedValues;
   final String locale;
   final bool isTest;
+
   Home(
       {Key key,
       this.currentIndex,
@@ -241,7 +242,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       appBar: currentIndex == 0
           ? appBarWhite(
               context,
-              '-',
+              deliveryAddress(),
               true,
               true,
               InkWell(
@@ -263,7 +264,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                   child: Icon(Icons.search),
                 ),
               ),
-              titleWidget: deliveryAddress())
+            )
           : null,
       drawer: Drawer(
         child: DrawerPage(

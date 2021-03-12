@@ -338,7 +338,7 @@ class _CheckoutState extends State<Checkout> {
       Map<String, dynamic> data = {
         "deliverySlotId": deliverySlotList[dateSelectedValue]['timings']
             [selectSlot]['_id'],
-        "orderFrom": "USER_APP",
+        "orderFrom": Constants.orderFrom,
         "shippingMethod": shippingMethodsList[shippingMethodValue],
       };
       var result = Navigator.push(
@@ -1050,7 +1050,6 @@ class _CheckoutState extends State<Checkout> {
                                                   currentLocation =
                                                       await _location
                                                           .getLocation();
-
                                                   if (currentLocation != null) {
                                                     Map locationLatLong = {
                                                       "latitude":

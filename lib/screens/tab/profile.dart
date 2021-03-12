@@ -7,7 +7,8 @@ import 'package:readymadeGroceryApp/main.dart';
 import 'package:readymadeGroceryApp/screens/authe/changePassword.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/drawer/address.dart';
-import 'package:readymadeGroceryApp/screens/orders/orders.dart';
+import 'package:readymadeGroceryApp/screens/orders/orderTab.dart';
+import 'package:readymadeGroceryApp/screens/subsription/subscriptionList.dart';
 import 'package:readymadeGroceryApp/screens/tab/editprofile.dart';
 import 'package:readymadeGroceryApp/screens/tab/wallet.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
@@ -227,7 +228,7 @@ class _ProfileState extends State<Profile> {
           ? null
           : token == null
               ? null
-              : appBarprimary(context, "PROFILE"),
+              : appBarPrimary(context, "PROFILE"),
       body: isGetTokenLoading || isGetLanguagesListLoading
           ? SquareLoader()
           : token == null
@@ -452,7 +453,7 @@ class _ProfileState extends State<Profile> {
                               var result = Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Orders(
+                                  builder: (context) => OrdersTab(
                                       locale: widget.locale,
                                       localizedValues: widget.localizedValues),
                                 ),
@@ -460,6 +461,19 @@ class _ProfileState extends State<Profile> {
                               result.then((value) => getToken());
                             },
                             child: profileText(context, "MY_ORDERS")),
+                        SizedBox(height: 15),
+                        InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SubScriptionList(
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues),
+                                ),
+                              );
+                            },
+                            child: profileText(context, "SUBSCRIPTION")),
                         SizedBox(height: 15),
                         InkWell(
                             onTap: () {

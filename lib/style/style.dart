@@ -1199,6 +1199,15 @@ TextStyle textbarlowMediumBlack(context) {
   );
 }
 
+TextStyle textbarlowmediumpri(context) {
+  return TextStyle(
+    fontSize: 14.0,
+    fontWeight: FontWeight.w600,
+    fontFamily: 'BarlowMedium',
+    color: primary(context),
+  );
+}
+
 TextStyle textbarlowMediumprimary(context) {
   return TextStyle(
     fontSize: 20.0,
@@ -1641,6 +1650,79 @@ TextStyle textBarlowRegularrwhsm(context) {
     fontFamily: 'BarlowRegular',
     fontWeight: FontWeight.w400,
     color: Colors.white.withOpacity(0.87),
+  );
+}
+
+TextStyle textbarlowMediumwhitemm(context) {
+  return TextStyle(
+    fontSize: 17.0,
+    fontFamily: 'BarlowMedium',
+    color: Colors.white,
+  );
+}
+
+TextStyle textbarlowMediumwhitemmDark(context) {
+  return TextStyle(
+    fontSize: 17.0,
+    fontFamily: 'BarlowMedium',
+    color: dark(context),
+  );
+}
+
+TextStyle textbarlowMediumBlackmm(context) {
+  return TextStyle(
+    fontSize: 16.0,
+    fontFamily: 'BarlowMedium',
+    color: Colors.black87,
+  );
+}
+
+TextStyle textbarlowmedium12(context) {
+  return TextStyle(
+      fontSize: 12.0,
+      fontWeight: FontWeight.w300,
+      fontFamily: 'BarlowMedium',
+      color: green);
+}
+
+TextStyle textbarlowmedium12Orange(context) {
+  return TextStyle(
+      fontSize: 12.0,
+      fontWeight: FontWeight.w300,
+      fontFamily: 'BarlowMedium',
+      color: Colors.orange);
+}
+
+TextStyle textbarlowMediumPrimary(context) {
+  return TextStyle(
+    fontSize: 20.0,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'BarlowMedium',
+    color: primary(context),
+  );
+}
+
+TextStyle textbarlowmedium12star(context) {
+  return TextStyle(
+      fontSize: 12.0,
+      fontWeight: FontWeight.w300,
+      fontFamily: 'BarlowMedium',
+      color: star);
+}
+
+TextStyle textbarlowRegularBlackFont14(context) {
+  return TextStyle(
+    fontSize: 14.0,
+    fontFamily: 'BarlowRegular',
+    color: dark(context).withOpacity(0.60),
+  );
+}
+
+TextStyle textbarlowRegularBlack87Font14(context) {
+  return TextStyle(
+    fontSize: 14.0,
+    fontFamily: 'BarlowRegular',
+    color: Colors.black.withOpacity(0.87),
   );
 }
 

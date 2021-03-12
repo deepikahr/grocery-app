@@ -17,6 +17,25 @@ class CartService {
     });
   }
 
+  // add subscription
+  static Future<Map<String, dynamic>> subscribeProductAdd(body) async {
+    return client
+        .post(Constants.apiUrl + "/subscriptions/add", body: json.encode(body))
+        .then((response) {
+      return json.decode(response.body);
+    });
+  } //  update subscription
+
+  static Future<Map<String, dynamic>> subscribeProductUpdate(
+      body, subscriptionId) async {
+    return client
+        .put(Constants.apiUrl + "/subscriptions/$subscriptionId",
+            body: json.encode(body))
+        .then((response) {
+      return json.decode(response.body);
+    });
+  }
+
   // get product in cart
   static Future<Map<String, dynamic>> getProductToCart() async {
     return client.get(Constants.apiUrl + "/carts/my").then((response) {

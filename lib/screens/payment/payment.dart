@@ -107,7 +107,6 @@ class _PaymentState extends State<Payment> {
           MyLocalizations.of(context).getLocalizations("SELECT_PAYMENT_FIRST"));
     } else {
       widget.data['deliveryInstruction'] = widget.instruction ?? "";
-      print(widget.data);
       if (fullWalletUsedOrNot == true) {
         widget.data['paymentType'] = "COD";
         palceOrderMethod(widget.data);
@@ -351,6 +350,8 @@ class _PaymentState extends State<Payment> {
                       ? Container()
                       : paymentTypes.length > 0
                           ? Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 buildBoldText(context, "CHOOSE_PAYMENT_METHOD"),
                                 SizedBox(height: 10),

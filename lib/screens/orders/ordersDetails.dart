@@ -22,7 +22,13 @@ SentryError sentryError = new SentryError();
 class OrderDetails extends StatefulWidget {
   final String orderId, locale;
   final Map localizedValues;
-  OrderDetails({Key key, this.orderId, this.locale, this.localizedValues})
+  final bool isSubscription;
+  OrderDetails(
+      {Key key,
+      this.orderId,
+      this.locale,
+      this.localizedValues,
+      this.isSubscription = false})
       : super(key: key);
   @override
   _OrderDetailsState createState() => _OrderDetailsState();
@@ -191,7 +197,11 @@ class _OrderDetailsState extends State<OrderDetails> {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarprimary(context, "ORDER_DETAILS"),
+      appBar: appBarPrimary(
+          context,
+          widget.isSubscription
+              ? "SUBSCRIPTION_ORDER_DETAILS"
+              : "ORDER_DETAILS"),
       body: isLoading
           ? SquareLoader()
           : orderHistory == null

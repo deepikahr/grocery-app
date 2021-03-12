@@ -4,8 +4,7 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 class CardOverlay extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return Positioned(
+  Widget build(BuildContext context) => Positioned(
       child: Container(
           alignment: Alignment.center,
           height: MediaQuery.of(context).size.height,
@@ -16,5 +15,4 @@ class CardOverlay extends StatelessWidget {
           ),
           child: outOfStck(context, "OOPS", "OUT_OF_STOCK")),
     );
-  }
 }

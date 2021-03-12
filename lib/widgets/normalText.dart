@@ -100,7 +100,7 @@ Widget walletTransaction(BuildContext context, title, subTitle) {
 }
 
 Widget normalTextWithOutRow(BuildContext context, title, isCenter) {
-  return Text(MyLocalizations.of(context).getLocalizations(title),
+  return Text(MyLocalizations.of(context).getLocalizations(title ?? ""),
       textAlign: isCenter ? TextAlign.center : TextAlign.start,
       style: textBarlowRegularBlack(context));
 }
@@ -226,11 +226,9 @@ Widget buildResentOtp(BuildContext context, title, isResentOtpLoading) {
 }
 
 Widget buildBoldText(BuildContext context, title) {
-  return GFTypography(
-    showDivider: false,
-    child: Expanded(
-        child: Text(MyLocalizations.of(context).getLocalizations(title ?? ""),
-            style: textBarlowSemiBoldBlackbigg(context))),
+  return Text(
+    MyLocalizations.of(context).getLocalizations(title ?? ""),
+    style: textBarlowSemiBoldBlackbigg(context),
   );
 }
 
@@ -470,6 +468,35 @@ Widget textWithValue(BuildContext context, title, value) {
             MyLocalizations.of(context).getLocalizations(title, true) + value,
             style: textBarlowMediumBlack(context),
           ),
+  );
+}
+
+Widget referText(BuildContext context, title) {
+  return Container(
+      child: Center(
+    child: Text(
+      MyLocalizations.of(context).getLocalizations(title),
+      style: textbarlowMediumBlackmm(context),
+    ),
+  ));
+}
+
+Widget whiteText(BuildContext context, title) {
+  return Container(
+      child: Center(
+    child: Text(
+      MyLocalizations.of(context).getLocalizations(title),
+      style: textbarlowMediumwhitemmDark(context),
+    ),
+  ));
+}
+
+Widget normallText(BuildContext context, title) {
+  return Container(
+    child: Text(
+      MyLocalizations.of(context).getLocalizations(title),
+      style: textbarlowMediumBlackmm(context),
+    ),
   );
 }
 
@@ -937,5 +964,55 @@ walletCard2(BuildContext context, title, subtitle, subtitle1) {
         Image.asset('lib/assets/images/walleticon.png', width: 38, height: 36)
       ],
     ),
+  );
+}
+
+Widget textGreenPrimary(context, title, style) {
+  return Text(MyLocalizations.of(context).getLocalizations(title ?? ""),
+      style: style);
+}
+
+regularText(BuildContext context, title) {
+  return Text(
+    MyLocalizations.of(context).getLocalizations(title),
+    textAlign: TextAlign.center,
+    style: textbarlowRegularBlackFont14(context),
+  );
+}
+
+regularTextatStart(BuildContext context, title) {
+  return Text(
+    MyLocalizations.of(context).getLocalizations(title),
+    style: textbarlowRegularBlackd(context),
+  );
+}
+
+regularTextblack87(BuildContext context, title) {
+  return Text(
+    MyLocalizations.of(context).getLocalizations(title),
+    textAlign: TextAlign.center,
+    style: textbarlowRegularBlack87Font14(context),
+  );
+}
+
+regularTextblackbold(BuildContext context, title) {
+  return Text(
+    MyLocalizations.of(context).getLocalizations(title),
+    textAlign: TextAlign.start,
+    style: textbarlowmediumwblack(context),
+  );
+}
+
+builddTextbarlowmediumwblack(BuildContext context, title) {
+  return Text(
+    MyLocalizations.of(context).getLocalizations(title),
+    style: textbarlowmediumwblack(context),
+  );
+}
+
+builddTextbarlowRegularBlackFont14(BuildContext context, title) {
+  return Text(
+    MyLocalizations.of(context).getLocalizations(title),
+    style: textbarlowRegularBlackFont14(context),
   );
 }

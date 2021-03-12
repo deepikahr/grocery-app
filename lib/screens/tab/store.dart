@@ -6,6 +6,7 @@ import 'package:readymadeGroceryApp/screens/categories/allcategories.dart';
 import 'package:readymadeGroceryApp/screens/product/all_deals.dart';
 import 'package:readymadeGroceryApp/screens/product/all_products.dart';
 import 'package:readymadeGroceryApp/screens/product/product-details.dart';
+import 'package:readymadeGroceryApp/screens/subsription/all_subscription_produts_list.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
@@ -18,6 +19,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:readymadeGroceryApp/widgets/categoryBlock.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import 'package:readymadeGroceryApp/widgets/product_gridcard.dart';
+import 'package:readymadeGroceryApp/widgets/subscription_card.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -39,17 +41,16 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   bool getTokenValue = true,
       isLocationLoading = false,
       isBannerLoading = false,
-      isLoadingAllData = false;
+      isLoadingAllData = false,
+      isGetSubcribeLoading = false;
   List categoryList,
       productsList,
       searchProductList,
       dealList,
       topDealList,
-      bannerList;
+      bannerList,
+      subscriptionProductsList;
   String currency;
-  final List<String> assetImg = [
-    'lib/assets/images/product.png',
-  ];
 
   TabController tabController;
 
@@ -60,7 +61,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
     getToken();
     getBanner();
     getAllData();
-
+    getSubScriptionDataMethod();
     super.initState();
     tabController = TabController(length: 4, vsync: this);
   }
@@ -210,6 +211,52 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       if (mounted) {
         setState(() {
           isLoadingAllData = false;
+        });
+      }
+      sentryError.reportError(error, null);
+    });
+  }
+
+  void getSubScriptionDataMethod() async {
+    setState(() {
+      isGetSubcribeLoading = true;
+    });
+    await Common.getSubcriptionData().then((value) async {
+      if (value == null || value['response_data'] == null) {
+        if (mounted) {
+          setState(() {
+            getSubScriptionData();
+          });
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            if (value['response_data'] == []) {
+              subscriptionProductsList = [];
+            } else {
+              subscriptionProductsList = value['response_data'];
+            }
+            isGetSubcribeLoading = false;
+            getSubScriptionData();
+          });
+        }
+      }
+    });
+  }
+
+  getSubScriptionData() {
+    ProductService.getSubscriptionList(0, 4).then((onValue) {
+      _refreshController.refreshCompleted();
+      if (mounted) {
+        setState(() {
+          isGetSubcribeLoading = false;
+          subscriptionProductsList = onValue['response_data'];
+        });
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isGetSubcribeLoading = false;
         });
       }
       sentryError.reportError(error, null);
@@ -494,6 +541,38 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
     );
   }
 
+  subscriptionProductsRow(titleTranslate, list) {
+    return Column(
+      children: <Widget>[
+        _buildTitleViewAllTile(
+          titleTranslate,
+          route: AllSubscriptionProductsListPage(
+            locale: widget.locale,
+            localizedValues: widget.localizedValues,
+          ),
+        ),
+        SizedBox(height: 20),
+        GridView.builder(
+          physics: ScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: list.length != null ? list.length : 0,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 14,
+            mainAxisSpacing: 14,
+            childAspectRatio: MediaQuery.of(context).size.width / 520,
+          ),
+          itemBuilder: (BuildContext context, int i) {
+            return SubscriptionCard(
+              currency: currency,
+              productData: list[i],
+            );
+          },
+        ),
+      ],
+    );
+  }
+
   topDealsRow(titleTranslate, list) {
     return Column(
       children: <Widget>[
@@ -758,17 +837,20 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
           setState(() {
             isLoadingAllData = true;
             isBannerLoading = true;
+            isGetSubcribeLoading = true;
             getBannerData();
             getAllDataMethod();
+            getSubScriptionData();
           });
         },
-        child: isLoadingAllData || isBannerLoading
+        child: isLoadingAllData || isBannerLoading || isGetSubcribeLoading
             ? SquareLoader()
             : (categoryList.length == 0 &&
                     productsList.length == 0 &&
                     dealList.length == 0 &&
                     topDealList.length == 0 &&
-                    bannerList.length == 0)
+                    bannerList.length == 0 &&
+                    subscriptionProductsList.length == 0)
                 ? noDataImage()
                 : SingleChildScrollView(
                     physics: ScrollPhysics(),
@@ -798,6 +880,16 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                               ? Column(
                                   children: [
                                     productRow("PRODUCTS", productsList),
+                                    Divider()
+                                  ],
+                                )
+                              : Container(),
+                          subscriptionProductsList.length > 0
+                              ? Column(
+                                  children: [
+                                    subscriptionProductsRow(
+                                        "SUBSCRIPTION_PRODUCTS",
+                                        subscriptionProductsList),
                                     Divider()
                                   ],
                                 )
