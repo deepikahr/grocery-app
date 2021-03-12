@@ -1685,12 +1685,12 @@ TextStyle textbarlowmedium12(context) {
       color: green);
 }
 
-TextStyle textbarlowmedium12Red(context) {
+TextStyle textbarlowmedium12Orange(context) {
   return TextStyle(
       fontSize: 12.0,
       fontWeight: FontWeight.w300,
       fontFamily: 'BarlowMedium',
-      color: red);
+      color: Colors.orange);
 }
 
 TextStyle textbarlowMediumPrimary(context) {

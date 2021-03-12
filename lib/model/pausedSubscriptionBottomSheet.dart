@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:readymadeGroceryApp/service/alert-service.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
@@ -75,13 +77,15 @@ class _PausedSubscriptionBottomSheetState
                 onPressed: () {
                   DatePicker.showDatePicker(context,
                       showTitleActions: true,
-                      minTime: DateTime.now(), onConfirm: (date) {
+                      minTime: widget.subscriptionStartDate, onConfirm: (date) {
                     if (mounted) {
                       setState(() {
                         startDate = date;
                       });
                     }
-                  }, currentTime: startDate, locale: LocaleType.en);
+                  },
+                      currentTime: widget.subscriptionStartDate,
+                      locale: LocaleType.en);
                 },
                 child: Container(
                   child: Row(
@@ -112,13 +116,15 @@ class _PausedSubscriptionBottomSheetState
                 onPressed: () {
                   DatePicker.showDatePicker(context,
                       showTitleActions: true,
-                      minTime: DateTime.now(), onConfirm: (date) {
+                      minTime: widget.subscriptionStartDate, onConfirm: (date) {
                     if (mounted) {
                       setState(() {
                         endDate = date;
                       });
                     }
-                  }, currentTime: endDate, locale: LocaleType.en);
+                  },
+                      currentTime: widget.subscriptionStartDate,
+                      locale: LocaleType.en);
                 },
                 child: Container(
                   child: Row(
@@ -136,10 +142,16 @@ class _PausedSubscriptionBottomSheetState
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
             child: InkWell(
                 onTap: () {
-                  Navigator.of(context).pop({
-                    "pauseStartDate": startDate.toString(),
-                    "pauseEndDate": endDate.toString()
-                  });
+                  if (startDate.microsecondsSinceEpoch >
+                      endDate.microsecondsSinceEpoch) {
+                    AlertService().showToast(MyLocalizations.of(context)
+                        .getLocalizations("SELECT_PROPER_START_AND_END_DATE"));
+                  } else {
+                    Navigator.of(context).pop({
+                      "pauseStartDate": startDate.toString(),
+                      "pauseEndDate": endDate.toString()
+                    });
+                  }
                 },
                 child: buttonprimary(context, "SUBMIT", false))),
       ]),

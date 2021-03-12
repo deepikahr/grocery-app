@@ -28,6 +28,7 @@ class SubscriptionDetails extends StatefulWidget {
 class _SubscriptionDetailsState extends State<SubscriptionDetails> {
   bool isGetSubscribedProductLoading = false;
   Map subscribedDetails;
+  List subscriptionStatusList = [];
   String currency;
   @override
   void initState() {
@@ -48,6 +49,8 @@ class _SubscriptionDetailsState extends State<SubscriptionDetails> {
         setState(() {
           isGetSubscribedProductLoading = false;
           subscribedDetails = onValue['response_data'];
+          subscriptionStatusList =
+              subscribedDetails['subscriptionStatus'] ?? [];
         });
       }
     }).catchError((error) {
@@ -83,23 +86,27 @@ class _SubscriptionDetailsState extends State<SubscriptionDetails> {
                     children: [
                       Row(
                         children: [
-                          (subscribedDetails['products'][0]['productImages'] !=
+                          (subscribedDetails['subscription']['products'][0]
+                                          ['productImages'] !=
                                       null &&
-                                  subscribedDetails['products'][0]
-                                              ['productImages']
+                                  subscribedDetails['subscription']['products']
+                                              [0]['productImages']
                                           .length >
                                       0)
                               ? CachedNetworkImage(
-                                  imageUrl: subscribedDetails['products'][0]
+                                  imageUrl: subscribedDetails['subscription']
+                                                      ['products'][0]
                                                   ['productImages'][0]
                                               ['filePath'] !=
                                           null
                                       ? Constants.imageUrlPath +
                                           "/tr:dpr-auto,tr:w-500" +
-                                          subscribedDetails['products'][0]
+                                          subscribedDetails['subscription']
+                                                  ['products'][0]
                                               ['productImages'][0]['filePath']
-                                      : subscribedDetails['products'][0]
-                                          ['productImages'][0]['imageUrl'],
+                                      : subscribedDetails['subscription']
+                                              ['products'][0]['productImages']
+                                          [0]['imageUrl'],
                                   imageBuilder: (context, imageProvider) =>
                                       Container(
                                     height: 70,
@@ -128,15 +135,15 @@ class _SubscriptionDetailsState extends State<SubscriptionDetails> {
                                           child: noDataImage()),
                                 )
                               : CachedNetworkImage(
-                                  imageUrl: subscribedDetails['products'][0]
-                                              ['filePath'] !=
+                                  imageUrl: subscribedDetails['subscription']
+                                              ['products'][0]['filePath'] !=
                                           null
                                       ? Constants.imageUrlPath +
                                           "/tr:dpr-auto,tr:w-500" +
-                                          subscribedDetails['products'][0]
-                                              ['filePath']
-                                      : subscribedDetails['products'][0]
-                                          ['imageUrl'],
+                                          subscribedDetails['subscription']
+                                              ['products'][0]['filePath']
+                                      : subscribedDetails['subscription']
+                                          ['products'][0]['imageUrl'],
                                   imageBuilder: (context, imageProvider) =>
                                       Container(
                                     height: 70,
@@ -169,7 +176,7 @@ class _SubscriptionDetailsState extends State<SubscriptionDetails> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '${subscribedDetails['products'][0]['productName'][0].toUpperCase()}${subscribedDetails['products'][0]['productName'].substring(1)}',
+                                '${subscribedDetails['subscription']['products'][0]['productName'][0].toUpperCase()}${subscribedDetails['subscription']['products'][0]['productName'].substring(1)}',
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
@@ -180,7 +187,7 @@ class _SubscriptionDetailsState extends State<SubscriptionDetails> {
                               ),
                               SizedBox(height: 5),
                               textLightSmall(
-                                  '${subscribedDetails['products'][0]['unit'] ?? ''}',
+                                  '${subscribedDetails['subscription']['products'][0]['unit'] ?? ''}',
                                   context),
                               SizedBox(height: 5),
                               Column(
@@ -195,10 +202,20 @@ class _SubscriptionDetailsState extends State<SubscriptionDetails> {
                                           MyLocalizations.of(context)
                                               .getLocalizations(
                                                   subscribedDetails[
-                                                      'schedule'])),
+                                                          'subscription']
+                                                      ['schedule'])),
+                                  SizedBox(height: 5),
+                                  textLightSmall(
+                                      MyLocalizations.of(context)
+                                              .getLocalizations(
+                                                  "QUANTITY", true) +
+                                          subscribedDetails['subscription']
+                                                  ['products'][0]['quantity']
+                                              .toString(),
+                                      context),
                                   SizedBox(height: 5),
                                   priceMrpText(
-                                      "$currency${subscribedDetails['products'][0]['subscriptionTotal']} (${subscribedDetails['products'][0]['quantity'].toString()}*$currency${subscribedDetails['products'][0]['subScriptionAmount']})",
+                                      "$currency${subscribedDetails['subscription']['products'][0]['subscriptionTotal']}",
                                       "",
                                       context),
                                 ],
@@ -227,15 +244,15 @@ class _SubscriptionDetailsState extends State<SubscriptionDetails> {
                       builddTextbarlowRegularBlackFont14(
                         context,
                         DateFormat('dd/MM/yyyy', widget.locale ?? "en").format(
-                            DateTime.parse(
-                                subscribedDetails['subscriptionStartDate']
-                                    .toString())),
+                            DateTime.parse(subscribedDetails['subscription']
+                                    ['subscriptionStartDate']
+                                .toString())),
                       )
                     ],
                   ),
                 ),
-                subscribedDetails['address'] == null ||
-                        subscribedDetails['address'] is String
+                subscribedDetails['subscription']['address'] == null ||
+                        subscribedDetails['subscription']['address'] is String
                     ? Container()
                     : Container(
                         padding:
@@ -256,140 +273,136 @@ class _SubscriptionDetailsState extends State<SubscriptionDetails> {
                             SizedBox(height: 8),
                             builddTextbarlowRegularBlackFont14(
                               context,
-                              '${subscribedDetails['address']['flatNo']}, ${subscribedDetails['address']['apartmentName']}, ${subscribedDetails['address']['address']}, ' +
-                                  "\n${subscribedDetails['address']['landmark']}, ${subscribedDetails['address']['postalCode']}, ${subscribedDetails['address']['mobileNumber'].toString()}",
+                              '${subscribedDetails['subscription']['address']['flatNo']}, ${subscribedDetails['subscription']['address']['apartmentName']}, ${subscribedDetails['subscription']['address']['address']}, ' +
+                                  "\n${subscribedDetails['subscription']['address']['landmark']}, ${subscribedDetails['subscription']['address']['postalCode']}, ${subscribedDetails['subscription']['address']['mobileNumber'].toString()}",
                             )
                           ],
                         ),
                       ),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                  decoration: BoxDecoration(
-                      color: cartCardBg(context),
-                      boxShadow: [
-                        new BoxShadow(color: Colors.black12, blurRadius: 0.0),
-                      ],
-                      borderRadius: new BorderRadius.only(
-                        topLeft: Radius.circular(20.0),
-                        topRight: Radius.circular(20.0),
-                      )),
-                  child: Column(children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      height: 52,
-                      decoration: BoxDecoration(
-                          borderRadius: new BorderRadius.only(
-                            topLeft: Radius.circular(20.0),
-                            topRight: Radius.circular(20.0),
+                subscriptionStatusList.length > 0
+                    ? Container(
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                        decoration: BoxDecoration(
+                            color: cartCardBg(context),
+                            boxShadow: [
+                              new BoxShadow(
+                                  color: Colors.black12, blurRadius: 0.0),
+                            ],
+                            borderRadius: new BorderRadius.only(
+                              topLeft: Radius.circular(20.0),
+                              topRight: Radius.circular(20.0),
+                            )),
+                        child: Column(children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            height: 52,
+                            decoration: BoxDecoration(
+                                borderRadius: new BorderRadius.only(
+                                  topLeft: Radius.circular(20.0),
+                                  topRight: Radius.circular(20.0),
+                                ),
+                                color: cartCardBg(context)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                whiteText(context, "HISTORY"),
+                              ],
+                            ),
                           ),
-                          color: cartCardBg(context)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          whiteText(context, "HISTORY"),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 15),
-                    subscribedDetails['dayList'].length > 0
-                        ? ListView.builder(
-                            physics: ScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount:
-                                subscribedDetails['dayList'].length == null
-                                    ? 0
-                                    : subscribedDetails['dayList'].length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Column(
-                                children: [
-                                  Container(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 20),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          DateFormat('dd/MM/yyyy',
-                                                  widget.locale ?? "en")
-                                              .format(DateTime.parse(
-                                                  subscribedDetails['dayList']
-                                                      [index]['time'])),
-                                          style: TextStyle(
-                                              fontSize: 16.0,
-                                              fontFamily: 'BarlowRegular',
-                                              color: blackText(context),
-                                              fontWeight: FontWeight.w500),
-                                        ),
-                                        Container(
-                                          width: 75,
-                                          height: 22,
-                                          decoration: BoxDecoration(
-                                              color:
-                                                  subscribedDetails['dayList']
-                                                                  [index]
-                                                              ['status'] ==
-                                                          "PAUSED"
-                                                      ? red.withOpacity(0.3)
-                                                      : green.withOpacity(0.3),
-                                              border: Border.all(
-                                                  color: subscribedDetails[
-                                                                      'dayList']
-                                                                  [index]
-                                                              ['status'] ==
-                                                          "PAUSED"
-                                                      ? red
-                                                      : green),
-                                              borderRadius:
-                                                  BorderRadius.circular(20)),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              textGreenPrimary(
-                                                  context,
-                                                  subscribedDetails['dayList']
-                                                      [index]['status'],
-                                                  subscribedDetails['dayList']
-                                                                  [index]
-                                                              ['status'] ==
-                                                          "PAUSED"
-                                                      ? textbarlowmedium12Red(
-                                                          context)
-                                                      : textbarlowmedium12(
-                                                          context)),
-                                              Icon(
-                                                subscribedDetails['dayList']
-                                                            [index]['status'] ==
-                                                        "PAUSED"
-                                                    ? Icons.pause
-                                                    : Icons.check,
-                                                color:
-                                                    subscribedDetails['dayList']
-                                                                    [index]
-                                                                ['status'] ==
-                                                            "PAUSED"
-                                                        ? red
-                                                        : green,
-                                                size: 15,
-                                              )
-                                            ],
+                          SizedBox(height: 15),
+                          ListView.builder(
+                              physics: ScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: subscriptionStatusList.length == null
+                                  ? 0
+                                  : subscriptionStatusList.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Column(
+                                  children: [
+                                    Container(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 20),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            DateFormat('dd/MM/yyyy',
+                                                    widget.locale ?? "en")
+                                                .format(DateTime.parse(
+                                                    subscriptionStatusList[
+                                                        index]['createdAt'])),
+                                            style: TextStyle(
+                                                fontSize: 16.0,
+                                                fontFamily: 'BarlowRegular',
+                                                color: blackText(context),
+                                                fontWeight: FontWeight.w500),
                                           ),
-                                        )
-                                      ],
+                                          Container(
+                                            width: 75,
+                                            height: 22,
+                                            decoration: BoxDecoration(
+                                                color: subscriptionStatusList[
+                                                            index]['status'] ==
+                                                        "DELIVERED"
+                                                    ? green.withOpacity(0.3)
+                                                    : Colors.orange
+                                                        .withOpacity(0.3),
+                                                border: Border.all(
+                                                    color:
+                                                        subscriptionStatusList[
+                                                                        index][
+                                                                    'status'] ==
+                                                                "DELIVERED"
+                                                            ? green
+                                                            : Colors.orange),
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            child: Center(
+                                              child: textGreenPrimary(
+                                                  context,
+                                                  subscriptionStatusList[index]
+                                                      ['status'],
+                                                  subscriptionStatusList[index]
+                                                              ['status'] ==
+                                                          "DELIVERED"
+                                                      ? textbarlowmedium12(
+                                                          context)
+                                                      : textbarlowmedium12Orange(
+                                                          context)),
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20.0),
-                                    child: Divider(),
-                                  ),
-                                ],
-                              );
-                            })
-                        : Container(),
-                  ]),
-                )
+                                    SizedBox(height: 5),
+                                    subscriptionStatusList[index]['status'] ==
+                                                "PENDING" ||
+                                            subscriptionStatusList[index]
+                                                    ['status'] ==
+                                                "DELIVERED"
+                                        ? Container()
+                                        : Text(
+                                            subscriptionStatusList[index]
+                                                ['description'],
+                                            style: TextStyle(
+                                                fontSize: 16.0,
+                                                fontFamily: 'BarlowRegular',
+                                                color: blackText(context),
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20.0),
+                                      child: Divider(),
+                                    ),
+                                  ],
+                                );
+                              })
+                        ]),
+                      )
+                    : Container(),
               ],
             ),
     );

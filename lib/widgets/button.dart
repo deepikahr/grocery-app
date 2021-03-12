@@ -136,6 +136,33 @@ Widget subscribeButton(BuildContext context, title, isLoading) {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
+          Expanded(
+            child: Text(
+              MyLocalizations.of(context).getLocalizations(title),
+              style: textbarlowMediumBlackm(context),
+            ),
+          ),
+          isLoading ? GFLoader(type: GFLoaderType.ios) : Text("")
+        ],
+      ),
+    ),
+  );
+}
+
+Widget subscribeButtonWithOutExpanded(BuildContext context, title, isLoading) {
+  return Container(
+    height: 35,
+    padding: EdgeInsets.only(left: 8, right: 8),
+    decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(5)),
+        color: Color(0xFFF0F0F0)),
+    child: GFButton(
+      size: GFSize.LARGE,
+      color: Color(0xFFF0F0F0),
+      onPressed: null,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
           Text(
             MyLocalizations.of(context).getLocalizations(title),
             style: textbarlowMediumBlackm(context),

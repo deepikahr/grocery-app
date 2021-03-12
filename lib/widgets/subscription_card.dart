@@ -18,16 +18,14 @@ class SubscriptionCard extends StatefulWidget {
   final Map productData;
   final String locale;
   final Map localizedValues;
-  final bool isHome;
 
-  SubscriptionCard(
-      {Key key,
-      this.currency,
-      this.productData,
-      this.locale,
-      this.localizedValues,
-      this.isHome})
-      : super(key: key);
+  SubscriptionCard({
+    Key key,
+    this.currency,
+    this.productData,
+    this.locale,
+    this.localizedValues,
+  }) : super(key: key);
 
   @override
   _SubscriptionCardState createState() => _SubscriptionCardState();
@@ -163,129 +161,112 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                                     barlowregularlack(context))
                               ],
                             ),
-                            Container(
-                              height: 35,
-                              child: subscribeButton(
-                                  context,
-                                  "${MyLocalizations.of(context).getLocalizations("SUBSCRIBE")} @${widget.currency}${widget.productData['variant'][0]['subScriptionAmount']}",
-                                  isAddInProgress),
-                            ),
-                            widget.isHome
-                                ? Container()
-                                : InkWell(
-                                    onTap: () async {
-                                      if (widget.productData['variant'].length >
-                                          1) {
-                                        if (widget.productData != null &&
-                                            widget.productData['variant'] !=
-                                                null) {
-                                          var bottomSheet =
-                                              showModalBottomSheet(
-                                                  context: context,
-                                                  builder: (BuildContext bc) {
-                                                    return SubsCriptionBottomSheet(
-                                                      locale: widget.locale,
+                            InkWell(
+                                onTap: () async {
+                                  if (widget.productData['variant'].length >
+                                      1) {
+                                    if (widget.productData != null &&
+                                        widget.productData['variant'] != null) {
+                                      var bottomSheet = showModalBottomSheet(
+                                          context: context,
+                                          builder: (BuildContext bc) {
+                                            return SubsCriptionBottomSheet(
+                                              locale: widget.locale,
+                                              localizedValues:
+                                                  widget.localizedValues,
+                                              currency: widget.currency,
+                                              productData: widget.productData,
+                                              variantsList:
+                                                  widget.productData['variant'],
+                                            );
+                                          });
+                                      bottomSheet.then((subProduct) {
+                                        if (subProduct != null) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    AddEditSubscriptionPage(
+                                                        currency:
+                                                            widget.currency,
+                                                        localizedValues: widget
+                                                            .localizedValues,
+                                                        locale: widget.locale,
+                                                        subProductData:
+                                                            subProduct,
+                                                        productData: widget
+                                                            .productData)),
+                                          );
+                                        }
+                                      });
+                                    }
+                                  } else {
+                                    await Common.getToken().then((onValue) {
+                                      if (onValue != null) {
+                                        Map subProduct = {
+                                          "products": [
+                                            {
+                                              "productId":
+                                                  widget.productData['_id'],
+                                              "productName":
+                                                  widget.productData['title'],
+                                              "variantId":
+                                                  widget.productData['variant']
+                                                      [0]['_id'],
+                                              "unit":
+                                                  widget.productData['variant']
+                                                      [0]['unit'],
+                                              "subScriptionAmount":
+                                                  widget.productData['variant']
+                                                      [0]['subScriptionAmount'],
+                                            },
+                                          ],
+                                        };
+                                        subProduct['products'][0]
+                                                ["subscriptionTotal"] =
+                                            subProduct['products'][0]
+                                                    ['subScriptionAmount'] *
+                                                1;
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  AddEditSubscriptionPage(
+                                                      currency: widget.currency,
                                                       localizedValues: widget
                                                           .localizedValues,
-                                                      currency: widget.currency,
+                                                      locale: widget.locale,
+                                                      subProductData:
+                                                          subProduct,
                                                       productData:
-                                                          widget.productData,
-                                                      variantsList:
-                                                          widget.productData[
-                                                              'variant'],
-                                                    );
-                                                  });
-                                          bottomSheet.then((subProduct) {
-                                            if (subProduct != null) {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        AddEditSubscriptionPage(
-                                                            currency:
-                                                                widget.currency,
-                                                            localizedValues: widget
-                                                                .localizedValues,
-                                                            locale:
-                                                                widget.locale,
-                                                            subProductData:
-                                                                subProduct,
-                                                            productData: widget
-                                                                .productData)),
-                                              );
-                                            }
-                                          });
-                                        }
+                                                          widget.productData)),
+                                        );
                                       } else {
-                                        await Common.getToken().then((onValue) {
-                                          if (onValue != null) {
-                                            Map subProduct = {
-                                              "products": [
-                                                {
-                                                  "productId":
-                                                      widget.productData['_id'],
-                                                  "productName": widget
-                                                      .productData['title'],
-                                                  "variantId":
-                                                      widget.productData[
-                                                          'variant'][0]['_id'],
-                                                  "unit": widget.productData[
-                                                      'variant'][0]['unit'],
-                                                  "subScriptionAmount": widget
-                                                              .productData[
-                                                          'variant'][0]
-                                                      ['subScriptionAmount'],
-                                                },
-                                              ],
-                                            };
-                                            subProduct['products'][0]
-                                                    ["subscriptionTotal"] =
-                                                subProduct['products'][0]
-                                                        ['subScriptionAmount'] *
-                                                    1;
+                                        if (mounted) {
+                                          setState(() {
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      AddEditSubscriptionPage(
-                                                          currency:
-                                                              widget.currency,
-                                                          localizedValues: widget
-                                                              .localizedValues,
-                                                          locale: widget.locale,
-                                                          subProductData:
-                                                              subProduct,
-                                                          productData: widget
-                                                              .productData)),
-                                            );
-                                          } else {
-                                            if (mounted) {
-                                              setState(() {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (BuildContext
-                                                            context) =>
+                                                builder:
+                                                    (BuildContext context) =>
                                                         Login(
-                                                      locale: widget.locale,
-                                                      localizedValues: widget
-                                                          .localizedValues,
-                                                      isBottomSheet: true,
-                                                    ),
-                                                  ),
-                                                );
-                                              });
-                                            }
-                                          }
-                                        });
+                                                  locale: widget.locale,
+                                                  localizedValues:
+                                                      widget.localizedValues,
+                                                  isBottomSheet: true,
+                                                ),
+                                              ),
+                                            );
+                                          });
+                                        }
                                       }
-                                    },
-                                    child: productAddButton(
-                                      context,
-                                      "ADD",
-                                      isAddInProgress,
-                                    ),
-                                  )
+                                    });
+                                  }
+                                },
+                                child: subscribeButton(
+                                    context,
+                                    "${MyLocalizations.of(context).getLocalizations("SUBSCRIBE")} @${widget.currency}${widget.productData['variant'][0]['subScriptionAmount']}",
+                                    isAddInProgress))
                           ],
                         ),
                       ),

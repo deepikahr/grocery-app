@@ -37,7 +37,8 @@ class _AllSubscribedState extends State<SubScriptionList> {
   bool isUserLoaggedIn = false,
       isFirstPageLoading = true,
       isNextPageLoading = false,
-      isSubscriptionPauseLoading = false;
+      isSubscriptionPauseLoading = false,
+      isSubscriptionCancelLoading = false;
   int subscriptionPerPage = 12,
       subscriptionsPageNumber = 0,
       totalSubscription = 1,
@@ -164,6 +165,29 @@ class _AllSubscribedState extends State<SubScriptionList> {
       if (mounted) {
         setState(() {
           isSubscriptionPauseLoading = false;
+        });
+      }
+      sentryError.reportError(error, null);
+    });
+  }
+
+  void subscriptionCancelled(subId,index) async {
+    setState(() {
+      isSubscriptionCancelLoading = true;
+    });
+    await ProductService.getSubscriptionResumeAndCancel(subId, false)
+        .then((onValue) {
+      if (mounted) {
+        setState(() {
+          isSubscriptionCancelLoading = false;
+          showSnackbar(onValue['response_data']);
+          subscriptionList[index]['status'] = "CANCELLED";
+        });
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isSubscriptionCancelLoading = false;
         });
       }
       sentryError.reportError(error, null);
@@ -382,8 +406,23 @@ class _AllSubscribedState extends State<SubScriptionList> {
                                                                       [
                                                                       'schedule'])),
                                                   SizedBox(height: 5),
+                                                  textLightSmall(
+                                                      MyLocalizations.of(
+                                                                  context)
+                                                              .getLocalizations(
+                                                                  "QUANTITY",
+                                                                  true) +
+                                                          subscriptionList[
+                                                                          index]
+                                                                      [
+                                                                      'products']
+                                                                  [
+                                                                  0]['quantity']
+                                                              .toString(),
+                                                      context),
+                                                  SizedBox(height: 5),
                                                   priceMrpText(
-                                                      "$currency${subscriptionList[index]['products'][0]['subscriptionTotal']} (${subscriptionList[index]['products'][0]['quantity'].toString()}*$currency${subscriptionList[index]['products'][0]['subScriptionAmount']})",
+                                                      "$currency${subscriptionList[index]['products'][0]['subscriptionTotal']}",
                                                       "",
                                                       context),
                                                 ],
@@ -464,10 +503,28 @@ class _AllSubscribedState extends State<SubScriptionList> {
                                                           }
                                                         });
                                                       },
-                                                      child: subscribeButton(
+                                                      child: subscribePrimary(
                                                           context,
                                                           "MODIFY",
                                                           false),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          subscIndex = index;
+                                                          subscriptionCancelled(
+                                                            subscriptionList[
+                                                                index]['_id'],index
+                                                          );
+                                                        });
+                                                      },
+                                                      child: subscribeButtonWithOutExpanded(
+                                                          context,
+                                                          "CANCEL",
+                                                          subscIndex == index &&
+                                                                  isSubscriptionCancelLoading
+                                                              ? true
+                                                              : false),
                                                     ),
                                                     subscriptionList[index]
                                                                 ['status'] ==
@@ -532,7 +589,7 @@ class _AllSubscribedState extends State<SubScriptionList> {
                                                                 }
                                                               });
                                                             },
-                                                            child: subscribeButton(
+                                                            child: subscribeButtonWithOutExpanded(
                                                                 context,
                                                                 "PAUSE",
                                                                 subscIndex ==

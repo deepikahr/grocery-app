@@ -32,6 +32,7 @@ class Constants {
   static String emailValidation =
       r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
 
+  static String orderFrom = "USER_APP";
   // countries code
   static List countryCode = [
     {"name": "Israel", "dial_code": "+972", "code": "IL"},

@@ -8,12 +8,11 @@ import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:readymadeGroceryApp/screens/drawer/add-address.dart';
 import 'package:readymadeGroceryApp/screens/drawer/edit-address.dart';
-import 'package:readymadeGroceryApp/screens/thank-you/thanku-subscription.dart';
+import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
 import 'package:readymadeGroceryApp/service/address-service.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
@@ -56,9 +55,7 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
       ],
       addressList;
   var selectedAddress, locationInfo;
-  bool addressLoading = false,
-      isSubscriptionLoading = false,
-      isSubscriptionCancelLoading = false;
+  bool addressLoading = false, isSubscriptionLoading = false;
   Location _location = new Location();
   PermissionStatus _permissionGranted;
 
@@ -87,32 +84,14 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
               ),
         bottomNavigationBar: addressLoading
             ? Container(height: 1)
-            : Container(
-                height: widget.isEdit ? 150 : 75,
-                child: Column(
-                  children: [
-                    widget.isEdit
-                        ? InkWell(
-                            onTap: subscriptionCancelled,
-                            child: Padding(
-                                padding: EdgeInsets.only(left: 20, right: 20),
-                                child: regularGreyButton(
-                                    context,
-                                    "CANCEL_SUBSCRIPTION",
-                                    isSubscriptionCancelLoading)))
-                        : Container(),
-                    InkWell(
-                      onTap:
-                          widget.isEdit ? updateSubscription : doSubscription,
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 10, right: 10),
-                        child: buttonprimary(
-                            context,
-                            widget.isEdit ? "UPDATE_CHANGES" : "SUBSCRIBE",
-                            isSubscriptionLoading),
-                      ),
-                    ),
-                  ],
+            : InkWell(
+                onTap: widget.isEdit ? updateSubscription : doSubscription,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 10, right: 10),
+                  child: buttonprimary(
+                      context,
+                      widget.isEdit ? "UPDATE_CHANGES" : "SUBSCRIBE",
+                      isSubscriptionLoading),
                 ),
               ),
       );
@@ -684,6 +663,7 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
           pickUpScheduleList[selectedPickSecheduleIndex];
       widget.subProductData["subscriptionStartDate"] =
           selectedDate.millisecondsSinceEpoch;
+      widget.subProductData["orderFrom"] = Constants.orderFrom;
       setState(() {
         isSubscriptionLoading = true;
       });
@@ -695,9 +675,10 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (BuildContext context) => ThankyouSubscription(
+            builder: (BuildContext context) => Thankyou(
               locale: widget.locale,
               localizedValues: widget.localizedValues,
+              isSubscription: true,
             ),
           ),
         );
@@ -710,31 +691,5 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
       showSnackbar(
           MyLocalizations.of(context).getLocalizations("SELECT_ADDESS_MSG"));
     }
-  }
-
-  void subscriptionCancelled() async {
-    setState(() {
-      isSubscriptionCancelLoading = true;
-    });
-    await ProductService.getSubscriptionResumeAndCancel(
-            widget.subProductData['_id'], false)
-        .then((onValue) {
-      if (mounted) {
-        setState(() {
-          isSubscriptionCancelLoading = false;
-          showSnackbar(onValue['response_data']);
-          Future.delayed(Duration(milliseconds: 1500), () {
-            Navigator.of(context).pop(true);
-          });
-        });
-      }
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          isSubscriptionCancelLoading = false;
-        });
-      }
-      sentryError.reportError(error, null);
-    });
   }
 }
