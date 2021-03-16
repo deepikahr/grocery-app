@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:readymadeGroceryApp/screens/orders/ordersDetails.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
@@ -21,50 +22,70 @@ class WalletHistoryyPage extends StatefulWidget {
 }
 
 class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
-  bool isWalletHistory = false, lastApiCall = true;
-  int walletLimit = 15, walletIndex = 0, totalWalletIndex = 1;
+  bool isFirstPageLoading = true, isNextPageLoading = false;
+  int walletPerPage = 12, walletsPageNumber = 0, totalWallet = 1;
   List walletHistoryList = [];
   String currency = '';
+  ScrollController _scrollController = ScrollController();
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
   @override
   void initState() {
-    if (mounted) {
-      setState(() {
-        isWalletHistory = true;
-      });
-    }
-    getWalletHistory();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        getwalletHistoryList();
+      }
+    });
+    checkIfUserIsLoaggedIn();
     super.initState();
   }
 
-  getWalletHistory() async {
+  void checkIfUserIsLoaggedIn() async {
+    setState(() {
+      isFirstPageLoading = true;
+    });
+    walletHistoryList = [];
+    walletsPageNumber = walletHistoryList.length;
+    totalWallet = 1;
     await Common.getCurrency().then((value) {
       currency = value;
     });
-    await LoginService.getWalletsHistory(walletIndex, walletLimit)
-        .then((onValue) {
-      if (mounted) {
+    getwalletHistoryList();
+  }
+
+  void getwalletHistoryList() async {
+    if (totalWallet != walletHistoryList.length) {
+      if (walletsPageNumber > 0) {
         setState(() {
-          if (onValue['response_data'] != []) {
-            walletHistoryList.addAll(onValue['response_data']);
-            totalWalletIndex = onValue["total"];
-            int index = walletHistoryList.length;
-            if (index != totalWalletIndex) {
-              walletIndex++;
-              getWalletHistory();
-            }
-          }
-          isWalletHistory = false;
+          isNextPageLoading = true;
         });
       }
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          walletHistoryList = [];
-          isWalletHistory = false;
-        });
-      }
-      sentryError.reportError(error, null);
-    });
+      await LoginService.getWalletsHistory(walletsPageNumber, walletPerPage)
+          .then((onValue) {
+        _refreshController.refreshCompleted();
+        if (onValue['response_data'] != null &&
+            onValue['response_data'] != []) {
+          walletHistoryList.addAll(onValue['response_data']);
+          totalWallet = onValue["total"];
+          walletsPageNumber++;
+        }
+        if (mounted) {
+          setState(() {
+            isFirstPageLoading = false;
+            isNextPageLoading = false;
+          });
+        }
+      }).catchError((error) {
+        if (mounted) {
+          setState(() {
+            isFirstPageLoading = false;
+            isNextPageLoading = false;
+          });
+        }
+        sentryError.reportError(error, null);
+      });
+    }
   }
 
   @override
@@ -72,30 +93,63 @@ class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
     return Scaffold(
       backgroundColor: bg(context),
       appBar: appBarPrimary(context, "RECENT_TRANSACTIONS"),
-      body: isWalletHistory
-          ? Center(child: SquareLoader())
-          : walletHistoryList.length > 0
-              ? ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  itemCount: walletHistoryList.length == null
-                      ? 0
-                      : walletHistoryList.length,
-                  itemBuilder: (BuildContext context, int index) => InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => OrderDetails(
-                              locale: widget.locale,
-                              localizedValues: widget.localizedValues,
-                              orderId: walletHistoryList[index]["orderId"]),
-                        ),
-                      );
-                    },
-                    child: wallethistory(walletHistoryList[index]),
-                  ),
+      body: Column(
+        children: <Widget>[
+          Flexible(
+              child: isFirstPageLoading
+                  ? Center(child: SquareLoader())
+                  : walletHistoryList.length > 0
+                      ? Container(
+                          padding: EdgeInsets.only(left: 5, right: 5),
+                          child: SmartRefresher(
+                            enablePullDown: true,
+                            enablePullUp: false,
+                            controller: _refreshController,
+                            onRefresh: () {
+                              checkIfUserIsLoaggedIn();
+                            },
+                            child: ListView.builder(
+                              physics: ScrollPhysics(),
+                              shrinkWrap: true,
+                              controller: _scrollController,
+                              itemCount: walletHistoryList.length == null
+                                  ? 0
+                                  : walletHistoryList.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return InkWell(
+                                  onTap: () {
+                                    if (walletHistoryList[index]
+                                            ['transactionType'] !=
+                                        "WALLET_TOPUP") {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => OrderDetails(
+                                              locale: widget.locale,
+                                              localizedValues:
+                                                  widget.localizedValues,
+                                              orderId: walletHistoryList[index]
+                                                  ["orderId"]),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  child:
+                                      wallethistory(walletHistoryList[index]),
+                                );
+                              },
+                            ),
+                          ),
+                        )
+                      : noDataImage()),
+          isNextPageLoading
+              ? Container(
+                  padding: EdgeInsets.only(top: 30, bottom: 20),
+                  child: SquareLoader(),
                 )
-              : noDataImage(),
+              : Container()
+        ],
+      ),
     );
   }
 
@@ -106,8 +160,10 @@ class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
       decoration: BoxDecoration(color: cartCardBg(context)),
       child: Column(
         children: [
-          walletTransaction1(
-              context, 'ORDER_ID', '#${walletDetails['orderID']}'),
+          walletDetails['transactionType'] == "WALLET_TOPUP"
+              ? Container()
+              : walletTransaction1(
+                  context, 'ORDER_ID', '#${walletDetails['orderID'] ?? ""}'),
           SizedBox(height: 3),
           walletTransaction(
               context,

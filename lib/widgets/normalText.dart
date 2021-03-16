@@ -92,7 +92,7 @@ Widget walletTransaction(BuildContext context, title, subTitle) {
     children: <Widget>[
       Text(
         MyLocalizations.of(context).getLocalizations(title, true) +
-            MyLocalizations.of(context).getLocalizations(subTitle),
+            MyLocalizations.of(context).getLocalizations(subTitle ?? ""),
         style: textBarlowRegularBlackdl(context),
       ),
     ],
