@@ -7,7 +7,12 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 class PaymentFailed extends StatefulWidget {
   final Map localizedValues;
   final String locale;
-  PaymentFailed({Key key, this.locale, this.localizedValues});
+
+  PaymentFailed({
+    Key key,
+    this.locale,
+    this.localizedValues,
+  });
   @override
   _PaymentFailedState createState() => _PaymentFailedState();
 }

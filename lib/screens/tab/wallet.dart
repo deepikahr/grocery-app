@@ -95,24 +95,31 @@ class _WalletPageState extends State<WalletPage> {
                 )
               ],
             ),
-      bottomNavigationBar: Container(
-        height: 80.0,
-        color: Colors.transparent,
-        margin: EdgeInsets.symmetric(vertical: 5, horizontal: 14),
-        child: Column(
-          children: [
-            InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => AddMoney()),
-                  );
-                },
-                child: regularbuttonPrimary(context, "ADD_MONEY", false)),
-            SizedBox(height: 4),
-          ],
-        ),
-      ),
+      bottomNavigationBar: isGetWalletInfoLoading
+          ? Container(height: 1)
+          : Container(
+              height: 80.0,
+              color: Colors.transparent,
+              margin: EdgeInsets.symmetric(vertical: 5, horizontal: 14),
+              child: Column(
+                children: [
+                  InkWell(
+                      onTap: () {
+                        var result = Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AddMoney(
+                                locale: widget.locale,
+                                localizedValues: widget.localizedValues),
+                          ),
+                        );
+                        result.then((value) => userInfoMethod());
+                      },
+                      child: regularbuttonPrimary(context, "ADD_MONEY", false)),
+                  SizedBox(height: 4),
+                ],
+              ),
+            ),
     );
   }
 }

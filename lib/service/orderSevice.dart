@@ -54,5 +54,13 @@ class OrderService {
         .then((response) {
       return json.decode(response.body);
     });
+  } // delivery boy rating
+
+  static Future<Map<String, dynamic>> addMoneyApi(body) async {
+    return client
+        .post(Constants.apiUrl + '/wallets/add/money', body: json.encode(body))
+        .then((response) {
+      return json.decode(response.body);
+    });
   }
 }
