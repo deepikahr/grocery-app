@@ -892,6 +892,9 @@ walletImage() {
   return Image.asset('lib/assets/images/wallet.png');
 }
 
+thankuImageWallet() {
+  return Image.asset('lib/assets/images/walletImage.png');
+}
 // walletIcon() {
 //   return Image.asset(
 //     'lib/assets/images/walleticon.png',

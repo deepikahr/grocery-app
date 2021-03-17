@@ -37,17 +37,17 @@ class _ThankyouState extends State<Thankyou> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            thankuImage(),
+            widget.isWallet ? thankuImageWallet() : thankuImage(),
             SizedBox(height: 10.0),
             orderPlaceText(
                 context,
                 (widget.isSubscription
                     ? "SUBCRIPTION_ACTIVATED"
                     : widget.isWallet
-                        ? "ADD_MONEY_SUCCESSFULLY"
+                        ? "MONEY_ADDED_TO_WALLET"
                         : "ORDER_PLACED")),
-            SizedBox(height: 13.0),
-            thankyouText(context, "THANK_YOU"),
+            widget.isWallet ? Container() : SizedBox(height: 13.0),
+            widget.isWallet ? Container() : thankyouText(context, "THANK_YOU"),
             SizedBox(height: 30.0),
             InkWell(
                 onTap: () {
