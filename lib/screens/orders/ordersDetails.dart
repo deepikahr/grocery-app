@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +22,13 @@ SentryError sentryError = new SentryError();
 class OrderDetails extends StatefulWidget {
   final String orderId, locale;
   final Map localizedValues;
-  OrderDetails({Key key, this.orderId, this.locale, this.localizedValues})
+  final bool isSubscription;
+  OrderDetails(
+      {Key key,
+      this.orderId,
+      this.locale,
+      this.localizedValues,
+      this.isSubscription = false})
       : super(key: key);
   @override
   _OrderDetailsState createState() => _OrderDetailsState();
@@ -39,7 +44,7 @@ class _OrderDetailsState extends State<OrderDetails> {
   String currency;
   double rating;
   Timer timer;
-  int productInfoIndex;
+  int productInfoIndex = -1;
   @override
   void initState() {
     getOrderHistory();
@@ -192,7 +197,11 @@ class _OrderDetailsState extends State<OrderDetails> {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarprimary(context, "ORDER_DETAILS"),
+      appBar: appBarPrimary(
+          context,
+          widget.isSubscription
+              ? "SUBSCRIPTION_ORDER_DETAILS"
+              : "ORDER_DETAILS"),
       body: isLoading
           ? SquareLoader()
           : orderHistory == null
@@ -238,14 +247,32 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                         .toString())
                                                 .toLocal())),
                                     SizedBox(height: 10),
+                                    buildOrderDetilsStatusText(
+                                        context,
+                                        "SHIPPING_METHOD",
+                                        (orderHistory['order']
+                                                    ['shippingMethod'] ==
+                                                null
+                                            ? "DELIVERY"
+                                            : orderHistory['order']
+                                                ['shippingMethod'])),
+                                    SizedBox(height: 10),
                                     buildOrderDetilsText(
                                         context,
-                                        "DELIVERY_DATE",
+                                        (orderHistory['order']
+                                                    ['shippingMethod'] ==
+                                                "PICK_UP"
+                                            ? "PICK_UP_DATE"
+                                            : "DELIVERY_DATE"),
                                         orderHistory['order']['deliveryDate']),
                                     SizedBox(height: 10),
                                     buildOrderDetilsText(
                                         context,
-                                        "DELIVERY_TIME",
+                                        (orderHistory['order']
+                                                    ['shippingMethod'] ==
+                                                "PICK_UP"
+                                            ? "PICK_UP_TIME"
+                                            : "DELIVERY_TIME"),
                                         orderHistory['order']['deliveryTime']),
                                     SizedBox(height: 10),
                                     Constants.predefined == "true"
@@ -259,9 +286,18 @@ class _OrderDetailsState extends State<OrderDetails> {
                                     SizedBox(height: 10),
                                     buildOrderDetilsText(
                                         context,
-                                        "ADDRESS",
-                                        orderHistory['order']['address']
-                                            ['address']),
+                                        (orderHistory['order']
+                                                    ['shippingMethod'] ==
+                                                "PICK_UP"
+                                            ? "PICK_UP_ADDRESS"
+                                            : "ADDRESS"),
+                                        (orderHistory['order']
+                                                    ['shippingMethod'] ==
+                                                "PICK_UP"
+                                            ? orderHistory['order']
+                                                ['storeAddress']['address']
+                                            : orderHistory['order']['address']
+                                                ['address'])),
                                     SizedBox(height: 10),
                                     buildOrderDetilsStatusText(
                                         context,
@@ -272,6 +308,20 @@ class _OrderDetailsState extends State<OrderDetails> {
                                         context,
                                         "PAYMENT_STATUS",
                                         orderHistory['order']['paymentStatus']),
+                                    orderHistory['order']
+                                                ['deliveryInstruction'] ==
+                                            null
+                                        ? Container()
+                                        : SizedBox(height: 10),
+                                    orderHistory['order']
+                                                ['deliveryInstruction'] ==
+                                            null
+                                        ? Container()
+                                        : buildOrderDetilsText(
+                                            context,
+                                            "INSTRUCTION",
+                                            orderHistory['order']
+                                                ['deliveryInstruction']),
                                   ],
                                 ),
                               ),

@@ -26,6 +26,7 @@ class Home extends StatefulWidget {
   final Map localizedValues;
   final String locale;
   final bool isTest;
+
   Home(
       {Key key,
       this.currentIndex,
@@ -274,12 +275,12 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       ),
       body: currencyLoading ? SquareLoader() : _screens[currentIndex],
       bottomNavigationBar: BottomNavigationBar(
-          elevation: 1,
-          currentIndex: currentIndex,
-          type: BottomNavigationBarType.fixed,
-          // fixedColor: primary(context),
-          onTap: _onTapped,
-          items: items),
+        elevation: 1,
+        currentIndex: currentIndex,
+        type: BottomNavigationBarType.fixed,
+        onTap: _onTapped,
+        items: items,
+      ),
     );
   }
 }

@@ -167,4 +167,19 @@ class Common {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return Future(() => prefs.getBool('setTheme'));
   }
+
+  static Future<bool> setSubcriptionData(Map<String, dynamic> data) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setString('subscriptionData', json.encode(data));
+  }
+
+  static Future<Map<String, dynamic>> getSubcriptionData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String info = prefs.getString('subscriptionData');
+    try {
+      return json.decode(info) as Map<String, dynamic>;
+    } catch (err) {
+      return Future(() => null);
+    }
+  }
 }

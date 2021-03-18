@@ -12,7 +12,7 @@ import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
-import 'package:readymadeGroceryApp/widgets/subCategoryProductCart.dart';
+import 'package:readymadeGroceryApp/widgets/product_gridcard.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -316,63 +316,44 @@ class _SearchItemState extends State<SearchItem> {
                                       searchresult[index]['averageRating'] = 0;
                                     }
                                     return InkWell(
-                                      onTap: () {
-                                        FocusScopeNode currentScope =
-                                            FocusScope.of(context);
-                                        FocusScopeNode rootScope =
-                                            WidgetsBinding.instance.focusManager
-                                                .rootScope;
+                                        onTap: () {
+                                          FocusScopeNode currentScope =
+                                              FocusScope.of(context);
+                                          FocusScopeNode rootScope =
+                                              WidgetsBinding.instance
+                                                  .focusManager.rootScope;
 
-                                        if (currentScope != rootScope) {
-                                          currentScope.unfocus();
-                                        }
-                                        var result = Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                ProductDetails(
-                                              locale: widget.locale,
-                                              localizedValues:
-                                                  widget.localizedValues,
-                                              productID: searchresult[index]
-                                                  ['_id'],
-                                            ),
-                                          ),
-                                        );
-                                        result.then((value) {
-                                          if (value != null) {
-                                            if (searchTerm.length > 0) {
-                                              productIndex = 0;
-                                              searchresult = [];
-                                              _searchForProducts();
-                                            }
+                                          if (currentScope != rootScope) {
+                                            currentScope.unfocus();
                                           }
-                                        });
-                                      },
-                                      child: Stack(
-                                        children: <Widget>[
-                                          SubCategoryProductCard(
-                                            currency: currency,
-                                            price: searchresult[index]
-                                                ['variant'][0]['price'],
-                                            productData: searchresult[index],
-                                            variantList: searchresult[index]
-                                                ['variant'],
-                                            isHome: false,
-                                          ),
-                                          searchresult[index]
-                                                      ['isDealAvailable'] ==
-                                                  true
-                                              ? buildBadge(
-                                                  context,
-                                                  searchresult[index]
-                                                          ['dealPercent']
-                                                      .toString(),
-                                                  "OFF")
-                                              : Container()
-                                        ],
-                                      ),
-                                    );
+                                          var result = Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ProductDetails(
+                                                locale: widget.locale,
+                                                localizedValues:
+                                                    widget.localizedValues,
+                                                productID: searchresult[index]
+                                                    ['_id'],
+                                              ),
+                                            ),
+                                          );
+                                          result.then((value) {
+                                            if (value != null) {
+                                              if (searchTerm.length > 0) {
+                                                productIndex = 0;
+                                                searchresult = [];
+                                                _searchForProducts();
+                                              }
+                                            }
+                                          });
+                                        },
+                                        child: ProductGridCard(
+                                          currency: currency,
+                                          productData: searchresult[index],
+                                          isHome: false,
+                                        ));
                                   },
                                 ),
                               ],

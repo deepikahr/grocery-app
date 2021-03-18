@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:getflutter/getwidget.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:readymadeGroceryApp/model/addToCart.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
@@ -20,6 +21,7 @@ SentryError sentryError = new SentryError();
 
 class Variants {
   const Variants(this.id, this.price, this.unit, this.productstock);
+
   final String id, unit;
   final int price, productstock;
 }
@@ -29,6 +31,7 @@ class ProductDetails extends StatefulWidget {
 
   final Map localizedValues;
   final String locale, productID;
+
   ProductDetails(
       {Key key,
       this.productID,
@@ -36,6 +39,7 @@ class ProductDetails extends StatefulWidget {
       this.localizedValues,
       this.locale})
       : super(key: key);
+
   @override
   _ProductDetailsState createState() => _ProductDetailsState();
 }
@@ -56,6 +60,7 @@ class _ProductDetailsState extends State<ProductDetails>
   var quantity = 1, variantPrice, variantStock;
   var rating;
   List productImages = [];
+
   void _changeProductQuantity(bool increase) {
     if (increase) {
       if (mounted) {
@@ -359,84 +364,128 @@ class _ProductDetailsState extends State<ProductDetails>
                                         },
                                         items: productImages.map(
                                           (url) {
-                                            return CachedNetworkImage(
-                                              imageUrl: url,
-                                              imageBuilder:
-                                                  (context, imageProvider) =>
-                                                      Container(
-                                                padding: EdgeInsets.zero,
-                                                margin: EdgeInsets.zero,
-                                                height: 340,
-                                                decoration: new BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                      bottomLeft:
-                                                          Radius.circular(40),
-                                                      bottomRight:
-                                                          Radius.circular(40),
-                                                    ),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                          color: Colors.grey,
-                                                          blurRadius: 10.0,
-                                                          offset:
-                                                              Offset(2.0, 2.0))
-                                                    ],
-                                                    image: DecorationImage(
-                                                        image: imageProvider,
-                                                        fit: BoxFit.cover)),
+                                            return InkWell(
+                                              onTap: () {
+                                                showGeneralDialog(
+                                                    context: context,
+                                                    barrierDismissible: true,
+                                                    barrierLabel:
+                                                        MaterialLocalizations
+                                                                .of(context)
+                                                            .modalBarrierDismissLabel,
+                                                    barrierColor:
+                                                        Colors.black45,
+                                                    transitionDuration:
+                                                        const Duration(
+                                                            milliseconds: 200),
+                                                    pageBuilder: (BuildContext
+                                                            buildContext,
+                                                        Animation animation,
+                                                        Animation
+                                                            secondaryAnimation) {
+                                                      return Center(
+                                                        child: Container(
+                                                          width: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width -
+                                                              10,
+                                                          height: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .height -
+                                                              80,
+                                                          padding:
+                                                              EdgeInsets.all(
+                                                                  20),
+                                                          color: bg(context),
+                                                          child: Column(
+                                                            children: [
+                                                              Container(
+                                                                  height: 380,
+                                                                  child:
+                                                                      PhotoView(
+                                                                    imageProvider:
+                                                                        NetworkImage(
+                                                                            url),
+                                                                    minScale:
+                                                                        PhotoViewComputedScale.contained *
+                                                                            0.8,
+                                                                    maxScale:
+                                                                        PhotoViewComputedScale.covered *
+                                                                            2,
+                                                                  )),
+                                                              Expanded(
+                                                                  child: Align(
+                                                                      alignment:
+                                                                          Alignment
+                                                                              .bottomCenter,
+                                                                      child:
+                                                                          RaisedButton(
+                                                                        color:
+                                                                            primarybg,
+                                                                        onPressed:
+                                                                            () {
+                                                                          Navigator.of(context)
+                                                                              .pop();
+                                                                        },
+                                                                        child:
+                                                                            Text(
+                                                                          MyLocalizations.of(context)
+                                                                              .getLocalizations("CLOSE"),
+                                                                          style:
+                                                                              TextStyle(color: Colors.white),
+                                                                        ),
+                                                                      )))
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      );
+                                                    });
+                                              },
+                                              child: CachedNetworkImage(
+                                                imageUrl: url,
+                                                imageBuilder:
+                                                    (context, imageProvider) =>
+                                                        Container(
+                                                  padding: EdgeInsets.zero,
+                                                  margin: EdgeInsets.zero,
+                                                  height: 340,
+                                                  decoration: new BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.only(
+                                                        bottomLeft:
+                                                            Radius.circular(40),
+                                                        bottomRight:
+                                                            Radius.circular(40),
+                                                      ),
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                            color: Colors.grey,
+                                                            blurRadius: 10.0,
+                                                            offset: Offset(
+                                                                2.0, 2.0))
+                                                      ],
+                                                      image: DecorationImage(
+                                                          image: imageProvider,
+                                                          fit: BoxFit.cover)),
+                                                ),
+                                                placeholder: (context, url) =>
+                                                    Container(
+                                                        height: 340,
+                                                        child: noDataImage()),
+                                                errorWidget: (context, url,
+                                                        error) =>
+                                                    Container(
+                                                        height: 340,
+                                                        child: noDataImage()),
                                               ),
-                                              placeholder: (context, url) =>
-                                                  Container(
-                                                      height: 340,
-                                                      child: noDataImage()),
-                                              errorWidget:
-                                                  (context, url, error) =>
-                                                      Container(
-                                                          height: 340,
-                                                          child: noDataImage()),
                                             );
                                           },
                                         ).toList(),
                                       )
-                                    : CachedNetworkImage(
-                                        imageUrl:
-                                            productDetail['filePath'] == null
-                                                ? productDetail['imageUrl']
-                                                : Constants.imageUrlPath +
-                                                    "/tr:dpr-auto,tr:w-1000" +
-                                                    productDetail['filePath'],
-                                        imageBuilder:
-                                            (context, imageProvider) =>
-                                                Container(
-                                          padding: EdgeInsets.zero,
-                                          margin: EdgeInsets.zero,
-                                          height: 340,
-                                          decoration: new BoxDecoration(
-                                              borderRadius: BorderRadius.only(
-                                                bottomLeft: Radius.circular(40),
-                                                bottomRight:
-                                                    Radius.circular(40),
-                                              ),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                    color: Colors.grey,
-                                                    blurRadius: 10.0,
-                                                    offset: Offset(2.0, 2.0))
-                                              ],
-                                              image: DecorationImage(
-                                                  image: imageProvider,
-                                                  fit: BoxFit.cover)),
-                                        ),
-                                        placeholder: (context, url) =>
-                                            Container(
-                                                height: 340,
-                                                child: noDataImage()),
-                                        errorWidget: (context, url, error) =>
-                                            Container(
-                                                height: 340,
-                                                child: noDataImage()),
-                                      ),
+                                    : Container(
+                                        height: 340, child: noDataImage()),
                               ),
                               SizedBox(height: 40),
                               Column(
@@ -522,14 +571,10 @@ class _ProductDetailsState extends State<ProductDetails>
                                                     top: 5.0,
                                                     right: 10),
                                                 child: priceMrpText(
-                                                    productDetail[
-                                                            'isDealAvailable']
-                                                        ? "$currency${((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * (productDetail['dealPercent'] / 100))).toDouble().toStringAsFixed(2)}"
-                                                        : '$currency${(variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice).toDouble().toStringAsFixed(2)}',
-                                                    productDetail[
-                                                            'isDealAvailable']
-                                                        ? "$currency${(variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice).toDouble().toStringAsFixed(2)}"
-                                                        : null,
+                                                    getDiscountedValue(
+                                                        index: 0),
+                                                    getPercentageValue(
+                                                        index: 0),
                                                     context)),
                                           ],
                                         ),
@@ -683,14 +728,10 @@ class _ProductDetailsState extends State<ProductDetails>
                                                         textbarlowBoldGreen(
                                                             context)),
                                                     title: priceMrpText(
-                                                        productDetail[
-                                                                'isDealAvailable']
-                                                            ? "$currency${(productDetail['variant'][i]['price'] - (productDetail['variant'][i]['price'] * (productDetail['dealPercent'] / 100))).toDouble().toStringAsFixed(2)}"
-                                                            : '$currency${productDetail['variant'][i]['price'].toDouble().toStringAsFixed(2)}',
-                                                        productDetail[
-                                                                'isDealAvailable']
-                                                            ? "$currency${productDetail['variant'][i]['price'].toDouble().toStringAsFixed(2)}"
-                                                            : null,
+                                                        getDiscountedValue(
+                                                            index: i),
+                                                        getPercentageValue(
+                                                            index: i),
                                                         context))
                                                 : Container();
                                           })
@@ -741,9 +782,7 @@ class _ProductDetailsState extends State<ProductDetails>
                             top: 45,
                             left: 20,
                             child: InkWell(
-                              onTap: () {
-                                Navigator.pop(context);
-                              },
+                              onTap: () => Navigator.pop(context),
                               child: Container(
                                   height: 40,
                                   width: 40,
@@ -779,9 +818,7 @@ class _ProductDetailsState extends State<ProductDetails>
                   child: addToCartButton(
                       context,
                       '(${quantity.toString()})  ',
-                      productDetail['isDealAvailable']
-                          ? "$currency${((((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * (productDetail['dealPercent'] / 100)))) * quantity).toDouble().toStringAsFixed(2)}"
-                          : '$currency${((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * quantity).toDouble().toStringAsFixed(2)}',
+                      calculateTotal(),
                       "ADD_TO_CART",
                       Icon(Icons.shopping_cart, color: Colors.black),
                       addProductTocart),
@@ -796,4 +833,30 @@ class _ProductDetailsState extends State<ProductDetails>
     );
     _scaffoldKey.currentState.showSnackBar(snackBar);
   }
+
+  getDiscountedValue({index = 0}) => productDetail['isDealAvailable'] &&
+              productDetail['variant'][index]['isOfferAvailable'] ||
+          productDetail['isDealAvailable']
+      ? "$currency${((variantPrice == null ? productDetail['variant'][index]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][index]['price'] : variantPrice) * (productDetail['dealPercent'] / 100))).toDouble().toStringAsFixed(2)}"
+      : (productDetail['variant'][index]['isOfferAvailable'] ?? false) &&
+              productDetail['variant'][index]['offerPercent'] != null
+          ? "$currency${((variantPrice == null ? productDetail['variant'][index]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][index]['price'] : variantPrice) * (productDetail['variant'][index]['offerPercent'] / 100))).toDouble().toStringAsFixed(2)}"
+          : '$currency${(variantPrice == null ? productDetail['variant'][index]['price'] : variantPrice).toDouble().toStringAsFixed(2)}';
+
+  getPercentageValue({index = 0}) => productDetail['isDealAvailable'] &&
+              productDetail['variant'][index]['isOfferAvailable'] ||
+          productDetail['isDealAvailable']
+      ? "$currency${(variantPrice == null ? productDetail['variant'][index]['price'] : variantPrice).toDouble().toStringAsFixed(2)}"
+      : (productDetail['variant'][index]['isOfferAvailable'] ?? false) &&
+              productDetail['variant'][index]['offerPercent'] != null
+          ? "$currency${(variantPrice == null ? productDetail['variant'][index]['price'] : variantPrice).toDouble().toStringAsFixed(2)}"
+          : null;
+
+  calculateTotal() => productDetail['isDealAvailable'] &&
+              productDetail['variant'][0]['isOfferAvailable'] ||
+          productDetail['isDealAvailable']
+      ? "$currency${((((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * (productDetail['dealPercent'] / 100)))) * quantity).toDouble().toStringAsFixed(2)}"
+      : productDetail['variant'][0]['isOfferAvailable']
+          ? "$currency${((((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * (productDetail['variant'][0]['offerPercent'] / 100)))) * quantity).toDouble().toStringAsFixed(2)}"
+          : '$currency${((variantPrice == null ? productDetail['variant'][0]['price'] : variantPrice) * quantity).toDouble().toStringAsFixed(2)}';
 }

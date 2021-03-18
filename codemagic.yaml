@@ -72,7 +72,7 @@ workflows:
     name: Send Test Apk to given mails
     max_build_duration: 60
     environment:
-      flutter: stable
+      flutter: 1.22.4
       xcode: latest
       cocoapods: default
       vars:
@@ -94,7 +94,7 @@ workflows:
           include: true
           source: true
     scripts:
-      - flutter upgrade
+      # - flutter upgrade
       - export LC_CTYPE=C; export LANG=C;
       - echo $SH_FILE_VAR | base64 --decode > temp
       - sh temp

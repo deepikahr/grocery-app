@@ -151,7 +151,7 @@ class _EditAddressState extends State<EditAddress> {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarprimary(context, "EDIT_ADDRESS"),
+      appBar: appBarPrimary(context, "EDIT_ADDRESS"),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -226,7 +226,13 @@ class _EditAddressState extends State<EditAddress> {
                                   googlePlacesApiKey: Constants.googleMapApiKey,
                                   initialPosition: LatLng(lat, long),
                                   mainColor: primary(context),
-                                  mapStrings: MapPickerStrings.english(),
+                                  mapStrings: MapPickerStrings.english(
+                                      selectAddress: MyLocalizations.of(context)
+                                          .getLocalizations("SELECT_ADDRESS"),
+                                      cancel: MyLocalizations.of(context)
+                                          .getLocalizations("CANCEL"),
+                                      address: MyLocalizations.of(context)
+                                          .getLocalizations("ADDRESS")),
                                   placeAutoCompleteLanguage: 'en',
                                 )));
                     setState(() {
@@ -449,19 +455,6 @@ class _EditAddressState extends State<EditAddress> {
                   itemCount:
                       addressType.length == null ? 0 : addressType.length,
                   itemBuilder: (BuildContext context, int i) {
-                    String type;
-                    if (addressType[i] == 'HOME') {
-                      type =
-                          MyLocalizations.of(context).getLocalizations("HOME");
-                    } else if (addressType[i] == 'WORK') {
-                      type =
-                          MyLocalizations.of(context).getLocalizations("WORK");
-                    } else if (addressType[i] == 'OTHERS') {
-                      type = MyLocalizations.of(context)
-                          .getLocalizations("OTHERS");
-                    } else {
-                      type = addressType[i];
-                    }
                     return Padding(
                       padding: const EdgeInsets.only(left: 10.0),
                       child: Row(
@@ -476,7 +469,7 @@ class _EditAddressState extends State<EditAddress> {
                               setSelectedRadio(value);
                             },
                           ),
-                          normalTextWithOutRow(context, type, false)
+                          normalTextWithOutRow(context, addressType[i], false)
                         ],
                       ),
                     );
