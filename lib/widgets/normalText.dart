@@ -92,7 +92,7 @@ Widget walletTransaction(BuildContext context, title, subTitle) {
     children: <Widget>[
       Text(
         MyLocalizations.of(context).getLocalizations(title, true) +
-            MyLocalizations.of(context).getLocalizations(subTitle),
+            MyLocalizations.of(context).getLocalizations(subTitle ?? ""),
         style: textBarlowRegularBlackdl(context),
       ),
     ],
@@ -892,6 +892,9 @@ walletImage() {
   return Image.asset('lib/assets/images/wallet.png');
 }
 
+thankuImageWallet() {
+  return Image.asset('lib/assets/images/walletImage.png');
+}
 // walletIcon() {
 //   return Image.asset(
 //     'lib/assets/images/walleticon.png',

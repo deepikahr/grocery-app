@@ -11,11 +11,12 @@ class Thankyou extends StatefulWidget {
     this.locale,
     this.localizedValues,
     this.isSubscription = false,
+    this.isWallet = false,
   });
 
   final Map localizedValues;
   final String locale;
-  final bool isSubscription;
+  final bool isSubscription, isWallet;
 
   @override
   _ThankyouState createState() => _ThankyouState();
@@ -36,19 +37,21 @@ class _ThankyouState extends State<Thankyou> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            thankuImage(),
+            widget.isWallet ? thankuImageWallet() : thankuImage(),
             SizedBox(height: 10.0),
             orderPlaceText(
                 context,
                 (widget.isSubscription
                     ? "SUBCRIPTION_ACTIVATED"
-                    : "ORDER_PLACED")),
-            SizedBox(height: 13.0),
-            thankyouText(context, "THANK_YOU"),
+                    : widget.isWallet
+                        ? "MONEY_ADDED_TO_WALLET"
+                        : "ORDER_PLACED")),
+            widget.isWallet ? Container() : SizedBox(height: 13.0),
+            widget.isWallet ? Container() : thankyouText(context, "THANK_YOU"),
             SizedBox(height: 30.0),
             InkWell(
                 onTap: () {
-                  if (widget.isSubscription) {
+                  if (widget.isSubscription || widget.isWallet) {
                     Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
@@ -81,8 +84,12 @@ class _ThankyouState extends State<Thankyou> {
                         (Route<dynamic> route) => false));
                   }
                 },
-                child: defaultButton(context,
-                    widget.isSubscription ? "HOME" : "ORDERS", dark(context))),
+                child: defaultButton(
+                    context,
+                    (widget.isSubscription || widget.isWallet
+                        ? "HOME"
+                        : "ORDERS"),
+                    dark(context))),
           ],
         ),
       ),
