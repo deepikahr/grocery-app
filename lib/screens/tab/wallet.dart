@@ -3,10 +3,12 @@ import 'package:readymadeGroceryApp/screens/tab/wallet-history.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
+import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
+
+import 'addmoney.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -58,8 +60,7 @@ class _WalletPageState extends State<WalletPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: bg(context),
-      appBar: appBarprimary(context, "WALLET"),
+      appBar: appBarPrimarynoradius(context, "WALLET"),
       body: isGetWalletInfoLoading
           ? Center(child: SquareLoader())
           : Column(
@@ -93,6 +94,31 @@ class _WalletPageState extends State<WalletPage> {
                   ],
                 )
               ],
+            ),
+      bottomNavigationBar: isGetWalletInfoLoading
+          ? Container(height: 1)
+          : Container(
+              height: 80.0,
+              color: Colors.transparent,
+              margin: EdgeInsets.symmetric(vertical: 5, horizontal: 14),
+              child: Column(
+                children: [
+                  InkWell(
+                      onTap: () {
+                        var result = Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AddMoney(
+                                locale: widget.locale,
+                                localizedValues: widget.localizedValues),
+                          ),
+                        );
+                        result.then((value) => userInfoMethod());
+                      },
+                      child: regularbuttonPrimary(context, "ADD_MONEY", false)),
+                  SizedBox(height: 4),
+                ],
+              ),
             ),
     );
   }

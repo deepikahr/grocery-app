@@ -206,7 +206,7 @@ class _LoginState extends State<Login> {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarprimary(context, "LOGIN"),
+      appBar: appBarPrimary(context, "LOGIN"),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

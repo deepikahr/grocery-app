@@ -125,7 +125,7 @@ class _AddressState extends State<Address> {
     return Scaffold(
         backgroundColor: bg(context),
         key: _scaffoldKey,
-        appBar: appBarprimary(context, "ADDRESS"),
+        appBar: appBarPrimary(context, "ADDRESS"),
         body: addressLoading || isLocationLoading
             ? SquareLoader()
             : addressList.length == 0
@@ -229,7 +229,13 @@ class _AddressState extends State<Address> {
                   initialPosition: LatLng(locationlatlong['latitude'],
                       locationlatlong['longitude']),
                   mainColor: primary(context),
-                  mapStrings: MapPickerStrings.english(),
+                  mapStrings: MapPickerStrings.english(
+                      selectAddress: MyLocalizations.of(context)
+                          .getLocalizations("SELECT_ADDRESS"),
+                      cancel: MyLocalizations.of(context)
+                          .getLocalizations("CANCEL"),
+                      address: MyLocalizations.of(context)
+                          .getLocalizations("ADDRESS")),
                   placeAutoCompleteLanguage: 'en',
                 )));
     if (pickerResult != null) {

@@ -3,22 +3,26 @@ import 'package:getflutter/getflutter.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 
-Widget appBarprimary(BuildContext context, title) {
+Widget appBarPrimary(BuildContext context, title) {
   return GFAppBar(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
       ),
       title: Text(MyLocalizations.of(context).getLocalizations(title),
-          style: TextStyle(
-            fontSize: 17.0,
-            fontFamily: 'BarlowSemiBold',
-            color: Colors.black87,
-            fontWeight: FontWeight.w700,
-          )),
+          style: textbarlowSemiBoldBlack(context)),
       centerTitle: true,
       backgroundColor: primary(context),
-      iconTheme: IconThemeData(color: Colors.black87));
+      iconTheme: IconThemeData(color: dark(context)));
+}
+
+Widget appBarPrimarynoradius(BuildContext context, title) {
+  return GFAppBar(
+      title: Text(MyLocalizations.of(context).getLocalizations(title),
+          style: textbarlowSemiBoldBlack(context)),
+      centerTitle: true,
+      backgroundColor: primary(context),
+      iconTheme: IconThemeData(color: dark(context)));
 }
 
 Widget appBarWhite(BuildContext context, title, bool changeUi,
@@ -27,11 +31,9 @@ Widget appBarWhite(BuildContext context, title, bool changeUi,
     title: changeUi
         ? title
         : Text(MyLocalizations.of(context).getLocalizations(title),
-            style: appbarText(context)),
+            style: textbarlowSemiBoldBlack(context)),
     centerTitle: true,
-    backgroundColor: Theme.of(context).brightness == Brightness.dark
-        ? Color(0xFF1e2024)
-        : lightbg,
+    backgroundColor: bg(context),
     elevation: 0,
     iconTheme: IconThemeData(color: dark(context)),
     actions: <Widget>[actionTrueOrFalse ? actionProcess : Container()],
@@ -41,11 +43,9 @@ Widget appBarWhite(BuildContext context, title, bool changeUi,
 Widget appBarTransparent(BuildContext context, title) {
   return GFAppBar(
       title: Text(MyLocalizations.of(context).getLocalizations(title),
-          style: appbarText(context)),
+          style: textbarlowSemiBoldBlack(context)),
       centerTitle: true,
-      backgroundColor: Theme.of(context).brightness == Brightness.dark
-          ? Color(0xFF1e2024)
-          : Colors.transparent,
+      backgroundColor: Colors.transparent,
       iconTheme: IconThemeData(color: dark(context)),
       elevation: 0);
 }

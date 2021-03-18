@@ -16,17 +16,16 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 SentryError sentryError = new SentryError();
 
 class Payment extends StatefulWidget {
-  final String locale;
-
+  final String locale, instruction;
   final Map data, locationInfo, localizedValues, cartItems;
-
   Payment(
       {Key key,
       this.data,
       this.locale,
       this.localizedValues,
       this.locationInfo,
-      this.cartItems})
+      this.cartItems,
+      this.instruction})
       : super(key: key);
   @override
   _PaymentState createState() => _PaymentState();
@@ -107,6 +106,7 @@ class _PaymentState extends State<Payment> {
       showSnackbar(
           MyLocalizations.of(context).getLocalizations("SELECT_PAYMENT_FIRST"));
     } else {
+      widget.data['deliveryInstruction'] = widget.instruction ?? "";
       if (fullWalletUsedOrNot == true) {
         widget.data['paymentType'] = "COD";
         palceOrderMethod(widget.data);
@@ -240,6 +240,16 @@ class _PaymentState extends State<Payment> {
                           ')',
                       '$currency${cartItem['subTotal'].toDouble().toStringAsFixed(2)}',
                       false),
+                  SizedBox(height: 10),
+                  cartItem['shippingMethod'] == 0
+                      ? Container()
+                      : buildPriceGreen(
+                          context,
+                          null,
+                          MyLocalizations.of(context)
+                              .getLocalizations("SHIPPING_METHOD"),
+                          '${cartItem['shippingMethod']}',
+                          false),
                   cartItem['couponCode'] != null
                       ? SizedBox(height: 10)
                       : Container(),
@@ -340,6 +350,8 @@ class _PaymentState extends State<Payment> {
                       ? Container()
                       : paymentTypes.length > 0
                           ? Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 buildBoldText(context, "CHOOSE_PAYMENT_METHOD"),
                                 SizedBox(height: 10),

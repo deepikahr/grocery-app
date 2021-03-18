@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:readymadeGroceryApp/screens/categories/subcategories.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -7,6 +6,8 @@ import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/categoryBlock.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+
+import '../product/all_products.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -99,13 +100,12 @@ class _AllCategoriesState extends State<AllCategories>
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (BuildContext context) => SubCategories(
-                                locale: widget.locale,
-                                localizedValues: widget.localizedValues,
-                                catId: categoryList[index]['_id'],
-                                catTitle:
-                                    '${categoryList[index]['title'][0].toUpperCase()}${categoryList[index]['title'].substring(1)}',
-                                token: widget.getTokenValue),
+                            builder: (BuildContext context) => AllProducts(
+                              locale: widget.locale,
+                              localizedValues: widget.localizedValues,
+                              categoryId: categoryList[index]['_id'],
+                              pageTitle: categoryList[index]['title'],
+                            ),
                           ),
                         );
                       },

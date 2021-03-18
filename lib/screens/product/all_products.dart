@@ -10,250 +10,277 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
-import 'package:readymadeGroceryApp/widgets/cardOverlay.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
-import 'package:readymadeGroceryApp/widgets/subCategoryProductCart.dart';
+import 'package:readymadeGroceryApp/widgets/product_gridcard.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import '../../style/style.dart';
+import '../../widgets/loader.dart';
 
 SentryError sentryError = new SentryError();
 
 class AllProducts extends StatefulWidget {
   final Map localizedValues;
-  final String locale, currency, dealId;
-  final bool token;
-  final List productsList;
+  final String locale, dealId, categoryId, pageTitle;
 
-  AllProducts(
-      {Key key,
-      this.locale,
-      this.localizedValues,
-      this.productsList,
-      this.currency,
-      this.token,
-      this.dealId});
+  AllProducts({
+    Key key,
+    this.locale,
+    this.localizedValues,
+    this.dealId,
+    this.categoryId,
+    this.pageTitle,
+  });
   @override
   _AllProductsState createState() => _AllProductsState();
 }
 
 class _AllProductsState extends State<AllProducts> {
-  List productsList = [], subCategryByProduct, subCategryList;
-  String currency, currentSubCategoryId;
-  bool getTokenValue = false,
-      isSelected = true,
-      isSelectedIndexZero = false,
-      subProductLastApiCall = true;
+  bool isUserLoaggedIn = false,
+      isFirstPageLoading = true,
+      isNextPageLoading = false,
+      isSubCategoryLoading = true,
+      isProductsForDeal = false,
+      isProductsForCategory = false;
+  int productsPerPage = 12,
+      productsPageNumber = 0,
+      totalProducts = 1,
+      selectedSubCategoryIndex = 0;
+  List productsList = [], subCategoryList = [];
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  ScrollController controller;
+  String currency;
   ScrollController _scrollController = ScrollController();
-  // int index = 0, totalIndex = 1;
-  bool productListApiCall = false,
-      isNewProductsLoading = false,
-      isLoadingSubCatProductsList = false,
-      lastApiCall = true;
+
   var cartData;
-  String isSelectetedId;
-  int productLimt = 15,
-      productIndex = 0,
-      totalProduct = 1,
-      subCatProductLimt = 15,
-      subCatProductIndex = 0,
-      subCattotalProduct = 1;
 
   @override
   void initState() {
-    getTokenValueMethod();
-    if (widget.dealId == null) {
-      getSubCatList();
-    }
     super.initState();
+    if (widget.dealId != null) {
+      isProductsForDeal = true;
+      isSubCategoryLoading = false;
+    } else if (widget.categoryId != null) {
+      isProductsForCategory = true;
+    } else {
+      getSubCategoryList();
+    }
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        methodCallsInitiate();
+      }
+    });
+    checkIfUserIsLoaggedIn();
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    if (_scrollController != null) _scrollController.dispose();
     super.dispose();
   }
 
-  getSubCatList() async {
-    if (mounted) {
-      setState(() {
-        isLoadingSubCatProductsList = true;
-      });
-    }
-    await ProductService.getSubCatList().then((onValue) {
-      _refreshController.refreshCompleted();
-
-      if (mounted)
-        setState(() {
-          subCategryList = onValue['response_data'];
-          isLoadingSubCatProductsList = false;
-        });
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          isLoadingSubCatProductsList = false;
-        });
+  void methodCallsInitiate() {
+    if (isProductsForDeal) {
+      getProductListByDealId();
+    } else if (isProductsForCategory) {
+      if (selectedSubCategoryIndex == 0) {
+        getSubCategoryListByCategoryId();
+      } else {
+        getProductsListBySubCategoryId();
       }
-      sentryError.reportError(error, null);
-    });
+    } else {
+      if (selectedSubCategoryIndex == 0) {
+        getProductsList();
+      } else {
+        getProductsListBySubCategoryId();
+      }
+    }
   }
 
-  getTokenValueMethod() async {
+  void checkIfUserIsLoaggedIn() async {
+    setState(() {
+      isFirstPageLoading = true;
+    });
+    productsList = [];
+    productsPageNumber = productsList.length;
+    totalProducts = 1;
     await Common.getCurrency().then((value) {
       currency = value;
     });
     await Common.getToken().then((onValue) {
       if (onValue != null) {
-        if (mounted) {
-          setState(() {
-            getTokenValue = true;
-          });
-        }
-      } else {
-        if (mounted) {
-          setState(() {
-            getTokenValue = false;
-          });
-        }
+        isUserLoaggedIn = true;
       }
-      setState(() {
-        isNewProductsLoading = true;
-        if (widget.dealId == null) {
-          getProductListMethod(productIndex);
-        } else {
-          getDealProductListMethod(productIndex);
-        }
-      });
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          getTokenValue = false;
-        });
-      }
-      sentryError.reportError(error, null);
+      methodCallsInitiate();
     });
   }
 
-  getProductListMethod(productIndex) async {
-    await ProductService.getProductListAll(productIndex, productLimt)
-        .then((onValue) {
-      _refreshController.refreshCompleted();
-      if (mounted) {
-        setState(() {
-          if (onValue['response_data'] != []) {
-            productsList.addAll(onValue['response_data']);
-            totalProduct = onValue["total"];
-            int index = productsList.length;
-            if (lastApiCall == true) {
-              productIndex++;
-              if (index < totalProduct) {
-                getProductListMethod(productIndex);
-              } else {
-                if (index == totalProduct) {
-                  if (mounted) {
-                    lastApiCall = false;
-                    getProductListMethod(productIndex);
-                  }
-                }
-              }
-            }
-          }
-          isNewProductsLoading = false;
-        });
+  void getSubCategoryList() async {
+    await ProductService.getSubCatList().then((onValue) {
+      if (onValue['response_data'] != null) {
+        subCategoryList = onValue['response_data'] as List;
       }
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          productsList = [];
-          isNewProductsLoading = false;
-        });
-      }
-      sentryError.reportError(error, null);
-    });
-  }
-
-  getDealProductListMethod(productIndex) async {
-    setState(() {
-      subCategryList = [];
-    });
-    await ProductService.getDealProductListAll(
-            productIndex, productLimt, widget.dealId)
-        .then((onValue) {
-      _refreshController.refreshCompleted();
-      if (mounted) {
-        setState(() {
-          if (onValue['response_data'] != []) {
-            productsList.addAll(onValue['response_data']);
-            totalProduct = onValue["total"];
-            int index = productsList.length;
-            if (lastApiCall == true) {
-              productIndex++;
-              if (index < totalProduct) {
-                getDealProductListMethod(productIndex);
-              } else {
-                if (index == totalProduct) {
-                  if (mounted) {
-                    lastApiCall = false;
-                    getDealProductListMethod(productIndex);
-                  }
-                }
-              }
-            }
-          }
-          isNewProductsLoading = false;
-        });
-      }
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          productsList = [];
-          isNewProductsLoading = false;
-        });
-      }
-      sentryError.reportError(error, null);
-    });
-  }
-
-  getProductToSubCategory(catId, subCatProductIndex) async {
-    await ProductService.getProductToSubCategoryList(
-            catId, subCatProductIndex, subCatProductLimt)
-        .then((onValue) {
       if (mounted)
         setState(() {
-          subCategryByProduct = onValue['response_data'];
-          subCategryByProduct.addAll(onValue['response_data']);
-          subCattotalProduct = onValue["total"];
-          int index = subCategryByProduct.length;
-          if (subProductLastApiCall == true) {
-            subCatProductIndex++;
-            if (index < subCattotalProduct) {
-              getProductToSubCategory(catId, subCatProductIndex);
-            } else {
-              if (index == subCattotalProduct) {
-                if (mounted) {
-                  subProductLastApiCall = false;
-                  getProductToSubCategory(catId, subCatProductIndex);
-                }
-              }
-            }
-          }
-          isLoadingSubCatProductsList = false;
+          isSubCategoryLoading = false;
         });
     }).catchError((error) {
       if (mounted) {
         setState(() {
-          isLoadingSubCatProductsList = false;
+          isSubCategoryLoading = false;
         });
       }
       sentryError.reportError(error, null);
     });
+  }
+
+  void getSubCategoryListByCategoryId() async {
+    if (totalProducts != productsList.length) {
+      if (productsPageNumber > 0) {
+        setState(() {
+          isNextPageLoading = true;
+        });
+      }
+      await ProductService.getProductToCategoryList(
+              widget.categoryId, productsPageNumber, productsPerPage)
+          .then((onValue) {
+        _refreshController.refreshCompleted();
+        if (onValue['response_data'] != null) {
+          productsList.addAll(onValue['response_data']['products']);
+          subCategoryList = onValue['response_data']['subCategories'];
+          totalProducts = onValue["total"];
+          productsPageNumber++;
+        }
+        if (mounted)
+          setState(() {
+            isSubCategoryLoading = false;
+            isFirstPageLoading = false;
+            isNextPageLoading = false;
+          });
+      }).catchError((error) {
+        if (mounted) {
+          setState(() {
+            isSubCategoryLoading = false;
+            isFirstPageLoading = false;
+            isNextPageLoading = false;
+          });
+        }
+        sentryError.reportError(error, null);
+      });
+    }
+  }
+
+  void getProductsList() async {
+    if (totalProducts != productsList.length) {
+      if (productsPageNumber > 0) {
+        setState(() {
+          isNextPageLoading = true;
+        });
+      }
+      await ProductService.getProductListAll(
+              productsPageNumber, productsPerPage)
+          .then((onValue) {
+        _refreshController.refreshCompleted();
+        if (onValue['response_data'] != null &&
+            onValue['response_data'] != []) {
+          productsList.addAll(onValue['response_data']);
+          totalProducts = onValue["total"];
+          productsPageNumber++;
+        }
+        if (mounted) {
+          setState(() {
+            isFirstPageLoading = false;
+            isNextPageLoading = false;
+          });
+        }
+      }).catchError((error) {
+        if (mounted) {
+          setState(() {
+            isFirstPageLoading = false;
+            isNextPageLoading = false;
+          });
+        }
+        sentryError.reportError(error, null);
+      });
+    }
+  }
+
+  void getProductsListBySubCategoryId() async {
+    if (totalProducts != productsList.length) {
+      if (productsPageNumber > 0) {
+        setState(() {
+          isNextPageLoading = true;
+        });
+      }
+      await ProductService.getProductToSubCategoryList(
+              subCategoryList[selectedSubCategoryIndex - 1]['_id'],
+              productsPageNumber,
+              productsPerPage)
+          .then((onValue) {
+        _refreshController.refreshCompleted();
+        if (onValue['response_data'] != null &&
+            onValue['response_data'] != []) {
+          productsList.addAll(onValue['response_data']);
+          totalProducts = onValue["total"];
+          productsPageNumber++;
+        }
+        if (mounted) {
+          setState(() {
+            isFirstPageLoading = false;
+            isNextPageLoading = false;
+          });
+        }
+      }).catchError((error) {
+        if (mounted) {
+          setState(() {
+            isFirstPageLoading = false;
+            isNextPageLoading = false;
+          });
+        }
+        sentryError.reportError(error, null);
+      });
+    }
+  }
+
+  void getProductListByDealId() async {
+    if (totalProducts != productsList.length) {
+      if (productsPageNumber > 0) {
+        setState(() {
+          isNextPageLoading = true;
+        });
+      }
+      await ProductService.getDealProductListAll(
+              widget.dealId, productsPageNumber, productsPerPage)
+          .then((onValue) {
+        _refreshController.refreshCompleted();
+        if (onValue['response_data'] != null &&
+            onValue['response_data'] != []) {
+          productsList.addAll(onValue['response_data']);
+          totalProducts = onValue["total"];
+          productsPageNumber++;
+        }
+        if (mounted) {
+          setState(() {
+            isFirstPageLoading = false;
+            isNextPageLoading = false;
+          });
+        }
+      }).catchError((error) {
+        if (mounted) {
+          setState(() {
+            isFirstPageLoading = false;
+            isNextPageLoading = false;
+          });
+        }
+        sentryError.reportError(error, null);
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (getTokenValue) {
+    if (isUserLoaggedIn) {
       CounterModel().getCartDataMethod().then((res) {
         if (mounted) {
           setState(() {
@@ -268,12 +295,11 @@ class _AllProductsState extends State<AllProducts> {
         });
       }
     }
-
     return Scaffold(
       backgroundColor: bg(context),
       appBar: appBarWhite(
         context,
-        "PRODUCTS",
+        widget.pageTitle,
         false,
         true,
         InkWell(
@@ -282,16 +308,15 @@ class _AllProductsState extends State<AllProducts> {
               context,
               MaterialPageRoute(
                 builder: (context) => SearchItem(
-                    locale: widget.locale,
-                    localizedValues: widget.localizedValues,
-                    currency: currency,
-                    token: getTokenValue),
+                  locale: widget.locale,
+                  localizedValues: widget.localizedValues,
+                  currency: currency,
+                  token: isUserLoaggedIn,
+                ),
               ),
             );
             result.then((value) {
-              productsList = [];
-              productIndex = productsList.length;
-              getTokenValueMethod();
+              checkIfUserIsLoaggedIn();
             });
           },
           child: Padding(
@@ -302,344 +327,106 @@ class _AllProductsState extends State<AllProducts> {
           ),
         ),
       ),
-      body: SmartRefresher(
-        enablePullDown: true,
-        enablePullUp: false,
-        controller: _refreshController,
-        onRefresh: () {
-          productsList = [];
-          productIndex = productsList.length;
-          getTokenValueMethod();
-        },
-        child: isNewProductsLoading
-            ? SquareLoader()
-            : ListView(children: <Widget>[
-                subCategryList.length > 0
-                    ? Container(
-                        height: 70,
-                        child: Container(
-                          margin: EdgeInsets.only(left: 20, right: 20),
-                          height: 35,
-                          child: ListView.builder(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 16),
-                            physics: ScrollPhysics(),
-                            scrollDirection: Axis.horizontal,
-                            shrinkWrap: true,
-                            itemCount: subCategryList.length == null
-                                ? 0
-                                : subCategryList.length,
-                            itemBuilder: (BuildContext context, int i) {
-                              if (subCategryList[i]['isSelected'] == null) {
-                                subCategryList[i]['isSelected'] = false;
-                              }
-                              return i == 0
-                                  ? Row(
-                                      children: <Widget>[
-                                        InkWell(
-                                            onTap: () {
-                                              subCategryByProduct = null;
-                                              if (mounted) {
-                                                setState(() {
-                                                  isSelected = true;
-                                                  isSelectedIndexZero = false;
-                                                  isSelectetedId = null;
-                                                  lastApiCall = true;
-                                                });
-                                              }
-
-                                              productsList = [];
-                                              productIndex =
-                                                  productsList.length;
-
-                                              getTokenValueMethod();
-                                            },
-                                            child: subCatTab(
-                                                context,
-                                                MyLocalizations.of(context)
-                                                    .getLocalizations("ALL"),
-                                                isSelected
-                                                    ? primary(context)
-                                                    : Color(0xFFf0F0F0))),
-                                        InkWell(
-                                            onTap: () {
-                                              if (mounted) {
-                                                setState(() {
-                                                  isLoadingSubCatProductsList =
-                                                      true;
-                                                  isSelected = false;
-                                                  isSelectedIndexZero = true;
-                                                  isSelectetedId = null;
-                                                  currentSubCategoryId =
-                                                      subCategryList[0]['_id']
-                                                          .toString();
-                                                  subCategryByProduct = [];
-                                                  subCatProductIndex =
-                                                      subCategryByProduct
-                                                          .length;
-                                                  isLoadingSubCatProductsList =
-                                                      true;
-                                                });
-                                              }
-
-                                              getProductToSubCategory(
-                                                  subCategryList[0]['_id']
-                                                      .toString(),
-                                                  subCatProductIndex);
-                                            },
-                                            child: subCatTab(
-                                                context,
-                                                '${subCategryList[0]['title'][0].toUpperCase()}${subCategryList[0]['title'].substring(1)}',
-                                                isSelectedIndexZero
-                                                    ? primary(context)
-                                                    : Color(0xFFf0F0F0)))
-                                      ],
-                                    )
-                                  : InkWell(
-                                      onTap: () {
-                                        if (mounted) {
-                                          setState(() {
-                                            isSelected = false;
-                                            isSelectedIndexZero = false;
-                                            isLoadingSubCatProductsList = true;
-                                            currentSubCategoryId =
-                                                subCategryList[i]['_id']
-                                                    .toString();
-                                            isSelectetedId =
-                                                subCategryList[i]['_id'];
-                                            subCategryByProduct = [];
-                                            subCatProductIndex =
-                                                subCategryByProduct.length;
-                                            isLoadingSubCatProductsList = true;
-                                          });
-                                        }
-
-                                        getProductToSubCategory(
-                                            subCategryList[i]['_id'].toString(),
-                                            subCatProductIndex);
-                                      },
-                                      child: subCatTab(
-                                          context,
-                                          '${subCategryList[i]['title'][0].toUpperCase()}${subCategryList[i]['title'].substring(1)}',
-                                          isSelectetedId ==
-                                                  subCategryList[i]['_id']
-                                              ? primary(context)
-                                              : Color(0xFFf0F0F0)));
-                            },
-                          ),
-                        ),
-                      )
-                    : Container(),
-                isLoadingSubCatProductsList
+      body: isSubCategoryLoading
+          ? Center(child: SquareLoader())
+          : Column(
+              children: [
+                isSubCategoryLoading
                     ? SquareLoader()
-                    : subCategryByProduct != null
-                        ? Container(
-                            height: MediaQuery.of(context).size.height - 201,
-                            child: ListView(
-                              children: <Widget>[
-                                Stack(
-                                  children: <Widget>[
-                                    subCategryByProduct.length == 0
-                                        ? noDataImage()
-                                        : GridView.builder(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 16, vertical: 16),
-                                            physics: ScrollPhysics(),
-                                            shrinkWrap: true,
-                                            itemCount: subCategryByProduct
-                                                        .length ==
-                                                    null
-                                                ? 0
-                                                : subCategryByProduct.length,
-                                            gridDelegate:
-                                                SliverGridDelegateWithFixedCrossAxisCount(
-                                                    crossAxisCount: 2,
-                                                    childAspectRatio:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width /
-                                                            520,
-                                                    crossAxisSpacing: 16,
-                                                    mainAxisSpacing: 16),
-                                            itemBuilder:
-                                                (BuildContext context, int i) {
-                                              if (subCategryByProduct[i]
-                                                      ['averageRating'] ==
-                                                  null) {
-                                                subCategryByProduct[i]
-                                                    ['averageRating'] = 0;
-                                              }
-
-                                              return InkWell(
-                                                onTap: () {
-                                                  var result = Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          ProductDetails(
-                                                        locale: widget.locale,
-                                                        localizedValues: widget
-                                                            .localizedValues,
-                                                        productID:
-                                                            subCategryByProduct[
-                                                                i]['_id'],
-                                                      ),
-                                                    ),
-                                                  );
-                                                  result.then((value) {
-                                                    if (value != null) {
-                                                      if (mounted) {
-                                                        setState(() {
-                                                          isLoadingSubCatProductsList =
-                                                              true;
-                                                          subCategryByProduct =
-                                                              [];
-                                                          subCatProductIndex =
-                                                              subCategryByProduct
-                                                                  .length;
-                                                          isLoadingSubCatProductsList =
-                                                              true;
-                                                        });
-                                                      }
-                                                      getProductToSubCategory(
-                                                          currentSubCategoryId,
-                                                          subCatProductIndex);
-                                                    }
-                                                  });
-                                                },
-                                                child: Stack(
-                                                  children: <Widget>[
-                                                    SubCategoryProductCard(
-                                                      currency: currency,
-                                                      price:
-                                                          subCategryByProduct[i]
-                                                                  ['variant'][0]
-                                                              ['price'],
-                                                      productData:
-                                                          subCategryByProduct[
-                                                              i],
-                                                      variantList:
-                                                          subCategryByProduct[i]
-                                                              ['variant'],
-                                                      isHome: false,
-                                                    ),
-                                                    subCategryByProduct[i][
-                                                                'isDealAvailable'] ==
-                                                            true
-                                                        ? buildBadge(
-                                                            context,
-                                                            subCategryByProduct[
-                                                                        i][
-                                                                    'dealPercent']
-                                                                .toString(),
-                                                            "OFF")
-                                                        : Container()
-                                                  ],
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          )
-                        : Padding(
-                            padding:
-                                EdgeInsets.only(left: 15, right: 15, top: 15),
+                    : isProductsForDeal
+                        ? Container()
+                        : Container(
+                            height: 45,
+                            child: ListView.builder(
+                                physics: ScrollPhysics(),
+                                shrinkWrap: true,
+                                scrollDirection: Axis.horizontal,
+                                itemCount: subCategoryList.length + 1,
+                                itemBuilder: (BuildContext context, int i) {
+                                  return InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        selectedSubCategoryIndex = i;
+                                      });
+                                      checkIfUserIsLoaggedIn();
+                                    },
+                                    child: subCatTab(
+                                      context,
+                                      i == 0
+                                          ? MyLocalizations.of(context)
+                                              .getLocalizations('ALL')
+                                          : subCategoryList[i - 1]['title'],
+                                      selectedSubCategoryIndex == i
+                                          ? primary(context)
+                                          : Color(0xFFf0F0F0),
+                                    ),
+                                  );
+                                }),
+                          ),
+                Flexible(
+                  child: isFirstPageLoading
+                      ? Center(child: SquareLoader())
+                      : Container(
+                          padding: EdgeInsets.only(left: 10, right: 10),
+                          child: SmartRefresher(
+                            enablePullDown: true,
+                            enablePullUp: false,
+                            controller: _refreshController,
+                            onRefresh: () {
+                              checkIfUserIsLoaggedIn();
+                            },
                             child: GridView.builder(
-                              padding: EdgeInsets.only(bottom: 25),
                               physics: ScrollPhysics(),
+                              controller: _scrollController,
                               shrinkWrap: true,
                               itemCount: productsList.length == null
                                   ? 0
                                   : productsList.length,
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2,
-                                      childAspectRatio:
-                                          MediaQuery.of(context).size.width /
-                                              520,
-                                      crossAxisSpacing: 16,
-                                      mainAxisSpacing: 16),
+                                crossAxisCount: 2,
+                                childAspectRatio:
+                                    MediaQuery.of(context).size.width / 520,
+                                crossAxisSpacing: 12,
+                                mainAxisSpacing: 12,
+                              ),
                               itemBuilder: (BuildContext context, int i) {
-                                if (productsList[i]['averageRating'] == null) {
-                                  productsList[i]['averageRating'] = 0;
-                                }
-
-                                return productsList[i]['outOfStock'] != null ||
-                                        productsList[i]['outOfStock'] != false
-                                    ? InkWell(
-                                        onTap: () {
-                                          var result = Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ProductDetails(
-                                                locale: widget.locale,
-                                                localizedValues:
-                                                    widget.localizedValues,
-                                                productID: productsList[i]
-                                                    ['_id'],
-                                              ),
-                                            ),
-                                          );
-                                          result.then((value) {
-                                            if (value != null) {
-                                              if (mounted) {
-                                                setState(() {
-                                                  isNewProductsLoading = true;
-                                                });
-                                              }
-                                              productIndex = 0;
-                                              productsList = [];
-                                              getTokenValueMethod();
-                                            }
-                                          });
-                                        },
-                                        child: Stack(
-                                          children: <Widget>[
-                                            SubCategoryProductCard(
-                                              currency: currency,
-                                              price: productsList[i]['variant']
-                                                  [0]['price'],
-                                              productData: productsList[i],
-                                              variantList: productsList[i]
-                                                  ['variant'],
-                                              isHome: false,
-                                            ),
-                                            productsList[i]
-                                                        ['isDealAvailable'] ==
-                                                    true
-                                                ? buildBadge(
-                                                    context,
-                                                    productsList[i]
-                                                            ['dealPercent']
-                                                        .toString(),
-                                                    "OFF")
-                                                : Container()
-                                          ],
+                                return InkWell(
+                                  onTap: () {
+                                    var result = Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ProductDetails(
+                                          locale: widget.locale,
+                                          localizedValues:
+                                              widget.localizedValues,
+                                          productID: productsList[i]['_id'],
                                         ),
-                                      )
-                                    : Stack(
-                                        children: <Widget>[
-                                          SubCategoryProductCard(
-                                            currency: currency,
-                                            price: productsList[i]['variant'][0]
-                                                ['price'],
-                                            productData: productsList[i],
-                                            variantList: productsList[i]
-                                                ['variant'],
-                                            isHome: false,
-                                          ),
-                                          CardOverlay()
-                                        ],
-                                      );
+                                      ),
+                                    );
+                                    result.then((value) {
+                                      checkIfUserIsLoaggedIn();
+                                    });
+                                  },
+                                  child: ProductGridCard(
+                                    currency: currency,
+                                    productData: productsList[i],
+                                    isHome: false,
+                                  ),
+                                );
                               },
                             ),
                           ),
-              ]),
-      ),
+                        ),
+                ),
+                isNextPageLoading
+                    ? Container(
+                        padding: EdgeInsets.only(top: 30, bottom: 20),
+                        child: SquareLoader(),
+                      )
+                    : Container()
+              ],
+            ),
       bottomNavigationBar: cartData == null
           ? Container(height: 10.0)
           : InkWell(
@@ -655,12 +442,15 @@ class _AllProductsState extends State<AllProducts> {
                   ),
                 );
                 result.then((value) {
-                  productsList = [];
-                  productIndex = productsList.length;
-                  getTokenValueMethod();
+                  checkIfUserIsLoaggedIn();
                 });
               },
-              child: cartInfoButton(context, cartData, currency)),
+              child: cartInfoButton(
+                context,
+                cartData,
+                currency,
+              ),
+            ),
     );
   }
 }

@@ -10,10 +10,10 @@ Client client =
 class OrderService {
   //order list
   static Future<Map<String, dynamic>> getOrderByUserID(
-      orderIndex, orderLimit) async {
+      orderIndex, orderLimit, type) async {
     return client
         .get(Constants.apiUrl +
-            "/orders/list?limit=$orderLimit&page=$orderIndex")
+            "/orders/list?page=$orderIndex&limit=$orderLimit&type=$type")
         .then((response) {
       return json.decode(response.body);
     });
@@ -51,6 +51,14 @@ class OrderService {
     return client
         .post(Constants.apiUrl + '/delivery-boy-ratings/rate',
             body: json.encode(body))
+        .then((response) {
+      return json.decode(response.body);
+    });
+  } // delivery boy rating
+
+  static Future<Map<String, dynamic>> addMoneyApi(body) async {
+    return client
+        .post(Constants.apiUrl + '/wallets/add/money', body: json.encode(body))
         .then((response) {
       return json.decode(response.body);
     });

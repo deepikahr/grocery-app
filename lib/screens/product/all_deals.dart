@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/model/counterModel.dart';
-import 'package:readymadeGroceryApp/screens/categories/subcategories.dart';
 import 'package:readymadeGroceryApp/screens/product/all_products.dart';
 import 'package:readymadeGroceryApp/screens/product/product-details.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -164,14 +163,12 @@ class _AllDealsListState extends State<AllDealsList> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => SubCategories(
-                                          locale: widget.locale,
-                                          localizedValues:
-                                              widget.localizedValues,
-                                          catId: dealsList[i]['categoryId'],
-                                          catTitle:
-                                              '${dealsList[i]['title'][0].toUpperCase()}${dealsList[i]['title'].substring(1)}',
-                                          token: getTokenValue),
+                                      builder: (context) => AllProducts(
+                                        locale: widget.locale,
+                                        localizedValues: widget.localizedValues,
+                                        categoryId: dealsList[i]['categoryId'],
+                                        pageTitle: dealsList[i]['title'],
+                                      ),
                                     ),
                                   );
                                 } else if (dealsList[i]['dealType'] ==
@@ -184,9 +181,8 @@ class _AllDealsListState extends State<AllDealsList> {
                                           locale: widget.locale,
                                           localizedValues:
                                               widget.localizedValues,
-                                          currency: currency,
-                                          token: getTokenValue,
-                                          dealId: dealsList[i]['_id']),
+                                          dealId: dealsList[i]['_id'],
+                                          pageTitle: dealsList[i]['title']),
                                     ),
                                   );
                                 } else {
