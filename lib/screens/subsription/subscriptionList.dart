@@ -171,7 +171,7 @@ class _AllSubscribedState extends State<SubScriptionList> {
     });
   }
 
-  void subscriptionCancelled(subId,index) async {
+  void subscriptionCancelled(subId, index) async {
     setState(() {
       isSubscriptionCancelLoading = true;
     });
@@ -200,6 +200,34 @@ class _AllSubscribedState extends State<SubScriptionList> {
       duration: Duration(milliseconds: 3000),
     );
     _scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+
+  showCancelSubscription(index) {
+    return showDialog(
+      context: context,
+      builder: (context) => new AlertDialog(
+        title: new Text(
+            MyLocalizations.of(context).getLocalizations("ARE_YOU_SURE")),
+        content: new Text(MyLocalizations.of(context)
+            .getLocalizations("YOU_WANT_TO_CANCEL_SUBSCRIPTION")),
+        actions: <Widget>[
+          new FlatButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: new Text(MyLocalizations.of(context).getLocalizations("NO")),
+          ),
+          new FlatButton(
+            onPressed: () {
+              setState(() {
+                subscIndex = index;
+                subscriptionCancelled(subscriptionList[index]['_id'], index);
+              });
+            },
+            child:
+                new Text(MyLocalizations.of(context).getLocalizations("YES")),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -510,13 +538,8 @@ class _AllSubscribedState extends State<SubScriptionList> {
                                                     ),
                                                     InkWell(
                                                       onTap: () {
-                                                        setState(() {
-                                                          subscIndex = index;
-                                                          subscriptionCancelled(
-                                                            subscriptionList[
-                                                                index]['_id'],index
-                                                          );
-                                                        });
+                                                        showCancelSubscription(
+                                                            index);
                                                       },
                                                       child: subscribeButtonWithOutExpanded(
                                                           context,
