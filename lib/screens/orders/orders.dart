@@ -151,6 +151,8 @@ class _OrdersState extends State<Orders> {
                                             localizedValues:
                                                 widget.localizedValues,
                                             orderId: orderList[i]["_id"],
+                                            isSubscription:
+                                                widget.isSubscription,
                                           ),
                                         ),
                                       );
