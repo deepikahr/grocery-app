@@ -70,19 +70,24 @@ class _AddMoneyState extends State<AddMoney> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: appBarPrimarynoradius(context, "ADD_MONEY"),
-        body: Container(
-          margin: EdgeInsets.symmetric(horizontal: 14),
-          child: Form(
-            key: _formKey,
-            child: ListView(
-              shrinkWrap: true,
-              children: [
-                SizedBox(height: 40),
-                buildImageView(),
-                buildAddMoneyTextDescription(),
-                buildLabelText(),
-                buildTextField(),
-              ],
+        body: InkWell(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 14),
+            child: Form(
+              key: _formKey,
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  SizedBox(height: 40),
+                  buildImageView(),
+                  buildAddMoneyTextDescription(),
+                  buildLabelText(),
+                  buildTextField(),
+                ],
+              ),
             ),
           ),
         ),

@@ -224,7 +224,8 @@ class _DrawerPageState extends State<DrawerPage> {
                     activeColor: primary(context),
                     inactiveTrackColor: greyb(context),
                     title: Text(
-                      'Dark Theme',
+                      MyLocalizations.of(context)
+                          .getLocalizations("DARK_THEME"),
                       style: textBarlowregwhitelg(context),
                     ),
                     value: themeChange.darkTheme,
