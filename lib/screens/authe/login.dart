@@ -18,7 +18,7 @@ SentryError sentryError = new SentryError();
 
 class Login extends StatefulWidget {
   const Login(
-      {Key key,
+      {Key? key,
       this.isProfile,
       this.isCart,
       this.isSaveItem,
@@ -27,9 +27,9 @@ class Login extends StatefulWidget {
       this.localizedValues,
       this.isBottomSheet})
       : super(key: key);
-  final bool isProfile, isCart, isSaveItem, isProductDetails, isBottomSheet;
-  final Map localizedValues;
-  final String locale;
+  final bool? isProfile, isCart, isSaveItem, isProductDetails, isBottomSheet;
+  final Map? localizedValues;
+  final String? locale;
 
   @override
   _LoginState createState() => _LoginState();
@@ -44,7 +44,7 @@ class _LoginState extends State<Login> {
       value = false,
       passwordVisible = true,
       _obscureText = true;
-  String password, userName;
+  String? password, userName;
 
   // Toggles the password
   void _toggle() {
@@ -59,7 +59,7 @@ class _LoginState extends State<Login> {
   }
 
   userLoginwithMobile() async {
-    final form = _formKeyForLogin.currentState;
+    final form = _formKeyForLogin.currentState!;
     if (form.validate()) {
       form.save();
       if (mounted) {
@@ -130,7 +130,7 @@ class _LoginState extends State<Login> {
               }
             } else {
               showSnackbar(
-                  MyLocalizations.of(context).getLocalizations("INVAILD_USER"));
+                  MyLocalizations.of(context)!.getLocalizations("INVAILD_USER"));
             }
           }
         }).catchError((error) {
@@ -165,7 +165,7 @@ class _LoginState extends State<Login> {
           actions: <Widget>[
             new FlatButton(
               child: new Text(
-                MyLocalizations.of(context).getLocalizations("CANCEL"),
+                MyLocalizations.of(context)!.getLocalizations("CANCEL"),
                 style: textbarlowRegularaprimary(context),
               ),
               onPressed: () {
@@ -174,7 +174,7 @@ class _LoginState extends State<Login> {
             ),
             new FlatButton(
               child: new Text(
-                MyLocalizations.of(context).getLocalizations("SEND_OTP"),
+                MyLocalizations.of(context)!.getLocalizations("SEND_OTP"),
                 style: textbarlowRegularaprimary(context),
               ),
               onPressed: () {
@@ -206,7 +206,7 @@ class _LoginState extends State<Login> {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarPrimary(context, "LOGIN"),
+      appBar: appBarPrimary(context, "LOGIN") as PreferredSizeWidget?,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -263,15 +263,15 @@ class _LoginState extends State<Login> {
       padding: const EdgeInsets.only(top: 5.0, bottom: 10.0),
       child: Container(
         child: TextFormField(
-          onSaved: (String value) {
+          onSaved: (String? value) {
             userName = value;
           },
           initialValue: Constants.predefined == "true"
               ? "user@ionicfirebaseapp.com"
               : null,
-          validator: (String value) {
-            if (value.isEmpty) {
-              return MyLocalizations.of(context)
+          validator: (String? value) {
+            if (value!.isEmpty) {
+              return MyLocalizations.of(context)!
                   .getLocalizations("ENTER_YOUR_EMAIL_OR_MOBILE_NUMBER");
             } else
               return null;
@@ -305,16 +305,16 @@ class _LoginState extends State<Login> {
       child: TextFormField(
         style: textBarlowRegularBlack(context),
         keyboardType: TextInputType.text,
-        onSaved: (String value) {
+        onSaved: (String? value) {
           password = value;
         },
         initialValue: Constants.predefined == "true" ? "123456" : null,
-        validator: (String value) {
-          if (value.isEmpty) {
-            return MyLocalizations.of(context)
+        validator: (String? value) {
+          if (value!.isEmpty) {
+            return MyLocalizations.of(context)!
                 .getLocalizations("ENTER_PASSWORD");
           } else if (value.length < 6) {
-            return MyLocalizations.of(context).getLocalizations("ERROR_PASS");
+            return MyLocalizations.of(context)!.getLocalizations("ERROR_PASS");
           } else
             return null;
         },
@@ -402,6 +402,6 @@ class _LoginState extends State<Login> {
       content: Text(message),
       duration: Duration(milliseconds: 3000),
     );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
+    _scaffoldKey.currentState!.showSnackBar(snackBar);
   }
 }

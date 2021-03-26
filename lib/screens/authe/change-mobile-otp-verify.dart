@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
@@ -7,7 +8,6 @@ import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/otp-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
-import 'package:pin_entry_text_field/pin_entry_text_field.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
@@ -17,10 +17,10 @@ SentryError sentryError = new SentryError();
 
 class ChangeMobileNumberOtpVerify extends StatefulWidget {
   ChangeMobileNumberOtpVerify(
-      {Key key, this.locale, this.localizedValues, this.sId, this.mobileNumber})
+      {Key? key, this.locale, this.localizedValues, this.sId, this.mobileNumber})
       : super(key: key);
-  final String locale, mobileNumber, sId;
-  final Map localizedValues;
+  final String? locale, mobileNumber, sId;
+  final Map? localizedValues;
 
   @override
   _ChangeMobileNumberOtpVerifyState createState() =>
@@ -33,7 +33,7 @@ class _ChangeMobileNumberOtpVerifyState
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  String enteredOtp, sid;
+  String? enteredOtp, sid;
   bool isOtpVerifyLoading = false;
   @override
   void initState() {
@@ -43,7 +43,7 @@ class _ChangeMobileNumberOtpVerifyState
 
   verifyOTPwithMobile() async {
     if (enteredOtp != null) {
-      final form = _formKey.currentState;
+      final form = _formKey.currentState!;
       if (form.validate()) {
         form.save();
         if (mounted) {
@@ -66,8 +66,8 @@ class _ChangeMobileNumberOtpVerifyState
             Common.getSelectedLanguage().then((selectedLocale) async {
               Map body = {"language": selectedLocale, "playerId": null};
               LoginService.updateUserInfo(body).then((value) async {
-                await Common.setToken(null);
-                await Common.setUserID(null);
+                await Common.setToken('');
+                await Common.setUserID('');
                 await Common.setCartDataCount(0);
                 await Common.setCartData(null);
                 if (mounted) {
@@ -124,7 +124,7 @@ class _ChangeMobileNumberOtpVerifyState
         });
       }
       showSnackbar(
-          MyLocalizations.of(context).getLocalizations("OTP_MSG_MOBILE"));
+          MyLocalizations.of(context)!.getLocalizations("OTP_MSG_MOBILE"));
     }
   }
 
@@ -133,7 +133,7 @@ class _ChangeMobileNumberOtpVerifyState
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarPrimary(context, "WELCOME"),
+      appBar: appBarPrimary(context, "WELCOME") as PreferredSizeWidget?,
       body: ListView(
         children: <Widget>[
           Padding(
@@ -153,21 +153,56 @@ class _ChangeMobileNumberOtpVerifyState
           ),
           Form(
             key: _formKey,
-            child: Container(
-              width: 800,
-              child: PinEntryTextField(
-                showFieldAsBox: true,
-                fieldWidth: 40.0,
-                fields: 6,
-                onSubmit: (String pin) {
-                  if (mounted) {
-                    setState(() {
-                      enteredOtp = pin;
-                    });
-                  }
-                },
+            child: PinCodeTextField(
+              appContext: context,
+              length: 6,
+              obscureText: true,
+              obscuringCharacter: '*',
+              obscuringWidget: FlutterLogo(
+                size: 24,
               ),
+              blinkWhenObscuring: true,
+              animationType: AnimationType.fade,
+              validator: (v) {
+                if (v!.length < 6) {
+                  return "Please enter 6 digit otp";
+                } else {
+                  return null;
+                }
+              },
+              pinTheme: PinTheme(
+                shape: PinCodeFieldShape.box,
+                borderRadius: BorderRadius.circular(5),
+                fieldHeight: 50,
+                fieldWidth: 40,
+              ),
+              cursorColor: Colors.black,
+              animationDuration: Duration(milliseconds: 300),
+              enableActiveFill: true,
+              keyboardType: TextInputType.number,
+              onCompleted: (String pin) {
+                if (mounted) {
+                  setState(() {
+                    enteredOtp = pin;
+                  });
+                }
+              }, onChanged: (String value) {  },
             ),
+            // Container(
+            //   width: 800,
+            //   child: PinEntryTextField(
+            //     showFieldAsBox: true,
+            //     fieldWidth: 40.0,
+            //     fields: 6,
+            //     onSubmit: (String pin) {
+            //       if (mounted) {
+            //         setState(() {
+            //           enteredOtp = pin;
+            //         });
+            //       }
+            //     },
+            //   ),
+            // ),
           ),
           InkWell(
               onTap: verifyOTPwithMobile,
@@ -185,6 +220,6 @@ class _ChangeMobileNumberOtpVerifyState
       content: Text(message),
       duration: Duration(milliseconds: 3000),
     );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
+    _scaffoldKey.currentState!.showSnackBar(snackBar);
   }
 }

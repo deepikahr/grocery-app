@@ -10,13 +10,13 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 SentryError sentryError = new SentryError();
 
 class SubsCriptionBottomSheet extends StatefulWidget {
-  final List variantsList;
-  final String currency, locale;
-  final Map localizedValues;
-  final Map<String, dynamic> productData;
+  final List? variantsList;
+  final String? currency, locale;
+  final Map? localizedValues;
+  final Map<String, dynamic>? productData;
 
   SubsCriptionBottomSheet(
-      {Key key,
+      {Key? key,
       this.variantsList,
       this.productData,
       this.currency,
@@ -30,7 +30,7 @@ class SubsCriptionBottomSheet extends StatefulWidget {
 
 class _SubsCriptionBottomSheetState extends State<SubsCriptionBottomSheet> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  int groupValue = 0;
+  int? groupValue = 0;
   bool selectVariant = false, getTokenValue = false;
 
   @override
@@ -47,13 +47,13 @@ class _SubsCriptionBottomSheetState extends State<SubsCriptionBottomSheet> {
             Map subProduct = {
               "products": [
                 {
-                  "productId": widget.productData['_id'],
-                  "productName": widget.productData['title'],
-                  "variantId": widget.productData['variant'][groupValue]['_id'],
-                  "unit": widget.productData['variant'][groupValue]['unit'],
-                  "subScriptionAmount": widget.productData['variant']
+                  "productId": widget.productData!['_id'],
+                  "productName": widget.productData!['title'],
+                  "variantId": widget.productData!['variant'][groupValue]['_id'],
+                  "unit": widget.productData!['variant'][groupValue]['unit'],
+                  "subScriptionAmount": widget.productData!['variant']
                       [groupValue]['subScriptionAmount'],
-                  "productDescription": widget.productData['description']
+                  "productDescription": widget.productData!['description']
                 },
               ],
             };
@@ -93,13 +93,13 @@ class _SubsCriptionBottomSheetState extends State<SubsCriptionBottomSheet> {
             shrinkWrap: true,
             scrollDirection: Axis.vertical,
             padding: EdgeInsets.only(right: 0.0),
-            itemCount: widget.variantsList.length,
+            itemCount: widget.variantsList!.length,
             itemBuilder: (BuildContext context, int index) {
               return new RadioListTile(
                 value: index,
                 groupValue: groupValue,
                 selected: selectVariant,
-                onChanged: (int selected) {
+                onChanged: (int? selected) {
                   if (mounted) {
                     setState(() {
                       groupValue = selected;
@@ -110,14 +110,14 @@ class _SubsCriptionBottomSheetState extends State<SubsCriptionBottomSheet> {
                 activeColor: primary(context),
                 secondary: textGreenprimary(
                     context,
-                    '${widget.variantsList[index]['unit']} ',
+                    '${widget.variantsList![index]['unit']} ',
                     textbarlowBoldGreen(context)),
                 title: priceMrpText(
-                    '${widget.currency}${(widget.variantsList[index]['price']).toStringAsFixed(2)}',
+                    '${widget.currency}${(widget.variantsList![index]['price']).toStringAsFixed(2)}',
                     null,
                     context),
                 subtitle: priceMrpText(
-                    "${MyLocalizations.of(context).getLocalizations("SUBSCRIBE")} @${widget.currency}${widget.productData['variant'][index]['subScriptionAmount']}",
+                    "${MyLocalizations.of(context)!.getLocalizations("SUBSCRIBE")} @${widget.currency}${widget.productData!['variant'][index]['subScriptionAmount']}",
                     null,
                     context),
               );
@@ -136,6 +136,6 @@ class _SubsCriptionBottomSheetState extends State<SubsCriptionBottomSheet> {
       content: Text(message),
       duration: Duration(milliseconds: 3000),
     );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
+    _scaffoldKey.currentState!.showSnackBar(snackBar);
   }
 }

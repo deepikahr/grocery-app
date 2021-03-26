@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:readymadeGroceryApp/model/counterModel.dart';
 import 'package:readymadeGroceryApp/screens/product/all_products.dart';
 import 'package:readymadeGroceryApp/screens/product/product-details.dart';
@@ -9,19 +12,18 @@ import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/dealsCard.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
 
 class AllDealsList extends StatefulWidget {
-  final Map localizedValues;
-  final bool token;
-  final List productsList, favProductList;
-  final String title, locale, currency;
+  final Map? localizedValues;
+  final bool? token;
+  final List? productsList, favProductList;
+  final String? title, locale, currency;
 
   AllDealsList(
-      {Key key,
+      {Key? key,
       this.locale,
       this.localizedValues,
       this.favProductList,
@@ -34,12 +36,15 @@ class AllDealsList extends StatefulWidget {
 }
 
 class _AllDealsListState extends State<AllDealsList> {
-  List dealsList, favProductList;
-  String currency;
-  bool getTokenValue = false, isAllDealsLoadingList = false;
-  RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
-  ScrollController controller;
+  final GlobalKey<LiquidPullToRefreshState> _refreshIndicatorKey =
+  GlobalKey<LiquidPullToRefreshState>();
+
+  List? dealsList, favProductList;
+  String? currency;
+  bool? getTokenValue = false, isAllDealsLoadingList = false;
+  // RefreshController _refreshController =
+  //     RefreshController(initialRefresh: false);
+  ScrollController? controller;
   var cartData;
   @override
   void initState() {
@@ -61,7 +66,8 @@ class _AllDealsListState extends State<AllDealsList> {
       });
     }
     await ProductService.getTopDealsListAll().then((onValue) {
-      _refreshController.refreshCompleted();
+      // _handleRefresh();
+      _handleRefresh();
       if (mounted) {
         setState(() {
           dealsList = onValue['response_data'];
@@ -86,7 +92,8 @@ class _AllDealsListState extends State<AllDealsList> {
       });
     }
     await ProductService.getTodayDealsListAll().then((onValue) {
-      _refreshController.refreshCompleted();
+      // _handleRefresh();
+      _handleRefresh();
       if (mounted) {
         setState(() {
           dealsList = onValue['response_data'];
@@ -104,9 +111,22 @@ class _AllDealsListState extends State<AllDealsList> {
     });
   }
 
+  Future<void> _handleRefresh() async {
+    final Completer<void> completer = Completer<void>();
+    Timer(const Duration(seconds: 3), () {
+      completer.complete();
+    });
+    if (widget.title == "DEALS_OF_THE_DAYS") {
+      getAllTopDealsListMethod();
+    } else {
+      getAllTodayDealsListMethod();
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    if (getTokenValue) {
+    if (getTokenValue!) {
       CounterModel().getCartDataMethod().then((res) {
         if (mounted) {
           setState(() {
@@ -123,21 +143,25 @@ class _AllDealsListState extends State<AllDealsList> {
     }
     return Scaffold(
       backgroundColor: bg(context),
-      appBar: appBarWhite(context, widget.title, false, false, null),
-      body: SmartRefresher(
-        enablePullDown: true,
-        enablePullUp: false,
-        controller: _refreshController,
-        onRefresh: () {
-          if (widget.title == "DEALS_OF_THE_DAYS") {
-            getAllTopDealsListMethod();
-          } else {
-            getAllTodayDealsListMethod();
-          }
-        },
-        child: isAllDealsLoadingList
+      appBar: appBarWhite(context, widget.title, false, false, null) as PreferredSizeWidget?,
+      body: LiquidPullToRefresh(
+    key: _refreshIndicatorKey,
+    onRefresh: _handleRefresh,
+    showChildOpacityTransition: false,
+      // SmartRefresher(
+      //   enablePullDown: true,
+      //   enablePullUp: false,
+      //   controller: _refreshController,
+      //   onRefresh: () {
+      //     if (widget.title == "DEALS_OF_THE_DAYS") {
+      //       getAllTopDealsListMethod();
+      //     } else {
+      //       getAllTodayDealsListMethod();
+      //     }
+      //   },
+        child: isAllDealsLoadingList!
             ? SquareLoader()
-            : dealsList.length > 0
+            : dealsList!.length > 0
                 ? Container(
                     margin: EdgeInsets.only(
                         left: 15, right: 15, top: 15, bottom: 16),
@@ -148,7 +172,7 @@ class _AllDealsListState extends State<AllDealsList> {
                           physics: ScrollPhysics(),
                           shrinkWrap: true,
                           itemCount:
-                              dealsList.length == null ? 0 : dealsList.length,
+                              dealsList!.length == null ? 0 : dealsList!.length,
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2,
@@ -159,21 +183,21 @@ class _AllDealsListState extends State<AllDealsList> {
                           itemBuilder: (BuildContext context, int i) {
                             return InkWell(
                               onTap: () {
-                                if (dealsList[i]['dealType'] == 'CATEGORY') {
+                                if (dealsList![i]['dealType'] == 'CATEGORY') {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => AllProducts(
                                         locale: widget.locale,
                                         localizedValues: widget.localizedValues,
-                                        categoryId: dealsList[i]['categoryId'],
-                                        pageTitle: dealsList[i]['title'],
+                                        categoryId: dealsList![i]['categoryId'],
+                                        pageTitle: dealsList![i]['title'],
                                       ),
                                     ),
                                   );
-                                } else if (dealsList[i]['dealType'] ==
+                                } else if (dealsList![i]['dealType'] ==
                                         "PRODUCT" &&
-                                    dealsList[i]['productId'] == null) {
+                                    dealsList![i]['productId'] == null) {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -181,8 +205,8 @@ class _AllDealsListState extends State<AllDealsList> {
                                           locale: widget.locale,
                                           localizedValues:
                                               widget.localizedValues,
-                                          dealId: dealsList[i]['_id'],
-                                          pageTitle: dealsList[i]['title']),
+                                          dealId: dealsList![i]['_id'],
+                                          pageTitle: dealsList![i]['title']),
                                     ),
                                   );
                                 } else {
@@ -193,21 +217,21 @@ class _AllDealsListState extends State<AllDealsList> {
                                           locale: widget.locale,
                                           localizedValues:
                                               widget.localizedValues,
-                                          productID: dealsList[i]['productId']),
+                                          productID: dealsList![i]['productId']),
                                     ),
                                   );
                                 }
                               },
                               child: DealsCard(
-                                image: dealsList[i]['filePath'] ??
-                                    dealsList[i]['imageUrl'],
-                                isPath: dealsList[i]['filePath'] == null
+                                image: dealsList![i]['filePath'] ??
+                                    dealsList![i]['imageUrl'],
+                                isPath: dealsList![i]['filePath'] == null
                                     ? false
                                     : true,
-                                title: dealsList[i]['title'],
-                                price: dealsList[i]['dealPercent'].toString() +
+                                title: dealsList![i]['title'],
+                                price: dealsList![i]['dealPercent'].toString() +
                                     "% " +
-                                    MyLocalizations.of(context)
+                                    MyLocalizations.of(context)!
                                         .getLocalizations("OFF"),
                               ),
                             );

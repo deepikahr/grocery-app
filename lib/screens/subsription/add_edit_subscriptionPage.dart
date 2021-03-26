@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:flutter_map_picker/flutter_map_picker.dart';
+import 'package:flutter_date_picker_timeline/flutter_date_picker_timeline.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:readymadeGroceryApp/screens/drawer/add-address.dart';
@@ -24,7 +24,7 @@ SentryError sentryError = new SentryError();
 
 class AddEditSubscriptionPage extends StatefulWidget {
   AddEditSubscriptionPage(
-      {Key key,
+      {Key? key,
       this.locale,
       this.localizedValues,
       this.subProductData,
@@ -33,8 +33,8 @@ class AddEditSubscriptionPage extends StatefulWidget {
       this.isEdit = false})
       : super(key: key);
 
-  final Map localizedValues, subProductData, productData;
-  final String locale, currency;
+  final Map? localizedValues, subProductData, productData;
+  final String? locale, currency;
   final bool isEdit;
 
   @override
@@ -44,9 +44,10 @@ class AddEditSubscriptionPage extends StatefulWidget {
 
 class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  int selectedPickSecheduleIndex = 0, selectedAddressValue, quantity = 1;
-  DateTime selectedDate = DateTime.now();
-  List pickUpScheduleList = [
+  int? selectedPickSecheduleIndex = 0, selectedAddressValue;
+  int quantity = 1;
+  DateTime? selectedDate = DateTime.now();
+  List? pickUpScheduleList = [
         'DAILY',
         'ALTERNATE',
         'EVERY_3_DAY',
@@ -57,7 +58,8 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
   var selectedAddress, locationInfo;
   bool addressLoading = false, isSubscriptionLoading = false;
   Location _location = new Location();
-  PermissionStatus _permissionGranted;
+  PermissionStatus? _permissionGranted;
+  PickResult? pickerResult;
 
   @override
   void initState() {
@@ -70,7 +72,7 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
         key: _scaffoldKey,
         backgroundColor: bg(context),
         appBar: appBarPrimarynoradius(
-            context, widget.isEdit ? "UPDATE_SUBSCRIPTION" : "SUBSCRIBE"),
+            context, widget.isEdit ? "UPDATE_SUBSCRIPTION" : "SUBSCRIBE") as PreferredSizeWidget?,
         body: addressLoading
             ? SquareLoader()
             : ListView(
@@ -103,16 +105,16 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
           children: [
             Flexible(
               flex: 4,
-              child: (widget.productData['productImages'] != null &&
-                      widget.productData['productImages'].length > 0)
+              child: (widget.productData!['productImages'] != null &&
+                      widget.productData!['productImages'].length > 0)
                   ? CachedNetworkImage(
-                      imageUrl: widget.productData['productImages'][0]
+                      imageUrl: widget.productData!['productImages'][0]
                                   ['filePath'] !=
                               null
-                          ? Constants.imageUrlPath +
+                          ? Constants.imageUrlPath! +
                               "/tr:dpr-auto,tr:w-500" +
-                              widget.productData['productImages'][0]['filePath']
-                          : widget.productData['productImages'][0]['imageUrl'],
+                              widget.productData!['productImages'][0]['filePath']
+                          : widget.productData!['productImages'][0]['imageUrl'],
                       imageBuilder: (context, imageProvider) => Container(
                         width: MediaQuery.of(context).size.width * 0.5,
                         height: 95,
@@ -131,11 +133,11 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
                           child: noDataImage()),
                     )
                   : CachedNetworkImage(
-                      imageUrl: widget.productData['filePath'] != null
-                          ? Constants.imageUrlPath +
+                      imageUrl: widget.productData!['filePath'] != null
+                          ? Constants.imageUrlPath! +
                               "/tr:dpr-auto,tr:w-500" +
-                              widget.productData['filePath']
-                          : widget.productData['imageUrl'],
+                              widget.productData!['filePath']
+                          : widget.productData!['imageUrl'],
                       imageBuilder: (context, imageProvider) => Container(
                         width: MediaQuery.of(context).size.width * 0.5,
                         height: 95,
@@ -161,7 +163,7 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '${widget.subProductData['products'][0]['productName'][0].toUpperCase()}${widget.subProductData['products'][0]['productName'].substring(1)}',
+                    '${widget.subProductData!['products'][0]['productName'][0].toUpperCase()}${widget.subProductData!['products'][0]['productName'].substring(1)}',
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -172,7 +174,7 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
                   ),
                   SizedBox(height: 10),
                   textLightSmall(
-                      '${widget.subProductData['products'][0]['unit'] ?? ''}',
+                      '${widget.subProductData!['products'][0]['unit'] ?? ''}',
                       context),
                   SizedBox(height: 10),
                   Column(
@@ -181,7 +183,7 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
                     children: [
                       regularTextatStart(context, "SUBSCRIPTION_PRICE"),
                       priceMrpText(
-                          "${widget.currency}${widget.subProductData['products'][0]['subscriptionTotal']}  (${quantity.toString()}*${widget.currency}${widget.subProductData['products'][0]['subScriptionAmount']})",
+                          "${widget.currency}${widget.subProductData!['products'][0]['subscriptionTotal']}  (${quantity.toString()}*${widget.currency}${widget.subProductData!['products'][0]['subScriptionAmount']})",
                           "",
                           context),
                     ],
@@ -216,9 +218,9 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
                         onTap: () {
                           setState(() {
                             quantity++;
-                            widget.subProductData['products'][0]
+                            widget.subProductData!['products'][0]
                                     ["subscriptionTotal"] =
-                                widget.subProductData['products'][0]
+                                widget.subProductData!['products'][0]
                                         ['subScriptionAmount'] *
                                     quantity;
                           });
@@ -237,11 +239,11 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
                       child: InkWell(
                         onTap: () {
                           setState(() {
-                            if (quantity > 1) {
+                            if (quantity! > 1) {
                               quantity--;
-                              widget.subProductData['products'][0]
+                              widget.subProductData!['products'][0]
                                       ["subscriptionTotal"] =
-                                  widget.subProductData['products'][0]
+                                  widget.subProductData!['products'][0]
                                           ['subScriptionAmount'] *
                                       quantity;
                             }
@@ -269,7 +271,7 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
               height: 90,
               margin: EdgeInsets.symmetric(vertical: 10),
               child: GridView.builder(
-                itemCount: pickUpScheduleList.length,
+                itemCount: pickUpScheduleList!.length,
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
                 physics: const ScrollPhysics(),
@@ -288,12 +290,12 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
                     decoration: BoxDecoration(
                         border: (selectedPickSecheduleIndex == index)
                             ? Border.all(color: primary(context))
-                            : Border.all(color: Colors.grey[300]),
+                            : Border.all(color: Colors.grey[300]!),
                         borderRadius: BorderRadius.circular(17)),
                     child: Center(
                       child: Text(
-                        MyLocalizations.of(context)
-                            .getLocalizations(pickUpScheduleList[index]),
+                        MyLocalizations.of(context)!
+                            .getLocalizations(pickUpScheduleList![index]),
                         style: textbarlowRegularBlackb(context),
                         textAlign: TextAlign.center,
                       ),
@@ -318,28 +320,40 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
                           width: MediaQuery.of(context).size.width,
                           decoration: BoxDecoration(
                               color: cartCardBg(context),
-                              border: Border.all(color: Colors.grey[300]),
+                              border: Border.all(color: Colors.grey[300]!),
                               borderRadius: BorderRadius.circular(5.0)),
                           child: FlatButton(
                               onPressed: () {
-                                DatePicker.showDatePicker(context,
-                                    showTitleActions: true,
-                                    minTime: DateTime.now(), onConfirm: (date) {
-                                  if (mounted) {
-                                    setState(() {
-                                      selectedDate = date;
-                                    });
-                                  }
-                                },
-                                    currentTime: DateTime.now(),
-                                    locale: LocaleType.en);
+                                FlutterDatePickerTimeline(
+                                  startDate: DateTime.now(),
+                                  endDate: DateTime(2021, 12, 30),
+                                  initialSelectedDate: DateTime.now(),
+                                  onSelectedDateChange: (date) {
+                                    if (mounted) {
+                                      setState(() {
+                                        selectedDate = date;
+                                      });
+                                    }
+                                  },
+                                );
+                                // DatePicker.showDatePicker(context,
+                                //     showTitleActions: true,
+                                //     minTime: DateTime.now(), onConfirm: (date) {
+                                //   if (mounted) {
+                                //     setState(() {
+                                //       selectedDate = date;
+                                //     });
+                                //   }
+                                // },
+                                //     currentTime: DateTime.now(),
+                                //     locale: LocaleType.en);
                               },
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Text(DateFormat('dd/MM/yyyy')
-                                      .format(selectedDate)),
+                                      .format(selectedDate!)),
                                   Icon(Icons.calendar_today,
                                       color: dark(context)),
                                 ],
@@ -377,7 +391,7 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
             contentPadding: EdgeInsets.only(top: 5, bottom: 5),
             titleChild: Text(
               selectedAddress == null
-                  ? MyLocalizations.of(context).getLocalizations("ADDRESS_MSG")
+                  ? MyLocalizations.of(context)!.getLocalizations("ADDRESS_MSG")
                   : '${selectedAddress['flatNo']}, ${selectedAddress['apartmentName']},${selectedAddress['address']}',
               overflow: TextOverflow.clip,
               maxLines: 1,
@@ -390,7 +404,7 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
                         physics: ScrollPhysics(),
                         shrinkWrap: true,
                         itemCount:
-                            addressList.length == null ? 0 : addressList.length,
+                            addressList!.length == null ? 0 : addressList!.length,
                         itemBuilder: (BuildContext context, int i) => Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
@@ -399,14 +413,14 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
                               activeColor: primary(context),
                               value: i,
                               title: buildAddress(
-                                  '${addressList[i]['flatNo']}, ${addressList[i]['apartmentName']},${addressList[i]['address']},',
-                                  "${addressList[i]['landmark']} ,'${addressList[i]['postalCode']}, ${addressList[i]['mobileNumber'].toString()}",
+                                  '${addressList![i]['flatNo']}, ${addressList![i]['apartmentName']},${addressList![i]['address']},',
+                                  "${addressList![i]['landmark']} ,'${addressList![i]['postalCode']}, ${addressList![i]['mobileNumber'].toString()}",
                                   context),
-                              onChanged: (value) {
+                              onChanged: (dynamic value) {
                                 if (mounted) {
                                   setState(() {
                                     selectedAddressValue = value;
-                                    selectedAddress = addressList[value];
+                                    selectedAddress = addressList![value];
                                   });
                                 }
                               },
@@ -429,7 +443,7 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
                                                 localizedValues:
                                                     widget.localizedValues,
                                                 isCheckout: true,
-                                                updateAddressID: addressList[i],
+                                                updateAddressID: addressList![i],
                                               ),
                                             ),
                                           );
@@ -445,7 +459,7 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
                                       InkWell(
                                           onTap: () {
                                             deleteAddress(
-                                                addressList[i]['_id']);
+                                                addressList![i]['_id']);
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.symmetric(
@@ -503,23 +517,36 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
       );
 
   addAddressPageMethod(locationlatlong) async {
-    PlacePickerResult pickerResult = await Navigator.push(
+    await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => PlacePickerScreen(
-                  googlePlacesApiKey: Constants.googleMapApiKey,
-                  initialPosition: LatLng(locationlatlong['latitude'],
-                      locationlatlong['longitude']),
-                  mainColor: primary(context),
-                  mapStrings: MapPickerStrings.english(
-                      selectAddress: MyLocalizations.of(context)
-                          .getLocalizations("SELECT_ADDRESS"),
-                      cancel: MyLocalizations.of(context)
-                          .getLocalizations("CANCEL"),
-                      address: MyLocalizations.of(context)
-                          .getLocalizations("ADDRESS")),
-                  placeAutoCompleteLanguage: 'en',
-                )));
+            builder: (context) =>  PlacePicker(
+              apiKey: Constants.googleMapApiKey!,
+              initialPosition: LatLng(locationlatlong['latitude'], locationlatlong['longitude']),
+              useCurrentLocation: true,
+              selectInitialPosition: true,
+              //usePlaceDetailSearch: true,
+              onPlacePicked: (result) {
+                pickerResult = result;
+                Navigator.of(context).pop();
+                setState(() {});
+              },
+            ),
+                // PlacePickerScreen(
+                //   googlePlacesApiKey: Constants.googleMapApiKey,
+                //   initialPosition: LatLng(locationlatlong['latitude'],
+                //       locationlatlong['longitude']),
+                //   mainColor: primary(context),
+                //   mapStrings: MapPickerStrings.english(
+                //       selectAddress: MyLocalizations.of(context)
+                //           .getLocalizations("SELECT_ADDRESS"),
+                //       cancel: MyLocalizations.of(context)
+                //           .getLocalizations("CANCEL"),
+                //       address: MyLocalizations.of(context)
+                //           .getLocalizations("ADDRESS")),
+                //   placeAutoCompleteLanguage: 'en',
+                // )
+        ));
     if (pickerResult != null) {
       setState(() {
         var result = Navigator.push(
@@ -556,26 +583,26 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
         setState(() {
           addressList = onValue['response_data'];
           if (widget.isEdit) {
-            for (int i = 0; i < pickUpScheduleList.length; i++) {
-              if (widget.subProductData['schedule'] == pickUpScheduleList[i]) {
+            for (int i = 0; i < pickUpScheduleList!.length; i++) {
+              if (widget.subProductData!['schedule'] == pickUpScheduleList![i]) {
                 selectedPickSecheduleIndex = i;
               }
             }
           }
           if (widget.isEdit) {
-            quantity = widget.subProductData['products'][0]["quantity"];
+            quantity = widget.subProductData!['products'][0]["quantity"];
           }
           if ((addressList?.length ?? 0) > 0) {
             if (widget.isEdit) {
-              for (int j = 0; j < addressList.length; j++) {
-                if (widget.subProductData['address']['_id'] ==
-                    addressList[j]['_id']) {
-                  selectedAddress = addressList[j];
+              for (int j = 0; j < addressList!.length; j++) {
+                if (widget.subProductData!['address']['_id'] ==
+                    addressList![j]['_id']) {
+                  selectedAddress = addressList![j];
                   selectedAddressValue = j;
                 }
               }
             } else {
-              selectedAddress = addressList.first;
+              selectedAddress = addressList!.first;
               selectedAddressValue = 0;
             }
           }
@@ -610,7 +637,7 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
       content: Text(message),
       duration: Duration(milliseconds: 3000),
     );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
+    _scaffoldKey.currentState!.showSnackBar(snackBar);
   }
 
   void updateSubscription() {
@@ -618,22 +645,22 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
       Map updateSubscriptionBody = {
         "address": selectedAddress['_id'],
         "quantity": quantity,
-        "schedule": pickUpScheduleList[selectedPickSecheduleIndex],
+        "schedule": pickUpScheduleList![selectedPickSecheduleIndex!],
       };
       setState(() {
         isSubscriptionLoading = true;
       });
-      widget.subProductData['products'][0]["quantity"] = quantity;
-      widget.subProductData['products'][0]["subscriptionTotal"] =
-          widget.subProductData['products'][0]["subScriptionAmount"] * quantity;
-      widget.subProductData['grandTotal'] =
-          widget.subProductData['products'][0]["subscriptionTotal"];
-      widget.subProductData["address"] = selectedAddress;
-      widget.subProductData["schedule"] =
-          pickUpScheduleList[selectedPickSecheduleIndex];
+      widget.subProductData!['products'][0]["quantity"] = quantity;
+      widget.subProductData!['products'][0]["subscriptionTotal"] =
+          widget.subProductData!['products'][0]["subScriptionAmount"] * quantity;
+      widget.subProductData!['grandTotal'] =
+          widget.subProductData!['products'][0]["subscriptionTotal"];
+      widget.subProductData!["address"] = selectedAddress;
+      widget.subProductData!["schedule"] =
+          pickUpScheduleList![selectedPickSecheduleIndex!];
 
       CartService.subscribeProductUpdate(
-              updateSubscriptionBody, widget.subProductData['_id'])
+              updateSubscriptionBody, widget.subProductData!['_id'])
           .then((value) {
         setState(() {
           isSubscriptionLoading = false;
@@ -649,21 +676,21 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
       });
     } else {
       showSnackbar(
-          MyLocalizations.of(context).getLocalizations("SELECT_ADDESS_MSG"));
+          MyLocalizations.of(context)!.getLocalizations("SELECT_ADDESS_MSG"));
     }
   }
 
   void doSubscription() {
     if (selectedAddress != null) {
-      widget.subProductData['products'][0]["quantity"] = quantity;
-      widget.subProductData['grandTotal'] =
-          widget.subProductData['products'][0]["subscriptionTotal"];
-      widget.subProductData["address"] = selectedAddress['_id'];
-      widget.subProductData["schedule"] =
-          pickUpScheduleList[selectedPickSecheduleIndex];
-      widget.subProductData["subscriptionStartDate"] =
-          selectedDate.millisecondsSinceEpoch;
-      widget.subProductData["orderFrom"] = Constants.orderFrom;
+      widget.subProductData!['products'][0]["quantity"] = quantity;
+      widget.subProductData!['grandTotal'] =
+          widget.subProductData!['products'][0]["subscriptionTotal"];
+      widget.subProductData!["address"] = selectedAddress['_id'];
+      widget.subProductData!["schedule"] =
+          pickUpScheduleList![selectedPickSecheduleIndex!];
+      widget.subProductData!["subscriptionStartDate"] =
+          selectedDate!.millisecondsSinceEpoch;
+      widget.subProductData!["orderFrom"] = Constants.orderFrom;
       setState(() {
         isSubscriptionLoading = true;
       });
@@ -689,7 +716,7 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
       });
     } else {
       showSnackbar(
-          MyLocalizations.of(context).getLocalizations("SELECT_ADDESS_MSG"));
+          MyLocalizations.of(context)!.getLocalizations("SELECT_ADDESS_MSG"));
     }
   }
 }

@@ -14,13 +14,13 @@ import 'package:readymadeGroceryApp/widgets/cardOverlay.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 class SubscriptionCard extends StatefulWidget {
-  final String currency;
-  final Map productData;
-  final String locale;
-  final Map localizedValues;
+  final String? currency;
+  final Map? productData;
+  final String? locale;
+  final Map? localizedValues;
 
   SubscriptionCard({
-    Key key,
+    Key? key,
     this.currency,
     this.productData,
     this.locale,
@@ -34,7 +34,7 @@ class SubscriptionCard extends StatefulWidget {
 class _SubscriptionCardState extends State<SubscriptionCard> {
   bool cardAdded = false, isAddInProgress = false, isQuantityUpdating = false;
   var variantPrice, variantUnit;
-  String cartId, quantityChangeType = '+';
+  String? cartId, quantityChangeType = '+';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -70,24 +70,24 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                           borderRadius: const BorderRadius.vertical(
                               top: Radius.circular(12)),
                           child: CachedNetworkImage(
-                            imageUrl: (widget.productData['productImages'] !=
+                            imageUrl: (widget.productData!['productImages'] !=
                                         null &&
-                                    widget.productData['productImages'].length >
+                                    widget.productData!['productImages'].length >
                                         0)
-                                ? (widget.productData['productImages'][0]
+                                ? (widget.productData!['productImages'][0]
                                             ['filePath'] !=
                                         null
-                                    ? Constants.imageUrlPath +
+                                    ? Constants.imageUrlPath! +
                                         "/tr:dpr-auto,tr:w-500" +
-                                        widget.productData['productImages'][0]
+                                        widget.productData!['productImages'][0]
                                             ['filePath']
-                                    : widget.productData['productImages'][0]
+                                    : widget.productData!['productImages'][0]
                                         ['imageUrl'])
-                                : widget.productData['filePath'] != null
-                                    ? Constants.imageUrlPath +
+                                : widget.productData!['filePath'] != null
+                                    ? Constants.imageUrlPath! +
                                         "/tr:dpr-auto,tr:w-500" +
-                                        widget.productData['filePath']
-                                    : widget.productData['imageUrl'],
+                                        widget.productData!['filePath']
+                                    : widget.productData!['imageUrl'],
                             imageBuilder: (context, imageProvider) => Container(
                               width: MediaQuery.of(context).size.width * 0.5,
                               height: 123,
@@ -116,12 +116,12 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                               children: <Widget>[
                                 Expanded(
                                     child: buildProductTitle(
-                                        '${widget.productData['title'][0].toUpperCase()}${widget.productData['title'].substring(1)}',
+                                        '${widget.productData!['title'][0].toUpperCase()}${widget.productData!['title'].substring(1)}',
                                         context)),
-                                widget.productData['averageRating'] == null ||
-                                        widget.productData['averageRating'] ==
+                                widget.productData!['averageRating'] == null ||
+                                        widget.productData!['averageRating'] ==
                                             0.0 ||
-                                        widget.productData['averageRating'] ==
+                                        widget.productData!['averageRating'] ==
                                             '0.0'
                                     ? Container()
                                     : Container(
@@ -138,7 +138,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                                               MainAxisAlignment.end,
                                           children: <Widget>[
                                             Text(
-                                                widget.productData[
+                                                widget.productData![
                                                         'averageRating']
                                                     .toStringAsFixed(1),
                                                 style: textBarlowregwhite(
@@ -157,16 +157,16 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                                 SizedBox(width: 3),
                                 textGreenprimary(
                                     context,
-                                    '${variantUnit == null ? widget.productData['variant'][0]['unit'] : variantUnit}',
+                                    '${variantUnit == null ? widget.productData!['variant'][0]['unit'] : variantUnit}',
                                     barlowregularlack(context))
                               ],
                             ),
                             InkWell(
                                 onTap: () async {
-                                  if (widget.productData['variant'].length >
+                                  if (widget.productData!['variant'].length >
                                       1) {
                                     if (widget.productData != null &&
-                                        widget.productData['variant'] != null) {
+                                        widget.productData!['variant'] != null) {
                                       var bottomSheet = showModalBottomSheet(
                                           context: context,
                                           builder: (BuildContext bc) {
@@ -175,9 +175,9 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                                               localizedValues:
                                                   widget.localizedValues,
                                               currency: widget.currency,
-                                              productData: widget.productData,
+                                              productData: widget.productData as Map<String, dynamic>?,
                                               variantsList:
-                                                  widget.productData['variant'],
+                                                  widget.productData!['variant'],
                                             );
                                           });
                                       bottomSheet.then((subProduct) {
@@ -207,17 +207,17 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                                           "products": [
                                             {
                                               "productId":
-                                                  widget.productData['_id'],
+                                                  widget.productData!['_id'],
                                               "productName":
-                                                  widget.productData['title'],
+                                                  widget.productData!['title'],
                                               "variantId":
-                                                  widget.productData['variant']
+                                                  widget.productData!['variant']
                                                       [0]['_id'],
                                               "unit":
-                                                  widget.productData['variant']
+                                                  widget.productData!['variant']
                                                       [0]['unit'],
                                               "subScriptionAmount":
-                                                  widget.productData['variant']
+                                                  widget.productData!['variant']
                                                       [0]['subScriptionAmount'],
                                             },
                                           ],
@@ -265,7 +265,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                                 },
                                 child: subscribeButton(
                                     context,
-                                    "${MyLocalizations.of(context).getLocalizations("SUBSCRIBE")} @${widget.currency}${widget.productData['variant'][0]['subScriptionAmount']}",
+                                    "${MyLocalizations.of(context)!.getLocalizations("SUBSCRIBE")} @${widget.currency}${widget.productData!['variant'][0]['subScriptionAmount']}",
                                     isAddInProgress))
                           ],
                         ),
@@ -274,7 +274,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                   ),
                 ],
               ),
-              widget.productData['variant'].indexWhere(
+              widget.productData!['variant'].indexWhere(
                           (element) => element['productStock'] == 0) ==
                       -1
                   ? Container()
@@ -289,10 +289,10 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
       content: Text(message),
       duration: Duration(milliseconds: 3000),
     );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
+    _scaffoldKey.currentState!.showSnackBar(snackBar);
   }
 
   getDiscountedValue() {
-    return '${widget.currency}${(variantPrice == null ? widget.productData['variant'][0]['price'] : variantPrice).toDouble().toStringAsFixed(2)}';
+    return '${widget.currency}${(variantPrice == null ? widget.productData!['variant'][0]['price'] : variantPrice).toDouble().toStringAsFixed(2)}';
   }
 }

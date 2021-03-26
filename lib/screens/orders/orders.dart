@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:readymadeGroceryApp/screens/orders/ordersDetails.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
@@ -10,18 +13,17 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:intl/intl.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import '../../style/style.dart';
 
 SentryError sentryError = new SentryError();
 
 class Orders extends StatefulWidget {
-  final String userID, locale;
-  final Map localizedValues;
+  final String? userID, locale;
+  final Map? localizedValues;
   final bool isSubscription;
   Orders({
-    Key key,
+    Key? key,
     this.userID,
     this.locale,
     this.localizedValues,
@@ -36,11 +38,13 @@ class _OrdersState extends State<Orders> {
   bool isUserLoaggedIn = false,
       isFirstPageLoading = true,
       isNextPageLoading = false;
-  int ordersPerPage = 12, ordersPageNumber = 0, totalOrders = 1;
+  int? ordersPerPage = 12;
+      int ordersPageNumber = 0;
+      int? totalOrders = 1;
   List orderList = [];
-  RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
-  String currency;
+  final GlobalKey<LiquidPullToRefreshState> _refreshIndicatorKey =
+  GlobalKey<LiquidPullToRefreshState>();
+  String? currency;
   ScrollController _scrollController = ScrollController();
 
   @override
@@ -81,7 +85,7 @@ class _OrdersState extends State<Orders> {
 
   void getorderList() async {
     if (totalOrders != orderList.length) {
-      if (ordersPageNumber > 0) {
+      if (ordersPageNumber! > 0) {
         setState(() {
           isNextPageLoading = true;
         });
@@ -89,7 +93,7 @@ class _OrdersState extends State<Orders> {
       await OrderService.getOrderByUserID(ordersPageNumber, ordersPerPage,
               widget.isSubscription ? "SUBSCRIPTIONS" : "PURCHASES")
           .then((onValue) {
-        _refreshController.refreshCompleted();
+        _handleRefresh();
         if (onValue['response_data'] != null &&
             onValue['response_data'] != []) {
           orderList.addAll(onValue['response_data']);
@@ -114,6 +118,14 @@ class _OrdersState extends State<Orders> {
     }
   }
 
+  Future<void> _handleRefresh() async {
+    final Completer<void> completer = Completer<void>();
+    Timer(const Duration(seconds: 3), () {
+      completer.complete();
+    });
+    checkIfUserIsLoaggedIn();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,13 +138,17 @@ class _OrdersState extends State<Orders> {
                   : orderList.length > 0
                       ? Container(
                           padding: EdgeInsets.only(left: 5, right: 5),
-                          child: SmartRefresher(
-                            enablePullDown: true,
-                            enablePullUp: false,
-                            controller: _refreshController,
-                            onRefresh: () {
-                              checkIfUserIsLoaggedIn();
-                            },
+                          child:  LiquidPullToRefresh(
+                            key: _refreshIndicatorKey,
+                            onRefresh: _handleRefresh,
+                            showChildOpacityTransition: false,
+                          // SmartRefresher(
+                          //   enablePullDown: true,
+                          //   enablePullUp: false,
+                          //   controller: _refreshController,
+                          //   onRefresh: () {
+                          //     checkIfUserIsLoaggedIn();
+                          //   },
                             child: ListView.builder(
                               physics: ScrollPhysics(),
                               shrinkWrap: true,
@@ -212,7 +228,7 @@ class _OrdersState extends State<Orders> {
                 imageUrl: orderDetails['product']['productImages'][0]
                             ['filePath'] !=
                         null
-                    ? Constants.imageUrlPath +
+                    ? Constants.imageUrlPath! +
                         "/tr:dpr-auto,tr:w-500" +
                         orderDetails['product']['productImages'][0]['filePath']
                     : orderDetails['product']['productImages'][0]['imageUrl'],
@@ -236,7 +252,7 @@ class _OrdersState extends State<Orders> {
             : CachedNetworkImage(
                 imageUrl: orderDetails['product']['filePath'] == null
                     ? orderDetails['product']['imageUrl']
-                    : Constants.imageUrlPath +
+                    : Constants.imageUrlPath! +
                         "/tr:dpr-auto,tr:w-500" +
                         orderDetails['product']['filePath'],
                 imageBuilder: (context, imageProvider) => Container(
@@ -261,7 +277,7 @@ class _OrdersState extends State<Orders> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             orderPageText(context,
-                '${MyLocalizations.of(context).getLocalizations("ORDER_ID", true)}  #${orderDetails['orderID']}'),
+                '${MyLocalizations.of(context)!.getLocalizations("ORDER_ID", true)}  #${orderDetails['orderID']}'),
             orderPageText(context,
                 '${orderDetails['product']['title'][0].toUpperCase()}${orderDetails['product']['title'].substring(1)}'),
             orderDetails['totalProduct'] > 1
@@ -269,16 +285,16 @@ class _OrdersState extends State<Orders> {
                 : Container(),
             orderDetails['totalProduct'] > 1
                 ? textLightSmall(
-                    MyLocalizations.of(context).getLocalizations("AND") +
+                    MyLocalizations.of(context)!.getLocalizations("AND") +
                         ' ${(orderDetails['totalProduct'] - 1).toString()} ' +
-                        MyLocalizations.of(context)
+                        MyLocalizations.of(context)!
                             .getLocalizations("MORE_ITEMS"),
                     context)
                 : Container(),
             buildBoldText(context,
                 '$currency${orderDetails['grandTotal'] > 0 ? orderDetails['grandTotal'].toStringAsFixed(2) : orderDetails['usedWalletAmount'].toStringAsFixed(2)}'),
             textLightSmall(
-                MyLocalizations.of(context).getLocalizations("ORDERED", true) +
+                MyLocalizations.of(context)!.getLocalizations("ORDERED", true) +
                     DateFormat('dd/MM/yyyy, hh:mm a', widget.locale ?? "en")
                         .format(
                             DateTime.parse(orderDetails['createdAt'].toString())

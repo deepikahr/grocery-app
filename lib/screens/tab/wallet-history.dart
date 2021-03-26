@@ -1,6 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:readymadeGroceryApp/screens/orders/ordersDetails.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
@@ -14,21 +16,23 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 SentryError sentryError = new SentryError();
 
 class WalletHistoryyPage extends StatefulWidget {
-  final Map localizedValues;
-  final String locale;
-  WalletHistoryyPage({Key key, this.locale, this.localizedValues});
+  final Map? localizedValues;
+  final String? locale;
+  WalletHistoryyPage({Key? key, this.locale, this.localizedValues});
   @override
   _WalletHistoryyPageState createState() => _WalletHistoryyPageState();
 }
 
 class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
   bool isFirstPageLoading = true, isNextPageLoading = false;
-  int walletPerPage = 12, walletsPageNumber = 0, totalWallet = 1;
+  int? walletPerPage = 12;
+  int walletsPageNumber = 0;
+  int? totalWallet = 1;
   List walletHistoryList = [];
   String currency = '';
   ScrollController _scrollController = ScrollController();
-  RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  final GlobalKey<LiquidPullToRefreshState> _refreshIndicatorKey =
+  GlobalKey<LiquidPullToRefreshState>();
   @override
   void initState() {
     _scrollController.addListener(() {
@@ -56,14 +60,14 @@ class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
 
   void getwalletHistoryList() async {
     if (totalWallet != walletHistoryList.length) {
-      if (walletsPageNumber > 0) {
+      if (walletsPageNumber! > 0) {
         setState(() {
           isNextPageLoading = true;
         });
       }
       await LoginService.getWalletsHistory(walletsPageNumber, walletPerPage)
           .then((onValue) {
-        _refreshController.refreshCompleted();
+        _handleRefresh();
         if (onValue['response_data'] != null &&
             onValue['response_data'] != []) {
           walletHistoryList.addAll(onValue['response_data']);
@@ -88,11 +92,19 @@ class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
     }
   }
 
+  Future<void> _handleRefresh() async {
+    final Completer<void> completer = Completer<void>();
+    Timer(const Duration(seconds: 3), () {
+      completer.complete();
+    });
+    checkIfUserIsLoaggedIn();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bg(context),
-      appBar: appBarPrimary(context, "RECENT_TRANSACTIONS"),
+      appBar: appBarPrimary(context, "RECENT_TRANSACTIONS") as PreferredSizeWidget?,
       body: Column(
         children: <Widget>[
           Flexible(
@@ -101,13 +113,17 @@ class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
                   : walletHistoryList.length > 0
                       ? Container(
                           padding: EdgeInsets.only(left: 5, right: 5),
-                          child: SmartRefresher(
-                            enablePullDown: true,
-                            enablePullUp: false,
-                            controller: _refreshController,
-                            onRefresh: () {
-                              checkIfUserIsLoaggedIn();
-                            },
+                          child: LiquidPullToRefresh(
+                            key: _refreshIndicatorKey,
+                            onRefresh: _handleRefresh,
+                            showChildOpacityTransition: false,
+                          // SmartRefresher(
+                          //   enablePullDown: true,
+                          //   enablePullUp: false,
+                          //   controller: _refreshController,
+                          //   onRefresh: () {
+                          //     checkIfUserIsLoaggedIn();
+                          //   },
                             child: ListView.builder(
                               physics: ScrollPhysics(),
                               shrinkWrap: true,
@@ -184,11 +200,11 @@ class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
               Row(
                 children: [
                   Text(
-                      MyLocalizations.of(context)
+                      MyLocalizations.of(context)!
                           .getLocalizations('WALLET', true),
                       style: textBarlowRegularBlackdl(context)),
                   Text(
-                      MyLocalizations.of(context)
+                      MyLocalizations.of(context)!
                           .getLocalizations((walletDetails['isCredited']
                               ? "CREDIT"
                               : !walletDetails['isCredited']

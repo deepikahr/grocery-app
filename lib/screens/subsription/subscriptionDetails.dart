@@ -15,11 +15,11 @@ SentryError sentryError = new SentryError();
 
 class SubscriptionDetails extends StatefulWidget {
   SubscriptionDetails(
-      {Key key, this.locale, this.localizedValues, this.subscriptionId})
+      {Key? key, this.locale, this.localizedValues, this.subscriptionId})
       : super(key: key);
 
-  final Map localizedValues;
-  final String locale, subscriptionId;
+  final Map? localizedValues;
+  final String? locale, subscriptionId;
 
   @override
   _SubscriptionDetailsState createState() => _SubscriptionDetailsState();
@@ -27,9 +27,9 @@ class SubscriptionDetails extends StatefulWidget {
 
 class _SubscriptionDetailsState extends State<SubscriptionDetails> {
   bool isGetSubscribedProductLoading = false;
-  Map subscribedDetails;
+  Map? subscribedDetails;
   List subscriptionStatusList = [];
-  String currency;
+  String? currency;
   @override
   void initState() {
     getProductsList();
@@ -50,7 +50,7 @@ class _SubscriptionDetailsState extends State<SubscriptionDetails> {
           isGetSubscribedProductLoading = false;
           subscribedDetails = onValue['response_data'];
           subscriptionStatusList =
-              subscribedDetails['subscriptionStatus'] ?? [];
+              subscribedDetails!['subscriptionStatus'] ?? [];
         });
       }
     }).catchError((error) {
@@ -67,7 +67,7 @@ class _SubscriptionDetailsState extends State<SubscriptionDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bg(context),
-      appBar: appBarPrimarynoradius(context, "DETAILS"),
+      appBar: appBarPrimarynoradius(context, "DETAILS") as PreferredSizeWidget?,
       body: isGetSubscribedProductLoading
           ? SquareLoader()
           : ListView(
@@ -86,25 +86,25 @@ class _SubscriptionDetailsState extends State<SubscriptionDetails> {
                     children: [
                       Row(
                         children: [
-                          (subscribedDetails['subscription']['products'][0]
+                          (subscribedDetails!['subscription']['products'][0]
                                           ['productImages'] !=
                                       null &&
-                                  subscribedDetails['subscription']['products']
+                                  subscribedDetails!['subscription']['products']
                                               [0]['productImages']
                                           .length >
                                       0)
                               ? CachedNetworkImage(
-                                  imageUrl: subscribedDetails['subscription']
+                                  imageUrl: subscribedDetails!['subscription']
                                                       ['products'][0]
                                                   ['productImages'][0]
                                               ['filePath'] !=
                                           null
-                                      ? Constants.imageUrlPath +
+                                      ? Constants.imageUrlPath! +
                                           "/tr:dpr-auto,tr:w-500" +
-                                          subscribedDetails['subscription']
+                                          subscribedDetails!['subscription']
                                                   ['products'][0]
                                               ['productImages'][0]['filePath']
-                                      : subscribedDetails['subscription']
+                                      : subscribedDetails!['subscription']
                                               ['products'][0]['productImages']
                                           [0]['imageUrl'],
                                   imageBuilder: (context, imageProvider) =>
@@ -135,14 +135,14 @@ class _SubscriptionDetailsState extends State<SubscriptionDetails> {
                                           child: noDataImage()),
                                 )
                               : CachedNetworkImage(
-                                  imageUrl: subscribedDetails['subscription']
+                                  imageUrl: subscribedDetails!['subscription']
                                               ['products'][0]['filePath'] !=
                                           null
-                                      ? Constants.imageUrlPath +
+                                      ? Constants.imageUrlPath! +
                                           "/tr:dpr-auto,tr:w-500" +
-                                          subscribedDetails['subscription']
+                                          subscribedDetails!['subscription']
                                               ['products'][0]['filePath']
-                                      : subscribedDetails['subscription']
+                                      : subscribedDetails!['subscription']
                                           ['products'][0]['imageUrl'],
                                   imageBuilder: (context, imageProvider) =>
                                       Container(
@@ -176,7 +176,7 @@ class _SubscriptionDetailsState extends State<SubscriptionDetails> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '${subscribedDetails['subscription']['products'][0]['productName'][0].toUpperCase()}${subscribedDetails['subscription']['products'][0]['productName'].substring(1)}',
+                                '${subscribedDetails!['subscription']['products'][0]['productName'][0].toUpperCase()}${subscribedDetails!['subscription']['products'][0]['productName'].substring(1)}',
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
@@ -187,7 +187,7 @@ class _SubscriptionDetailsState extends State<SubscriptionDetails> {
                               ),
                               SizedBox(height: 5),
                               textLightSmall(
-                                  '${subscribedDetails['subscription']['products'][0]['unit'] ?? ''}',
+                                  '${subscribedDetails!['subscription']['products'][0]['unit'] ?? ''}',
                                   context),
                               SizedBox(height: 5),
                               Column(
@@ -196,26 +196,26 @@ class _SubscriptionDetailsState extends State<SubscriptionDetails> {
                                 children: [
                                   regularTextatStart(
                                       context,
-                                      MyLocalizations.of(context)
+                                      MyLocalizations.of(context)!
                                               .getLocalizations(
                                                   "SUBSCRIPTION", true) +
-                                          MyLocalizations.of(context)
+                                          MyLocalizations.of(context)!
                                               .getLocalizations(
-                                                  subscribedDetails[
+                                                  subscribedDetails![
                                                           'subscription']
                                                       ['schedule'])),
                                   SizedBox(height: 5),
                                   textLightSmall(
-                                      MyLocalizations.of(context)
+                                      MyLocalizations.of(context)!
                                               .getLocalizations(
                                                   "QUANTITY", true) +
-                                          subscribedDetails['subscription']
+                                          subscribedDetails!['subscription']
                                                   ['products'][0]['quantity']
                                               .toString(),
                                       context),
                                   SizedBox(height: 5),
                                   priceMrpText(
-                                      "$currency${subscribedDetails['subscription']['products'][0]['subscriptionTotal']}",
+                                      "$currency${subscribedDetails!['subscription']['products'][0]['subscriptionTotal']}",
                                       "",
                                       context),
                                 ],
@@ -244,15 +244,15 @@ class _SubscriptionDetailsState extends State<SubscriptionDetails> {
                       builddTextbarlowRegularBlackFont14(
                         context,
                         DateFormat('dd/MM/yyyy', widget.locale ?? "en").format(
-                            DateTime.parse(subscribedDetails['subscription']
+                            DateTime.parse(subscribedDetails!['subscription']
                                     ['subscriptionStartDate']
                                 .toString())),
                       )
                     ],
                   ),
                 ),
-                subscribedDetails['subscription']['address'] == null ||
-                        subscribedDetails['subscription']['address'] is String
+                subscribedDetails!['subscription']['address'] == null ||
+                        subscribedDetails!['subscription']['address'] is String
                     ? Container()
                     : Container(
                         padding:
@@ -273,8 +273,8 @@ class _SubscriptionDetailsState extends State<SubscriptionDetails> {
                             SizedBox(height: 8),
                             builddTextbarlowRegularBlackFont14(
                               context,
-                              '${subscribedDetails['subscription']['address']['flatNo']}, ${subscribedDetails['subscription']['address']['apartmentName']}, ${subscribedDetails['subscription']['address']['address']}, ' +
-                                  "\n${subscribedDetails['subscription']['address']['landmark']}, ${subscribedDetails['subscription']['address']['postalCode']}, ${subscribedDetails['subscription']['address']['mobileNumber'].toString()}",
+                              '${subscribedDetails!['subscription']['address']['flatNo']}, ${subscribedDetails!['subscription']['address']['apartmentName']}, ${subscribedDetails!['subscription']['address']['address']}, ' +
+                                  "\n${subscribedDetails!['subscription']['address']['landmark']}, ${subscribedDetails!['subscription']['address']['postalCode']}, ${subscribedDetails!['subscription']['address']['mobileNumber'].toString()}",
                             )
                           ],
                         ),

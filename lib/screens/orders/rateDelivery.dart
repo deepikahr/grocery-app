@@ -10,9 +10,9 @@ import 'package:readymadeGroceryApp/widgets/button.dart';
 SentryError sentryError = new SentryError();
 
 class RateDelivery extends StatefulWidget {
-  final Map localizedValues, orderHistory;
-  final String locale;
-  RateDelivery({Key key, this.locale, this.localizedValues, this.orderHistory});
+  final Map? localizedValues, orderHistory;
+  final String? locale;
+  RateDelivery({Key? key, this.locale, this.localizedValues, this.orderHistory});
   @override
   _RateDeliveryState createState() => _RateDeliveryState();
 }
@@ -21,10 +21,10 @@ class _RateDeliveryState extends State<RateDelivery> {
   bool isRatingLoading = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKeyForLogin = GlobalKey<FormState>();
-  String discription;
+  String? discription;
   double ratingValue = 1.0;
   orderCancelMethod() async {
-    final form = _formKeyForLogin.currentState;
+    final form = _formKeyForLogin.currentState!;
     if (form.validate()) {
       form.save();
       if (mounted) {
@@ -35,8 +35,8 @@ class _RateDeliveryState extends State<RateDelivery> {
       Map body = {
         "rate": ratingValue,
         "description": discription,
-        "orderId": widget.orderHistory['order']['_id'],
-        "deliveryBoyId": widget.orderHistory['order']["assignedToId"]
+        "orderId": widget.orderHistory!['order']['_id'],
+        "deliveryBoyId": widget.orderHistory!['order']["assignedToId"]
       };
       await OrderService.deliveryRating(body).then((onValue) {
         if (mounted) {
@@ -64,7 +64,7 @@ class _RateDeliveryState extends State<RateDelivery> {
       content: Text(message),
       duration: Duration(milliseconds: 3000),
     );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
+    _scaffoldKey.currentState!.showSnackBar(snackBar);
   }
 
   @override
@@ -72,7 +72,7 @@ class _RateDeliveryState extends State<RateDelivery> {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarPrimary(context, "RATE_DELIVERY"),
+      appBar: appBarPrimary(context, "RATE_DELIVERY") as PreferredSizeWidget?,
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
         child: InkWell(
@@ -91,14 +91,14 @@ class _RateDeliveryState extends State<RateDelivery> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  MyLocalizations.of(context)
+                  MyLocalizations.of(context)!
                       .getLocalizations('YOUR_ORDER_WAS_DELIVERED_BY'),
                   style: textBarlowMediumsmBlackk(context),
                 ),
                 Flexible(
                   child: Text(
-                    MyLocalizations.of(context).getLocalizations(
-                        widget.orderHistory['order']["assignedToName"]),
+                    MyLocalizations.of(context)!.getLocalizations(
+                        widget.orderHistory!['order']["assignedToName"]),
                     style: textBarlowMediumsmBlackk(context),
                   ),
                 ),
@@ -107,7 +107,7 @@ class _RateDeliveryState extends State<RateDelivery> {
           ),
           SizedBox(height: 10),
           Text(
-            MyLocalizations.of(context)
+            MyLocalizations.of(context)!
                 .getLocalizations('PLEASE_SUBMIT_YOUR_FEEDBACK'),
             style: textBarlowRegularBlackdl(context),
           ),
@@ -140,17 +140,17 @@ class _RateDeliveryState extends State<RateDelivery> {
                 style: textBarlowRegularBlack(context),
                 keyboardType: TextInputType.text,
                 maxLines: 5,
-                onSaved: (String value) {
+                onSaved: (String? value) {
                   discription = value;
                 },
-                validator: (String value) {
-                  if (value.isEmpty) {
+                validator: (String? value) {
+                  if (value!.isEmpty) {
                     return null;
                   } else
                     return null;
                 },
                 decoration: InputDecoration(
-                  hintText: MyLocalizations.of(context)
+                  hintText: MyLocalizations.of(context)!
                       .getLocalizations("TELL_US_YOUR_EXPERIENCE"),
                   hintStyle: textbarlowRegularaddwithop(context),
                   errorStyle: TextStyle(color: Color(0xFFF44242)),

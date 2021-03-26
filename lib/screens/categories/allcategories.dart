@@ -1,22 +1,24 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/categoryBlock.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../product/all_products.dart';
 
 SentryError sentryError = new SentryError();
 
 class AllCategories extends StatefulWidget {
-  final Map localizedValues;
-  final String locale;
-  final bool getTokenValue;
+  final Map? localizedValues;
+  final String? locale;
+  final bool? getTokenValue;
   AllCategories(
-      {Key key, this.locale, this.localizedValues, this.getTokenValue});
+      {Key? key, this.locale, this.localizedValues, this.getTokenValue});
 
   @override
   _AllCategoriesState createState() => _AllCategoriesState();
@@ -24,11 +26,14 @@ class AllCategories extends StatefulWidget {
 
 class _AllCategoriesState extends State<AllCategories>
     with TickerProviderStateMixin {
-  TabController tabController;
+  final GlobalKey<LiquidPullToRefreshState> _refreshIndicatorKey =
+  GlobalKey<LiquidPullToRefreshState>();
+
+  late TabController tabController;
   bool isLoadingProductsList = false, isLoadingcategoryList = false;
-  List categoryList, productsList;
-  RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  List? categoryList, productsList;
+  // RefreshController _refreshController =
+  //     RefreshController(initialRefresh: false);
   @override
   void initState() {
     super.initState();
@@ -49,7 +54,8 @@ class _AllCategoriesState extends State<AllCategories>
       });
     }
     await ProductService.getCategoryList().then((onValue) {
-      _refreshController.refreshCompleted();
+      // _handleRefresh();
+      _handleRefresh();
       if (mounted) {
         setState(() {
           categoryList = onValue['response_data'];
@@ -67,18 +73,30 @@ class _AllCategoriesState extends State<AllCategories>
     });
   }
 
+  Future<void> _handleRefresh() async {
+    final Completer<void> completer = Completer<void>();
+    Timer(const Duration(seconds: 3), () {
+      completer.complete();
+    });
+    getCategoryList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bg(context),
-      appBar: appBarTransparent(context, "ALL_CATEGROIES"),
-      body: SmartRefresher(
-        enablePullDown: true,
-        enablePullUp: false,
-        controller: _refreshController,
-        onRefresh: () {
-          getCategoryList();
-        },
+      appBar: appBarTransparent(context, "ALL_CATEGROIES") as PreferredSizeWidget?,
+      body: LiquidPullToRefresh(
+    key: _refreshIndicatorKey,
+    onRefresh: _handleRefresh,
+    showChildOpacityTransition: false,
+    // SmartRefresher(
+    //     enablePullDown: true,
+    //     enablePullUp: false,
+    //     controller: _refreshController,
+    //     onRefresh: () {
+    //       getCategoryList();
+    //     },
         child: isLoadingcategoryList
             ? SquareLoader()
             : Container(
@@ -87,7 +105,7 @@ class _AllCategoriesState extends State<AllCategories>
                   physics: ScrollPhysics(),
                   shrinkWrap: true,
                   itemCount:
-                      categoryList.length == null ? 0 : categoryList.length,
+                      categoryList!.length == null ? 0 : categoryList!.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
                       childAspectRatio: MediaQuery.of(context).size.width / 420,
@@ -103,18 +121,18 @@ class _AllCategoriesState extends State<AllCategories>
                             builder: (BuildContext context) => AllProducts(
                               locale: widget.locale,
                               localizedValues: widget.localizedValues,
-                              categoryId: categoryList[index]['_id'],
-                              pageTitle: categoryList[index]['title'],
+                              categoryId: categoryList![index]['_id'],
+                              pageTitle: categoryList![index]['title'],
                             ),
                           ),
                         );
                       },
                       child: CategoryBlock(
-                          image: categoryList[index]['filePath'] == null
-                              ? categoryList[index]['imageUrl']
-                              : categoryList[index]['filePath'],
-                          title: categoryList[index]['title'],
-                          isPath: categoryList[index]['filePath'] == null
+                          image: categoryList![index]['filePath'] == null
+                              ? categoryList![index]['imageUrl']
+                              : categoryList![index]['filePath'],
+                          title: categoryList![index]['title'],
+                          isPath: categoryList![index]['filePath'] == null
                               ? false
                               : true,
                           isHome: false),

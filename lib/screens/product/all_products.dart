@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:readymadeGroceryApp/model/counterModel.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/product/product-details.dart';
@@ -13,18 +16,17 @@ import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import 'package:readymadeGroceryApp/widgets/product_gridcard.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../style/style.dart';
 import '../../widgets/loader.dart';
 
 SentryError sentryError = new SentryError();
 
 class AllProducts extends StatefulWidget {
-  final Map localizedValues;
-  final String locale, dealId, categoryId, pageTitle;
+  final Map? localizedValues;
+  final String? locale, dealId, categoryId, pageTitle;
 
   AllProducts({
-    Key key,
+    Key? key,
     this.locale,
     this.localizedValues,
     this.dealId,
@@ -36,20 +38,24 @@ class AllProducts extends StatefulWidget {
 }
 
 class _AllProductsState extends State<AllProducts> {
+
+  final GlobalKey<LiquidPullToRefreshState> _refreshIndicatorKey =
+  GlobalKey<LiquidPullToRefreshState>();
+
   bool isUserLoaggedIn = false,
       isFirstPageLoading = true,
       isNextPageLoading = false,
       isSubCategoryLoading = true,
       isProductsForDeal = false,
       isProductsForCategory = false;
-  int productsPerPage = 12,
-      productsPageNumber = 0,
+  int? productsPerPage = 12,
       totalProducts = 1,
       selectedSubCategoryIndex = 0;
-  List productsList = [], subCategoryList = [];
-  RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
-  String currency;
+  int productsPageNumber = 0;
+  List? productsList = [], subCategoryList = [];
+  // RefreshController _refreshController =
+  //     RefreshController(initialRefresh: false);
+  String? currency;
   ScrollController _scrollController = ScrollController();
 
   var cartData;
@@ -103,7 +109,7 @@ class _AllProductsState extends State<AllProducts> {
       isFirstPageLoading = true;
     });
     productsList = [];
-    productsPageNumber = productsList.length;
+    productsPageNumber = productsList!.length;
     totalProducts = 1;
     await Common.getCurrency().then((value) {
       currency = value;
@@ -119,7 +125,7 @@ class _AllProductsState extends State<AllProducts> {
   void getSubCategoryList() async {
     await ProductService.getSubCatList().then((onValue) {
       if (onValue['response_data'] != null) {
-        subCategoryList = onValue['response_data'] as List;
+        subCategoryList = onValue['response_data'] as List?;
       }
       if (mounted)
         setState(() {
@@ -136,8 +142,8 @@ class _AllProductsState extends State<AllProducts> {
   }
 
   void getSubCategoryListByCategoryId() async {
-    if (totalProducts != productsList.length) {
-      if (productsPageNumber > 0) {
+    if (totalProducts != productsList!.length) {
+      if (productsPageNumber! > 0) {
         setState(() {
           isNextPageLoading = true;
         });
@@ -145,9 +151,9 @@ class _AllProductsState extends State<AllProducts> {
       await ProductService.getProductToCategoryList(
               widget.categoryId, productsPageNumber, productsPerPage)
           .then((onValue) {
-        _refreshController.refreshCompleted();
+        _handleRefresh();
         if (onValue['response_data'] != null) {
-          productsList.addAll(onValue['response_data']['products']);
+          productsList!.addAll(onValue['response_data']['products']);
           subCategoryList = onValue['response_data']['subCategories'];
           totalProducts = onValue["total"];
           productsPageNumber++;
@@ -172,8 +178,8 @@ class _AllProductsState extends State<AllProducts> {
   }
 
   void getProductsList() async {
-    if (totalProducts != productsList.length) {
-      if (productsPageNumber > 0) {
+    if (totalProducts != productsList!.length) {
+      if (productsPageNumber! > 0) {
         setState(() {
           isNextPageLoading = true;
         });
@@ -181,10 +187,10 @@ class _AllProductsState extends State<AllProducts> {
       await ProductService.getProductListAll(
               productsPageNumber, productsPerPage)
           .then((onValue) {
-        _refreshController.refreshCompleted();
+        _handleRefresh();
         if (onValue['response_data'] != null &&
             onValue['response_data'] != []) {
-          productsList.addAll(onValue['response_data']);
+          productsList!.addAll(onValue['response_data']);
           totalProducts = onValue["total"];
           productsPageNumber++;
         }
@@ -207,21 +213,21 @@ class _AllProductsState extends State<AllProducts> {
   }
 
   void getProductsListBySubCategoryId() async {
-    if (totalProducts != productsList.length) {
-      if (productsPageNumber > 0) {
+    if (totalProducts != productsList!.length) {
+      if (productsPageNumber! > 0) {
         setState(() {
           isNextPageLoading = true;
         });
       }
       await ProductService.getProductToSubCategoryList(
-              subCategoryList[selectedSubCategoryIndex - 1]['_id'],
+              subCategoryList![selectedSubCategoryIndex! - 1]['_id'],
               productsPageNumber,
               productsPerPage)
           .then((onValue) {
-        _refreshController.refreshCompleted();
+        _handleRefresh();
         if (onValue['response_data'] != null &&
             onValue['response_data'] != []) {
-          productsList.addAll(onValue['response_data']);
+          productsList!.addAll(onValue['response_data']);
           totalProducts = onValue["total"];
           productsPageNumber++;
         }
@@ -244,8 +250,8 @@ class _AllProductsState extends State<AllProducts> {
   }
 
   void getProductListByDealId() async {
-    if (totalProducts != productsList.length) {
-      if (productsPageNumber > 0) {
+    if (totalProducts != productsList!.length) {
+      if (productsPageNumber! > 0) {
         setState(() {
           isNextPageLoading = true;
         });
@@ -253,10 +259,10 @@ class _AllProductsState extends State<AllProducts> {
       await ProductService.getDealProductListAll(
               widget.dealId, productsPageNumber, productsPerPage)
           .then((onValue) {
-        _refreshController.refreshCompleted();
+        _handleRefresh();
         if (onValue['response_data'] != null &&
             onValue['response_data'] != []) {
-          productsList.addAll(onValue['response_data']);
+          productsList!.addAll(onValue['response_data']);
           totalProducts = onValue["total"];
           productsPageNumber++;
         }
@@ -277,6 +283,15 @@ class _AllProductsState extends State<AllProducts> {
       });
     }
   }
+
+  Future<void> _handleRefresh() async {
+    final Completer<void> completer = Completer<void>();
+    Timer(const Duration(seconds: 3), () {
+      completer.complete();
+    });
+    checkIfUserIsLoaggedIn();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -326,7 +341,7 @@ class _AllProductsState extends State<AllProducts> {
             ),
           ),
         ),
-      ),
+      ) as PreferredSizeWidget?,
       body: isSubCategoryLoading
           ? Center(child: SquareLoader())
           : Column(
@@ -341,7 +356,7 @@ class _AllProductsState extends State<AllProducts> {
                                 physics: ScrollPhysics(),
                                 shrinkWrap: true,
                                 scrollDirection: Axis.horizontal,
-                                itemCount: subCategoryList.length + 1,
+                                itemCount: subCategoryList!.length + 1,
                                 itemBuilder: (BuildContext context, int i) {
                                   return InkWell(
                                     onTap: () {
@@ -353,9 +368,9 @@ class _AllProductsState extends State<AllProducts> {
                                     child: subCatTab(
                                       context,
                                       i == 0
-                                          ? MyLocalizations.of(context)
+                                          ? MyLocalizations.of(context)!
                                               .getLocalizations('ALL')
-                                          : subCategoryList[i - 1]['title'],
+                                          : subCategoryList![i - 1]['title'],
                                       selectedSubCategoryIndex == i
                                           ? primary(context)
                                           : Color(0xFFf0F0F0),
@@ -368,20 +383,24 @@ class _AllProductsState extends State<AllProducts> {
                       ? Center(child: SquareLoader())
                       : Container(
                           padding: EdgeInsets.only(left: 10, right: 10),
-                          child: SmartRefresher(
-                            enablePullDown: true,
-                            enablePullUp: false,
-                            controller: _refreshController,
-                            onRefresh: () {
-                              checkIfUserIsLoaggedIn();
-                            },
+                          child: LiquidPullToRefresh(
+                            key: _refreshIndicatorKey,
+                            onRefresh: _handleRefresh,
+                            showChildOpacityTransition: false,
+                          // SmartRefresher(
+                          //   enablePullDown: true,
+                          //   enablePullUp: false,
+                          //   controller: _refreshController,
+                          //   onRefresh: () {
+                          //     checkIfUserIsLoaggedIn();
+                          //   },
                             child: GridView.builder(
                               physics: ScrollPhysics(),
                               controller: _scrollController,
                               shrinkWrap: true,
-                              itemCount: productsList.length == null
+                              itemCount: productsList!.length == null
                                   ? 0
-                                  : productsList.length,
+                                  : productsList!.length,
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2,
@@ -400,7 +419,7 @@ class _AllProductsState extends State<AllProducts> {
                                           locale: widget.locale,
                                           localizedValues:
                                               widget.localizedValues,
-                                          productID: productsList[i]['_id'],
+                                          productID: productsList![i]['_id'],
                                         ),
                                       ),
                                     );
@@ -410,7 +429,7 @@ class _AllProductsState extends State<AllProducts> {
                                   },
                                   child: ProductGridCard(
                                     currency: currency,
-                                    productData: productsList[i],
+                                    productData: productsList![i],
                                     isHome: false,
                                   ),
                                 );

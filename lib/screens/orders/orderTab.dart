@@ -7,17 +7,17 @@ import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/screens/orders/orders.dart';
 
 class OrdersTab extends StatefulWidget {
-  final String locale;
-  final Map localizedValues;
+  final String? locale;
+  final Map? localizedValues;
 
-  OrdersTab({Key key, this.locale, this.localizedValues}) : super(key: key);
+  OrdersTab({Key? key, this.locale, this.localizedValues}) : super(key: key);
   @override
   _OrdersTabState createState() => _OrdersTabState();
 }
 
 class _OrdersTabState extends State<OrdersTab>
     with SingleTickerProviderStateMixin {
-  TabController tabController;
+  TabController? tabController;
   @override
   void initState() {
     super.initState();
@@ -26,14 +26,14 @@ class _OrdersTabState extends State<OrdersTab>
 
   @override
   void dispose() {
-    tabController.dispose();
+    tabController!.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: bg(context),
-        appBar: appBarPrimarynoradius(context, "ORDERS"),
+        appBar: appBarPrimarynoradius(context, "ORDERS") as PreferredSizeWidget?,
         body: ListView(
           children: <Widget>[
             Container(
@@ -47,14 +47,14 @@ class _OrdersTabState extends State<OrdersTab>
                 tabs: <Widget>[
                   Tab(
                     child: Text(
-                      MyLocalizations.of(context).getLocalizations("PURCHASES"),
+                      MyLocalizations.of(context)!.getLocalizations("PURCHASES"),
                       style: textbarlowRegularBlackb(context),
                       textAlign: TextAlign.center,
                     ),
                   ),
                   Tab(
                     child: Text(
-                      MyLocalizations.of(context)
+                      MyLocalizations.of(context)!
                           .getLocalizations("SUBSCRIPTION"),
                       style: textbarlowRegularBlackb(context),
                       textAlign: TextAlign.center,

@@ -1,11 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:readymadeGroceryApp/widgets/subscription_card.dart';
 import '../../style/style.dart';
 import '../../widgets/loader.dart';
@@ -13,11 +15,11 @@ import '../../widgets/loader.dart';
 SentryError sentryError = new SentryError();
 
 class AllSubscriptionProductsListPage extends StatefulWidget {
-  final Map localizedValues;
-  final String locale;
+  final Map? localizedValues;
+  final String? locale;
 
   AllSubscriptionProductsListPage({
-    Key key,
+    Key? key,
     this.locale,
     this.localizedValues,
   });
@@ -28,14 +30,17 @@ class AllSubscriptionProductsListPage extends StatefulWidget {
 
 class _AllSubscriptionProductsListPageState
     extends State<AllSubscriptionProductsListPage> {
+  final GlobalKey<LiquidPullToRefreshState> _refreshIndicatorKey =
+  GlobalKey<LiquidPullToRefreshState>();
+
   bool isUserLoaggedIn = false,
       isFirstPageLoading = true,
       isNextPageLoading = false;
-  int productsPerPage = 12, productsPageNumber = 0, totalProducts = 1;
+  int? productsPerPage = 12;
+  int productsPageNumber = 0;
+  int? totalProducts = 1;
   List productsList = [];
-  RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
-  String currency;
+  String? currency;
   ScrollController _scrollController = ScrollController();
   @override
   void initState() {
@@ -76,7 +81,7 @@ class _AllSubscriptionProductsListPageState
 
   void getProductsList() async {
     if (totalProducts != productsList.length) {
-      if (productsPageNumber > 0) {
+      if (productsPageNumber! > 0) {
         setState(() {
           isNextPageLoading = true;
         });
@@ -84,7 +89,7 @@ class _AllSubscriptionProductsListPageState
       await ProductService.getSubscriptionList(
               productsPageNumber, productsPerPage)
           .then((onValue) {
-        _refreshController.refreshCompleted();
+        _handleRefresh();
         if (onValue['response_data'] != null &&
             onValue['response_data'] != []) {
           productsList.addAll(onValue['response_data']);
@@ -109,11 +114,20 @@ class _AllSubscriptionProductsListPageState
     }
   }
 
+  Future<void> _handleRefresh() async {
+    final Completer<void> completer = Completer<void>();
+    Timer(const Duration(seconds: 3), () {
+      completer.complete();
+    });
+    checkIfUserIsLoaggedIn();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bg(context),
-      appBar: appBarPrimarynoradius(context, "SUBSCRIPTION_PRODUCTS"),
+      appBar: appBarPrimarynoradius(context, "SUBSCRIPTION_PRODUCTS") as PreferredSizeWidget?,
       body: Column(
         children: [
           SizedBox(height: 10),
@@ -151,13 +165,17 @@ class _AllSubscriptionProductsListPageState
                 ? Center(child: SquareLoader())
                 : Container(
                     padding: EdgeInsets.only(left: 10, right: 10),
-                    child: SmartRefresher(
-                      enablePullDown: true,
-                      enablePullUp: false,
-                      controller: _refreshController,
-                      onRefresh: () {
-                        checkIfUserIsLoaggedIn();
-                      },
+                    child: LiquidPullToRefresh(
+                      key: _refreshIndicatorKey,
+                      onRefresh: _handleRefresh,
+                      showChildOpacityTransition: false,
+                    // SmartRefresher(
+                    //   enablePullDown: true,
+                    //   enablePullUp: false,
+                    //   controller: _refreshController,
+                    //   onRefresh: () {
+                    //     checkIfUserIsLoaggedIn();
+                    //   },
                       child: GridView.builder(
                         physics: ScrollPhysics(),
                         controller: _scrollController,

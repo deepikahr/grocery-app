@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:readymadeGroceryApp/screens/categories/allcategories.dart';
 import 'package:readymadeGroceryApp/screens/product/all_deals.dart';
 import 'package:readymadeGroceryApp/screens/product/all_products.dart';
@@ -15,7 +18,6 @@ import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:readymadeGroceryApp/widgets/categoryBlock.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import 'package:readymadeGroceryApp/widgets/product_gridcard.dart';
@@ -24,9 +26,9 @@ import 'package:readymadeGroceryApp/widgets/subscription_card.dart';
 SentryError sentryError = new SentryError();
 
 class Store extends StatefulWidget {
-  final Map localizedValues;
-  final String locale, currentLocation;
-  Store({Key key, this.currentLocation, this.locale, this.localizedValues})
+  final Map? localizedValues;
+  final String? locale, currentLocation;
+  Store({Key? key, this.currentLocation, this.locale, this.localizedValues})
       : super(key: key);
   @override
   _StoreState createState() => _StoreState();
@@ -36,26 +38,26 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKeydrawer =
       new GlobalKey<ScaffoldState>();
 
-  RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  final GlobalKey<LiquidPullToRefreshState> _refreshIndicatorKey =
+  GlobalKey<LiquidPullToRefreshState>();
   bool getTokenValue = true,
       isLocationLoading = false,
       isBannerLoading = false,
       isLoadingAllData = false,
       isGetSubcribeLoading = false;
-  List categoryList,
+  List? categoryList,
       productsList,
       searchProductList,
       dealList,
       topDealList,
       bannerList,
       subscriptionProductsList;
-  String currency;
+  String? currency;
 
-  TabController tabController;
+  late TabController tabController;
 
   var addressData;
-  String locale;
+  String? locale;
   @override
   void initState() {
     getToken();
@@ -145,10 +147,10 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
 
   getBannerData() async {
     await ProductService.getBanner().then((onValue) {
-      _refreshController.refreshCompleted();
+      _handleRefresh();
       if (mounted) {
         setState(() {
-          if (onValue['response_data'] == []) {
+          if (onValue!['response_data'] == []) {
             bannerList = [];
           } else {
             bannerList = onValue['response_data'];
@@ -196,11 +198,11 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
 
   getAllDataMethod() async {
     await ProductService.getProdCatDealTopDeal().then((onValue) {
-      _refreshController.refreshCompleted();
+      _handleRefresh();
 
       if (mounted) {
         setState(() {
-          productsList = onValue['response_data']['products'];
+          productsList = onValue!['response_data']['products'];
           categoryList = onValue['response_data']['categories'];
           dealList = onValue['response_data']['dealsOfDay'];
           topDealList = onValue['response_data']['topDeals'];
@@ -246,7 +248,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
 
   getSubScriptionData() {
     ProductService.getSubscriptionList(0, 4).then((onValue) {
-      _refreshController.refreshCompleted();
+      _handleRefresh();
       if (mounted) {
         setState(() {
           isGetSubcribeLoading = false;
@@ -263,7 +265,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
     });
   }
 
-  Widget _buildTitleViewAllTile(String name, {Widget route, valueKey}) {
+  Widget _buildTitleViewAllTile(String name, {Widget? route, valueKey}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
@@ -271,7 +273,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
         InkWell(
           onTap: () {
             Navigator.push(context,
-                MaterialPageRoute(builder: (BuildContext context) => route));
+                MaterialPageRoute(builder: (BuildContext context) => route!));
           },
           child: viewAllBoldText(context, "VIEW_ALL", valueKey: valueKey),
         )
@@ -296,7 +298,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
             physics: ScrollPhysics(),
             shrinkWrap: true,
             scrollDirection: Axis.horizontal,
-            itemCount: categoryList.length != null ? categoryList.length : 0,
+            itemCount: categoryList!.length != null ? categoryList!.length : 0,
             itemBuilder: (BuildContext context, int index) {
               return InkWell(
                 onTap: () {
@@ -306,19 +308,19 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       builder: (context) => AllProducts(
                         locale: widget.locale,
                         localizedValues: widget.localizedValues,
-                        categoryId: categoryList[index]['_id'],
-                        pageTitle: categoryList[index]['title'],
+                        categoryId: categoryList![index]['_id'],
+                        pageTitle: categoryList![index]['title'],
                       ),
                     ),
                   );
                 },
                 child: CategoryBlock(
-                    image: categoryList[index]['filePath'] == null
-                        ? categoryList[index]['imageUrl']
-                        : categoryList[index]['filePath'],
-                    title: categoryList[index]['title'],
+                    image: categoryList![index]['filePath'] == null
+                        ? categoryList![index]['imageUrl']
+                        : categoryList![index]['filePath'],
+                    title: categoryList![index]['title'],
                     isPath:
-                        categoryList[index]['filePath'] == null ? false : true,
+                        categoryList![index]['filePath'] == null ? false : true,
                     isHome: true),
               );
             },
@@ -342,7 +344,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
           //do not remove this setstate
         });
       },
-      items: bannerList.map((url) {
+      items: bannerList!.map((url) {
         return InkWell(
           onTap: () {
             if (url['bannerType'] == "PRODUCT") {
@@ -431,7 +433,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       child: CachedNetworkImage(
                         imageUrl: url['filePath'] == null
                             ? url['imageURL']
-                            : Constants.imageUrlPath +
+                            : Constants.imageUrlPath! +
                                 "/tr:dpr-auto,tr:w-500" +
                                 url['filePath'],
                         imageBuilder: (context, imageProvider) => Container(
@@ -638,7 +640,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                 child: CachedNetworkImage(
                   imageUrl: list[i]['filePath'] == null
                       ? list[i]['imageUrl']
-                      : Constants.imageUrlPath +
+                      : Constants.imageUrlPath! +
                           "/tr:dpr-auto,tr:w-500" +
                           list[i]['filePath'],
                   imageBuilder: (context, imageProvider) => Container(
@@ -647,7 +649,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       child: GFImageOverlay(
                           image: NetworkImage(list[i]['filePath'] == null
                               ? list[i]['imageUrl']
-                              : Constants.imageUrlPath +
+                              : Constants.imageUrlPath! +
                                   "/tr:dpr-auto,tr:w-500" +
                                   list[i]['filePath']),
                           boxFit: BoxFit.cover,
@@ -664,7 +666,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                   '${list[i]['title'][0].toUpperCase()}${list[i]['title'].substring(1)}',
                                   list[i]['dealPercent'].toString() +
                                       "% " +
-                                      MyLocalizations.of(context)
+                                      MyLocalizations.of(context)!
                                           .getLocalizations("OFF"),
                                   context)))),
                   placeholder: (context, url) => Container(
@@ -689,7 +691,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                   '${list[i]['title'][0].toUpperCase()}${list[i]['title'].substring(1)}',
                                   list[i]['dealPercent'].toString() +
                                       "% " +
-                                      MyLocalizations.of(context)
+                                      MyLocalizations.of(context)!
                                           .getLocalizations("OFF"),
                                   context)))),
                 ),
@@ -764,7 +766,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                 child: CachedNetworkImage(
                   imageUrl: list[i]['filePath'] == null
                       ? list[i]['imageUrl']
-                      : Constants.imageUrlPath +
+                      : Constants.imageUrlPath! +
                           "/tr:dpr-auto,tr:w-500" +
                           list[i]['filePath'],
                   imageBuilder: (context, imageProvider) => Container(
@@ -773,7 +775,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       child: GFImageOverlay(
                           image: NetworkImage(list[i]['filePath'] == null
                               ? list[i]['imageUrl']
-                              : Constants.imageUrlPath +
+                              : Constants.imageUrlPath! +
                                   "/tr:dpr-auto,tr:w-500" +
                                   list[i]['filePath']),
                           boxFit: BoxFit.cover,
@@ -790,7 +792,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                   '${list[i]['title'][0].toUpperCase()}${list[i]['title'].substring(1)}',
                                   list[i]['dealPercent'].toString() +
                                       "% " +
-                                      MyLocalizations.of(context)
+                                      MyLocalizations.of(context)!
                                           .getLocalizations("OFF"),
                                   context)))),
                   errorWidget: (context, url, error) => Container(
@@ -809,7 +811,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                             '${list[i]['title'][0].toUpperCase()}${list[i]['title'].substring(1)}',
                             list[i]['dealPercent'].toString() +
                                 "% " +
-                                MyLocalizations.of(context)
+                                MyLocalizations.of(context)!
                                     .getLocalizations("OFF"),
                             context),
                       ),
@@ -824,33 +826,52 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
     );
   }
 
+  Future<void> _handleRefresh() async {
+    final Completer<void> completer = Completer<void>();
+    Timer(const Duration(seconds: 3), () {
+      completer.complete();
+    });
+    setState(() {
+      isLoadingAllData = true;
+      isBannerLoading = true;
+      isGetSubcribeLoading = true;
+      getBannerData();
+      getAllDataMethod();
+      getSubScriptionData();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKeydrawer,
-      body: SmartRefresher(
-        enablePullDown: true,
-        enablePullUp: false,
-        controller: _refreshController,
-        onRefresh: () {
-          setState(() {
-            isLoadingAllData = true;
-            isBannerLoading = true;
-            isGetSubcribeLoading = true;
-            getBannerData();
-            getAllDataMethod();
-            getSubScriptionData();
-          });
-        },
+      body: LiquidPullToRefresh(
+        key: _refreshIndicatorKey,
+        onRefresh: _handleRefresh,
+        showChildOpacityTransition: false,
+      // SmartRefresher(
+      //   enablePullDown: true,
+      //   enablePullUp: false,
+      //   controller: _refreshController,
+      //   onRefresh: () {
+      //     setState(() {
+      //       isLoadingAllData = true;
+      //       isBannerLoading = true;
+      //       isGetSubcribeLoading = true;
+      //       getBannerData();
+      //       getAllDataMethod();
+      //       getSubScriptionData();
+      //     });
+      //   },
         child: isLoadingAllData || isBannerLoading || isGetSubcribeLoading
             ? SquareLoader()
-            : (categoryList.length == 0 &&
-                    productsList.length == 0 &&
-                    dealList.length == 0 &&
-                    topDealList.length == 0 &&
-                    bannerList.length == 0 &&
-                    subscriptionProductsList.length == 0)
+            : (categoryList!.length == 0 &&
+                    productsList!.length == 0 &&
+                    dealList!.length == 0 &&
+                    topDealList!.length == 0 &&
+                    bannerList!.length == 0 &&
+                    subscriptionProductsList!.length == 0)
                 ? noDataImage()
                 : SingleChildScrollView(
                     physics: ScrollPhysics(),
@@ -858,17 +879,17 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Column(
                         children: <Widget>[
-                          bannerList.length > 0
+                          bannerList!.length > 0
                               ? Column(
                                   children: [banner(), Divider()],
                                 )
                               : Container(),
-                          categoryList.length > 0
+                          categoryList!.length > 0
                               ? Column(
                                   children: [categoryRow(), Divider()],
                                 )
                               : Container(),
-                          topDealList.length > 0
+                          topDealList!.length > 0
                               ? Column(
                                   children: [
                                     topDealsRow("TOP_DEALS", topDealList),
@@ -876,7 +897,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                   ],
                                 )
                               : Container(),
-                          productsList.length > 0
+                          productsList!.length > 0
                               ? Column(
                                   children: [
                                     productRow("PRODUCTS", productsList),
@@ -884,7 +905,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                   ],
                                 )
                               : Container(),
-                          subscriptionProductsList.length > 0
+                          subscriptionProductsList!.length > 0
                               ? Column(
                                   children: [
                                     subscriptionProductsRow(
@@ -894,7 +915,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                   ],
                                 )
                               : Container(),
-                          dealList.length > 0
+                          dealList!.length > 0
                               ? Column(
                                   children: [
                                     todayDealsRow(
