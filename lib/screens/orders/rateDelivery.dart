@@ -113,7 +113,7 @@ class _RateDeliveryState extends State<RateDelivery> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20.0),
-            child: RatingBar(
+            child: RatingBar.builder(
               initialRating: 3,
               minRating: 1,
               direction: Axis.horizontal,

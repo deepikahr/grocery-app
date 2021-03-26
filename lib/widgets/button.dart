@@ -1,6 +1,6 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:getflutter/getwidget.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';

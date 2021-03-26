@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:getflutter/getwidget.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import '../../service/auth-service.dart';

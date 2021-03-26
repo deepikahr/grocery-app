@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_map_picker/flutter_map_picker.dart';
-import 'package:getflutter/getwidget.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
@@ -361,16 +361,16 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
             child: regularTextblackbold(context, "DELIVERY_ADDRESS"),
           ),
           GFAccordion(
-            expandedTitlebackgroundColor:
+            expandedTitleBackgroundColor:
                 Theme.of(context).brightness == Brightness.dark
                     ? greyb2
                     : Color(0xFFF0F0F0),
-            collapsedTitlebackgroundColor:
+            collapsedTitleBackgroundColor:
                 Theme.of(context).brightness == Brightness.dark
                     ? greyc2
                     : Color(0xFFF0F0F0),
-            titleborder: Border.all(color: Color(0xffD6D6D6)),
-            contentbackgroundColor:
+            titleBorder: Border.all(color: Color(0xffD6D6D6)),
+            contentBackgroundColor:
                 Theme.of(context).brightness == Brightness.dark
                     ? greyc2
                     : Colors.white,

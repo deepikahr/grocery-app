@@ -11,7 +11,7 @@ class FavouriteService {
   //add to fav
   static Future<Map<String, dynamic>> addToFav(id) async {
     return client
-        .post(Constants.apiUrl + "/favourites/add/$id")
+        .post(Uri.parse(Constants.apiUrl + "/favourites/add/$id"))
         .then((response) {
       return json.decode(response.body);
     });
@@ -19,7 +19,7 @@ class FavouriteService {
 
   // get fav
   static Future<Map<String, dynamic>> getFavList() async {
-    return client.get(Constants.apiUrl + "/favourites/list").then((response) {
+    return client.get(Uri.parse(Constants.apiUrl + "/favourites/list")).then((response) {
       return json.decode(response.body);
     });
   }
@@ -27,7 +27,7 @@ class FavouriteService {
   //delete to fav
   static Future<Map<String, dynamic>> deleteToFav(id) async {
     return client
-        .delete(Constants.apiUrl + "/favourites/remove/$id")
+        .delete(Uri.parse(Constants.apiUrl + "/favourites/remove/$id"))
         .then((response) {
       return json.decode(response.body);
     });

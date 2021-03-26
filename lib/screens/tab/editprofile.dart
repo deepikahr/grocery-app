@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/authe/change-mobile-number.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
-import 'package:getflutter/getflutter.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';

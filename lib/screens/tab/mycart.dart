@@ -13,7 +13,7 @@ import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/screens/checkout/checkout.dart';
-import 'package:getflutter/getflutter.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';

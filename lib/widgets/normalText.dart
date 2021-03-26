@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:getflutter/getflutter.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:readymadeGroceryApp/screens/orders/orders.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';

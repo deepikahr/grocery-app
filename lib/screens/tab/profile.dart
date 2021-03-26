@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:getflutter/getflutter.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:readymadeGroceryApp/main.dart';
 import 'package:readymadeGroceryApp/screens/authe/changePassword.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:getflutter/components/accordian/gf_accordian.dart';
-import 'package:getflutter/getflutter.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:readymadeGroceryApp/screens/drawer/add-address.dart';
@@ -878,19 +877,19 @@ class _CheckoutState extends State<Checkout> {
                                         isUpdateShippingMethodLoading
                                     ? Container()
                                     : GFAccordion(
-                                        expandedTitlebackgroundColor:
+                                        expandedTitleBackgroundColor:
                                             Theme.of(context).brightness ==
                                                     Brightness.dark
                                                 ? greyb2
                                                 : Color(0xFFF0F0F0),
-                                        collapsedTitlebackgroundColor:
+                                        collapsedTitleBackgroundColor:
                                             Theme.of(context).brightness ==
                                                     Brightness.dark
                                                 ? greyc2
                                                 : Color(0xFFF0F0F0),
-                                        titleborder: Border.all(
+                                        titleBorder: Border.all(
                                             color: Color(0xffD6D6D6)),
-                                        contentbackgroundColor:
+                                        contentBackgroundColor:
                                             Theme.of(context).brightness ==
                                                     Brightness.dark
                                                 ? greyc2

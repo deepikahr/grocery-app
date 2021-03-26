@@ -155,7 +155,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                 new Radius.circular(32.0),
               ),
             ),
-            child: RatingBar(
+            child: RatingBar.builder(
               initialRating: rating,
               minRating: 1,
               direction: Axis.horizontal,

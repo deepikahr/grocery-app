@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:getflutter/getflutter.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:readymadeGroceryApp/model/addToCart.dart';
 import 'package:readymadeGroceryApp/model/bottomSheet.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
@@ -27,7 +27,7 @@ void main() {
 }
 
 void initializeMain({bool isTest}) async {
-  await DotEnv().load('.env');
+  await DotEnv.load();
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarBrightness: Brightness.dark,

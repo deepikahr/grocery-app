@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:getflutter/getwidget.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:readymadeGroceryApp/model/addToCart.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
@@ -508,7 +508,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                         child: Padding(
                                           padding: const EdgeInsets.only(
                                               top: 0.0, right: 5.0, left: 5.0),
-                                          child: RatingBar(
+                                          child: RatingBar.builder(
                                             initialRating: double.parse(
                                                     productDetail[
                                                             'averageRating']
