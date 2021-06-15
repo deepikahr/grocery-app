@@ -837,19 +837,19 @@ class _ProductDetailsState extends State<ProductDetails>
   getDiscountedValue({index = 0}) => productDetail['isDealAvailable'] &&
               productDetail['variant'][index]['isOfferAvailable'] ||
           productDetail['isDealAvailable']
-      ? "$currency${((variantPrice == null ? productDetail['variant'][index]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][index]['price'] : variantPrice) * (productDetail['dealPercent'] / 100))).toDouble().toStringAsFixed(2)}"
+      ? "$currency${(productDetail['variant'][index]['price'] - (productDetail['variant'][index]['price'] * (productDetail['dealPercent'] / 100))).toDouble().toStringAsFixed(2)}"
       : (productDetail['variant'][index]['isOfferAvailable'] ?? false) &&
               productDetail['variant'][index]['offerPercent'] != null
-          ? "$currency${((variantPrice == null ? productDetail['variant'][index]['price'] : variantPrice) - ((variantPrice == null ? productDetail['variant'][index]['price'] : variantPrice) * (productDetail['variant'][index]['offerPercent'] / 100))).toDouble().toStringAsFixed(2)}"
-          : '$currency${(variantPrice == null ? productDetail['variant'][index]['price'] : variantPrice).toDouble().toStringAsFixed(2)}';
+          ? "$currency${(productDetail['variant'][index]['price'] - (productDetail['variant'][index]['price'] * (productDetail['variant'][index]['offerPercent'] / 100))).toDouble().toStringAsFixed(2)}"
+          : '$currency${productDetail['variant'][index]['price'].toDouble().toStringAsFixed(2)}';
 
   getPercentageValue({index = 0}) => productDetail['isDealAvailable'] &&
               productDetail['variant'][index]['isOfferAvailable'] ||
           productDetail['isDealAvailable']
-      ? "$currency${(variantPrice == null ? productDetail['variant'][index]['price'] : variantPrice).toDouble().toStringAsFixed(2)}"
+      ? "$currency${productDetail['variant'][index]['price'].toDouble().toStringAsFixed(2)}"
       : (productDetail['variant'][index]['isOfferAvailable'] ?? false) &&
               productDetail['variant'][index]['offerPercent'] != null
-          ? "$currency${(variantPrice == null ? productDetail['variant'][index]['price'] : variantPrice).toDouble().toStringAsFixed(2)}"
+          ? "$currency${productDetail['variant'][index]['price'].toDouble().toStringAsFixed(2)}"
           : null;
 
   calculateTotal() => productDetail['isDealAvailable'] &&

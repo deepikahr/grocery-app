@@ -559,10 +559,11 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                               order["rating"] >
                                                                   0) {
                                                             setState(() {
-                                                              rating = double
-                                                                  .parse(order[
-                                                                          "rating"]
-                                                                      .toString());
+                                                              rating =
+                                                                  double.parse(
+                                                                order["rating"]
+                                                                    .toString(),
+                                                              );
                                                             });
                                                           } else {
                                                             setState(() {
