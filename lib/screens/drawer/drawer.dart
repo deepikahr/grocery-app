@@ -25,15 +25,15 @@ SentryError sentryError = new SentryError();
 
 class DrawerPage extends StatefulWidget {
   DrawerPage(
-      {Key key,
+      {Key? key,
       this.locale,
       this.localizedValues,
       this.addressData,
       this.scaffoldKey})
       : super(key: key);
 
-  final Map localizedValues;
-  final String locale, addressData;
+  final Map? localizedValues;
+  final String? locale, addressData;
   final scaffoldKey;
   @override
   _DrawerPageState createState() => _DrawerPageState();
@@ -47,14 +47,14 @@ class _DrawerPageState extends State<DrawerPage> {
   void initState() {
     getToken();
     Common.getTheme().then((isDark) {
-      isDark ? Color(0xFAAACF2D) : Color(0xFFFFCF2D);
+      isDark! ? Color(0xFAAACF2D) : Color(0xFFFFCF2D);
     });
     super.initState();
   }
 
   getToken() async {
     await Common.getCurrency().then((value) {
-      currency = value;
+      currency = value!;
     });
     await Common.getToken().then((onValue) {
       if (onValue != null) {
@@ -107,8 +107,8 @@ class _DrawerPageState extends State<DrawerPage> {
                 ),
                 _buildMenuTileList('lib/assets/icons/products.png', "PRODUCTS",
                     route: AllProducts(
-                      locale: widget.locale,
-                      localizedValues: widget.localizedValues,
+                      locale: widget.locale!,
+                      localizedValues: widget.localizedValues!,
                       pageTitle: "PRODUCTS",
                     )),
                 _buildMenuTileList(
@@ -122,8 +122,8 @@ class _DrawerPageState extends State<DrawerPage> {
                 ),
                 _buildMenuTileList('lib/assets/icons/deals.png', "TOP_DEALS",
                     route: AllDealsList(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
+                        locale: widget.locale!,
+                        localizedValues: widget.localizedValues!,
                         currency: currency,
                         token: getTokenValue,
                         title: "TOP_DEALS")),
@@ -194,8 +194,8 @@ class _DrawerPageState extends State<DrawerPage> {
                         'lib/assets/icons/subscription_list.png',
                         "SUBSCRIPTION",
                         route: SubScriptionList(
-                          locale: widget.locale,
-                          localizedValues: widget.localizedValues,
+                          locale: widget.locale!,
+                          localizedValues: widget.localizedValues!,
                         ),
                       )
                     : Container(),
@@ -209,9 +209,9 @@ class _DrawerPageState extends State<DrawerPage> {
                 // ),
                 InkWell(
                     onTap: () {
-                      final RenderBox box = context.findRenderObject();
+                      final RenderBox box = context.findRenderObject() as RenderBox;
                       Share.share(
-                          MyLocalizations.of(context)
+                          MyLocalizations.of(context)!
                                   .getLocalizations("SHARE_MESSAGE") +
                               " " +
                               Constants.baseUrl,
@@ -224,7 +224,7 @@ class _DrawerPageState extends State<DrawerPage> {
                     activeColor: primary(context),
                     inactiveTrackColor: greyb(context),
                     title: Text(
-                      MyLocalizations.of(context)
+                      MyLocalizations.of(context)!
                           .getLocalizations("DARK_THEME"),
                       style: textBarlowregwhitelg(context),
                     ),
@@ -236,7 +236,7 @@ class _DrawerPageState extends State<DrawerPage> {
                 SizedBox(height: 20.0),
                 getTokenValue
                     ? _buildMenuTileList1('lib/assets/icons/lg.png', "LOGOUT",
-                        route: null)
+                        route: Container())
                     : _buildMenuTileList1('lib/assets/icons/lg.png', "LOGIN",
                         route: Login(
                           locale: widget.locale,
@@ -256,11 +256,11 @@ class _DrawerPageState extends State<DrawerPage> {
       LoginService.updateUserInfo(body).then((value) async {
         Navigator.pop(context);
         showSnackbar(
-            MyLocalizations.of(context).getLocalizations("LOGOUT_SUCCESSFULL"));
+            MyLocalizations.of(context)!.getLocalizations("LOGOUT_SUCCESSFULL"));
         Future.delayed(Duration(milliseconds: 1500), () async {
-          await Common.setToken(null);
-          await Common.setUserID(null);
-          await Common.setCartData(null);
+          await Common.setToken('');
+          await Common.setUserID('');
+          await Common.setCartData({});
           await Common.setCartDataCount(0);
           Navigator.pushAndRemoveUntil(
               context,
@@ -280,7 +280,7 @@ class _DrawerPageState extends State<DrawerPage> {
     widget.scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
-  Widget _buildMenuTileList(icon, name, {Widget route}) {
+  Widget _buildMenuTileList(icon, name, {required Widget route}) {
     return InkWell(
         onTap: () {
           if (route != null) {
@@ -294,7 +294,7 @@ class _DrawerPageState extends State<DrawerPage> {
         child: buildDrawer(context, name, icon));
   }
 
-  Widget _buildMenuTileList1(icon, String name, {Widget route}) {
+  Widget _buildMenuTileList1(icon, String name, {required Widget route}) {
     return InkWell(
       onTap: () {
         if (route != null) {

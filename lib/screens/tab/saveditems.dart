@@ -16,18 +16,18 @@ import 'package:readymadeGroceryApp/widgets/product_gridcard.dart';
 SentryError sentryError = new SentryError();
 
 class SavedItems extends StatefulWidget {
-  final Map localizedValues;
-  final String locale;
+  final Map? localizedValues;
+  final String? locale;
 
-  SavedItems({Key key, this.locale, this.localizedValues}) : super(key: key);
+  SavedItems({Key? key, this.locale, this.localizedValues}) : super(key: key);
   @override
   _SavedItemsState createState() => _SavedItemsState();
 }
 
 class _SavedItemsState extends State<SavedItems> {
   bool isGetTokenLoading = false, isFavListLoading = false;
-  String token, currency;
-  List<dynamic> favProductList;
+  String? token, currency;
+  List<dynamic>? favProductList;
   var cartData;
   @override
   void initState() {
@@ -126,7 +126,7 @@ class _SavedItemsState extends State<SavedItems> {
           ? null
           : token == null
               ? null
-              : appBarTransparent(context, "FAVORITE"),
+              : appBarTransparent(context, "FAVORITE") as PreferredSizeWidget?,
       body: isGetTokenLoading
           ? SquareLoader()
           : token == null
@@ -137,15 +137,15 @@ class _SavedItemsState extends State<SavedItems> {
                 )
               : isFavListLoading
                   ? SquareLoader()
-                  : favProductList.length != 0
+                  : favProductList!.length != 0
                       ? GridView.builder(
                           padding: EdgeInsets.symmetric(
                               vertical: 16, horizontal: 16),
                           physics: ScrollPhysics(),
                           shrinkWrap: true,
-                          itemCount: favProductList.length == null
+                          itemCount: favProductList!.length == null
                               ? 0
-                              : favProductList.length,
+                              : favProductList!.length,
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2,
@@ -154,8 +154,8 @@ class _SavedItemsState extends State<SavedItems> {
                                   crossAxisSpacing: 16,
                                   mainAxisSpacing: 16),
                           itemBuilder: (BuildContext context, int i) {
-                            if (favProductList[i]['averageRating'] == null) {
-                              favProductList[i]['averageRating'] = 0;
+                            if (favProductList![i]['averageRating'] == null) {
+                              favProductList![i]['averageRating'] = 0;
                             }
 
                             return InkWell(
@@ -166,7 +166,7 @@ class _SavedItemsState extends State<SavedItems> {
                                       builder: (context) => ProductDetails(
                                         locale: widget.locale,
                                         localizedValues: widget.localizedValues,
-                                        productID: favProductList[i]['_id'],
+                                        productID: favProductList![i]['_id'],
                                       ),
                                     ),
                                   );
@@ -175,8 +175,8 @@ class _SavedItemsState extends State<SavedItems> {
                                   });
                                 },
                                 child: ProductGridCard(
-                                  currency: currency,
-                                  productData: favProductList[i],
+                                  currency: currency!,
+                                  productData: favProductList![i],
                                   isHome: false,
                                 ));
                           },

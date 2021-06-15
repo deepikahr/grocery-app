@@ -7,15 +7,15 @@ import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 
 class AlertService {
-  Timer checkConnectionTimer;
+  late Timer checkConnectionTimer;
   bool isFirstTime = false;
-  AppLifecycleState state;
+  late AppLifecycleState state;
   checkConnectionMethod() async {
     if (checkConnectionTimer != null && checkConnectionTimer.isActive)
       checkConnectionTimer.cancel();
     checkConnectionTimer = Timer.periodic(Duration(seconds: 5), (timer) async {
       var connectivityResult = await (Connectivity().checkConnectivity());
-      state = WidgetsBinding.instance.lifecycleState;
+      state = WidgetsBinding.instance!.lifecycleState!;
       if (state != AppLifecycleState.paused) {
         Common.getNoConnection().then((value) {
           String noInternet = (value == null || value['NO_INTERNET'] == null

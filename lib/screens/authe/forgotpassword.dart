@@ -12,24 +12,24 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 SentryError sentryError = new SentryError();
 
 class ForgotPassword extends StatefulWidget {
-  ForgotPassword({Key key, this.title, this.locale, this.localizedValues})
+  ForgotPassword({Key? key, this.title, this.locale, this.localizedValues})
       : super(key: key);
-  final String title, locale;
-  final Map localizedValues;
+  final String? title, locale;
+  final Map? localizedValues;
 
   @override
   _ForgotPasswordState createState() => _ForgotPasswordState();
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
-  String email, mobileNumber;
+  String? email, mobileNumber;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool isVerifyMobileLoading = false;
 
   verifyMobileNumber() async {
     final form = _formKey.currentState;
-    if (form.validate()) {
+    if (form!.validate()) {
       form.save();
       if (mounted) {
         setState(() {
@@ -59,7 +59,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               actions: <Widget>[
                 new FlatButton(
                   child: new Text(
-                    MyLocalizations.of(context).getLocalizations("SUBMIT"),
+                    MyLocalizations.of(context)!.getLocalizations("SUBMIT"),
                     style: textbarlowRegularaprimary(context),
                   ),
                   onPressed: () {
@@ -104,7 +104,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarPrimary(context, "FORGET_PASSWORD"),
+      appBar: appBarPrimary(context, "FORGET_PASSWORD")  as PreferredSizeWidget?,
       body: Form(
         key: _formKey,
         child: Container(
@@ -129,12 +129,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     top: 5.0, bottom: 10.0, left: 20.0, right: 20.0),
                 child: Container(
                   child: TextFormField(
-                    onSaved: (String value) {
+                    onSaved: (String? value) {
                       mobileNumber = value;
                     },
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return MyLocalizations.of(context)
+                    validator: (String? value) {
+                      if (value!.isEmpty) {
+                        return MyLocalizations.of(context)!
                             .getLocalizations("ENTER_YOUR_MOBILE_NUMBER");
                       } else
                         return null;
@@ -176,6 +176,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       content: Text(message),
       duration: Duration(milliseconds: 3000),
     );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
+    _scaffoldKey.currentState!.showSnackBar(snackBar);
   }
 }

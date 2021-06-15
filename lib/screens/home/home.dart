@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:geocoder/geocoder.dart';
+import 'package:geocode/geocode.dart';
+// import 'package:geocoder/geocoder.dart';
 import 'package:readymadeGroceryApp/model/counterModel.dart';
 import 'package:readymadeGroceryApp/screens/drawer/drawer.dart';
 import 'package:readymadeGroceryApp/screens/tab/mycart.dart';
@@ -22,13 +23,13 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 SentryError sentryError = new SentryError();
 
 class Home extends StatefulWidget {
-  final int currentIndex;
-  final Map localizedValues;
-  final String locale;
-  final bool isTest;
+  final int? currentIndex;
+  final Map? localizedValues;
+  final String? locale;
+  final bool? isTest;
 
   Home(
-      {Key key,
+      {Key? key,
       this.currentIndex,
       this.locale,
       this.localizedValues,
@@ -42,14 +43,15 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  TabController tabController;
+  TabController? tabController;
   bool currencyLoading = false,
       isCurrentLoactionLoading = false,
       getTokenValue = false;
-  int currentIndex = 0, cartData;
-  LocationData currentLocation;
+  int? currentIndex = 0, cartData;
+  LocationData? currentLocation;
   Location _location = new Location();
   String currency = "";
+  GeoCode geoCode = GeoCode();
 
   var addressData;
 
@@ -62,7 +64,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       }
     }
     getToken();
-    if (widget.isTest == null || !widget.isTest) {
+    if (widget.isTest == null || !widget.isTest!) {
       getResult();
     }
     getGlobalSettingsData();
@@ -85,7 +87,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       if (onValue['response_data']['currencySymbol'] == null) {
         await Common.setCurrency('\$');
         await Common.getCurrency().then((value) {
-          currency = value;
+          currency = value!;
         });
       } else {
         currency = onValue['response_data']['currencySymbol'];
@@ -129,7 +131,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    if (tabController != null) tabController.dispose();
+    if (tabController != null) tabController!.dispose();
     super.dispose();
   }
 
@@ -148,18 +150,23 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         }
       }
       currentLocation = await _location.getLocation();
-      final coordinates =
-          new Coordinates(currentLocation.latitude, currentLocation.longitude);
-      var addresses =
-          await Geocoder.local.findAddressesFromCoordinates(coordinates);
-      var first = addresses.first;
+      var addresses = await geoCode.reverseGeocoding(
+          latitude: currentLocation!.latitude!,
+          longitude: currentLocation!.longitude!
+      );
+      // final coordinates =
+      //     new Coordinates(currentLocation.latitude, currentLocation.longitude);
+      // var addresses =
+      //     await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      var first = addresses;
+
       if (mounted) {
         setState(() {
-          addressData = first.addressLine;
+          addressData = first.streetAddress;
           isCurrentLoactionLoading = false;
         });
       }
-      await Common.setCountryInfo(first.countryCode);
+      await Common.setCountryInfo(first.countryCode!);
       await Common.setCurrentLocation(addressData);
       return first;
     });
@@ -190,7 +197,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     }
     List<BottomNavigationBarItem> items = [
       BottomNavigationBarItem(
-          label: MyLocalizations.of(context).getLocalizations("STORE"),
+          label: MyLocalizations.of(context)!.getLocalizations("STORE"),
           icon: buildIcon(
               context,
               const IconData(
@@ -199,7 +206,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               ),
               0)),
       BottomNavigationBarItem(
-          label: MyLocalizations.of(context).getLocalizations("FAVORITE"),
+          label: MyLocalizations.of(context)!.getLocalizations("FAVORITE"),
           icon: buildIcon(
               context,
               const IconData(
@@ -208,7 +215,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               ),
               0)),
       BottomNavigationBarItem(
-          label: MyLocalizations.of(context).getLocalizations("MY_CART"),
+          label: MyLocalizations.of(context)!.getLocalizations("MY_CART"),
           icon: buildIcon(
               context,
               const IconData(
@@ -217,7 +224,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               ),
               cartData)),
       BottomNavigationBarItem(
-          label: MyLocalizations.of(context).getLocalizations("PROFILE"),
+          label: MyLocalizations.of(context)!.getLocalizations("PROFILE"),
           icon: buildIcon(
               context,
               const IconData(
@@ -228,11 +235,11 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     ];
 
     List<Widget> _screens = [
-      Store(locale: widget.locale, localizedValues: widget.localizedValues),
+      Store(locale: widget.locale!, localizedValues: widget.localizedValues!),
       SavedItems(
-          locale: widget.locale, localizedValues: widget.localizedValues),
-      MyCart(locale: widget.locale, localizedValues: widget.localizedValues),
-      Profile(locale: widget.locale, localizedValues: widget.localizedValues),
+          locale: widget.locale!, localizedValues: widget.localizedValues!),
+      MyCart(locale: widget.locale!, localizedValues: widget.localizedValues!),
+      Profile(locale: widget.locale!, localizedValues: widget.localizedValues!),
     ];
 
     return Scaffold(
@@ -241,31 +248,32 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       // backgroundColor: Colors.white,
       appBar: currentIndex == 0
           ? appBarWhite(
+        context,
+        deliveryAddress(),
+        true,
+        true,
+        InkWell(
+          onTap: () {
+            Navigator.push(
               context,
-              deliveryAddress(),
-              true,
-              true,
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SearchItem(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
-                        currency: currency,
-                        token: getTokenValue,
-                      ),
-                    ),
-                  );
-                },
-                child: Padding(
-                  padding: EdgeInsets.only(right: 15, left: 15),
-                  child: Icon(Icons.search),
+              MaterialPageRoute(
+                builder: (context) => SearchItem(
+                  locale: widget.locale!,
+                  localizedValues: widget.localizedValues!,
+                  currency: currency,
+                  token: getTokenValue,
                 ),
               ),
-            )
+            );
+          },
+          child: Padding(
+            padding: EdgeInsets.only(right: 15, left: 15),
+            child: Icon(Icons.search),
+          ),
+        ),
+      ) as PreferredSizeWidget?
           : null,
+
       drawer: Drawer(
         child: DrawerPage(
             locale: widget.locale,
@@ -273,10 +281,10 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
             addressData: addressData ?? "",
             scaffoldKey: _scaffoldKey),
       ),
-      body: currencyLoading ? SquareLoader() : _screens[currentIndex],
+      body: currencyLoading ? SquareLoader() : _screens[currentIndex!],
       bottomNavigationBar: BottomNavigationBar(
         elevation: 1,
-        currentIndex: currentIndex,
+        currentIndex: currentIndex!,
         type: BottomNavigationBarType.fixed,
         onTap: _onTapped,
         items: items,

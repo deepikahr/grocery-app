@@ -15,10 +15,10 @@ import 'package:socket_io_client/socket_io_client.dart' as io;
 SentryError sentryError = new SentryError();
 
 class Chat extends StatefulWidget {
-  final Map localizedValues, userDetail, chatDetails;
-  final String locale;
+  final Map? localizedValues, userDetail, chatDetails;
+  final String? locale;
   Chat(
-      {Key key,
+      {Key? key,
       this.locale,
       this.localizedValues,
       this.userDetail,
@@ -29,13 +29,13 @@ class Chat extends StatefulWidget {
 }
 
 class _ChatState extends State<Chat> with TickerProviderStateMixin {
-  List chatList = List();
+  List chatList = List.empty(growable: true);
   ScrollController _scrollController = new ScrollController();
   final TextEditingController _textController = new TextEditingController();
   bool _isWriting = false, isChatLoading = false, getUserDataLoading = false;
 
   var userData, pageNumber = 0, chatDataLimit = 100;
-  Timer chatTimer;
+  Timer? chatTimer;
   var socket = io.io(Constants.apiUrl, <String, dynamic>{
     'transports': ['websocket']
   });
@@ -136,7 +136,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) => new Scaffold(
       backgroundColor: bg(context),
-      appBar: appBarPrimary(context, "CHAT"),
+      appBar: appBarPrimary(context, "CHAT") as PreferredSizeWidget?,
       body: isChatLoading || getUserDataLoading
           ? SquareLoader()
           : Stack(
@@ -188,7 +188,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                                     },
                                     onSubmitted: _submitMsg,
                                     decoration: new InputDecoration.collapsed(
-                                        hintText: MyLocalizations.of(context)
+                                        hintText: MyLocalizations.of(context)!
                                             .getLocalizations(
                                                 "ENTER_TEXT_HERE")),
                                   ),

@@ -14,9 +14,9 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 SentryError sentryError = new SentryError();
 
 class WalletHistoryyPage extends StatefulWidget {
-  final Map localizedValues;
-  final String locale;
-  WalletHistoryyPage({Key key, this.locale, this.localizedValues});
+  final Map? localizedValues;
+  final String? locale;
+  WalletHistoryyPage({Key? key, this.locale, this.localizedValues});
   @override
   _WalletHistoryyPageState createState() => _WalletHistoryyPageState();
 }
@@ -49,7 +49,7 @@ class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
     walletsPageNumber = walletHistoryList.length;
     totalWallet = 1;
     await Common.getCurrency().then((value) {
-      currency = value;
+      currency = value!;
     });
     getwalletHistoryList();
   }
@@ -92,7 +92,7 @@ class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bg(context),
-      appBar: appBarPrimary(context, "RECENT_TRANSACTIONS"),
+      appBar: appBarPrimary(context, "RECENT_TRANSACTIONS") as PreferredSizeWidget?,
       body: Column(
         children: <Widget>[
           Flexible(
@@ -184,11 +184,11 @@ class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
               Row(
                 children: [
                   Text(
-                      MyLocalizations.of(context)
+                      MyLocalizations.of(context)!
                           .getLocalizations('WALLET', true),
                       style: textBarlowRegularBlackdl(context)),
                   Text(
-                      MyLocalizations.of(context)
+                      MyLocalizations.of(context)!
                           .getLocalizations((walletDetails['isCredited']
                               ? "CREDIT"
                               : !walletDetails['isCredited']

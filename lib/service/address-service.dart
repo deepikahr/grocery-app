@@ -11,7 +11,7 @@ class AddressService {
   // add address
   static Future<Map<String, dynamic>> addAddress(body) async {
     return client
-        .post(Constants.apiUrl + "/address/create", body: json.encode(body))
+        .post(Uri.parse(Constants.apiUrl + "/address/create"), body: json.encode(body))
         .then((response) {
       return json.decode(response.body);
     });
@@ -19,7 +19,7 @@ class AddressService {
 
   // get address
   static Future<Map<String, dynamic>> getAddress() async {
-    return client.get(Constants.apiUrl + "/address/list").then((response) {
+    return client.get(Uri.parse(Constants.apiUrl + "/address/list")).then((response) {
       return json.decode(response.body);
     });
   }
@@ -27,7 +27,7 @@ class AddressService {
   //getDeliverySlots
   static Future<Map<String, dynamic>> deliverySlot() async {
     return client
-        .get(Constants.apiUrl + "/settings/delivery-time-slots")
+        .get(Uri.parse(Constants.apiUrl + "/settings/delivery-time-slots"))
         .then((response) {
       return json.decode(response.body);
     });
@@ -36,7 +36,7 @@ class AddressService {
   // update address
   static Future<Map<String, dynamic>> updateAddress(body, addressId) async {
     return client
-        .put(Constants.apiUrl + "/address/update/$addressId",
+        .put(Uri.parse(Constants.apiUrl + "/address/update/$addressId"),
             body: json.encode(body))
         .then((response) {
       return json.decode(response.body);
@@ -46,7 +46,7 @@ class AddressService {
   // delete address
   static Future<Map<String, dynamic>> deleteAddress(addressId) async {
     return client
-        .delete(Constants.apiUrl + "/address/delete/$addressId")
+        .delete(Uri.parse(Constants.apiUrl + "/address/delete/$addressId"))
         .then((response) {
       return json.decode(response.body);
     });

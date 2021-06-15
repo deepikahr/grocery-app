@@ -13,11 +13,11 @@ import '../../widgets/loader.dart';
 SentryError sentryError = new SentryError();
 
 class AllSubscriptionProductsListPage extends StatefulWidget {
-  final Map localizedValues;
-  final String locale;
+  final Map? localizedValues;
+  final String? locale;
 
   AllSubscriptionProductsListPage({
-    Key key,
+    Key? key,
     this.locale,
     this.localizedValues,
   });
@@ -35,7 +35,7 @@ class _AllSubscriptionProductsListPageState
   List productsList = [];
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  String currency;
+  String? currency;
   ScrollController _scrollController = ScrollController();
   @override
   void initState() {
@@ -113,7 +113,7 @@ class _AllSubscriptionProductsListPageState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bg(context),
-      appBar: appBarPrimarynoradius(context, "SUBSCRIPTION_PRODUCTS"),
+      appBar: appBarPrimarynoradius(context, "SUBSCRIPTION_PRODUCTS") as PreferredSizeWidget?,
       body: Column(
         children: [
           SizedBox(height: 10),
@@ -174,7 +174,7 @@ class _AllSubscriptionProductsListPageState
                         ),
                         itemBuilder: (BuildContext context, int i) {
                           return SubscriptionCard(
-                            currency: currency,
+                            currency: currency!,
                             productData: productsList[i],
                           );
                         },

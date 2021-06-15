@@ -9,11 +9,11 @@ import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class PaymentWeViewPage extends StatefulWidget {
-  final String sessionId, locale, orderId;
-  final Map localizedValues;
+  final String? sessionId, locale, orderId;
+  final Map? localizedValues;
 
   const PaymentWeViewPage(
-      {Key key,
+      {Key? key,
       this.sessionId,
       this.locale,
       this.localizedValues,
@@ -25,32 +25,33 @@ class PaymentWeViewPage extends StatefulWidget {
 }
 
 class _PaymentWeViewPageState extends State<PaymentWeViewPage> {
-  WebViewController _controller;
+  WebViewController? _controller;
 
   Future<bool> _onWillPop() {
     return showDialog(
-          context: context,
-          builder: (context) => new AlertDialog(
-            title: new Text(
-                MyLocalizations.of(context).getLocalizations("ARE_YOU_SURE")),
-            content: new Text(MyLocalizations.of(context)
-                .getLocalizations("DO_YOU_WANT_TO_DISMISS_PAYMENT_PROCESS")),
-            actions: <Widget>[
-              new FlatButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: new Text(
-                    MyLocalizations.of(context).getLocalizations("NO")),
-              ),
-              new FlatButton(
-                onPressed: orderCancel,
-                child: new Text(
-                    MyLocalizations.of(context).getLocalizations("YES")),
-              ),
-            ],
+      context: context,
+      builder: (context) => new AlertDialog(
+        title: new Text(
+            MyLocalizations.of(context)!.getLocalizations("ARE_YOU_SURE")),
+        content: new Text(MyLocalizations.of(context)!
+            .getLocalizations("DO_YOU_WANT_TO_DISMISS_PAYMENT_PROCESS")),
+        actions: <Widget>[
+          new FlatButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: new Text(
+                MyLocalizations.of(context)!.getLocalizations("NO")),
           ),
-        ) ??
-        false;
+          new FlatButton(
+            onPressed: orderCancel,
+            child: new Text(
+                MyLocalizations.of(context)!.getLocalizations("YES")),
+          ),
+        ],
+      ),
+    ) as Future<bool>? ??
+        false as Future<bool>;
   }
+
 
   orderCancel() async {
     await OrderService.orderCancel(widget.orderId).then((onValue) {
@@ -59,7 +60,7 @@ class _PaymentWeViewPageState extends State<PaymentWeViewPage> {
           context,
           MaterialPageRoute(
             builder: (BuildContext context) => PaymentFailed(
-                locale: widget.locale, localizedValues: widget.localizedValues),
+                locale: widget.locale!, localizedValues: widget.localizedValues!),
           ),
           (Route<dynamic> route) => false);
     });
@@ -71,7 +72,7 @@ class _PaymentWeViewPageState extends State<PaymentWeViewPage> {
       onWillPop: _onWillPop,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: appBarTransparentWithoutBack(context, "PAYMENT"),
+        appBar: appBarTransparentWithoutBack(context, "PAYMENT") as PreferredSizeWidget?,
         body: WebView(
             initialUrl: initialUrl,
             javascriptMode: JavascriptMode.unrestricted,
@@ -82,8 +83,8 @@ class _PaymentWeViewPageState extends State<PaymentWeViewPage> {
                     context,
                     MaterialPageRoute(
                       builder: (BuildContext context) => Thankyou(
-                          locale: widget.locale,
-                          localizedValues: widget.localizedValues),
+                          locale: widget.locale!,
+                          localizedValues: widget.localizedValues!),
                     ),
                     (Route<dynamic> route) => false);
               } else if (request.url.startsWith('${Constants.baseUrl}/home')) {
@@ -112,7 +113,7 @@ stripe.redirectToCheckout({
   result.error.message = 'Error'
 });
 ''';
-    _controller.evaluateJavascript(
+    _controller!.evaluateJavascript(
         redirectToCheckoutJs); //<--- call the JS function on controller
   }
 }

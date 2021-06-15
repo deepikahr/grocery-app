@@ -11,8 +11,8 @@ class ChatService {
   static Future<Map<String, dynamic>> chatDataMethod(
       pageNumber, chatDataLimit) async {
     return client
-        .get(Constants.apiUrl +
-            "/chats/list?page=$pageNumber&limit=$chatDataLimit")
+        .get(Uri.parse(Constants.apiUrl +
+            "/chats/list?page=$pageNumber&limit=$chatDataLimit"))
         .then((response) {
       return json.decode(response.body);
     });

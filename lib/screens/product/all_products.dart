@@ -20,11 +20,11 @@ import '../../widgets/loader.dart';
 SentryError sentryError = new SentryError();
 
 class AllProducts extends StatefulWidget {
-  final Map localizedValues;
-  final String locale, dealId, categoryId, pageTitle;
+  final Map? localizedValues;
+  final String? locale, dealId, categoryId, pageTitle;
 
   AllProducts({
-    Key key,
+    Key? key,
     this.locale,
     this.localizedValues,
     this.dealId,
@@ -49,7 +49,7 @@ class _AllProductsState extends State<AllProducts> {
   List productsList = [], subCategoryList = [];
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  String currency;
+  String? currency;
   ScrollController _scrollController = ScrollController();
 
   var cartData;
@@ -308,9 +308,9 @@ class _AllProductsState extends State<AllProducts> {
               context,
               MaterialPageRoute(
                 builder: (context) => SearchItem(
-                  locale: widget.locale,
-                  localizedValues: widget.localizedValues,
-                  currency: currency,
+                  locale: widget.locale!,
+                  localizedValues: widget.localizedValues!,
+                  currency: currency!,
                   token: isUserLoaggedIn,
                 ),
               ),
@@ -326,7 +326,7 @@ class _AllProductsState extends State<AllProducts> {
             ),
           ),
         ),
-      ),
+      ) as PreferredSizeWidget?,
       body: isSubCategoryLoading
           ? Center(child: SquareLoader())
           : Column(
@@ -353,7 +353,7 @@ class _AllProductsState extends State<AllProducts> {
                                     child: subCatTab(
                                       context,
                                       i == 0
-                                          ? MyLocalizations.of(context)
+                                          ? MyLocalizations.of(context)!
                                               .getLocalizations('ALL')
                                           : subCategoryList[i - 1]['title'],
                                       selectedSubCategoryIndex == i
@@ -397,9 +397,9 @@ class _AllProductsState extends State<AllProducts> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => ProductDetails(
-                                          locale: widget.locale,
+                                          locale: widget.locale!,
                                           localizedValues:
-                                              widget.localizedValues,
+                                              widget.localizedValues!,
                                           productID: productsList[i]['_id'],
                                         ),
                                       ),
@@ -409,7 +409,7 @@ class _AllProductsState extends State<AllProducts> {
                                     });
                                   },
                                   child: ProductGridCard(
-                                    currency: currency,
+                                    currency: currency!,
                                     productData: productsList[i],
                                     isHome: false,
                                   ),

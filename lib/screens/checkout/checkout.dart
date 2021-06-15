@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:getflutter/components/accordian/gf_accordian.dart';
-import 'package:getflutter/getflutter.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:location/location.dart';
 import 'package:readymadeGroceryApp/screens/drawer/add-address.dart';
 import 'package:readymadeGroceryApp/screens/drawer/edit-address.dart';
@@ -20,15 +20,14 @@ import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import '../../service/constants.dart';
-import 'package:flutter_map_picker/flutter_map_picker.dart';
 
 SentryError sentryError = new SentryError();
 
 class Checkout extends StatefulWidget {
   final locale, id;
-  final Map localizedValues;
+  final Map? localizedValues;
 
-  Checkout({Key key, this.id, this.locale, this.localizedValues})
+  Checkout({Key? key, this.id, this.locale, this.localizedValues})
       : super(key: key);
   @override
   _CheckoutState createState() => _CheckoutState();
@@ -40,14 +39,14 @@ class _CheckoutState extends State<Checkout> {
   // Declare this variable
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  Map userInfo, address, cartItem, locationInfo;
+  Map? userInfo, address, cartItem, locationInfo;
 
-  List addressList, deliverySlotList, shippingMethodsList;
-  int selecteAddressValue,
+  List? addressList, deliverySlotList, shippingMethodsList;
+  int? selecteAddressValue,
       dateSelectedValue = 0,
       selectSlot,
       shippingMethodValue = 0;
-  String selectedDeliveryType,
+  String? selectedDeliveryType,
       locationNotFound,
       currency,
       couponCode,
@@ -65,12 +64,14 @@ class _CheckoutState extends State<Checkout> {
       isDeliveryChargeFree = false,
       isGetShippingLoading = false,
       isUpdateShippingMethodLoading = false;
-  LocationData currentLocation;
+  LocationData? currentLocation;
   Location _location = new Location();
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   TextEditingController instructionController = TextEditingController();
-  PermissionStatus _permissionGranted;
+  PermissionStatus? _permissionGranted;
+  PickResult? pickerResult;
+
   @override
   void initState() {
     Common.getCurrency().then((value) {
@@ -87,8 +88,8 @@ class _CheckoutState extends State<Checkout> {
       if (mounted) {
         setState(() {
           locationInfo = onValue['response_data'];
-          shippingMethodsList = locationInfo['shippingMethod'] ?? [];
-          storeAddress = locationInfo['storeAddress']['address'] ?? "";
+          shippingMethodsList = locationInfo!['shippingMethod'] ?? [];
+          storeAddress = locationInfo!['storeAddress']['address'] ?? "";
         });
       }
     }).catchError((error) {
@@ -116,9 +117,9 @@ class _CheckoutState extends State<Checkout> {
           mounted) {
         setState(() {
           cartItem = onValue['response_data'];
-          if (cartItem['shipping_method'] == "DELIVERY") {
-            for (int i = 0; i < shippingMethodsList.length; i++) {
-              if (shippingMethodsList[i] == cartItem['shipping_method']) {
+          if (cartItem!['shipping_method'] == "DELIVERY") {
+            for (int i = 0; i < shippingMethodsList!.length; i++) {
+              if (shippingMethodsList![i] == cartItem!['shipping_method']) {
                 setState(() {
                   shippingMethodValue = i;
                 });
@@ -133,7 +134,7 @@ class _CheckoutState extends State<Checkout> {
         if (mounted) {
           setState(() {
             cartItem = null;
-            Common.setCartData(null);
+            Common.setCartData({});
             isLoadingCart = false;
           });
         }
@@ -152,20 +153,20 @@ class _CheckoutState extends State<Checkout> {
     if (mounted) {
       setState(() {
         selecteAddressValue = value;
-        selectedAddress = addressList[value];
+        selectedAddress = addressList![value];
         isDeliveryChargeLoading = true;
       });
       var body = {"deliveryAddress": selectedAddress['_id'].toString()};
       await CartService.getDeliveryChargesAndSaveAddress(body).then((value) {
         if (mounted) {
           setState(() {
-            cartItem['deliveryCharges'] =
+            cartItem!['deliveryCharges'] =
                 value['response_data']['deliveryCharges'];
-            cartItem['grandTotal'] = value['response_data']['grandTotal'];
-            cartItem['deliveryAddress'] =
+            cartItem!['grandTotal'] = value['response_data']['grandTotal'];
+            cartItem!['deliveryAddress'] =
                 value['response_data']['deliveryAddress'];
-            if (cartItem['deliveryCharges'] == 0 &&
-                cartItem['deliveryAddress'] != null) {
+            if (cartItem!['deliveryCharges'] == 0 &&
+                cartItem!['deliveryAddress'] != null) {
               setState(() {
                 isDeliveryChargeFree = true;
               });
@@ -198,14 +199,14 @@ class _CheckoutState extends State<Checkout> {
         shippingMethodValue = value;
         isUpdateShippingMethodLoading = true;
       });
-      var body = {"shippingMethod": shippingMethodsList[value]};
+      var body = {"shippingMethod": shippingMethodsList![value]};
       await CartService.getShippingMethodAndSave(body).then((value) {
         if (mounted) {
           setState(() {
             cartItem = value['response_data'];
             isUpdateShippingMethodLoading = false;
-            if (shippingMethodsList[shippingMethodValue] == "DELIVERY") {
-              if (addressList.length > 0) {
+            if (shippingMethodsList![shippingMethodValue!] == "DELIVERY") {
+              if (addressList!.length > 0) {
                 addressRadioValueChanged(0);
               }
             } else {
@@ -286,15 +287,15 @@ class _CheckoutState extends State<Checkout> {
       if (mounted) {
         setState(() {
           addressList = onValue['response_data'];
-          if (shippingMethodsList.length > 0 &&
-              cartItem['shippingMethod'] != null) {
-            for (int i = 0; i < shippingMethodsList.length; i++) {
-              if (shippingMethodsList[i] == cartItem['shippingMethod']) {
+          if (shippingMethodsList!.length > 0 &&
+              cartItem!['shippingMethod'] != null) {
+            for (int i = 0; i < shippingMethodsList!.length; i++) {
+              if (shippingMethodsList![i] == cartItem!['shippingMethod']) {
                 shippingMethodRadioValueChanged(i);
               }
             }
-          } else if (shippingMethodsList.length > 0 &&
-              cartItem['shippingMethod'] == null) {
+          } else if (shippingMethodsList!.length > 0 &&
+              cartItem!['shippingMethod'] == null) {
             shippingMethodRadioValueChanged(0);
           }
         });
@@ -325,31 +326,31 @@ class _CheckoutState extends State<Checkout> {
 
   placeOrder() async {
     if (shippingMethodValue == null) {
-      showSnackbar(MyLocalizations.of(context)
+      showSnackbar(MyLocalizations.of(context)!
           .getLocalizations("SELECT_SHIPPING_METHOD"));
     } else if (selecteAddressValue == null &&
-        shippingMethodsList[shippingMethodValue] != "PICK_UP") {
+        shippingMethodsList![shippingMethodValue!] != "PICK_UP") {
       showSnackbar(
-          MyLocalizations.of(context).getLocalizations("SELECT_ADDESS_MSG"));
+          MyLocalizations.of(context)!.getLocalizations("SELECT_ADDESS_MSG"));
     } else if (selectSlot == null) {
       showSnackbar(
-          MyLocalizations.of(context).getLocalizations("SELECT_TIME_MSG"));
+          MyLocalizations.of(context)!.getLocalizations("SELECT_TIME_MSG"));
     } else {
       Map<String, dynamic> data = {
-        "deliverySlotId": deliverySlotList[dateSelectedValue]['timings']
+        "deliverySlotId": deliverySlotList![dateSelectedValue!]['timings']
             [selectSlot]['_id'],
         "orderFrom": Constants.orderFrom,
-        "shippingMethod": shippingMethodsList[shippingMethodValue],
+        "shippingMethod": shippingMethodsList![shippingMethodValue!],
       };
       var result = Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => Payment(
-              locale: widget.locale,
-              localizedValues: widget.localizedValues,
+              locale: widget.locale!,
+              localizedValues: widget.localizedValues!,
               data: data,
-              cartItems: cartItem,
-              locationInfo: locationInfo,
+              cartItems: cartItem!,
+              locationInfo: locationInfo!,
               instruction: instructionController.text),
         ),
       );
@@ -360,10 +361,10 @@ class _CheckoutState extends State<Checkout> {
   }
 
   couponCodeApply() async {
-    if (!_formKey.currentState.validate()) {
+    if (!_formKey.currentState!.validate()) {
       return;
     } else {
-      _formKey.currentState.save();
+      _formKey.currentState!.save();
       if (mounted) {
         setState(() {
           isCouponLoading = true;
@@ -457,7 +458,7 @@ class _CheckoutState extends State<Checkout> {
                                 height: 30.0,
                                 decoration: BoxDecoration(),
                                 child: Text(
-                                  MyLocalizations.of(context)
+                                  MyLocalizations.of(context)!
                                       .getLocalizations("OK"),
                                   style: hintSfLightbig(context),
                                 ),
@@ -478,23 +479,38 @@ class _CheckoutState extends State<Checkout> {
   }
 
   addAddressPageMethod(locationlatlong) async {
-    PlacePickerResult pickerResult = await Navigator.push(
+    await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => PlacePickerScreen(
-                  googlePlacesApiKey: Constants.googleMapApiKey,
+            builder: (context) =>
+                PlacePicker(
+                  apiKey: Constants.googleMapApiKey,
                   initialPosition: LatLng(locationlatlong['latitude'],
                       locationlatlong['longitude']),
-                  mainColor: primary(context),
-                  mapStrings: MapPickerStrings.english(
-                      selectAddress: MyLocalizations.of(context)
-                          .getLocalizations("SELECT_ADDRESS"),
-                      cancel: MyLocalizations.of(context)
-                          .getLocalizations("CANCEL"),
-                      address: MyLocalizations.of(context)
-                          .getLocalizations("ADDRESS")),
-                  placeAutoCompleteLanguage: 'en',
-                )));
+                  useCurrentLocation: true,
+                  selectInitialPosition: true,
+                  //usePlaceDetailSearch: true,
+                  onPlacePicked: (result) {
+                    pickerResult = result;
+                    Navigator.of(context).pop();
+                    setState(() {});
+                  },
+                ),
+                // PlacePickerScreen(
+                //   googlePlacesApiKey: Constants.googleMapApiKey,
+                //   initialPosition: LatLng(locationlatlong['latitude'],
+                //       locationlatlong['longitude']),
+                //   mainColor: primary(context),
+                //   mapStrings: MapPickerStrings.english(
+                //       selectAddress: MyLocalizations.of(context)!
+                //           .getLocalizations("SELECT_ADDRESS"),
+                //       cancel: MyLocalizations.of(context)!
+                //           .getLocalizations("CANCEL"),
+                //       address: MyLocalizations.of(context)!
+                //           .getLocalizations("ADDRESS")),
+                //   placeAutoCompleteLanguage: 'en',
+                // )
+        ));
     if (pickerResult != null) {
       setState(() {
         var result = Navigator.push(
@@ -502,9 +518,9 @@ class _CheckoutState extends State<Checkout> {
           new MaterialPageRoute(
             builder: (BuildContext context) => new AddAddress(
               isProfile: true,
-              pickedLocation: pickerResult,
+              pickedLocation: pickerResult!,
               locale: widget.locale,
-              localizedValues: widget.localizedValues,
+              localizedValues: widget.localizedValues!,
             ),
           ),
         );
@@ -523,8 +539,8 @@ class _CheckoutState extends State<Checkout> {
           controller: instructionController,
           maxLength: 100,
           maxLines: 5,
-          onSaved: (String value) {
-            instructionController.text = value;
+          onSaved: (String? value) {
+            instructionController.text = value!;
           },
           style: textBarlowRegularBlack(context),
           keyboardType: TextInputType.text,
@@ -551,7 +567,7 @@ class _CheckoutState extends State<Checkout> {
     return Scaffold(
       // backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarTransparent(context, "CHECKOUT"),
+      appBar: appBarTransparent(context, "CHECKOUT") as PreferredSizeWidget?,
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
@@ -586,41 +602,41 @@ class _CheckoutState extends State<Checkout> {
                                   buildPrice(
                                       context,
                                       null,
-                                      MyLocalizations.of(context)
+                                      MyLocalizations.of(context)!
                                               .getLocalizations("SUB_TOTAL") +
-                                          ' ( ${cartItem['products'].length} ' +
-                                          MyLocalizations.of(context)
+                                          ' ( ${cartItem!['products'].length} ' +
+                                          MyLocalizations.of(context)!
                                               .getLocalizations("ITEMS") +
                                           ')',
-                                      '$currency${cartItem['subTotal'].toDouble().toStringAsFixed(2)}',
+                                      '$currency${cartItem!['subTotal'].toDouble().toStringAsFixed(2)}',
                                       false),
-                                  cartItem['tax'] == 0
+                                  cartItem!['tax'] == 0
                                       ? Container()
                                       : SizedBox(height: 10),
-                                  cartItem['tax'] == 0
+                                  cartItem!['tax'] == 0
                                       ? Container()
                                       : buildPrice(
                                           context,
                                           null,
-                                          cartItem['taxInfo'] == null
-                                              ? MyLocalizations.of(context)
+                                          cartItem!['taxInfo'] == null
+                                              ? MyLocalizations.of(context)!
                                                   .getLocalizations("TAX")
-                                              : MyLocalizations.of(context)
+                                              : MyLocalizations.of(context)!
                                                       .getLocalizations("TAX") +
                                                   " (" +
-                                                  cartItem['taxInfo']
+                                                  cartItem!['taxInfo']
                                                       ['taxName'] +
                                                   " " +
-                                                  cartItem['taxInfo']['amount']
+                                                  cartItem!['taxInfo']['amount']
                                                       .toString() +
                                                   "%)",
-                                          '$currency${cartItem['tax'].toDouble().toStringAsFixed(2)}',
+                                          '$currency${cartItem!['tax'].toDouble().toStringAsFixed(2)}',
                                           false),
                                   SizedBox(height: 10),
                                   Form(
                                     key: _formKey,
                                     child: Container(
-                                      child: cartItem['couponCode'] != null
+                                      child: cartItem!['couponCode'] != null
                                           ? Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment
@@ -632,11 +648,11 @@ class _CheckoutState extends State<Checkout> {
                                                         context,
                                                         null,
                                                         MyLocalizations.of(
-                                                                    context)
+                                                                    context)!
                                                                 .getLocalizations(
                                                                     "COUPON_DISCOUNT") +
                                                             " (" +
-                                                            "${cartItem['couponCode']}"
+                                                            "${cartItem!['couponCode']}"
                                                                 ")",
                                                         null,
                                                         false),
@@ -646,7 +662,7 @@ class _CheckoutState extends State<Checkout> {
                                                         : InkWell(
                                                             onTap: () {
                                                               removeCoupons(
-                                                                  cartItem[
+                                                                  cartItem![
                                                                       'couponCode']);
                                                             },
                                                             child: Icon(
@@ -662,7 +678,7 @@ class _CheckoutState extends State<Checkout> {
                                                         context,
                                                         null,
                                                         "",
-                                                        '-$currency${cartItem['couponAmount'].toDouble().toStringAsFixed(2)}',
+                                                        '-$currency${cartItem!['couponAmount'].toDouble().toStringAsFixed(2)}',
                                                         false),
                                                   ],
                                                 ),
@@ -695,7 +711,7 @@ class _CheckoutState extends State<Checkout> {
                                                             .words,
                                                     decoration: InputDecoration(
                                                         hintText: MyLocalizations
-                                                                .of(context)
+                                                                .of(context)!
                                                             .getLocalizations(
                                                                 "ENTER_COUPON_CODE"),
                                                         hintStyle:
@@ -707,10 +723,10 @@ class _CheckoutState extends State<Checkout> {
                                                         border:
                                                             InputBorder.none),
                                                     cursorColor: primarybg,
-                                                    validator: (String value) {
-                                                      if (value.isEmpty) {
+                                                    validator: (String? value) {
+                                                      if (value!.isEmpty) {
                                                         return MyLocalizations
-                                                                .of(context)
+                                                                .of(context)!
                                                             .getLocalizations(
                                                                 "ENTER_COUPON_CODE");
                                                       } else {
@@ -720,7 +736,7 @@ class _CheckoutState extends State<Checkout> {
                                                     style:
                                                         textBarlowRegularBlacklight(
                                                             context),
-                                                    onSaved: (String value) {
+                                                    onSaved: (String? value) {
                                                       couponCode = value;
                                                     },
                                                   ),
@@ -757,35 +773,35 @@ class _CheckoutState extends State<Checkout> {
                                       ? buildPrice(
                                           context,
                                           null,
-                                          MyLocalizations.of(context)
+                                          MyLocalizations.of(context)!
                                               .getLocalizations(
                                                   "DELIVERY_CHARGES"),
-                                          MyLocalizations.of(context)
+                                          MyLocalizations.of(context)!
                                               .getLocalizations("FREE"),
                                           false)
-                                      : cartItem['deliveryCharges'] == 0 ||
-                                              cartItem['deliveryCharges'] == '0'
+                                      : cartItem!['deliveryCharges'] == 0 ||
+                                              cartItem!['deliveryCharges'] == '0'
                                           ? Container()
                                           : buildPrice(
                                               context,
                                               null,
-                                              MyLocalizations.of(context)
+                                              MyLocalizations.of(context)!
                                                   .getLocalizations(
                                                       "DELIVERY_CHARGES"),
-                                              '$currency${cartItem['deliveryCharges'].toDouble().toStringAsFixed(2)}',
+                                              '$currency${cartItem!['deliveryCharges'].toDouble().toStringAsFixed(2)}',
                                               isDeliveryChargeLoading),
                                   SizedBox(height: 10),
-                                  cartItem['walletAmount'] > 0
+                                  cartItem!['walletAmount'] > 0
                                       ? buildPrice(
                                           context,
                                           null,
-                                          MyLocalizations.of(context)
+                                          MyLocalizations.of(context)!
                                               .getLocalizations(
                                                   "PAID_FORM_WALLET"),
-                                          '-$currency${cartItem['walletAmount'].toDouble().toStringAsFixed(2)}',
+                                          '-$currency${cartItem!['walletAmount'].toDouble().toStringAsFixed(2)}',
                                           false)
                                       : Container(),
-                                  cartItem['walletAmount'] > 0
+                                  cartItem!['walletAmount'] > 0
                                       ? SizedBox(height: 10)
                                       : Container(),
                                   Divider(
@@ -795,23 +811,23 @@ class _CheckoutState extends State<Checkout> {
                                   buildPrice(
                                       context,
                                       null,
-                                      MyLocalizations.of(context)
+                                      MyLocalizations.of(context)!
                                           .getLocalizations("PAYABLE_AMOUNT"),
-                                      '$currency${cartItem['grandTotal'].toDouble().toStringAsFixed(2)}',
+                                      '$currency${cartItem!['grandTotal'].toDouble().toStringAsFixed(2)}',
                                       false),
                                   Divider(
                                       color:
                                           Color(0xFF707070).withOpacity(0.20),
                                       thickness: 1),
                                   SizedBox(height: 5),
-                                  shippingMethodsList.length == 0
+                                  shippingMethodsList!.length == 0
                                       ? Container()
                                       : buildBoldText(
                                           context, "SHIPPING_METHOD"),
-                                  shippingMethodsList.length == 0
+                                  shippingMethodsList!.length == 0
                                       ? Container()
                                       : SizedBox(height: 10),
-                                  shippingMethodsList.length == 0
+                                  shippingMethodsList!.length == 0
                                       ? Container()
                                       : Container(
                                           height: 60,
@@ -819,11 +835,11 @@ class _CheckoutState extends State<Checkout> {
                                             physics: ScrollPhysics(),
                                             shrinkWrap: true,
                                             scrollDirection: Axis.horizontal,
-                                            itemCount: shippingMethodsList
+                                            itemCount: shippingMethodsList!
                                                         .length ==
                                                     null
                                                 ? 0
-                                                : shippingMethodsList.length,
+                                                : shippingMethodsList!.length,
                                             itemBuilder:
                                                 (BuildContext context, int i) {
                                               return InkWell(
@@ -838,10 +854,12 @@ class _CheckoutState extends State<Checkout> {
                                                             primary(context),
                                                         groupValue:
                                                             shippingMethodValue,
-                                                        onChanged:
-                                                            shippingMethodRadioValueChanged),
+                                                        onChanged: (int){
+                                                          shippingMethodRadioValueChanged(i);
+                                                        },
+                                                    ),
                                                     buildShippingMethodText(
-                                                        shippingMethodsList[
+                                                        shippingMethodsList![
                                                                 i] ??
                                                             "",
                                                         context),
@@ -852,10 +870,10 @@ class _CheckoutState extends State<Checkout> {
                                   isUpdateShippingMethodLoading
                                       ? SquareLoader()
                                       : Container(),
-                                  shippingMethodsList.length == 0
+                                  shippingMethodsList!.length == 0
                                       ? Container()
-                                      : shippingMethodsList[
-                                                  shippingMethodValue] ==
+                                      : shippingMethodsList![
+                                                  shippingMethodValue!] ==
                                               "PICK_UP"
                                           ? Column(
                                               children: [
@@ -871,26 +889,26 @@ class _CheckoutState extends State<Checkout> {
                                 ],
                               ),
                             ),
-                            shippingMethodsList.length == 0
+                            shippingMethodsList!.length == 0
                                 ? Container()
-                                : shippingMethodsList[shippingMethodValue] ==
+                                : shippingMethodsList![shippingMethodValue!] ==
                                             "PICK_UP" ||
                                         isUpdateShippingMethodLoading
                                     ? Container()
                                     : GFAccordion(
-                                        expandedTitlebackgroundColor:
+                                        expandedTitleBackgroundColor:
                                             Theme.of(context).brightness ==
                                                     Brightness.dark
                                                 ? greyb2
                                                 : Color(0xFFF0F0F0),
-                                        collapsedTitlebackgroundColor:
+                                        collapsedTitleBackgroundColor:
                                             Theme.of(context).brightness ==
                                                     Brightness.dark
                                                 ? greyc2
                                                 : Color(0xFFF0F0F0),
-                                        titleborder: Border.all(
+                                        titleBorder: Border.all(
                                             color: Color(0xffD6D6D6)),
-                                        contentbackgroundColor:
+                                        contentBackgroundColor:
                                             Theme.of(context).brightness ==
                                                     Brightness.dark
                                                 ? greyc2
@@ -899,7 +917,7 @@ class _CheckoutState extends State<Checkout> {
                                             EdgeInsets.only(top: 5, bottom: 5),
                                         titleChild: Text(
                                           selectedAddress == null
-                                              ? MyLocalizations.of(context)
+                                              ? MyLocalizations.of(context)!
                                                   .getLocalizations(
                                                       "ADDRESS_MSG")
                                               : '${selectedAddress['flatNo']}, ${selectedAddress['apartmentName']},${selectedAddress['address']}',
@@ -914,9 +932,9 @@ class _CheckoutState extends State<Checkout> {
                                               physics: ScrollPhysics(),
                                               shrinkWrap: true,
                                               itemCount:
-                                                  addressList.length == null
+                                                  addressList!.length == null
                                                       ? 0
-                                                      : addressList.length,
+                                                      : addressList!.length,
                                               itemBuilder:
                                                   (BuildContext context,
                                                       int i) {
@@ -931,11 +949,12 @@ class _CheckoutState extends State<Checkout> {
                                                           primary(context),
                                                       value: i,
                                                       title: buildAddress(
-                                                          '${addressList[i]['flatNo']}, ${addressList[i]['apartmentName']},${addressList[i]['address']},',
-                                                          "${addressList[i]['landmark']} ,'${addressList[i]['postalCode']}, ${addressList[i]['mobileNumber'].toString()}",
+                                                          '${addressList![i]['flatNo']}, ${addressList![i]['apartmentName']},${addressList![i]['address']},',
+                                                          "${addressList![i]['landmark']} ,'${addressList![i]['postalCode']}, ${addressList![i]['mobileNumber'].toString()}",
                                                           context),
-                                                      onChanged:
-                                                          addressRadioValueChanged,
+                                                      onChanged: (int){
+                                                        addressRadioValueChanged(i);
+                                                      },
                                                     ),
                                                     Row(
                                                       mainAxisAlignment:
@@ -963,13 +982,13 @@ class _CheckoutState extends State<Checkout> {
                                                                           (context) =>
                                                                               EditAddress(
                                                                         locale:
-                                                                            widget.locale,
+                                                                            widget.locale!,
                                                                         localizedValues:
-                                                                            widget.localizedValues,
+                                                                            widget.localizedValues!,
                                                                         isCheckout:
                                                                             true,
                                                                         updateAddressID:
-                                                                            addressList[i],
+                                                                            addressList![i],
                                                                       ),
                                                                     ),
                                                                   );
@@ -988,7 +1007,7 @@ class _CheckoutState extends State<Checkout> {
                                                               InkWell(
                                                                   onTap: () {
                                                                     deleteAddress(
-                                                                        addressList[i]
+                                                                        addressList![i]
                                                                             [
                                                                             '_id']);
                                                                   },
@@ -1033,11 +1052,11 @@ class _CheckoutState extends State<Checkout> {
                                                             .granted) {
                                                       Map locationLatLong = {
                                                         "latitude":
-                                                            locationInfo[
+                                                            locationInfo![
                                                                     'location']
                                                                 ['latitude'],
                                                         "longitude":
-                                                            locationInfo[
+                                                            locationInfo![
                                                                     'location']
                                                                 ['longitude']
                                                       };
@@ -1053,10 +1072,10 @@ class _CheckoutState extends State<Checkout> {
                                                   if (currentLocation != null) {
                                                     Map locationLatLong = {
                                                       "latitude":
-                                                          currentLocation
+                                                          currentLocation!
                                                               .latitude,
                                                       "longitude":
-                                                          currentLocation
+                                                          currentLocation!
                                                               .longitude
                                                     };
                                                     addAddressPageMethod(
@@ -1085,7 +1104,7 @@ class _CheckoutState extends State<Checkout> {
                               child: buildBoldText(context, "CHOOSE_DATE_TIME"),
                             ),
                             SizedBox(height: 15),
-                            deliverySlotList.length > 0
+                            deliverySlotList!.length > 0
                                 ? Column(
                                     children: <Widget>[
                                       Row(
@@ -1100,11 +1119,11 @@ class _CheckoutState extends State<Checkout> {
                                                 shrinkWrap: true,
                                                 scrollDirection:
                                                     Axis.horizontal,
-                                                itemCount: deliverySlotList
+                                                itemCount: deliverySlotList!
                                                             .length ==
                                                         null
                                                     ? 0
-                                                    : deliverySlotList.length,
+                                                    : deliverySlotList!.length,
                                                 itemBuilder:
                                                     (BuildContext context,
                                                         int index) {
@@ -1145,7 +1164,7 @@ class _CheckoutState extends State<Checkout> {
                                                               child: Center(
                                                                   child: normalTextWithOutRow(
                                                                       context,
-                                                                      deliverySlotList[index]
+                                                                      deliverySlotList![index]
                                                                               [
                                                                               'date']
                                                                           .split(
@@ -1168,14 +1187,14 @@ class _CheckoutState extends State<Checkout> {
                                         child: ListView.builder(
                                           physics: ScrollPhysics(),
                                           shrinkWrap: true,
-                                          itemCount: deliverySlotList[
-                                                              dateSelectedValue]
+                                          itemCount: deliverySlotList![
+                                                              dateSelectedValue!]
                                                           ['timings']
                                                       .length ==
                                                   null
                                               ? 0
-                                              : deliverySlotList[
-                                                          dateSelectedValue]
+                                              : deliverySlotList![
+                                                          dateSelectedValue!]
                                                       ['timings']
                                                   .length,
                                           itemBuilder:
@@ -1195,8 +1214,8 @@ class _CheckoutState extends State<Checkout> {
                                                       },
                                                       title: normalTextWithOutRow(
                                                           context,
-                                                          deliverySlotList[
-                                                                      dateSelectedValue]
+                                                          deliverySlotList![
+                                                                      dateSelectedValue!]
                                                                   ['timings'][i]
                                                               ['slot'],
                                                           false)),
@@ -1238,6 +1257,6 @@ class _CheckoutState extends State<Checkout> {
       content: Text(message),
       duration: Duration(milliseconds: 3000),
     );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
+    _scaffoldKey.currentState!.showSnackBar(snackBar);
   }
 }

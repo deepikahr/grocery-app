@@ -1,7 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:getflutter/getwidget.dart';
+import 'package:getwidget/getwidget.dart';
+import 'package:getwidget/components/carousel/gf_carousel.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:readymadeGroceryApp/model/addToCart.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
@@ -27,13 +28,13 @@ class Variants {
 }
 
 class ProductDetails extends StatefulWidget {
-  final int currentIndex;
+  final int? currentIndex;
 
-  final Map localizedValues;
-  final String locale, productID;
+  final Map? localizedValues;
+  final String? locale, productID;
 
   ProductDetails(
-      {Key key,
+      {Key? key,
       this.productID,
       this.currentIndex,
       this.localizedValues,
@@ -48,7 +49,7 @@ class _ProductDetailsState extends State<ProductDetails>
     with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var productDetail;
-  String variantUnit, variantId, currency, description;
+  String? variantUnit, variantId, currency, description;
 
   int groupValue = 0;
   bool sizeSelect = false,
@@ -233,10 +234,10 @@ class _ProductDetailsState extends State<ProductDetails>
           addProductTocart = false;
         });
       }
-      showSnackbar(MyLocalizations.of(context)
+      showSnackbar(MyLocalizations.of(context)!
               .getLocalizations("LIMITED_STOCK") +
           " ${variantStock == null ? productDetail['variant'][0]['productStock'] : variantStock} " +
-          MyLocalizations.of(context).getLocalizations("OF_THIS_ITEM"));
+          MyLocalizations.of(context)!.getLocalizations("OF_THIS_ITEM"));
     }
   }
 
@@ -269,7 +270,7 @@ class _ProductDetailsState extends State<ProductDetails>
       if (onValue['response_data'] is Map) {
         Common.setCartData(onValue['response_data']);
       } else {
-        Common.setCartData(null);
+        Common.setCartData({});
       }
     }).catchError((error) {
       if (mounted) {
@@ -292,14 +293,14 @@ class _ProductDetailsState extends State<ProductDetails>
           actions: <Widget>[
             FlatButton(
               child:
-                  Text(MyLocalizations.of(context).getLocalizations("CANCEL")),
+                  Text(MyLocalizations.of(context)!.getLocalizations("CANCEL")),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             FlatButton(
               child: Text(
-                  MyLocalizations.of(context).getLocalizations("CLEAR_CART")),
+                  MyLocalizations.of(context)!.getLocalizations("CLEAR_CART")),
               onPressed: () {
                 Navigator.pop(context);
 
@@ -307,7 +308,7 @@ class _ProductDetailsState extends State<ProductDetails>
                   if (response['response_data'] is Map) {
                     Common.setCartData(response['response_data']);
                   } else {
-                    Common.setCartData(null);
+                    Common.setCartData({});
                   }
                 });
               },
@@ -431,7 +432,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                                                         },
                                                                         child:
                                                                             Text(
-                                                                          MyLocalizations.of(context)
+                                                                          MyLocalizations.of(context)!
                                                                               .getLocalizations("CLOSE"),
                                                                           style:
                                                                               TextStyle(color: Colors.white),
@@ -508,12 +509,11 @@ class _ProductDetailsState extends State<ProductDetails>
                                         child: Padding(
                                           padding: const EdgeInsets.only(
                                               top: 0.0, right: 5.0, left: 5.0),
-                                          child: RatingBar(
+                                          child: RatingBar.builder(
                                             initialRating: double.parse(
                                                     productDetail[
                                                             'averageRating']
-                                                        .toStringAsFixed(1)) ??
-                                                0.0,
+                                                        .toStringAsFixed(1)),
                                             minRating: 0,
                                             direction: Axis.horizontal,
                                             allowHalfRating: true,
@@ -527,7 +527,9 @@ class _ProductDetailsState extends State<ProductDetails>
                                               color: Colors.red,
                                               size: 12.0,
                                             ),
-                                            onRatingUpdate: null,
+                                            onRatingUpdate: (int){
+
+                                            },
                                           ),
                                         ),
                                       )
@@ -652,12 +654,12 @@ class _ProductDetailsState extends State<ProductDetails>
                                                             true);
                                                       } else {
                                                         showSnackbar(MyLocalizations
-                                                                    .of(context)
+                                                                    .of(context)!
                                                                 .getLocalizations(
                                                                     "LIMITED_STOCK") +
                                                             " ${variantStock == null ? productDetail['variant'][0]['productStock'] : variantStock} " +
                                                             MyLocalizations.of(
-                                                                    context)
+                                                                    context)!
                                                                 .getLocalizations(
                                                                     "OF_THIS_ITEM"));
                                                       }
@@ -692,10 +694,10 @@ class _ProductDetailsState extends State<ProductDetails>
                                                     selected: sizeSelect,
                                                     activeColor:
                                                         primary(context),
-                                                    onChanged: (int value) {
+                                                    onChanged: (int? value) {
                                                       if (mounted) {
                                                         setState(() {
-                                                          groupValue = value;
+                                                          groupValue = value!;
                                                           sizeSelect =
                                                               !sizeSelect;
                                                           variantPrice =
@@ -831,7 +833,7 @@ class _ProductDetailsState extends State<ProductDetails>
       content: Text(message),
       duration: Duration(milliseconds: 3000),
     );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
+    _scaffoldKey.currentState!.showSnackBar(snackBar);
   }
 
   getDiscountedValue({index = 0}) => productDetail['isDealAvailable'] &&

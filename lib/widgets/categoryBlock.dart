@@ -6,9 +6,9 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 class CategoryBlock extends StatelessWidget {
   final image, title;
-  final bool isHome;
+  final bool? isHome;
   final isPath;
-  CategoryBlock({Key key, this.image, this.title, this.isPath, this.isHome})
+  CategoryBlock({Key? key, this.image, this.title, this.isPath, this.isHome})
       : super(key: key);
 
   @override
@@ -19,8 +19,8 @@ class CategoryBlock extends StatelessWidget {
       child: Column(
         children: <Widget>[
           Container(
-            width: isHome ? 68 : 80,
-            height: isHome ? 68 : 80,
+            width: isHome! ? 68 : 80,
+            height: isHome! ? 68 : 80,
             padding: EdgeInsets.all(5),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(8)),

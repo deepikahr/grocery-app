@@ -13,16 +13,16 @@ import 'addmoney.dart';
 SentryError sentryError = new SentryError();
 
 class WalletPage extends StatefulWidget {
-  final Map localizedValues;
-  final String locale;
-  WalletPage({Key key, this.locale, this.localizedValues});
+  final Map? localizedValues;
+  final String? locale;
+  WalletPage({Key? key, this.locale, this.localizedValues});
   @override
   _WalletPageState createState() => _WalletPageState();
 }
 
 class _WalletPageState extends State<WalletPage> {
   bool isGetWalletInfoLoading = false;
-  Map userInfo;
+  Map? userInfo;
   String currency = "";
   @override
   void initState() {
@@ -37,13 +37,13 @@ class _WalletPageState extends State<WalletPage> {
       });
     }
     await Common.getCurrency().then((value) {
-      currency = value;
+      currency = value!;
     });
     await LoginService.getUserInfo().then((onValue) {
       if (mounted) {
         setState(() {
           userInfo = onValue['response_data'];
-          Common.setUserID(userInfo['_id']);
+          Common.setUserID(userInfo!['_id']);
           isGetWalletInfoLoading = false;
         });
       }
@@ -60,7 +60,7 @@ class _WalletPageState extends State<WalletPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarPrimarynoradius(context, "WALLET"),
+      appBar: appBarPrimarynoradius(context, "WALLET") as PreferredSizeWidget?,
       body: isGetWalletInfoLoading
           ? Center(child: SquareLoader())
           : Column(
@@ -75,15 +75,15 @@ class _WalletPageState extends State<WalletPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     walletCard1(context, 'WALLET', 'BALANCE',
-                        '$currency ${userInfo['walletAmount'] ?? 0}'),
+                        '$currency ${userInfo!['walletAmount'] ?? 0}'),
                     InkWell(
                       onTap: () {
                         var result = Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => WalletHistoryyPage(
-                                locale: widget.locale,
-                                localizedValues: widget.localizedValues),
+                                locale: widget.locale!,
+                                localizedValues: widget.localizedValues!),
                           ),
                         );
                         result.then((value) => userInfoMethod());

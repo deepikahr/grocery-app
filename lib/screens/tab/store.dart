@@ -1,7 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:getflutter/getflutter.dart';
+import 'package:getwidget/getwidget.dart';
+import 'package:getwidget/components/carousel/gf_carousel.dart';
 import 'package:readymadeGroceryApp/screens/categories/allcategories.dart';
 import 'package:readymadeGroceryApp/screens/product/all_deals.dart';
 import 'package:readymadeGroceryApp/screens/product/all_products.dart';
@@ -24,9 +25,9 @@ import 'package:readymadeGroceryApp/widgets/subscription_card.dart';
 SentryError sentryError = new SentryError();
 
 class Store extends StatefulWidget {
-  final Map localizedValues;
-  final String locale, currentLocation;
-  Store({Key key, this.currentLocation, this.locale, this.localizedValues})
+  final Map? localizedValues;
+  final String? locale, currentLocation;
+  Store({Key? key, this.currentLocation, this.locale, this.localizedValues})
       : super(key: key);
   @override
   _StoreState createState() => _StoreState();
@@ -43,19 +44,19 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       isBannerLoading = false,
       isLoadingAllData = false,
       isGetSubcribeLoading = false;
-  List categoryList,
+  List? categoryList,
       productsList,
       searchProductList,
       dealList,
       topDealList,
       bannerList,
       subscriptionProductsList;
-  String currency;
+  String? currency;
 
-  TabController tabController;
+  TabController? tabController;
 
   var addressData;
-  String locale;
+  String? locale;
   @override
   void initState() {
     getToken();
@@ -68,7 +69,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    tabController.dispose();
+    tabController!.dispose();
     super.dispose();
   }
 
@@ -105,9 +106,9 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
           value['response_data']['products'] != []) {
         Common.setCartData(value['response_data']);
       } else if (value['response_code'] == 403) {
-        Common.setCartData(null);
+        Common.setCartData({});
       } else {
-        Common.setCartData(null);
+        Common.setCartData({});
       }
     }).catchError((error) {
       sentryError.reportError(error, null);
@@ -263,7 +264,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
     });
   }
 
-  Widget _buildTitleViewAllTile(String name, {Widget route, valueKey}) {
+  Widget _buildTitleViewAllTile(String name, {required Widget route, valueKey}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
@@ -296,7 +297,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
             physics: ScrollPhysics(),
             shrinkWrap: true,
             scrollDirection: Axis.horizontal,
-            itemCount: categoryList.length != null ? categoryList.length : 0,
+            itemCount: categoryList!.length != null ? categoryList!.length : 0,
             itemBuilder: (BuildContext context, int index) {
               return InkWell(
                 onTap: () {
@@ -306,19 +307,19 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       builder: (context) => AllProducts(
                         locale: widget.locale,
                         localizedValues: widget.localizedValues,
-                        categoryId: categoryList[index]['_id'],
-                        pageTitle: categoryList[index]['title'],
+                        categoryId: categoryList![index]['_id'],
+                        pageTitle: categoryList![index]['title'],
                       ),
                     ),
                   );
                 },
                 child: CategoryBlock(
-                    image: categoryList[index]['filePath'] == null
-                        ? categoryList[index]['imageUrl']
-                        : categoryList[index]['filePath'],
-                    title: categoryList[index]['title'],
+                    image: categoryList![index]['filePath'] == null
+                        ? categoryList![index]['imageUrl']
+                        : categoryList![index]['filePath'],
+                    title: categoryList![index]['title'],
                     isPath:
-                        categoryList[index]['filePath'] == null ? false : true,
+                        categoryList![index]['filePath'] == null ? false : true,
                     isHome: true),
               );
             },
@@ -342,7 +343,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
           //do not remove this setstate
         });
       },
-      items: bannerList.map((url) {
+      items: bannerList!.map((url) {
         return InkWell(
           onTap: () {
             if (url['bannerType'] == "PRODUCT") {
@@ -525,13 +526,13 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                         );
                       },
                       child: ProductGridCard(
-                          currency: currency,
+                          currency: currency!,
                           productData: list[i],
                           isHome: true),
                     ),
                   )
                 : ProductGridCard(
-                    currency: currency,
+                    currency: currency!,
                     productData: list[i],
                     isHome: true,
                   );
@@ -564,7 +565,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
           ),
           itemBuilder: (BuildContext context, int i) {
             return SubscriptionCard(
-              currency: currency,
+              currency: currency!,
               productData: list[i],
             );
           },
@@ -664,7 +665,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                   '${list[i]['title'][0].toUpperCase()}${list[i]['title'].substring(1)}',
                                   list[i]['dealPercent'].toString() +
                                       "% " +
-                                      MyLocalizations.of(context)
+                                      MyLocalizations.of(context)!
                                           .getLocalizations("OFF"),
                                   context)))),
                   placeholder: (context, url) => Container(
@@ -689,7 +690,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                   '${list[i]['title'][0].toUpperCase()}${list[i]['title'].substring(1)}',
                                   list[i]['dealPercent'].toString() +
                                       "% " +
-                                      MyLocalizations.of(context)
+                                      MyLocalizations.of(context)!
                                           .getLocalizations("OFF"),
                                   context)))),
                 ),
@@ -790,7 +791,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                   '${list[i]['title'][0].toUpperCase()}${list[i]['title'].substring(1)}',
                                   list[i]['dealPercent'].toString() +
                                       "% " +
-                                      MyLocalizations.of(context)
+                                      MyLocalizations.of(context)!
                                           .getLocalizations("OFF"),
                                   context)))),
                   errorWidget: (context, url, error) => Container(
@@ -809,7 +810,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                             '${list[i]['title'][0].toUpperCase()}${list[i]['title'].substring(1)}',
                             list[i]['dealPercent'].toString() +
                                 "% " +
-                                MyLocalizations.of(context)
+                                MyLocalizations.of(context)!
                                     .getLocalizations("OFF"),
                             context),
                       ),
@@ -845,12 +846,12 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
         },
         child: isLoadingAllData || isBannerLoading || isGetSubcribeLoading
             ? SquareLoader()
-            : (categoryList.length == 0 &&
-                    productsList.length == 0 &&
-                    dealList.length == 0 &&
-                    topDealList.length == 0 &&
-                    bannerList.length == 0 &&
-                    subscriptionProductsList.length == 0)
+            : (categoryList!.length == 0 &&
+                    productsList!.length == 0 &&
+                    dealList!.length == 0 &&
+                    topDealList!.length == 0 &&
+                    bannerList!.length == 0 &&
+                    subscriptionProductsList!.length == 0)
                 ? noDataImage()
                 : SingleChildScrollView(
                     physics: ScrollPhysics(),
@@ -858,17 +859,17 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Column(
                         children: <Widget>[
-                          bannerList.length > 0
+                          bannerList!.length > 0
                               ? Column(
                                   children: [banner(), Divider()],
                                 )
                               : Container(),
-                          categoryList.length > 0
+                          categoryList!.length > 0
                               ? Column(
                                   children: [categoryRow(), Divider()],
                                 )
                               : Container(),
-                          topDealList.length > 0
+                          topDealList!.length > 0
                               ? Column(
                                   children: [
                                     topDealsRow("TOP_DEALS", topDealList),
@@ -876,7 +877,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                   ],
                                 )
                               : Container(),
-                          productsList.length > 0
+                          productsList!.length > 0
                               ? Column(
                                   children: [
                                     productRow("PRODUCTS", productsList),
@@ -884,7 +885,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                   ],
                                 )
                               : Container(),
-                          subscriptionProductsList.length > 0
+                          subscriptionProductsList!.length > 0
                               ? Column(
                                   children: [
                                     subscriptionProductsRow(
@@ -894,7 +895,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                   ],
                                 )
                               : Container(),
-                          dealList.length > 0
+                          dealList!.length > 0
                               ? Column(
                                   children: [
                                     todayDealsRow(
