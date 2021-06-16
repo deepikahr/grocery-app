@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_date_picker_timeline/flutter_date_picker_timeline.dart';
+// import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:readymadeGroceryApp/service/alert-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -73,19 +74,32 @@ class _PausedSubscriptionBottomSheetState
                 color: cartCardBg(context),
                 border: Border.all(color: Colors.grey[300]!),
                 borderRadius: BorderRadius.circular(5.0)),
+            // ignore: deprecated_member_use
             child: FlatButton(
                 onPressed: () {
-                  DatePicker.showDatePicker(context,
-                      showTitleActions: true,
-                      minTime: widget.subscriptionStartDate, onConfirm: (date) {
-                    if (mounted) {
-                      setState(() {
-                        startDate = date;
-                      });
-                    }
-                  },
-                      currentTime: widget.subscriptionStartDate,
-                      locale: LocaleType.en);
+                  FlutterDatePickerTimeline(
+                    startDate: widget.subscriptionStartDate!,
+                    endDate: DateTime(2021, 12, 30),
+                    initialSelectedDate: widget.subscriptionStartDate,
+                    onSelectedDateChange: (date) {
+                      if (mounted) {
+                        setState(() {
+                          startDate = date;
+                        });
+                      }
+                    },
+                  );
+                  // DatePicker.showDatePicker(context,
+                  //     showTitleActions: true,
+                  //     minTime: widget.subscriptionStartDate, onConfirm: (date) {
+                  //   if (mounted) {
+                  //     setState(() {
+                  //       startDate = date;
+                  //     });
+                  //   }
+                  // },
+                  //     currentTime: widget.subscriptionStartDate,
+                  //     locale: LocaleType.en);
                 },
                 child: Container(
                   child: Row(
@@ -114,17 +128,30 @@ class _PausedSubscriptionBottomSheetState
                 borderRadius: BorderRadius.circular(5.0)),
             child: FlatButton(
                 onPressed: () {
-                  DatePicker.showDatePicker(context,
-                      showTitleActions: true,
-                      minTime: widget.subscriptionStartDate, onConfirm: (date) {
-                    if (mounted) {
-                      setState(() {
-                        endDate = date;
-                      });
-                    }
-                  },
-                      currentTime: widget.subscriptionStartDate,
-                      locale: LocaleType.en);
+                  FlutterDatePickerTimeline(
+                    startDate: widget.subscriptionStartDate!,
+                    endDate: DateTime(2021, 12, 30),
+                    initialSelectedDate: widget.subscriptionStartDate,
+                    onSelectedDateChange: (date) {
+                      if (mounted) {
+                        setState(() {
+                          endDate = date;
+                        });
+                      }
+                    },
+                  );
+
+                  // DatePicker.showDatePicker(context,
+                  //     showTitleActions: true,
+                  //     minTime: widget.subscriptionStartDate, onConfirm: (date) {
+                  //   if (mounted) {
+                  //     setState(() {
+                  //       endDate = date;
+                  //     });
+                  //   }
+                  // },
+                  //     currentTime: widget.subscriptionStartDate,
+                  //     locale: LocaleType.en);
                 },
                 child: Container(
                   child: Row(

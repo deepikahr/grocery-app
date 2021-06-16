@@ -36,6 +36,7 @@ void initializeMain({bool? isTest}) async {
   runZoned<Future>(() {
     runApp(MainScreen());
     return Future.value(null);
+  // ignore: deprecated_member_use
   }, onError: (error, stackTrace) {
     sentryError.reportError(error, stackTrace);
   });

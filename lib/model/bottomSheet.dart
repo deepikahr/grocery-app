@@ -307,6 +307,7 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
       content: Text(message),
       duration: Duration(milliseconds: 3000),
     );
+    // ignore: deprecated_member_use
     _scaffoldKey.currentState!.showSnackBar(snackBar);
   }
 }

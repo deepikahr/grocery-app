@@ -40,7 +40,7 @@ class _MyCartState extends State<MyCart> {
       isUpdating = false,
       isMinAmountCheckLoading = false,
       isCheckProductAvailableOrNot = false;
-  late String currency;
+  String? currency;
   String? token;
   String quantityUpdateType = '+';
   Map? cartItem;
@@ -642,15 +642,14 @@ class _MyCartState extends State<MyCart> {
                                               Row(
                                                 children: <Widget>[
                                                   priceMrpText(
-                                                      currency +
-                                                              cartItem!['products']
-                                                                          [i][
-                                                                      'productTotal']
-                                                                  .toDouble()
-                                                                  .toStringAsFixed(
-                                                                      2)
-                                                                  .toString() ??
-                                                          "",
+                                                      currency! +
+                                                          cartItem!['products']
+                                                          [i][
+                                                          'productTotal']
+                                                              .toDouble()
+                                                              .toStringAsFixed(
+                                                              2)
+                                                              .toString(),
                                                       cartItem!['products'][i][
                                                               'isDealAvailable']
                                                           ? '$currency${((cartItem!['products'][i]['price']) * (cartItem!['products'][i]['quantity'])).toDouble().toStringAsFixed(2)}'

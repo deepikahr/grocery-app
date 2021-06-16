@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_date_picker_timeline/flutter_date_picker_timeline.dart';
+// import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_place_picker/google_maps_place_picker.dart';
@@ -325,17 +326,29 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
                               borderRadius: BorderRadius.circular(5.0)),
                           child: FlatButton(
                               onPressed: () {
-                                DatePicker.showDatePicker(context,
-                                    showTitleActions: true,
-                                    minTime: DateTime.now(), onConfirm: (date) {
-                                  if (mounted) {
-                                    setState(() {
-                                      selectedDate = date;
-                                    });
-                                  }
-                                },
-                                    currentTime: DateTime.now(),
-                                    locale: LocaleType.en);
+                                FlutterDatePickerTimeline(
+                                  startDate: DateTime.now(),
+                                  endDate: DateTime(2021, 12, 30),
+                                  initialSelectedDate: DateTime.now(),
+                                  onSelectedDateChange: (date) {
+                                    if (mounted) {
+                                      setState(() {
+                                        selectedDate = date!;
+                                      });
+                                    }
+                                  },
+                                );
+                                // DatePicker.showDatePicker(context,
+                                //     showTitleActions: true,
+                                //     minTime: DateTime.now(), onConfirm: (date) {
+                                //   if (mounted) {
+                                //     setState(() {
+                                //       selectedDate = date;
+                                //     });
+                                //   }
+                                // },
+                                //     currentTime: DateTime.now(),
+                                //     locale: LocaleType.en);
                               },
                               child: Row(
                                 mainAxisAlignment:
