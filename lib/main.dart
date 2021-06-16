@@ -20,7 +20,6 @@ import 'package:flutter/widgets.dart';
 export 'package:flutter/services.dart' show Brightness;
 
 SentryError sentryError = new SentryError();
-// Timer oneSignalTimer;
 
 void main() {
   initializeMain(isTest: false);
@@ -44,12 +43,12 @@ void initializeMain({bool? isTest}) async {
 }
 
 void initializeLanguage({bool? isTest}) async {
-  // if (isTest != null && !isTest) {
-  //   oneSignalTimer = Timer.periodic(Duration(seconds: 4), (timer) {
-      // configLocalNotification();
+  if (isTest != null && !isTest) {
+    // oneSignalTimer = Timer.periodic(Duration(seconds: 4), (timer) {
+    //   configLocalNotification();
     // });
-    // configLocalNotification();
-  // }
+    configLocalNotification();
+  }
   getToken();
 }
 
@@ -100,6 +99,23 @@ void userInfoMethod() async {
 //       oneSignalTimer.cancel();
 //   }
 // }
+
+Future<void> configLocalNotification() async {
+  await OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
+  await OneSignal.shared.setAppId(Constants.oneSignalKey);
+  final allowed = await OneSignal.shared
+      .promptUserForPushNotificationPermission(fallbackToSettings: true);
+  if (allowed) {
+    var status =
+    await (OneSignal.shared.getDeviceState() as FutureOr<OSDeviceState>);
+    var playerId = status.userId;
+    if (playerId != null) {
+      await Common.setPlayerID(playerId);
+      getToken();
+    }
+  }
+}
+
 
 class MainScreen extends StatefulWidget {
   @override
