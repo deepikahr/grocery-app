@@ -22,6 +22,7 @@ SentryError sentryError = new SentryError();
 class AllProducts extends StatefulWidget {
   final Map localizedValues;
   final String locale, dealId, categoryId, pageTitle;
+  final int categoryIndex;
 
   AllProducts({
     Key key,
@@ -30,6 +31,7 @@ class AllProducts extends StatefulWidget {
     this.dealId,
     this.categoryId,
     this.pageTitle,
+    this.categoryIndex
   });
   @override
   _AllProductsState createState() => _AllProductsState();
@@ -45,11 +47,13 @@ class _AllProductsState extends State<AllProducts> {
   int productsPerPage = 12,
       productsPageNumber = 0,
       totalProducts = 1,
-      selectedSubCategoryIndex = 0;
+      selectedSubCategoryIndex = 0, selectedCategoryIndex = 0;
   List productsList = [], subCategoryList = [];
+  bool isLoadingProductsList = false, isCategoryLoadingList = false;
+  List categoryList;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  String currency;
+  String currency, selectedCategoryId, selectedCategoryTitle;
   ScrollController _scrollController = ScrollController();
 
   var cartData;
@@ -57,10 +61,13 @@ class _AllProductsState extends State<AllProducts> {
   @override
   void initState() {
     super.initState();
+    getCategoryList();
+    selectedCategoryIndex = widget.categoryIndex;
+    selectedCategoryId = widget.categoryId;
     if (widget.dealId != null) {
       isProductsForDeal = true;
       isSubCategoryLoading = false;
-    } else if (widget.categoryId != null) {
+    } else if (selectedCategoryId != null) {
       isProductsForCategory = true;
     } else {
       getSubCategoryList();
@@ -143,7 +150,7 @@ class _AllProductsState extends State<AllProducts> {
         });
       }
       await ProductService.getProductToCategoryList(
-              widget.categoryId, productsPageNumber, productsPerPage)
+          selectedCategoryId, productsPageNumber, productsPerPage)
           .then((onValue) {
         _refreshController.refreshCompleted();
         if (onValue['response_data'] != null) {
@@ -278,6 +285,31 @@ class _AllProductsState extends State<AllProducts> {
     }
   }
 
+  getCategoryList() async {
+    if (mounted) {
+      setState(() {
+        isCategoryLoadingList = true;
+      });
+    }
+    await ProductService.getCategoryList().then((onValue) {
+      _refreshController.refreshCompleted();
+      if (mounted) {
+        setState(() {
+          categoryList = onValue['response_data'];
+          isCategoryLoadingList = false;
+        });
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          categoryList = [];
+          isCategoryLoadingList = false;
+        });
+      }
+      sentryError.reportError(error, null);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isUserLoaggedIn) {
@@ -297,39 +329,77 @@ class _AllProductsState extends State<AllProducts> {
     }
     return Scaffold(
       backgroundColor: bg(context),
-      appBar: appBarWhite(
-        context,
-        widget.pageTitle,
-        false,
-        true,
-        InkWell(
-          onTap: () {
-            var result = Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => SearchItem(
-                  locale: widget.locale,
-                  localizedValues: widget.localizedValues,
-                  currency: currency,
-                  token: isUserLoaggedIn,
-                ),
-              ),
-            );
-            result.then((value) {
-              checkIfUserIsLoaggedIn();
-            });
-          },
-          child: Padding(
-            padding: EdgeInsets.only(right: 15, left: 15),
-            child: Icon(
-              Icons.search,
-            ),
-          ),
+      appBar: AppBar(
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        backgroundColor: primary(context),
+        title:  isCategoryLoadingList
+            ? SquareLoader()
+            : isProductsForDeal
+            ? Container()
+            :  Container(
+          height: 45,
+          child: ListView.builder(
+              physics: ScrollPhysics(),
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              itemCount: categoryList.length,
+              itemBuilder: (BuildContext context, int i) {
+                return InkWell(
+                  onTap: () {
+                    setState(() {
+                      selectedCategoryIndex = i;
+                      selectedCategoryId = categoryList[i]['_id'];
+                      selectedSubCategoryIndex = 0;
+                    });
+                    checkIfUserIsLoaggedIn();
+                  },
+                  child: categoryTab(
+                    context,
+                    categoryList[i]['title'],
+                    selectedCategoryIndex == i
+                        ? darkbg
+                        : primary(context),
+                  ),
+                );
+              }),
         ),
       ),
+      // appBarWhite(
+      //   context,
+      //   widget.pageTitle,
+      //   false,
+      //   true,
+      //   InkWell(
+      //     onTap: () {
+      //       var result = Navigator.push(
+      //         context,
+      //         MaterialPageRoute(
+      //           builder: (context) => SearchItem(
+      //             locale: widget.locale,
+      //             localizedValues: widget.localizedValues,
+      //             currency: currency,
+      //             token: isUserLoaggedIn,
+      //           ),
+      //         ),
+      //       );
+      //       result.then((value) {
+      //         checkIfUserIsLoaggedIn();
+      //       });
+      //     },
+      //     child: Padding(
+      //       padding: EdgeInsets.only(right: 15, left: 15),
+      //       child: Icon(
+      //         Icons.search,
+      //       ),
+      //     ),
+      //   ),
+      // ),
       body: isSubCategoryLoading
           ? Center(child: SquareLoader())
           : Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 isSubCategoryLoading
                     ? SquareLoader()
@@ -337,9 +407,11 @@ class _AllProductsState extends State<AllProducts> {
                         ? Container()
                         : Container(
                             height: 45,
+                            margin: EdgeInsets.only(top: 8),
                             child: ListView.builder(
                                 physics: ScrollPhysics(),
                                 shrinkWrap: true,
+                                padding: EdgeInsets.only(left: 10, right: 10),
                                 scrollDirection: Axis.horizontal,
                                 itemCount: subCategoryList.length + 1,
                                 itemBuilder: (BuildContext context, int i) {
@@ -347,6 +419,10 @@ class _AllProductsState extends State<AllProducts> {
                                     onTap: () {
                                       setState(() {
                                         selectedSubCategoryIndex = i;
+                                        selectedCategoryTitle = i == 0
+                                            ? MyLocalizations.of(context)
+                                            .getLocalizations('ALL')
+                                            : subCategoryList[i - 1]['title'];
                                       });
                                       checkIfUserIsLoaggedIn();
                                     },
@@ -363,6 +439,11 @@ class _AllProductsState extends State<AllProducts> {
                                   );
                                 }),
                           ),
+                selectedCategoryTitle == null ? Container() :
+                Container(
+                    padding: EdgeInsets.only(left: 14, bottom: 16, top: 4),
+                    child: Text(selectedCategoryTitle, style: textBarlowBoldBlack(context),)
+                ),
                 Flexible(
                   child: isFirstPageLoading
                       ? Center(child: SquareLoader())

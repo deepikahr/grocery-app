@@ -19,12 +19,13 @@ class CategoryBlock extends StatelessWidget {
       child: Column(
         children: <Widget>[
           Container(
-            width: isHome ? 68 : 80,
-            height: isHome ? 68 : 80,
+            // width: isHome ? 68 : 80,
+            // height: isHome ? 68 : 80,
+            width: 120, height: 120,
             padding: EdgeInsets.all(5),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(8)),
-              border: Border.all(color: dark(context).withOpacity(0.20)),
+              // border: Border.all(color: dark(context).withOpacity(0.20)),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -46,7 +47,7 @@ class CategoryBlock extends StatelessWidget {
           ),
           Expanded(
               child: buildCatTitle(
-                  title, true, textBarlowRegularrdarkdull(context)))
+                  title, true, textbarlowRegularBlackDark(context)))
         ],
       ),
     );

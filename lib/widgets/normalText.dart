@@ -318,6 +318,28 @@ Widget subCatTab(BuildContext context, title, Color color) {
   );
 }
 
+Widget categoryTab(BuildContext context, title, Color color) {
+  return Container(
+    height: 45,
+    padding: EdgeInsets.only(
+      top: 12,
+      left: 25,
+      right: 25,
+    ),
+    margin: EdgeInsets.only(bottom: 6),
+    decoration: BoxDecoration(
+      border: Border(
+        bottom: BorderSide(width: 2.0, color: color),
+      ),
+    ),
+    child: Text(
+      title,
+      textAlign: TextAlign.center,
+      style: hintSfNormalBoldtext(context),
+    ),
+  );
+}
+
 Widget buildBadge(BuildContext context, title, subTitle) {
   return Positioned(
     child: Stack(

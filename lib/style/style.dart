@@ -507,6 +507,15 @@ TextStyle hintSfboldtext(context) {
   );
 }
 
+TextStyle hintSfNormalBoldtext(context) {
+  return TextStyle(
+    fontWeight: FontWeight.w500,
+    fontSize: 16.0,
+    color: darkbg,
+    fontFamily: 'SfUiDBold',
+  );
+}
+
 TextStyle hintSfboldprimary(context) {
   return TextStyle(
     fontWeight: FontWeight.w500,
@@ -1225,6 +1234,14 @@ TextStyle textbarlowMediumBlackm(context) {
       color: Colors.black);
 }
 
+TextStyle textbarlowMediumWhitem(context) {
+  return TextStyle(
+      fontSize: 14.0,
+      fontWeight: FontWeight.w400,
+      fontFamily: 'BarlowMedium',
+      color: Colors.white);
+}
+
 TextStyle textbarlowMediumlgBlack(context) {
   return TextStyle(
     fontSize: 45.0,
@@ -1372,6 +1389,15 @@ TextStyle textbarlowRegularBlackFont(context) {
     fontSize: 15.0,
     fontFamily: 'BarlowRegular',
     color: dark(context).withOpacity(0.60),
+  );
+}
+
+TextStyle textbarlowRegularBlackDark(context) {
+  return TextStyle(
+    fontSize: 15.0,
+    fontFamily: 'BarlowRegular',
+    color: dark(context).withOpacity(0.60),
+    fontWeight: FontWeight.w600,
   );
 }
 

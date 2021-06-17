@@ -51,6 +51,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       bannerList,
       subscriptionProductsList;
   String currency;
+  bool isLoadingProductsList = false, isLoadingCategoryList = false;
 
   TabController tabController;
 
@@ -61,6 +62,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
     getToken();
     getBanner();
     getAllData();
+    getCategoryList();
     getSubScriptionDataMethod();
     super.initState();
     tabController = TabController(length: 4, vsync: this);
@@ -184,13 +186,38 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
           setState(() {
             isLoadingAllData = false;
             productsList = value['response_data']['products'];
-            categoryList = value['response_data']['categories'];
+            // categoryList = value['response_data']['categories'];
             dealList = value['response_data']['dealsOfDay'];
             topDealList = value['response_data']['topDeals'];
             getAllDataMethod();
           });
         }
       }
+    });
+  }
+
+  getCategoryList() async {
+    if (mounted) {
+      setState(() {
+        isLoadingCategoryList = true;
+      });
+    }
+    await ProductService.getCategoryList().then((onValue) {
+      _refreshController.refreshCompleted();
+      if (mounted) {
+        setState(() {
+          categoryList = onValue['response_data'];
+          isLoadingCategoryList = false;
+        });
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          categoryList = [];
+          isLoadingCategoryList = false;
+        });
+      }
+      sentryError.reportError(error, null);
     });
   }
 
@@ -201,7 +228,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       if (mounted) {
         setState(() {
           productsList = onValue['response_data']['products'];
-          categoryList = onValue['response_data']['categories'];
+          // categoryList = onValue['response_data']['categories'];
           dealList = onValue['response_data']['dealsOfDay'];
           topDealList = onValue['response_data']['topDeals'];
           isLoadingAllData = false;
@@ -838,12 +865,14 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
             isLoadingAllData = true;
             isBannerLoading = true;
             isGetSubcribeLoading = true;
+            isLoadingCategoryList = true;
             getBannerData();
             getAllDataMethod();
             getSubScriptionData();
+            getCategoryList();
           });
         },
-        child: isLoadingAllData || isBannerLoading || isGetSubcribeLoading
+        child: isLoadingAllData || isBannerLoading || isGetSubcribeLoading || isLoadingCategoryList
             ? SquareLoader()
             : (categoryList.length == 0 &&
                     productsList.length == 0 &&
@@ -863,46 +892,90 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                                   children: [banner(), Divider()],
                                 )
                               : Container(),
-                          categoryList.length > 0
-                              ? Column(
-                                  children: [categoryRow(), Divider()],
-                                )
-                              : Container(),
-                          topDealList.length > 0
-                              ? Column(
-                                  children: [
-                                    topDealsRow("TOP_DEALS", topDealList),
-                                    Divider()
-                                  ],
-                                )
-                              : Container(),
-                          productsList.length > 0
-                              ? Column(
-                                  children: [
-                                    productRow("PRODUCTS", productsList),
-                                    Divider()
-                                  ],
-                                )
-                              : Container(),
-                          subscriptionProductsList.length > 0
-                              ? Column(
-                                  children: [
-                                    subscriptionProductsRow(
-                                        "SUBSCRIPTION_PRODUCTS",
-                                        subscriptionProductsList),
-                                    Divider()
-                                  ],
-                                )
-                              : Container(),
-                          dealList.length > 0
-                              ? Column(
-                                  children: [
-                                    todayDealsRow(
-                                        "DEALS_OF_THE_DAYS", dealList),
-                                    Divider()
-                                  ],
-                                )
-                              : Container(),
+                          isLoadingCategoryList
+                              ? SquareLoader()
+                              : Container(
+                            child: GridView.builder(
+                              // padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                              physics: ScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount:
+                              categoryList.length == null ? 0 : categoryList.length,
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  childAspectRatio: MediaQuery.of(context).size.width / 480,
+                                  crossAxisSpacing: 0,
+                                  mainAxisSpacing: 0),
+                              itemBuilder: (BuildContext context, int index) {
+                                return InkWell(
+                                  key: ValueKey('$index-first-category'),
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (BuildContext context) => AllProducts(
+                                          locale: widget.locale,
+                                          localizedValues: widget.localizedValues,
+                                          categoryId: categoryList[index]['_id'],
+                                          pageTitle: categoryList[index]['title'],
+                                          categoryIndex: index
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: CategoryBlock(
+                                      image: categoryList[index]['filePath'] == null
+                                          ? categoryList[index]['imageUrl']
+                                          : categoryList[index]['filePath'],
+                                      title: categoryList[index]['title'],
+                                      isPath: categoryList[index]['filePath'] == null
+                                          ? false
+                                          : true,
+                                      isHome: false),
+                                );
+                              },
+                            ),
+                          ),
+                          // categoryList.length > 0
+                          //     ? Column(
+                          //         children: [categoryRow(), Divider()],
+                          //       )
+                          //     : Container(),
+                          // topDealList.length > 0
+                          //     ? Column(
+                          //         children: [
+                          //           topDealsRow("TOP_DEALS", topDealList),
+                          //           Divider()
+                          //         ],
+                          //       )
+                          //     : Container(),
+                          // productsList.length > 0
+                          //     ? Column(
+                          //         children: [
+                          //           productRow("PRODUCTS", productsList),
+                          //           Divider()
+                          //         ],
+                          //       )
+                          //     : Container(),
+                          // subscriptionProductsList.length > 0
+                          //     ? Column(
+                          //         children: [
+                          //           subscriptionProductsRow(
+                          //               "SUBSCRIPTION_PRODUCTS",
+                          //               subscriptionProductsList),
+                          //           Divider()
+                          //         ],
+                          //       )
+                          //     : Container(),
+                          // dealList.length > 0
+                          //     ? Column(
+                          //         children: [
+                          //           todayDealsRow(
+                          //               "DEALS_OF_THE_DAYS", dealList),
+                          //           Divider()
+                          //         ],
+                          //       )
+                          //     : Container(),
                           SizedBox(height: 10)
                         ],
                       ),
