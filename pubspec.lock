@@ -847,7 +847,7 @@ packages:
       name: socket_io_client
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.9.11"
+    version: "0.9.12"
   socket_io_common:
     dependency: transitive
     description:
@@ -925,13 +925,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0-nullsafety.1"
-  stripe_payment:
-    dependency: "direct main"
-    description:
-      name: stripe_payment
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.10"
   sync_http:
     dependency: transitive
     description:

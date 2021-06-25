@@ -20,7 +20,7 @@ dependencies:
   image_picker: ^0.6.3+1
   async_loader: ^0.1.2
   google_maps_flutter: ^0.5.25+3
-  socket_io_client: ^0.9.9
+  socket_io_client: 
   onesignal_flutter: ^2.4.1
   flutter_rating_bar: ^3.0.1+1
   dotted_border: ^1.0.5
@@ -31,7 +31,6 @@ dependencies:
   pull_to_refresh: ^1.5.7
   url_launcher: ^5.4.5
   flutter_map_picker: ^0.1.2
-  stripe_payment: ^1.0.7
   flutter_dotenv: ^2.1.0
   http_interceptor: ^0.3.2
   fluttertoast: ^7.0.2
