@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:getflutter/getflutter.dart';
-import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:getwidget/getwidget.dart';
+import 'package:readymade_grocery_app/service/localizations.dart';
+import 'package:readymade_grocery_app/style/style.dart';
 
 Widget appBarPrimary(BuildContext context, title) {
   return GFAppBar(
@@ -9,7 +9,7 @@ Widget appBarPrimary(BuildContext context, title) {
         borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
       ),
-      title: Text(MyLocalizations.of(context).getLocalizations(title),
+      title: Text(MyLocalizations.of(context)!.getLocalizations(title),
           style: textbarlowSemiBoldBlack(context)),
       centerTitle: true,
       backgroundColor: primary(context),
@@ -18,7 +18,7 @@ Widget appBarPrimary(BuildContext context, title) {
 
 Widget appBarPrimarynoradius(BuildContext context, title) {
   return GFAppBar(
-      title: Text(MyLocalizations.of(context).getLocalizations(title),
+      title: Text(MyLocalizations.of(context)!.getLocalizations(title),
           style: textbarlowSemiBoldBlack(context)),
       centerTitle: true,
       backgroundColor: primary(context),
@@ -30,7 +30,7 @@ Widget appBarWhite(BuildContext context, title, bool changeUi,
   return GFAppBar(
     title: changeUi
         ? title
-        : Text(MyLocalizations.of(context).getLocalizations(title),
+        : Text(MyLocalizations.of(context)!.getLocalizations(title),
             style: textbarlowSemiBoldBlack(context)),
     centerTitle: true,
     backgroundColor: bg(context),
@@ -42,7 +42,7 @@ Widget appBarWhite(BuildContext context, title, bool changeUi,
 
 Widget appBarTransparent(BuildContext context, title) {
   return GFAppBar(
-      title: Text(MyLocalizations.of(context).getLocalizations(title),
+      title: Text(MyLocalizations.of(context)!.getLocalizations(title),
           style: textbarlowSemiBoldBlack(context)),
       centerTitle: true,
       backgroundColor: Colors.transparent,
@@ -53,7 +53,7 @@ Widget appBarTransparent(BuildContext context, title) {
 Widget appBarTransparentWithoutBack(BuildContext context, title) {
   return GFAppBar(
       automaticallyImplyLeading: false,
-      title: Text(MyLocalizations.of(context).getLocalizations(title),
+      title: Text(MyLocalizations.of(context)!.getLocalizations(title),
           style: appbarText(context)),
       centerTitle: true,
       backgroundColor: Theme.of(context).brightness == Brightness.dark

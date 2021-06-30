@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:getflutter/getflutter.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:getwidget/getwidget.dart';
+import 'package:readymade_grocery_app/style/style.dart';
 
 class SquareLoader extends StatelessWidget {
   final size;

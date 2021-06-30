@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:readymadeGroceryApp/model/counterModel.dart';
-import 'package:readymadeGroceryApp/screens/home/home.dart';
-import 'package:readymadeGroceryApp/screens/product/product-details.dart';
-import 'package:readymadeGroceryApp/screens/tab/searchitem.dart';
-import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/service/product-service.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
-import 'package:readymadeGroceryApp/widgets/appBar.dart';
-import 'package:readymadeGroceryApp/widgets/button.dart';
-import 'package:readymadeGroceryApp/widgets/loader.dart';
-import 'package:readymadeGroceryApp/widgets/normalText.dart';
-import 'package:readymadeGroceryApp/widgets/product_gridcard.dart';
+import 'package:readymade_grocery_app/model/counterModel.dart';
+import 'package:readymade_grocery_app/screens/home/home.dart';
+import 'package:readymade_grocery_app/screens/product/product-details.dart';
+import 'package:readymade_grocery_app/screens/tab/searchitem.dart';
+import 'package:readymade_grocery_app/service/common.dart';
+import 'package:readymade_grocery_app/service/localizations.dart';
+import 'package:readymade_grocery_app/service/product-service.dart';
+import 'package:readymade_grocery_app/service/sentry-service.dart';
+import 'package:readymade_grocery_app/style/style.dart';
+import 'package:readymade_grocery_app/widgets/appBar.dart';
+import 'package:readymade_grocery_app/widgets/button.dart';
+import 'package:readymade_grocery_app/widgets/loader.dart';
+import 'package:readymade_grocery_app/widgets/normalText.dart';
+import 'package:readymade_grocery_app/widgets/product_gridcard.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../style/style.dart';
 import '../../widgets/loader.dart';
@@ -20,11 +20,11 @@ import '../../widgets/loader.dart';
 SentryError sentryError = new SentryError();
 
 class AllProducts extends StatefulWidget {
-  final Map localizedValues;
-  final String locale, dealId, categoryId, pageTitle;
+  final Map? localizedValues;
+  final String? locale, dealId, categoryId, pageTitle;
 
   AllProducts({
-    Key key,
+    Key? key,
     this.locale,
     this.localizedValues,
     this.dealId,
@@ -49,8 +49,8 @@ class _AllProductsState extends State<AllProducts> {
   List productsList = [], subCategoryList = [];
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  String currency;
-  ScrollController _scrollController = ScrollController();
+  String? currency;
+  late ScrollController _scrollController = ScrollController();
 
   var cartData;
 
@@ -76,7 +76,7 @@ class _AllProductsState extends State<AllProducts> {
 
   @override
   void dispose() {
-    if (_scrollController != null) _scrollController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -326,7 +326,7 @@ class _AllProductsState extends State<AllProducts> {
             ),
           ),
         ),
-      ),
+      ) as PreferredSizeWidget,
       body: isSubCategoryLoading
           ? Center(child: SquareLoader())
           : Column(
@@ -353,7 +353,7 @@ class _AllProductsState extends State<AllProducts> {
                                     child: subCatTab(
                                       context,
                                       i == 0
-                                          ? MyLocalizations.of(context)
+                                          ? MyLocalizations.of(context)!
                                               .getLocalizations('ALL')
                                           : subCategoryList[i - 1]['title'],
                                       selectedSubCategoryIndex == i
@@ -379,9 +379,7 @@ class _AllProductsState extends State<AllProducts> {
                               physics: ScrollPhysics(),
                               controller: _scrollController,
                               shrinkWrap: true,
-                              itemCount: productsList.length == null
-                                  ? 0
-                                  : productsList.length,
+                              itemCount: productsList.length,
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2,

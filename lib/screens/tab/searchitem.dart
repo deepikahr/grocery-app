@@ -1,27 +1,27 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:readymadeGroceryApp/model/counterModel.dart';
-import 'package:readymadeGroceryApp/screens/home/home.dart';
-import 'package:readymadeGroceryApp/screens/product/product-details.dart';
-import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/service/product-service.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
-import 'package:readymadeGroceryApp/widgets/button.dart';
-import 'package:readymadeGroceryApp/widgets/loader.dart';
-import 'package:readymadeGroceryApp/widgets/normalText.dart';
-import 'package:readymadeGroceryApp/widgets/product_gridcard.dart';
+import 'package:readymade_grocery_app/model/counterModel.dart';
+import 'package:readymade_grocery_app/screens/home/home.dart';
+import 'package:readymade_grocery_app/screens/product/product-details.dart';
+import 'package:readymade_grocery_app/service/common.dart';
+import 'package:readymade_grocery_app/service/localizations.dart';
+import 'package:readymade_grocery_app/service/product-service.dart';
+import 'package:readymade_grocery_app/service/sentry-service.dart';
+import 'package:readymade_grocery_app/style/style.dart';
+import 'package:readymade_grocery_app/widgets/button.dart';
+import 'package:readymade_grocery_app/widgets/loader.dart';
+import 'package:readymade_grocery_app/widgets/normalText.dart';
+import 'package:readymade_grocery_app/widgets/product_gridcard.dart';
 
 SentryError sentryError = new SentryError();
 
 class SearchItem extends StatefulWidget {
-  final String currency, locale;
-  final bool token;
-  final Map localizedValues;
+  final String? currency, locale;
+  final bool? token;
+  final Map? localizedValues;
   SearchItem(
-      {Key key, this.currency, this.locale, this.token, this.localizedValues})
+      {Key? key, this.currency, this.locale, this.token, this.localizedValues})
       : super(key: key);
   @override
   _SearchItemState createState() => _SearchItemState();
@@ -37,11 +37,11 @@ class _SearchItemState extends State<SearchItem> {
       isTokenGetLoading = false,
       lastApiCall = true;
   List searchresult = [];
-  String cartId, searchTerm;
+  String? cartId, searchTerm;
   var cartData;
-  String currency;
+  String? currency;
   int productLimt = 10, productIndex = 0, totalProduct = 1;
-  Timer timer;
+  Timer? timer;
   @override
   void initState() {
     getCurrency();
@@ -86,22 +86,22 @@ class _SearchItemState extends State<SearchItem> {
 
   @override
   void dispose() {
-    if (timer != null && timer.isActive) {
-      timer.cancel();
+    if (timer != null && timer!.isActive) {
+      timer?.cancel();
     }
     super.dispose();
   }
 
   void _searchForProducts() async {
     final form = _formKeyForSearch.currentState;
-    if (form.validate()) {
+    if (form!.validate()) {
       form.save();
       if (mounted) {
         setState(() {
           isFirstTime = false;
           isSearching = true;
           searchData();
-          if (timer != null && timer.isActive) timer.cancel();
+          if (timer != null && timer!.isActive) timer?.cancel();
           timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
             if (lastApiCall == false) {
               productIndex++;
@@ -110,7 +110,7 @@ class _SearchItemState extends State<SearchItem> {
           });
           FocusScopeNode currentScope = FocusScope.of(context);
           FocusScopeNode rootScope =
-              WidgetsBinding.instance.focusManager.rootScope;
+              WidgetsBinding.instance!.focusManager.rootScope;
 
           if (currentScope != rootScope) {
             currentScope.unfocus();
@@ -134,7 +134,7 @@ class _SearchItemState extends State<SearchItem> {
           if (onValue['response_data'].length > 0) {
             searchresult.addAll(onValue['response_data']);
           } else {
-            if (timer != null && timer.isActive) timer.cancel();
+            if (timer != null && timer!.isActive) timer?.cancel();
           }
           isSearching = false;
         });
@@ -184,7 +184,7 @@ class _SearchItemState extends State<SearchItem> {
                         onEditingComplete: () {
                           FocusScopeNode currentScope = FocusScope.of(context);
                           FocusScopeNode rootScope =
-                              WidgetsBinding.instance.focusManager.rootScope;
+                              WidgetsBinding.instance!.focusManager.rootScope;
 
                           if (currentScope != rootScope) {
                             currentScope.unfocus();
@@ -197,12 +197,12 @@ class _SearchItemState extends State<SearchItem> {
                         style: new TextStyle(
                           color: Colors.black,
                         ),
-                        onSaved: (String value) {
+                        onSaved: (String? value) {
                           searchTerm = value;
                         },
-                        validator: (String value) {
-                          if (value.isEmpty) {
-                            return MyLocalizations.of(context)
+                        validator: (String? value) {
+                          if (value!.isEmpty) {
+                            return MyLocalizations.of(context)!
                                 .getLocalizations("WHAT_ARE_YOU_BUING_TODAY");
                           } else
                             return null;
@@ -213,7 +213,7 @@ class _SearchItemState extends State<SearchItem> {
                               FocusScopeNode currentScope =
                                   FocusScope.of(context);
                               FocusScopeNode rootScope = WidgetsBinding
-                                  .instance.focusManager.rootScope;
+                                  .instance!.focusManager.rootScope;
 
                               if (currentScope != rootScope) {
                                 currentScope.unfocus();
@@ -229,7 +229,7 @@ class _SearchItemState extends State<SearchItem> {
                               FocusScopeNode currentScope =
                                   FocusScope.of(context);
                               FocusScopeNode rootScope = WidgetsBinding
-                                  .instance.focusManager.rootScope;
+                                  .instance!.focusManager.rootScope;
 
                               if (currentScope != rootScope) {
                                 currentScope.unfocus();
@@ -239,7 +239,7 @@ class _SearchItemState extends State<SearchItem> {
                             child:
                                 new Icon(Icons.arrow_back, color: Colors.black),
                           ),
-                          hintText: MyLocalizations.of(context)
+                          hintText: MyLocalizations.of(context)!
                               .getLocalizations("WHAT_ARE_YOU_BUING_TODAY"),
                           hintStyle: new TextStyle(
                             color: greyb2,
@@ -283,7 +283,7 @@ class _SearchItemState extends State<SearchItem> {
                                       Text(
                                           searchresult.length.toString() +
                                               " " +
-                                              MyLocalizations.of(context)
+                                              MyLocalizations.of(context)!
                                                   .getLocalizations(
                                                       "ITEMS_FOUNDS"),
                                           style:
@@ -296,9 +296,7 @@ class _SearchItemState extends State<SearchItem> {
                                       vertical: 16, horizontal: 16),
                                   physics: ScrollPhysics(),
                                   shrinkWrap: true,
-                                  itemCount: searchresult.length == null
-                                      ? 0
-                                      : searchresult.length,
+                                  itemCount: searchresult.length,
                                   gridDelegate:
                                       SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisCount: 2,
@@ -320,7 +318,7 @@ class _SearchItemState extends State<SearchItem> {
                                           FocusScopeNode currentScope =
                                               FocusScope.of(context);
                                           FocusScopeNode rootScope =
-                                              WidgetsBinding.instance
+                                              WidgetsBinding.instance!
                                                   .focusManager.rootScope;
 
                                           if (currentScope != rootScope) {
@@ -341,7 +339,7 @@ class _SearchItemState extends State<SearchItem> {
                                           );
                                           result.then((value) {
                                             if (value != null) {
-                                              if (searchTerm.length > 0) {
+                                              if (searchTerm!.length > 0) {
                                                 productIndex = 0;
                                                 searchresult = [];
                                                 _searchForProducts();
@@ -375,7 +373,7 @@ class _SearchItemState extends State<SearchItem> {
               onTap: () {
                 FocusScopeNode currentScope = FocusScope.of(context);
                 FocusScopeNode rootScope =
-                    WidgetsBinding.instance.focusManager.rootScope;
+                    WidgetsBinding.instance!.focusManager.rootScope;
 
                 if (currentScope != rootScope) {
                   currentScope.unfocus();
@@ -390,7 +388,7 @@ class _SearchItemState extends State<SearchItem> {
                   ),
                 );
                 result.then((value) {
-                  if (searchTerm.length > 0) {
+                  if (searchTerm!.length > 0) {
                     productIndex = 0;
                     searchresult = [];
                     _searchForProducts();

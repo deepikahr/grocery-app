@@ -1,31 +1,31 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:readymadeGroceryApp/model/pausedSubscriptionBottomSheet.dart';
-import 'package:readymadeGroceryApp/screens/subsription/add_edit_subscriptionPage.dart';
-import 'package:readymadeGroceryApp/screens/subsription/subscriptionDetails.dart';
-import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/constants.dart';
-import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/service/product-service.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
-import 'package:readymadeGroceryApp/widgets/appBar.dart';
-import 'package:readymadeGroceryApp/widgets/button.dart';
-import 'package:readymadeGroceryApp/widgets/loader.dart';
+import 'package:readymade_grocery_app/model/pausedSubscriptionBottomSheet.dart';
+import 'package:readymade_grocery_app/screens/subsription/add_edit_subscriptionPage.dart';
+import 'package:readymade_grocery_app/screens/subsription/subscriptionDetails.dart';
+import 'package:readymade_grocery_app/service/common.dart';
+import 'package:readymade_grocery_app/service/constants.dart';
+import 'package:readymade_grocery_app/service/localizations.dart';
+import 'package:readymade_grocery_app/service/product-service.dart';
+import 'package:readymade_grocery_app/service/sentry-service.dart';
+import 'package:readymade_grocery_app/style/style.dart';
+import 'package:readymade_grocery_app/widgets/appBar.dart';
+import 'package:readymade_grocery_app/widgets/button.dart';
+import 'package:readymade_grocery_app/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:readymadeGroceryApp/widgets/normalText.dart';
+import 'package:readymade_grocery_app/widgets/normalText.dart';
 import '../../style/style.dart';
 import '../../widgets/loader.dart';
 
 SentryError sentryError = new SentryError();
 
 class SubScriptionList extends StatefulWidget {
-  final Map localizedValues;
-  final String locale;
+  final Map? localizedValues;
+  final String? locale;
 
   SubScriptionList({
-    Key key,
+    Key? key,
     this.locale,
     this.localizedValues,
   });
@@ -41,12 +41,12 @@ class _AllSubscribedState extends State<SubScriptionList> {
       isSubscriptionCancelLoading = false;
   int subscriptionPerPage = 12,
       subscriptionsPageNumber = 0,
-      totalSubscription = 1,
-      subscIndex;
+      totalSubscription = 1;
+  int? subscIndex;
   List subscriptionList = [];
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  String currency;
+  String? currency;
   ScrollController _scrollController = ScrollController();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
@@ -64,7 +64,7 @@ class _AllSubscribedState extends State<SubScriptionList> {
 
   @override
   void dispose() {
-    if (_scrollController != null) _scrollController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -195,11 +195,12 @@ class _AllSubscribedState extends State<SubScriptionList> {
   }
 
   void showSnackbar(message) {
-    final snackBar = SnackBar(
-      content: Text(message),
-      duration: Duration(milliseconds: 3000),
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(milliseconds: 3000),
+      ),
     );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   showCancelSubscription(index) {
@@ -207,13 +208,14 @@ class _AllSubscribedState extends State<SubScriptionList> {
       context: context,
       builder: (context) => new AlertDialog(
         title: new Text(
-            MyLocalizations.of(context).getLocalizations("ARE_YOU_SURE")),
-        content: new Text(MyLocalizations.of(context)
+            MyLocalizations.of(context)!.getLocalizations("ARE_YOU_SURE")),
+        content: new Text(MyLocalizations.of(context)!
             .getLocalizations("YOU_WANT_TO_CANCEL_SUBSCRIPTION")),
         actions: <Widget>[
           new FlatButton(
             onPressed: () => Navigator.pop(context, false),
-            child: new Text(MyLocalizations.of(context).getLocalizations("NO")),
+            child:
+                new Text(MyLocalizations.of(context)!.getLocalizations("NO")),
           ),
           new FlatButton(
             onPressed: () {
@@ -223,7 +225,7 @@ class _AllSubscribedState extends State<SubScriptionList> {
               });
             },
             child:
-                new Text(MyLocalizations.of(context).getLocalizations("YES")),
+                new Text(MyLocalizations.of(context)!.getLocalizations("YES")),
           ),
         ],
       ),
@@ -235,7 +237,8 @@ class _AllSubscribedState extends State<SubScriptionList> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: bg(context),
-      appBar: appBarPrimarynoradius(context, "SUBSCRIPTION_LIST"),
+      appBar: appBarPrimarynoradius(context, "SUBSCRIPTION_LIST")
+          as PreferredSizeWidget,
       body: Column(
         children: [
           Flexible(
@@ -253,9 +256,7 @@ class _AllSubscribedState extends State<SubScriptionList> {
                             physics: ScrollPhysics(),
                             controller: _scrollController,
                             shrinkWrap: true,
-                            itemCount: subscriptionList.length == null
-                                ? 0
-                                : subscriptionList.length,
+                            itemCount: subscriptionList.length,
                             itemBuilder: (BuildContext context, int index) {
                               return InkWell(
                                 onTap: () => Navigator.push(
@@ -301,7 +302,7 @@ class _AllSubscribedState extends State<SubScriptionList> {
                                                                   ['productImages']
                                                               [0]['filePath'] !=
                                                           null
-                                                      ? Constants.imageUrlPath +
+                                                      ? Constants.imageUrlPath! +
                                                           "/tr:dpr-auto,tr:w-500" +
                                                           subscriptionList[index]
                                                                       ['products'][0]
@@ -350,10 +351,10 @@ class _AllSubscribedState extends State<SubScriptionList> {
                                                                   ['products']
                                                               [0]['filePath'] !=
                                                           null
-                                                      ? Constants.imageUrlPath +
+                                                      ? Constants
+                                                              .imageUrlPath! +
                                                           "/tr:dpr-auto,tr:w-500" +
-                                                          subscriptionList[
-                                                                      index]
+                                                          subscriptionList[index]
                                                                   ['products']
                                                               [0]['filePath']
                                                       : subscriptionList[index]
@@ -422,12 +423,12 @@ class _AllSubscribedState extends State<SubScriptionList> {
                                                   regularTextatStart(
                                                       context,
                                                       MyLocalizations.of(
-                                                                  context)
+                                                                  context)!
                                                               .getLocalizations(
                                                                   "SUBSCRIPTION",
                                                                   true) +
                                                           MyLocalizations.of(
-                                                                  context)
+                                                                  context)!
                                                               .getLocalizations(
                                                                   subscriptionList[
                                                                           index]
@@ -436,7 +437,7 @@ class _AllSubscribedState extends State<SubScriptionList> {
                                                   SizedBox(height: 5),
                                                   textLightSmall(
                                                       MyLocalizations.of(
-                                                                  context)
+                                                                  context)!
                                                               .getLocalizations(
                                                                   "QUANTITY",
                                                                   true) +
@@ -632,7 +633,7 @@ class _AllSubscribedState extends State<SubScriptionList> {
                                                             ['status'] ==
                                                         "PAUSE"
                                                     ? textLightSmall(
-                                                        "${MyLocalizations.of(context).getLocalizations("YOUR_SUBSCRIPTION_IS_PAUSED_FORM")} ${DateFormat('dd/MM/yyyy', widget.locale ?? "en").format(DateTime.parse(subscriptionList[index]['pauseStartDate'].toString()))} ${MyLocalizations.of(context).getLocalizations("TO")}  ${DateFormat('dd/MM/yyyy', widget.locale ?? "en").format(DateTime.parse(subscriptionList[index]['pauseEndDate'].toString()))}",
+                                                        "${MyLocalizations.of(context)!.getLocalizations("YOUR_SUBSCRIPTION_IS_PAUSED_FORM")} ${DateFormat('dd/MM/yyyy', widget.locale ?? "en").format(DateTime.parse(subscriptionList[index]['pauseStartDate'].toString()))} ${MyLocalizations.of(context)!.getLocalizations("TO")}  ${DateFormat('dd/MM/yyyy', widget.locale ?? "en").format(DateTime.parse(subscriptionList[index]['pauseEndDate'].toString()))}",
                                                         context)
                                                     : Container()
                                               ],

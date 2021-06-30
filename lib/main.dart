@@ -6,28 +6,27 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-import 'package:readymadeGroceryApp/screens/home/home.dart';
-import 'package:readymadeGroceryApp/service/alert-service.dart';
-import 'package:readymadeGroceryApp/service/auth-service.dart';
-import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/constants.dart';
-import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymade_grocery_app/screens/home/home.dart';
+import 'package:readymade_grocery_app/service/alert-service.dart';
+import 'package:readymade_grocery_app/service/auth-service.dart';
+import 'package:readymade_grocery_app/service/common.dart';
+import 'package:readymade_grocery_app/service/constants.dart';
+import 'package:readymade_grocery_app/service/localizations.dart';
+import 'package:readymade_grocery_app/service/sentry-service.dart';
+import 'package:readymade_grocery_app/style/style.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/widgets.dart';
 export 'package:flutter/services.dart' show Brightness;
 
 SentryError sentryError = new SentryError();
-Timer oneSignalTimer;
 
 void main() {
   initializeMain(isTest: false);
 }
 
-void initializeMain({bool isTest}) async {
-  await DotEnv().load('.env');
+void initializeMain({bool? isTest}) async {
+  await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarBrightness: Brightness.dark,
@@ -36,17 +35,15 @@ void initializeMain({bool isTest}) async {
   runZoned<Future>(() {
     runApp(MainScreen());
     return Future.value(null);
+    // ignore: deprecated_member_use
   }, onError: (error, stackTrace) {
     sentryError.reportError(error, stackTrace);
   });
   initializeLanguage(isTest: isTest);
 }
 
-void initializeLanguage({bool isTest}) async {
+void initializeLanguage({bool? isTest}) async {
   if (isTest != null && !isTest) {
-    oneSignalTimer = Timer.periodic(Duration(seconds: 4), (timer) {
-      configLocalNotification();
-    });
     configLocalNotification();
   }
   getToken();
@@ -77,26 +74,16 @@ void userInfoMethod() async {
 }
 
 Future<void> configLocalNotification() async {
-  var settings = {
-    OSiOSSettings.autoPrompt: true,
-    OSiOSSettings.promptBeforeOpeningPushUrl: true
-  };
-  OneSignal.shared
-      .setNotificationReceivedHandler((OSNotification notification) {});
-  OneSignal.shared
-      .setNotificationOpenedHandler((OSNotificationOpenedResult result) {});
-  await OneSignal.shared.init(Constants.oneSignalKey, iOSSettings: settings);
-  OneSignal.shared
+  await OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
+  await OneSignal.shared.setAppId(Constants.oneSignalKey!);
+  await OneSignal.shared
       .promptUserForPushNotificationPermission(fallbackToSettings: true);
-  OneSignal.shared
-      .setInFocusDisplayType(OSNotificationDisplayType.notification);
-  var status = await OneSignal.shared.getPermissionSubscriptionState();
-  String playerId = status.subscriptionStatus.userId;
+  var status =
+      await (OneSignal.shared.getDeviceState() as FutureOr<OSDeviceState>);
+  var playerId = status.userId;
   if (playerId != null) {
     await Common.setPlayerID(playerId);
     getToken();
-    if (oneSignalTimer != null && oneSignalTimer.isActive)
-      oneSignalTimer.cancel();
   }
 }
 
@@ -108,8 +95,8 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   DarkThemeProvider themeChangeProvider = new DarkThemeProvider();
 
-  String locale;
-  Map localizedValues;
+  String? locale;
+  Map? localizedValues;
   bool isGetJsonLoading = false;
   void initState() {
     super.initState();
@@ -131,8 +118,7 @@ class _MainScreenState extends State<MainScreen> {
       isGetJsonLoading = true;
     });
     await Common.getSelectedLanguage().then((selectedLocale) async {
-      String defaultLocale = '';
-      locale = selectedLocale ?? defaultLocale;
+      locale = selectedLocale ?? '';
       await LoginService.getLanguageJson(locale).then((value) async {
         setState(() {
           isGetJsonLoading = false;
@@ -145,7 +131,7 @@ class _MainScreenState extends State<MainScreen> {
           "NO_INTERNET_MSG": value['response_data']['json'][locale]
               ["NO_INTERNET_MSG"]
         });
-        await Common.setSelectedLanguage(locale);
+        await Common.setSelectedLanguage(locale!);
       });
     });
   }
@@ -157,7 +143,7 @@ class _MainScreenState extends State<MainScreen> {
         return themeChangeProvider;
       },
       child: Consumer<DarkThemeProvider>(
-        builder: (BuildContext context, value, Widget child) {
+        builder: (BuildContext context, value, Widget? child) {
           return isGetJsonLoading
               ? MaterialApp(
                   debugShowCheckedModeBanner: false,
@@ -166,15 +152,15 @@ class _MainScreenState extends State<MainScreen> {
                       Styles.themeData(themeChangeProvider.darkTheme, context),
                   home: AnimatedScreen())
               : MaterialApp(
-                  locale: Locale(locale),
+                  locale: Locale(locale!),
                   localizationsDelegates: [
-                    MyLocalizationsDelegate(localizedValues, [locale]),
+                    MyLocalizationsDelegate(localizedValues!, [locale]),
                     GlobalWidgetsLocalizations.delegate,
                     GlobalMaterialLocalizations.delegate,
                     GlobalCupertinoLocalizations.delegate,
                     DefaultCupertinoLocalizations.delegate
                   ],
-                  supportedLocales: [Locale(locale)],
+                  supportedLocales: [Locale(locale!)],
                   debugShowCheckedModeBanner: false,
                   title: Constants.appName,
                   theme:

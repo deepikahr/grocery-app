@@ -1,9 +1,9 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:getflutter/getwidget.dart';
-import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
-import 'package:readymadeGroceryApp/widgets/loader.dart';
+import 'package:getwidget/getwidget.dart';
+import 'package:readymade_grocery_app/service/localizations.dart';
+import 'package:readymade_grocery_app/style/style.dart';
+import 'package:readymade_grocery_app/widgets/loader.dart';
 
 Widget buttonprimary(BuildContext context, title, isLoading) {
   return Container(
@@ -25,7 +25,7 @@ Widget buttonprimary(BuildContext context, title, isLoading) {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(MyLocalizations.of(context).getLocalizations(title),
+            Text(MyLocalizations.of(context)!.getLocalizations(title),
                 style: textBarlowRegularBlack(context)),
             SizedBox(height: 10),
             isLoading ? GFLoader(type: GFLoaderType.ios) : Container()
@@ -54,7 +54,7 @@ Widget regularbuttonPrimary(BuildContext context, title, isLoading) {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(MyLocalizations.of(context).getLocalizations(title),
+            Text(MyLocalizations.of(context)!.getLocalizations(title),
                 style: textBarlowRegularBlack(context)),
             SizedBox(height: 10),
             isLoading ? GFLoader(type: GFLoaderType.ios) : Container()
@@ -84,7 +84,7 @@ Widget regularGreyButton(BuildContext context, title, isLoading) {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(MyLocalizations.of(context).getLocalizations(title),
+            Text(MyLocalizations.of(context)!.getLocalizations(title),
                 style: textBarlowRegularBlack(context)),
             SizedBox(height: 10),
             isLoading ? GFLoader(type: GFLoaderType.ios) : Container()
@@ -113,7 +113,7 @@ Widget productAddButton(BuildContext context, title, isLoading) => Container(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              MyLocalizations.of(context).getLocalizations(title),
+              MyLocalizations.of(context)!.getLocalizations(title),
               style: textbarlowMediumBlackm(context),
             ),
             isLoading ? GFLoader(type: GFLoaderType.ios) : Text("")
@@ -138,7 +138,7 @@ Widget subscribeButton(BuildContext context, title, isLoading) {
         children: <Widget>[
           Expanded(
             child: Text(
-              MyLocalizations.of(context).getLocalizations(title),
+              MyLocalizations.of(context)!.getLocalizations(title),
               style: textbarlowMediumBlackm(context),
             ),
           ),
@@ -164,7 +164,7 @@ Widget subscribeButtonWithOutExpanded(BuildContext context, title, isLoading) {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
-            MyLocalizations.of(context).getLocalizations(title),
+            MyLocalizations.of(context)!.getLocalizations(title),
             style: textbarlowMediumBlackm(context),
           ),
           isLoading ? GFLoader(type: GFLoaderType.ios) : Text("")
@@ -188,7 +188,7 @@ Widget subscribePrimary(BuildContext context, title, isLoading) {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
-            MyLocalizations.of(context).getLocalizations(title),
+            MyLocalizations.of(context)!.getLocalizations(title),
             style: textBarlowSemiboldblack(context),
           ),
           isLoading ? GFLoader(type: GFLoaderType.ios) : Text("")
@@ -209,7 +209,7 @@ Widget transparenttButton(BuildContext context, title, icon) {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-            MyLocalizations.of(context).getLocalizations(title),
+            MyLocalizations.of(context)!.getLocalizations(title),
             style: hintSfboldBig(context),
           ),
           icon
@@ -240,7 +240,7 @@ Widget editProfileButton(BuildContext context, title, isLoading) {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              MyLocalizations.of(context).getLocalizations(title),
+              MyLocalizations.of(context)!.getLocalizations(title),
               style: textBarlowRegularrBlack(context),
             ),
             SizedBox(
@@ -266,7 +266,7 @@ Widget primaryOutlineButton(BuildContext context, title) {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Text(
-          MyLocalizations.of(context).getLocalizations(title),
+          MyLocalizations.of(context)!.getLocalizations(title),
           style: textbarlowRegularaPrimar(context),
         ),
       ],
@@ -284,7 +284,7 @@ Widget primarySolidButtonSmall(BuildContext context, title) {
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text(MyLocalizations.of(context).getLocalizations(title),
+        Text(MyLocalizations.of(context)!.getLocalizations(title),
             style: textbarlowRegularadark(context)),
       ],
     ),
@@ -306,7 +306,7 @@ Widget dottedBorderButton(BuildContext context, title) {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
-            MyLocalizations.of(context).getLocalizations(title),
+            MyLocalizations.of(context)!.getLocalizations(title),
             style: textBarlowRegularBb(context),
           ),
         ],
@@ -333,7 +333,7 @@ Widget dottedBorderButtonn(BuildContext context, title) {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Text(
-              MyLocalizations.of(context).getLocalizations(title),
+              MyLocalizations.of(context)!.getLocalizations(title),
               style: textBarlowRegularBlackwithOpa(context),
             ),
             Image.asset(
@@ -355,7 +355,7 @@ Widget transparentIconButton(BuildContext context, title, Icon icon) {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Text(
-          MyLocalizations.of(context).getLocalizations(title),
+          MyLocalizations.of(context)!.getLocalizations(title),
           style: hintSfboldBig(context),
         ),
         icon
@@ -374,7 +374,7 @@ Widget transparentButton(BuildContext context, title) {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-            MyLocalizations.of(context).getLocalizations(title),
+            MyLocalizations.of(context)!.getLocalizations(title),
             style: hintSfboldBig(context),
           ),
         ],
@@ -427,7 +427,7 @@ Widget addToCartButton(
                           style: textBarlowRegularWhite(context),
                         ),
                         TextSpan(
-                            text: MyLocalizations.of(context)
+                            text: MyLocalizations.of(context)!
                                 .getLocalizations("ITEMS"),
                             style: textBarlowRegularWhite(context)),
                       ],
@@ -449,7 +449,7 @@ Widget addToCartButton(
                 Row(
                   children: [
                     isLoading ? GFLoader(type: GFLoaderType.ios) : Text(""),
-                    Text(MyLocalizations.of(context).getLocalizations(title),
+                    Text(MyLocalizations.of(context)!.getLocalizations(title),
                         style: TextStyle(
                             fontSize: 16.0,
                             fontFamily: 'BarlowRegular',
@@ -503,10 +503,10 @@ Widget checkoutButton(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   SizedBox(height: 8.0),
-                  Text(MyLocalizations.of(context).getLocalizations(total),
+                  Text(MyLocalizations.of(context)!.getLocalizations(total),
                       style: textBarlowRegularWhite(context)),
                   SizedBox(height: 1.0),
-                  new Text(MyLocalizations.of(context).getLocalizations(price),
+                  new Text(MyLocalizations.of(context)!.getLocalizations(price),
                       style: textbarlowBoldWhite(context)),
                 ],
               ),
@@ -516,7 +516,7 @@ Widget checkoutButton(
               child: Row(
                 children: [
                   isLoading ? GFLoader(type: GFLoaderType.ios) : Text(""),
-                  Text(MyLocalizations.of(context).getLocalizations(title),
+                  Text(MyLocalizations.of(context)!.getLocalizations(title),
                       style: TextStyle(
                           fontSize: 16.0,
                           fontFamily: 'BarlowRegular',
@@ -544,7 +544,7 @@ Widget applyCoupon(BuildContext context, title, isLoading) {
         child: isLoading
             ? SquareLoader()
             : Text(
-                MyLocalizations.of(context).getLocalizations(title) + " ",
+                MyLocalizations.of(context)!.getLocalizations(title) + " ",
                 style: textBarlowRegularBlack(context),
               ),
       ),
@@ -560,7 +560,7 @@ Widget alertSubmitButton(BuildContext context, title) {
     margin: EdgeInsets.symmetric(vertical: 5),
     child: GFButton(
       onPressed: null,
-      text: MyLocalizations.of(context).getLocalizations(title),
+      text: MyLocalizations.of(context)!.getLocalizations(title),
       color: primary(context),
       size: GFSize.SMALL,
       textStyle: textBarlowRegularrWhite(context),
@@ -579,7 +579,7 @@ Widget defaultButton(BuildContext context, title, color) {
       onPressed: null,
       color: dark(context),
       child: Text(
-        MyLocalizations.of(context).getLocalizations(title),
+        MyLocalizations.of(context)!.getLocalizations(title),
         style: textbarlowMediumprimary(context),
       ),
     ),
@@ -634,14 +634,15 @@ Widget mdPillsButton(BuildContext context, color, title, Map order) {
               ],
             )
           : Text(
-              MyLocalizations.of(context).getLocalizations(title),
+              MyLocalizations.of(context)!.getLocalizations(title),
               overflow: TextOverflow.ellipsis,
             ),
     ),
   );
 }
 
-Widget addsubQuantityButton(BuildContext context, color, Map order, isLoading) {
+Widget addsubQuantityButton(
+    BuildContext context, color, Map? order, isLoading) {
   return Container(
     width: 32,
     height: 32,
@@ -657,7 +658,7 @@ Widget addsubQuantityButton(BuildContext context, color, Map order, isLoading) {
                   isLoading ? GFLoader(type: GFLoaderType.ios) : Text(""),
                 ],
               )
-            : Container),
+            : Container()),
   );
 }
 
@@ -682,7 +683,7 @@ Widget cartInfoButton(BuildContext context, Map cartData, currency) {
                   SizedBox(height: 7),
                   new Text(
                     '(${cartData['products'].length})  ' +
-                        MyLocalizations.of(context).getLocalizations("ITEMS"),
+                        MyLocalizations.of(context)!.getLocalizations("ITEMS"),
                     style: textBarlowRegularWhite(context),
                   ),
                   new Text(
@@ -697,7 +698,7 @@ Widget cartInfoButton(BuildContext context, Map cartData, currency) {
                 Row(
                   children: <Widget>[
                     new Text(
-                      MyLocalizations.of(context)
+                      MyLocalizations.of(context)!
                           .getLocalizations("GO_TO_CART"),
                       style: TextStyle(
                           fontSize: 16.0,

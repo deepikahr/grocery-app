@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:readymadeGroceryApp/service/constants.dart';
+import 'package:readymade_grocery_app/service/constants.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
-import 'package:readymadeGroceryApp/widgets/normalText.dart';
+import 'package:readymade_grocery_app/style/style.dart';
+import 'package:readymade_grocery_app/widgets/normalText.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class DealsCard extends StatelessWidget {
   final image, title, price, currency, rating, category, offer, nullImage;
-  final bool isPath;
+  final bool? isPath;
   DealsCard(
-      {Key key,
+      {Key? key,
       this.image,
       this.title,
       this.price,
@@ -24,7 +24,6 @@ class DealsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final CardTheme cardTheme = CardTheme.of(context);
     final double _defaultElevation = 1;
     final Clip _defaultClipBehavior = Clip.none;
 
@@ -36,20 +35,20 @@ class DealsCard extends StatelessWidget {
       child: Material(
         type: MaterialType.card,
         color: Theme.of(context).cardColor,
-        elevation: _defaultElevation ?? cardTheme.elevation,
+        elevation: _defaultElevation,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(12)),
         ),
         borderOnForeground: true,
-        clipBehavior: _defaultClipBehavior ?? cardTheme.clipBehavior,
+        clipBehavior: _defaultClipBehavior,
         child: Column(
           children: <Widget>[
             ClipRRect(
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(12)),
               child: CachedNetworkImage(
-                imageUrl: isPath
-                    ? Constants.imageUrlPath + "/tr:dpr-auto,tr:w-500" + image
+                imageUrl: isPath!
+                    ? Constants.imageUrlPath! + "/tr:dpr-auto,tr:w-500" + image
                     : image,
                 imageBuilder: (context, imageProvider) => Container(
                   width: MediaQuery.of(context).size.width * 0.5,

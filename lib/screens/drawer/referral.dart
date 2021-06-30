@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:readymadeGroceryApp/widgets/appBar.dart';
-import 'package:readymadeGroceryApp/widgets/button.dart';
-import 'package:readymadeGroceryApp/widgets/normalText.dart';
+import 'package:readymade_grocery_app/widgets/appBar.dart';
+import 'package:readymade_grocery_app/widgets/button.dart';
+import 'package:readymade_grocery_app/widgets/normalText.dart';
 import '../../service/sentry-service.dart';
 
 SentryError sentryError = new SentryError();
 
 class ReferralPage extends StatefulWidget {
-  ReferralPage({Key key, this.locale, this.localizedValues}) : super(key: key);
+  ReferralPage({Key? key, this.locale, this.localizedValues}) : super(key: key);
 
-  final Map localizedValues;
-  final String locale;
+  final Map? localizedValues;
+  final String? locale;
 
   @override
   _ReferralPageState createState() => _ReferralPageState();
@@ -26,7 +26,7 @@ class _ReferralPageState extends State<ReferralPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: appBarPrimary(context, "REFER_EARN"),
+      appBar: appBarPrimary(context, "REFER_EARN") as PreferredSizeWidget,
       body: ListView(
         children: <Widget>[
           Container(

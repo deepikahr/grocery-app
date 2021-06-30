@@ -1,5 +1,5 @@
-import 'package:readymadeGroceryApp/service/cart-service.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymade_grocery_app/service/cart-service.dart';
+import 'package:readymade_grocery_app/service/sentry-service.dart';
 
 SentryError sentryError = new SentryError();
 

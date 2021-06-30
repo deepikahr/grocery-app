@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:readymadeGroceryApp/widgets/appBar.dart';
+import 'package:readymade_grocery_app/widgets/appBar.dart';
 import '../../service/auth-service.dart';
 import '../../service/sentry-service.dart';
 import '../../widgets/loader.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymade_grocery_app/style/style.dart';
 
 SentryError sentryError = new SentryError();
 
 class TandCandPrivacyPolicy extends StatefulWidget {
   TandCandPrivacyPolicy(
-      {Key key, this.locale, this.localizedValues, this.endPoint, this.title})
+      {Key? key, this.locale, this.localizedValues, this.endPoint, this.title})
       : super(key: key);
 
-  final Map localizedValues;
-  final String locale, endPoint, title;
+  final Map? localizedValues;
+  final String? locale, endPoint, title;
 
   @override
   _TandCandPrivacyPolicyState createState() => _TandCandPrivacyPolicyState();
@@ -66,7 +66,7 @@ class _TandCandPrivacyPolicyState extends State<TandCandPrivacyPolicy> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bg(context),
-      appBar: appBarTransparent(context, widget.title),
+      appBar: appBarTransparent(context, widget.title) as PreferredSizeWidget,
       body: isTandCandPPloading
           ? SquareLoader()
           : ListView(

@@ -1,19 +1,19 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:readymadeGroceryApp/screens/thank-you/payment-failed.dart';
-import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
-import 'package:readymadeGroceryApp/service/constants.dart';
-import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/service/orderSevice.dart';
-import 'package:readymadeGroceryApp/widgets/appBar.dart';
+import 'package:readymade_grocery_app/screens/thank-you/payment-failed.dart';
+import 'package:readymade_grocery_app/screens/thank-you/thankyou.dart';
+import 'package:readymade_grocery_app/service/constants.dart';
+import 'package:readymade_grocery_app/service/localizations.dart';
+import 'package:readymade_grocery_app/service/orderSevice.dart';
+import 'package:readymade_grocery_app/widgets/appBar.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class PaymentWeViewPage extends StatefulWidget {
-  final String sessionId, locale, orderId;
-  final Map localizedValues;
+  final String? sessionId, locale, orderId;
+  final Map? localizedValues;
 
   const PaymentWeViewPage(
-      {Key key,
+      {Key? key,
       this.sessionId,
       this.locale,
       this.localizedValues,
@@ -25,31 +25,30 @@ class PaymentWeViewPage extends StatefulWidget {
 }
 
 class _PaymentWeViewPageState extends State<PaymentWeViewPage> {
-  WebViewController _controller;
-
+  late WebViewController _controller;
   Future<bool> _onWillPop() {
     return showDialog(
           context: context,
           builder: (context) => new AlertDialog(
             title: new Text(
-                MyLocalizations.of(context).getLocalizations("ARE_YOU_SURE")),
-            content: new Text(MyLocalizations.of(context)
+                MyLocalizations.of(context)!.getLocalizations("ARE_YOU_SURE")),
+            content: new Text(MyLocalizations.of(context)!
                 .getLocalizations("DO_YOU_WANT_TO_DISMISS_PAYMENT_PROCESS")),
             actions: <Widget>[
               new FlatButton(
                 onPressed: () => Navigator.pop(context, false),
                 child: new Text(
-                    MyLocalizations.of(context).getLocalizations("NO")),
+                    MyLocalizations.of(context)!.getLocalizations("NO")),
               ),
               new FlatButton(
                 onPressed: orderCancel,
                 child: new Text(
-                    MyLocalizations.of(context).getLocalizations("YES")),
+                    MyLocalizations.of(context)!.getLocalizations("YES")),
               ),
             ],
           ),
-        ) ??
-        false;
+        ) as Future<bool>? ??
+        false as Future<bool>;
   }
 
   orderCancel() async {
@@ -71,7 +70,8 @@ class _PaymentWeViewPageState extends State<PaymentWeViewPage> {
       onWillPop: _onWillPop,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: appBarTransparentWithoutBack(context, "PAYMENT"),
+        appBar: appBarTransparentWithoutBack(context, "PAYMENT")
+            as PreferredSizeWidget,
         body: WebView(
             initialUrl: initialUrl,
             javascriptMode: JavascriptMode.unrestricted,

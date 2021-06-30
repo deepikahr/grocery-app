@@ -1,40 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:geocoder/geocoder.dart';
-import 'package:readymadeGroceryApp/model/counterModel.dart';
-import 'package:readymadeGroceryApp/screens/drawer/drawer.dart';
-import 'package:readymadeGroceryApp/screens/tab/mycart.dart';
-import 'package:readymadeGroceryApp/screens/tab/profile.dart';
-import 'package:readymadeGroceryApp/screens/tab/saveditems.dart';
-import 'package:readymadeGroceryApp/screens/tab/searchitem.dart';
-import 'package:readymadeGroceryApp/screens/tab/store.dart';
-import 'package:readymadeGroceryApp/service/auth-service.dart';
-import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/constants.dart';
-import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:geocode/geocode.dart';
+import 'package:readymade_grocery_app/model/counterModel.dart';
+import 'package:readymade_grocery_app/screens/drawer/drawer.dart';
+import 'package:readymade_grocery_app/screens/tab/mycart.dart';
+import 'package:readymade_grocery_app/screens/tab/profile.dart';
+import 'package:readymade_grocery_app/screens/tab/saveditems.dart';
+import 'package:readymade_grocery_app/screens/tab/searchitem.dart';
+import 'package:readymade_grocery_app/screens/tab/store.dart';
+import 'package:readymade_grocery_app/service/auth-service.dart';
+import 'package:readymade_grocery_app/service/common.dart';
+import 'package:readymade_grocery_app/service/constants.dart';
+import 'package:readymade_grocery_app/service/localizations.dart';
+import 'package:readymade_grocery_app/service/sentry-service.dart';
+import 'package:readymade_grocery_app/style/style.dart';
 import 'package:location/location.dart';
-import 'package:readymadeGroceryApp/widgets/appBar.dart';
-import 'package:readymadeGroceryApp/widgets/loader.dart';
-import 'package:readymadeGroceryApp/widgets/normalText.dart';
+import 'package:readymade_grocery_app/widgets/appBar.dart';
+import 'package:readymade_grocery_app/widgets/loader.dart';
+import 'package:readymade_grocery_app/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
 
 class Home extends StatefulWidget {
-  final int currentIndex;
-  final Map localizedValues;
-  final String locale;
-  final bool isTest;
+  final int? currentIndex;
+  final Map? localizedValues;
+  final String? locale;
+  final bool? isTest;
 
   Home(
-      {Key key,
+      {Key? key,
       this.currentIndex,
       this.locale,
       this.localizedValues,
       this.isTest})
       : super(key: key);
-
   @override
   _HomeState createState() => _HomeState();
 }
@@ -42,27 +41,28 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  TabController tabController;
+  late TabController tabController;
   bool currencyLoading = false,
       isCurrentLoactionLoading = false,
       getTokenValue = false;
-  int currentIndex = 0, cartData;
-  LocationData currentLocation;
+  int currentIndex = 0;
+  int? cartData;
+  LocationData? currentLocation;
   Location _location = new Location();
   String currency = "";
-
+  GeoCode geoCode = GeoCode();
   var addressData;
 
   void initState() {
     if (widget.currentIndex != null) {
       if (mounted) {
         setState(() {
-          currentIndex = widget.currentIndex;
+          currentIndex = widget.currentIndex!;
         });
       }
     }
     getToken();
-    if (widget.isTest == null || !widget.isTest) {
+    if (widget.isTest == null || !widget.isTest!) {
       getResult();
     }
     getGlobalSettingsData();
@@ -85,7 +85,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       if (onValue['response_data']['currencySymbol'] == null) {
         await Common.setCurrency('\$');
         await Common.getCurrency().then((value) {
-          currency = value;
+          currency = value!;
         });
       } else {
         currency = onValue['response_data']['currencySymbol'];
@@ -129,7 +129,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    if (tabController != null) tabController.dispose();
+    tabController.dispose();
     super.dispose();
   }
 
@@ -148,18 +148,19 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         }
       }
       currentLocation = await _location.getLocation();
-      final coordinates =
-          new Coordinates(currentLocation.latitude, currentLocation.longitude);
-      var addresses =
-          await Geocoder.local.findAddressesFromCoordinates(coordinates);
-      var first = addresses.first;
+
+      var addresses = await geoCode.reverseGeocoding(
+          latitude: currentLocation!.latitude!,
+          longitude: currentLocation!.longitude!);
+
+      var first = addresses;
       if (mounted) {
         setState(() {
-          addressData = first.addressLine;
+          addressData = first.streetAddress;
           isCurrentLoactionLoading = false;
         });
       }
-      await Common.setCountryInfo(first.countryCode);
+      await Common.setCountryInfo(first.countryCode!);
       await Common.setCurrentLocation(addressData);
       return first;
     });
@@ -190,7 +191,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     }
     List<BottomNavigationBarItem> items = [
       BottomNavigationBarItem(
-          label: MyLocalizations.of(context).getLocalizations("STORE"),
+          label: MyLocalizations.of(context)!.getLocalizations("STORE"),
           icon: buildIcon(
               context,
               const IconData(
@@ -199,7 +200,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               ),
               0)),
       BottomNavigationBarItem(
-          label: MyLocalizations.of(context).getLocalizations("FAVORITE"),
+          label: MyLocalizations.of(context)!.getLocalizations("FAVORITE"),
           icon: buildIcon(
               context,
               const IconData(
@@ -208,7 +209,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               ),
               0)),
       BottomNavigationBarItem(
-          label: MyLocalizations.of(context).getLocalizations("MY_CART"),
+          label: MyLocalizations.of(context)!.getLocalizations("MY_CART"),
           icon: buildIcon(
               context,
               const IconData(
@@ -217,7 +218,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               ),
               cartData)),
       BottomNavigationBarItem(
-          label: MyLocalizations.of(context).getLocalizations("PROFILE"),
+          label: MyLocalizations.of(context)!.getLocalizations("PROFILE"),
           icon: buildIcon(
               context,
               const IconData(
@@ -238,7 +239,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      // backgroundColor: Colors.white,
       appBar: currentIndex == 0
           ? appBarWhite(
               context,
@@ -264,14 +264,14 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                   child: Icon(Icons.search),
                 ),
               ),
-            )
+            ) as PreferredSizeWidget?
           : null,
       drawer: Drawer(
         child: DrawerPage(
-            locale: widget.locale,
-            localizedValues: widget.localizedValues,
-            addressData: addressData ?? "",
-            scaffoldKey: _scaffoldKey),
+          locale: widget.locale,
+          localizedValues: widget.localizedValues,
+          scaffoldKey: _scaffoldKey,
+        ),
       ),
       body: currencyLoading ? SquareLoader() : _screens[currentIndex],
       bottomNavigationBar: BottomNavigationBar(

@@ -1,24 +1,23 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map_picker/flutter_map_picker.dart';
-
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:readymadeGroceryApp/service/constants.dart';
-import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
-import 'package:readymadeGroceryApp/service/address-service.dart';
+import 'package:google_maps_place_picker/google_maps_place_picker.dart';
+import 'package:readymade_grocery_app/service/constants.dart';
+import 'package:readymade_grocery_app/service/localizations.dart';
+import 'package:readymade_grocery_app/style/style.dart';
+import 'package:readymade_grocery_app/service/sentry-service.dart';
+import 'package:readymade_grocery_app/service/address-service.dart';
 import 'package:location/location.dart';
-import 'package:readymadeGroceryApp/widgets/appBar.dart';
-import 'package:readymadeGroceryApp/widgets/button.dart';
-import 'package:readymadeGroceryApp/widgets/normalText.dart';
+import 'package:readymade_grocery_app/widgets/appBar.dart';
+import 'package:readymade_grocery_app/widgets/button.dart';
+import 'package:readymade_grocery_app/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
 
 class EditAddress extends StatefulWidget {
   const EditAddress(
-      {Key key,
+      {Key? key,
       this.currentLocation,
       this.isCheckout,
       this.isProfile,
@@ -26,11 +25,11 @@ class EditAddress extends StatefulWidget {
       this.locale,
       this.localizedValues})
       : super(key: key);
-  final bool isCheckout, isProfile;
-  final Map<String, dynamic> updateAddressID;
-  final LocationData currentLocation;
-  final Map localizedValues;
-  final String locale;
+  final bool? isCheckout, isProfile;
+  final Map<String, dynamic>? updateAddressID;
+  final LocationData? currentLocation;
+  final Map? localizedValues;
+  final String? locale;
 
   @override
   _EditAddressState createState() => _EditAddressState();
@@ -41,19 +40,19 @@ class _EditAddressState extends State<EditAddress> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   TextEditingController addressController = TextEditingController();
   var addressData;
-  LocationData currentLocation;
+  LocationData? currentLocation;
   bool isUpdateAddressLoading = false;
-  StreamSubscription<LocationData> locationSubscription;
-  PlacePickerResult _pickedLocation;
-  int selectedAddressType;
-  String fullAddress;
+  StreamSubscription<LocationData>? locationSubscription;
+  PickResult? _pickedLocation;
+  int? selectedAddressType;
+  String? fullAddress;
   @override
   void initState() {
-    if (widget.updateAddressID['addressType'] != null) {
-      addressController.text = widget.updateAddressID['address'];
+    if (widget.updateAddressID?['addressType'] != null) {
+      addressController.text = widget.updateAddressID?['address'];
 
       for (int i = 0; i < addressType.length; i++) {
-        if (addressType[i] == widget.updateAddressID['addressType']) {
+        if (addressType[i] == widget.updateAddressID?['addressType']) {
           setSelectedRadio(i);
         }
       }
@@ -62,7 +61,7 @@ class _EditAddressState extends State<EditAddress> {
   }
 
   List<String> addressType = ['HOME', "WORK", "OTHERS"];
-  setSelectedRadio(int val) async {
+  setSelectedRadio(int? val) async {
     if (mounted) {
       setState(() {
         selectedAddressType = val;
@@ -81,26 +80,27 @@ class _EditAddressState extends State<EditAddress> {
     "addressType": null
   };
   updateAddress() async {
-    if (_formKey.currentState.validate()) {
+    if (_formKey.currentState!.validate()) {
       if (mounted) {
         setState(() {
           isUpdateAddressLoading = true;
         });
       }
-      _formKey.currentState.save();
+      _formKey.currentState?.save();
       address['address'] = addressController.text;
 
       if (_pickedLocation == null) {
-        address['location'] = widget.updateAddressID['location'];
+        address['location'] = widget.updateAddressID?['location'];
       } else {
         var location = {
-          "latitude": _pickedLocation.latLng.latitude,
-          "longitude": _pickedLocation.latLng.longitude
+          "latitude": _pickedLocation!.geometry!.location.lat,
+          "longitude": _pickedLocation!.geometry!.location.lng
         };
+
         address['location'] = location;
       }
-      address['addressType'] = addressType[selectedAddressType];
-      AddressService.updateAddress(address, widget.updateAddressID['_id'])
+      address['addressType'] = addressType[selectedAddressType!];
+      AddressService.updateAddress(address, widget.updateAddressID?['_id'])
           .then((onValue) {
         if (mounted) {
           setState(() {
@@ -131,17 +131,18 @@ class _EditAddressState extends State<EditAddress> {
   }
 
   void showSnackbar(message) {
-    final snackBar = SnackBar(
-      content: Text(message),
-      duration: Duration(milliseconds: 3000),
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(milliseconds: 3000),
+      ),
     );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   @override
   void dispose() {
     if (locationSubscription != null && locationSubscription is Stream)
-      locationSubscription.cancel();
+      locationSubscription?.cancel();
     addressController.clear();
     super.dispose();
   }
@@ -151,7 +152,7 @@ class _EditAddressState extends State<EditAddress> {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarPrimary(context, "EDIT_ADDRESS"),
+      appBar: appBarPrimary(context, "EDIT_ADDRESS") as PreferredSizeWidget,
       body: Form(
         key: _formKey,
         child: ListView(
@@ -197,14 +198,14 @@ class _EditAddressState extends State<EditAddress> {
                           borderSide: BorderSide(color: primary(context)),
                         ),
                       ),
-                      validator: (String value) {
-                        if (value.isEmpty) {
-                          return MyLocalizations.of(context)
+                      validator: (String? value) {
+                        if (value!.isEmpty) {
+                          return MyLocalizations.of(context)!
                               .getLocalizations("ENTER_LOCATION");
                         } else
                           return null;
                       },
-                      onSaved: (String value) {
+                      onSaved: (String? value) {
                         address['address'] = addressController.text;
                       }),
                 ),
@@ -212,32 +213,32 @@ class _EditAddressState extends State<EditAddress> {
                   onTap: () async {
                     var lat, long;
                     if (_pickedLocation == null) {
-                      lat = widget.updateAddressID['location']['latitude'];
-                      long = widget.updateAddressID['location']['longitude'];
+                      lat = widget.updateAddressID!['location']['latitude'];
+                      long = widget.updateAddressID!['location']['longitude'];
                     } else {
-                      lat = _pickedLocation.latLng.latitude;
-                      long = _pickedLocation.latLng.longitude;
+                      lat = _pickedLocation!.geometry!.location.lat;
+                      long = _pickedLocation!.geometry!.location.lng;
                     }
 
-                    PlacePickerResult pickerResult = await Navigator.push(
+                    await Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => PlacePickerScreen(
-                                  googlePlacesApiKey: Constants.googleMapApiKey,
-                                  initialPosition: LatLng(lat, long),
-                                  mainColor: primary(context),
-                                  mapStrings: MapPickerStrings.english(
-                                      selectAddress: MyLocalizations.of(context)
-                                          .getLocalizations("SELECT_ADDRESS"),
-                                      cancel: MyLocalizations.of(context)
-                                          .getLocalizations("CANCEL"),
-                                      address: MyLocalizations.of(context)
-                                          .getLocalizations("ADDRESS")),
-                                  placeAutoCompleteLanguage: 'en',
-                                )));
+                          builder: (context) => PlacePicker(
+                            apiKey: Constants.googleMapApiKey!,
+                            initialPosition: LatLng(lat, long),
+                            useCurrentLocation: true,
+                            selectInitialPosition: true,
+                            onPlacePicked: (result) {
+                              _pickedLocation = result;
+                              Navigator.of(context).pop();
+                              setState(() {});
+                            },
+                          ),
+                        ));
+
                     setState(() {
-                      _pickedLocation = pickerResult;
-                      addressController.text = pickerResult.address.toString();
+                      addressController.text =
+                          _pickedLocation!.formattedAddress!;
                     });
                   },
                   child: Padding(
@@ -252,7 +253,7 @@ class _EditAddressState extends State<EditAddress> {
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
-                    initialValue: widget.updateAddressID['flatNo'],
+                    initialValue: widget.updateAddressID?['flatNo'],
                     maxLength: 14,
                     style: labelStyle(context),
                     keyboardType: TextInputType.number,
@@ -272,14 +273,14 @@ class _EditAddressState extends State<EditAddress> {
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: primary(context)),
                         )),
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return MyLocalizations.of(context)
+                    validator: (String? value) {
+                      if (value!.isEmpty) {
+                        return MyLocalizations.of(context)!
                             .getLocalizations("ENTER_HOUSE_FLAT_BLOCK_NUMBER");
                       } else
                         return null;
                     },
-                    onSaved: (String value) {
+                    onSaved: (String? value) {
                       address['flatNo'] = value;
                     },
                   ),
@@ -292,7 +293,7 @@ class _EditAddressState extends State<EditAddress> {
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
-                      initialValue: widget.updateAddressID['apartmentName'],
+                      initialValue: widget.updateAddressID?['apartmentName'],
                       style: labelStyle(context),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
@@ -312,14 +313,14 @@ class _EditAddressState extends State<EditAddress> {
                           borderSide: BorderSide(color: primary(context)),
                         ),
                       ),
-                      validator: (String value) {
-                        if (value.isEmpty) {
-                          return MyLocalizations.of(context)
+                      validator: (String? value) {
+                        if (value!.isEmpty) {
+                          return MyLocalizations.of(context)!
                               .getLocalizations("ENTER_APARTMENT_NAME");
                         } else
                           return null;
                       },
-                      onSaved: (String value) {
+                      onSaved: (String? value) {
                         address['apartmentName'] = value;
                       }),
                 ),
@@ -331,7 +332,7 @@ class _EditAddressState extends State<EditAddress> {
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
-                      initialValue: widget.updateAddressID['landmark'],
+                      initialValue: widget.updateAddressID?['landmark'],
                       style: labelStyle(context),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
@@ -351,14 +352,14 @@ class _EditAddressState extends State<EditAddress> {
                           borderSide: BorderSide(color: primary(context)),
                         ),
                       ),
-                      validator: (String value) {
-                        if (value.isEmpty) {
-                          return MyLocalizations.of(context)
+                      validator: (String? value) {
+                        if (value!.isEmpty) {
+                          return MyLocalizations.of(context)!
                               .getLocalizations("ENTER_LANDMARK");
                         } else
                           return null;
                       },
-                      onSaved: (String value) {
+                      onSaved: (String? value) {
                         address['landmark'] = value;
                       }),
                 ),
@@ -371,7 +372,7 @@ class _EditAddressState extends State<EditAddress> {
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
                       initialValue:
-                          widget.updateAddressID['postalCode'].toString(),
+                          widget.updateAddressID?['postalCode'].toString(),
                       style: labelStyle(context),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
@@ -391,14 +392,14 @@ class _EditAddressState extends State<EditAddress> {
                           borderSide: BorderSide(color: primary(context)),
                         ),
                       ),
-                      validator: (String value) {
-                        if (value.isEmpty) {
-                          return MyLocalizations.of(context)
+                      validator: (String? value) {
+                        if (value!.isEmpty) {
+                          return MyLocalizations.of(context)!
                               .getLocalizations("ENTER_POSTAL_CODE");
                         } else
                           return null;
                       },
-                      onSaved: (String value) {
+                      onSaved: (String? value) {
                         address['postalCode'] = value;
                       }),
                 ),
@@ -411,7 +412,8 @@ class _EditAddressState extends State<EditAddress> {
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: TextFormField(
                     initialValue:
-                        widget.updateAddressID['mobileNumber'].toString() ?? "",
+                        widget.updateAddressID?['mobileNumber'].toString() ??
+                            "",
                     maxLength: 15,
                     style: labelStyle(context),
                     keyboardType: TextInputType.number,
@@ -432,14 +434,14 @@ class _EditAddressState extends State<EditAddress> {
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: primary(context)),
                         )),
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return MyLocalizations.of(context)
+                    validator: (String? value) {
+                      if (value!.isEmpty) {
+                        return MyLocalizations.of(context)!
                             .getLocalizations("ENTER_MOBILE_NUMBER");
                       } else
                         return null;
                     },
-                    onSaved: (String value) {
+                    onSaved: (String? value) {
                       address['mobileNumber'] = value;
                     },
                   ),
@@ -452,8 +454,7 @@ class _EditAddressState extends State<EditAddress> {
                 ListView.builder(
                   physics: ScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount:
-                      addressType.length == null ? 0 : addressType.length,
+                  itemCount: addressType.length,
                   itemBuilder: (BuildContext context, int i) {
                     return Padding(
                       padding: const EdgeInsets.only(left: 10.0),
@@ -465,7 +466,7 @@ class _EditAddressState extends State<EditAddress> {
                             value: i,
                             groupValue: selectedAddressType,
                             activeColor: primary(context),
-                            onChanged: (value) {
+                            onChanged: (int? value) {
                               setSelectedRadio(value);
                             },
                           ),

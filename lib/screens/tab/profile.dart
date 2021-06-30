@@ -2,31 +2,31 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:getflutter/getflutter.dart';
-import 'package:readymadeGroceryApp/main.dart';
-import 'package:readymadeGroceryApp/screens/authe/changePassword.dart';
-import 'package:readymadeGroceryApp/screens/authe/login.dart';
-import 'package:readymadeGroceryApp/screens/drawer/address.dart';
-import 'package:readymadeGroceryApp/screens/orders/orderTab.dart';
-import 'package:readymadeGroceryApp/screens/subsription/subscriptionList.dart';
-import 'package:readymadeGroceryApp/screens/tab/editprofile.dart';
-import 'package:readymadeGroceryApp/screens/tab/wallet.dart';
-import 'package:readymadeGroceryApp/service/constants.dart';
-import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
-import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/auth-service.dart';
-import 'package:readymadeGroceryApp/widgets/appBar.dart';
-import 'package:readymadeGroceryApp/widgets/loader.dart';
-import 'package:readymadeGroceryApp/widgets/normalText.dart';
+import 'package:getwidget/getwidget.dart';
+import 'package:readymade_grocery_app/main.dart';
+import 'package:readymade_grocery_app/screens/authe/changePassword.dart';
+import 'package:readymade_grocery_app/screens/authe/login.dart';
+import 'package:readymade_grocery_app/screens/drawer/address.dart';
+import 'package:readymade_grocery_app/screens/orders/orderTab.dart';
+import 'package:readymade_grocery_app/screens/subsription/subscriptionList.dart';
+import 'package:readymade_grocery_app/screens/tab/editprofile.dart';
+import 'package:readymade_grocery_app/screens/tab/wallet.dart';
+import 'package:readymade_grocery_app/service/constants.dart';
+import 'package:readymade_grocery_app/service/localizations.dart';
+import 'package:readymade_grocery_app/style/style.dart';
+import 'package:readymade_grocery_app/service/sentry-service.dart';
+import 'package:readymade_grocery_app/service/common.dart';
+import 'package:readymade_grocery_app/service/auth-service.dart';
+import 'package:readymade_grocery_app/widgets/appBar.dart';
+import 'package:readymade_grocery_app/widgets/loader.dart';
+import 'package:readymade_grocery_app/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
 
 class Profile extends StatefulWidget {
-  final Map localizedValues;
-  final String locale;
-  Profile({Key key, this.locale, this.localizedValues}) : super(key: key);
+  final Map? localizedValues;
+  final String? locale;
+  Profile({Key? key, this.locale, this.localizedValues}) : super(key: key);
 
   @override
   _ProfileState createState() => _ProfileState();
@@ -39,8 +39,8 @@ class _ProfileState extends State<Profile> {
   bool isGetTokenLoading = false,
       isLanguageSelecteLoading = false,
       isGetLanguagesListLoading = false;
-  String token, userID, currency = "";
-  List languagesList;
+  String? token, userID, currency = "";
+  List? languagesList;
   var selectedLanguages;
   @override
   void initState() {
@@ -120,9 +120,9 @@ class _ProfileState extends State<Profile> {
       if (mounted) {
         setState(() {
           languagesList = onValue['response_data'];
-          for (int i = 0; i < languagesList.length; i++) {
-            if (languagesList[i]['languageCode'] == widget.locale) {
-              selectedLanguages = languagesList[i]['languageName'];
+          for (int i = 0; i < languagesList!.length; i++) {
+            if (languagesList?[i]['languageCode'] == widget.locale) {
+              selectedLanguages = languagesList?[i]['languageName'];
             }
           }
           isGetLanguagesListLoading = false;
@@ -160,18 +160,18 @@ class _ProfileState extends State<Profile> {
                       padding: EdgeInsets.only(bottom: 25),
                       physics: ScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: languagesList.length == null
+                      itemCount: languagesList?.length == null
                           ? 0
-                          : languagesList.length,
+                          : languagesList?.length,
                       itemBuilder: (BuildContext context, int i) {
                         return GFButton(
                             onPressed: () async {
                               setState(() {
                                 selectedLanguages =
-                                    languagesList[i]['languageName'];
+                                    languagesList?[i]['languageName'];
                               });
                               await Common.setSelectedLanguage(
-                                  languagesList[i]['languageCode']);
+                                  languagesList?[i]['languageCode']);
                               Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
@@ -181,7 +181,7 @@ class _ProfileState extends State<Profile> {
                             },
                             type: GFButtonType.transparent,
                             child: alertText(context,
-                                languagesList[i]['languageName'], null));
+                                languagesList?[i]['languageName'], null));
                       }),
                 ],
               ),
@@ -194,8 +194,8 @@ class _ProfileState extends State<Profile> {
     Common.getSelectedLanguage().then((selectedLocale) async {
       Map body = {"language": selectedLocale, "playerId": null};
       LoginService.updateUserInfo(body).then((value) async {
-        showSnackbar(
-            MyLocalizations.of(context).getLocalizations("LOGOUT_SUCCESSFULL"));
+        showSnackbar(MyLocalizations.of(context)!
+            .getLocalizations("LOGOUT_SUCCESSFULL"));
         Future.delayed(Duration(milliseconds: 1500), () async {
           await Common.setToken(null);
           await Common.setUserID(null);
@@ -212,11 +212,12 @@ class _ProfileState extends State<Profile> {
   }
 
   void showSnackbar(message) {
-    final snackBar = SnackBar(
-      content: Text(message),
-      duration: Duration(milliseconds: 3000),
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(milliseconds: 3000),
+      ),
     );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   @override
@@ -228,7 +229,7 @@ class _ProfileState extends State<Profile> {
           ? null
           : token == null
               ? null
-              : appBarPrimary(context, "PROFILE"),
+              : appBarPrimary(context, "PROFILE") as PreferredSizeWidget,
       body: isGetTokenLoading || isGetLanguagesListLoading
           ? SquareLoader()
           : token == null
@@ -305,7 +306,7 @@ class _ProfileState extends State<Profile> {
                                                             'filePath'] ==
                                                         null
                                                     ? userInfo['imageUrl']
-                                                    : Constants.imageUrlPath +
+                                                    : Constants.imageUrlPath! +
                                                         "/tr:dpr-auto,tr:w-500" +
                                                         userInfo['filePath'],
                                                 imageBuilder:
@@ -378,7 +379,7 @@ class _ProfileState extends State<Profile> {
                                       SizedBox(height: 6),
                                       normalText(
                                           context,
-                                          (MyLocalizations.of(context)
+                                          (MyLocalizations.of(context)!
                                                       .getLocalizations(
                                                           "WALLET", true) +
                                                   currency +
@@ -438,10 +439,10 @@ class _ProfileState extends State<Profile> {
                               );
                             },
                             child: profileText(context, "ADDRESS")),
-                        languagesList.length > 0
+                        languagesList!.length > 0
                             ? SizedBox(height: 15)
                             : Container(),
-                        languagesList.length > 0
+                        languagesList!.length > 0
                             ? InkWell(
                                 onTap: selectLanguagesMethod,
                                 child: profileTextRow(context,

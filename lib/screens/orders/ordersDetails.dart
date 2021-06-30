@@ -4,27 +4,27 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
-import 'package:readymadeGroceryApp/screens/orders/rateDelivery.dart';
-import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/constants.dart';
-import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/service/orderSevice.dart';
-import 'package:readymadeGroceryApp/service/product-service.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
-import 'package:readymadeGroceryApp/widgets/appBar.dart';
-import 'package:readymadeGroceryApp/widgets/button.dart';
-import 'package:readymadeGroceryApp/widgets/loader.dart';
-import 'package:readymadeGroceryApp/widgets/normalText.dart';
+import 'package:readymade_grocery_app/screens/orders/rateDelivery.dart';
+import 'package:readymade_grocery_app/service/common.dart';
+import 'package:readymade_grocery_app/service/constants.dart';
+import 'package:readymade_grocery_app/service/localizations.dart';
+import 'package:readymade_grocery_app/service/orderSevice.dart';
+import 'package:readymade_grocery_app/service/product-service.dart';
+import 'package:readymade_grocery_app/service/sentry-service.dart';
+import 'package:readymade_grocery_app/style/style.dart';
+import 'package:readymade_grocery_app/widgets/appBar.dart';
+import 'package:readymade_grocery_app/widgets/button.dart';
+import 'package:readymade_grocery_app/widgets/loader.dart';
+import 'package:readymade_grocery_app/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
 
 class OrderDetails extends StatefulWidget {
-  final String orderId, locale;
-  final Map localizedValues;
-  final bool isSubscription;
+  final String? orderId, locale;
+  final Map? localizedValues;
+  final bool? isSubscription;
   OrderDetails({
-    Key key,
+    Key? key,
     this.orderId,
     this.locale,
     this.localizedValues,
@@ -41,9 +41,9 @@ class _OrderDetailsState extends State<OrderDetails> {
       isRatingSubmitting = false,
       isOrderCancleLoading = false;
   var orderHistory;
-  String currency;
-  double rating;
-  Timer timer;
+  String? currency;
+  double? rating;
+  Timer? timer;
   int productInfoIndex = -1;
   @override
   void initState() {
@@ -60,8 +60,8 @@ class _OrderDetailsState extends State<OrderDetails> {
 
   @override
   void dispose() {
-    if (timer != null && timer.isActive) {
-      timer.cancel();
+    if (timer != null && timer!.isActive) {
+      timer?.cancel();
     }
     super.dispose();
   }
@@ -120,11 +120,12 @@ class _OrderDetailsState extends State<OrderDetails> {
   }
 
   void showSnackbar(message) {
-    final snackBar = SnackBar(
-      content: Text(message),
-      duration: Duration(milliseconds: 3000),
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(milliseconds: 3000),
+      ),
     );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   ratingAlert(productID) {
@@ -133,7 +134,7 @@ class _OrderDetailsState extends State<OrderDetails> {
       builder: (context) {
         return AlertDialog(
           title: Text(
-            MyLocalizations.of(context).getLocalizations("RATE_PRODUCT"),
+            MyLocalizations.of(context)!.getLocalizations("RATE_PRODUCT"),
             style: TextStyle(
                 color: dark(context),
                 fontSize: 20,
@@ -155,8 +156,8 @@ class _OrderDetailsState extends State<OrderDetails> {
                 new Radius.circular(32.0),
               ),
             ),
-            child: RatingBar(
-              initialRating: rating,
+            child: RatingBar.builder(
+              initialRating: rating!,
               minRating: 1,
               direction: Axis.horizontal,
               allowHalfRating: true,
@@ -197,7 +198,7 @@ class _OrderDetailsState extends State<OrderDetails> {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarPrimary(context, "ORDER_DETAILS"),
+      appBar: appBarPrimary(context, "ORDER_DETAILS") as PreferredSizeWidget,
       body: isLoading
           ? SquareLoader()
           : orderHistory == null
@@ -383,7 +384,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                   null
                                               ? order["productImages"][0]
                                                   ['imageUrl']
-                                              : Constants.imageUrlPath +
+                                              : Constants.imageUrlPath! +
                                                   "/tr:dpr-auto,tr:w-500" +
                                                   order["productImages"][0]
                                                       ['filePath'],
@@ -441,7 +442,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                       : CachedNetworkImage(
                                           imageUrl: order['filePath'] == null
                                               ? order['imageUrl']
-                                              : Constants.imageUrlPath +
+                                              : Constants.imageUrlPath! +
                                                   "/tr:dpr-auto,tr:w-500" +
                                                   order['filePath'],
                                           imageBuilder:
@@ -514,7 +515,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                 children: [
                                                   textMediumSmallGreen(
                                                       MyLocalizations.of(
-                                                                  context)
+                                                                  context)!
                                                               .getLocalizations(
                                                                   "ORIGINAL_PRICE",
                                                                   true) +
@@ -533,7 +534,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                         order['dealTotalAmount'] == 0
                                             ? Container()
                                             : textLightSmall(
-                                                MyLocalizations.of(context)
+                                                MyLocalizations.of(context)!
                                                         .getLocalizations(
                                                             "DEAL_AMOUNT",
                                                             true) +
@@ -609,11 +610,9 @@ class _OrderDetailsState extends State<OrderDetails> {
                           buildPriceBold(
                               context,
                               null,
-                              MyLocalizations.of(context)
+                              MyLocalizations.of(context)!
                                   .getLocalizations("SUB_TOTAL"),
-                              currency +
-                                  orderHistory['order']['subTotal']
-                                      .toStringAsFixed(2),
+                              '$currency ${orderHistory['order']['subTotal'].toStringAsFixed(2)}',
                               false),
                           widget.isSubscription == true
                               ? Container()
@@ -625,20 +624,17 @@ class _OrderDetailsState extends State<OrderDetails> {
                                   : buildPriceBold(
                                       context,
                                       null,
-                                      MyLocalizations.of(context)
-                                          .getLocalizations("TAX"),
-                                      currency +
-                                          orderHistory['order']['tax']
-                                              .toStringAsFixed(2),
+                                      '${MyLocalizations.of(context)!.getLocalizations("TAX")}',
+                                      '$currency ${orderHistory['order']['tax'].toStringAsFixed(2)}',
                                       false),
                           SizedBox(height: 6),
                           buildPriceBold(
                               context,
                               null,
-                              MyLocalizations.of(context)
+                              MyLocalizations.of(context)!
                                   .getLocalizations("DELIVERY_CHARGES"),
                               orderHistory['order']['deliveryCharges'] == 0
-                                  ? MyLocalizations.of(context)
+                                  ? MyLocalizations.of(context)!
                                       .getLocalizations("FREE")
                                   : orderHistory['order']['deliveryCharges']
                                       .toStringAsFixed(2),
@@ -655,13 +651,9 @@ class _OrderDetailsState extends State<OrderDetails> {
                                   : buildPriceBold(
                                       context,
                                       null,
-                                      MyLocalizations.of(context)
+                                      MyLocalizations.of(context)!
                                           .getLocalizations("PAID_FORM_WALLET"),
-                                      "-" +
-                                          currency +
-                                          orderHistory['order']
-                                                  ['usedWalletAmount']
-                                              .toStringAsFixed(2),
+                                      '-$currency ${orderHistory['order']['usedWalletAmount'].toStringAsFixed(2)}',
                                       false),
                           widget.isSubscription == true
                               ? Container()
@@ -675,7 +667,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                         buildPriceBold(
                                             context,
                                             null,
-                                            MyLocalizations.of(context)
+                                            MyLocalizations.of(context)!
                                                 .getLocalizations(
                                                     "COUPON_APPLIED"),
                                             orderHistory['order']['couponCode'],
@@ -684,13 +676,9 @@ class _OrderDetailsState extends State<OrderDetails> {
                                         buildPriceBold(
                                             context,
                                             null,
-                                            MyLocalizations.of(context)
+                                            MyLocalizations.of(context)!
                                                 .getLocalizations("DISCOUNT"),
-                                            "-" +
-                                                currency +
-                                                orderHistory['order']
-                                                        ['couponAmount']
-                                                    .toStringAsFixed(2),
+                                            '-$currency ${orderHistory['order']['couponAmount'].toStringAsFixed(2)}',
                                             false),
                                       ],
                                     ),
@@ -712,13 +700,9 @@ class _OrderDetailsState extends State<OrderDetails> {
                       child: buildPriceBold(
                           context,
                           null,
-                          MyLocalizations.of(context).getLocalizations("TOTAL"),
-                          currency +
-                              (widget.isSubscription
-                                      ? orderHistory['order']
-                                          ['usedWalletAmount']
-                                      : orderHistory['order']['grandTotal'])
-                                  .toStringAsFixed(2),
+                          MyLocalizations.of(context)!
+                              .getLocalizations("TOTAL"),
+                          '$currency ${(widget.isSubscription! ? orderHistory['order']['usedWalletAmount'] : orderHistory['order']['grandTotal']).toStringAsFixed(2)}',
                           false),
                     ),
                     SizedBox(height: 6),

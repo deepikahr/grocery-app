@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:readymadeGroceryApp/screens/authe/otp.dart';
-import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/constants.dart';
-import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/service/otp-service.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
-import 'package:readymadeGroceryApp/widgets/appBar.dart';
-import 'package:readymadeGroceryApp/widgets/button.dart';
-import 'package:readymadeGroceryApp/widgets/loader.dart';
-import 'package:readymadeGroceryApp/widgets/normalText.dart';
+import 'package:readymade_grocery_app/screens/authe/otp.dart';
+import 'package:readymade_grocery_app/service/common.dart';
+import 'package:readymade_grocery_app/service/constants.dart';
+import 'package:readymade_grocery_app/service/localizations.dart';
+import 'package:readymade_grocery_app/service/otp-service.dart';
+import 'package:readymade_grocery_app/style/style.dart';
+import 'package:readymade_grocery_app/service/sentry-service.dart';
+import 'package:readymade_grocery_app/widgets/appBar.dart';
+import 'package:readymade_grocery_app/widgets/button.dart';
+import 'package:readymade_grocery_app/widgets/loader.dart';
+import 'package:readymade_grocery_app/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
 
 class Signup extends StatefulWidget {
-  final Map localizedValues;
-  final String locale;
-  Signup({Key key, this.locale, this.localizedValues});
+  final Map? localizedValues;
+  final String? locale;
+  Signup({Key? key, this.locale, this.localizedValues});
 
   @override
   _SignupState createState() => _SignupState();
@@ -29,7 +29,7 @@ class _SignupState extends State<Signup> {
   TextEditingController passwordController = TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var selectedCountryValue, currentLocale;
-  Map selectedCountry;
+  Map? selectedCountry;
   bool isLoading = false,
       registerationLoading = false,
       rememberMe = false,
@@ -38,7 +38,7 @@ class _SignupState extends State<Signup> {
       isChecked = false,
       _obscureText = true,
       isCuntryLoading = false;
-  String userName, email, password, firstName, lastName, mobileNumber;
+  String? userName, email, password, firstName, lastName, mobileNumber;
   // Toggles the password
   void _toggle() {
     setState(() {
@@ -74,7 +74,7 @@ class _SignupState extends State<Signup> {
 
   userSignupwithMobile() async {
     final form = _formKey.currentState;
-    if (form.validate()) {
+    if (form!.validate()) {
       form.save();
       if (mounted) {
         setState(() {
@@ -86,11 +86,11 @@ class _SignupState extends State<Signup> {
         "lastName": lastName,
         "password": password,
         "mobileNumber": mobileNumber,
-        "countryCode": selectedCountry['dial_code'],
-        "countryName": selectedCountry['name'],
+        "countryCode": selectedCountry?['dial_code'],
+        "countryName": selectedCountry?['name'],
       };
       if (email != null && email != "") {
-        body['email'] = email.toLowerCase();
+        body['email'] = email?.toLowerCase();
       }
       await OtpService.signUpWithNumber(body).then((onValue) {
         if (mounted) {
@@ -114,7 +114,7 @@ class _SignupState extends State<Signup> {
               actions: <Widget>[
                 new FlatButton(
                   child: new Text(
-                      MyLocalizations.of(context).getLocalizations("OK"),
+                      MyLocalizations.of(context)!.getLocalizations("OK"),
                       style: textbarlowRegularaprimary(context)),
                   onPressed: () {
                     Navigator.pop(context);
@@ -164,7 +164,7 @@ class _SignupState extends State<Signup> {
             top: 10.0,
           ),
           title: new Text(
-            MyLocalizations.of(context).getLocalizations("ERROR"),
+            MyLocalizations.of(context)!.getLocalizations("ERROR"),
             style: textBarlowRegularBlack(context),
             textAlign: TextAlign.center,
           ),
@@ -193,7 +193,7 @@ class _SignupState extends State<Signup> {
                             alignment: Alignment.center,
                             decoration: BoxDecoration(),
                             child: Text(
-                              MyLocalizations.of(context)
+                              MyLocalizations.of(context)!
                                   .getLocalizations("OK"),
                               style: textbarlowRegularaprimary(context),
                             ),
@@ -216,7 +216,7 @@ class _SignupState extends State<Signup> {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarPrimary(context, "SIGNUP"),
+      appBar: appBarPrimary(context, "SIGNUP") as PreferredSizeWidget,
       body: isCuntryLoading
           ? Center(child: SquareLoader())
           : Form(
@@ -265,14 +265,14 @@ class _SignupState extends State<Signup> {
         child: TextFormField(
           style: textBarlowRegularBlack(context),
           keyboardType: TextInputType.emailAddress,
-          validator: (String value) {
-            if (value.isEmpty) {
-              return MyLocalizations.of(context)
+          validator: (String? value) {
+            if (value!.isEmpty) {
+              return MyLocalizations.of(context)!
                   .getLocalizations("ENTER_FIRST_NAME", true);
             } else
               return null;
           },
-          onSaved: (String value) {
+          onSaved: (String? value) {
             firstName = value;
           },
           decoration: InputDecoration(
@@ -303,14 +303,14 @@ class _SignupState extends State<Signup> {
         child: TextFormField(
           style: textBarlowRegularBlack(context),
           keyboardType: TextInputType.emailAddress,
-          validator: (String value) {
-            if (value.isEmpty) {
-              return MyLocalizations.of(context)
+          validator: (String? value) {
+            if (value!.isEmpty) {
+              return MyLocalizations.of(context)!
                   .getLocalizations("ENTER_LAST_NAME");
             } else
               return null;
           },
-          onSaved: (String value) {
+          onSaved: (String? value) {
             lastName = value;
           },
           decoration: InputDecoration(
@@ -341,15 +341,16 @@ class _SignupState extends State<Signup> {
         child: TextFormField(
           style: textBarlowRegularBlack(context),
           keyboardType: TextInputType.emailAddress,
-          validator: (String value) {
-            if (value.isEmpty) {
+          validator: (String? value) {
+            if (value!.isEmpty) {
               return null;
-            } else if (!RegExp(Constants.emailValidation).hasMatch(value)) {
-              return MyLocalizations.of(context).getLocalizations("ERROR_MAIL");
+            } else if (!RegExp(Constants.emailValidation!).hasMatch(value)) {
+              return MyLocalizations.of(context)!
+                  .getLocalizations("ERROR_MAIL");
             } else
               return null;
           },
-          onSaved: (String value) {
+          onSaved: (String? value) {
             email = value;
           },
           decoration: InputDecoration(
@@ -379,16 +380,16 @@ class _SignupState extends State<Signup> {
       child: TextFormField(
         style: textBarlowRegularBlack(context),
         keyboardType: TextInputType.text,
-        validator: (String value) {
-          if (value.isEmpty) {
-            return MyLocalizations.of(context)
+        validator: (String? value) {
+          if (value!.isEmpty) {
+            return MyLocalizations.of(context)!
                 .getLocalizations("ENTER_PASSWORD");
           } else if (value.length < 6) {
-            return MyLocalizations.of(context).getLocalizations("ERROR_PASS");
+            return MyLocalizations.of(context)!.getLocalizations("ERROR_PASS");
           } else
             return null;
         },
-        onSaved: (String value) {
+        onSaved: (String? value) {
           password = value;
         },
         decoration: InputDecoration(
@@ -440,14 +441,14 @@ class _SignupState extends State<Signup> {
         maxLength: 15,
         style: textBarlowRegularBlack(context),
         keyboardType: TextInputType.number,
-        validator: (String value) {
-          if (value.isEmpty) {
-            return MyLocalizations.of(context)
+        validator: (String? value) {
+          if (value!.isEmpty) {
+            return MyLocalizations.of(context)!
                 .getLocalizations("ENTER_YOUR_MOBILE_NUMBER");
           } else
             return null;
         },
-        onSaved: (String value) {
+        onSaved: (String? value) {
           mobileNumber = value;
         },
         decoration: InputDecoration(
@@ -460,12 +461,12 @@ class _SignupState extends State<Signup> {
               padding: EdgeInsets.symmetric(horizontal: 9),
               width: 100,
               decoration: BoxDecoration(
-                  border: Border(right: BorderSide(color: Colors.grey[300]))),
+                  border: Border(right: BorderSide(color: Colors.grey[300]!))),
               child: Row(
                 children: [
                   Expanded(
                     child: Text(
-                        "${selectedCountry['code'] ?? ""}${selectedCountry['dial_code'] ?? ""}",
+                        "${selectedCountry?['code'] ?? ""}${selectedCountry?['dial_code'] ?? ""}",
                         overflow: TextOverflow.ellipsis,
                         style: textBarlowSemiboldprimaryy(context)),
                   ),
@@ -508,7 +509,7 @@ class _SignupState extends State<Signup> {
       },
       child: Center(
         child: buildGFTypographyOtp(context, "HAVE_GOT_AN_ACCOUNT",
-            ' ${MyLocalizations.of(context).getLocalizations("LOGIN")}'),
+            ' ${MyLocalizations.of(context)!.getLocalizations("LOGIN")}'),
       ),
     );
   }
@@ -544,7 +545,7 @@ class _SignupState extends State<Signup> {
                         topRight: Radius.circular(40.0),
                       )),
                   child: Text(
-                    MyLocalizations.of(context)
+                    MyLocalizations.of(context)!
                         .getLocalizations('SELECT_YOUR_COUNTRY'),
                     style: textbarlowmediumwhitee(context),
                   ),
@@ -590,10 +591,11 @@ class _SignupState extends State<Signup> {
   }
 
   void showSnackbar(message) {
-    final snackBar = SnackBar(
-      content: Text(message),
-      duration: Duration(milliseconds: 3000),
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(milliseconds: 3000),
+      ),
     );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 }

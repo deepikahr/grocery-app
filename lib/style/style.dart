@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
-import 'package:readymadeGroceryApp/main.dart';
+import 'package:readymade_grocery_app/main.dart';
 
 class Styles {
   static ThemeData themeData(bool isDarkTheme, BuildContext context) {

@@ -1,21 +1,21 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:getflutter/getwidget.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:readymadeGroceryApp/model/addToCart.dart';
-import 'package:readymadeGroceryApp/screens/authe/login.dart';
-import 'package:readymadeGroceryApp/service/cart-service.dart';
-import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/constants.dart';
-import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/service/product-service.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
-import 'package:readymadeGroceryApp/service/fav-service.dart';
-import 'package:readymadeGroceryApp/widgets/button.dart';
-import 'package:readymadeGroceryApp/widgets/loader.dart';
-import 'package:readymadeGroceryApp/widgets/normalText.dart';
+import 'package:readymade_grocery_app/model/addToCart.dart';
+import 'package:readymade_grocery_app/screens/authe/login.dart';
+import 'package:readymade_grocery_app/service/cart-service.dart';
+import 'package:readymade_grocery_app/service/common.dart';
+import 'package:readymade_grocery_app/service/constants.dart';
+import 'package:readymade_grocery_app/service/localizations.dart';
+import 'package:readymade_grocery_app/service/product-service.dart';
+import 'package:readymade_grocery_app/style/style.dart';
+import 'package:readymade_grocery_app/service/sentry-service.dart';
+import 'package:readymade_grocery_app/service/fav-service.dart';
+import 'package:readymade_grocery_app/widgets/button.dart';
+import 'package:readymade_grocery_app/widgets/loader.dart';
+import 'package:readymade_grocery_app/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -27,13 +27,12 @@ class Variants {
 }
 
 class ProductDetails extends StatefulWidget {
-  final int currentIndex;
-
-  final Map localizedValues;
-  final String locale, productID;
+  final int? currentIndex;
+  final Map? localizedValues;
+  final String? locale, productID;
 
   ProductDetails(
-      {Key key,
+      {Key? key,
       this.productID,
       this.currentIndex,
       this.localizedValues,
@@ -48,7 +47,7 @@ class _ProductDetailsState extends State<ProductDetails>
     with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var productDetail;
-  String variantUnit, variantId, currency, description;
+  String? variantUnit, variantId, currency, description;
 
   int groupValue = 0;
   bool sizeSelect = false,
@@ -121,7 +120,7 @@ class _ProductDetailsState extends State<ProductDetails>
                 productImages
                     .add(productDetail['productImages'][i]['imageUrl']);
               } else {
-                productImages.add(Constants.imageUrlPath +
+                productImages.add(Constants.imageUrlPath! +
                     "/tr:dpr-auto,tr:w-1000" +
                     productDetail['productImages'][i]['filePath']);
               }
@@ -130,7 +129,7 @@ class _ProductDetailsState extends State<ProductDetails>
             if (productDetail['filePath'] == null) {
               productImages.add(productDetail['imageUrl']);
             } else {
-              productImages.add(Constants.imageUrlPath +
+              productImages.add(Constants.imageUrlPath! +
                   "/tr:dpr-auto,tr:w-1000" +
                   productDetail['filePath']);
             }
@@ -233,10 +232,10 @@ class _ProductDetailsState extends State<ProductDetails>
           addProductTocart = false;
         });
       }
-      showSnackbar(MyLocalizations.of(context)
+      showSnackbar(MyLocalizations.of(context)!
               .getLocalizations("LIMITED_STOCK") +
           " ${variantStock == null ? productDetail['variant'][0]['productStock'] : variantStock} " +
-          MyLocalizations.of(context).getLocalizations("OF_THIS_ITEM"));
+          MyLocalizations.of(context)!.getLocalizations("OF_THIS_ITEM"));
     }
   }
 
@@ -292,14 +291,14 @@ class _ProductDetailsState extends State<ProductDetails>
           actions: <Widget>[
             FlatButton(
               child:
-                  Text(MyLocalizations.of(context).getLocalizations("CANCEL")),
+                  Text(MyLocalizations.of(context)!.getLocalizations("CANCEL")),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             FlatButton(
               child: Text(
-                  MyLocalizations.of(context).getLocalizations("CLEAR_CART")),
+                  MyLocalizations.of(context)!.getLocalizations("CLEAR_CART")),
               onPressed: () {
                 Navigator.pop(context);
 
@@ -349,7 +348,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                         offset: Offset(2.0, 2.0))
                                   ],
                                 ),
-                                child: (productImages != null &&
+                                child: (productImages.isNotEmpty &&
                                         productImages.length > 0)
                                     ? GFCarousel(
                                         height: 340,
@@ -431,7 +430,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                                                         },
                                                                         child:
                                                                             Text(
-                                                                          MyLocalizations.of(context)
+                                                                          MyLocalizations.of(context)!
                                                                               .getLocalizations("CLOSE"),
                                                                           style:
                                                                               TextStyle(color: Colors.white),
@@ -508,12 +507,11 @@ class _ProductDetailsState extends State<ProductDetails>
                                         child: Padding(
                                           padding: const EdgeInsets.only(
                                               top: 0.0, right: 5.0, left: 5.0),
-                                          child: RatingBar(
+                                          child: RatingBar.builder(
                                             initialRating: double.parse(
-                                                    productDetail[
-                                                            'averageRating']
-                                                        .toStringAsFixed(1)) ??
-                                                0.0,
+                                                productDetail['averageRating']
+                                                        .toStringAsFixed(1) ??
+                                                    .0),
                                             minRating: 0,
                                             direction: Axis.horizontal,
                                             allowHalfRating: true,
@@ -527,7 +525,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                               color: Colors.red,
                                               size: 12.0,
                                             ),
-                                            onRatingUpdate: null,
+                                            onRatingUpdate: (value) {},
                                           ),
                                         ),
                                       )
@@ -652,12 +650,13 @@ class _ProductDetailsState extends State<ProductDetails>
                                                             true);
                                                       } else {
                                                         showSnackbar(MyLocalizations
-                                                                    .of(context)
+                                                                    .of(
+                                                                        context)!
                                                                 .getLocalizations(
                                                                     "LIMITED_STOCK") +
                                                             " ${variantStock == null ? productDetail['variant'][0]['productStock'] : variantStock} " +
                                                             MyLocalizations.of(
-                                                                    context)
+                                                                    context)!
                                                                 .getLocalizations(
                                                                     "OF_THIS_ITEM"));
                                                       }
@@ -692,10 +691,10 @@ class _ProductDetailsState extends State<ProductDetails>
                                                     selected: sizeSelect,
                                                     activeColor:
                                                         primary(context),
-                                                    onChanged: (int value) {
+                                                    onChanged: (int? value) {
                                                       if (mounted) {
                                                         setState(() {
-                                                          groupValue = value;
+                                                          groupValue = value!;
                                                           sizeSelect =
                                                               !sizeSelect;
                                                           variantPrice =
@@ -827,11 +826,12 @@ class _ProductDetailsState extends State<ProductDetails>
   }
 
   void showSnackbar(message) {
-    final snackBar = SnackBar(
-      content: Text(message),
-      duration: Duration(milliseconds: 3000),
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(milliseconds: 3000),
+      ),
     );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   getDiscountedValue({index = 0}) => productDetail['isDealAvailable'] &&

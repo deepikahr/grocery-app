@@ -1,17 +1,16 @@
 import 'package:http/http.dart' show Client;
-import 'package:http_interceptor/http_interceptor.dart';
-import 'package:readymadeGroceryApp/service/intercepter.dart';
+import 'package:http_interceptor/http/intercepted_client.dart';
+import 'package:readymade_grocery_app/service/intercepter.dart';
 import 'dart:convert';
 import 'constants.dart';
 
-Client client =
-    HttpClientWithInterceptor.build(interceptors: [ApiInterceptor()]);
+Client client = InterceptedClient.build(interceptors: [ApiInterceptor()]);
 
 class LoginService {
   // register user
   // static Future signUp(body) async {
   //   return client
-  //       .post(Constants.apiUrl + "/users/register", body: json.encode(body))
+  //       .post(Uri.parse(Constants.apiUrl! + "/users/register", body: json.encode(body))
   //       .then((response) {
   //     return json.decode(response.body);
   //   });
@@ -20,7 +19,8 @@ class LoginService {
   // user login
   static Future signIn(body) async {
     return client
-        .post(Constants.apiUrl + "/users/login", body: json.encode(body))
+        .post(Uri.parse(Constants.apiUrl! + "/users/login"),
+            body: json.encode(body))
         .then((response) {
       return json.decode(response.body);
     });
@@ -30,7 +30,7 @@ class LoginService {
   static Future forgetPassword(email) async {
     Map body = {"email": email};
     return client
-        .post(Constants.apiUrl + "/users/forgot-password",
+        .post(Uri.parse(Constants.apiUrl! + "/users/forgot-password"),
             body: json.encode(body))
         .then((response) {
       return json.decode(response.body);
@@ -40,7 +40,8 @@ class LoginService {
   // verify otp
   static Future verifyOtp(otp, email) async {
     return client
-        .get(Constants.apiUrl + "/users/verify-otp?email=$email&otp=$otp")
+        .get(Uri.parse(
+            Constants.apiUrl! + "/users/verify-otp?email=$email&otp=$otp"))
         .then((response) {
       return json.decode(response.body);
     });
@@ -49,7 +50,7 @@ class LoginService {
   // reset password
   static Future resetPassword(body) async {
     return client
-        .post(Constants.apiUrl + "/users/reset-password",
+        .post(Uri.parse(Constants.apiUrl! + "/users/reset-password"),
             body: json.encode(body))
         .then((response) {
       return json.decode(response.body);
@@ -59,7 +60,7 @@ class LoginService {
   // change password
   static Future changePassword(body) async {
     return client
-        .post(Constants.apiUrl + "/users/change-password",
+        .post(Uri.parse(Constants.apiUrl! + "/users/change-password"),
             body: json.encode(body))
         .then((response) {
       return json.decode(response.body);
@@ -68,7 +69,9 @@ class LoginService {
 
   // get user info
   static Future getUserInfo() async {
-    return client.get(Constants.apiUrl + "/users/me").then((response) {
+    return client
+        .get(Uri.parse(Constants.apiUrl! + "/users/me"))
+        .then((response) {
       return json.decode(response.body);
     });
   }
@@ -76,7 +79,7 @@ class LoginService {
   // image delete
   static Future imagedelete() async {
     return client
-        .delete(Constants.apiUrl + "/users/delete/image")
+        .delete(Uri.parse(Constants.apiUrl! + "/users/delete/image"))
         .then((response) {
       return json.decode(response.body);
     });
@@ -85,7 +88,7 @@ class LoginService {
   // user data update
   static Future updateUserInfo(body) async {
     return client
-        .put(Constants.apiUrl + "/users/update/profile",
+        .put(Uri.parse(Constants.apiUrl! + "/users/update/profile"),
             body: json.encode(body))
         .then((response) {
       return json.decode(response.body);
@@ -94,21 +97,25 @@ class LoginService {
 
   // get about us data
   static Future businessInfo() async {
-    return client.get(Constants.apiUrl + "/business/detail").then((response) {
+    return client
+        .get(Uri.parse(Constants.apiUrl! + "/business/detail"))
+        .then((response) {
       return json.decode(response.body);
     });
   }
 
   // get about us data
   static Future aboutUs() async {
-    return client.get(Constants.apiUrl + "/pages/about-us").then((response) {
+    return client
+        .get(Uri.parse(Constants.apiUrl! + "/pages/about-us"))
+        .then((response) {
       return json.decode(response.body);
     });
   }
 
   // get about us data
   static Future tandCandPandPMethod(endPoint) async {
-    return client.get(Constants.apiUrl + endPoint).then((response) {
+    return client.get(Uri.parse(Constants.apiUrl! + endPoint)).then((response) {
       return json.decode(response.body);
     });
   }
@@ -116,7 +123,8 @@ class LoginService {
   // get json data
   static Future getLanguageJson(languageCode) async {
     return client
-        .get(Constants.apiUrl + "/languages/user?code=$languageCode")
+        .get(
+            Uri.parse(Constants.apiUrl! + "/languages/user?code=$languageCode"))
         .then((response) {
       return json.decode(response.body);
     });
@@ -124,7 +132,9 @@ class LoginService {
 
   // get location info
   static Future getLocationformation() async {
-    return client.get(Constants.apiUrl + '/settings/details').then((response) {
+    return client
+        .get(Uri.parse(Constants.apiUrl! + '/settings/details'))
+        .then((response) {
       return json.decode(response.body);
     });
   }
@@ -132,7 +142,8 @@ class LoginService {
   // verify mail send api
   static Future<dynamic> verificationMailSendApi(email) async {
     return client
-        .get(Constants.apiUrl + '/users/resend-verify-email?email=$email')
+        .get(Uri.parse(
+            Constants.apiUrl! + '/users/resend-verify-email?email=$email'))
         .then((response) {
       return json.decode(response.body);
     });
@@ -140,16 +151,18 @@ class LoginService {
 
   // get languages list api
   static Future<dynamic> getLanguagesList() async {
-    return client.get(Constants.apiUrl + '/languages/list').then((response) {
+    return client
+        .get(Uri.parse(Constants.apiUrl! + '/languages/list'))
+        .then((response) {
       return json.decode(response.body);
     });
   }
 
   // get all wallet history
   static Future<Map<String, dynamic>> getWalletsHistory(index, limit) async {
-    print(Constants.apiUrl + "/wallets/history?limit=$limit&page=$index");
     return client
-        .get(Constants.apiUrl + "/wallets/history?limit=$limit&page=$index")
+        .get(Uri.parse(
+            Constants.apiUrl! + "/wallets/history?limit=$limit&page=$index"))
         .then((response) {
       return json.decode(response.body);
     });

@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
-import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymade_grocery_app/service/common.dart';
+import 'package:readymade_grocery_app/service/sentry-service.dart';
 
 SentryError sentryError = new SentryError();
 
 class CounterModel with ChangeNotifier {
-  Map cartData;
-  int cartCount;
+  Map? cartData;
+  int? cartCount;
   getCartDataMethod() async {
     await Common.getCartData().then((onValue) {
       if (onValue != null) {

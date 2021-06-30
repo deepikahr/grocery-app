@@ -1,27 +1,27 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:readymadeGroceryApp/screens/orders/ordersDetails.dart';
-import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/constants.dart';
-import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/service/orderSevice.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
-import 'package:readymadeGroceryApp/widgets/loader.dart';
+import 'package:readymade_grocery_app/screens/orders/ordersDetails.dart';
+import 'package:readymade_grocery_app/service/common.dart';
+import 'package:readymade_grocery_app/service/constants.dart';
+import 'package:readymade_grocery_app/service/localizations.dart';
+import 'package:readymade_grocery_app/service/orderSevice.dart';
+import 'package:readymade_grocery_app/service/sentry-service.dart';
+import 'package:readymade_grocery_app/style/style.dart';
+import 'package:readymade_grocery_app/widgets/loader.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:readymadeGroceryApp/widgets/normalText.dart';
+import 'package:readymade_grocery_app/widgets/normalText.dart';
 import '../../style/style.dart';
 
 SentryError sentryError = new SentryError();
 
 class Orders extends StatefulWidget {
-  final String userID, locale;
-  final Map localizedValues;
-  final bool isSubscription;
+  final String? userID, locale;
+  final Map? localizedValues;
+  final bool? isSubscription;
   Orders({
-    Key key,
+    Key? key,
     this.userID,
     this.locale,
     this.localizedValues,
@@ -40,8 +40,8 @@ class _OrdersState extends State<Orders> {
   List orderList = [];
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  String currency;
-  ScrollController _scrollController = ScrollController();
+  String? currency;
+  late ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -57,7 +57,7 @@ class _OrdersState extends State<Orders> {
 
   @override
   void dispose() {
-    if (_scrollController != null) _scrollController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -87,7 +87,7 @@ class _OrdersState extends State<Orders> {
         });
       }
       await OrderService.getOrderByUserID(ordersPageNumber, ordersPerPage,
-              widget.isSubscription ? "SUBSCRIPTIONS" : "PURCHASES")
+              widget.isSubscription! ? "SUBSCRIPTIONS" : "PURCHASES")
           .then((onValue) {
         _refreshController.refreshCompleted();
         if (onValue['response_data'] != null &&
@@ -137,9 +137,7 @@ class _OrdersState extends State<Orders> {
                               physics: ScrollPhysics(),
                               shrinkWrap: true,
                               controller: _scrollController,
-                              itemCount: orderList.length == null
-                                  ? 0
-                                  : orderList.length,
+                              itemCount: orderList.length,
                               itemBuilder: (BuildContext context, int i) {
                                 return InkWell(
                                     onTap: () {
@@ -212,7 +210,7 @@ class _OrdersState extends State<Orders> {
                 imageUrl: orderDetails['product']['productImages'][0]
                             ['filePath'] !=
                         null
-                    ? Constants.imageUrlPath +
+                    ? Constants.imageUrlPath! +
                         "/tr:dpr-auto,tr:w-500" +
                         orderDetails['product']['productImages'][0]['filePath']
                     : orderDetails['product']['productImages'][0]['imageUrl'],
@@ -236,7 +234,7 @@ class _OrdersState extends State<Orders> {
             : CachedNetworkImage(
                 imageUrl: orderDetails['product']['filePath'] == null
                     ? orderDetails['product']['imageUrl']
-                    : Constants.imageUrlPath +
+                    : Constants.imageUrlPath! +
                         "/tr:dpr-auto,tr:w-500" +
                         orderDetails['product']['filePath'],
                 imageBuilder: (context, imageProvider) => Container(
@@ -261,7 +259,7 @@ class _OrdersState extends State<Orders> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             orderPageText(context,
-                '${MyLocalizations.of(context).getLocalizations("ORDER_ID", true)}  #${orderDetails['orderID']}'),
+                '${MyLocalizations.of(context)!.getLocalizations("ORDER_ID", true)}  #${orderDetails['orderID']}'),
             orderPageText(context,
                 '${orderDetails['product']['title'][0].toUpperCase()}${orderDetails['product']['title'].substring(1)}'),
             orderDetails['totalProduct'] > 1
@@ -269,16 +267,16 @@ class _OrdersState extends State<Orders> {
                 : Container(),
             orderDetails['totalProduct'] > 1
                 ? textLightSmall(
-                    MyLocalizations.of(context).getLocalizations("AND") +
+                    MyLocalizations.of(context)!.getLocalizations("AND") +
                         ' ${(orderDetails['totalProduct'] - 1).toString()} ' +
-                        MyLocalizations.of(context)
+                        MyLocalizations.of(context)!
                             .getLocalizations("MORE_ITEMS"),
                     context)
                 : Container(),
             buildBoldText(context,
                 '$currency${orderDetails['grandTotal'] > 0 ? orderDetails['grandTotal'].toStringAsFixed(2) : orderDetails['usedWalletAmount'].toStringAsFixed(2)}'),
             textLightSmall(
-                MyLocalizations.of(context).getLocalizations("ORDERED", true) +
+                MyLocalizations.of(context)!.getLocalizations("ORDERED", true) +
                     DateFormat('dd/MM/yyyy, hh:mm a', widget.locale ?? "en")
                         .format(
                             DateTime.parse(orderDetails['createdAt'].toString())

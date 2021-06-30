@@ -1,29 +1,29 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:getflutter/getflutter.dart';
-import 'package:readymadeGroceryApp/model/addToCart.dart';
-import 'package:readymadeGroceryApp/model/bottomSheet.dart';
-import 'package:readymadeGroceryApp/screens/authe/login.dart';
-import 'package:readymadeGroceryApp/service/cart-service.dart';
-import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/constants.dart';
-import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:getwidget/getwidget.dart';
+import 'package:readymade_grocery_app/model/addToCart.dart';
+import 'package:readymade_grocery_app/model/bottomSheet.dart';
+import 'package:readymade_grocery_app/screens/authe/login.dart';
+import 'package:readymade_grocery_app/service/cart-service.dart';
+import 'package:readymade_grocery_app/service/common.dart';
+import 'package:readymade_grocery_app/service/constants.dart';
+import 'package:readymade_grocery_app/service/localizations.dart';
+import 'package:readymade_grocery_app/style/style.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:readymadeGroceryApp/widgets/button.dart';
-import 'package:readymadeGroceryApp/widgets/cardOverlay.dart';
-import 'package:readymadeGroceryApp/widgets/normalText.dart';
+import 'package:readymade_grocery_app/widgets/button.dart';
+import 'package:readymade_grocery_app/widgets/cardOverlay.dart';
+import 'package:readymade_grocery_app/widgets/normalText.dart';
 
 class ProductGridCard extends StatefulWidget {
-  final String currency;
-  final Map productData;
-  final String locale;
-  final Map localizedValues;
-  final bool isHome;
+  final String? currency;
+  final Map? productData;
+  final String? locale;
+  final Map? localizedValues;
+  final bool? isHome;
 
   ProductGridCard(
-      {Key key,
+      {Key? key,
       this.currency,
       this.productData,
       this.locale,
@@ -38,31 +38,32 @@ class ProductGridCard extends StatefulWidget {
 class _ProductGridCardState extends State<ProductGridCard> {
   bool cardAdded = false, isAddInProgress = false, isQuantityUpdating = false;
   var variantPrice, variantUnit, dealPercentage, offerPercentage;
-  String cartId, quantityChangeType = '+';
+  String quantityChangeType = '+';
+  String? cartId;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
-    if (widget.productData['isAddedToCart'] == true) {
-      cardAdded = widget.productData['isAddedToCart'];
+    if (widget.productData?['isAddedToCart'] == true) {
+      cardAdded = widget.productData?['isAddedToCart'];
     } else {
       cardAdded = false;
     }
-    if (widget.productData['isDealAvailable'] != null &&
-        widget.productData['isDealAvailable'] == true) {
-      if (widget.productData['dealPercent'] != null) {
+    if (widget.productData?['isDealAvailable'] != null &&
+        widget.productData?['isDealAvailable'] == true) {
+      if (widget.productData?['dealPercent'] != null) {
         dealPercentage =
-            double.parse(widget.productData['dealPercent'].toStringAsFixed(1));
+            double.parse(widget.productData?['dealPercent'].toStringAsFixed(1));
       } else {
         dealPercentage = null;
       }
     } else {
       dealPercentage = null;
     }
-    if (widget.productData['variant'][0]['isOfferAvailable'] != null &&
-        widget.productData['variant'][0]['isOfferAvailable'] == true) {
-      if (widget.productData['variant'][0]['offerPercent'] != null) {
-        offerPercentage = double.parse(widget.productData['variant'][0]
+    if (widget.productData?['variant'][0]['isOfferAvailable'] != null &&
+        widget.productData?['variant'][0]['isOfferAvailable'] == true) {
+      if (widget.productData?['variant'][0]['offerPercent'] != null) {
+        offerPercentage = double.parse(widget.productData?['variant'][0]
                 ['offerPercent']
             .toStringAsFixed(1));
       } else {
@@ -71,8 +72,8 @@ class _ProductGridCardState extends State<ProductGridCard> {
     } else {
       offerPercentage = null;
     }
-    widget.productData['quantityToCart'] =
-        widget.productData['quantityToCart'] ?? 0;
+    widget.productData?['quantityToCart'] =
+        widget.productData?['quantityToCart'] ?? 0;
     super.initState();
   }
 
@@ -81,10 +82,10 @@ class _ProductGridCardState extends State<ProductGridCard> {
       isQuantityUpdating = true;
     });
     if (value) {
-      updateCart(widget.productData['quantityToCart'], value);
+      updateCart(widget.productData?['quantityToCart'], value);
     } else {
-      if (widget.productData['quantityToCart'] > 1) {
-        updateCart(widget.productData['quantityToCart'], value);
+      if (widget.productData?['quantityToCart'] > 1) {
+        updateCart(widget.productData?['quantityToCart'], value);
       } else {
         deleteCart();
       }
@@ -94,9 +95,9 @@ class _ProductGridCardState extends State<ProductGridCard> {
   void updateCart(quanity, increase) async {
     Map<String, dynamic> body = {
       'unit': variantUnit == null
-          ? widget.productData['variant'][0]['unit']
+          ? widget.productData!['variant'][0]['unit']
           : variantUnit,
-      'productId': widget.productData["_id"],
+      'productId': widget.productData?["_id"],
     };
     if (increase) {
       body['quantity'] = quanity + 1;
@@ -112,9 +113,9 @@ class _ProductGridCardState extends State<ProductGridCard> {
       if (mounted) {
         setState(() {
           if (increase) {
-            widget.productData['quantityToCart']++;
+            widget.productData?['quantityToCart']++;
           } else {
-            widget.productData['quantityToCart']--;
+            widget.productData?['quantityToCart']--;
           }
           isQuantityUpdating = false;
         });
@@ -129,7 +130,7 @@ class _ProductGridCardState extends State<ProductGridCard> {
   }
 
   void deleteCart() async {
-    await CartService.deleteDataFromCart(widget.productData["_id"])
+    await CartService.deleteDataFromCart(widget.productData?["_id"])
         .then((onValue) {
       if (onValue['response_data'] is Map &&
           onValue['response_data']['products'].length == 0 &&
@@ -200,24 +201,25 @@ class _ProductGridCardState extends State<ProductGridCard> {
                           borderRadius: const BorderRadius.vertical(
                               top: Radius.circular(12)),
                           child: CachedNetworkImage(
-                            imageUrl: (widget.productData['productImages'] !=
-                                        null &&
-                                    widget.productData['productImages'].length >
-                                        0)
-                                ? (widget.productData['productImages'][0]
-                                            ['filePath'] !=
-                                        null
-                                    ? Constants.imageUrlPath +
-                                        "/tr:dpr-auto,tr:w-500" +
-                                        widget.productData['productImages'][0]
-                                            ['filePath']
-                                    : widget.productData['productImages'][0]
-                                        ['imageUrl'])
-                                : widget.productData['filePath'] != null
-                                    ? Constants.imageUrlPath +
-                                        "/tr:dpr-auto,tr:w-500" +
-                                        widget.productData['filePath']
-                                    : widget.productData['imageUrl'],
+                            imageUrl:
+                                (widget.productData?['productImages'] != null &&
+                                        widget.productData?['productImages']
+                                                .length >
+                                            0)
+                                    ? (widget.productData?['productImages'][0]
+                                                ['filePath'] !=
+                                            null
+                                        ? Constants.imageUrlPath! +
+                                            "/tr:dpr-auto,tr:w-500" +
+                                            widget.productData!['productImages']
+                                                [0]['filePath']
+                                        : widget.productData?['productImages']
+                                            [0]['imageUrl'])
+                                    : widget.productData?['filePath'] != null
+                                        ? Constants.imageUrlPath! +
+                                            "/tr:dpr-auto,tr:w-500" +
+                                            widget.productData!['filePath']
+                                        : widget.productData?['imageUrl'],
                             imageBuilder: (context, imageProvider) => Container(
                               width: MediaQuery.of(context).size.width * 0.5,
                               height: 123,
@@ -246,12 +248,12 @@ class _ProductGridCardState extends State<ProductGridCard> {
                               children: <Widget>[
                                 Expanded(
                                     child: buildProductTitle(
-                                        '${widget.productData['title'][0].toUpperCase()}${widget.productData['title'].substring(1)}',
+                                        '${widget.productData?['title'][0].toUpperCase()}${widget.productData?['title'].substring(1)}',
                                         context)),
-                                widget.productData['averageRating'] == null ||
-                                        widget.productData['averageRating'] ==
+                                widget.productData?['averageRating'] == null ||
+                                        widget.productData?['averageRating'] ==
                                             0.0 ||
-                                        widget.productData['averageRating'] ==
+                                        widget.productData?['averageRating'] ==
                                             '0.0'
                                     ? Container()
                                     : Container(
@@ -268,7 +270,7 @@ class _ProductGridCardState extends State<ProductGridCard> {
                                               MainAxisAlignment.end,
                                           children: <Widget>[
                                             Text(
-                                                widget.productData[
+                                                widget.productData?[
                                                         'averageRating']
                                                     .toStringAsFixed(1),
                                                 style: textBarlowregwhite(
@@ -288,20 +290,21 @@ class _ProductGridCardState extends State<ProductGridCard> {
                                 SizedBox(width: 3),
                                 textGreenprimary(
                                     context,
-                                    '${variantUnit == null ? widget.productData['variant'][0]['unit'] : variantUnit}',
+                                    '${variantUnit == null ? widget.productData!['variant'][0]['unit'] : variantUnit}',
                                     barlowregularlack(context))
                               ],
                             ),
-                            widget.isHome
+                            widget.isHome!
                                 ? Container()
                                 : !cardAdded
                                     ? InkWell(
                                         onTap: () async {
-                                          if (widget.productData['variant']
+                                          if (widget.productData?['variant']
                                                   .length >
                                               1) {
                                             if (widget.productData != null &&
-                                                widget.productData['variant'] !=
+                                                widget.productData?[
+                                                        'variant'] !=
                                                     null) {
                                               var bottomSheet =
                                                   showModalBottomSheet(
@@ -320,10 +323,10 @@ class _ProductGridCardState extends State<ProductGridCard> {
                                                             dealPercentage:
                                                                 dealPercentage,
                                                             variantsList: widget
-                                                                    .productData[
+                                                                    .productData?[
                                                                 'variant'],
                                                             productQuantity: widget
-                                                                    .productData[
+                                                                    .productData?[
                                                                 'quantityToCart']);
                                                       });
                                               bottomSheet.then((onValue) {
@@ -333,13 +336,13 @@ class _ProductGridCardState extends State<ProductGridCard> {
                                                           onValue['products']
                                                               .length;
                                                       i++) {
-                                                    if (widget.productData[
+                                                    if (widget.productData?[
                                                             "_id"] ==
                                                         onValue['products'][i]
                                                             ["productId"]) {
                                                       if (mounted) {
                                                         setState(() {
-                                                          widget.productData[
+                                                          widget.productData?[
                                                                   'quantityToCart'] =
                                                               onValue['products']
                                                                       [i]
@@ -366,21 +369,21 @@ class _ProductGridCardState extends State<ProductGridCard> {
                                               if (onValue != null) {
                                                 if (mounted) {
                                                   setState(() {
-                                                    if (widget.productData[
+                                                    if (widget.productData?[
                                                                 'variant'][0]
                                                             ['productStock'] >
-                                                        widget.productData[
+                                                        widget.productData?[
                                                             'quantityToCart']) {
                                                       if (!isAddInProgress) {
                                                         Map<String, dynamic>
                                                             productAddBody = {
                                                           'productId': widget
-                                                              .productData[
+                                                              .productData?[
                                                                   '_id']
                                                               .toString(),
                                                           'quantity': 1,
                                                           "unit": widget
-                                                              .productData[
+                                                              .productData?[
                                                                   'variant'][0]
                                                                   ['unit']
                                                               .toString()
@@ -409,7 +412,7 @@ class _ProductGridCardState extends State<ProductGridCard> {
                                                                           'products']
                                                                       .length;
                                                               i++) {
-                                                            if (widget.productData[
+                                                            if (widget.productData?[
                                                                     "_id"] ==
                                                                 onValue['response_data']
                                                                         [
@@ -418,7 +421,7 @@ class _ProductGridCardState extends State<ProductGridCard> {
                                                                     "productId"]) {
                                                               if (mounted) {
                                                                 setState(() {
-                                                                  widget.productData[
+                                                                  widget.productData?[
                                                                       'quantityToCart'] = onValue[
                                                                               'response_data']
                                                                           [
@@ -460,12 +463,12 @@ class _ProductGridCardState extends State<ProductGridCard> {
                                                       }
                                                     } else {
                                                       showSnackbar(MyLocalizations
-                                                                  .of(context)
+                                                                  .of(context)!
                                                               .getLocalizations(
                                                                   "LIMITED_STOCK") +
-                                                          " ${widget.productData['variant'][0]['productStock']} " +
+                                                          " ${widget.productData?['variant'][0]['productStock']} " +
                                                           MyLocalizations.of(
-                                                                  context)
+                                                                  context)!
                                                               .getLocalizations(
                                                                   "OF_THIS_ITEM"));
                                                     }
@@ -545,7 +548,7 @@ class _ProductGridCardState extends State<ProductGridCard> {
                                               ),
                                             ),
                                             titleTwoLine(
-                                                widget.productData[
+                                                widget.productData?[
                                                         'quantityToCart']
                                                     .toString(),
                                                 context),
@@ -585,30 +588,30 @@ class _ProductGridCardState extends State<ProductGridCard> {
                       ),
                     ],
                   ),
-                  (widget.productData['isDealAvailable'] == true &&
-                          widget.productData['variant'][0]
+                  (widget.productData?['isDealAvailable'] == true &&
+                          widget.productData?['variant'][0]
                                   ['isOfferAvailable'] ==
                               true)
                       ? buildBadge(context,
-                          widget.productData['dealPercent'].toString(), "OFF")
-                      : (widget.productData['isDealAvailable'] == true)
+                          widget.productData?['dealPercent'].toString(), "OFF")
+                      : (widget.productData?['isDealAvailable'] == true)
                           ? buildBadge(
                               context,
-                              widget.productData['dealPercent'].toString(),
+                              widget.productData?['dealPercent'].toString(),
                               "OFF")
-                          : (widget.productData['variant'][0]
+                          : (widget.productData?['variant'][0]
                                       ['isOfferAvailable'] ==
                                   true)
                               ? buildBadge(
                                   context,
-                                  widget.productData['variant'][0]
+                                  widget.productData?['variant'][0]
                                           ['offerPercent']
                                       .toString(),
                                   "OFF")
                               : Container()
                 ],
               ),
-              widget.productData['variant'].indexWhere(
+              widget.productData?['variant'].indexWhere(
                           (element) => element['productStock'] == 0) ==
                       -1
                   ? Container()
@@ -619,31 +622,32 @@ class _ProductGridCardState extends State<ProductGridCard> {
       ));
 
   void showSnackbar(message) {
-    final snackBar = SnackBar(
-      content: Text(message),
-      duration: Duration(milliseconds: 3000),
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(milliseconds: 3000),
+      ),
     );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   getDiscountedValue() {
     if (dealPercentage != null && offerPercentage != null)
-      return '${widget.currency}${((variantPrice == null ? widget.productData['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? widget.productData['variant'][0]['price'] : variantPrice) * (dealPercentage / 100))).toDouble().toStringAsFixed(2)}';
+      return '${widget.currency}${((variantPrice == null ? widget.productData!['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? widget.productData!['variant'][0]['price'] : variantPrice) * (dealPercentage / 100))).toDouble().toStringAsFixed(2)}';
     else if (dealPercentage != null)
-      return '${widget.currency}${((variantPrice == null ? widget.productData['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? widget.productData['variant'][0]['price'] : variantPrice) * (dealPercentage / 100))).toDouble().toStringAsFixed(2)}';
+      return '${widget.currency}${((variantPrice == null ? widget.productData!['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? widget.productData!['variant'][0]['price'] : variantPrice) * (dealPercentage / 100))).toDouble().toStringAsFixed(2)}';
     else if (offerPercentage != null)
-      return '${widget.currency}${((variantPrice == null ? widget.productData['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? widget.productData['variant'][0]['price'] : variantPrice) * (offerPercentage / 100))).toDouble().toStringAsFixed(2)}';
+      return '${widget.currency}${((variantPrice == null ? widget.productData!['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? widget.productData!['variant'][0]['price'] : variantPrice) * (offerPercentage / 100))).toDouble().toStringAsFixed(2)}';
     else
-      return '${widget.currency}${(variantPrice == null ? widget.productData['variant'][0]['price'] : variantPrice).toDouble().toStringAsFixed(2)}';
+      return '${widget.currency}${(variantPrice == null ? widget.productData!['variant'][0]['price'] : variantPrice).toDouble().toStringAsFixed(2)}';
   }
 
   getPercentageValue() {
     if (dealPercentage != null && offerPercentage != null)
-      return '${widget.currency}${(variantPrice == null ? widget.productData['variant'][0]['price'] : variantPrice).toDouble().toStringAsFixed(2)}';
+      return '${widget.currency}${(variantPrice == null ? widget.productData!['variant'][0]['price'] : variantPrice).toDouble().toStringAsFixed(2)}';
     else if (dealPercentage != null)
-      return '${widget.currency}${(variantPrice == null ? widget.productData['variant'][0]['price'] : variantPrice).toDouble().toStringAsFixed(2)}';
+      return '${widget.currency}${(variantPrice == null ? widget.productData!['variant'][0]['price'] : variantPrice).toDouble().toStringAsFixed(2)}';
     else if (offerPercentage != null)
-      return '${widget.currency}${(variantPrice == null ? widget.productData['variant'][0]['price'] : variantPrice).toDouble().toStringAsFixed(2)}';
+      return '${widget.currency}${(variantPrice == null ? widget.productData!['variant'][0]['price'] : variantPrice).toDouble().toStringAsFixed(2)}';
     else
       return null;
   }

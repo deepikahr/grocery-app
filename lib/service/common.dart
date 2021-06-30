@@ -3,13 +3,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Common {
   // save token on storage
-  static Future<bool> setToken(String token) async {
+  static Future<bool> setToken(String? token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setString('token', token);
+    return prefs.setString('token', token!);
   }
 
   // retrive token from storage
-  static Future<String> getToken() async {
+  static Future<String?> getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return Future(() => prefs.getString('token'));
   }
@@ -19,26 +19,26 @@ class Common {
     return prefs.setString('allData', json.encode(data));
   }
 
-  static Future<Map<String, dynamic>> getAllData() async {
+  static Future<Map<String, dynamic>?> getAllData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String info = prefs.getString('allData');
+    String? info = prefs.getString('allData');
     try {
-      return json.decode(info) as Map<String, dynamic>;
+      return json.decode(info!) as Map<String, dynamic>;
     } catch (err) {
       return Future(() => null);
     }
   }
 
-  static Future<bool> setCartData(Map<String, dynamic> data) async {
+  static Future<bool> setCartData(Map<String, dynamic>? data) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.setString('cartData', json.encode(data));
   }
 
-  static Future<Map<String, dynamic>> getCartData() async {
+  static Future<Map<String, dynamic>?> getCartData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String info = prefs.getString('cartData');
+    String? info = prefs.getString('cartData');
     try {
-      return json.decode(info) as Map<String, dynamic>;
+      return json.decode(info!) as Map<String, dynamic>;
     } catch (err) {
       return Future(() => null);
     }
@@ -49,7 +49,7 @@ class Common {
     return prefs.setInt('cartDataCount', data);
   }
 
-  static Future<int> getCartDataCount() async {
+  static Future<int?> getCartDataCount() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return Future(() => prefs.getInt('cartDataCount'));
   }
@@ -59,72 +59,72 @@ class Common {
     return prefs.setString('bannerInfo', json.encode(data));
   }
 
-  static Future<Map<String, dynamic>> getBanner() async {
+  static Future<Map<String, dynamic>?> getBanner() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String info = prefs.getString('bannerInfo');
+    String? info = prefs.getString('bannerInfo');
     try {
-      return json.decode(info) as Map<String, dynamic>;
+      return json.decode(info!) as Map<String, dynamic>;
     } catch (err) {
       return Future(() => null);
     }
   }
 
-  static Future<bool> setCurrentLocation(String lang) async {
+  static Future<bool> setCurrentLocation(String? lang) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setString('currentLocation', lang);
+    return prefs.setString('currentLocation', lang!);
   }
 
-  static Future<String> getCurrentLocation() async {
+  static Future<String?> getCurrentLocation() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return Future(() => prefs.getString('currentLocation'));
   }
 
-  static Future<bool> setSelectedLanguage(String lang) async {
+  static Future<bool> setSelectedLanguage(String? lang) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setString('selectedLanguage', lang);
+    return prefs.setString('selectedLanguage', lang!);
   }
 
-  static Future<String> getSelectedLanguage() async {
+  static Future<String?> getSelectedLanguage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return Future(() => prefs.getString('selectedLanguage'));
   }
 
-  static Future<bool> setUserID(String id) async {
+  static Future<bool> setUserID(String? id) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setString('userID', id);
+    return prefs.setString('userID', id!);
   }
 
-  static Future<String> getUserID() async {
+  static Future<String?> getUserID() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return Future(() => prefs.getString('userID'));
   }
 
-  static Future<bool> setPlayerID(String id) async {
+  static Future<bool> setPlayerID(String? id) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setString('playerId', id);
+    return prefs.setString('playerId', id!);
   }
 
-  static Future<String> getPlayerID() async {
+  static Future<String?> getPlayerID() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return Future(() => prefs.getString('playerId'));
   }
 
-  static Future<bool> setCurrency(String code) async {
+  static Future<bool> setCurrency(String? code) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setString('currency', code);
+    return prefs.setString('currency', code!);
   }
 
-  static Future<String> getCurrency() async {
+  static Future<String?> getCurrency() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return Future(() => prefs.getString('currency'));
   }
 
-  static Future<bool> setCountryInfo(String data) async {
+  static Future<bool> setCountryInfo(String? data) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setString('countryInfo', data);
+    return prefs.setString('countryInfo', data!);
   }
 
-  static Future<String> getCountryInfo() async {
+  static Future<String?> getCountryInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return Future(() => prefs.getString("countryInfo"));
   }
@@ -134,11 +134,11 @@ class Common {
     return prefs.setString('connection', json.encode(data));
   }
 
-  static Future<Map<String, dynamic>> getNoConnection() async {
+  static Future<Map<String, dynamic>?> getNoConnection() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String info = prefs.getString('connection');
+    String? info = prefs.getString('connection');
     try {
-      return json.decode(info) as Map<String, dynamic>;
+      return json.decode(info!) as Map<String, dynamic>;
     } catch (err) {
       return Future(() => null);
     }
@@ -151,7 +151,7 @@ class Common {
   }
 
   // get setSplash from storage
-  static Future<bool> getSplash() async {
+  static Future<bool?> getSplash() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return Future(() => prefs.getBool('setSplash'));
   }
@@ -163,21 +163,21 @@ class Common {
   }
 
   // get setTheme from storage
-  static Future<bool> getTheme() async {
+  static Future<bool?> getTheme() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return Future(() => prefs.getBool('setTheme'));
   }
 
-  static Future<bool> setSubcriptionData(Map<String, dynamic> data) async {
+  static Future<bool> setSubcriptionData(Map<String, dynamic>? data) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.setString('subscriptionData', json.encode(data));
   }
 
-  static Future<Map<String, dynamic>> getSubcriptionData() async {
+  static Future<Map<String, dynamic>?> getSubcriptionData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String info = prefs.getString('subscriptionData');
+    String? info = prefs.getString('subscriptionData');
     try {
-      return json.decode(info) as Map<String, dynamic>;
+      return json.decode(info!) as Map<String, dynamic>;
     } catch (err) {
       return Future(() => null);
     }

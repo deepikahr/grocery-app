@@ -1,20 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:readymadeGroceryApp/screens/authe/change-mobile-otp-verify.dart';
-import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/service/otp-service.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
-import 'package:readymadeGroceryApp/widgets/appBar.dart';
-import 'package:readymadeGroceryApp/widgets/button.dart';
-import 'package:readymadeGroceryApp/widgets/normalText.dart';
+import 'package:readymade_grocery_app/screens/authe/change-mobile-otp-verify.dart';
+import 'package:readymade_grocery_app/service/localizations.dart';
+import 'package:readymade_grocery_app/service/otp-service.dart';
+import 'package:readymade_grocery_app/service/sentry-service.dart';
+import 'package:readymade_grocery_app/style/style.dart';
+import 'package:readymade_grocery_app/widgets/appBar.dart';
+import 'package:readymade_grocery_app/widgets/button.dart';
+import 'package:readymade_grocery_app/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
 
 class ChangeMobileNumber extends StatefulWidget {
-  final String locale;
-  final Map localizedValues;
-  ChangeMobileNumber({Key key, this.localizedValues, this.locale})
+  final String? locale;
+  final Map? localizedValues;
+  ChangeMobileNumber({Key? key, this.localizedValues, this.locale})
       : super(key: key);
 
   @override
@@ -24,12 +24,12 @@ class ChangeMobileNumber extends StatefulWidget {
 class _ChangeMobileNumberState extends State<ChangeMobileNumber> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  String mobileNumber;
+  String? mobileNumber;
   bool isUpdateMobileNumberLoading = false;
 
   updateMobileNumber() async {
     final form = _formKey.currentState;
-    if (form.validate()) {
+    if (form!.validate()) {
       form.save();
       if (mounted) {
         setState(() {
@@ -59,7 +59,7 @@ class _ChangeMobileNumberState extends State<ChangeMobileNumber> {
               actions: <Widget>[
                 new FlatButton(
                   child: new Text(
-                      MyLocalizations.of(context).getLocalizations("OK"),
+                      MyLocalizations.of(context)!.getLocalizations("OK"),
                       style: textbarlowRegularaprimary(context)),
                   onPressed: () {
                     Navigator.pop(context);
@@ -103,7 +103,8 @@ class _ChangeMobileNumberState extends State<ChangeMobileNumber> {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarPrimary(context, "CHANGE_MOBILE_NUMBER"),
+      appBar:
+          appBarPrimary(context, "CHANGE_MOBILE_NUMBER") as PreferredSizeWidget,
       body: Form(
         key: _formKey,
         child: Container(
@@ -133,14 +134,14 @@ class _ChangeMobileNumberState extends State<ChangeMobileNumber> {
                       focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: primary(context))),
                     ),
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return MyLocalizations.of(context)
+                    validator: (String? value) {
+                      if (value!.isEmpty) {
+                        return MyLocalizations.of(context)!
                             .getLocalizations("ENTER_YOUR_NEW_MOBILE_NUMBER");
                       } else
                         return null;
                     },
-                    onSaved: (String value) {
+                    onSaved: (String? value) {
                       mobileNumber = value;
                     },
                   ),
@@ -161,10 +162,11 @@ class _ChangeMobileNumberState extends State<ChangeMobileNumber> {
   }
 
   void showSnackbar(message) {
-    final snackBar = SnackBar(
-      content: Text(message),
-      duration: Duration(milliseconds: 3000),
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(milliseconds: 3000),
+      ),
     );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 }

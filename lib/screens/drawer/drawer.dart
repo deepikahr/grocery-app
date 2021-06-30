@@ -1,39 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:readymadeGroceryApp/screens/authe/login.dart';
-import 'package:readymadeGroceryApp/screens/categories/allcategories.dart';
-import 'package:readymadeGroceryApp/screens/drawer/about-us.dart';
-import 'package:readymadeGroceryApp/screens/drawer/address.dart';
-import 'package:readymadeGroceryApp/screens/drawer/chatpage.dart';
-import 'package:readymadeGroceryApp/screens/home/home.dart';
-import 'package:readymadeGroceryApp/screens/orders/orderTab.dart';
-import 'package:readymadeGroceryApp/screens/product/all_deals.dart';
-import 'package:readymadeGroceryApp/screens/subsription/subscriptionList.dart';
-import 'package:readymadeGroceryApp/screens/product/all_products.dart';
-import 'package:readymadeGroceryApp/screens/drawer/TandC-PP.dart';
-import 'package:readymadeGroceryApp/service/auth-service.dart';
-import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/constants.dart';
-import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
-import 'package:readymadeGroceryApp/widgets/normalText.dart';
+import 'package:readymade_grocery_app/screens/authe/login.dart';
+import 'package:readymade_grocery_app/screens/categories/allcategories.dart';
+import 'package:readymade_grocery_app/screens/drawer/about-us.dart';
+import 'package:readymade_grocery_app/screens/drawer/address.dart';
+import 'package:readymade_grocery_app/screens/drawer/chatpage.dart';
+import 'package:readymade_grocery_app/screens/home/home.dart';
+import 'package:readymade_grocery_app/screens/orders/orderTab.dart';
+import 'package:readymade_grocery_app/screens/product/all_deals.dart';
+import 'package:readymade_grocery_app/screens/subsription/subscriptionList.dart';
+import 'package:readymade_grocery_app/screens/product/all_products.dart';
+import 'package:readymade_grocery_app/screens/drawer/TandC-PP.dart';
+import 'package:readymade_grocery_app/service/auth-service.dart';
+import 'package:readymade_grocery_app/service/common.dart';
+import 'package:readymade_grocery_app/service/constants.dart';
+import 'package:readymade_grocery_app/service/localizations.dart';
+import 'package:readymade_grocery_app/service/sentry-service.dart';
+import 'package:readymade_grocery_app/style/style.dart';
+import 'package:readymade_grocery_app/widgets/normalText.dart';
 import 'package:share/share.dart';
 import '../../main.dart';
 
 SentryError sentryError = new SentryError();
 
 class DrawerPage extends StatefulWidget {
-  DrawerPage(
-      {Key key,
-      this.locale,
-      this.localizedValues,
-      this.addressData,
-      this.scaffoldKey})
+  DrawerPage({Key? key, this.locale, this.localizedValues, this.scaffoldKey})
       : super(key: key);
 
-  final Map localizedValues;
-  final String locale, addressData;
+  final Map? localizedValues;
+  final String? locale;
   final scaffoldKey;
   @override
   _DrawerPageState createState() => _DrawerPageState();
@@ -46,15 +41,13 @@ class _DrawerPageState extends State<DrawerPage> {
   @override
   void initState() {
     getToken();
-    Common.getTheme().then((isDark) {
-      isDark ? Color(0xFAAACF2D) : Color(0xFFFFCF2D);
-    });
+
     super.initState();
   }
 
   getToken() async {
     await Common.getCurrency().then((value) {
-      currency = value;
+      currency = value!;
     });
     await Common.getToken().then((onValue) {
       if (onValue != null) {
@@ -209,12 +202,10 @@ class _DrawerPageState extends State<DrawerPage> {
                 // ),
                 InkWell(
                     onTap: () {
-                      final RenderBox box = context.findRenderObject();
+                      final RenderBox box =
+                          context.findRenderObject() as RenderBox;
                       Share.share(
-                          MyLocalizations.of(context)
-                                  .getLocalizations("SHARE_MESSAGE") +
-                              " " +
-                              Constants.baseUrl,
+                          "${MyLocalizations.of(context)!.getLocalizations("SHARE_MESSAGE")} ${Constants.baseUrl}",
                           sharePositionOrigin:
                               box.localToGlobal(Offset.zero) & box.size);
                     },
@@ -224,7 +215,7 @@ class _DrawerPageState extends State<DrawerPage> {
                     activeColor: primary(context),
                     inactiveTrackColor: greyb(context),
                     title: Text(
-                      MyLocalizations.of(context)
+                      MyLocalizations.of(context)!
                           .getLocalizations("DARK_THEME"),
                       style: textBarlowregwhitelg(context),
                     ),
@@ -255,8 +246,8 @@ class _DrawerPageState extends State<DrawerPage> {
       Map body = {"language": selectedLocale, "playerId": null};
       LoginService.updateUserInfo(body).then((value) async {
         Navigator.pop(context);
-        showSnackbar(
-            MyLocalizations.of(context).getLocalizations("LOGOUT_SUCCESSFULL"));
+        showSnackbar(MyLocalizations.of(context)!
+            .getLocalizations("LOGOUT_SUCCESSFULL"));
         Future.delayed(Duration(milliseconds: 1500), () async {
           await Common.setToken(null);
           await Common.setUserID(null);
@@ -273,14 +264,15 @@ class _DrawerPageState extends State<DrawerPage> {
   }
 
   void showSnackbar(message) {
-    final snackBar = SnackBar(
-      content: Text(message),
-      duration: Duration(milliseconds: 3000),
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(milliseconds: 3000),
+      ),
     );
-    widget.scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
-  Widget _buildMenuTileList(icon, name, {Widget route}) {
+  Widget _buildMenuTileList(icon, name, {Widget? route}) {
     return InkWell(
         onTap: () {
           if (route != null) {
@@ -294,7 +286,7 @@ class _DrawerPageState extends State<DrawerPage> {
         child: buildDrawer(context, name, icon));
   }
 
-  Widget _buildMenuTileList1(icon, String name, {Widget route}) {
+  Widget _buildMenuTileList1(icon, String name, {Widget? route}) {
     return InkWell(
       onTap: () {
         if (route != null) {

@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:readymadeGroceryApp/screens/orders/ordersDetails.dart';
-import 'package:readymadeGroceryApp/service/auth-service.dart';
-import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
-import 'package:readymadeGroceryApp/widgets/appBar.dart';
-import 'package:readymadeGroceryApp/widgets/loader.dart';
-import 'package:readymadeGroceryApp/widgets/normalText.dart';
+import 'package:readymade_grocery_app/screens/orders/ordersDetails.dart';
+import 'package:readymade_grocery_app/service/auth-service.dart';
+import 'package:readymade_grocery_app/service/common.dart';
+import 'package:readymade_grocery_app/service/localizations.dart';
+import 'package:readymade_grocery_app/service/sentry-service.dart';
+import 'package:readymade_grocery_app/style/style.dart';
+import 'package:readymade_grocery_app/widgets/appBar.dart';
+import 'package:readymade_grocery_app/widgets/loader.dart';
+import 'package:readymade_grocery_app/widgets/normalText.dart';
 
 SentryError sentryError = new SentryError();
 
 class WalletHistoryyPage extends StatefulWidget {
-  final Map localizedValues;
-  final String locale;
-  WalletHistoryyPage({Key key, this.locale, this.localizedValues});
+  final Map? localizedValues;
+  final String? locale;
+  WalletHistoryyPage({Key? key, this.locale, this.localizedValues});
   @override
   _WalletHistoryyPageState createState() => _WalletHistoryyPageState();
 }
@@ -49,7 +49,7 @@ class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
     walletsPageNumber = walletHistoryList.length;
     totalWallet = 1;
     await Common.getCurrency().then((value) {
-      currency = value;
+      currency = value!;
     });
     getwalletHistoryList();
   }
@@ -92,7 +92,8 @@ class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bg(context),
-      appBar: appBarPrimary(context, "RECENT_TRANSACTIONS"),
+      appBar:
+          appBarPrimary(context, "RECENT_TRANSACTIONS") as PreferredSizeWidget,
       body: Column(
         children: <Widget>[
           Flexible(
@@ -112,9 +113,7 @@ class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
                               physics: ScrollPhysics(),
                               shrinkWrap: true,
                               controller: _scrollController,
-                              itemCount: walletHistoryList.length == null
-                                  ? 0
-                                  : walletHistoryList.length,
+                              itemCount: walletHistoryList.length,
                               itemBuilder: (BuildContext context, int index) {
                                 return InkWell(
                                   onTap: () {
@@ -184,11 +183,11 @@ class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
               Row(
                 children: [
                   Text(
-                      MyLocalizations.of(context)
+                      MyLocalizations.of(context)!
                           .getLocalizations('WALLET', true),
                       style: textBarlowRegularBlackdl(context)),
                   Text(
-                      MyLocalizations.of(context)
+                      MyLocalizations.of(context)!
                           .getLocalizations((walletDetails['isCredited']
                               ? "CREDIT"
                               : !walletDetails['isCredited']

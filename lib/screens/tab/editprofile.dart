@@ -1,33 +1,34 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:readymadeGroceryApp/screens/authe/change-mobile-number.dart';
-import 'package:readymadeGroceryApp/service/auth-service.dart';
-import 'package:getflutter/getflutter.dart';
-import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
-import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
+import 'package:readymade_grocery_app/screens/authe/change-mobile-number.dart';
+import 'package:readymade_grocery_app/service/auth-service.dart';
+import 'package:getwidget/getwidget.dart';
+import 'package:readymade_grocery_app/service/localizations.dart';
+import 'package:readymade_grocery_app/service/sentry-service.dart';
+import 'package:readymade_grocery_app/service/common.dart';
+import 'package:readymade_grocery_app/style/style.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:readymadeGroceryApp/widgets/appBar.dart';
-import 'package:readymadeGroceryApp/widgets/button.dart';
-import 'package:readymadeGroceryApp/widgets/normalText.dart';
+import 'package:readymade_grocery_app/widgets/appBar.dart';
+import 'package:readymade_grocery_app/widgets/button.dart';
+import 'package:readymade_grocery_app/widgets/normalText.dart';
 import '../../service/constants.dart';
 import 'package:path/path.dart' as path;
 import 'package:http/http.dart' as http;
 import 'package:async/async.dart';
 import 'dart:ui';
-import 'package:readymadeGroceryApp/widgets/loader.dart';
+import 'package:readymade_grocery_app/widgets/loader.dart';
 
 SentryError sentryError = new SentryError();
 
 class EditProfile extends StatefulWidget {
-  final Map<String, dynamic> userInfo;
-  final Map localizedValues;
-  final String locale;
-  EditProfile({Key key, this.userInfo, this.locale, this.localizedValues})
+  final Map<String, dynamic>? userInfo;
+  final Map? localizedValues;
+  final String? locale;
+  EditProfile({Key? key, this.userInfo, this.locale, this.localizedValues})
       : super(key: key);
 
   @override
@@ -36,15 +37,16 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfileState extends State<EditProfile> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  Map<String, dynamic> userInfo;
+  Map<String, dynamic>? userInfo;
   bool isLoading = false,
       isPicUploading = false,
       profileEdit = false,
       isUpdateMobileNumberLoading = false;
-  String firstName, lastName, currency = "", email;
+  String? firstName, lastName, email;
+  String currency = "";
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final picker = ImagePicker();
   var image;
-
   @override
   void initState() {
     getUserInfo();
@@ -58,7 +60,7 @@ class _EditProfileState extends State<EditProfile> {
       });
     }
     await Common.getCurrency().then((value) {
-      currency = value;
+      currency = value!;
     });
     await LoginService.getUserInfo().then((onValue) {
       if (mounted) {
@@ -102,7 +104,7 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   updateUserInformation() async {
-    final FormState form = _formKey.currentState;
+    final FormState form = _formKey.currentState!;
 
     if (!form.validate()) {
       return;
@@ -117,7 +119,7 @@ class _EditProfileState extends State<EditProfile> {
       Map<String, dynamic> body = {
         "firstName": firstName,
         "lastName": lastName,
-        "email": email.toLowerCase()
+        "email": email?.toLowerCase()
       };
 
       await LoginService.updateUserInfo(body).then((onValue) {
@@ -140,7 +142,9 @@ class _EditProfileState extends State<EditProfile> {
 
   selectGallary() async {
     // ignore: deprecated_member_use
-    image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    image = await (picker.getImage(source: ImageSource.gallery)
+        as FutureOr<PickedFile>);
+
     if (mounted) {
       setState(() {
         isPicUploading = true;
@@ -150,8 +154,8 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   selectCamera() async {
-    // ignore: deprecated_member_use
-    image = await ImagePicker.pickImage(source: ImageSource.camera);
+    image = await (picker.getImage(source: ImageSource.camera)
+        as FutureOr<PickedFile>);
     if (mounted) {
       setState(() {
         isPicUploading = true;
@@ -167,7 +171,7 @@ class _EditProfileState extends State<EditProfile> {
         new http.ByteStream(DelegatingStream.typed(_imageFile.openRead()));
 
     int length = await _imageFile.length();
-    String uri = Constants.apiUrl + '/users/upload/image';
+    String uri = Constants.apiUrl! + '/users/upload/image';
 
     dynamic request = new http.MultipartRequest("POST", Uri.parse(uri));
 
@@ -175,10 +179,10 @@ class _EditProfileState extends State<EditProfile> {
         filename: path.basename(_imageFile.path));
 
     await request.files.add(multipartFile);
-    String token;
+    String? token;
 
     await Common.getToken().then((onValue) {
-      token = onValue;
+      token = onValue!;
     }).catchError((error) {
       if (mounted) {
         setState(() {
@@ -226,7 +230,7 @@ class _EditProfileState extends State<EditProfile> {
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Text(
-                      MyLocalizations.of(context).getLocalizations("SELECT"),
+                      MyLocalizations.of(context)!.getLocalizations("SELECT"),
                       style: TextStyle(
                           color: Colors.red,
                           fontSize: 20,
@@ -243,7 +247,7 @@ class _EditProfileState extends State<EditProfile> {
                       type: GFButtonType.transparent,
                       child: alertText(
                           context, "CHOOSE_FROM_PHOTOS", Icon(Icons.image))),
-                  userInfo['filePath'] != null && userInfo['imageUrl'] != null
+                  userInfo?['filePath'] != null && userInfo?['imageUrl'] != null
                       ? GFButton(
                           onPressed: removeImage,
                           type: GFButtonType.transparent,
@@ -286,7 +290,7 @@ class _EditProfileState extends State<EditProfile> {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarPrimary(context, "EDIT_PROFILE"),
+      appBar: appBarPrimary(context, "EDIT_PROFILE") as PreferredSizeWidget,
       body: isLoading
           ? SquareLoader()
           : Form(
@@ -298,8 +302,8 @@ class _EditProfileState extends State<EditProfile> {
                     child: Stack(
                       children: <Widget>[
                         image == null
-                            ? userInfo['filePath'] == null &&
-                                    userInfo['imageUrl'] == null
+                            ? userInfo!['filePath'] == null &&
+                                    userInfo!['imageUrl'] == null
                                 ? Center(
                                     child: new Container(
                                       width: 200.0,
@@ -317,11 +321,11 @@ class _EditProfileState extends State<EditProfile> {
                                   )
                                 : Center(
                                     child: CachedNetworkImage(
-                                      imageUrl: userInfo['filePath'] == null
-                                          ? userInfo['imageUrl']
-                                          : Constants.imageUrlPath +
+                                      imageUrl: userInfo?['filePath'] == null
+                                          ? userInfo!['imageUrl']
+                                          : Constants.imageUrlPath! +
                                               "/tr:dpr-auto,tr:w-500" +
-                                              userInfo['filePath'],
+                                              userInfo?['filePath'],
                                       imageBuilder: (context, imageProvider) =>
                                           Container(
                                         width: 200.0,
@@ -395,7 +399,7 @@ class _EditProfileState extends State<EditProfile> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                            "${userInfo['countryCode'] ?? ""}${userInfo['mobileNumber'] ?? ""}",
+                            "${userInfo?['countryCode'] ?? ""}${userInfo?['mobileNumber'] ?? ""}",
                             style: textBarlowRegularBlack(context)),
                         InkWell(
                           onTap: () async {
@@ -425,7 +429,7 @@ class _EditProfileState extends State<EditProfile> {
                   Padding(
                     padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                     child: TextFormField(
-                      initialValue: userInfo['firstName'] ?? "",
+                      initialValue: userInfo?['firstName'] ?? "",
                       style: textBarlowRegularBlack(context),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
@@ -445,12 +449,12 @@ class _EditProfileState extends State<EditProfile> {
                           borderSide: BorderSide(color: primary(context)),
                         ),
                       ),
-                      onSaved: (String value) {
+                      onSaved: (String? value) {
                         firstName = value;
                       },
-                      validator: (String value) {
-                        if (value.isEmpty) {
-                          return MyLocalizations.of(context)
+                      validator: (String? value) {
+                        if (value!.isEmpty) {
+                          return MyLocalizations.of(context)!
                               .getLocalizations("ENTER_FIRST_NAME");
                         } else
                           return null;
@@ -465,7 +469,7 @@ class _EditProfileState extends State<EditProfile> {
                   Padding(
                     padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                     child: TextFormField(
-                      initialValue: userInfo['lastName'] ?? "",
+                      initialValue: userInfo?['lastName'] ?? "",
                       style: textBarlowRegularBlack(context),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
@@ -489,12 +493,12 @@ class _EditProfileState extends State<EditProfile> {
                           borderSide: BorderSide(color: primary(context)),
                         ),
                       ),
-                      onSaved: (String value) {
+                      onSaved: (String? value) {
                         lastName = value;
                       },
-                      validator: (String value) {
-                        if (value.isEmpty) {
-                          return MyLocalizations.of(context)
+                      validator: (String? value) {
+                        if (value!.isEmpty) {
+                          return MyLocalizations.of(context)!
                               .getLocalizations("ENTER_LAST_NAME");
                         } else
                           return null;
@@ -509,7 +513,7 @@ class _EditProfileState extends State<EditProfile> {
                   Padding(
                     padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                     child: TextFormField(
-                      initialValue: userInfo['email'] ?? "",
+                      initialValue: userInfo?['email'] ?? "",
                       style: textBarlowRegularBlack(context),
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
@@ -529,15 +533,15 @@ class _EditProfileState extends State<EditProfile> {
                           borderSide: BorderSide(color: primary(context)),
                         ),
                       ),
-                      onSaved: (String value) {
+                      onSaved: (String? value) {
                         email = value;
                       },
-                      validator: (String value) {
-                        if (value.isEmpty) {
+                      validator: (String? value) {
+                        if (value!.isEmpty) {
                           return null;
-                        } else if (!RegExp(Constants.emailValidation)
+                        } else if (!RegExp(Constants.emailValidation!)
                             .hasMatch(value)) {
-                          return MyLocalizations.of(context)
+                          return MyLocalizations.of(context)!
                               .getLocalizations("ERROR_MAIL");
                         } else
                           return null;
@@ -558,10 +562,11 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   void showSnackbar(message) {
-    final snackBar = SnackBar(
-      content: Text(message),
-      duration: Duration(milliseconds: 3000),
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(milliseconds: 3000),
+      ),
     );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 }

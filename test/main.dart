@@ -1,4 +1,4 @@
-import 'package:readymadeGroceryApp/main.dart';
+import 'package:readymade_grocery_app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_driver/driver_extension.dart';
 

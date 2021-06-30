@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/product-service.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
-import 'package:readymadeGroceryApp/style/style.dart';
-import 'package:readymadeGroceryApp/widgets/appBar.dart';
-import 'package:readymadeGroceryApp/widgets/loader.dart';
+import 'package:readymade_grocery_app/service/common.dart';
+import 'package:readymade_grocery_app/service/product-service.dart';
+import 'package:readymade_grocery_app/service/sentry-service.dart';
+import 'package:readymade_grocery_app/style/style.dart';
+import 'package:readymade_grocery_app/widgets/appBar.dart';
+import 'package:readymade_grocery_app/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:readymadeGroceryApp/widgets/subscription_card.dart';
+import 'package:readymade_grocery_app/widgets/subscription_card.dart';
 import '../../style/style.dart';
 import '../../widgets/loader.dart';
 
 SentryError sentryError = new SentryError();
 
 class AllSubscriptionProductsListPage extends StatefulWidget {
-  final Map localizedValues;
-  final String locale;
+  final Map? localizedValues;
+  final String? locale;
 
   AllSubscriptionProductsListPage({
-    Key key,
+    Key? key,
     this.locale,
     this.localizedValues,
   });
@@ -35,7 +35,7 @@ class _AllSubscriptionProductsListPageState
   List productsList = [];
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  String currency;
+  String? currency;
   ScrollController _scrollController = ScrollController();
   @override
   void initState() {
@@ -52,7 +52,7 @@ class _AllSubscriptionProductsListPageState
 
   @override
   void dispose() {
-    if (_scrollController != null) _scrollController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -113,7 +113,8 @@ class _AllSubscriptionProductsListPageState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bg(context),
-      appBar: appBarPrimarynoradius(context, "SUBSCRIPTION_PRODUCTS"),
+      appBar: appBarPrimarynoradius(context, "SUBSCRIPTION_PRODUCTS")
+          as PreferredSizeWidget,
       body: Column(
         children: [
           SizedBox(height: 10),
@@ -127,14 +128,14 @@ class _AllSubscriptionProductsListPageState
           //       ),
           //       validator: (String value) {
           //         if (value.isEmpty) {
-          //           return MyLocalizations.of(context)
+          //           return MyLocalizations.of(context)!
           //               .getLocalizations("WHAT_ARE_YOU_BUING_TODAY");
           //         } else
           //           return null;
           //       },
           //       decoration: new InputDecoration(
           //         prefixIcon: new Icon(Icons.search, color: Colors.black),
-          //         hintText: MyLocalizations.of(context)
+          //         hintText: MyLocalizations.of(context)!
           //             .getLocalizations("WHAT_ARE_YOU_BUING_TODAY"),
           //         fillColor: Color(0xFFF0F0F0),
           //         filled: true,
@@ -162,9 +163,7 @@ class _AllSubscriptionProductsListPageState
                         physics: ScrollPhysics(),
                         controller: _scrollController,
                         shrinkWrap: true,
-                        itemCount: productsList.length == null
-                            ? 0
-                            : productsList.length,
+                        itemCount: productsList.length,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           childAspectRatio:
