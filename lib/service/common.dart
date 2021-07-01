@@ -129,7 +129,7 @@ class Common {
     return Future(() => prefs.getString("countryInfo"));
   }
 
-  static Future<bool> setNoConnection(Map<String, dynamic> data) async {
+  static Future<bool> setNoConnection(Map<String, dynamic>? data) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.setString('connection', json.encode(data));
   }
