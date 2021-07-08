@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:readymadeGroceryApp/screens/authe/otp.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
@@ -112,7 +113,8 @@ class _SignupState extends State<Signup> {
                 ),
               ),
               actions: <Widget>[
-                new FlatButton(
+                GFButton(
+                  color: Colors.transparent,
                   child: new Text(
                       MyLocalizations.of(context)!.getLocalizations("OK"),
                       style: textbarlowRegularaprimary(context)),

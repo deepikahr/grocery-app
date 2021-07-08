@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:intl/intl.dart';
 import 'package:readymadeGroceryApp/model/pausedSubscriptionBottomSheet.dart';
 import 'package:readymadeGroceryApp/screens/subsription/add_edit_subscriptionPage.dart';
@@ -212,12 +213,14 @@ class _AllSubscribedState extends State<SubScriptionList> {
         content: new Text(MyLocalizations.of(context)!
             .getLocalizations("YOU_WANT_TO_CANCEL_SUBSCRIPTION")),
         actions: <Widget>[
-          new FlatButton(
+          GFButton(
+             color: Colors.transparent,
             onPressed: () => Navigator.pop(context, false),
             child:
                 new Text(MyLocalizations.of(context)!.getLocalizations("NO")),
           ),
-          new FlatButton(
+        GFButton(
+         color: Colors.transparent,
             onPressed: () {
               setState(() {
                 subscIndex = index;

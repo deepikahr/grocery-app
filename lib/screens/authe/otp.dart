@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:getwidget/components/button/gf_button.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:readymadeGroceryApp/screens/authe/resetPas.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -82,7 +83,8 @@ class _OtpState extends State<Otp> {
                     ),
                   ),
                   actions: <Widget>[
-                    new FlatButton(
+                    GFButton(
+                      color: Colors.transparent,
                       child: new Text(
                           MyLocalizations.of(context)!.getLocalizations("OK"),
                           style: TextStyle(color: green)),
@@ -165,7 +167,8 @@ class _OtpState extends State<Otp> {
             ),
           ),
           actions: <Widget>[
-            new FlatButton(
+            GFButton(
+              color: Colors.transparent,
               child: new Text(
                 MyLocalizations.of(context)!.getLocalizations("OK"),
                 style: textbarlowRegularaprimary(context),

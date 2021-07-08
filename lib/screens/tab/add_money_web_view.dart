@@ -29,13 +29,13 @@ class _AddMoneyWebViewPageState extends State<AddMoneyWebViewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: appBarPrimarynoradius(context, "ADD_MONEY") as PreferredSizeWidget?,
+      appBar:
+          appBarPrimarynoradius(context, "ADD_MONEY") as PreferredSizeWidget?,
       body: WebView(
           initialUrl: initialUrl,
           javascriptMode: JavascriptMode.unrestricted,
           onWebViewCreated: (controller) => _controller = controller,
           navigationDelegate: (NavigationRequest request) {
-            print("request.url${request.url}");
             if (request.url
                 .startsWith('${Constants.baseUrl}/wallet-payment-successful')) {
               Navigator.of(context).pop();

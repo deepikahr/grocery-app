@@ -355,7 +355,8 @@ class _MyCartState extends State<MyCart> {
             responseData,
           ),
           actions: <Widget>[
-            FlatButton(
+            GFButton(
+                color: Colors.transparent,
               child: Text(MyLocalizations.of(context)!.getLocalizations("OK")),
               onPressed: () {
                 Navigator.pop(context);

@@ -50,7 +50,6 @@ void initializeLanguage({bool? isTest}) async {
 
 void getToken() async {
   await Common.getToken().then((onValue) async {
-    print(onValue);
     if (onValue != null) {
       Common.getPlayerID().then((palyerId) {
         Common.getSelectedLanguage().then((selectedLocale) async {
@@ -61,7 +60,6 @@ void getToken() async {
       });
     }
   }).catchError((error) {
-    print("error$error");
     sentryError.reportError(error, null);
   });
 }
@@ -118,12 +116,9 @@ class _MainScreenState extends State<MainScreen> {
       isGetJsonLoading = true;
     });
     await Common.getSelectedLanguage().then((selectedLocale) async {
-      print(selectedLocale);
       String defaultLocale = '';
       locale = selectedLocale ?? defaultLocale;
       await LoginService.getLanguageJson(locale).then((value) async {
-        print(value);
-
         setState(() {
           isGetJsonLoading = false;
         });
