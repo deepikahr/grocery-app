@@ -7,15 +7,15 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 class Thankyou extends StatefulWidget {
   Thankyou({
-    Key key,
+    Key? key,
     this.locale,
     this.localizedValues,
     this.isSubscription = false,
     this.isWallet = false,
   });
 
-  final Map localizedValues;
-  final String locale;
+  final Map? localizedValues;
+  final String? locale;
   final bool isSubscription, isWallet;
 
   @override

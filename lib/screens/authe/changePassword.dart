@@ -14,9 +14,9 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 SentryError sentryError = new SentryError();
 
 class ChangePassword extends StatefulWidget {
-  final String token, locale;
-  final Map localizedValues;
-  ChangePassword({Key key, this.token, this.localizedValues, this.locale})
+  final String? token, locale;
+  final Map? localizedValues;
+  ChangePassword({Key? key, this.token, this.localizedValues, this.locale})
       : super(key: key);
 
   @override
@@ -28,7 +28,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController _passwordTextController = TextEditingController();
 
-  String oldPassword, newPassword, confirmPassword;
+  String? oldPassword, newPassword, confirmPassword;
   bool oldPasswordVisible = true,
       newPasswordVisible = true,
       confirmPasswordVisible = true;
@@ -36,11 +36,11 @@ class _ChangePasswordState extends State<ChangePassword> {
   bool isChangePasswordLoading = false;
 
   changePassword() async {
-    final form = _formKey.currentState;
+    final form = _formKey.currentState!;
     if (form.validate()) {
       form.save();
       if (newPassword == oldPassword) {
-        showSnackbar(MyLocalizations.of(context)
+        showSnackbar(MyLocalizations.of(context)!
             .getLocalizations("DO_NOT_ENTER_SAME_PASS"));
       } else {
         if (mounted) {
@@ -63,8 +63,8 @@ class _ChangePasswordState extends State<ChangePassword> {
           Common.getSelectedLanguage().then((selectedLocale) async {
             Map body = {"language": selectedLocale, "playerId": null};
             LoginService.updateUserInfo(body).then((value) async {
-              await Common.setToken(null);
-              await Common.setUserID(null);
+              await Common.deleteToken();
+              await Common.deleteUserId();
               var result = Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -112,7 +112,7 @@ class _ChangePasswordState extends State<ChangePassword> {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarPrimary(context, "CHANGE_PASSWORD"),
+      appBar: appBarPrimary(context, "CHANGE_PASSWORD") as PreferredSizeWidget?,
       body: Form(
         key: _formKey,
         child: Container(
@@ -156,17 +156,17 @@ class _ChangePasswordState extends State<ChangePassword> {
                         borderSide: BorderSide(color: primary(context)),
                       ),
                     ),
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return MyLocalizations.of(context)
+                    validator: (String? value) {
+                      if (value!.isEmpty) {
+                        return MyLocalizations.of(context)!
                             .getLocalizations("ENTER_OLD_PASSWORD");
                       } else if (value.length < 6) {
-                        return MyLocalizations.of(context)
+                        return MyLocalizations.of(context)!
                             .getLocalizations("ERROR_PASS");
                       } else
                         return null;
                     },
-                    onSaved: (String value) {
+                    onSaved: (String? value) {
                       oldPassword = value;
                     },
                     obscureText: oldPasswordVisible,
@@ -211,18 +211,18 @@ class _ChangePasswordState extends State<ChangePassword> {
                         borderSide: BorderSide(color: primary(context)),
                       ),
                     ),
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return MyLocalizations.of(context)
+                    validator: (String? value) {
+                      if (value!.isEmpty) {
+                        return MyLocalizations.of(context)!
                             .getLocalizations("ENTER_NEW_PASSWORD");
                       } else if (value.length < 6) {
-                        return MyLocalizations.of(context)
+                        return MyLocalizations.of(context)!
                             .getLocalizations("ERROR_PASS");
                       } else
                         return null;
                     },
                     controller: _passwordTextController,
-                    onSaved: (String value) {
+                    onSaved: (String? value) {
                       newPassword = value;
                     },
                     obscureText: newPasswordVisible,
@@ -269,20 +269,20 @@ class _ChangePasswordState extends State<ChangePassword> {
                         borderSide: BorderSide(color: primary(context)),
                       ),
                     ),
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return MyLocalizations.of(context)
+                    validator: (String? value) {
+                      if (value!.isEmpty) {
+                        return MyLocalizations.of(context)!
                             .getLocalizations("ENTER_CONFIRM_PASSWORD");
                       } else if (value.length < 6) {
-                        return MyLocalizations.of(context)
+                        return MyLocalizations.of(context)!
                             .getLocalizations("ERROR_PASS");
                       } else if (_passwordTextController.text != value) {
-                        return MyLocalizations.of(context)
+                        return MyLocalizations.of(context)!
                             .getLocalizations("PASS_NOT_MATCH");
                       } else
                         return null;
                     },
-                    onSaved: (String value) {
+                    onSaved: (String? value) {
                       confirmPassword = value;
                     },
                     obscureText: confirmPasswordVisible,
@@ -304,10 +304,11 @@ class _ChangePasswordState extends State<ChangePassword> {
   }
 
   void showSnackbar(message) {
-    final snackBar = SnackBar(
-      content: Text(message),
-      duration: Duration(milliseconds: 3000),
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(milliseconds: 3000),
+      ),
     );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 }

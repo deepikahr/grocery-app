@@ -11,15 +11,15 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 SentryError sentryError = new SentryError();
 
 class BottonSheetClassDryClean extends StatefulWidget {
-  final List variantsList;
-  final int productQuantity;
-  final double dealPercentage;
-  final String currency, locale;
-  final Map localizedValues;
-  final Map<String, dynamic> productData;
+  final List? variantsList;
+  final int? productQuantity;
+  final double? dealPercentage;
+  final String? currency, locale;
+  final Map? localizedValues;
+  final Map<String, dynamic>? productData;
 
   BottonSheetClassDryClean(
-      {Key key,
+      {Key? key,
       this.variantsList,
       this.productData,
       this.currency,
@@ -36,9 +36,9 @@ class BottonSheetClassDryClean extends StatefulWidget {
 class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  int groupValue = 0;
+  int? groupValue = 0;
   bool selectVariant = false, addProductTocart = false, getTokenValue = false;
-  int quantity = 1;
+  int? quantity = 1;
   var variantUnit, variantId;
   var variantStock;
   var variantPrice;
@@ -56,14 +56,14 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
     if (increase) {
       if (mounted) {
         setState(() {
-          quantity++;
+          quantity = quantity! + 1;
         });
       }
     } else {
-      if (quantity > 1) {
+      if (quantity! > 1) {
         if (mounted) {
           setState(() {
-            quantity--;
+            quantity = quantity! - 1;
           });
         }
       }
@@ -107,14 +107,14 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
 
   addToCartMethod() {
     if ((variantStock == null
-            ? widget.variantsList[0]['productStock']
+            ? widget.variantsList![0]['productStock']
             : variantStock) >=
         quantity) {
       Map<String, dynamic> productAddBody = {
-        'productId': widget.productData['_id'].toString(),
+        'productId': widget.productData!['_id'].toString(),
         'quantity': quantity,
         "unit": variantUnit == null
-            ? widget.variantsList[0]['unit'].toString()
+            ? widget.variantsList![0]['unit'].toString()
             : variantUnit.toString()
       };
       AddToCart.addAndUpdateProductMethod(productAddBody).then((onValue) {
@@ -150,10 +150,10 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
         });
       }
 
-      showSnackbar(MyLocalizations.of(context)
+      showSnackbar(MyLocalizations.of(context)!
               .getLocalizations("LIMITED_STOCK") +
-          " ${variantStock == null ? widget.variantsList[0]['productStock'] : variantStock} " +
-          MyLocalizations.of(context).getLocalizations("OF_THIS_ITEM"));
+          " ${variantStock == null ? widget.variantsList![0]['productStock'] : variantStock} " +
+          MyLocalizations.of(context)!.getLocalizations("OF_THIS_ITEM"));
     }
   }
 
@@ -217,16 +217,16 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                               child: InkWell(
                                 onTap: () {
                                   if ((variantStock == null
-                                          ? widget.variantsList[0]
+                                          ? widget.variantsList![0]
                                               ['productStock']
                                           : variantStock) >
                                       quantity) {
                                     _changeProductQuantity(true);
                                   } else {
-                                    showSnackbar(MyLocalizations.of(context)
+                                    showSnackbar(MyLocalizations.of(context)!
                                             .getLocalizations("LIMITED_STOCK") +
-                                        " ${variantStock == null ? widget.variantsList[0]['productStock'] : variantStock} " +
-                                        MyLocalizations.of(context)
+                                        " ${variantStock == null ? widget.variantsList![0]['productStock'] : variantStock} " +
+                                        MyLocalizations.of(context)!
                                             .getLocalizations("OF_THIS_ITEM"));
                                   }
                                 },
@@ -246,39 +246,39 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
                   padding: EdgeInsets.only(right: 0.0),
-                  itemCount: widget.variantsList.length,
+                  itemCount: widget.variantsList!.length,
                   itemBuilder: (BuildContext context, int index) {
                     return new RadioListTile(
                       value: index,
                       groupValue: groupValue,
                       selected: selectVariant,
-                      onChanged: (int selected) {
+                      onChanged: (int? selected) {
                         if (mounted) {
                           setState(() {
                             groupValue = selected;
                             selectVariant = !selectVariant;
                             variantPrice =
-                                widget.variantsList[selected]['price'];
-                            variantUnit = widget.variantsList[selected]['unit']
+                                widget.variantsList![selected!]['price'];
+                            variantUnit = widget.variantsList![selected]['unit']
                                 .toString();
-                            variantId =
-                                widget.variantsList[selected]['_id'].toString();
+                            variantId = widget.variantsList![selected]['_id']
+                                .toString();
                             variantStock =
-                                widget.variantsList[selected]['productStock'];
+                                widget.variantsList![selected]['productStock'];
                           });
                         }
                       },
                       activeColor: primary(context),
                       secondary: textGreenprimary(
                           context,
-                          '${widget.variantsList[index]['unit']} ',
+                          '${widget.variantsList![index]['unit']} ',
                           textbarlowBoldGreen(context)),
                       title: priceMrpText(
                           widget.dealPercentage != null
-                              ? "${widget.currency}${((widget.variantsList[index]['price'] - (widget.variantsList[index]['price'] * (widget.dealPercentage / 100)))).toStringAsFixed(2)}"
-                              : '${widget.currency}${(widget.variantsList[index]['price']).toStringAsFixed(2)}',
+                              ? "${widget.currency}${(widget.variantsList![index]['price'] - (widget.variantsList![index]['price'] * (widget.dealPercentage! / 100))).toStringAsFixed(2)}"
+                              : '${widget.currency}${(widget.variantsList![index]['price']).toStringAsFixed(2)}',
                           widget.dealPercentage != null
-                              ? '${widget.currency}${(widget.variantsList[index]['price']).toStringAsFixed(2)}'
+                              ? '${widget.currency}${(widget.variantsList![index]['price']).toStringAsFixed(2)}'
                               : null,
                           context),
                     );
@@ -293,8 +293,8 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
               context,
               '(${quantity.toString()})  ',
               widget.dealPercentage != null
-                  ? '${widget.currency}${((variantPrice == null ? (widget.variantsList[0]['price'] * quantity) : (variantPrice * quantity)) - ((variantPrice == null ? (widget.variantsList[0]['price'] * quantity) : (variantPrice * quantity)) * (widget.dealPercentage / 100))).toStringAsFixed(2)}'
-                  : '${widget.currency}${variantPrice == null ? (widget.variantsList[0]['price'] * quantity) : (variantPrice * quantity).toStringAsFixed(2)}',
+                  ? '${widget.currency}${((variantPrice == null ? (widget.variantsList![0]['price'] * quantity) : (variantPrice * quantity)) - ((variantPrice == null ? (widget.variantsList![0]['price'] * quantity) : (variantPrice * quantity)) * (widget.dealPercentage! / 100))).toStringAsFixed(2)}'
+                  : '${widget.currency}${variantPrice == null ? (widget.variantsList![0]['price'] * quantity) : (variantPrice * quantity).toStringAsFixed(2)}',
               "ADD_TO_CART",
               Icon(Icons.shopping_cart, color: dark(context)),
               addProductTocart),
@@ -302,10 +302,11 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
   }
 
   void showSnackbar(message) {
-    final snackBar = SnackBar(
-      content: Text(message),
-      duration: Duration(milliseconds: 3000),
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(milliseconds: 3000),
+      ),
     );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:getflutter/getwidget.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import '../../service/auth-service.dart';
@@ -11,10 +11,10 @@ import 'package:readymadeGroceryApp/style/style.dart';
 SentryError sentryError = new SentryError();
 
 class AboutUs extends StatefulWidget {
-  AboutUs({Key key, this.locale, this.localizedValues}) : super(key: key);
+  AboutUs({Key? key, this.locale, this.localizedValues}) : super(key: key);
 
-  final Map localizedValues;
-  final String locale;
+  final Map? localizedValues;
+  final String? locale;
 
   @override
   _AboutUsState createState() => _AboutUsState();
@@ -99,7 +99,7 @@ class _AboutUsState extends State<AboutUs> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bg(context),
-      appBar: appBarTransparent(context, "ABOUT_US"),
+      appBar: appBarTransparent(context, "ABOUT_US") as PreferredSizeWidget?,
       body: isAboutUsData || isBusinessInfoData
           ? SquareLoader()
           : ListView(

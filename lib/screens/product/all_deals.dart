@@ -15,13 +15,13 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 SentryError sentryError = new SentryError();
 
 class AllDealsList extends StatefulWidget {
-  final Map localizedValues;
-  final bool token;
-  final List productsList, favProductList;
-  final String title, locale, currency;
+  final Map? localizedValues;
+  final bool? token;
+  final List? productsList, favProductList;
+  final String? title, locale, currency;
 
   AllDealsList(
-      {Key key,
+      {Key? key,
       this.locale,
       this.localizedValues,
       this.favProductList,
@@ -34,12 +34,12 @@ class AllDealsList extends StatefulWidget {
 }
 
 class _AllDealsListState extends State<AllDealsList> {
-  List dealsList, favProductList;
-  String currency;
-  bool getTokenValue = false, isAllDealsLoadingList = false;
+  List? dealsList, favProductList;
+  String? currency;
+  bool? getTokenValue = false, isAllDealsLoadingList = false;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  ScrollController controller;
+  ScrollController? controller;
   var cartData;
   @override
   void initState() {
@@ -106,7 +106,7 @@ class _AllDealsListState extends State<AllDealsList> {
 
   @override
   Widget build(BuildContext context) {
-    if (getTokenValue) {
+    if (getTokenValue!) {
       CounterModel().getCartDataMethod().then((res) {
         if (mounted) {
           setState(() {
@@ -123,7 +123,8 @@ class _AllDealsListState extends State<AllDealsList> {
     }
     return Scaffold(
       backgroundColor: bg(context),
-      appBar: appBarWhite(context, widget.title, false, false, null),
+      appBar: appBarWhite(context, widget.title, false, false, Container())
+          as PreferredSizeWidget?,
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
@@ -135,9 +136,9 @@ class _AllDealsListState extends State<AllDealsList> {
             getAllTodayDealsListMethod();
           }
         },
-        child: isAllDealsLoadingList
+        child: isAllDealsLoadingList!
             ? SquareLoader()
-            : dealsList.length > 0
+            : dealsList!.length > 0
                 ? Container(
                     margin: EdgeInsets.only(
                         left: 15, right: 15, top: 15, bottom: 16),
@@ -147,8 +148,7 @@ class _AllDealsListState extends State<AllDealsList> {
                           padding: EdgeInsets.only(bottom: 25),
                           physics: ScrollPhysics(),
                           shrinkWrap: true,
-                          itemCount:
-                              dealsList.length == null ? 0 : dealsList.length,
+                          itemCount: dealsList!.isEmpty ? 0 : dealsList!.length,
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2,
@@ -159,21 +159,21 @@ class _AllDealsListState extends State<AllDealsList> {
                           itemBuilder: (BuildContext context, int i) {
                             return InkWell(
                               onTap: () {
-                                if (dealsList[i]['dealType'] == 'CATEGORY') {
+                                if (dealsList![i]['dealType'] == 'CATEGORY') {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => AllProducts(
                                         locale: widget.locale,
                                         localizedValues: widget.localizedValues,
-                                        categoryId: dealsList[i]['categoryId'],
-                                        pageTitle: dealsList[i]['title'],
+                                        categoryId: dealsList![i]['categoryId'],
+                                        pageTitle: dealsList![i]['title'],
                                       ),
                                     ),
                                   );
-                                } else if (dealsList[i]['dealType'] ==
+                                } else if (dealsList![i]['dealType'] ==
                                         "PRODUCT" &&
-                                    dealsList[i]['productId'] == null) {
+                                    dealsList![i]['productId'] == null) {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -181,8 +181,8 @@ class _AllDealsListState extends State<AllDealsList> {
                                           locale: widget.locale,
                                           localizedValues:
                                               widget.localizedValues,
-                                          dealId: dealsList[i]['_id'],
-                                          pageTitle: dealsList[i]['title']),
+                                          dealId: dealsList![i]['_id'],
+                                          pageTitle: dealsList![i]['title']),
                                     ),
                                   );
                                 } else {
@@ -193,21 +193,22 @@ class _AllDealsListState extends State<AllDealsList> {
                                           locale: widget.locale,
                                           localizedValues:
                                               widget.localizedValues,
-                                          productID: dealsList[i]['productId']),
+                                          productID: dealsList![i]
+                                              ['productId']),
                                     ),
                                   );
                                 }
                               },
                               child: DealsCard(
-                                image: dealsList[i]['filePath'] ??
-                                    dealsList[i]['imageUrl'],
-                                isPath: dealsList[i]['filePath'] == null
+                                image: dealsList![i]['filePath'] ??
+                                    dealsList![i]['imageUrl'],
+                                isPath: dealsList![i]['filePath'] == null
                                     ? false
                                     : true,
-                                title: dealsList[i]['title'],
-                                price: dealsList[i]['dealPercent'].toString() +
+                                title: dealsList![i]['title'],
+                                price: dealsList![i]['dealPercent'].toString() +
                                     "% " +
-                                    MyLocalizations.of(context)
+                                    MyLocalizations.of(context)!
                                         .getLocalizations("OFF"),
                               ),
                             );
