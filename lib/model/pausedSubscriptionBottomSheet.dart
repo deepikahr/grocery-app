@@ -11,12 +11,12 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 SentryError sentryError = new SentryError();
 
 class PausedSubscriptionBottomSheet extends StatefulWidget {
-  final String locale;
-  final Map localizedValues;
-  final DateTime subscriptionStartDate;
+  final String? locale;
+  final Map? localizedValues;
+  final DateTime? subscriptionStartDate;
 
   PausedSubscriptionBottomSheet(
-      {Key key, this.locale, this.localizedValues, this.subscriptionStartDate})
+      {Key? key, this.locale, this.localizedValues, this.subscriptionStartDate})
       : super(key: key);
   @override
   _PausedSubscriptionBottomSheetState createState() =>
@@ -25,7 +25,7 @@ class PausedSubscriptionBottomSheet extends StatefulWidget {
 
 class _PausedSubscriptionBottomSheetState
     extends State<PausedSubscriptionBottomSheet> {
-  DateTime startDate, endDate;
+  DateTime? startDate, endDate;
   @override
   void initState() {
     startDate = endDate = widget.subscriptionStartDate;
@@ -71,7 +71,7 @@ class _PausedSubscriptionBottomSheetState
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
                 color: cartCardBg(context),
-                border: Border.all(color: Colors.grey[300]),
+                border: Border.all(color: Colors.grey[300]!),
                 borderRadius: BorderRadius.circular(5.0)),
             child: FlatButton(
                 onPressed: () {
@@ -91,7 +91,7 @@ class _PausedSubscriptionBottomSheetState
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text(DateFormat('dd/MM/yyyy').format(startDate)),
+                      Text(DateFormat('dd/MM/yyyy').format(startDate!)),
                       Icon(Icons.calendar_today, color: dark(context)),
                     ],
                   ),
@@ -110,7 +110,7 @@ class _PausedSubscriptionBottomSheetState
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
                 color: cartCardBg(context),
-                border: Border.all(color: Colors.grey[300]),
+                border: Border.all(color: Colors.grey[300]!),
                 borderRadius: BorderRadius.circular(5.0)),
             child: FlatButton(
                 onPressed: () {
@@ -130,7 +130,7 @@ class _PausedSubscriptionBottomSheetState
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text(DateFormat('dd/MM/yyyy').format(endDate)),
+                      Text(DateFormat('dd/MM/yyyy').format(endDate!)),
                       Icon(Icons.calendar_today, color: dark(context)),
                     ],
                   ),
@@ -142,9 +142,9 @@ class _PausedSubscriptionBottomSheetState
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
             child: InkWell(
                 onTap: () {
-                  if (startDate.microsecondsSinceEpoch >
-                      endDate.microsecondsSinceEpoch) {
-                    AlertService().showToast(MyLocalizations.of(context)
+                  if (startDate!.microsecondsSinceEpoch >
+                      endDate!.microsecondsSinceEpoch) {
+                    AlertService().showToast(MyLocalizations.of(context)!
                         .getLocalizations("SELECT_PROPER_START_AND_END_DATE"));
                   } else {
                     Navigator.of(context).pop({

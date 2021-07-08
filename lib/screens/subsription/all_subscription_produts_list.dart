@@ -13,11 +13,11 @@ import '../../widgets/loader.dart';
 SentryError sentryError = new SentryError();
 
 class AllSubscriptionProductsListPage extends StatefulWidget {
-  final Map localizedValues;
-  final String locale;
+  final Map? localizedValues;
+  final String? locale;
 
   AllSubscriptionProductsListPage({
-    Key key,
+    Key? key,
     this.locale,
     this.localizedValues,
   });
@@ -31,11 +31,11 @@ class _AllSubscriptionProductsListPageState
   bool isUserLoaggedIn = false,
       isFirstPageLoading = true,
       isNextPageLoading = false;
-  int productsPerPage = 12, productsPageNumber = 0, totalProducts = 1;
+  int? productsPerPage = 12, productsPageNumber = 0, totalProducts = 1;
   List productsList = [];
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  String currency;
+  String? currency;
   ScrollController _scrollController = ScrollController();
   @override
   void initState() {
@@ -52,7 +52,7 @@ class _AllSubscriptionProductsListPageState
 
   @override
   void dispose() {
-    if (_scrollController != null) _scrollController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -76,7 +76,7 @@ class _AllSubscriptionProductsListPageState
 
   void getProductsList() async {
     if (totalProducts != productsList.length) {
-      if (productsPageNumber > 0) {
+      if (productsPageNumber! > 0) {
         setState(() {
           isNextPageLoading = true;
         });
@@ -89,7 +89,7 @@ class _AllSubscriptionProductsListPageState
             onValue['response_data'] != []) {
           productsList.addAll(onValue['response_data']);
           totalProducts = onValue["total"];
-          productsPageNumber++;
+          productsPageNumber = productsPageNumber! + 1;
         }
         if (mounted) {
           setState(() {
@@ -113,7 +113,8 @@ class _AllSubscriptionProductsListPageState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bg(context),
-      appBar: appBarPrimarynoradius(context, "SUBSCRIPTION_PRODUCTS"),
+      appBar: appBarPrimarynoradius(context, "SUBSCRIPTION_PRODUCTS")
+          as PreferredSizeWidget?,
       body: Column(
         children: [
           SizedBox(height: 10),
@@ -162,9 +163,8 @@ class _AllSubscriptionProductsListPageState
                         physics: ScrollPhysics(),
                         controller: _scrollController,
                         shrinkWrap: true,
-                        itemCount: productsList.length == null
-                            ? 0
-                            : productsList.length,
+                        itemCount:
+                            productsList.isEmpty ? 0 : productsList.length,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           childAspectRatio:

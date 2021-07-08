@@ -13,7 +13,7 @@ import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/screens/checkout/checkout.dart';
-import 'package:getflutter/getflutter.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
@@ -23,10 +23,10 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 SentryError sentryError = new SentryError();
 
 class MyCart extends StatefulWidget {
-  final Map localizedValues;
-  final String locale;
+  final Map? localizedValues;
+  final String? locale;
 
-  MyCart({Key key, this.locale, this.localizedValues}) : super(key: key);
+  MyCart({Key? key, this.locale, this.localizedValues}) : super(key: key);
 
   @override
   _MyCartState createState() => _MyCartState();
@@ -40,9 +40,9 @@ class _MyCartState extends State<MyCart> {
       isUpdating = false,
       isMinAmountCheckLoading = false,
       isCheckProductAvailableOrNot = false;
-  String token, currency;
+  String? token, currency;
   String quantityUpdateType = '+';
-  Map cartItem;
+  Map? cartItem;
   double bottomBarHeight = 150;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -124,17 +124,17 @@ class _MyCartState extends State<MyCart> {
 
     if (mounted)
       setState(() {
-        cartItem['products'][i]['quantity']++;
+        cartItem!['products'][i]['quantity']++;
         updateCart(i);
       });
   }
 
   void _decrementCount(i) {
     quantityUpdateType = '-';
-    if (cartItem['products'][i]['quantity'] > 1) {
+    if (cartItem!['products'][i]['quantity'] > 1) {
       if (mounted) {
         setState(() {
-          cartItem['products'][i]['quantity']--;
+          cartItem!['products'][i]['quantity']--;
           updateCart(i);
         });
       }
@@ -150,14 +150,14 @@ class _MyCartState extends State<MyCart> {
   // update cart
   updateCart(i) async {
     Map<String, dynamic> body = {
-      'unit': cartItem['products'][i]['unit'],
-      'productId': cartItem['products'][i]['productId'],
-      'quantity': cartItem['products'][i]['quantity']
+      'unit': cartItem!['products'][i]['unit'],
+      'productId': cartItem!['products'][i]['productId'],
+      'quantity': cartItem!['products'][i]['quantity']
     };
     if (mounted) {
       setState(() {
         isUpdating = true;
-        cartItem['products'][i]['isQuantityUpdating'] = true;
+        cartItem!['products'][i]['isQuantityUpdating'] = true;
       });
     }
     await AddToCart.addAndUpdateProductMethod(body).then((onValue) {
@@ -165,9 +165,9 @@ class _MyCartState extends State<MyCart> {
         setState(() {
           isUpdating = false;
           cartItem = onValue['response_data'];
-          cartItem['products'][i]['quantity'] =
-              cartItem['products'][i]['quantity'];
-          cartItem['products'][i]['isQuantityUpdating'] = false;
+          cartItem!['products'][i]['quantity'] =
+              cartItem!['products'][i]['quantity'];
+          cartItem!['products'][i]['isQuantityUpdating'] = false;
         });
       }
       if (onValue['message'] != null) {
@@ -183,10 +183,10 @@ class _MyCartState extends State<MyCart> {
       if (mounted) {
         setState(() {
           isUpdating = false;
-          cartItem['products'][i]['quantity']--;
-          cartItem['products'][i]['quantity'] =
-              cartItem['products'][i]['quantity'];
-          cartItem['products'][i]['isQuantityUpdating'] = false;
+          cartItem!['products'][i]['quantity']--;
+          cartItem!['products'][i]['quantity'] =
+              cartItem!['products'][i]['quantity'];
+          cartItem!['products'][i]['isQuantityUpdating'] = false;
         });
       }
       sentryError.reportError(error, null);
@@ -194,11 +194,12 @@ class _MyCartState extends State<MyCart> {
   }
 
   void showSnackbar(message) {
-    final snackBar = SnackBar(
-      content: Text(message),
-      duration: Duration(milliseconds: 3000),
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(milliseconds: 3000),
+      ),
     );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   // get to cart
@@ -221,16 +222,16 @@ class _MyCartState extends State<MyCart> {
         Common.setCartData(onValue['response_data']);
         setState(() {
           cartItem = onValue['response_data'];
-          if (cartItem['grandTotal'] != null) {
+          if (cartItem!['grandTotal'] != null) {
             bottomBarHeight = 150;
-            if (cartItem['deliveryCharges'] == 0 &&
-                cartItem['deliveryAddress'] != null) {
+            if (cartItem!['deliveryCharges'] == 0 &&
+                cartItem!['deliveryAddress'] != null) {
               bottomBarHeight = bottomBarHeight + 20;
             }
-            if (cartItem['tax'] != 0) {
+            if (cartItem!['tax'] != 0) {
               bottomBarHeight = bottomBarHeight + 20;
             }
-            if (cartItem['couponInfo'] != null) {
+            if (cartItem!['couponInfo'] != null) {
               bottomBarHeight = bottomBarHeight + 20;
             }
           }
@@ -257,7 +258,7 @@ class _MyCartState extends State<MyCart> {
 
   //delete from cart
   deleteCart(i) async {
-    await CartService.deleteDataFromCart(cartItem['products'][i]['productId'])
+    await CartService.deleteDataFromCart(cartItem!['products'][i]['productId'])
         .then((onValue) {
       if (onValue['response_data'] is Map &&
           onValue['response_data']['products'].length == 0 &&
@@ -300,10 +301,11 @@ class _MyCartState extends State<MyCart> {
     if (minAmout['minimumOrderAmountToPlaceOrder'] == null) {
       minAmout['minimumOrderAmountToPlaceOrder'] = 0.0;
     }
-    if (cartItem['subTotal'] >= minAmout['minimumOrderAmountToPlaceOrder']) {
+    if (cartItem!['subTotal'] >= minAmout['minimumOrderAmountToPlaceOrder']) {
       checkProductAvailableOrNot();
     } else {
-      showError(MyLocalizations.of(context).getLocalizations("MIN_AMOUNT_MEG") +
+      showError(MyLocalizations.of(context)!
+              .getLocalizations("MIN_AMOUNT_MEG") +
           "($currency${minAmout['minimumOrderAmountToPlaceOrder'].toString()})");
     }
   }
@@ -326,7 +328,7 @@ class _MyCartState extends State<MyCart> {
           builder: (context) => Checkout(
             locale: widget.locale,
             localizedValues: widget.localizedValues,
-            id: cartItem['_id'].toString(),
+            id: cartItem!['_id'].toString(),
           ),
         ),
       );
@@ -354,7 +356,7 @@ class _MyCartState extends State<MyCart> {
           ),
           actions: <Widget>[
             FlatButton(
-              child: Text(MyLocalizations.of(context).getLocalizations("OK")),
+              child: Text(MyLocalizations.of(context)!.getLocalizations("OK")),
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -373,7 +375,8 @@ class _MyCartState extends State<MyCart> {
           ? null
           : token == null
               ? null
-              : appBarWhite(context, "MY_CART", false, false, Container()),
+              : appBarWhite(context, "MY_CART", false, false, Container())
+                  as PreferredSizeWidget?,
       body: isGetTokenLoading || isMinAmountCheckLoading
           ? SquareLoader()
           : token == null
@@ -401,12 +404,12 @@ class _MyCartState extends State<MyCart> {
                                       cartItem == null
                                           ? textMediumSmall(
                                               '0 ' +
-                                                  MyLocalizations.of(context)
+                                                  MyLocalizations.of(context)!
                                                       .getLocalizations("ITEM"),
                                               context)
                                           : textMediumSmall(
-                                              '(${cartItem['products'].length}) ' +
-                                                  MyLocalizations.of(context)
+                                              '(${cartItem!['products'].length}) ' +
+                                                  MyLocalizations.of(context)!
                                                       .getLocalizations("ITEM"),
                                               context),
                                       InkWell(
@@ -414,7 +417,7 @@ class _MyCartState extends State<MyCart> {
                                           deleteAllCart();
                                         },
                                         child: textMediumSmall(
-                                            MyLocalizations.of(context)
+                                            MyLocalizations.of(context)!
                                                 .getLocalizations("CLEAR_CART"),
                                             context),
                                       ),
@@ -426,7 +429,7 @@ class _MyCartState extends State<MyCart> {
                                   shrinkWrap: true,
                                   itemCount: cartItem == null
                                       ? 0
-                                      : cartItem['products'].length,
+                                      : cartItem!['products'].length,
                                   itemBuilder: (BuildContext context, int i) =>
                                       Container(
                                     margin: EdgeInsets.only(bottom: 5),
@@ -438,25 +441,26 @@ class _MyCartState extends State<MyCart> {
                                         Flexible(
                                           flex: 3,
                                           fit: FlexFit.tight,
-                                          child: (cartItem['products'][i]
+                                          child: (cartItem!['products'][i]
                                                           ['productImages'] !=
                                                       null &&
-                                                  cartItem['products'][i]
+                                                  cartItem!['products'][i]
                                                               ['productImages']
                                                           .length >
                                                       0)
                                               ? CachedNetworkImage(
-                                                  imageUrl: cartItem['products']
-                                                                      [i][
-                                                                  'productImages']
+                                                  imageUrl: cartItem!['products']
+                                                                      [i]
+                                                                  ['productImages']
                                                               [0]['filePath'] ==
                                                           null
-                                                      ? cartItem['products'][i]
+                                                      ? cartItem!['products'][i]
                                                               ['productImages']
                                                           [0]['imageUrl']
-                                                      : Constants.imageUrlPath +
+                                                      : Constants
+                                                              .imageUrlPath! +
                                                           "/tr:dpr-auto,tr:w-500" +
-                                                          cartItem['products']
+                                                          cartItem!['products']
                                                                       [i]
                                                                   ['productImages']
                                                               [0]['filePath'],
@@ -533,14 +537,16 @@ class _MyCartState extends State<MyCart> {
                                                           child: noDataImage()),
                                                 )
                                               : CachedNetworkImage(
-                                                  imageUrl: cartItem['products']
-                                                              [i]['filePath'] ==
+                                                  imageUrl: cartItem![
+                                                                  'products'][i]
+                                                              ['filePath'] ==
                                                           null
-                                                      ? cartItem['products'][i]
+                                                      ? cartItem!['products'][i]
                                                           ['imageUrl']
-                                                      : Constants.imageUrlPath +
+                                                      : Constants
+                                                              .imageUrlPath! +
                                                           "/tr:dpr-auto,tr:w-500" +
-                                                          cartItem['products']
+                                                          cartItem!['products']
                                                               [i]['filePath'],
                                                   imageBuilder: (context,
                                                           imageProvider) =>
@@ -626,7 +632,7 @@ class _MyCartState extends State<MyCart> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: <Widget>[
                                               Text(
-                                                cartItem['products'][i]
+                                                cartItem!['products'][i]
                                                     ['productName'],
                                                 maxLines: 2,
                                                 overflow: TextOverflow.ellipsis,
@@ -641,23 +647,23 @@ class _MyCartState extends State<MyCart> {
                                               Row(
                                                 children: <Widget>[
                                                   priceMrpText(
-                                                      currency +
-                                                              cartItem['products']
+                                                      currency! +
+                                                          (cartItem!['products']
                                                                           [i][
-                                                                      'productTotal']
-                                                                  .toDouble()
-                                                                  .toStringAsFixed(
-                                                                      2)
-                                                                  .toString() ??
-                                                          "",
-                                                      cartItem['products'][i][
+                                                                      'productTotal'] ??
+                                                                  .0)
+                                                              .toDouble()
+                                                              .toStringAsFixed(
+                                                                  2)
+                                                              .toString(),
+                                                      cartItem!['products'][i][
                                                               'isDealAvailable']
-                                                          ? '$currency${((cartItem['products'][i]['price']) * (cartItem['products'][i]['quantity'])).toDouble().toStringAsFixed(2)}'
-                                                          : (cartItem['products']
+                                                          ? '$currency${((cartItem!['products'][i]['price']) * (cartItem!['products'][i]['quantity'])).toDouble().toStringAsFixed(2)}'
+                                                          : (cartItem!['products']
                                                                           [i][
                                                                       'isOfferAvailable'] ??
                                                                   false)
-                                                              ? '$currency${((cartItem['products'][i]['price']) * (cartItem['products'][i]['quantity'])).toDouble().toStringAsFixed(2)}'
+                                                              ? '$currency${((cartItem!['products'][i]['price']) * (cartItem!['products'][i]['quantity'])).toDouble().toStringAsFixed(2)}'
                                                               : null,
                                                       context),
                                                   Padding(
@@ -666,7 +672,7 @@ class _MyCartState extends State<MyCart> {
                                                               top: 5.0),
                                                       child: textLightSmall(
                                                           " / " +
-                                                              cartItem['products']
+                                                              cartItem!['products']
                                                                           [i]
                                                                       ['unit']
                                                                   .toString(),
@@ -674,30 +680,30 @@ class _MyCartState extends State<MyCart> {
                                                 ],
                                               ),
                                               SizedBox(height: 10),
-                                              cartItem['products'][i]
+                                              cartItem!['products'][i]
                                                           ['isDealAvailable'] ==
                                                       true
                                                   ? textLightSmall(
-                                                      MyLocalizations.of(context)
+                                                      MyLocalizations.of(context)!
                                                               .getLocalizations(
                                                                   "DEAL") +
                                                           " " +
-                                                          (cartItem['products'][i]['dealPercent'])
+                                                          (cartItem!['products'][i]['dealPercent'])
                                                               .toString() +
                                                           "% " +
-                                                          MyLocalizations.of(context)
+                                                          MyLocalizations.of(context)!
                                                               .getLocalizations(
                                                                   "OFF"),
                                                       context)
-                                                  : cartItem['products'][i]['isOfferAvailable'] ==
+                                                  : cartItem!['products'][i]['isOfferAvailable'] ==
                                                           true
                                                       ? textLightSmall(
-                                                          MyLocalizations.of(context).getLocalizations("OFFER") +
+                                                          MyLocalizations.of(context)!.getLocalizations("OFFER") +
                                                               " " +
-                                                              (cartItem['products'][i]['offerPercent'])
+                                                              (cartItem!['products'][i]['offerPercent'])
                                                                   .toString() +
                                                               "% " +
-                                                              MyLocalizations.of(context)
+                                                              MyLocalizations.of(context)!
                                                                   .getLocalizations("OFF"),
                                                           context)
                                                       : Text("")
@@ -732,18 +738,18 @@ class _MyCartState extends State<MyCart> {
                                                   ),
                                                   child: InkWell(
                                                     onTap: () {
-                                                      if (cartItem['products']
+                                                      if (cartItem!['products']
                                                                       [i][
                                                                   'isQuantityUpdating'] ==
                                                               null ||
-                                                          cartItem['products']
+                                                          cartItem!['products']
                                                                       [i][
                                                                   'isQuantityUpdating'] ==
                                                               false) {
                                                         _incrementCount(i);
                                                       }
                                                     },
-                                                    child: cartItem['products']
+                                                    child: cartItem!['products']
                                                                         [i][
                                                                     'isQuantityUpdating'] ==
                                                                 true &&
@@ -759,12 +765,12 @@ class _MyCartState extends State<MyCart> {
                                                           ),
                                                   ),
                                                 ),
-                                                cartItem['products'][i]
+                                                cartItem!['products'][i]
                                                             ['quantity'] ==
                                                         null
                                                     ? Text('0')
                                                     : titleTwoLine(
-                                                        cartItem['products'][i]
+                                                        cartItem!['products'][i]
                                                                 ['quantity']
                                                             .toString(),
                                                         context),
@@ -772,7 +778,7 @@ class _MyCartState extends State<MyCart> {
                                                   width: 32,
                                                   height: 32,
                                                   decoration: BoxDecoration(
-                                                    color: cartItem['products']
+                                                    color: cartItem!['products']
                                                                         [i][
                                                                     'isQuantityUpdating'] ==
                                                                 true &&
@@ -786,18 +792,18 @@ class _MyCartState extends State<MyCart> {
                                                   ),
                                                   child: InkWell(
                                                     onTap: () {
-                                                      if (cartItem['products']
+                                                      if (cartItem!['products']
                                                                       [i][
                                                                   'isQuantityUpdating'] ==
                                                               null ||
-                                                          cartItem['products']
+                                                          cartItem!['products']
                                                                       [i][
                                                                   'isQuantityUpdating'] ==
                                                               false) {
                                                         _decrementCount(i);
                                                       }
                                                     },
-                                                    child: cartItem['products']
+                                                    child: cartItem!['products']
                                                                         [i][
                                                                     'isQuantityUpdating'] ==
                                                                 true &&
@@ -842,16 +848,16 @@ class _MyCartState extends State<MyCart> {
                           child: buildPrice(
                               context,
                               null,
-                              MyLocalizations.of(context)
+                              MyLocalizations.of(context)!
                                       .getLocalizations("SUB_TOTAL") +
-                                  ' ( ${cartItem['products'].length} ' +
-                                  MyLocalizations.of(context)
+                                  ' ( ${cartItem!['products'].length} ' +
+                                  MyLocalizations.of(context)!
                                       .getLocalizations("ITEMS") +
                                   ')',
-                              '$currency${cartItem['subTotal'].toDouble().toStringAsFixed(2)}',
+                              '$currency${cartItem!['subTotal'].toDouble().toStringAsFixed(2)}',
                               false)),
                       SizedBox(height: 4),
-                      cartItem['tax'] == 0
+                      cartItem!['tax'] == 0
                           ? Container()
                           : Padding(
                               padding: const EdgeInsets.only(
@@ -862,21 +868,21 @@ class _MyCartState extends State<MyCart> {
                                     'lib/assets/icons/sale.png',
                                     color: dark(context),
                                   ),
-                                  cartItem['taxInfo'] == null
-                                      ? MyLocalizations.of(context)
+                                  cartItem!['taxInfo'] == null
+                                      ? MyLocalizations.of(context)!
                                           .getLocalizations("TAX")
-                                      : MyLocalizations.of(context)
+                                      : MyLocalizations.of(context)!
                                               .getLocalizations("TAX") +
                                           " (" +
-                                          cartItem['taxInfo']['taxName'] +
+                                          cartItem!['taxInfo']['taxName'] +
                                           " " +
-                                          cartItem['taxInfo']['amount']
+                                          cartItem!['taxInfo']['amount']
                                               .toString() +
                                           "%)",
-                                  '$currency${cartItem['tax'].toDouble().toStringAsFixed(2)}',
+                                  '$currency${cartItem!['tax'].toDouble().toStringAsFixed(2)}',
                                   false)),
                       SizedBox(height: 6),
-                      cartItem['couponCode'] == null
+                      cartItem!['couponCode'] == null
                           ? Container()
                           : Padding(
                               padding: const EdgeInsets.only(
@@ -884,30 +890,30 @@ class _MyCartState extends State<MyCart> {
                               child: buildPrice(
                                   context,
                                   null,
-                                  MyLocalizations.of(context)
+                                  MyLocalizations.of(context)!
                                           .getLocalizations("COUPON_APPLIED") +
                                       " (" +
-                                      "${cartItem['couponCode']}"
+                                      "${cartItem!['couponCode']}"
                                           ")",
-                                  '-$currency${cartItem['couponAmount'].toDouble().toStringAsFixed(2)}',
+                                  '-$currency${cartItem!['couponAmount'].toDouble().toStringAsFixed(2)}',
                                   false)),
-                      cartItem['couponCode'] == null
+                      cartItem!['couponCode'] == null
                           ? Container()
                           : SizedBox(height: 6),
-                      cartItem['deliveryCharges'] == 0 &&
-                              cartItem['deliveryAddress'] != null
+                      cartItem!['deliveryCharges'] == 0 &&
+                              cartItem!['deliveryAddress'] != null
                           ? Padding(
                               padding: const EdgeInsets.only(
                                   left: 20.0, right: 20.0),
                               child: buildPrice(
                                   context,
                                   null,
-                                  MyLocalizations.of(context)
+                                  MyLocalizations.of(context)!
                                       .getLocalizations("DELIVERY_CHARGES"),
-                                  MyLocalizations.of(context)
+                                  MyLocalizations.of(context)!
                                       .getLocalizations("FREE"),
                                   false))
-                          : cartItem['deliveryCharges'] == 0
+                          : cartItem!['deliveryCharges'] == 0
                               ? Container()
                               : Padding(
                                   padding: const EdgeInsets.only(
@@ -915,16 +921,16 @@ class _MyCartState extends State<MyCart> {
                                   child: buildPrice(
                                       context,
                                       null,
-                                      MyLocalizations.of(context)
+                                      MyLocalizations.of(context)!
                                           .getLocalizations("DELIVERY_CHARGES"),
-                                      '$currency${cartItem['deliveryCharges'].toDouble().toStringAsFixed(2)}',
+                                      '$currency${cartItem!['deliveryCharges'].toDouble().toStringAsFixed(2)}',
                                       false)),
                       InkWell(
                         onTap: checkMinOrderAmountCondition,
                         child: checkoutButton(
                             context,
                             "TOTAL",
-                            '$currency${cartItem['grandTotal'].toDouble().toStringAsFixed(2)}',
+                            '$currency${cartItem!['grandTotal'].toDouble().toStringAsFixed(2)}',
                             "CHECKOUT",
                             Icon(
                               Icons.arrow_forward,

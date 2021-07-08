@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:getflutter/getwidget.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:readymadeGroceryApp/model/addToCart.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
@@ -27,13 +27,13 @@ class Variants {
 }
 
 class ProductDetails extends StatefulWidget {
-  final int currentIndex;
+  final int? currentIndex;
 
-  final Map localizedValues;
-  final String locale, productID;
+  final Map? localizedValues;
+  final String? locale, productID;
 
   ProductDetails(
-      {Key key,
+      {Key? key,
       this.productID,
       this.currentIndex,
       this.localizedValues,
@@ -48,16 +48,16 @@ class _ProductDetailsState extends State<ProductDetails>
     with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var productDetail;
-  String variantUnit, variantId, currency, description;
+  String? variantUnit, variantId, currency, description;
 
-  int groupValue = 0;
-  bool sizeSelect = false,
+  int? groupValue = 0;
+  bool? sizeSelect = false,
       getTokenValue = false,
       addProductTocart = false,
       isProductDetails = false,
       isFavProductLoading = false,
       isProductAlredayInCart = false;
-  var quantity = 1, variantPrice, variantStock;
+  int? quantity = 1, variantPrice, variantStock;
   var rating;
   List productImages = [];
 
@@ -65,14 +65,14 @@ class _ProductDetailsState extends State<ProductDetails>
     if (increase) {
       if (mounted) {
         setState(() {
-          quantity++;
+          quantity = quantity! + 1;
         });
       }
     } else {
-      if (quantity > 1) {
+      if (quantity! > 1) {
         if (mounted) {
           setState(() {
-            quantity--;
+            quantity = quantity! - 1;
           });
         }
       }
@@ -121,7 +121,7 @@ class _ProductDetailsState extends State<ProductDetails>
                 productImages
                     .add(productDetail['productImages'][i]['imageUrl']);
               } else {
-                productImages.add(Constants.imageUrlPath +
+                productImages.add(Constants.imageUrlPath! +
                     "/tr:dpr-auto,tr:w-1000" +
                     productDetail['productImages'][i]['filePath']);
               }
@@ -130,7 +130,7 @@ class _ProductDetailsState extends State<ProductDetails>
             if (productDetail['filePath'] == null) {
               productImages.add(productDetail['imageUrl']);
             } else {
-              productImages.add(Constants.imageUrlPath +
+              productImages.add(Constants.imageUrlPath! +
                   "/tr:dpr-auto,tr:w-1000" +
                   productDetail['filePath']);
             }
@@ -233,10 +233,10 @@ class _ProductDetailsState extends State<ProductDetails>
           addProductTocart = false;
         });
       }
-      showSnackbar(MyLocalizations.of(context)
+      showSnackbar(MyLocalizations.of(context)!
               .getLocalizations("LIMITED_STOCK") +
           " ${variantStock == null ? productDetail['variant'][0]['productStock'] : variantStock} " +
-          MyLocalizations.of(context).getLocalizations("OF_THIS_ITEM"));
+          MyLocalizations.of(context)!.getLocalizations("OF_THIS_ITEM"));
     }
   }
 
@@ -292,14 +292,14 @@ class _ProductDetailsState extends State<ProductDetails>
           actions: <Widget>[
             FlatButton(
               child:
-                  Text(MyLocalizations.of(context).getLocalizations("CANCEL")),
+                  Text(MyLocalizations.of(context)!.getLocalizations("CANCEL")),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             FlatButton(
               child: Text(
-                  MyLocalizations.of(context).getLocalizations("CLEAR_CART")),
+                  MyLocalizations.of(context)!.getLocalizations("CLEAR_CART")),
               onPressed: () {
                 Navigator.pop(context);
 
@@ -323,7 +323,7 @@ class _ProductDetailsState extends State<ProductDetails>
     return Scaffold(
         backgroundColor: bg(context),
         key: _scaffoldKey,
-        body: isProductDetails
+        body: isProductDetails!
             ? SquareLoader()
             : Container(
                 height: MediaQuery.of(context).size.height,
@@ -349,7 +349,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                         offset: Offset(2.0, 2.0))
                                   ],
                                 ),
-                                child: (productImages != null &&
+                                child: (productImages.isNotEmpty &&
                                         productImages.length > 0)
                                     ? GFCarousel(
                                         height: 340,
@@ -431,7 +431,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                                                         },
                                                                         child:
                                                                             Text(
-                                                                          MyLocalizations.of(context)
+                                                                          MyLocalizations.of(context)!
                                                                               .getLocalizations("CLOSE"),
                                                                           style:
                                                                               TextStyle(color: Colors.white),
@@ -508,12 +508,12 @@ class _ProductDetailsState extends State<ProductDetails>
                                         child: Padding(
                                           padding: const EdgeInsets.only(
                                               top: 0.0, right: 5.0, left: 5.0),
-                                          child: RatingBar(
+                                          child: RatingBar.builder(
                                             initialRating: double.parse(
-                                                    productDetail[
-                                                            'averageRating']
-                                                        .toStringAsFixed(1)) ??
-                                                0.0,
+                                                (productDetail[
+                                                            'averageRating'] ??
+                                                        .0)
+                                                    .toStringAsFixed(1)),
                                             minRating: 0,
                                             direction: Axis.horizontal,
                                             allowHalfRating: true,
@@ -527,7 +527,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                               color: Colors.red,
                                               size: 12.0,
                                             ),
-                                            onRatingUpdate: null,
+                                            onRatingUpdate: (value) {},
                                           ),
                                         ),
                                       )
@@ -652,12 +652,13 @@ class _ProductDetailsState extends State<ProductDetails>
                                                             true);
                                                       } else {
                                                         showSnackbar(MyLocalizations
-                                                                    .of(context)
+                                                                    .of(
+                                                                        context)!
                                                                 .getLocalizations(
                                                                     "LIMITED_STOCK") +
                                                             " ${variantStock == null ? productDetail['variant'][0]['productStock'] : variantStock} " +
                                                             MyLocalizations.of(
-                                                                    context)
+                                                                    context)!
                                                                 .getLocalizations(
                                                                     "OF_THIS_ITEM"));
                                                       }
@@ -689,15 +690,15 @@ class _ProductDetailsState extends State<ProductDetails>
                                                 ? RadioListTile(
                                                     value: i,
                                                     groupValue: groupValue,
-                                                    selected: sizeSelect,
+                                                    selected: sizeSelect!,
                                                     activeColor:
                                                         primary(context),
-                                                    onChanged: (int value) {
+                                                    onChanged: (int? value) {
                                                       if (mounted) {
                                                         setState(() {
                                                           groupValue = value;
                                                           sizeSelect =
-                                                              !sizeSelect;
+                                                              !sizeSelect!;
                                                           variantPrice =
                                                               productDetail[
                                                                       'variant']
@@ -743,13 +744,13 @@ class _ProductDetailsState extends State<ProductDetails>
                           Positioned(
                               top: 310.0,
                               left: 280.0,
-                              child: !getTokenValue
+                              child: !getTokenValue!
                                   ? Container()
                                   : InkWell(
                                       onTap: () {
                                         if (mounted) {
                                           setState(() {
-                                            if (!isFavProductLoading) {
+                                            if (!isFavProductLoading!) {
                                               if (productDetail[
                                                       'isFavourite'] ==
                                                   true) {
@@ -803,7 +804,7 @@ class _ProductDetailsState extends State<ProductDetails>
                   ),
                 ),
               ),
-        bottomNavigationBar: isProductDetails
+        bottomNavigationBar: isProductDetails!
             ? Container(height: 65.0)
             : Container(
                 margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -827,11 +828,12 @@ class _ProductDetailsState extends State<ProductDetails>
   }
 
   void showSnackbar(message) {
-    final snackBar = SnackBar(
-      content: Text(message),
-      duration: Duration(milliseconds: 3000),
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(milliseconds: 3000),
+      ),
     );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   getDiscountedValue({index = 0}) => productDetail['isDealAvailable'] &&

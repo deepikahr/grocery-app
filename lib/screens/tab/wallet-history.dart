@@ -14,16 +14,16 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 SentryError sentryError = new SentryError();
 
 class WalletHistoryyPage extends StatefulWidget {
-  final Map localizedValues;
-  final String locale;
-  WalletHistoryyPage({Key key, this.locale, this.localizedValues});
+  final Map? localizedValues;
+  final String? locale;
+  WalletHistoryyPage({Key? key, this.locale, this.localizedValues});
   @override
   _WalletHistoryyPageState createState() => _WalletHistoryyPageState();
 }
 
 class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
   bool isFirstPageLoading = true, isNextPageLoading = false;
-  int walletPerPage = 12, walletsPageNumber = 0, totalWallet = 1;
+  int? walletPerPage = 12, walletsPageNumber = 0, totalWallet = 1;
   List walletHistoryList = [];
   String currency = '';
   ScrollController _scrollController = ScrollController();
@@ -56,7 +56,7 @@ class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
 
   void getwalletHistoryList() async {
     if (totalWallet != walletHistoryList.length) {
-      if (walletsPageNumber > 0) {
+      if (walletsPageNumber! > 0) {
         setState(() {
           isNextPageLoading = true;
         });
@@ -68,7 +68,7 @@ class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
             onValue['response_data'] != []) {
           walletHistoryList.addAll(onValue['response_data']);
           totalWallet = onValue["total"];
-          walletsPageNumber++;
+          walletsPageNumber = walletsPageNumber! + 1;
         }
         if (mounted) {
           setState(() {
@@ -92,7 +92,8 @@ class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bg(context),
-      appBar: appBarPrimary(context, "RECENT_TRANSACTIONS"),
+      appBar:
+          appBarPrimary(context, "RECENT_TRANSACTIONS") as PreferredSizeWidget?,
       body: Column(
         children: <Widget>[
           Flexible(
@@ -112,7 +113,7 @@ class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
                               physics: ScrollPhysics(),
                               shrinkWrap: true,
                               controller: _scrollController,
-                              itemCount: walletHistoryList.length == null
+                              itemCount: walletHistoryList.isEmpty
                                   ? 0
                                   : walletHistoryList.length,
                               itemBuilder: (BuildContext context, int index) {
@@ -184,11 +185,11 @@ class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
               Row(
                 children: [
                   Text(
-                      MyLocalizations.of(context)
+                      MyLocalizations.of(context)!
                           .getLocalizations('WALLET', true),
                       style: textBarlowRegularBlackdl(context)),
                   Text(
-                      MyLocalizations.of(context)
+                      MyLocalizations.of(context)!
                           .getLocalizations((walletDetails['isCredited']
                               ? "CREDIT"
                               : !walletDetails['isCredited']
