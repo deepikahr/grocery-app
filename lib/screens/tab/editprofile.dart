@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +43,7 @@ class _EditProfileState extends State<EditProfile> {
       isUpdateMobileNumberLoading = false;
   String? firstName, lastName, currency = "", email;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  var image;
+  PickedFile? image;
   final ImagePicker _picker = ImagePicker();
   @override
   void initState() {
@@ -138,7 +139,8 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   selectGallary() async {
-    image = await _picker.getImage(source: ImageSource.gallery);
+    image = await _picker.getImage(
+        source: ImageSource.gallery, maxHeight: 800, maxWidth: 800);
     if (mounted) {
       setState(() {
         isPicUploading = true;
@@ -148,7 +150,8 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   selectCamera() async {
-    image = await _picker.getImage(source: ImageSource.camera);
+    image = await _picker.getImage(
+        source: ImageSource.camera, maxHeight: 800, maxWidth: 800);
 
     if (mounted) {
       setState(() {
@@ -158,13 +161,13 @@ class _EditProfileState extends State<EditProfile> {
     imageUpload(image);
   }
 
-  imageUpload(_imageFile) async {
+  imageUpload(PickedFile? _imageFile) async {
     Navigator.pop(context);
     var stream =
         // ignore: deprecated_member_use
-        new http.ByteStream(DelegatingStream.typed(_imageFile.openRead()));
+        new http.ByteStream(DelegatingStream.typed(_imageFile!.openRead()));
 
-    int length = await _imageFile.length();
+    int length = (await _imageFile.readAsBytes()).length;
     String uri = Constants.apiUrl! + '/users/upload/image';
 
     dynamic request = new http.MultipartRequest("POST", Uri.parse(uri));
@@ -362,7 +365,8 @@ class _EditProfileState extends State<EditProfile> {
                                             BorderRadius.circular(20.0),
                                         image: new DecorationImage(
                                           fit: BoxFit.cover,
-                                          image: new FileImage(image),
+                                          image:
+                                              new FileImage(File(image!.path)),
                                         ),
                                       ),
                                     ),

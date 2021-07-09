@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/payment-failed.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
@@ -36,12 +37,14 @@ class _PaymentWeViewPageState extends State<PaymentWeViewPage> {
         content: new Text(MyLocalizations.of(context)!
             .getLocalizations("DO_YOU_WANT_TO_DISMISS_PAYMENT_PROCESS")),
         actions: <Widget>[
-          new FlatButton(
+          GFButton(
+            color: Colors.transparent,
             onPressed: () => Navigator.pop(context, false),
             child:
                 new Text(MyLocalizations.of(context)!.getLocalizations("NO")),
           ),
-          new FlatButton(
+          GFButton(
+            color: Colors.transparent,
             onPressed: orderCancel,
             child:
                 new Text(MyLocalizations.of(context)!.getLocalizations("YES")),

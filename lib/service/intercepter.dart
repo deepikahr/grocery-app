@@ -17,17 +17,13 @@ class ApiInterceptor implements InterceptorContract {
       data.headers['Content-Type'] = 'application/json';
       data.headers['language'] = languageCode!;
       data.headers['Authorization'] = 'bearer $token';
-      print('${data.headers} ${data.body} ${data.url}');
-    } catch (e) {
-      print(e.toString());
-    }
+    } catch (e) {}
     return data;
   }
 
   @override
   Future<ResponseData> interceptResponse({required ResponseData data}) async {
     var errorData = json.decode(data.body!);
-    print(errorData);
     if (data.statusCode == 400) {
       var msg = '';
       for (int? i = 0, l = errorData['errors'].length; i! < l!; i++) {

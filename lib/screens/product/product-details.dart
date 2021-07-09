@@ -290,14 +290,16 @@ class _ProductDetailsState extends State<ProductDetails>
           title: Text(responseData['message'],
               style: textBarlowRegularrBlack(context)),
           actions: <Widget>[
-            FlatButton(
+            GFButton(
+              color: Colors.transparent,
               child:
                   Text(MyLocalizations.of(context)!.getLocalizations("CANCEL")),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
-            FlatButton(
+            GFButton(
+              color: Colors.transparent,
               child: Text(
                   MyLocalizations.of(context)!.getLocalizations("CLEAR_CART")),
               onPressed: () {
@@ -421,7 +423,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                                                           Alignment
                                                                               .bottomCenter,
                                                                       child:
-                                                                          RaisedButton(
+                                                                          GFButton(
                                                                         color:
                                                                             primarybg,
                                                                         onPressed:

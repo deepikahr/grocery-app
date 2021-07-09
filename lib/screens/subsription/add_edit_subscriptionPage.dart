@@ -323,7 +323,8 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
                               color: cartCardBg(context),
                               border: Border.all(color: Colors.grey[300]!),
                               borderRadius: BorderRadius.circular(5.0)),
-                          child: FlatButton(
+                          child: GFButton(
+                              color: Colors.transparent,
                               onPressed: () {
                                 DatePicker.showDatePicker(context,
                                     showTitleActions: true,

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:readymadeGroceryApp/screens/authe/change-mobile-otp-verify.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/otp-service.dart';
@@ -57,7 +58,8 @@ class _ChangeMobileNumberState extends State<ChangeMobileNumber> {
                 ),
               ),
               actions: <Widget>[
-                new FlatButton(
+                GFButton(
+                  color: Colors.transparent,
                   child: new Text(
                       MyLocalizations.of(context)!.getLocalizations("OK"),
                       style: textbarlowRegularaprimary(context)),

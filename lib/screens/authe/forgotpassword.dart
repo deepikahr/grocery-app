@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:readymadeGroceryApp/screens/authe/otp.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/otp-service.dart';
@@ -57,7 +58,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 ),
               ),
               actions: <Widget>[
-                new FlatButton(
+                GFButton(
+                  color: Colors.transparent,
                   child: new Text(
                     MyLocalizations.of(context)!.getLocalizations("SUBMIT"),
                     style: textbarlowRegularaprimary(context),

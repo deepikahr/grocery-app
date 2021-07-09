@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:getwidget/components/button/gf_button.dart';
 import 'package:intl/intl.dart';
 import 'package:readymadeGroceryApp/service/alert-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -73,7 +74,8 @@ class _PausedSubscriptionBottomSheetState
                 color: cartCardBg(context),
                 border: Border.all(color: Colors.grey[300]!),
                 borderRadius: BorderRadius.circular(5.0)),
-            child: FlatButton(
+            child: GFButton(
+                color: Colors.transparent,
                 onPressed: () {
                   DatePicker.showDatePicker(context,
                       showTitleActions: true,
@@ -112,7 +114,8 @@ class _PausedSubscriptionBottomSheetState
                 color: cartCardBg(context),
                 border: Border.all(color: Colors.grey[300]!),
                 borderRadius: BorderRadius.circular(5.0)),
-            child: FlatButton(
+            child: GFButton(
+                color: Colors.transparent,
                 onPressed: () {
                   DatePicker.showDatePicker(context,
                       showTitleActions: true,

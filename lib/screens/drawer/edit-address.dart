@@ -210,8 +210,6 @@ class _EditAddressState extends State<EditAddress> {
                 InkWell(
                   onTap: () async {
                     var lat, long;
-                    print(pickerResult!.geometry!.location);
-                    print(widget.updateAddressID!['location']);
                     if (pickerResult == null) {
                       lat = widget.updateAddressID!['location']['latitude'];
                       long = widget.updateAddressID!['location']['longitude'];
@@ -220,8 +218,6 @@ class _EditAddressState extends State<EditAddress> {
                       long = pickerResult!.geometry!.location.lng;
                     }
 
-                    print(lat);
-                    print(long);
                     await Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -234,7 +230,6 @@ class _EditAddressState extends State<EditAddress> {
                               Navigator.of(context).pop();
                               setState(() {
                                 pickerResult = result;
-                                print(pickerResult!.geometry!.location);
                               });
                             },
                           ),

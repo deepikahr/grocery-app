@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/otp-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
@@ -70,7 +71,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                 ),
               ),
               actions: <Widget>[
-                new FlatButton(
+                GFButton(
+                  color: Colors.transparent,
                   child: new Text(
                       MyLocalizations.of(context)!.getLocalizations("OK"),
                       style: textbarlowRegularaprimary(context)),

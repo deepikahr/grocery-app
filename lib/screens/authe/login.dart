@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:readymadeGroceryApp/screens/authe/forgotpassword.dart';
 import 'package:readymadeGroceryApp/screens/authe/otp.dart';
 import 'package:readymadeGroceryApp/screens/authe/signup.dart';
@@ -163,7 +164,8 @@ class _LoginState extends State<Login> {
             style: hintSfMediumredsmall(context),
           ),
           actions: <Widget>[
-            new FlatButton(
+            GFButton(
+              color: Colors.transparent,
               child: new Text(
                 MyLocalizations.of(context)!.getLocalizations("CANCEL"),
                 style: textbarlowRegularaprimary(context),
@@ -172,7 +174,8 @@ class _LoginState extends State<Login> {
                 Navigator.of(context).pop();
               },
             ),
-            new FlatButton(
+            GFButton(
+              color: Colors.transparent,
               child: new Text(
                 MyLocalizations.of(context)!.getLocalizations("SEND_OTP"),
                 style: textbarlowRegularaprimary(context),

@@ -41,7 +41,6 @@ class _AddMoneyState extends State<AddMoney> {
       });
       Map body = {"amount": walletAmmount};
       await OrderService.addMoneyApi(body).then((onValue) {
-        print(onValue);
         if (mounted) {
           setState(() {
             isAddMoneyLoading = false;
@@ -69,7 +68,8 @@ class _AddMoneyState extends State<AddMoney> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: appBarPrimarynoradius(context, "ADD_MONEY") as PreferredSizeWidget?,
+        appBar:
+            appBarPrimarynoradius(context, "ADD_MONEY") as PreferredSizeWidget?,
         body: InkWell(
           onTap: () {
             FocusScope.of(context).unfocus();
