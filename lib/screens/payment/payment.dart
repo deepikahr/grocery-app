@@ -16,10 +16,10 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 SentryError sentryError = new SentryError();
 
 class Payment extends StatefulWidget {
-  final String locale, instruction;
-  final Map data, locationInfo, localizedValues, cartItems;
+  final String? locale, instruction;
+  final Map? data, locationInfo, localizedValues, cartItems;
   Payment(
-      {Key key,
+      {Key? key,
       this.data,
       this.locale,
       this.localizedValues,
@@ -34,16 +34,16 @@ class Payment extends StatefulWidget {
 class _PaymentState extends State<Payment> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  int groupValue = 0;
-  String currency;
-  bool isPlaceOrderLoading = false,
+  int? groupValue = 0;
+  late String currency;
+  bool? isPlaceOrderLoading = false,
       isCardListLoading = false,
       isSelected = false,
       isWalletLoading = false,
       walletUsedOrNotValue = false,
       fullWalletUsedOrNot = false;
 
-  List paymentTypes = [];
+  List? paymentTypes = [];
   var walletAmount, cartItem;
   @override
   void initState() {
@@ -65,7 +65,7 @@ class _PaymentState extends State<Payment> {
       });
     }
     getUserInfo();
-    paymentTypes = widget.locationInfo["paymentMethod"];
+    paymentTypes = widget.locationInfo!["paymentMethod"];
 
     await Common.getCurrency().then((value) {
       currency = value;
@@ -103,15 +103,15 @@ class _PaymentState extends State<Payment> {
           isPlaceOrderLoading = false;
         });
       }
-      showSnackbar(
-          MyLocalizations.of(context).getLocalizations("SELECT_PAYMENT_FIRST"));
+      showSnackbar(MyLocalizations.of(context)!
+          .getLocalizations("SELECT_PAYMENT_FIRST"));
     } else {
-      widget.data['deliveryInstruction'] = widget.instruction ?? "";
+      widget.data!['deliveryInstruction'] = widget.instruction ?? "";
       if (fullWalletUsedOrNot == true) {
-        widget.data['paymentType'] = "COD";
+        widget.data!['paymentType'] = "COD";
         palceOrderMethod(widget.data);
       } else {
-        widget.data['paymentType'] = paymentTypes[groupValue];
+        widget.data!['paymentType'] = paymentTypes![groupValue!];
         palceOrderMethod(widget.data);
       }
     }
@@ -219,8 +219,8 @@ class _PaymentState extends State<Payment> {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarTransparent(context, "PAYMENT"),
-      body: isCardListLoading
+      appBar: appBarTransparent(context, "PAYMENT") as PreferredSizeWidget?,
+      body: isCardListLoading!
           ? SquareLoader()
           : Padding(
               padding: const EdgeInsets.only(
@@ -232,10 +232,10 @@ class _PaymentState extends State<Payment> {
                   buildPrice(
                       context,
                       null,
-                      MyLocalizations.of(context)
+                      MyLocalizations.of(context)!
                               .getLocalizations("SUB_TOTAL") +
                           ' ( ${cartItem['products'].length} ' +
-                          MyLocalizations.of(context)
+                          MyLocalizations.of(context)!
                               .getLocalizations("ITEMS") +
                           ')',
                       '$currency${cartItem['subTotal'].toDouble().toStringAsFixed(2)}',
@@ -246,7 +246,7 @@ class _PaymentState extends State<Payment> {
                       : buildPriceGreen(
                           context,
                           null,
-                          MyLocalizations.of(context)
+                          MyLocalizations.of(context)!
                               .getLocalizations("SHIPPING_METHOD"),
                           '${cartItem['shippingMethod']}',
                           false),
@@ -257,7 +257,7 @@ class _PaymentState extends State<Payment> {
                       ? buildPrice(
                           context,
                           null,
-                          MyLocalizations.of(context)
+                          MyLocalizations.of(context)!
                               .getLocalizations("COUPON_DISCOUNT"),
                           '-$currency${cartItem['couponAmount'].toDouble().toStringAsFixed(2)}',
                           false)
@@ -268,18 +268,19 @@ class _PaymentState extends State<Payment> {
                       : buildPrice(
                           context,
                           null,
-                          MyLocalizations.of(context).getLocalizations("TAX"),
+                          MyLocalizations.of(context)!.getLocalizations("TAX"),
                           '$currency${cartItem['tax'].toDouble().toStringAsFixed(2)}',
                           false),
                   SizedBox(height: 10),
                   buildPrice(
                       context,
                       null,
-                      MyLocalizations.of(context)
+                      MyLocalizations.of(context)!
                           .getLocalizations("DELIVERY_CHARGES"),
                       cartItem['deliveryCharges'] == 0 ||
                               cartItem['deliveryCharges'] == "0"
-                          ? MyLocalizations.of(context).getLocalizations("FREE")
+                          ? MyLocalizations.of(context)!
+                              .getLocalizations("FREE")
                           : '$currency${cartItem['deliveryCharges'].toDouble().toStringAsFixed(2)}',
                       false),
                   SizedBox(height: 10),
@@ -287,7 +288,7 @@ class _PaymentState extends State<Payment> {
                       ? buildPrice(
                           context,
                           null,
-                          MyLocalizations.of(context)
+                          MyLocalizations.of(context)!
                               .getLocalizations("PAID_FORM_WALLET"),
                           '-$currency${cartItem['walletAmount'].toDouble().toStringAsFixed(2)}',
                           false)
@@ -298,7 +299,7 @@ class _PaymentState extends State<Payment> {
                   buildPrice(
                       context,
                       null,
-                      MyLocalizations.of(context).getLocalizations("WALLET"),
+                      MyLocalizations.of(context)!.getLocalizations("WALLET"),
                       '$currency${(walletAmount - cartItem['walletAmount']).toDouble().toStringAsFixed(2)}',
                       false),
                   walletAmount == null || walletAmount == 0
@@ -310,9 +311,9 @@ class _PaymentState extends State<Payment> {
                                 context,
                                 null,
                                 cartItem['walletAmount'] == 0
-                                    ? MyLocalizations.of(context)
+                                    ? MyLocalizations.of(context)!
                                         .getLocalizations("APPLY_WALLET")
-                                    : MyLocalizations.of(context)
+                                    : MyLocalizations.of(context)!
                                         .getLocalizations("REMOVE_WALLET"),
                                 "",
                                 isWalletLoading),
@@ -322,7 +323,7 @@ class _PaymentState extends State<Payment> {
                                 new Checkbox(
                                     value: walletUsedOrNotValue,
                                     activeColor: Colors.green,
-                                    onChanged: (bool walleValue) {
+                                    onChanged: (bool? walleValue) {
                                       setState(() {
                                         if (walleValue == true) {
                                           applyWallet(walleValue);
@@ -340,7 +341,7 @@ class _PaymentState extends State<Payment> {
                   buildPrice(
                       context,
                       null,
-                      MyLocalizations.of(context)
+                      MyLocalizations.of(context)!
                           .getLocalizations("PAYABLE_AMOUNT"),
                       '$currency${cartItem['grandTotal'].toDouble().toStringAsFixed(2)}',
                       false),
@@ -348,7 +349,7 @@ class _PaymentState extends State<Payment> {
                       color: Color(0xFF707070).withOpacity(0.20), thickness: 1),
                   fullWalletUsedOrNot == true
                       ? Container()
-                      : paymentTypes.length > 0
+                      : paymentTypes!.length > 0
                           ? Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -358,7 +359,7 @@ class _PaymentState extends State<Payment> {
                                 ListView.builder(
                                   physics: ScrollPhysics(),
                                   shrinkWrap: true,
-                                  itemCount: paymentTypes.length,
+                                  itemCount: paymentTypes!.length,
                                   itemBuilder:
                                       (BuildContext context, int index) {
                                     return Container(
@@ -368,20 +369,20 @@ class _PaymentState extends State<Payment> {
                                       child: RadioListTile(
                                         value: index,
                                         groupValue: groupValue,
-                                        selected: isSelected,
+                                        selected: isSelected!,
                                         activeColor: primary(context),
                                         title: textGreenprimary(
                                             context,
-                                            paymentTypes[index],
+                                            paymentTypes![index],
                                             TextStyle(color: primarybg)),
-                                        onChanged: (int selected) {
+                                        onChanged: (int? selected) {
                                           if (mounted) {
                                             setState(() {
                                               groupValue = selected;
                                             });
                                           }
                                         },
-                                        secondary: paymentTypes[index] == "COD"
+                                        secondary: paymentTypes![index] == "COD"
                                             ? Text(currency,
                                                 style:
                                                     TextStyle(color: primarybg))
@@ -397,7 +398,7 @@ class _PaymentState extends State<Payment> {
                 ],
               ),
             ),
-      bottomNavigationBar: paymentTypes.length > 0
+      bottomNavigationBar: paymentTypes!.length > 0
           ? InkWell(
               onTap: placeOrder,
               child: Padding(
@@ -410,10 +411,11 @@ class _PaymentState extends State<Payment> {
   }
 
   void showSnackbar(message) {
-    final snackBar = SnackBar(
-      content: Text(message),
-      duration: Duration(milliseconds: 3000),
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(milliseconds: 3000),
+      ),
     );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 }

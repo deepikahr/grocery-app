@@ -20,33 +20,29 @@ import 'package:flutter/widgets.dart';
 export 'package:flutter/services.dart' show Brightness;
 
 SentryError sentryError = new SentryError();
-Timer oneSignalTimer;
 
 void main() {
   initializeMain(isTest: false);
 }
 
-void initializeMain({bool isTest}) async {
-  await DotEnv().load('.env');
+void initializeMain({bool? isTest}) async {
+  await dotenv.load(fileName: '.env');
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarBrightness: Brightness.dark,
       statusBarIconBrightness: Brightness.dark));
   AlertService().checkConnectionMethod();
-  runZoned<Future>(() {
+  runZonedGuarded(() {
     runApp(MainScreen());
     return Future.value(null);
-  }, onError: (error, stackTrace) {
+  }, (error, stackTrace) {
     sentryError.reportError(error, stackTrace);
   });
   initializeLanguage(isTest: isTest);
 }
 
-void initializeLanguage({bool isTest}) async {
+void initializeLanguage({bool? isTest}) async {
   if (isTest != null && !isTest) {
-    oneSignalTimer = Timer.periodic(Duration(seconds: 4), (timer) {
-      configLocalNotification();
-    });
     configLocalNotification();
   }
   getToken();
@@ -77,26 +73,15 @@ void userInfoMethod() async {
 }
 
 Future<void> configLocalNotification() async {
-  var settings = {
-    OSiOSSettings.autoPrompt: true,
-    OSiOSSettings.promptBeforeOpeningPushUrl: true
-  };
-  OneSignal.shared
-      .setNotificationReceivedHandler((OSNotification notification) {});
-  OneSignal.shared
-      .setNotificationOpenedHandler((OSNotificationOpenedResult result) {});
-  await OneSignal.shared.init(Constants.oneSignalKey, iOSSettings: settings);
-  OneSignal.shared
+  await OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
+  await OneSignal.shared.setAppId(Constants.oneSignalKey!);
+  await OneSignal.shared
       .promptUserForPushNotificationPermission(fallbackToSettings: true);
-  OneSignal.shared
-      .setInFocusDisplayType(OSNotificationDisplayType.notification);
-  var status = await OneSignal.shared.getPermissionSubscriptionState();
-  String playerId = status.subscriptionStatus.userId;
+  var status = await (OneSignal.shared.getDeviceState());
+  var playerId = status?.userId;
   if (playerId != null) {
     await Common.setPlayerID(playerId);
     getToken();
-    if (oneSignalTimer != null && oneSignalTimer.isActive)
-      oneSignalTimer.cancel();
   }
 }
 
@@ -108,8 +93,8 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   DarkThemeProvider themeChangeProvider = new DarkThemeProvider();
 
-  String locale;
-  Map localizedValues;
+  String? locale;
+  Map? localizedValues;
   bool isGetJsonLoading = false;
   void initState() {
     super.initState();
@@ -145,7 +130,7 @@ class _MainScreenState extends State<MainScreen> {
           "NO_INTERNET_MSG": value['response_data']['json'][locale]
               ["NO_INTERNET_MSG"]
         });
-        await Common.setSelectedLanguage(locale);
+        await Common.setSelectedLanguage(locale!);
       });
     });
   }
@@ -157,7 +142,7 @@ class _MainScreenState extends State<MainScreen> {
         return themeChangeProvider;
       },
       child: Consumer<DarkThemeProvider>(
-        builder: (BuildContext context, value, Widget child) {
+        builder: (BuildContext context, value, Widget? child) {
           return isGetJsonLoading
               ? MaterialApp(
                   debugShowCheckedModeBanner: false,
@@ -166,7 +151,7 @@ class _MainScreenState extends State<MainScreen> {
                       Styles.themeData(themeChangeProvider.darkTheme, context),
                   home: AnimatedScreen())
               : MaterialApp(
-                  locale: Locale(locale),
+                  locale: Locale(locale!),
                   localizationsDelegates: [
                     MyLocalizationsDelegate(localizedValues, [locale]),
                     GlobalWidgetsLocalizations.delegate,
@@ -174,7 +159,7 @@ class _MainScreenState extends State<MainScreen> {
                     GlobalCupertinoLocalizations.delegate,
                     DefaultCupertinoLocalizations.delegate
                   ],
-                  supportedLocales: [Locale(locale)],
+                  supportedLocales: [Locale(locale!)],
                   debugShowCheckedModeBanner: false,
                   title: Constants.appName,
                   theme:

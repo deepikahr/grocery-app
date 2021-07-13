@@ -17,11 +17,11 @@ import '../../style/style.dart';
 SentryError sentryError = new SentryError();
 
 class Orders extends StatefulWidget {
-  final String userID, locale;
-  final Map localizedValues;
+  final String? userID, locale;
+  final Map? localizedValues;
   final bool isSubscription;
   Orders({
-    Key key,
+    Key? key,
     this.userID,
     this.locale,
     this.localizedValues,
@@ -36,11 +36,11 @@ class _OrdersState extends State<Orders> {
   bool isUserLoaggedIn = false,
       isFirstPageLoading = true,
       isNextPageLoading = false;
-  int ordersPerPage = 12, ordersPageNumber = 0, totalOrders = 1;
+  int? ordersPerPage = 12, ordersPageNumber = 0, totalOrders = 1;
   List orderList = [];
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  String currency;
+  String? currency;
   ScrollController _scrollController = ScrollController();
 
   @override
@@ -57,7 +57,7 @@ class _OrdersState extends State<Orders> {
 
   @override
   void dispose() {
-    if (_scrollController != null) _scrollController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -81,7 +81,7 @@ class _OrdersState extends State<Orders> {
 
   void getorderList() async {
     if (totalOrders != orderList.length) {
-      if (ordersPageNumber > 0) {
+      if (ordersPageNumber! > 0) {
         setState(() {
           isNextPageLoading = true;
         });
@@ -94,7 +94,7 @@ class _OrdersState extends State<Orders> {
             onValue['response_data'] != []) {
           orderList.addAll(onValue['response_data']);
           totalOrders = onValue["total"];
-          ordersPageNumber++;
+          ordersPageNumber = ordersPageNumber! + 1;
         }
         if (mounted) {
           setState(() {
@@ -137,9 +137,8 @@ class _OrdersState extends State<Orders> {
                               physics: ScrollPhysics(),
                               shrinkWrap: true,
                               controller: _scrollController,
-                              itemCount: orderList.length == null
-                                  ? 0
-                                  : orderList.length,
+                              itemCount:
+                                  orderList.isEmpty ? 0 : orderList.length,
                               itemBuilder: (BuildContext context, int i) {
                                 return InkWell(
                                     onTap: () {
@@ -151,6 +150,8 @@ class _OrdersState extends State<Orders> {
                                             localizedValues:
                                                 widget.localizedValues,
                                             orderId: orderList[i]["_id"],
+                                            isSubscription:
+                                                widget.isSubscription,
                                           ),
                                         ),
                                       );
@@ -210,7 +211,7 @@ class _OrdersState extends State<Orders> {
                 imageUrl: orderDetails['product']['productImages'][0]
                             ['filePath'] !=
                         null
-                    ? Constants.imageUrlPath +
+                    ? Constants.imageUrlPath! +
                         "/tr:dpr-auto,tr:w-500" +
                         orderDetails['product']['productImages'][0]['filePath']
                     : orderDetails['product']['productImages'][0]['imageUrl'],
@@ -234,7 +235,7 @@ class _OrdersState extends State<Orders> {
             : CachedNetworkImage(
                 imageUrl: orderDetails['product']['filePath'] == null
                     ? orderDetails['product']['imageUrl']
-                    : Constants.imageUrlPath +
+                    : Constants.imageUrlPath! +
                         "/tr:dpr-auto,tr:w-500" +
                         orderDetails['product']['filePath'],
                 imageBuilder: (context, imageProvider) => Container(
@@ -259,7 +260,7 @@ class _OrdersState extends State<Orders> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             orderPageText(context,
-                '${MyLocalizations.of(context).getLocalizations("ORDER_ID", true)}  #${orderDetails['orderID']}'),
+                '${MyLocalizations.of(context)!.getLocalizations("ORDER_ID", true)}  #${orderDetails['orderID']}'),
             orderPageText(context,
                 '${orderDetails['product']['title'][0].toUpperCase()}${orderDetails['product']['title'].substring(1)}'),
             orderDetails['totalProduct'] > 1
@@ -267,16 +268,16 @@ class _OrdersState extends State<Orders> {
                 : Container(),
             orderDetails['totalProduct'] > 1
                 ? textLightSmall(
-                    MyLocalizations.of(context).getLocalizations("AND") +
+                    MyLocalizations.of(context)!.getLocalizations("AND") +
                         ' ${(orderDetails['totalProduct'] - 1).toString()} ' +
-                        MyLocalizations.of(context)
+                        MyLocalizations.of(context)!
                             .getLocalizations("MORE_ITEMS"),
                     context)
                 : Container(),
             buildBoldText(context,
                 '$currency${orderDetails['grandTotal'] > 0 ? orderDetails['grandTotal'].toStringAsFixed(2) : orderDetails['usedWalletAmount'].toStringAsFixed(2)}'),
             textLightSmall(
-                MyLocalizations.of(context).getLocalizations("ORDERED", true) +
+                MyLocalizations.of(context)!.getLocalizations("ORDERED", true) +
                     DateFormat('dd/MM/yyyy, hh:mm a', widget.locale ?? "en")
                         .format(
                             DateTime.parse(orderDetails['createdAt'].toString())

@@ -20,16 +20,16 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 SentryError sentryError = new SentryError();
 
 class OrderDetails extends StatefulWidget {
-  final String orderId, locale;
-  final Map localizedValues;
+  final String? orderId, locale;
+  final Map? localizedValues;
   final bool isSubscription;
-  OrderDetails(
-      {Key key,
-      this.orderId,
-      this.locale,
-      this.localizedValues,
-      this.isSubscription = false})
-      : super(key: key);
+  OrderDetails({
+    Key? key,
+    this.orderId,
+    this.locale,
+    this.localizedValues,
+    this.isSubscription = false,
+  }) : super(key: key);
   @override
   _OrderDetailsState createState() => _OrderDetailsState();
 }
@@ -41,10 +41,10 @@ class _OrderDetailsState extends State<OrderDetails> {
       isRatingSubmitting = false,
       isOrderCancleLoading = false;
   var orderHistory;
-  String currency;
-  double rating;
-  Timer timer;
-  int productInfoIndex = -1;
+  late String currency;
+  double? rating;
+  Timer? timer;
+  int? productInfoIndex = -1;
   @override
   void initState() {
     getOrderHistory();
@@ -60,8 +60,8 @@ class _OrderDetailsState extends State<OrderDetails> {
 
   @override
   void dispose() {
-    if (timer != null && timer.isActive) {
-      timer.cancel();
+    if (timer != null && timer!.isActive) {
+      timer!.cancel();
     }
     super.dispose();
   }
@@ -120,11 +120,12 @@ class _OrderDetailsState extends State<OrderDetails> {
   }
 
   void showSnackbar(message) {
-    final snackBar = SnackBar(
-      content: Text(message),
-      duration: Duration(milliseconds: 3000),
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(milliseconds: 3000),
+      ),
     );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   ratingAlert(productID) {
@@ -133,7 +134,7 @@ class _OrderDetailsState extends State<OrderDetails> {
       builder: (context) {
         return AlertDialog(
           title: Text(
-            MyLocalizations.of(context).getLocalizations("RATE_PRODUCT"),
+            MyLocalizations.of(context)!.getLocalizations("RATE_PRODUCT"),
             style: TextStyle(
                 color: dark(context),
                 fontSize: 20,
@@ -155,8 +156,8 @@ class _OrderDetailsState extends State<OrderDetails> {
                 new Radius.circular(32.0),
               ),
             ),
-            child: RatingBar(
-              initialRating: rating,
+            child: RatingBar.builder(
+              initialRating: rating!,
               minRating: 1,
               direction: Axis.horizontal,
               allowHalfRating: true,
@@ -197,11 +198,7 @@ class _OrderDetailsState extends State<OrderDetails> {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarPrimary(
-          context,
-          widget.isSubscription
-              ? "SUBSCRIPTION_ORDER_DETAILS"
-              : "ORDER_DETAILS"),
+      appBar: appBarPrimary(context, "ORDER_DETAILS") as PreferredSizeWidget?,
       body: isLoading
           ? SquareLoader()
           : orderHistory == null
@@ -246,43 +243,62 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                             ['createdAt']
                                                         .toString())
                                                 .toLocal())),
+                                    widget.isSubscription == true
+                                        ? Container()
+                                        : SizedBox(height: 10),
+                                    widget.isSubscription == true
+                                        ? Container()
+                                        : buildOrderDetilsStatusText(
+                                            context,
+                                            "SHIPPING_METHOD",
+                                            (orderHistory['order']
+                                                        ['shippingMethod'] ==
+                                                    null
+                                                ? "DELIVERY"
+                                                : orderHistory['order']
+                                                    ['shippingMethod'])),
+                                    widget.isSubscription == true
+                                        ? Container()
+                                        : SizedBox(height: 10),
+                                    widget.isSubscription == true
+                                        ? Container()
+                                        : buildOrderDetilsText(
+                                            context,
+                                            (orderHistory['order']
+                                                        ['shippingMethod'] ==
+                                                    "PICK_UP"
+                                                ? "PICK_UP_DATE"
+                                                : "DELIVERY_DATE"),
+                                            orderHistory['order']
+                                                ['deliveryDate']),
+                                    widget.isSubscription == true
+                                        ? Container()
+                                        : SizedBox(height: 10),
+                                    widget.isSubscription == true
+                                        ? Container()
+                                        : buildOrderDetilsText(
+                                            context,
+                                            (orderHistory['order']
+                                                        ['shippingMethod'] ==
+                                                    "PICK_UP"
+                                                ? "PICK_UP_TIME"
+                                                : "DELIVERY_TIME"),
+                                            orderHistory['order']
+                                                ['deliveryTime']),
                                     SizedBox(height: 10),
-                                    buildOrderDetilsStatusText(
-                                        context,
-                                        "SHIPPING_METHOD",
-                                        (orderHistory['order']
-                                                    ['shippingMethod'] ==
-                                                null
-                                            ? "DELIVERY"
-                                            : orderHistory['order']
-                                                ['shippingMethod'])),
-                                    SizedBox(height: 10),
-                                    buildOrderDetilsText(
-                                        context,
-                                        (orderHistory['order']
-                                                    ['shippingMethod'] ==
-                                                "PICK_UP"
-                                            ? "PICK_UP_DATE"
-                                            : "DELIVERY_DATE"),
-                                        orderHistory['order']['deliveryDate']),
-                                    SizedBox(height: 10),
-                                    buildOrderDetilsText(
-                                        context,
-                                        (orderHistory['order']
-                                                    ['shippingMethod'] ==
-                                                "PICK_UP"
-                                            ? "PICK_UP_TIME"
-                                            : "DELIVERY_TIME"),
-                                        orderHistory['order']['deliveryTime']),
-                                    SizedBox(height: 10),
-                                    Constants.predefined == "true"
-                                        ? timeZoneMessage(
-                                            context, "TIME_ZONE_MESSAGE")
-                                        : Container(),
+                                    widget.isSubscription == true
+                                        ? Container()
+                                        : Constants.predefined == "true"
+                                            ? timeZoneMessage(
+                                                context, "TIME_ZONE_MESSAGE")
+                                            : Container(),
                                     buildOrderDetilsText(
                                         context,
                                         "PAYMENT_TYPE",
-                                        orderHistory['order']['paymentType']),
+                                        widget.isSubscription == true
+                                            ? "WALLET"
+                                            : orderHistory['order']
+                                                ['paymentType']),
                                     SizedBox(height: 10),
                                     buildOrderDetilsText(
                                         context,
@@ -298,24 +314,36 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                 ['storeAddress']['address']
                                             : orderHistory['order']['address']
                                                 ['address'])),
-                                    SizedBox(height: 10),
-                                    buildOrderDetilsStatusText(
-                                        context,
-                                        "ORDER_STAUS",
-                                        orderHistory['order']['orderStatus']),
-                                    SizedBox(height: 10),
-                                    buildOrderDetilsStatusText(
-                                        context,
-                                        "PAYMENT_STATUS",
-                                        orderHistory['order']['paymentStatus']),
+                                    widget.isSubscription == true
+                                        ? Container()
+                                        : SizedBox(height: 10),
+                                    widget.isSubscription == true
+                                        ? Container()
+                                        : buildOrderDetilsStatusText(
+                                            context,
+                                            "ORDER_STAUS",
+                                            orderHistory['order']
+                                                ['orderStatus']),
+                                    widget.isSubscription == true
+                                        ? Container()
+                                        : SizedBox(height: 10),
+                                    widget.isSubscription == true
+                                        ? Container()
+                                        : buildOrderDetilsStatusText(
+                                            context,
+                                            "PAYMENT_STATUS",
+                                            orderHistory['order']
+                                                ['paymentStatus']),
                                     orderHistory['order']
-                                                ['deliveryInstruction'] ==
-                                            null
+                                                    ['deliveryInstruction'] ==
+                                                null ||
+                                            widget.isSubscription == true
                                         ? Container()
                                         : SizedBox(height: 10),
                                     orderHistory['order']
-                                                ['deliveryInstruction'] ==
-                                            null
+                                                    ['deliveryInstruction'] ==
+                                                null ||
+                                            widget.isSubscription == true
                                         ? Container()
                                         : buildOrderDetilsText(
                                             context,
@@ -356,7 +384,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                   null
                                               ? order["productImages"][0]
                                                   ['imageUrl']
-                                              : Constants.imageUrlPath +
+                                              : Constants.imageUrlPath! +
                                                   "/tr:dpr-auto,tr:w-500" +
                                                   order["productImages"][0]
                                                       ['filePath'],
@@ -414,7 +442,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                       : CachedNetworkImage(
                                           imageUrl: order['filePath'] == null
                                               ? order['imageUrl']
-                                              : Constants.imageUrlPath +
+                                              : Constants.imageUrlPath! +
                                                   "/tr:dpr-auto,tr:w-500" +
                                                   order['filePath'],
                                           imageBuilder:
@@ -487,7 +515,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                 children: [
                                                   textMediumSmallGreen(
                                                       MyLocalizations.of(
-                                                                  context)
+                                                                  context)!
                                                               .getLocalizations(
                                                                   "ORIGINAL_PRICE",
                                                                   true) +
@@ -506,7 +534,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                         order['dealTotalAmount'] == 0
                                             ? Container()
                                             : textLightSmall(
-                                                MyLocalizations.of(context)
+                                                MyLocalizations.of(context)!
                                                         .getLocalizations(
                                                             "DEAL_AMOUNT",
                                                             true) +
@@ -532,10 +560,11 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                               order["rating"] >
                                                                   0) {
                                                             setState(() {
-                                                              rating = double
-                                                                  .parse(order[
-                                                                          "rating"]
-                                                                      .toString());
+                                                              rating =
+                                                                  double.parse(
+                                                                order["rating"]
+                                                                    .toString(),
+                                                              );
                                                             });
                                                           } else {
                                                             setState(() {
@@ -581,78 +610,94 @@ class _OrderDetailsState extends State<OrderDetails> {
                           buildPriceBold(
                               context,
                               null,
-                              MyLocalizations.of(context)
+                              MyLocalizations.of(context)!
                                   .getLocalizations("SUB_TOTAL"),
                               currency +
                                   orderHistory['order']['subTotal']
                                       .toStringAsFixed(2),
                               false),
-                          SizedBox(height: 6),
-                          orderHistory['order']['tax'] == 0
+                          widget.isSubscription == true
                               ? Container()
-                              : buildPriceBold(
-                                  context,
-                                  null,
-                                  MyLocalizations.of(context)
-                                      .getLocalizations("TAX"),
-                                  currency +
-                                      orderHistory['order']['tax']
-                                          .toStringAsFixed(2),
-                                  false),
+                              : SizedBox(height: 6),
+                          widget.isSubscription == true
+                              ? Container()
+                              : orderHistory['order']['tax'] == 0
+                                  ? Container()
+                                  : buildPriceBold(
+                                      context,
+                                      null,
+                                      MyLocalizations.of(context)!
+                                          .getLocalizations("TAX"),
+                                      currency +
+                                          orderHistory['order']['tax']
+                                              .toStringAsFixed(2),
+                                      false),
                           SizedBox(height: 6),
                           buildPriceBold(
                               context,
                               null,
-                              MyLocalizations.of(context)
+                              MyLocalizations.of(context)!
                                   .getLocalizations("DELIVERY_CHARGES"),
                               orderHistory['order']['deliveryCharges'] == 0
-                                  ? MyLocalizations.of(context)
+                                  ? MyLocalizations.of(context)!
                                       .getLocalizations("FREE")
                                   : orderHistory['order']['deliveryCharges']
                                       .toStringAsFixed(2),
                               false),
                           SizedBox(height: 6),
-                          orderHistory['order']['usedWalletAmount'] == 0 ||
-                                  orderHistory['order']['usedWalletAmount'] ==
-                                      0.0
+                          widget.isSubscription == true
                               ? Container()
-                              : buildPriceBold(
-                                  context,
-                                  null,
-                                  MyLocalizations.of(context)
-                                      .getLocalizations("PAID_FORM_WALLET"),
-                                  "-" +
-                                      currency +
-                                      orderHistory['order']['usedWalletAmount']
-                                          .toStringAsFixed(2),
-                                  false),
-                          SizedBox(height: 6),
-                          orderHistory['order']['couponCode'] == null
+                              : orderHistory['order']['usedWalletAmount'] ==
+                                          0 ||
+                                      orderHistory['order']
+                                              ['usedWalletAmount'] ==
+                                          0.0
+                                  ? Container()
+                                  : buildPriceBold(
+                                      context,
+                                      null,
+                                      MyLocalizations.of(context)!
+                                          .getLocalizations("PAID_FORM_WALLET"),
+                                      "-" +
+                                          currency +
+                                          orderHistory['order']
+                                                  ['usedWalletAmount']
+                                              .toStringAsFixed(2),
+                                      false),
+                          widget.isSubscription == true
                               ? Container()
-                              : Column(
-                                  children: <Widget>[
-                                    buildPriceBold(
-                                        context,
-                                        null,
-                                        MyLocalizations.of(context)
-                                            .getLocalizations("COUPON_APPLIED"),
-                                        orderHistory['order']['couponCode'],
-                                        false),
-                                    SizedBox(height: 6),
-                                    buildPriceBold(
-                                        context,
-                                        null,
-                                        MyLocalizations.of(context)
-                                            .getLocalizations("DISCOUNT"),
-                                        "-" +
-                                            currency +
-                                            orderHistory['order']
-                                                    ['couponAmount']
-                                                .toStringAsFixed(2),
-                                        false),
-                                  ],
-                                ),
-                          SizedBox(height: 6),
+                              : SizedBox(height: 6),
+                          widget.isSubscription == true
+                              ? Container()
+                              : orderHistory['order']['couponCode'] == null
+                                  ? Container()
+                                  : Column(
+                                      children: <Widget>[
+                                        buildPriceBold(
+                                            context,
+                                            null,
+                                            MyLocalizations.of(context)!
+                                                .getLocalizations(
+                                                    "COUPON_APPLIED"),
+                                            orderHistory['order']['couponCode'],
+                                            false),
+                                        SizedBox(height: 6),
+                                        buildPriceBold(
+                                            context,
+                                            null,
+                                            MyLocalizations.of(context)!
+                                                .getLocalizations("DISCOUNT"),
+                                            "-" +
+                                                currency +
+                                                orderHistory['order']
+                                                        ['couponAmount']
+                                                    .toStringAsFixed(2),
+                                            false),
+                                      ],
+                                    ),
+                          widget.isSubscription == true
+                              ? Container()
+                              : SizedBox(height: 6),
                         ],
                       ),
                     ),
@@ -668,9 +713,13 @@ class _OrderDetailsState extends State<OrderDetails> {
                       child: buildPriceBold(
                           context,
                           null,
-                          MyLocalizations.of(context).getLocalizations("TOTAL"),
+                          MyLocalizations.of(context)!
+                              .getLocalizations("TOTAL"),
                           currency +
-                              orderHistory['order']['grandTotal']
+                              (widget.isSubscription
+                                      ? orderHistory['order']
+                                          ['usedWalletAmount']
+                                      : orderHistory['order']['grandTotal'])
                                   .toStringAsFixed(2),
                           false),
                     ),
@@ -680,7 +729,8 @@ class _OrderDetailsState extends State<OrderDetails> {
                       child:
                           orderHistory['order']['orderStatus'] == "DELIVERED" ||
                                   orderHistory['order']['orderStatus'] ==
-                                      "CANCELLED"
+                                      "CANCELLED" ||
+                                  widget.isSubscription == true
                               ? Container()
                               : InkWell(
                                   onTap: orderCancelMethod,

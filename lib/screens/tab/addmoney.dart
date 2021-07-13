@@ -12,10 +12,10 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 SentryError sentryError = new SentryError();
 
 class AddMoney extends StatefulWidget {
-  final Map localizedValues;
-  final String locale;
+  final Map? localizedValues;
+  final String? locale;
 
-  AddMoney({Key key, this.locale, this.localizedValues});
+  AddMoney({Key? key, this.locale, this.localizedValues});
 
   @override
   _AddMoneyState createState() => _AddMoneyState();
@@ -23,7 +23,7 @@ class AddMoney extends StatefulWidget {
 
 class _AddMoneyState extends State<AddMoney> {
   String currency = "";
-  double walletAmmount;
+  double? walletAmmount;
   bool isAddMoneyLoading = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
@@ -33,7 +33,7 @@ class _AddMoneyState extends State<AddMoney> {
   }
 
   addMoney() async {
-    final form = _formKey.currentState;
+    final form = _formKey.currentState!;
     if (form.validate()) {
       form.save();
       setState(() {
@@ -41,7 +41,6 @@ class _AddMoneyState extends State<AddMoney> {
       });
       Map body = {"amount": walletAmmount};
       await OrderService.addMoneyApi(body).then((onValue) {
-        print(onValue);
         if (mounted) {
           setState(() {
             isAddMoneyLoading = false;
@@ -69,20 +68,26 @@ class _AddMoneyState extends State<AddMoney> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: appBarPrimarynoradius(context, "ADD_MONEY"),
-        body: Container(
-          margin: EdgeInsets.symmetric(horizontal: 14),
-          child: Form(
-            key: _formKey,
-            child: ListView(
-              shrinkWrap: true,
-              children: [
-                SizedBox(height: 40),
-                buildImageView(),
-                buildAddMoneyTextDescription(),
-                buildLabelText(),
-                buildTextField(),
-              ],
+        appBar:
+            appBarPrimarynoradius(context, "ADD_MONEY") as PreferredSizeWidget?,
+        body: InkWell(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 14),
+            child: Form(
+              key: _formKey,
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  SizedBox(height: 40),
+                  buildImageView(),
+                  buildAddMoneyTextDescription(),
+                  buildLabelText(),
+                  buildTextField(),
+                ],
+              ),
             ),
           ),
         ),
@@ -110,15 +115,15 @@ class _AddMoneyState extends State<AddMoney> {
     return Container(
       margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
       child: TextFormField(
-        onSaved: (String value) {
-          if (value.length > 0) {
+        onSaved: (String? value) {
+          if (value!.length > 0) {
             walletAmmount = double.parse(value);
           }
         },
-        validator: (String value) {
+        validator: (String? value) {
           double enteredVal;
-          if (value.isEmpty) {
-            return MyLocalizations.of(context)
+          if (value!.isEmpty) {
+            return MyLocalizations.of(context)!
                 .getLocalizations("ENTER_ADD_VALID_AMOUNT");
           } else {
             try {
@@ -127,12 +132,12 @@ class _AddMoneyState extends State<AddMoney> {
               try {
                 enteredVal = int.parse(value).toDouble();
               } catch (e) {
-                return MyLocalizations.of(context)
+                return MyLocalizations.of(context)!
                     .getLocalizations("ENTER_ADD_VALID_AMOUNT");
               }
             }
             if (value.isEmpty || enteredVal < 0) {
-              return MyLocalizations.of(context)
+              return MyLocalizations.of(context)!
                   .getLocalizations("ENTER_ADD_VALID_AMOUNT");
             }
             return null;
@@ -155,7 +160,7 @@ class _AddMoneyState extends State<AddMoney> {
           prefixIcon: Padding(
             padding: const EdgeInsets.only(top: 15.0, bottom: 15, left: 12),
             child: Text(
-              MyLocalizations.of(context).getLocalizations(currency, true),
+              MyLocalizations.of(context)!.getLocalizations(currency, true),
               style: textbarlowmediumwblack(context),
             ),
           ),
@@ -177,7 +182,7 @@ class _AddMoneyState extends State<AddMoney> {
   buildAddMoneyTextDescription() => Padding(
         padding: const EdgeInsets.symmetric(vertical: 20),
         child: Text(
-          MyLocalizations.of(context).getLocalizations(
+          MyLocalizations.of(context)!.getLocalizations(
               "PLEASE_ENTER_THE_AMOUNT_YOU_WANT_TO_ADD_IN_THE_WALLET"),
           style: textBarlowRegularBlack(context),
           textAlign: TextAlign.center,

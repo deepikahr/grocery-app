@@ -20,11 +20,11 @@ import '../../widgets/loader.dart';
 SentryError sentryError = new SentryError();
 
 class AllProducts extends StatefulWidget {
-  final Map localizedValues;
-  final String locale, dealId, categoryId, pageTitle;
+  final Map? localizedValues;
+  final String? locale, dealId, categoryId, pageTitle;
 
   AllProducts({
-    Key key,
+    Key? key,
     this.locale,
     this.localizedValues,
     this.dealId,
@@ -42,14 +42,14 @@ class _AllProductsState extends State<AllProducts> {
       isSubCategoryLoading = true,
       isProductsForDeal = false,
       isProductsForCategory = false;
-  int productsPerPage = 12,
+  int? productsPerPage = 12,
       productsPageNumber = 0,
       totalProducts = 1,
       selectedSubCategoryIndex = 0;
-  List productsList = [], subCategoryList = [];
+  List? productsList = [], subCategoryList = [];
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  String currency;
+  String? currency;
   ScrollController _scrollController = ScrollController();
 
   var cartData;
@@ -76,7 +76,7 @@ class _AllProductsState extends State<AllProducts> {
 
   @override
   void dispose() {
-    if (_scrollController != null) _scrollController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -103,7 +103,7 @@ class _AllProductsState extends State<AllProducts> {
       isFirstPageLoading = true;
     });
     productsList = [];
-    productsPageNumber = productsList.length;
+    productsPageNumber = productsList!.length;
     totalProducts = 1;
     await Common.getCurrency().then((value) {
       currency = value;
@@ -119,7 +119,7 @@ class _AllProductsState extends State<AllProducts> {
   void getSubCategoryList() async {
     await ProductService.getSubCatList().then((onValue) {
       if (onValue['response_data'] != null) {
-        subCategoryList = onValue['response_data'] as List;
+        subCategoryList = onValue['response_data'] as List?;
       }
       if (mounted)
         setState(() {
@@ -136,8 +136,8 @@ class _AllProductsState extends State<AllProducts> {
   }
 
   void getSubCategoryListByCategoryId() async {
-    if (totalProducts != productsList.length) {
-      if (productsPageNumber > 0) {
+    if (totalProducts != productsList!.length) {
+      if (productsPageNumber! > 0) {
         setState(() {
           isNextPageLoading = true;
         });
@@ -147,10 +147,10 @@ class _AllProductsState extends State<AllProducts> {
           .then((onValue) {
         _refreshController.refreshCompleted();
         if (onValue['response_data'] != null) {
-          productsList.addAll(onValue['response_data']['products']);
+          productsList!.addAll(onValue['response_data']['products']);
           subCategoryList = onValue['response_data']['subCategories'];
           totalProducts = onValue["total"];
-          productsPageNumber++;
+          productsPageNumber = productsPageNumber! + 1;
         }
         if (mounted)
           setState(() {
@@ -172,8 +172,8 @@ class _AllProductsState extends State<AllProducts> {
   }
 
   void getProductsList() async {
-    if (totalProducts != productsList.length) {
-      if (productsPageNumber > 0) {
+    if (totalProducts != productsList!.length) {
+      if (productsPageNumber! > 0) {
         setState(() {
           isNextPageLoading = true;
         });
@@ -184,9 +184,9 @@ class _AllProductsState extends State<AllProducts> {
         _refreshController.refreshCompleted();
         if (onValue['response_data'] != null &&
             onValue['response_data'] != []) {
-          productsList.addAll(onValue['response_data']);
+          productsList!.addAll(onValue['response_data']);
           totalProducts = onValue["total"];
-          productsPageNumber++;
+          productsPageNumber = productsPageNumber! + 1;
         }
         if (mounted) {
           setState(() {
@@ -207,23 +207,23 @@ class _AllProductsState extends State<AllProducts> {
   }
 
   void getProductsListBySubCategoryId() async {
-    if (totalProducts != productsList.length) {
-      if (productsPageNumber > 0) {
+    if (totalProducts != productsList!.length) {
+      if (productsPageNumber! > 0) {
         setState(() {
           isNextPageLoading = true;
         });
       }
       await ProductService.getProductToSubCategoryList(
-              subCategoryList[selectedSubCategoryIndex - 1]['_id'],
+              subCategoryList![selectedSubCategoryIndex! - 1]['_id'],
               productsPageNumber,
               productsPerPage)
           .then((onValue) {
         _refreshController.refreshCompleted();
         if (onValue['response_data'] != null &&
             onValue['response_data'] != []) {
-          productsList.addAll(onValue['response_data']);
+          productsList!.addAll(onValue['response_data']);
           totalProducts = onValue["total"];
-          productsPageNumber++;
+          productsPageNumber = productsPageNumber! + 1;
         }
         if (mounted) {
           setState(() {
@@ -244,8 +244,8 @@ class _AllProductsState extends State<AllProducts> {
   }
 
   void getProductListByDealId() async {
-    if (totalProducts != productsList.length) {
-      if (productsPageNumber > 0) {
+    if (totalProducts != productsList!.length) {
+      if (productsPageNumber! > 0) {
         setState(() {
           isNextPageLoading = true;
         });
@@ -256,9 +256,9 @@ class _AllProductsState extends State<AllProducts> {
         _refreshController.refreshCompleted();
         if (onValue['response_data'] != null &&
             onValue['response_data'] != []) {
-          productsList.addAll(onValue['response_data']);
+          productsList!.addAll(onValue['response_data']);
           totalProducts = onValue["total"];
-          productsPageNumber++;
+          productsPageNumber = productsPageNumber! + 1;
         }
         if (mounted) {
           setState(() {
@@ -326,7 +326,7 @@ class _AllProductsState extends State<AllProducts> {
             ),
           ),
         ),
-      ),
+      ) as PreferredSizeWidget?,
       body: isSubCategoryLoading
           ? Center(child: SquareLoader())
           : Column(
@@ -341,7 +341,7 @@ class _AllProductsState extends State<AllProducts> {
                                 physics: ScrollPhysics(),
                                 shrinkWrap: true,
                                 scrollDirection: Axis.horizontal,
-                                itemCount: subCategoryList.length + 1,
+                                itemCount: subCategoryList!.length + 1,
                                 itemBuilder: (BuildContext context, int i) {
                                   return InkWell(
                                     onTap: () {
@@ -353,9 +353,9 @@ class _AllProductsState extends State<AllProducts> {
                                     child: subCatTab(
                                       context,
                                       i == 0
-                                          ? MyLocalizations.of(context)
+                                          ? MyLocalizations.of(context)!
                                               .getLocalizations('ALL')
-                                          : subCategoryList[i - 1]['title'],
+                                          : subCategoryList![i - 1]['title'],
                                       selectedSubCategoryIndex == i
                                           ? primary(context)
                                           : Color(0xFFf0F0F0),
@@ -379,9 +379,9 @@ class _AllProductsState extends State<AllProducts> {
                               physics: ScrollPhysics(),
                               controller: _scrollController,
                               shrinkWrap: true,
-                              itemCount: productsList.length == null
+                              itemCount: productsList!.isEmpty
                                   ? 0
-                                  : productsList.length,
+                                  : productsList!.length,
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2,
@@ -400,7 +400,7 @@ class _AllProductsState extends State<AllProducts> {
                                           locale: widget.locale,
                                           localizedValues:
                                               widget.localizedValues,
-                                          productID: productsList[i]['_id'],
+                                          productID: productsList![i]['_id'],
                                         ),
                                       ),
                                     );
@@ -410,7 +410,7 @@ class _AllProductsState extends State<AllProducts> {
                                   },
                                   child: ProductGridCard(
                                     currency: currency,
-                                    productData: productsList[i],
+                                    productData: productsList![i],
                                     isHome: false,
                                   ),
                                 );
