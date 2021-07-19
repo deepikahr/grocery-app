@@ -25,6 +25,12 @@ class Constants {
   // dashboard url
   static String? baseUrl = dotenv.env['BASE_URL'];
 
+  // PlayStore Url
+  static String? playStoreUrl=dotenv.env['USER_ANDROID'];
+  
+  // appStore Url
+  static String? appStoreUrl= dotenv.env['USER_IOS'];
+
   // PREDEFINED
   static String predefined = dotenv.env['PREDEFINED'] ?? "false";
 

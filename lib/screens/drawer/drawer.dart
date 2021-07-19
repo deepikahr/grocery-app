@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
@@ -211,13 +213,30 @@ class _DrawerPageState extends State<DrawerPage> {
                     onTap: () {
                       final RenderBox box =
                           context.findRenderObject() as RenderBox;
-                      Share.share(
-                          MyLocalizations.of(context)!
-                                  .getLocalizations("SHARE_MESSAGE") +
-                              " " +
-                              Constants.baseUrl,
-                          sharePositionOrigin:
-                              box.localToGlobal(Offset.zero) & box.size);
+                      // Share.share(
+                      //     MyLocalizations.of(context)!
+                      //             .getLocalizations("SHARE_MESSAGE") +
+                      //         " " +
+                      //         Constants.baseUrl,
+                      //     sharePositionOrigin:
+                      //         box.localToGlobal(Offset.zero) & box.size);
+                      if (Platform.isAndroid) {
+                        Share.share(
+                            MyLocalizations.of(context)!
+                                    .getLocalizations("SHARE_MESSAGE") +
+                                " " +
+                                Constants.playStoreUrl,
+                            sharePositionOrigin:
+                                box.localToGlobal(Offset.zero) & box.size);
+                      } else if (Platform.isIOS) {
+                        Share.share(
+                            MyLocalizations.of(context)!
+                                    .getLocalizations("SHARE_MESSAGE") +
+                                " " +
+                                Constants.appStoreUrl,
+                            sharePositionOrigin:
+                                box.localToGlobal(Offset.zero) & box.size);
+                      }
                     },
                     child: buildDrawer(
                         context, "SHARE", "lib/assets/icons/share.png")),
