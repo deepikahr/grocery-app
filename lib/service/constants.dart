@@ -26,10 +26,10 @@ class Constants {
   static String? baseUrl = dotenv.env['BASE_URL'];
 
   // PlayStore Url
-  static String? playStoreUrl=dotenv.env['USER_ANDROID'];
+  static String? playStoreUrl=  "https://play.google.com/store/apps/details?id=com.ionicfirebaseapp.readymadegroceryuserapp";
   
   // appStore Url
-  static String? appStoreUrl= dotenv.env['USER_IOS'];
+  static String? appStoreUrl= "https://apps.apple.com/in/app/readymade-grocery-app/id1506920690";
 
   // PREDEFINED
   static String predefined = dotenv.env['PREDEFINED'] ?? "false";
