@@ -689,7 +689,7 @@ Widget textMediumSmallGreen(title, context) {
 Widget priceMrpText(title, subtitle, context) {
   return Row(children: <Widget>[
     Text(title, style: textbarlowBoldGreen(context)),
-    SizedBox(width: 3),
+    SizedBox(width: 6),
     subtitle != null
         ? Padding(
             padding: const EdgeInsets.only(top: 5.0),
