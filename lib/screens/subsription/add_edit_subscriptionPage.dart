@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:readymadeGroceryApp/screens/drawer/add-address.dart';
+import 'package:readymadeGroceryApp/screens/drawer/addressPick.dart';
 import 'package:readymadeGroceryApp/screens/drawer/edit-address.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
 import 'package:readymadeGroceryApp/service/address-service.dart';
@@ -58,7 +58,6 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
   bool addressLoading = false, isSubscriptionLoading = false;
   Location _location = new Location();
   PermissionStatus? _permissionGranted;
-  PickResult? pickerResult;
   @override
   void initState() {
     getAddress();
@@ -432,7 +431,6 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
                                                 locale: widget.locale,
                                                 localizedValues:
                                                     widget.localizedValues,
-                                                isCheckout: true,
                                                 updateAddressID:
                                                     addressList![i],
                                               ),
@@ -508,31 +506,27 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
 
   addAddressPageMethod(locationlatlong) async {
     await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PlacePicker(
-            apiKey: Constants.googleMapApiKey!,
-            initialPosition: LatLng(
-                locationlatlong['latitude'], locationlatlong['longitude']),
-            useCurrentLocation: true,
-            selectInitialPosition: true,
-            onPlacePicked: (result) {
-              Navigator.of(context).pop();
-              setState(() {
-                pickerResult = result;
-              });
-            },
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddressPickPage(
+          locale: widget.locale,
+          localizedValues: widget.localizedValues,
+          initialLocation: LatLng(
+            locationlatlong['latitude'],
+            locationlatlong['longitude'],
           ),
-        ));
-
-    if (pickerResult != null) {
-      setState(() {
+        ),
+      ),
+    ).then((value) {
+      if (value != null && value['initialLocation'] != null) {
+        addAddressPageMethod(value['initialLocation']);
+      } else if (value != null) {
         var result = Navigator.push(
           context,
           new MaterialPageRoute(
-            builder: (BuildContext context) => AddAddress(
-              isProfile: true,
-              pickedLocation: pickerResult,
+            builder: (BuildContext context) => new AddAddress(
+              address: value['address'],
+              position: value['location'],
               locale: widget.locale,
               localizedValues: widget.localizedValues,
             ),
@@ -541,8 +535,8 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
         result.then((res) {
           getAddress();
         });
-      });
-    }
+      }
+    });
   }
 
   getAddress() async {

@@ -1020,3 +1020,15 @@ builddTextbarlowRegularBlackFont14(BuildContext context, title) {
     style: textbarlowRegularBlackFont14(context),
   );
 }
+
+Widget locationTile(BuildContext context, String address) {
+  return Column(
+    children: [
+      ListTile(
+        title: Text(address, style: hintSmallSfMediumblack(context)),
+        trailing: Icon(Icons.arrow_forward_ios),
+      ),
+      Divider(color: dark(context))
+    ],
+  );
+}
