@@ -772,6 +772,15 @@ orderNow(BuildContext context, title) {
   );
 }
 
+orderNowPrimary(BuildContext context, title) {
+  return Row(
+    children: <Widget>[
+      Text(MyLocalizations.of(context)!.getLocalizations(title),style:textbarlowRegularaPrimar(context)),
+      Icon(Icons.arrow_right,color:primary(context))
+    ],
+  );
+}
+
 Widget buildIcon(BuildContext context, iconData, cartData) {
   return Padding(
     padding: const EdgeInsets.only(top: 8.0),

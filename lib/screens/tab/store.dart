@@ -379,7 +379,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                 padding: EdgeInsets.only(top: 5, left: 20, right: 20),
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
-                    color: primary(context),
+                    // color: primary(context),
+                    image: DecorationImage(image: AssetImage('lib/assets/images/banner_bg.png'),fit: BoxFit.cover),
                     borderRadius: BorderRadius.all(Radius.circular(5))),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -388,6 +389,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                         padding: EdgeInsets.only(
                           right: locale == 'ar' ? 0 : 100,
                           left: locale == 'ar' ? 100 : 0,
+                          top:10
                         ),
                         child: bannerTitle(
                             '${url['title'][0].toUpperCase()}${url['title'].substring(1)}',
@@ -419,61 +421,61 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                             );
                           }
                         },
-                        child: orderNow(context, "ORDER_NOW"))
+                        child: orderNowPrimary(context, "ORDER_NOW"))
                   ],
                 ),
               ),
-              url['filePath'] == null && url['imageURL'] == null
-                  ? Container()
-                  : Positioned(
-                      right: locale == 'ar' ? null : 0,
-                      left: locale == 'ar' ? 0 : null,
-                      child: CachedNetworkImage(
-                        imageUrl: url['filePath'] == null
-                            ? url['imageURL']
-                            : Constants.imageUrlPath! +
-                                "/tr:dpr-auto,tr:w-500" +
-                                url['filePath'],
-                        imageBuilder: (context, imageProvider) => Container(
-                          height: 134,
-                          width: 134,
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                  color: dark(context).withOpacity(0.33),
-                                  blurRadius: 6)
-                            ],
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                                image: imageProvider, fit: BoxFit.cover),
-                          ),
-                        ),
-                        placeholder: (context, url) => Container(
-                            decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                    color: dark(context).withOpacity(0.33),
-                                    blurRadius: 6)
-                              ],
-                              shape: BoxShape.circle,
-                            ),
-                            height: 134,
-                            width: 134,
-                            child: noDataImage()),
-                        errorWidget: (context, url, error) => Container(
-                            decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                    color: dark(context).withOpacity(0.33),
-                                    blurRadius: 6)
-                              ],
-                              shape: BoxShape.circle,
-                            ),
-                            height: 134,
-                            width: 134,
-                            child: noDataImage()),
-                      ),
-                    ),
+              // url['filePath'] == null && url['imageURL'] == null
+              //     ? Container()
+              //     : Positioned(
+              //         right: locale == 'ar' ? null : 0,
+              //         left: locale == 'ar' ? 0 : null,
+              //         child: CachedNetworkImage(
+              //           imageUrl: url['filePath'] == null
+              //               ? url['imageURL']
+              //               : Constants.imageUrlPath! +
+              //                   "/tr:dpr-auto,tr:w-500" +
+              //                   url['filePath'],
+              //           imageBuilder: (context, imageProvider) => Container(
+              //             height: 134,
+              //             width: 134,
+              //             decoration: BoxDecoration(
+              //               boxShadow: [
+              //                 BoxShadow(
+              //                     color: dark(context).withOpacity(0.33),
+              //                     blurRadius: 6)
+              //               ],
+              //               shape: BoxShape.circle,
+              //               image: DecorationImage(
+              //                   image: imageProvider, fit: BoxFit.cover),
+              //             ),
+              //           ),
+              //           placeholder: (context, url) => Container(
+              //               decoration: BoxDecoration(
+              //                 boxShadow: [
+              //                   BoxShadow(
+              //                       color: dark(context).withOpacity(0.33),
+              //                       blurRadius: 6)
+              //                 ],
+              //                 shape: BoxShape.circle,
+              //               ),
+              //               height: 134,
+              //               width: 134,
+              //               child: noDataImage()),
+              //           errorWidget: (context, url, error) => Container(
+              //               decoration: BoxDecoration(
+              //                 boxShadow: [
+              //                   BoxShadow(
+              //                       color: dark(context).withOpacity(0.33),
+              //                       blurRadius: 6)
+              //                 ],
+              //                 shape: BoxShape.circle,
+              //               ),
+              //               height: 134,
+              //               width: 134,
+              //               child: noDataImage()),
+              //         ),
+              //       ),
             ],
           ),
         );
