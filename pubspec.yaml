@@ -123,6 +123,7 @@ flutter:
     - lib/assets/images/copylink.png
     - lib/assets/images/addMoney.png
     - lib/assets/images/walletImage.png
+    - lib/assets/images/banner_bg.png
 
     - lib/assets/icons/tick.svg
     - lib/assets/icons/editt.svg
