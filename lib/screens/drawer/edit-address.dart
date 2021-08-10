@@ -2,13 +2,11 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_maps_place_picker/google_maps_place_picker.dart';
-import 'package:readymadeGroceryApp/service/constants.dart';
+import 'package:readymadeGroceryApp/screens/drawer/addressPick.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/address-service.dart';
-import 'package:location/location.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
@@ -17,17 +15,9 @@ SentryError sentryError = new SentryError();
 
 class EditAddress extends StatefulWidget {
   const EditAddress(
-      {Key? key,
-      this.currentLocation,
-      this.isCheckout,
-      this.isProfile,
-      this.updateAddressID,
-      this.locale,
-      this.localizedValues})
+      {Key? key, this.updateAddressID, this.locale, this.localizedValues})
       : super(key: key);
-  final bool? isCheckout, isProfile;
   final Map<String, dynamic>? updateAddressID;
-  final LocationData? currentLocation;
   final Map? localizedValues;
   final String? locale;
 
@@ -40,14 +30,15 @@ class _EditAddressState extends State<EditAddress> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   TextEditingController addressController = TextEditingController();
   var addressData;
-  LocationData? currentLocation;
   bool isUpdateAddressLoading = false;
-  StreamSubscription<LocationData>? locationSubscription;
-  PickResult? pickerResult;
   int? selectedAddressType;
   String? fullAddress;
+  LatLng? position;
+
   @override
   void initState() {
+    position = LatLng(widget.updateAddressID!['location']['latitude'],
+        widget.updateAddressID!['location']['longitude']);
     if (widget.updateAddressID!['addressType'] != null) {
       addressController.text = widget.updateAddressID!['address'];
 
@@ -89,15 +80,12 @@ class _EditAddressState extends State<EditAddress> {
       _formKey.currentState!.save();
       address['address'] = addressController.text;
 
-      if (pickerResult == null) {
-        address['location'] = widget.updateAddressID!['location'];
-      } else {
-        var location = {
-          "latitude": pickerResult!.geometry!.location.lat,
-          "longitude": pickerResult!.geometry!.location.lng
-        };
-        address['location'] = location;
-      }
+      var location = {
+        "latitude": position?.latitude,
+        "longitude": position?.longitude
+      };
+      address['location'] = location;
+
       address['addressType'] = addressType[selectedAddressType!];
       AddressService.updateAddress(address, widget.updateAddressID!['_id'])
           .then((onValue) {
@@ -140,9 +128,31 @@ class _EditAddressState extends State<EditAddress> {
 
   @override
   void dispose() {
-    locationSubscription?.cancel();
     addressController.clear();
     super.dispose();
+  }
+
+  onTabChangeAddress(dataLocation) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddressPickPage(
+          initialLocation: dataLocation,
+          locale: widget.locale,
+          localizedValues: widget.localizedValues,
+        ),
+      ),
+    ).then((value) {
+      if (value != null && value['initialLocation'] != null) {
+        onTabChangeAddress(LatLng(value['initialLocation']['latitude'],
+            value['initialLocation']['longitude']));
+      } else if (value != null) {
+        setState(() {
+          addressController.text = value['address'];
+          position = value['location'];
+        });
+      }
+    });
   }
 
   @override
@@ -157,10 +167,9 @@ class _EditAddressState extends State<EditAddress> {
           children: <Widget>[
             Column(
               children: <Widget>[
-                SizedBox(height: 25),
                 Padding(
                     padding: const EdgeInsets.only(
-                        left: 12.0, bottom: 5.0, right: 20.0),
+                        left: 20.0, bottom: 5.0, right: 20.0, top: 10),
                     child: addressPage(context, "LOCATION")),
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
@@ -209,36 +218,7 @@ class _EditAddressState extends State<EditAddress> {
                 ),
                 InkWell(
                   onTap: () async {
-                    var lat, long;
-                    if (pickerResult == null) {
-                      lat = widget.updateAddressID!['location']['latitude'];
-                      long = widget.updateAddressID!['location']['longitude'];
-                    } else {
-                      lat = pickerResult!.geometry!.location.lat;
-                      long = pickerResult!.geometry!.location.lng;
-                    }
-
-                    await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PlacePicker(
-                            apiKey: Constants.googleMapApiKey!,
-                            initialPosition: LatLng(lat, long),
-                            useCurrentLocation: true,
-                            selectInitialPosition: true,
-                            onPlacePicked: (result) {
-                              Navigator.of(context).pop();
-                              setState(() {
-                                pickerResult = result;
-                              });
-                            },
-                          ),
-                        ));
-
-                    setState(() {
-                      addressController.text =
-                          pickerResult!.formattedAddress.toString();
-                    });
+                    onTabChangeAddress(position);
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 5.0),
