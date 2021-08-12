@@ -28,6 +28,16 @@ class OrderService {
     });
   }
 
+  //get Payment Razor Order Id
+  static Future<Map<String, dynamic>> getPaymentRazorOrderId() async {
+    return client
+        .get(Uri.parse(Constants.apiUrl! + "/orders/razorpay"))
+        .then((response) {
+      return json.decode(response.body);
+    });
+  }
+
+
   // order detail
   static Future<Map<String, dynamic>> getOrderHistory(orderId) async {
     return client

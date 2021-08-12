@@ -11,6 +11,7 @@ import 'package:readymadeGroceryApp/screens/orders/orderTab.dart';
 import 'package:readymadeGroceryApp/screens/subsription/subscriptionList.dart';
 import 'package:readymadeGroceryApp/screens/tab/editprofile.dart';
 import 'package:readymadeGroceryApp/screens/tab/wallet.dart';
+import 'package:readymadeGroceryApp/service/chat-service.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -474,6 +475,12 @@ class _ProfileState extends State<Profile> {
                               );
                             },
                             child: profileText(context, "SUBSCRIPTION")),
+                        SizedBox(height: 15),
+                        InkWell(
+                            onTap: () {
+                              ChatService.onChat();
+                            },
+                            child: profileText(context, "CHAT_ON_WHATSAPP")),
                         SizedBox(height: 15),
                         InkWell(
                             onTap: () {

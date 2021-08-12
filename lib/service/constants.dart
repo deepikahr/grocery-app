@@ -19,11 +19,22 @@ class Constants {
   // stripe key
   static String? stripKey = dotenv.env['STRIPE_KEY'];
 
+  // RAZOR PAY KEY
+  static String? razorPayKey = dotenv.env['RAZOR_PAY_KEY'];
+
   // image url
   static String? imageUrlPath = dotenv.env['IMAGE_URL_PATH'];
 
   // dashboard url
   static String? baseUrl = dotenv.env['BASE_URL'];
+
+  //Owner phone number
+  static String phone = "8200606954";
+
+  //initial message for owner
+  static String message = "Hi";
+
+  static String orderFrom = "USER_APP";
 
   // store Url
   static String? storeUrl = Platform.isIOS
@@ -37,7 +48,6 @@ class Constants {
   static String emailValidation =
       r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
 
-  static String orderFrom = "USER_APP";
   // countries code
   static List countryCode = [
     {"name": "Israel", "dial_code": "+972", "code": "IL"},

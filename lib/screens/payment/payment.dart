@@ -4,6 +4,7 @@ import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/orderSevice.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
@@ -12,6 +13,7 @@ import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -45,6 +47,10 @@ class _PaymentState extends State<Payment> {
 
   List? paymentTypes = [];
   var walletAmount, cartItem;
+
+  Razorpay? _razorpay;
+  Map? userInfo;
+
   @override
   void initState() {
     fetchCardInfo();
@@ -76,6 +82,7 @@ class _PaymentState extends State<Payment> {
     await LoginService.getUserInfo().then((onValue) {
       if (mounted) {
         setState(() {
+          userInfo = onValue['response_data'];
           walletAmount = onValue['response_data']['walletAmount'] ?? 0;
           isCardListLoading = false;
         });
@@ -91,7 +98,36 @@ class _PaymentState extends State<Payment> {
     });
   }
 
+  // placeOrder() async {
+  //   if (mounted) {
+  //     setState(() {
+  //       isPlaceOrderLoading = true;
+  //     });
+  //   }
+  //   if (groupValue == null) {
+  //     if (mounted) {
+  //       setState(() {
+  //         isPlaceOrderLoading = false;
+  //       });
+  //     }
+  //     showSnackbar(MyLocalizations.of(context)!
+  //         .getLocalizations("SELECT_PAYMENT_FIRST"));
+  //   } else {
+  //     widget.data!['deliveryInstruction'] = widget.instruction ?? "";
+  //     if (fullWalletUsedOrNot == true) {
+  //       widget.data!['paymentType'] = "COD";
+  //       palceOrderMethod(widget.data);
+  //     } else {
+  //       widget.data!['paymentType'] = paymentTypes![groupValue!];
+  //       palceOrderMethod(widget.data);
+  //     }
+  //   }
+  // }
+
   placeOrder() async {
+
+    widget.data!['paymentType'] = paymentTypes![groupValue!];
+    print('type ${widget.data!['paymentType']}');
     if (mounted) {
       setState(() {
         isPlaceOrderLoading = true;
@@ -103,14 +139,50 @@ class _PaymentState extends State<Payment> {
           isPlaceOrderLoading = false;
         });
       }
-      showSnackbar(MyLocalizations.of(context)!
-          .getLocalizations("SELECT_PAYMENT_FIRST"));
+      showSnackbar(
+          MyLocalizations.of(context)!.getLocalizations("SELECT_PAYMENT_FIRST"));
     } else {
       widget.data!['deliveryInstruction'] = widget.instruction ?? "";
       if (fullWalletUsedOrNot == true) {
         widget.data!['paymentType'] = "COD";
+        print('body ${widget.data}');
         palceOrderMethod(widget.data);
-      } else {
+      }  else if (widget.data!['paymentType'] == "RAZORPAY") {
+        print('111');
+        try {
+          print('2222');
+          await OrderService.getPaymentRazorOrderId().then((onValue) {
+            print('object $onValue');
+            _razorpay = Razorpay();
+            var options = {
+              'key': Constants.razorPayKey,
+              'amount':
+              (100 * cartItem['grandTotal'].toDouble()).toStringAsFixed(2),
+              'name': Constants.appName,
+              'order_id': onValue['response_data']['paymentRazorOrderId'],
+              'timeout': 300,
+              'prefill': {
+                'contact': userInfo!['mobileNumber'],
+                'email': userInfo!['email']
+              }
+            };
+
+            print('oprions $options');
+            _razorpay!.open(options);
+          });
+          _razorpay!.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+          _razorpay!.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+        } catch (e) {
+          print('333');
+          if (mounted) {
+            setState(() {
+              isPlaceOrderLoading = false;
+            });
+          }
+          print('eeee $e');
+          showSnackbar(e.toString());
+        }
+      }else {
         widget.data!['paymentType'] = paymentTypes![groupValue!];
         palceOrderMethod(widget.data);
       }
@@ -418,4 +490,29 @@ class _PaymentState extends State<Payment> {
       ),
     );
   }
+
+
+  _handlePaymentSuccess(PaymentSuccessResponse response) {
+    var razorPayDetails = {
+      'paymentId': response.paymentId,
+      'signature': response.signature,
+      'orderId': response.orderId
+    };
+    setState(() {
+      widget.data!['razorPayDetails'] = razorPayDetails;
+      widget.data!['paymentId'] = response.paymentId;
+    });
+    palceOrderMethod(widget.data);
+  }
+
+  _handlePaymentError(PaymentFailureResponse response) {
+    print('error $response');
+    showSnackbar(response.message);
+    if (mounted) {
+      setState(() {
+        isPlaceOrderLoading = false;
+      });
+    }
+  }
+
 }
