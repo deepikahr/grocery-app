@@ -476,12 +476,12 @@ class _ProfileState extends State<Profile> {
                             },
                             child: profileText(context, "SUBSCRIPTION")),
                         SizedBox(height: 15),
-                        InkWell(
-                            onTap: () {
-                              ChatService.onChat();
-                            },
-                            child: profileText(context, "CHAT_ON_WHATSAPP")),
-                        SizedBox(height: 15),
+                        // InkWell(
+                        //     onTap: () {
+                        //       ChatService.onChat();
+                        //     },
+                        //     child: profileText(context, "CHAT_ON_WHATSAPP")),
+                        // SizedBox(height: 15),
                         InkWell(
                             onTap: () {
                               Navigator.push(
