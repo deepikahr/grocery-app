@@ -29,7 +29,7 @@ class Constants {
   static String? baseUrl = dotenv.env['BASE_URL'];
 
   //Owner phone number
-  static String phone = "8200606954";
+  static String phone = "NUMBER_HERE";
 
   //initial message for owner
   static String message = "Hi";
