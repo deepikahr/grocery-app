@@ -25,6 +25,11 @@ class Constants {
   // dashboard url
   static String? baseUrl = dotenv.env['BASE_URL'];
 
+  // store Url
+  static String? storeUrl = Platform.isIOS
+      ? 'https://apps.apple.com/in/app/readymade-grocery-app/id1506920690'
+      : "https://play.google.com/store/apps/details?id=com.ionicfirebaseapp.readymadegroceryuserapp";
+
   // PREDEFINED
   static String predefined = dotenv.env['PREDEFINED'] ?? "false";
 
