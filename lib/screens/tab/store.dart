@@ -330,7 +330,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
 
   banner() {
     return GFCarousel(
-      autoPlay: true,
+      // autoPlay: true,
       pagination: true,
       viewportFraction: 1.0,
       activeIndicator: primarybg,
@@ -375,12 +375,15 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
               Container(height: 130, color: bg(context)),
               Container(
                 height: 115,
-                margin: EdgeInsets.only(top: 10),
+                margin: EdgeInsets.only(top: 10, left: 16, right: 16),
                 padding: EdgeInsets.only(top: 5, left: 20, right: 20),
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                     // color: primary(context),
-                    image: DecorationImage(image: AssetImage('lib/assets/images/banner_bg.png'),fit: BoxFit.cover),
+                    image: url['imageUrl'] != null ? DecorationImage(image: NetworkImage(url['imageUrl']),
+                        fit: BoxFit.cover, colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.darken),)
+                    : DecorationImage(image: AssetImage('lib/assets/images/banner_bg.png'),fit: BoxFit.cover,
+                        colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.darken), ),
                     borderRadius: BorderRadius.all(Radius.circular(5))),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -421,7 +424,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                             );
                           }
                         },
-                        child: orderNowPrimary(context, "ORDER_NOW"))
+                        child: orderNowPrimary(context, "ORDER_NOW")),
+                    SizedBox(height: 1,),
                   ],
                 ),
               ),
@@ -856,58 +860,61 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                 ? noDataImage()
                 : SingleChildScrollView(
                     physics: ScrollPhysics(),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
-                        children: <Widget>[
-                          bannerList!.length > 0
-                              ? Column(
-                                  children: [banner(), Divider()],
-                                )
-                              : Container(),
-                          categoryList!.length > 0
-                              ? Column(
-                                  children: [categoryRow(), Divider()],
-                                )
-                              : Container(),
-                          topDealList!.length > 0
-                              ? Column(
-                                  children: [
-                                    topDealsRow("TOP_DEALS", topDealList),
-                                    Divider()
-                                  ],
-                                )
-                              : Container(),
-                          productsList!.length > 0
-                              ? Column(
-                                  children: [
-                                    productRow("PRODUCTS", productsList),
-                                    Divider()
-                                  ],
-                                )
-                              : Container(),
-                          subscriptionProductsList!.length > 0
-                              ? Column(
-                                  children: [
-                                    subscriptionProductsRow(
-                                        "SUBSCRIPTION_PRODUCTS",
-                                        subscriptionProductsList),
-                                    Divider()
-                                  ],
-                                )
-                              : Container(),
-                          dealList!.length > 0
-                              ? Column(
-                                  children: [
-                                    todayDealsRow(
-                                        "DEALS_OF_THE_DAYS", dealList),
-                                    Divider()
-                                  ],
-                                )
-                              : Container(),
-                          SizedBox(height: 10)
-                        ],
-                      ),
+                    child: Column(
+                      children: [
+                        bannerList!.length > 0
+                            ? Column(
+                          children: [banner(), Divider()],
+                        ) : Container(),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            children: <Widget>[
+                              categoryList!.length > 0
+                                  ? Column(
+                                      children: [categoryRow(), Divider()],
+                                    )
+                                  : Container(),
+                              topDealList!.length > 0
+                                  ? Column(
+                                      children: [
+                                        topDealsRow("TOP_DEALS", topDealList),
+                                        Divider()
+                                      ],
+                                    )
+                                  : Container(),
+                              productsList!.length > 0
+                                  ? Column(
+                                      children: [
+                                        productRow("PRODUCTS", productsList),
+                                        Divider()
+                                      ],
+                                    )
+                                  : Container(),
+                              subscriptionProductsList!.length > 0
+                                  ? Column(
+                                      children: [
+                                        subscriptionProductsRow(
+                                            "SUBSCRIPTION_PRODUCTS",
+                                            subscriptionProductsList),
+                                        Divider()
+                                      ],
+                                    )
+                                  : Container(),
+                              dealList!.length > 0
+                                  ? Column(
+                                      children: [
+                                        todayDealsRow(
+                                            "DEALS_OF_THE_DAYS", dealList),
+                                        Divider()
+                                      ],
+                                    )
+                                  : Container(),
+                              SizedBox(height: 10)
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
       ),
