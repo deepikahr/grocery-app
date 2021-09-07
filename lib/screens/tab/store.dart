@@ -373,58 +373,160 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
           child: Stack(
             children: <Widget>[
               Container(height: 130, color: bg(context)),
-              Container(
-                height: 115,
-                margin: EdgeInsets.only(top: 10),
-                padding: EdgeInsets.only(top: 5, left: 20, right: 20),
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
+              CachedNetworkImage(
+                imageUrl: url['filePath'] == null
+                    ? url['imageURL']
+                    : Constants.imageUrlPath! +
+                    "/tr:dpr-auto,tr:w-500" +
+                    url['filePath'],
+                imageBuilder: (context, imageProvider) => Container(
+                  height: 115,
+                  margin: EdgeInsets.only(top: 10, left: 16, right: 16),
+                  padding: EdgeInsets.only(top: 5, left: 20, right: 20),
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
                     // color: primary(context),
-                    image: DecorationImage(image: AssetImage('lib/assets/images/banner_bg.png'),fit: BoxFit.cover),
-                    borderRadius: BorderRadius.all(Radius.circular(5))),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                        padding: EdgeInsets.only(
-                          right: locale == 'ar' ? 0 : 100,
-                          left: locale == 'ar' ? 100 : 0,
-                          top:10
-                        ),
-                        child: bannerTitle(
-                            '${url['title'][0].toUpperCase()}${url['title'].substring(1)}',
-                            context)),
-                    InkWell(
-                        onTap: () {
-                          if (url['bannerType'] == "PRODUCT") {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ProductDetails(
-                                  locale: widget.locale,
-                                  localizedValues: widget.localizedValues,
-                                  productID: url['productId'],
+                      image:
+                      // url['imageUrl'] == null ? DecorationImage(image: AssetImage('lib/assets/images/banner_bg.png'),fit: BoxFit.cover,
+                      //   colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.darken), ) :
+                      DecorationImage(
+                        image: imageProvider,
+                        // NetworkImage(url['imageUrl']),
+                        fit: BoxFit.cover,
+                        colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.darken),
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(5))),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                          padding: EdgeInsets.only(
+                              right: locale == 'ar' ? 0 : 100,
+                              left: locale == 'ar' ? 100 : 0,
+                              top:10
+                          ),
+                          child: bannerTitle(
+                              '${url['title'][0].toUpperCase()}${url['title'].substring(1)}',
+                              context)),
+                      InkWell(
+                          onTap: () {
+                            if (url['bannerType'] == "PRODUCT") {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProductDetails(
+                                    locale: widget.locale,
+                                    localizedValues: widget.localizedValues,
+                                    productID: url['productId'],
+                                  ),
                                 ),
-                              ),
-                            );
-                          } else {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AllProducts(
-                                  locale: widget.locale,
-                                  localizedValues: widget.localizedValues,
-                                  categoryId: url['categoryId'],
-                                  pageTitle: url['title'],
+                              );
+                            } else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AllProducts(
+                                    locale: widget.locale,
+                                    localizedValues: widget.localizedValues,
+                                    categoryId: url['categoryId'],
+                                    pageTitle: url['title'],
+                                  ),
                                 ),
-                              ),
-                            );
-                          }
-                        },
-                        child: orderNowPrimary(context, "ORDER_NOW"))
-                  ],
+                              );
+                            }
+                          },
+                          child: orderNowPrimary(context, "ORDER_NOW")),
+                      SizedBox(height: 1,),
+                    ],
+                  ),
+                ),
+                //     Container(
+                //   height: 134,
+                //   width: 134,
+                //   decoration: BoxDecoration(
+                //     boxShadow: [
+                //       BoxShadow(
+                //           color: dark(context).withOpacity(0.33),
+                //           blurRadius: 6)
+                //     ],
+                //     shape: BoxShape.circle,
+                //     image: DecorationImage(
+                //         image: imageProvider, fit: BoxFit.cover),
+                //   ),
+                // ),
+                placeholder: (context, url) => Container(
+                    height: 115,
+                    margin: EdgeInsets.only(top: 10, left: 16, right: 16),
+                    padding: EdgeInsets.only(top: 5, left: 20, right: 20),
+                    width: MediaQuery.of(context).size.width,
+                    child: noDataImage(),
+                  color: Colors.black.withOpacity(0.2),
+                ),
+                errorWidget: (context, url, error) => Container(
+                    height: 115,
+                    margin: EdgeInsets.only(top: 10, left: 16, right: 16),
+                    padding: EdgeInsets.only(top: 5, left: 20, right: 20),
+                    width: MediaQuery.of(context).size.width,
+                    child: noDataImage(),
+                  color: Colors.black.withOpacity(0.2),
                 ),
               ),
+              // Container(
+              //   height: 115,
+              //   margin: EdgeInsets.only(top: 10, left: 16, right: 16),
+              //   padding: EdgeInsets.only(top: 5, left: 20, right: 20),
+              //   width: MediaQuery.of(context).size.width,
+              //   decoration: BoxDecoration(
+              //       // color: primary(context),
+              //       image: url['imageUrl'] != null ? DecorationImage(image: NetworkImage(url['imageUrl']),
+              //           fit: BoxFit.cover, colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.darken),)
+              //       : DecorationImage(image: AssetImage('lib/assets/images/banner_bg.png'),fit: BoxFit.cover,
+              //           colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.darken), ),
+              //       borderRadius: BorderRadius.all(Radius.circular(5))),
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: <Widget>[
+              //       Padding(
+              //           padding: EdgeInsets.only(
+              //             right: locale == 'ar' ? 0 : 100,
+              //             left: locale == 'ar' ? 100 : 0,
+              //             top:10
+              //           ),
+              //           child: bannerTitle(
+              //               '${url['title'][0].toUpperCase()}${url['title'].substring(1)}',
+              //               context)),
+              //       InkWell(
+              //           onTap: () {
+              //             if (url['bannerType'] == "PRODUCT") {
+              //               Navigator.push(
+              //                 context,
+              //                 MaterialPageRoute(
+              //                   builder: (context) => ProductDetails(
+              //                     locale: widget.locale,
+              //                     localizedValues: widget.localizedValues,
+              //                     productID: url['productId'],
+              //                   ),
+              //                 ),
+              //               );
+              //             } else {
+              //               Navigator.push(
+              //                 context,
+              //                 MaterialPageRoute(
+              //                   builder: (context) => AllProducts(
+              //                     locale: widget.locale,
+              //                     localizedValues: widget.localizedValues,
+              //                     categoryId: url['categoryId'],
+              //                     pageTitle: url['title'],
+              //                   ),
+              //                 ),
+              //               );
+              //             }
+              //           },
+              //           child: orderNowPrimary(context, "ORDER_NOW")),
+              //       SizedBox(height: 1,),
+              //     ],
+              //   ),
+              // ),
               // url['filePath'] == null && url['imageURL'] == null
               //     ? Container()
               //     : Positioned(
@@ -856,58 +958,61 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                 ? noDataImage()
                 : SingleChildScrollView(
                     physics: ScrollPhysics(),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
-                        children: <Widget>[
-                          bannerList!.length > 0
-                              ? Column(
-                                  children: [banner(), Divider()],
-                                )
-                              : Container(),
-                          categoryList!.length > 0
-                              ? Column(
-                                  children: [categoryRow(), Divider()],
-                                )
-                              : Container(),
-                          topDealList!.length > 0
-                              ? Column(
-                                  children: [
-                                    topDealsRow("TOP_DEALS", topDealList),
-                                    Divider()
-                                  ],
-                                )
-                              : Container(),
-                          productsList!.length > 0
-                              ? Column(
-                                  children: [
-                                    productRow("PRODUCTS", productsList),
-                                    Divider()
-                                  ],
-                                )
-                              : Container(),
-                          subscriptionProductsList!.length > 0
-                              ? Column(
-                                  children: [
-                                    subscriptionProductsRow(
-                                        "SUBSCRIPTION_PRODUCTS",
-                                        subscriptionProductsList),
-                                    Divider()
-                                  ],
-                                )
-                              : Container(),
-                          dealList!.length > 0
-                              ? Column(
-                                  children: [
-                                    todayDealsRow(
-                                        "DEALS_OF_THE_DAYS", dealList),
-                                    Divider()
-                                  ],
-                                )
-                              : Container(),
-                          SizedBox(height: 10)
-                        ],
-                      ),
+                    child: Column(
+                      children: [
+                        bannerList!.length > 0
+                            ? Column(
+                          children: [banner(), Divider()],
+                        ) : Container(),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            children: <Widget>[
+                              categoryList!.length > 0
+                                  ? Column(
+                                      children: [categoryRow(), Divider()],
+                                    )
+                                  : Container(),
+                              topDealList!.length > 0
+                                  ? Column(
+                                      children: [
+                                        topDealsRow("TOP_DEALS", topDealList),
+                                        Divider()
+                                      ],
+                                    )
+                                  : Container(),
+                              productsList!.length > 0
+                                  ? Column(
+                                      children: [
+                                        productRow("PRODUCTS", productsList),
+                                        Divider()
+                                      ],
+                                    )
+                                  : Container(),
+                              subscriptionProductsList!.length > 0
+                                  ? Column(
+                                      children: [
+                                        subscriptionProductsRow(
+                                            "SUBSCRIPTION_PRODUCTS",
+                                            subscriptionProductsList),
+                                        Divider()
+                                      ],
+                                    )
+                                  : Container(),
+                              dealList!.length > 0
+                                  ? Column(
+                                      children: [
+                                        todayDealsRow(
+                                            "DEALS_OF_THE_DAYS", dealList),
+                                        Divider()
+                                      ],
+                                    )
+                                  : Container(),
+                              SizedBox(height: 10)
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
       ),
