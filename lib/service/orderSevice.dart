@@ -37,7 +37,6 @@ class OrderService {
     });
   }
 
-
   // order detail
   static Future<Map<String, dynamic>> getOrderHistory(orderId) async {
     return client
@@ -69,6 +68,15 @@ class OrderService {
   static Future<Map<String, dynamic>> addMoneyApi(body) async {
     return client
         .post(Uri.parse(Constants.apiUrl! + '/wallets/add/money'),
+            body: json.encode(body))
+        .then((response) {
+      return json.decode(response.body);
+    });
+  }
+
+  static Future<Map<String, dynamic>> addMoneyRazorPayId(body) async {
+    return client
+        .post(Uri.parse(Constants.apiUrl! + '/wallets/get/razorpay/id'),
             body: json.encode(body))
         .then((response) {
       return json.decode(response.body);

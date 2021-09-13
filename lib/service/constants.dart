@@ -29,7 +29,7 @@ class Constants {
   static String? baseUrl = dotenv.env['BASE_URL'];
 
   //Owner phone number
-  static String phone = "NUMBER_HERE";
+  // static String phone = "NUMBER_HERE";
 
   //initial message for owner
   static String message = "Hi";
@@ -50,7 +50,6 @@ class Constants {
 
   // countries code
   static List countryCode = [
-    {"name": "Israel", "dial_code": "+972", "code": "IL"},
     {"name": "Afghanistan", "dial_code": "+93", "code": "AF"},
     {"name": "Albania", "dial_code": "+355", "code": "AL"},
     {"name": "Algeria", "dial_code": "+213", "code": "DZ"},

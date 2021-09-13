@@ -12,7 +12,7 @@ import 'package:readymadeGroceryApp/screens/subsription/subscriptionList.dart';
 import 'package:readymadeGroceryApp/screens/product/all_products.dart';
 import 'package:readymadeGroceryApp/screens/drawer/TandC-PP.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
-import 'package:readymadeGroceryApp/service/chat-service.dart';
+// import 'package:readymadeGroceryApp/service/chat-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -172,8 +172,8 @@ class _DrawerPageState extends State<DrawerPage> {
                 //     onTap: () {
                 //       ChatService.onChat();
                 //     },
-                //     child: buildDrawer(context, "CHAT_ON_WHATSAPP", 'lib/assets/icons/chat.png')
-                // ),
+                //     child: buildDrawer(context, "CHAT_ON_WHATSAPP",
+                //         'lib/assets/icons/chat.png')),
                 _buildMenuTileList('lib/assets/icons/about.png', "ABOUT_US",
                     route: AboutUs(
                         locale: widget.locale,
