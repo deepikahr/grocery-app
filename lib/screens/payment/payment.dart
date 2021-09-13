@@ -4,6 +4,7 @@ import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/orderSevice.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
@@ -12,6 +13,7 @@ import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -35,16 +37,18 @@ class _PaymentState extends State<Payment> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   int? groupValue = 0;
-  late String currency;
-  bool? isPlaceOrderLoading = false,
+  String? currency;
+  bool isPlaceOrderLoading = false,
       isCardListLoading = false,
       isSelected = false,
       isWalletLoading = false,
       walletUsedOrNotValue = false,
       fullWalletUsedOrNot = false;
 
-  List? paymentTypes = [];
+  List paymentTypes = [];
   var walletAmount, cartItem;
+  Razorpay? _razorpay;
+  Map? userInfo;
   @override
   void initState() {
     fetchCardInfo();
@@ -76,6 +80,7 @@ class _PaymentState extends State<Payment> {
     await LoginService.getUserInfo().then((onValue) {
       if (mounted) {
         setState(() {
+          userInfo = onValue['response_data'];
           walletAmount = onValue['response_data']['walletAmount'] ?? 0;
           isCardListLoading = false;
         });
@@ -106,12 +111,41 @@ class _PaymentState extends State<Payment> {
       showSnackbar(MyLocalizations.of(context)!
           .getLocalizations("SELECT_PAYMENT_FIRST"));
     } else {
-      widget.data!['deliveryInstruction'] = widget.instruction ?? "";
+      widget.data!['deliveryInstruction'] = widget.instruction;
+      widget.data!['paymentType'] = paymentTypes[groupValue!];
       if (fullWalletUsedOrNot == true) {
         widget.data!['paymentType'] = "COD";
         palceOrderMethod(widget.data);
+      } else if (widget.data!['paymentType'] == "RAZORPAY") {
+        try {
+          await OrderService.getPaymentRazorOrderId().then((onValue) {
+            _razorpay = Razorpay();
+            var options = {
+              'key': Constants.razorPayKey,
+              'amount':
+                  (100 * cartItem['grandTotal'].toDouble()).toStringAsFixed(2),
+              'name': Constants.appName,
+              'order_id': onValue['response_data']['paymentRazorOrderId'],
+              'timeout': 300,
+              'prefill': {
+                'contact': userInfo?['mobileNumber'],
+                'email': userInfo?['email']
+              }
+            };
+
+            _razorpay?.open(options);
+          });
+          _razorpay?.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+          _razorpay?.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+        } catch (e) {
+          if (mounted) {
+            setState(() {
+              isPlaceOrderLoading = false;
+            });
+          }
+          showSnackbar(e.toString());
+        }
       } else {
-        widget.data!['paymentType'] = paymentTypes![groupValue!];
         palceOrderMethod(widget.data);
       }
     }
@@ -220,7 +254,7 @@ class _PaymentState extends State<Payment> {
       backgroundColor: bg(context),
       key: _scaffoldKey,
       appBar: appBarTransparent(context, "PAYMENT") as PreferredSizeWidget?,
-      body: isCardListLoading!
+      body: isCardListLoading
           ? SquareLoader()
           : Padding(
               padding: const EdgeInsets.only(
@@ -349,17 +383,15 @@ class _PaymentState extends State<Payment> {
                       color: Color(0xFF707070).withOpacity(0.20), thickness: 1),
                   fullWalletUsedOrNot == true
                       ? Container()
-                      : paymentTypes!.length > 0
+                      : paymentTypes.length > 0
                           ? Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 buildBoldText(context, "CHOOSE_PAYMENT_METHOD"),
                                 SizedBox(height: 10),
                                 ListView.builder(
                                   physics: ScrollPhysics(),
                                   shrinkWrap: true,
-                                  itemCount: paymentTypes!.length,
+                                  itemCount: paymentTypes.length,
                                   itemBuilder:
                                       (BuildContext context, int index) {
                                     return Container(
@@ -369,21 +401,21 @@ class _PaymentState extends State<Payment> {
                                       child: RadioListTile(
                                         value: index,
                                         groupValue: groupValue,
-                                        selected: isSelected!,
+                                        selected: isSelected,
                                         activeColor: primary(context),
                                         title: textGreenprimary(
                                             context,
-                                            paymentTypes![index],
+                                            paymentTypes[index],
                                             TextStyle(color: primarybg)),
                                         onChanged: (int? selected) {
                                           if (mounted) {
                                             setState(() {
-                                              groupValue = selected;
+                                              groupValue = selected!;
                                             });
                                           }
                                         },
-                                        secondary: paymentTypes![index] == "COD"
-                                            ? Text(currency,
+                                        secondary: paymentTypes[index] == "COD"
+                                            ? Text(currency!,
                                                 style:
                                                     TextStyle(color: primarybg))
                                             : Icon(Icons.credit_card,
@@ -398,7 +430,7 @@ class _PaymentState extends State<Payment> {
                 ],
               ),
             ),
-      bottomNavigationBar: paymentTypes!.length > 0
+      bottomNavigationBar: paymentTypes.length > 0
           ? InkWell(
               onTap: placeOrder,
               child: Padding(
@@ -417,5 +449,27 @@ class _PaymentState extends State<Payment> {
         duration: Duration(milliseconds: 3000),
       ),
     );
+  }
+
+  _handlePaymentSuccess(PaymentSuccessResponse? response) {
+    var razorPayDetails = {
+      'paymentId': response?.paymentId,
+      'signature': response?.signature,
+      'orderId': response?.orderId
+    };
+    setState(() {
+      widget.data?['razorPayDetails'] = razorPayDetails;
+      widget.data?['paymentId'] = response?.paymentId;
+    });
+    palceOrderMethod(widget.data);
+  }
+
+  _handlePaymentError(PaymentFailureResponse response) {
+    showSnackbar(response.message);
+    if (mounted) {
+      setState(() {
+        isPlaceOrderLoading = false;
+      });
+    }
   }
 }

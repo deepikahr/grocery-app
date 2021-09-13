@@ -64,4 +64,22 @@ class OrderService {
       return json.decode(response.body);
     });
   }
+
+  static Future<Map<String, dynamic>> addMoneyRazorPayId(body) async {
+    return client
+        .post(Uri.parse(Constants.apiUrl! + '/wallets/get/razorpay/id'),
+            body: json.encode(body))
+        .then((response) {
+      return json.decode(response.body);
+    });
+  }
+
+  static Future<Map<String, dynamic>> getPaymentRazorOrderId() async {
+    return client
+        .get(Uri.parse(Constants.apiUrl! + "/orders/razorpay"))
+        .then((response) {
+      return json.decode(response.body);
+    });
+  }
+
 }

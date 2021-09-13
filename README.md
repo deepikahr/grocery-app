@@ -15,6 +15,7 @@ STRIPE_KEY=
 IMAGE_URL_PATH=
 ANDROID_GOOGLE_MAP_API_KEY=
 IOS_GOOGLE_MAP_API_KEY=
+RAZOR_PAY_KEY=
 PREDEFINED=
 ```
 ### to generate new icons & splash for android and ios.

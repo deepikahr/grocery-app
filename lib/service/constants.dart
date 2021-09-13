@@ -30,6 +30,9 @@ class Constants {
       ? 'https://apps.apple.com/in/app/readymade-grocery-app/id1506920690'
       : "https://play.google.com/store/apps/details?id=com.ionicfirebaseapp.readymadegroceryuserapp";
 
+  //razorPayKey
+  static String? razorPayKey = dotenv.env['RAZOR_PAY_KEY'];
+
   // PREDEFINED
   static String predefined = dotenv.env['PREDEFINED'] ?? "false";
 
