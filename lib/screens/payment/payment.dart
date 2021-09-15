@@ -144,7 +144,8 @@ class _PaymentState extends State<Payment> {
               isPlaceOrderLoading = false;
             });
           }
-          showSnackbar(e.toString());
+          showSnackbar(MyLocalizations.of(context)!
+              .getLocalizations("PAYMENT_UNSUCCESSFUL"));
         }
       } else {
         palceOrderMethod(widget.data);
@@ -462,11 +463,15 @@ class _PaymentState extends State<Payment> {
       widget.data?['razorPayDetails'] = razorPayDetails;
       widget.data?['paymentId'] = response?.paymentId;
     });
+    showSnackbar(MyLocalizations.of(context)!
+        .getLocalizations("PAYMENT_SUCCESSFUL"));
     palceOrderMethod(widget.data);
   }
 
   _handlePaymentError(PaymentFailureResponse response) {
-    showSnackbar(response.message);
+    // showSnackbar(response.message);
+    showSnackbar(MyLocalizations.of(context)!
+        .getLocalizations("PAYMENT_UNSUCCESSFUL"));
     if (mounted) {
       setState(() {
         isPlaceOrderLoading = false;
