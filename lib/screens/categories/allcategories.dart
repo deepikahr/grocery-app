@@ -12,11 +12,11 @@ import '../product/all_products.dart';
 SentryError sentryError = new SentryError();
 
 class AllCategories extends StatefulWidget {
-  final Map localizedValues;
-  final String locale;
-  final bool getTokenValue;
+  final Map? localizedValues;
+  final String? locale;
+  final bool? getTokenValue;
   AllCategories(
-      {Key key, this.locale, this.localizedValues, this.getTokenValue});
+      {Key? key, this.locale, this.localizedValues, this.getTokenValue});
 
   @override
   _AllCategoriesState createState() => _AllCategoriesState();
@@ -24,9 +24,9 @@ class AllCategories extends StatefulWidget {
 
 class _AllCategoriesState extends State<AllCategories>
     with TickerProviderStateMixin {
-  TabController tabController;
+  late TabController tabController;
   bool isLoadingProductsList = false, isLoadingcategoryList = false;
-  List categoryList, productsList;
+  List? categoryList, productsList;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   @override
@@ -71,7 +71,8 @@ class _AllCategoriesState extends State<AllCategories>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bg(context),
-      appBar: appBarTransparent(context, "ALL_CATEGROIES"),
+      appBar:
+          appBarTransparent(context, "ALL_CATEGROIES") as PreferredSizeWidget?,
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
@@ -86,8 +87,7 @@ class _AllCategoriesState extends State<AllCategories>
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                   physics: ScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount:
-                      categoryList.length == null ? 0 : categoryList.length,
+                  itemCount: categoryList!.isEmpty ? 0 : categoryList!.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
                       childAspectRatio: MediaQuery.of(context).size.width / 420,
@@ -103,18 +103,18 @@ class _AllCategoriesState extends State<AllCategories>
                             builder: (BuildContext context) => AllProducts(
                               locale: widget.locale,
                               localizedValues: widget.localizedValues,
-                              categoryId: categoryList[index]['_id'],
-                              pageTitle: categoryList[index]['title'],
+                              categoryId: categoryList![index]['_id'],
+                              pageTitle: categoryList![index]['title'],
                             ),
                           ),
                         );
                       },
                       child: CategoryBlock(
-                          image: categoryList[index]['filePath'] == null
-                              ? categoryList[index]['imageUrl']
-                              : categoryList[index]['filePath'],
-                          title: categoryList[index]['title'],
-                          isPath: categoryList[index]['filePath'] == null
+                          image: categoryList![index]['filePath'] == null
+                              ? categoryList![index]['imageUrl']
+                              : categoryList![index]['filePath'],
+                          title: categoryList![index]['title'],
+                          isPath: categoryList![index]['filePath'] == null
                               ? false
                               : true,
                           isHome: false),

@@ -5,11 +5,11 @@ import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 class PaymentFailed extends StatefulWidget {
-  final Map localizedValues;
-  final String locale;
+  final Map? localizedValues;
+  final String? locale;
 
   PaymentFailed({
-    Key key,
+    Key? key,
     this.locale,
     this.localizedValues,
   });

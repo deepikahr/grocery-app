@@ -6,27 +6,32 @@ class Constants {
   static String appName = 'Readymade Grocery App';
 
   // delopy url production
-  static String apiUrl = DotEnv().env['API_URL'];
+  static String? apiUrl = dotenv.env['API_URL'];
 
   // ONE_SIGNAL_KEY
-  static String oneSignalKey = DotEnv().env['ONE_SIGNAL_KEY'];
+  static String? oneSignalKey = dotenv.env['ONE_SIGNAL_KEY'];
 
   // googleapikey
-  static String googleMapApiKey = Platform.isIOS
-      ? DotEnv().env['IOS_GOOGLE_MAP_API_KEY']
-      : DotEnv().env['ANDROID_GOOGLE_MAP_API_KEY'];
+  static String? googleMapApiKey = Platform.isIOS
+      ? dotenv.env['IOS_GOOGLE_MAP_API_KEY']
+      : dotenv.env['ANDROID_GOOGLE_MAP_API_KEY'];
 
   // stripe key
-  static String stripKey = DotEnv().env['STRIPE_KEY'];
+  static String? stripKey = dotenv.env['STRIPE_KEY'];
 
   // image url
-  static String imageUrlPath = DotEnv().env['IMAGE_URL_PATH'];
+  static String? imageUrlPath = dotenv.env['IMAGE_URL_PATH'];
 
   // dashboard url
-  static String baseUrl = DotEnv().env['BASE_URL'];
+  static String? baseUrl = dotenv.env['BASE_URL'];
+
+  // store Url
+  static String? storeUrl = Platform.isIOS
+      ? 'https://apps.apple.com/in/app/readymade-grocery-app/id1506920690'
+      : "https://play.google.com/store/apps/details?id=com.ionicfirebaseapp.readymadegroceryuserapp";
 
   // PREDEFINED
-  static String predefined = DotEnv().env['PREDEFINED'] ?? "false";
+  static String predefined = dotenv.env['PREDEFINED'] ?? "false";
 
   //email validation
   static String emailValidation =

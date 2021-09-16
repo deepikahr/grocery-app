@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/address-service.dart';
-import 'package:location/location.dart';
-import 'package:flutter_map_picker/flutter_map_picker.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
@@ -15,21 +14,16 @@ SentryError sentryError = new SentryError();
 
 class AddAddress extends StatefulWidget {
   const AddAddress(
-      {Key key,
-      this.currentLocation,
-      this.isCheckout,
-      this.isProfile,
-      this.pickedLocation,
-      this.updateAddressID,
+      {Key? key,
+      this.position,
+      this.address,
       this.locale,
       this.localizedValues})
       : super(key: key);
-  final bool isCheckout, isProfile;
-  final PlacePickerResult pickedLocation;
-  final Map<String, dynamic> updateAddressID;
-  final LocationData currentLocation;
-  final Map localizedValues;
-  final String locale;
+
+  final LatLng? position;
+  final Map? localizedValues;
+  final String? locale, address;
 
   @override
   _AddAddressState createState() => _AddAddressState();
@@ -38,16 +32,17 @@ class AddAddress extends StatefulWidget {
 class _AddAddressState extends State<AddAddress> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  var addressData;
-  LocationData currentLocation;
   bool isAddAddressLoading = false;
-  StreamSubscription<LocationData> locationSubscription;
-  int selectedAddressType = 0;
+  int? selectedAddressType = 0;
   TextEditingController addressController = TextEditingController();
+  LatLng? position;
 
   @override
   void initState() {
-    addressController.text = widget.pickedLocation.address;
+    setState(() {
+      addressController.text = widget.address!;
+      position = widget.position;
+    });
 
     super.initState();
   }
@@ -64,8 +59,8 @@ class _AddAddressState extends State<AddAddress> {
     "addressType": null
   };
   addAddress() async {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
       if (mounted) {
         setState(() {
           isAddAddressLoading = true;
@@ -73,12 +68,12 @@ class _AddAddressState extends State<AddAddress> {
       }
 
       var location = {
-        "latitude": widget.pickedLocation.latLng.latitude,
-        "longitude": widget.pickedLocation.latLng.longitude
+        "latitude": position?.latitude,
+        "longitude": position?.longitude
       };
       address['address'] = addressController.text;
       address['location'] = location;
-      address['addressType'] = addressType[selectedAddressType];
+      address['addressType'] = addressType[selectedAddressType!];
 
       AddressService.addAddress(address).then((onValue) {
         if (mounted) {
@@ -102,7 +97,7 @@ class _AddAddressState extends State<AddAddress> {
     }
   }
 
-  setSelectedRadio(int val) async {
+  setSelectedRadio(int? val) async {
     if (mounted) {
       setState(() {
         selectedAddressType = val;
@@ -111,18 +106,12 @@ class _AddAddressState extends State<AddAddress> {
   }
 
   void showSnackbar(message) {
-    final snackBar = SnackBar(
-      content: Text(message),
-      duration: Duration(milliseconds: 3000),
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(milliseconds: 3000),
+      ),
     );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
-  }
-
-  @override
-  void dispose() {
-    if (locationSubscription != null && locationSubscription is Stream)
-      locationSubscription.cancel();
-    super.dispose();
   }
 
   @override
@@ -130,7 +119,7 @@ class _AddAddressState extends State<AddAddress> {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      appBar: appBarPrimary(context, "ADD_NEW_ADDRESS"),
+      appBar: appBarPrimary(context, "ADD_NEW_ADDRESS") as PreferredSizeWidget?,
       body: Form(
         key: _formKey,
         child: ListView(
@@ -139,7 +128,7 @@ class _AddAddressState extends State<AddAddress> {
               children: <Widget>[
                 Padding(
                     padding: const EdgeInsets.only(
-                        left: 12.0, bottom: 5.0, right: 20.0),
+                        left: 20.0, bottom: 5.0, right: 20.0, top: 10),
                     child: addressPage(context, "LOCATION")),
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
@@ -175,14 +164,14 @@ class _AddAddressState extends State<AddAddress> {
                           borderSide: BorderSide(color: primary(context)),
                         ),
                       ),
-                      validator: (String value) {
-                        if (value.isEmpty) {
-                          return MyLocalizations.of(context)
+                      validator: (String? value) {
+                        if (value!.isEmpty) {
+                          return MyLocalizations.of(context)!
                               .getLocalizations("ENTER_LOCATION");
                         } else
                           return null;
                       },
-                      onSaved: (String value) {
+                      onSaved: (String? value) {
                         address['address'] = addressController.text;
                       }),
                 ),
@@ -222,14 +211,14 @@ class _AddAddressState extends State<AddAddress> {
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: primary(context)),
                         )),
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return MyLocalizations.of(context)
+                    validator: (String? value) {
+                      if (value!.isEmpty) {
+                        return MyLocalizations.of(context)!
                             .getLocalizations("ENTER_HOUSE_FLAT_BLOCK_NUMBER");
                       } else
                         return null;
                     },
-                    onSaved: (String value) {
+                    onSaved: (String? value) {
                       address['flatNo'] = value;
                     },
                   ),
@@ -270,14 +259,14 @@ class _AddAddressState extends State<AddAddress> {
                           borderSide: BorderSide(color: primary(context)),
                         ),
                       ),
-                      validator: (String value) {
-                        if (value.isEmpty) {
-                          return MyLocalizations.of(context)
+                      validator: (String? value) {
+                        if (value!.isEmpty) {
+                          return MyLocalizations.of(context)!
                               .getLocalizations("ENTER_APARTMENT_NAME");
                         } else
                           return null;
                       },
-                      onSaved: (String value) {
+                      onSaved: (String? value) {
                         address['apartmentName'] = value;
                       }),
                 ),
@@ -317,14 +306,14 @@ class _AddAddressState extends State<AddAddress> {
                           borderSide: BorderSide(color: primary(context)),
                         ),
                       ),
-                      validator: (String value) {
-                        if (value.isEmpty) {
-                          return MyLocalizations.of(context)
+                      validator: (String? value) {
+                        if (value!.isEmpty) {
+                          return MyLocalizations.of(context)!
                               .getLocalizations("ENTER_LANDMARK");
                         } else
                           return null;
                       },
-                      onSaved: (String value) {
+                      onSaved: (String? value) {
                         address['landmark'] = value;
                       }),
                 ),
@@ -365,14 +354,14 @@ class _AddAddressState extends State<AddAddress> {
                           borderSide: BorderSide(color: primary(context)),
                         ),
                       ),
-                      validator: (String value) {
-                        if (value.isEmpty) {
-                          return MyLocalizations.of(context)
+                      validator: (String? value) {
+                        if (value!.isEmpty) {
+                          return MyLocalizations.of(context)!
                               .getLocalizations("ENTER_POSTAL_CODE");
                         } else
                           return null;
                       },
-                      onSaved: (String value) {
+                      onSaved: (String? value) {
                         address['postalCode'] = value;
                       }),
                 ),
@@ -404,14 +393,14 @@ class _AddAddressState extends State<AddAddress> {
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: primary(context)),
                         )),
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return MyLocalizations.of(context)
+                    validator: (String? value) {
+                      if (value!.isEmpty) {
+                        return MyLocalizations.of(context)!
                             .getLocalizations("ENTER_MOBILE_NUMBER");
                       } else
                         return null;
                     },
-                    onSaved: (String value) {
+                    onSaved: (String? value) {
                       address['mobileNumber'] = value;
                     },
                   ),
@@ -424,8 +413,7 @@ class _AddAddressState extends State<AddAddress> {
                 ListView.builder(
                   physics: ScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount:
-                      addressType.length == null ? 0 : addressType.length,
+                  itemCount: addressType.isEmpty ? 0 : addressType.length,
                   itemBuilder: (BuildContext context, int i) {
                     return Padding(
                       padding: const EdgeInsets.only(left: 10.0),
@@ -437,7 +425,7 @@ class _AddAddressState extends State<AddAddress> {
                             value: i,
                             groupValue: selectedAddressType,
                             activeColor: primary(context),
-                            onChanged: (value) {
+                            onChanged: (dynamic value) {
                               setSelectedRadio(value);
                             },
                           ),

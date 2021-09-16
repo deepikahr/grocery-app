@@ -7,11 +7,11 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
 
 class AddMoneyWebViewPage extends StatefulWidget {
-  final String sessionId, locale, userId;
-  final Map localizedValues;
+  final String? sessionId, locale, userId;
+  final Map? localizedValues;
 
   const AddMoneyWebViewPage({
-    Key key,
+    Key? key,
     this.sessionId,
     this.locale,
     this.localizedValues,
@@ -23,19 +23,19 @@ class AddMoneyWebViewPage extends StatefulWidget {
 }
 
 class _AddMoneyWebViewPageState extends State<AddMoneyWebViewPage> {
-  WebViewController _controller;
+  late WebViewController _controller;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: appBarPrimarynoradius(context, "ADD_MONEY"),
+      appBar:
+          appBarPrimarynoradius(context, "ADD_MONEY") as PreferredSizeWidget?,
       body: WebView(
           initialUrl: initialUrl,
           javascriptMode: JavascriptMode.unrestricted,
           onWebViewCreated: (controller) => _controller = controller,
           navigationDelegate: (NavigationRequest request) {
-            print("request.url${request.url}");
             if (request.url
                 .startsWith('${Constants.baseUrl}/wallet-payment-successful')) {
               Navigator.of(context).pop();
