@@ -215,7 +215,7 @@ class _DrawerPageState extends State<DrawerPage> {
                           MyLocalizations.of(context)!
                                   .getLocalizations("SHARE_MESSAGE") +
                               " " +
-                              Constants.baseUrl,
+                              Constants.storeUrl,
                           sharePositionOrigin:
                               box.localToGlobal(Offset.zero) & box.size);
                     },

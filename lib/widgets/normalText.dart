@@ -689,7 +689,7 @@ Widget textMediumSmallGreen(title, context) {
 Widget priceMrpText(title, subtitle, context) {
   return Row(children: <Widget>[
     Text(title, style: textbarlowBoldGreen(context)),
-    SizedBox(width: 3),
+    SizedBox(width: 6),
     subtitle != null
         ? Padding(
             padding: const EdgeInsets.only(top: 5.0),
@@ -768,6 +768,15 @@ orderNow(BuildContext context, title) {
     children: <Widget>[
       Text(MyLocalizations.of(context)!.getLocalizations(title)),
       Icon(Icons.arrow_right)
+    ],
+  );
+}
+
+orderNowPrimary(BuildContext context, title) {
+  return Row(
+    children: <Widget>[
+      Text(MyLocalizations.of(context)!.getLocalizations(title),style:textbarlowRegularaPrimar(context)),
+      Icon(Icons.arrow_right,color:primary(context))
     ],
   );
 }
@@ -1018,5 +1027,17 @@ builddTextbarlowRegularBlackFont14(BuildContext context, title) {
   return Text(
     MyLocalizations.of(context)!.getLocalizations(title),
     style: textbarlowRegularBlackFont14(context),
+  );
+}
+
+Widget locationTile(BuildContext context, String address) {
+  return Column(
+    children: [
+      ListTile(
+        title: Text(address, style: hintSmallSfMediumblack(context)),
+        trailing: Icon(Icons.arrow_forward_ios),
+      ),
+      Divider(color: dark(context))
+    ],
   );
 }
