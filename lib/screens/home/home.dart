@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:readymadeGroceryApp/model/counterModel.dart';
 import 'package:readymadeGroceryApp/screens/drawer/drawer.dart';
 import 'package:readymadeGroceryApp/screens/tab/mycart.dart';
@@ -11,6 +12,7 @@ import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/locationService.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:location/location.dart';
@@ -148,21 +150,25 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         }
       }
       currentLocation = await _location.getLocation();
-
-      var addresses = await geoCode.reverseGeocoding(
-          latitude: currentLocation.latitude!,
-          longitude: currentLocation.longitude!);
-
-      var first = addresses;
+      var addressValue = await LocationUtils().getAddressFromLatLng(
+        LatLng(
+          currentLocation.latitude!,
+          currentLocation.longitude!,
+        ),
+      );
+      var addressescountryCode = await geoCode.reverseGeocoding(
+        latitude: currentLocation.latitude!,
+        longitude: currentLocation.longitude!,
+      );
       if (mounted) {
         setState(() {
-          addressData = first.streetAddress;
+          addressData = addressValue.formattedAddress;
           isCurrentLoactionLoading = false;
         });
       }
-      await Common.setCountryInfo(first.countryCode!);
+      await Common.setCountryInfo(addressescountryCode.countryCode!);
       await Common.setCurrentLocation(addressData);
-      return first;
+      return addressescountryCode;
     });
   }
 

@@ -55,11 +55,10 @@ workflows:
       email:
         recipients:
           - pietechsolution@gmail.com
-          - kakadiyasandip4world@gmail.com
           - chandra@pietechsolution.com
           - ujjwal.2518@gmail.com
           - montyvipul@gmail.com
-          - nitish.k@pietechsolution.com
+          - sarth@pietechsolution.com
       app_store_connect:
         # app_id: "1506920690"
         apple_id: pietechsolution@gmail.com
@@ -108,12 +107,9 @@ workflows:
       email:
         recipients:
           - pietechsolution@gmail.com
-          - kakadiyasandip4world@gmail.com
           - chandra@pietechsolution.com
           - ujjwal.2518@gmail.com
           - montyvipul@gmail.com
-          - nitish.k@pietechsolution.com
-          - nidhi@pietechsolution.com
           - sarth@pietechsolution.com
 
   screenshots:
@@ -161,4 +157,8 @@ workflows:
     publishing:
       email:
         recipients:
-          - kakadiyasandip4world@gmail.com
+          - pietechsolution@gmail.com
+          - chandra@pietechsolution.com
+          - ujjwal.2518@gmail.com
+          - montyvipul@gmail.com
+          - sarth@pietechsolution.com

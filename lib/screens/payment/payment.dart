@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:readymadeGroceryApp/screens/payment/payment-webview.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:readymadeGroceryApp/screens/thank-you/payment-failed.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
+import 'package:readymadeGroceryApp/service/alert-service.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
@@ -66,7 +68,6 @@ class _PaymentState extends State<Payment> {
     }
     getUserInfo();
     paymentTypes = widget.locationInfo!["paymentMethod"];
-
     await Common.getCurrency().then((value) {
       currency = value;
     });
@@ -106,47 +107,25 @@ class _PaymentState extends State<Payment> {
       showSnackbar(MyLocalizations.of(context)!
           .getLocalizations("SELECT_PAYMENT_FIRST"));
     } else {
-      widget.data!['deliveryInstruction'] = widget.instruction ?? "";
+      widget.data?['paymentType'] = paymentTypes?[groupValue!];
+      widget.data?['deliveryInstruction'] = widget.instruction;
       if (fullWalletUsedOrNot == true) {
         widget.data!['paymentType'] = "COD";
         palceOrderMethod(widget.data);
       } else {
-        widget.data!['paymentType'] = paymentTypes![groupValue!];
         palceOrderMethod(widget.data);
       }
     }
   }
 
   palceOrderMethod(cartData) async {
-    await OrderService.placeOrder(cartData).then((onValue) {
-      if (mounted) {
-        setState(() {
-          isPlaceOrderLoading = false;
-        });
-      }
-      Common.setCartDataCount(0);
-      Common.setCartData(null);
+    print('aaaaaaaaaa ${cartData['paymentType']}');
+    await OrderService.placeOrder(cartData).then((onValue) async {
       if (cartData['paymentType'] == 'STRIPE') {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => PaymentWeViewPage(
-                  locale: widget.locale,
-                  localizedValues: widget.localizedValues,
-                  sessionId: onValue['response_data']['sessionId'],
-                  orderId: onValue['response_data']['id']),
-            ),
-            (Route<dynamic> route) => false);
+        print('sssssss');
+        await createOrderViaStripe(onValue['response_data']);
       } else {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => Thankyou(
-                locale: widget.locale,
-                localizedValues: widget.localizedValues,
-              ),
-            ),
-            (Route<dynamic> route) => false);
+        thankyouPage();
       }
     }).catchError((error) {
       if (mounted) {
@@ -156,6 +135,79 @@ class _PaymentState extends State<Payment> {
       }
       sentryError.reportError(error, null);
     });
+  }
+
+  Future<void> createOrderViaStripe(Map? res) async {
+    if (res?['client_secret'] != null) {
+      try {
+        await Stripe.instance.initPaymentSheet(
+          paymentSheetParameters: SetupPaymentSheetParameters(
+            paymentIntentClientSecret: res?['client_secret'],
+          ),
+        );
+
+        await Stripe.instance.presentPaymentSheet(
+          // ignore: deprecated_member_use
+          parameters: PresentPaymentSheetParameters(
+            clientSecret: res?['client_secret'],
+            confirmPayment: true,
+          ),
+        );
+        thankyouPage();
+      } on Exception catch (e) {
+        print('eeeeeeeeeeeeee $e');
+        if (e is StripeException) {
+          pleaseTryAgain(res);
+        }
+      }
+    } else {
+      pleaseTryAgain(res);
+    }
+  }
+
+  pleaseTryAgain(res) async {
+    AlertService().showToast(MyLocalizations.of(context)!
+        .getLocalizations('PLEASE_TRY_AGAIN_LATER'));
+    await OrderService.orderCancel(res?['id']);
+    Common.setCartDataCount(0);
+    Common.setCartData(null);
+    paymentFailedPage();
+  }
+
+  paymentFailedPage() {
+    if (mounted) {
+      setState(() {
+        isPlaceOrderLoading = false;
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => PaymentFailed(
+                locale: widget.locale,
+                localizedValues: widget.localizedValues,
+              ),
+            ),
+            (Route<dynamic> route) => false);
+      });
+    }
+  }
+
+  thankyouPage() {
+    if (mounted) {
+      setState(() {
+        isPlaceOrderLoading = false;
+        Common.setCartDataCount(0);
+        Common.setCartData(null);
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => Thankyou(
+                locale: widget.locale,
+                localizedValues: widget.localizedValues,
+              ),
+            ),
+            (Route<dynamic> route) => false);
+      });
+    }
   }
 
   applyWallet(walleValue) async {

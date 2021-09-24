@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:readymadeGroceryApp/screens/tab/add_money_web_view.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
+import 'package:readymadeGroceryApp/service/alert-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/orderSevice.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
@@ -36,32 +39,79 @@ class _AddMoneyState extends State<AddMoney> {
     final form = _formKey.currentState!;
     if (form.validate()) {
       form.save();
+      FocusScope.of(context).unfocus();
       setState(() {
         isAddMoneyLoading = true;
       });
-      Map body = {"amount": walletAmmount};
+      Map body = {
+        "amount": walletAmmount,
+        "userFrom": Constants.orderFrom,
+      };
       await OrderService.addMoneyApi(body).then((onValue) {
         if (mounted) {
           setState(() {
-            isAddMoneyLoading = false;
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (BuildContext context) => AddMoneyWebViewPage(
-                    locale: widget.locale,
-                    localizedValues: widget.localizedValues,
-                    sessionId: onValue['response_data']['sessionId'],
-                    userId: onValue['response_data']['userId']),
-              ),
-            );
+            createAddMoneyToWalletViaStripe(onValue['response_data']);
           });
         }
       }).catchError((error) {
         if (mounted) {
           setState(() {
             isAddMoneyLoading = false;
+            pleaseTryAgain();
           });
         }
+      });
+    }
+  }
+
+  Future<void> createAddMoneyToWalletViaStripe(Map? res) async {
+    await Stripe.instance.initPaymentSheet(
+      paymentSheetParameters: SetupPaymentSheetParameters(
+        paymentIntentClientSecret: res?['client_secret'],
+      ),
+    );
+
+    if (res?['client_secret'] != null) {
+      try {
+        await Stripe.instance.presentPaymentSheet(
+          // ignore: deprecated_member_use
+          parameters: PresentPaymentSheetParameters(
+              clientSecret: res?['client_secret'], confirmPayment: true),
+        );
+
+        thankuPage();
+      } on Exception catch (e) {
+        if (e is StripeException) {
+          pleaseTryAgain();
+        }
+      }
+    } else {
+      pleaseTryAgain();
+    }
+  }
+
+  thankuPage() {
+    setState(() {
+      isAddMoneyLoading = false;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => Thankyou(
+            locale: widget.locale,
+            localizedValues: widget.localizedValues,
+            isWallet: true,
+          ),
+        ),
+      );
+    });
+  }
+
+  pleaseTryAgain() async {
+    if (mounted) {
+      setState(() {
+        isAddMoneyLoading = false;
+        AlertService().showToast(MyLocalizations.of(context)!
+            .getLocalizations('PLEASE_TRY_AGAIN_LATER'));
       });
     }
   }
@@ -70,7 +120,7 @@ class _AddMoneyState extends State<AddMoney> {
   Widget build(BuildContext context) => Scaffold(
         appBar:
             appBarPrimarynoradius(context, "ADD_MONEY") as PreferredSizeWidget?,
-        body: InkWell(
+        body: GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
           },
