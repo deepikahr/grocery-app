@@ -135,48 +135,26 @@ class _AddressState extends State<Address> {
                           top: 10.0, bottom: 10.0, left: 20.0, right: 20.0),
                       child: buildBoldText(context, "SAVED_ADDRESS"),
                     ),
-                    ListView.builder(
+                    Divider(),
+                    ListView.separated(
+                      separatorBuilder: (__, _) {
+                        return Divider();
+                      },
                       physics: ScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: addressList!.isEmpty ? 0 : addressList!.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            padding:
-                                const EdgeInsets.only(top: 5.0, bottom: 5.0),
-                            decoration: BoxDecoration(
-                                color: Colors.white70,
-                                borderRadius: BorderRadius.circular(5.0)),
-                            child: Row(
-                              children: <Widget>[
-                                Container(
-                                  margin: EdgeInsets.only(bottom: 100, left: 7),
-                                  child: Text(
-                                    (index + 1).toString() + ".",
-                                  ),
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.9,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 10.0, left: 10.0),
-                                        child: buildAddress(
-                                            '${addressList![index]['flatNo']}, ${addressList![index]['apartmentName']},${addressList![index]['address']}, ${addressList![index]['landmark']} ,${addressList![index]['postalCode']}, ${addressList![index]['mobileNumber'].toString()}',
-                                            null,
-                                            context),
-                                      ),
-                                    ),
-                                    SizedBox(height: 20),
-                                    buildEditDelete(addressList![index])
-                                  ],
-                                ),
-                              ],
-                            ),
+                        return ListTile(
+                          leading: Text(
+                            (index + 1).toString() + ".",
+                          ),
+                          title: buildAddress(
+                              '${addressList?[index]['flatNo']}, ${addressList?[index]['apartmentName']},${addressList?[index]['address']}, ${addressList?[index]['landmark']} ,${addressList?[index]['postalCode']}, ${addressList?[index]['mobileNumber'].toString()}',
+                              null,
+                              context),
+                          subtitle: Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: buildEditDelete(addressList?[index]),
                           ),
                         );
                       },
@@ -255,38 +233,35 @@ class _AddressState extends State<Address> {
   }
 
   Widget buildEditDelete(addressList) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 37.0, right: 37.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          InkWell(
-              onTap: () {
-                var result = Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => EditAddress(
-                      updateAddressID: addressList,
-                      locale: widget.locale,
-                      localizedValues: widget.localizedValues,
-                    ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        InkWell(
+            onTap: () {
+              var result = Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditAddress(
+                    updateAddressID: addressList,
+                    locale: widget.locale,
+                    localizedValues: widget.localizedValues,
                   ),
-                );
-                result.then((update) {
-                  getAddress();
-                });
-              },
-              child: primaryOutlineButton(context, "EDIT")),
-          InkWell(
-              onTap: () {
-                deleteAddress(addressList['_id']);
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                child: primaryOutlineButton(context, "DELETE"),
-              )),
-        ],
-      ),
+                ),
+              );
+              result.then((update) {
+                getAddress();
+              });
+            },
+            child: primaryOutlineButton(context, "EDIT")),
+        InkWell(
+            onTap: () {
+              deleteAddress(addressList['_id']);
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 40.0),
+              child: primaryOutlineButton(context, "DELETE"),
+            )),
+      ],
     );
   }
 

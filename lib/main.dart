@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/service/alert-service.dart';
@@ -32,6 +33,8 @@ void initializeMain({bool? isTest}) async {
       statusBarBrightness: Brightness.dark,
       statusBarIconBrightness: Brightness.dark));
   AlertService().checkConnectionMethod();
+  Stripe.publishableKey = Constants.stripKey!;
+  await Stripe.instance.applySettings();
   runZonedGuarded(() {
     runApp(MainScreen());
     return Future.value(null);
