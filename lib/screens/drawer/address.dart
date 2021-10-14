@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
 import 'package:readymadeGroceryApp/screens/drawer/add-address.dart';
 import 'package:readymadeGroceryApp/screens/drawer/addressPick.dart';
 import 'package:readymadeGroceryApp/screens/drawer/edit-address.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/locationService.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/address-service.dart';
@@ -30,10 +31,7 @@ class _AddressState extends State<Address> {
   bool addressLoading = false, isLocationLoading = false;
   List? addressList = [];
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  LocationData? currentLocation;
-  Location _location = new Location();
   Map? locationInfo;
-  PermissionStatus? _permissionGranted;
   @override
   void initState() {
     getAddress();
@@ -165,25 +163,19 @@ class _AddressState extends State<Address> {
           ? Container(height: 1)
           : InkWell(
               onTap: () async {
-                _permissionGranted = await _location.hasPermission();
-                if (_permissionGranted == PermissionStatus.denied) {
-                  _permissionGranted = await _location.requestPermission();
-                  if (_permissionGranted != PermissionStatus.granted) {
-                    Map locationLatLong = {
-                      "latitude": locationInfo!['location']['latitude'],
-                      "longitude": locationInfo!['location']['longitude']
-                    };
+                bool permission = await LocationUtils().locationPermission();
 
-                    addAddressPageMethod(locationLatLong);
-                    return;
-                  }
-                }
-                currentLocation = await _location.getLocation();
-
-                if (currentLocation != null) {
+                if (permission) {
+                  Position position = await LocationUtils().currentLocation();
                   Map locationLatLong = {
-                    "latitude": currentLocation!.latitude,
-                    "longitude": currentLocation!.longitude
+                    "latitude": position.latitude,
+                    "longitude": position.longitude
+                  };
+                  addAddressPageMethod(locationLatLong);
+                } else {
+                  Map locationLatLong = {
+                    "latitude": locationInfo!['location']['latitude'],
+                    "longitude": locationInfo!['location']['longitude']
                   };
                   addAddressPageMethod(locationLatLong);
                 }
