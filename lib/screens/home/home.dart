@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:readymadeGroceryApp/model/counterModel.dart';
 import 'package:readymadeGroceryApp/screens/drawer/drawer.dart';
@@ -15,7 +16,6 @@ import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/locationService.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
-import 'package:location/location.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
@@ -49,8 +49,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       isCurrentLoactionLoading = false,
       getTokenValue = false;
   int? currentIndex = 0, cartData;
-  late LocationData currentLocation;
-  Location _location = new Location();
   String? currency = "";
   GeoCode geoCode = GeoCode();
   var addressData;
@@ -149,26 +147,29 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           });
         }
       }
-      currentLocation = await _location.getLocation();
-      var addressValue = await LocationUtils().getAddressFromLatLng(
-        LatLng(
-          currentLocation.latitude!,
-          currentLocation.longitude!,
-        ),
-      );
-      var addressescountryCode = await geoCode.reverseGeocoding(
-        latitude: currentLocation.latitude!,
-        longitude: currentLocation.longitude!,
-      );
-      if (mounted) {
-        setState(() {
-          addressData = addressValue.formattedAddress;
-          isCurrentLoactionLoading = false;
-        });
+      bool permission = await LocationUtils().locationPermission();
+
+      if (permission) {
+        Position position = await LocationUtils().currentLocation();
+        var addressValue = await LocationUtils().getAddressFromLatLng(
+          LatLng(
+            position.latitude,
+            position.longitude,
+          ),
+        );
+        var addressescountryCode = await geoCode.reverseGeocoding(
+          latitude: position.latitude,
+          longitude: position.longitude,
+        );
+        if (mounted) {
+          setState(() {
+            addressData = addressValue.formattedAddress;
+            isCurrentLoactionLoading = false;
+          });
+        }
+        await Common.setCountryInfo(addressescountryCode.countryCode!);
+        await Common.setCurrentLocation(addressData);
       }
-      await Common.setCountryInfo(addressescountryCode.countryCode!);
-      await Common.setCurrentLocation(addressData);
-      return addressescountryCode;
     });
   }
 
