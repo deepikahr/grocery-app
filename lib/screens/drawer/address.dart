@@ -163,7 +163,7 @@ class _AddressState extends State<Address> {
           ? Container(height: 1)
           : InkWell(
               onTap: () async {
-                bool permission = await LocationUtils().locationPermission();
+                bool? permission = await LocationUtils().locationPermission();
 
                 if (permission) {
                   Position position = await LocationUtils().currentLocation();

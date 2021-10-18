@@ -1011,7 +1011,7 @@ class _CheckoutState extends State<Checkout> {
                                             SizedBox(height: 20),
                                             InkWell(
                                                 onTap: () async {
-                                                  bool permission =
+                                                  bool? permission =
                                                       await LocationUtils()
                                                           .locationPermission();
 

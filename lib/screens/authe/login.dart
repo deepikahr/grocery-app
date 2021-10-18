@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:readymadeGroceryApp/screens/authe/forgotpassword.dart';
 import 'package:readymadeGroceryApp/screens/authe/otp.dart';
 import 'package:readymadeGroceryApp/screens/authe/signup.dart';
@@ -68,80 +69,24 @@ class _LoginState extends State<Login> {
           isUserLoaginLoading = true;
         });
       }
-      await Common.getPlayerID().then((playerID) async {
+      await Common.getPlayerID().then((playerId) async {
         Map<String, dynamic> body = {
           "userName": userName,
-          "password": password,
-          "playerId": playerID
+          "password": password
         };
-        await OtpService.signInWithNumber(body).then((onValue) async {
-          if (mounted) {
-            setState(() {
-              isUserLoaginLoading = false;
-            });
-          }
-          if (onValue['response_code'] == 205) {
-            showAlert(onValue['response_data'], userName);
-          } else {
-            if (onValue['response_data']['role'] == 'USER') {
-              await Common.setToken(onValue['response_data']['token']);
-
-              if (widget.isCart == true) {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => Home(
-                          locale: widget.locale,
-                          localizedValues: widget.localizedValues,
-                          currentIndex: 2),
-                    ),
-                    (Route<dynamic> route) => false);
-              } else if (widget.isProfile == true) {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => Home(
-                          locale: widget.locale,
-                          localizedValues: widget.localizedValues,
-                          currentIndex: 3),
-                    ),
-                    (Route<dynamic> route) => false);
-              } else if (widget.isSaveItem == true) {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => Home(
-                          locale: widget.locale,
-                          localizedValues: widget.localizedValues,
-                          currentIndex: 1),
-                    ),
-                    (Route<dynamic> route) => false);
-              } else if (widget.isProductDetails == true) {
-                Navigator.pop(context);
-              } else {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => Home(
-                          locale: widget.locale,
-                          localizedValues: widget.localizedValues,
-                          currentIndex: 0),
-                    ),
-                    (Route<dynamic> route) => false);
-              }
-            } else {
-              showSnackbar(MyLocalizations.of(context)!
-                  .getLocalizations("INVAILD_USER"));
-            }
-          }
-        }).catchError((error) {
-          if (mounted) {
-            setState(() {
-              isUserLoaginLoading = false;
-            });
-          }
-          sentryError.reportError(error, null);
-        });
+        if (playerId == null) {
+          var playerIdData = (await OneSignal.shared.getDeviceState())?.userId;
+          await Common.setPlayerID(playerIdData!);
+          setState(() {
+            body['playerId'] = playerIdData;
+            loginMethod(body);
+          });
+        } else {
+          setState(() {
+            body['playerId'] = playerId;
+            loginMethod(body);
+          });
+        }
       });
     } else {
       if (mounted) {
@@ -151,6 +96,77 @@ class _LoginState extends State<Login> {
       }
       return;
     }
+  }
+
+  loginMethod(body) async {
+    await OtpService.signInWithNumber(body).then((onValue) async {
+      if (mounted) {
+        setState(() {
+          isUserLoaginLoading = false;
+        });
+      }
+      if (onValue['response_code'] == 205) {
+        showAlert(onValue['response_data'], userName);
+      } else {
+        if (onValue['response_data']['role'] == 'USER') {
+          await Common.setToken(onValue['response_data']['token']);
+
+          if (widget.isCart == true) {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => Home(
+                      locale: widget.locale,
+                      localizedValues: widget.localizedValues,
+                      currentIndex: 2),
+                ),
+                (Route<dynamic> route) => false);
+          } else if (widget.isProfile == true) {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => Home(
+                      locale: widget.locale,
+                      localizedValues: widget.localizedValues,
+                      currentIndex: 3),
+                ),
+                (Route<dynamic> route) => false);
+          } else if (widget.isSaveItem == true) {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => Home(
+                      locale: widget.locale,
+                      localizedValues: widget.localizedValues,
+                      currentIndex: 1),
+                ),
+                (Route<dynamic> route) => false);
+          } else if (widget.isProductDetails == true) {
+            Navigator.pop(context);
+          } else {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => Home(
+                      locale: widget.locale,
+                      localizedValues: widget.localizedValues,
+                      currentIndex: 0),
+                ),
+                (Route<dynamic> route) => false);
+          }
+        } else {
+          showSnackbar(
+              MyLocalizations.of(context)!.getLocalizations("INVAILD_USER"));
+        }
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isUserLoaginLoading = false;
+        });
+      }
+      sentryError.reportError(error, null);
+    });
   }
 
   showAlert(message, mobileNumber) {
