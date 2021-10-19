@@ -78,10 +78,9 @@ void userInfoMethod() async {
 Future<void> configLocalNotification() async {
   await OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
   await OneSignal.shared.setAppId(Constants.oneSignalKey!);
-  await OneSignal.shared
-      .promptUserForPushNotificationPermission(fallbackToSettings: true);
-  var status = await (OneSignal.shared.getDeviceState());
-  var playerId = status?.userId;
+  await OneSignal.shared.promptUserForPushNotificationPermission();
+  var playerId = (await OneSignal.shared.getDeviceState())?.userId;
+  print('playerId-- $playerId');
   if (playerId != null) {
     await Common.setPlayerID(playerId);
     getToken();
