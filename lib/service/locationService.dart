@@ -32,27 +32,30 @@ class LocationUtils {
     return res.results.first;
   }
 
-  Future locationPermission() async {
+  Future<bool> locationPermission() async {
     bool serviceEnabled, permissionValue = true;
     LocationPermission permission;
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       permissionValue = false;
-      return Future.error('Location services are disabled.');
+      print('Location services are disabled.');
+      return false;
     }
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         permissionValue = false;
-        return Future.error('Location permissions are denied');
+        print('Location permissions are denied');
+        return false;
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
       permissionValue = false;
-      return Future.error(
+      print(
           'Location permissions are permanently denied, we cannot request permissions.');
+      return false;
     }
     return permissionValue;
   }

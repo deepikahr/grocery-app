@@ -471,7 +471,7 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
                 SizedBox(height: 20),
                 InkWell(
                     onTap: () async {
-                      bool permission =
+                      bool? permission =
                           await LocationUtils().locationPermission();
                       if (permission) {
                         Position position =

@@ -147,7 +147,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           });
         }
       }
-      bool permission = await LocationUtils().locationPermission();
+      bool? permission = await LocationUtils().locationPermission();
 
       if (permission) {
         Position position = await LocationUtils().currentLocation();
