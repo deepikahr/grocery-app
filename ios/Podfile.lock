@@ -23,10 +23,10 @@ PODS:
     - GoogleMaps/Base
   - image_picker (0.0.1):
     - Flutter
-  - onesignal_flutter (3.0.0):
+  - onesignal_flutter (3.2.3):
     - Flutter
-    - OneSignalXCFramework (= 3.4.4)
-  - OneSignalXCFramework (3.4.4)
+    - OneSignalXCFramework (= 3.7.0)
+  - OneSignalXCFramework (3.7.0)
   - path_provider (0.0.1):
     - Flutter
   - Reachability (3.2)
@@ -128,11 +128,11 @@ SPEC CHECKSUMS:
   fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geolocator_apple: b741765c55dc21950e3e106e8b3584e55cf81ce5
-  google_maps_flutter: df4e7de95264aa0a2f11aac0fc7e313acb8ffc7e
+  google_maps_flutter: 279865bd07e2d8751f43a3bc64bac7f6075d0c93
   GoogleMaps: 086ae1dab659eaa7339bdb30fc88e2f44e7c597c
   image_picker: e06f7a68f000bd36f552c1847e33cda96ed31f1f
-  onesignal_flutter: 6a582e3051074be6d9d129002a93a3bfd04a5b88
-  OneSignalXCFramework: eaf286b7438aa1f030f03e5fa9f1c79ede5d8f04
+  onesignal_flutter: abfc75e8d08a0d9c977aacfab9454af58f4f4fcc
+  OneSignalXCFramework: 974dc438d68910cf04f3c8ab034e0131d41438c1
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410
