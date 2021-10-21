@@ -47,7 +47,6 @@ class _AddMoneyState extends State<AddMoney> {
       Map body = {"amount": walletAmmount};
       await OrderService.addMoneyRazorPayId(body).then((onValue) {
         try {
-          print(Constants.razorPayKey);
           _razorpay = Razorpay();
           var options = {
             'key': Constants.razorPayKey,
@@ -253,9 +252,6 @@ class _AddMoneyState extends State<AddMoney> {
 
   _handlePaymentError(PaymentFailureResponse response) {
     showSnackbar(response.message);
-    print(response.toString());
-    print("message - ${response.message}");
-    print("code - ${response.code}");
     if (mounted) {
       setState(() {
         isAddMoneyLoading = false;
