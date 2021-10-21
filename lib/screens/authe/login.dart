@@ -12,6 +12,7 @@ import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 import '../../service/constants.dart';
@@ -46,7 +47,7 @@ class _LoginState extends State<Login> {
       value = false,
       passwordVisible = true,
       _obscureText = true;
-  String? password, userName;
+  String? password, userName, playerIdTemp;
 
   // Toggles the password
   void _toggle() {
@@ -57,7 +58,20 @@ class _LoginState extends State<Login> {
 
   @override
   void initState() {
+    configLocalNotification();
     super.initState();
+  }
+
+  Future<void> configLocalNotification() async {
+    var playerId = (await (OneSignal.shared.getDeviceState()))?.userId;
+    if (playerId != null) {
+      setState(() {
+        playerIdTemp = playerId;
+      });
+      await Common.setPlayerID(playerId);
+    } else {
+      configLocalNotification();
+    }
   }
 
   userLoginwithMobile() async {
@@ -227,14 +241,16 @@ class _LoginState extends State<Login> {
       backgroundColor: bg(context),
       key: _scaffoldKey,
       appBar: appBarPrimary(context, "LOGIN") as PreferredSizeWidget?,
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            buildLoginPageForm(),
-          ],
-        ),
-      ),
+      body: playerIdTemp == null
+          ? SquareLoader()
+          : SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  buildLoginPageForm(),
+                ],
+              ),
+            ),
     );
   }
 
