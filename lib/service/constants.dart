@@ -1,4 +1,4 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_config/flutter_config.dart';
 import 'dart:io';
 
 class Constants {
@@ -6,33 +6,24 @@ class Constants {
   static String appName = 'Readymade Grocery App';
 
   // delopy url production
-  static String? apiUrl = dotenv.env['API_URL'];
+  static String? apiUrl = FlutterConfig.get('API_URL');
 
   // ONE_SIGNAL_KEY
-  static String? oneSignalKey = dotenv.env['ONE_SIGNAL_KEY'];
+  static String? oneSignalKey = FlutterConfig.get('ONE_SIGNAL_KEY');
 
   // googleapikey
   static String? googleMapApiKey = Platform.isIOS
-      ? dotenv.env['IOS_GOOGLE_MAP_API_KEY']
-      : dotenv.env['ANDROID_GOOGLE_MAP_API_KEY'];
+      ? FlutterConfig.get('IOS_GOOGLE_MAP_API_KEY')
+      : FlutterConfig.get('ANDROID_GOOGLE_MAP_API_KEY');
 
   // stripe key
-  static String? stripKey = dotenv.env['STRIPE_KEY'];
+  static String? stripKey = FlutterConfig.get('STRIPE_KEY');
 
   // RAZOR PAY KEY
-  static String? razorPayKey = dotenv.env['RAZOR_PAY_KEY'];
+  static String? razorPayKey = FlutterConfig.get('RAZOR_PAY_KEY');
 
   // image url
-  static String? imageUrlPath = dotenv.env['IMAGE_URL_PATH'];
-
-  // dashboard url
-  static String? baseUrl = dotenv.env['BASE_URL'];
-
-  //Owner phone number
-  // static String phone = "NUMBER_HERE";
-
-  //initial message for owner
-  static String message = "Hi";
+  static String? imageUrlPath = FlutterConfig.get('IMAGE_URL_PATH');
 
   static String orderFrom = "USER_APP";
 
@@ -42,7 +33,7 @@ class Constants {
       : "https://play.google.com/store/apps/details?id=com.ionicfirebaseapp.readymadegroceryuserapp";
 
   // PREDEFINED
-  static String predefined = dotenv.env['PREDEFINED'] ?? "false";
+  static String predefined = FlutterConfig.get('PREDEFINED') ?? "false";
 
   //email validation
   static String emailValidation =

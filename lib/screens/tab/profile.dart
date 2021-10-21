@@ -319,13 +319,9 @@ class _ProfileState extends State<Profile> {
                                                         BorderRadius.circular(
                                                             20.0),
                                                     image: DecorationImage(
-                                                        image: imageProvider,
-                                                        fit: BoxFit.cover,
-                                                        colorFilter:
-                                                            ColorFilter.mode(
-                                                                Colors.red,
-                                                                BlendMode
-                                                                    .colorBurn)),
+                                                      image: imageProvider,
+                                                      fit: BoxFit.cover,
+                                                    ),
                                                   ),
                                                 ),
                                                 placeholder: (context, url) =>

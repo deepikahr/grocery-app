@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:location/location.dart';
 import 'package:readymadeGroceryApp/screens/drawer/add-address.dart';
 import 'package:readymadeGroceryApp/screens/drawer/addressPick.dart';
 import 'package:readymadeGroceryApp/screens/drawer/edit-address.dart';
@@ -13,6 +13,7 @@ import 'package:readymadeGroceryApp/service/address-service.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/locationService.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
@@ -56,8 +57,6 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
       addressList;
   var selectedAddress, locationInfo;
   bool addressLoading = false, isSubscriptionLoading = false;
-  Location _location = new Location();
-  PermissionStatus? _permissionGranted;
   @override
   void initState() {
     getAddress();
@@ -472,26 +471,23 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
                 SizedBox(height: 20),
                 InkWell(
                     onTap: () async {
-                      _permissionGranted = await _location.hasPermission();
-                      if (_permissionGranted == PermissionStatus.denied) {
-                        _permissionGranted =
-                            await _location.requestPermission();
-                        if (_permissionGranted != PermissionStatus.granted) {
-                          Map locationLatLong = {
-                            "latitude": locationInfo['location']['latitude'],
-                            "longitude": locationInfo['location']['longitude']
-                          };
-                          addAddressPageMethod(locationLatLong);
-                          return;
-                        }
+                      bool? permission =
+                          await LocationUtils().locationPermission();
+                      if (permission) {
+                        Position position =
+                            await LocationUtils().currentLocation();
+                        Map locationLatLong = {
+                          "latitude": position.latitude,
+                          "longitude": position.longitude
+                        };
+                        addAddressPageMethod(locationLatLong);
+                      } else {
+                        Map locationLatLong = {
+                          "latitude": locationInfo['location']['latitude'],
+                          "longitude": locationInfo['location']['longitude']
+                        };
+                        addAddressPageMethod(locationLatLong);
                       }
-                      final currentLocation = await _location.getLocation();
-
-                      Map locationLatLong = {
-                        "latitude": currentLocation.latitude,
-                        "longitude": currentLocation.longitude
-                      };
-                      addAddressPageMethod(locationLatLong);
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 80.0),

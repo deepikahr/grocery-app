@@ -9,9 +9,7 @@ Grocery User App
 Add these following in env variable 
 ```
 API_URL=
-BASE_URL=
 ONE_SIGNAL_KEY=
-STRIPE_KEY=
 IMAGE_URL_PATH=
 ANDROID_GOOGLE_MAP_API_KEY=
 IOS_GOOGLE_MAP_API_KEY=
