@@ -772,11 +772,12 @@ orderNow(BuildContext context, title) {
   );
 }
 
-orderNowPrimary(BuildContext context, title) {
+orderNowDark(BuildContext context, title) {
   return Row(
     children: <Widget>[
-      Text(MyLocalizations.of(context)!.getLocalizations(title),style:textbarlowRegularaPrimar(context)),
-      Icon(Icons.arrow_right,color:primary(context))
+      Text(MyLocalizations.of(context)!.getLocalizations(title),
+          style: textbarlowRegularaDark(context)),
+      Icon(Icons.arrow_right, color: dark(context))
     ],
   );
 }

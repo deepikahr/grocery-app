@@ -1405,6 +1405,14 @@ TextStyle textbarlowRegularaPrimar(context) {
   );
 }
 
+TextStyle textbarlowRegularaDark(context) {
+  return TextStyle(
+    fontSize: 16.0,
+    fontFamily: 'BarlowRegular',
+    color: dark(context),
+  );
+}
+
 TextStyle textbarlowRegularad(context) {
   return TextStyle(
     fontSize: 16.0,

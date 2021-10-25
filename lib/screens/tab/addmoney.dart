@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:readymadeGroceryApp/screens/thank-you/payment-failed.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
-import 'package:readymadeGroceryApp/service/alert-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -11,14 +11,15 @@ import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 SentryError sentryError = new SentryError();
 
 class AddMoney extends StatefulWidget {
-  final Map? localizedValues;
+  final Map? localizedValues, userInfo;
   final String? locale;
 
-  AddMoney({Key? key, this.locale, this.localizedValues});
+  AddMoney({Key? key, this.locale, this.localizedValues, this.userInfo});
 
   @override
   _AddMoneyState createState() => _AddMoneyState();
@@ -29,6 +30,8 @@ class _AddMoneyState extends State<AddMoney> {
   double? walletAmmount;
   bool isAddMoneyLoading = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  Razorpay? _razorpay;
+
   @override
   void initState() {
     Common.getCurrency().then((value) => setState(() => currency = value));
@@ -43,10 +46,7 @@ class _AddMoneyState extends State<AddMoney> {
       setState(() {
         isAddMoneyLoading = true;
       });
-      Map body = {
-        "amount": walletAmmount,
-        "userFrom": Constants.orderFrom,
-      };
+      Map body = {"amount": walletAmmount, "userFrom": Constants.orderFrom};
       await OrderService.addMoneyApi(body).then((onValue) {
         if (mounted) {
           setState(() {
@@ -54,14 +54,71 @@ class _AddMoneyState extends State<AddMoney> {
           });
         }
       }).catchError((error) {
-        if (mounted) {
-          setState(() {
-            isAddMoneyLoading = false;
-            pleaseTryAgain();
-          });
+        playmentFailedRoute();
+      });
+    }
+  }
+
+  addMoneyVaiRazorpay() async {
+    final form = _formKey.currentState!;
+    if (form.validate()) {
+      form.save();
+      FocusScope.of(context).unfocus();
+      setState(() {
+        isAddMoneyLoading = true;
+      });
+      Map body = {"amount": walletAmmount, "userFrom": Constants.orderFrom};
+      await OrderService.addMoneyRazorPayId(body).then((onValue) {
+        try {
+          _razorpay = Razorpay();
+          var options = {
+            'key': Constants.razorPayKey,
+            'amount': (100 * walletAmmount!).toStringAsFixed(2),
+            'name': Constants.appName,
+            'order_id': onValue['response_data']['generatedId'],
+            'timeout': 300,
+            'prefill': {
+              'contact': widget.userInfo?['mobileNumber'],
+              'email': widget.userInfo?['email']
+            }
+          };
+          _razorpay?.open(options);
+          _razorpay?.on(
+              Razorpay.EVENT_PAYMENT_SUCCESS,
+              (response) => _handlePaymentSuccess(
+                  response, onValue['response_data']['walletId']));
+          _razorpay?.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+        } catch (e) {
+          if (mounted) {
+            setState(() {
+              isAddMoneyLoading = false;
+            });
+          }
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => PaymentFailed(
+                locale: widget.locale,
+                localizedValues: widget.localizedValues,
+              ),
+            ),
+          );
         }
       });
     }
+  }
+
+  _handlePaymentError(PaymentFailureResponse response) {
+    playmentFailedRoute();
+  }
+
+  void showSnackbar(message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(milliseconds: 3000),
+      ),
+    );
   }
 
   Future<void> createAddMoneyToWalletViaStripe(Map? res) async {
@@ -82,11 +139,14 @@ class _AddMoneyState extends State<AddMoney> {
         thankuPage();
       } on Exception catch (e) {
         if (e is StripeException) {
-          pleaseTryAgain();
+          print('lll');
+          playmentFailedRoute();
         }
       }
     } else {
-      pleaseTryAgain();
+      print('lljl');
+
+      playmentFailedRoute();
     }
   }
 
@@ -106,12 +166,19 @@ class _AddMoneyState extends State<AddMoney> {
     });
   }
 
-  pleaseTryAgain() async {
+  playmentFailedRoute() async {
     if (mounted) {
       setState(() {
         isAddMoneyLoading = false;
-        AlertService().showToast(MyLocalizations.of(context)!
-            .getLocalizations('PLEASE_TRY_AGAIN_LATER'));
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => PaymentFailed(
+              locale: widget.locale,
+              localizedValues: widget.localizedValues,
+            ),
+          ),
+        );
       });
     }
   }
@@ -148,7 +215,16 @@ class _AddMoneyState extends State<AddMoney> {
           child: Column(
             children: [
               InkWell(
-                  onTap: addMoney,
+                  onTap: () {
+                    if (Constants.stripKey != null &&
+                        Constants.stripKey!.isNotEmpty) {
+                      addMoney();
+                    }
+                    if (Constants.razorPayKey != null &&
+                        Constants.razorPayKey!.isNotEmpty) {
+                      addMoneyVaiRazorpay();
+                    }
+                  },
                   child: regularbuttonPrimary(
                       context, "ADD_MONEY", isAddMoneyLoading)),
               SizedBox(height: 4),
@@ -238,4 +314,38 @@ class _AddMoneyState extends State<AddMoney> {
           textAlign: TextAlign.center,
         ),
       );
+  _handlePaymentSuccess(
+      PaymentSuccessResponse? response, String? walletId) async {
+    var razorPayDetails = {
+      'amount': walletAmmount,
+      'paymentType': 'RAZORPAY',
+      'walletId': walletId,
+      'paymentId': response?.paymentId,
+      'signature': response?.signature,
+      'generatedId': response?.orderId
+    };
+    await OrderService.addMoneyApi(razorPayDetails).then((value) {
+      if (mounted) {
+        setState(() {
+          isAddMoneyLoading = false;
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => Thankyou(
+                locale: widget.locale,
+                localizedValues: widget.localizedValues,
+                isWallet: true,
+              ),
+            ),
+          );
+        });
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isAddMoneyLoading = false;
+        });
+      }
+    });
+  }
 }

@@ -19,11 +19,10 @@ class Constants {
   // stripe key
   static String? stripKey = FlutterConfig.get('STRIPE_KEY');
 
+  static String? razorPayKey = FlutterConfig.get('RAZOR_PAY_KEY');
+
   // image url
   static String? imageUrlPath = FlutterConfig.get('IMAGE_URL_PATH');
-
-  // dashboard url
-  static String? baseUrl = FlutterConfig.get('BASE_URL');
 
   // store Url
   static String? storeUrl = Platform.isIOS
