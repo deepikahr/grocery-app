@@ -33,8 +33,10 @@ void initializeMain({bool? isTest}) async {
       statusBarBrightness: Brightness.dark,
       statusBarIconBrightness: Brightness.dark));
   AlertService().checkConnectionMethod();
-  Stripe.publishableKey = Constants.stripKey!;
-  await Stripe.instance.applySettings();
+  if (Constants.stripKey != null && Constants.stripKey!.isNotEmpty) {
+    Stripe.publishableKey = Constants.stripKey!;
+    await Stripe.instance.applySettings();
+  }
   runZonedGuarded(() {
     runApp(MainScreen());
     return Future.value(null);

@@ -654,6 +654,8 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
   void doSubscription() {
     if (selectedAddress != null) {
       widget.subProductData!['products'][0]["quantity"] = quantity;
+      widget.subProductData!['products'][0]["imageUrl"] = widget.productData!['productImages'][0]['imageUrl'];
+      widget.subProductData!['products'][0]["filePath"] = widget.productData!['productImages'][0]['filePath'];
       widget.subProductData!['grandTotal'] =
           widget.subProductData!['products'][0]["subscriptionTotal"];
       widget.subProductData!["address"] = selectedAddress['_id'];
