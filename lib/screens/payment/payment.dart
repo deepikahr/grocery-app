@@ -231,7 +231,15 @@ class _PaymentState extends State<Payment> {
     if (mounted) {
       setState(() {
         isPlaceOrderLoading = false;
-        paymentFailedPage();
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => PaymentFailed(
+                locale: widget.locale,
+                localizedValues: widget.localizedValues,
+              ),
+            ),
+            (Route<dynamic> route) => false);
       });
     }
   }
