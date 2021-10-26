@@ -39,15 +39,15 @@ class _PaymentState extends State<Payment> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   int? groupValue = 0;
-  late String currency;
-  bool? isPlaceOrderLoading = false,
+  String? currency;
+  bool isPlaceOrderLoading = false,
       isCardListLoading = false,
       isSelected = false,
       isWalletLoading = false,
       walletUsedOrNotValue = false,
       fullWalletUsedOrNot = false;
 
-  List? paymentTypes = [];
+  List paymentTypes = [];
   var walletAmount, cartItem;
   Razorpay? _razorpay;
   Map? userInfo;
@@ -72,19 +72,21 @@ class _PaymentState extends State<Payment> {
       });
     }
     getUserInfo();
-    paymentTypes = widget.locationInfo!["paymentMethod"];
+    paymentTypes = widget.locationInfo!["paymentMethod"] ?? [];
     if (Constants.stripKey == null || Constants.stripKey!.isEmpty) {
       setState(() {
-        paymentTypes?.remove('STRIPE');
+        paymentTypes.remove('STRIPE');
       });
     }
     if (Constants.razorPayKey == null || Constants.razorPayKey!.isEmpty) {
       setState(() {
-        paymentTypes?.remove('RAZORPAY');
+        paymentTypes.remove('RAZORPAY');
       });
     }
     await Common.getCurrency().then((value) {
-      currency = value;
+      setState(() {
+        currency = value;
+      });
     });
   }
 
@@ -123,7 +125,7 @@ class _PaymentState extends State<Payment> {
       showSnackbar(MyLocalizations.of(context)!
           .getLocalizations("SELECT_PAYMENT_FIRST"));
     } else {
-      widget.data?['paymentType'] = paymentTypes?[groupValue!];
+      widget.data?['paymentType'] = paymentTypes[groupValue!];
       widget.data?['deliveryInstruction'] = widget.instruction;
       if (fullWalletUsedOrNot == true) {
         widget.data!['paymentType'] = "COD";
@@ -172,10 +174,8 @@ class _PaymentState extends State<Payment> {
   }
 
   palceOrderMethod(cartData) async {
-    print('aaaaaaaaaa ${cartData['paymentType']}');
     await OrderService.placeOrder(cartData).then((onValue) async {
       if (cartData['paymentType'] == 'STRIPE') {
-        print('sssssss');
         await createOrderViaStripe(onValue['response_data']);
       } else {
         thankyouPage();
@@ -208,7 +208,6 @@ class _PaymentState extends State<Payment> {
         );
         thankyouPage();
       } on Exception catch (e) {
-        print('eeeeeeeeeeeeee $e');
         if (e is StripeException) {
           pleaseTryAgain(res);
         }
@@ -325,7 +324,7 @@ class _PaymentState extends State<Payment> {
       backgroundColor: bg(context),
       key: _scaffoldKey,
       appBar: appBarTransparent(context, "PAYMENT") as PreferredSizeWidget?,
-      body: isCardListLoading!
+      body: isCardListLoading
           ? SquareLoader()
           : Padding(
               padding: const EdgeInsets.only(
@@ -454,7 +453,7 @@ class _PaymentState extends State<Payment> {
                       color: Color(0xFF707070).withOpacity(0.20), thickness: 1),
                   fullWalletUsedOrNot == true
                       ? Container()
-                      : paymentTypes!.length > 0
+                      : paymentTypes.length > 0
                           ? Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -464,7 +463,7 @@ class _PaymentState extends State<Payment> {
                                 ListView.builder(
                                   physics: ScrollPhysics(),
                                   shrinkWrap: true,
-                                  itemCount: paymentTypes!.length,
+                                  itemCount: paymentTypes.length,
                                   itemBuilder:
                                       (BuildContext context, int index) {
                                     return Container(
@@ -474,11 +473,11 @@ class _PaymentState extends State<Payment> {
                                       child: RadioListTile(
                                         value: index,
                                         groupValue: groupValue,
-                                        selected: isSelected!,
+                                        selected: isSelected,
                                         activeColor: primary(context),
                                         title: textGreenprimary(
                                             context,
-                                            paymentTypes![index],
+                                            paymentTypes[index],
                                             TextStyle(color: primarybg)),
                                         onChanged: (int? selected) {
                                           if (mounted) {
@@ -487,8 +486,8 @@ class _PaymentState extends State<Payment> {
                                             });
                                           }
                                         },
-                                        secondary: paymentTypes![index] == "COD"
-                                            ? Text(currency,
+                                        secondary: paymentTypes[index] == "COD"
+                                            ? Text(currency ?? '',
                                                 style:
                                                     TextStyle(color: primarybg))
                                             : Icon(Icons.credit_card,
@@ -503,7 +502,7 @@ class _PaymentState extends State<Payment> {
                 ],
               ),
             ),
-      bottomNavigationBar: paymentTypes!.length > 0
+      bottomNavigationBar: !isCardListLoading && paymentTypes.length > 0
           ? InkWell(
               onTap: placeOrder,
               child: Padding(

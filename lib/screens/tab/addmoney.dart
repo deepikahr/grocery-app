@@ -139,13 +139,10 @@ class _AddMoneyState extends State<AddMoney> {
         thankuPage();
       } on Exception catch (e) {
         if (e is StripeException) {
-          print('lll');
           playmentFailedRoute();
         }
       }
     } else {
-      print('lljl');
-
       playmentFailedRoute();
     }
   }
@@ -322,7 +319,8 @@ class _AddMoneyState extends State<AddMoney> {
       'walletId': walletId,
       'paymentId': response?.paymentId,
       'signature': response?.signature,
-      'generatedId': response?.orderId
+      'generatedId': response?.orderId,
+      'userFrom': Constants.orderFrom,
     };
     await OrderService.addMoneyApi(razorPayDetails).then((value) {
       if (mounted) {

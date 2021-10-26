@@ -91,7 +91,6 @@ class _LoginState extends State<Login> {
         if (playerId == null) {
           var playerIdData = (await OneSignal.shared.getDeviceState())?.userId;
           await Common.setPlayerID(playerIdData!);
-          print('playerIdData-- $playerIdData');
           setState(() {
             body['playerId'] = playerIdData;
             loginMethod(body);
