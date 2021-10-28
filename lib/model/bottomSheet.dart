@@ -273,14 +273,8 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
                           context,
                           '${widget.variantsList![index]['unit']} ',
                           textbarlowBoldGreen(context)),
-                      title: priceMrpText(
-                          widget.dealPercentage != null
-                              ? "${widget.currency}${(widget.variantsList![index]['price'] - (widget.variantsList![index]['price'] * (widget.dealPercentage! / 100))).toStringAsFixed(2)}"
-                              : '${widget.currency}${(widget.variantsList![index]['price']).toStringAsFixed(2)}',
-                          widget.dealPercentage != null
-                              ? '${widget.currency}${(widget.variantsList![index]['price']).toStringAsFixed(2)}'
-                              : null,
-                          context),
+                      title: priceMrpText(getDiscountedValue(index: index),
+                          getPercentageValue(index: index), context),
                     );
                   }),
               SizedBox(height: 5),
@@ -292,9 +286,7 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
           child: addToCartButton(
               context,
               '(${quantity.toString()})  ',
-              widget.dealPercentage != null
-                  ? '${widget.currency}${((variantPrice == null ? (widget.variantsList![0]['price'] * quantity) : (variantPrice * quantity)) - ((variantPrice == null ? (widget.variantsList![0]['price'] * quantity) : (variantPrice * quantity)) * (widget.dealPercentage! / 100))).toStringAsFixed(2)}'
-                  : '${widget.currency}${variantPrice == null ? (widget.variantsList![0]['price'] * quantity) : (variantPrice * quantity).toStringAsFixed(2)}',
+              calculateTotal(),
               "ADD_TO_CART",
               Icon(Icons.shopping_cart, color: dark(context)),
               addProductTocart),
@@ -309,4 +301,38 @@ class _BottonSheetClassDryCleanState extends State<BottonSheetClassDryClean> {
       ),
     );
   }
+
+ 
+  getDiscountedValue({index = 0}) => (widget.productData!['isDealAvailable'] ??
+                  false) &&
+              (widget.productData!['variant'][index]['isOfferAvailable'] ??
+                  false) ||
+          (widget.productData!['isDealAvailable'] ?? false)
+      ? "${widget.currency}${(widget.productData!['variant'][index]['price'] - (widget.productData!['variant'][index]['price'] * (widget.productData!['dealPercent'] / 100))).toDouble().toStringAsFixed(2)}"
+      : ((widget.productData!['variant'][index]['isOfferAvailable'] ?? false) ??
+                  false) &&
+              widget.productData!['variant'][index]['offerPercent'] != null
+          ? "${widget.currency}${(widget.productData!['variant'][index]['price'] - (widget.productData!['variant'][index]['price'] * (widget.productData!['variant'][index]['offerPercent'] / 100))).toDouble().toStringAsFixed(2)}"
+          : '${widget.currency}${widget.productData!['variant'][index]['price'].toDouble().toStringAsFixed(2)}';
+
+  getPercentageValue({index = 0}) => (widget.productData!['isDealAvailable'] ??
+                  false) &&
+              (widget.productData!['variant'][index]['isOfferAvailable'] ??
+                  false) ||
+          (widget.productData!['isDealAvailable'] ?? false)
+      ? "${widget.currency}${widget.productData!['variant'][index]['price'].toDouble().toStringAsFixed(2)}"
+      : ((widget.productData!['variant'][index]['isOfferAvailable'] ?? false) ??
+                  false) &&
+              widget.productData!['variant'][index]['offerPercent'] != null
+          ? "${widget.currency}${widget.productData!['variant'][index]['price'].toDouble().toStringAsFixed(2)}"
+          : null;
+
+  calculateTotal() => (widget.productData!['isDealAvailable'] ?? false) &&
+              (widget.productData!['variant'][0]['isOfferAvailable'] ??
+                  false) ||
+          (widget.productData!['isDealAvailable'] ?? false)
+      ? "${widget.currency}${((((variantPrice == null ? widget.productData!['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? widget.productData!['variant'][0]['price'] : variantPrice) * (widget.productData!['dealPercent'] / 100)))) * quantity).toDouble().toStringAsFixed(2)}"
+      : (widget.productData!['variant'][0]['isOfferAvailable'] ?? false)
+          ? "${widget.currency}${((((variantPrice == null ? widget.productData!['variant'][0]['price'] : variantPrice) - ((variantPrice == null ? widget.productData!['variant'][0]['price'] : variantPrice) * (widget.productData!['variant'][0]['offerPercent'] / 100)))) * quantity).toDouble().toStringAsFixed(2)}"
+          : '${widget.currency}${((variantPrice == null ? widget.productData!['variant'][0]['price'] : variantPrice) * quantity).toDouble().toStringAsFixed(2)}';
 }

@@ -41,9 +41,9 @@ final green = const Color(0xFF20C978);
 
 dynamic primary(context) {
   if (Theme.of(context).brightness == Brightness.dark) {
-    return Color(0xFFFFCF2D);
+    return primarybg;
   } else {
-    return Color(0xFFFFCF2D);
+    return primarybg;
   }
 }
 
@@ -1402,6 +1402,14 @@ TextStyle textbarlowRegularaPrimar(context) {
     fontSize: 16.0,
     fontFamily: 'BarlowRegular',
     color: primary(context),
+  );
+}
+
+TextStyle textbarlowRegularaDark(context) {
+  return TextStyle(
+    fontSize: 16.0,
+    fontFamily: 'BarlowRegular',
+    color: dark(context),
   );
 }
 

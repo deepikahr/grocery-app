@@ -1,18 +1,19 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:location/location.dart';
 import 'package:readymadeGroceryApp/screens/drawer/add-address.dart';
+import 'package:readymadeGroceryApp/screens/drawer/addressPick.dart';
 import 'package:readymadeGroceryApp/screens/drawer/edit-address.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
 import 'package:readymadeGroceryApp/service/address-service.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/locationService.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
@@ -56,9 +57,6 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
       addressList;
   var selectedAddress, locationInfo;
   bool addressLoading = false, isSubscriptionLoading = false;
-  Location _location = new Location();
-  PermissionStatus? _permissionGranted;
-  PickResult? pickerResult;
   @override
   void initState() {
     getAddress();
@@ -432,7 +430,6 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
                                                 locale: widget.locale,
                                                 localizedValues:
                                                     widget.localizedValues,
-                                                isCheckout: true,
                                                 updateAddressID:
                                                     addressList![i],
                                               ),
@@ -474,26 +471,23 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
                 SizedBox(height: 20),
                 InkWell(
                     onTap: () async {
-                      _permissionGranted = await _location.hasPermission();
-                      if (_permissionGranted == PermissionStatus.denied) {
-                        _permissionGranted =
-                            await _location.requestPermission();
-                        if (_permissionGranted != PermissionStatus.granted) {
-                          Map locationLatLong = {
-                            "latitude": locationInfo['location']['latitude'],
-                            "longitude": locationInfo['location']['longitude']
-                          };
-                          addAddressPageMethod(locationLatLong);
-                          return;
-                        }
+                      bool? permission =
+                          await LocationUtils().locationPermission();
+                      if (permission) {
+                        Position position =
+                            await LocationUtils().currentLocation();
+                        Map locationLatLong = {
+                          "latitude": position.latitude,
+                          "longitude": position.longitude
+                        };
+                        addAddressPageMethod(locationLatLong);
+                      } else {
+                        Map locationLatLong = {
+                          "latitude": locationInfo['location']['latitude'],
+                          "longitude": locationInfo['location']['longitude']
+                        };
+                        addAddressPageMethod(locationLatLong);
                       }
-                      final currentLocation = await _location.getLocation();
-
-                      Map locationLatLong = {
-                        "latitude": currentLocation.latitude,
-                        "longitude": currentLocation.longitude
-                      };
-                      addAddressPageMethod(locationLatLong);
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 80.0),
@@ -508,31 +502,27 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
 
   addAddressPageMethod(locationlatlong) async {
     await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PlacePicker(
-            apiKey: Constants.googleMapApiKey!,
-            initialPosition: LatLng(
-                locationlatlong['latitude'], locationlatlong['longitude']),
-            useCurrentLocation: true,
-            selectInitialPosition: true,
-            onPlacePicked: (result) {
-              Navigator.of(context).pop();
-              setState(() {
-                pickerResult = result;
-              });
-            },
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddressPickPage(
+          locale: widget.locale,
+          localizedValues: widget.localizedValues,
+          initialLocation: LatLng(
+            locationlatlong['latitude'],
+            locationlatlong['longitude'],
           ),
-        ));
-
-    if (pickerResult != null) {
-      setState(() {
+        ),
+      ),
+    ).then((value) {
+      if (value != null && value['initialLocation'] != null) {
+        addAddressPageMethod(value['initialLocation']);
+      } else if (value != null) {
         var result = Navigator.push(
           context,
           new MaterialPageRoute(
-            builder: (BuildContext context) => AddAddress(
-              isProfile: true,
-              pickedLocation: pickerResult,
+            builder: (BuildContext context) => new AddAddress(
+              address: value['address'],
+              position: value['location'],
               locale: widget.locale,
               localizedValues: widget.localizedValues,
             ),
@@ -541,8 +531,8 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
         result.then((res) {
           getAddress();
         });
-      });
-    }
+      }
+    });
   }
 
   getAddress() async {
@@ -664,6 +654,8 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
   void doSubscription() {
     if (selectedAddress != null) {
       widget.subProductData!['products'][0]["quantity"] = quantity;
+      widget.subProductData!['products'][0]["imageUrl"] = widget.productData!['productImages'][0]['imageUrl'];
+      widget.subProductData!['products'][0]["filePath"] = widget.productData!['productImages'][0]['filePath'];
       widget.subProductData!['grandTotal'] =
           widget.subProductData!['products'][0]["subscriptionTotal"];
       widget.subProductData!["address"] = selectedAddress['_id'];

@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_place_picker/google_maps_place_picker.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/address-service.dart';
-import 'package:location/location.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
@@ -16,20 +15,15 @@ SentryError sentryError = new SentryError();
 class AddAddress extends StatefulWidget {
   const AddAddress(
       {Key? key,
-      this.currentLocation,
-      this.isCheckout,
-      this.isProfile,
-      this.pickedLocation,
-      this.updateAddressID,
+      this.position,
+      this.address,
       this.locale,
       this.localizedValues})
       : super(key: key);
-  final bool? isCheckout, isProfile;
-  final PickResult? pickedLocation;
-  final Map<String, dynamic>? updateAddressID;
-  final LocationData? currentLocation;
+
+  final LatLng? position;
   final Map? localizedValues;
-  final String? locale;
+  final String? locale, address;
 
   @override
   _AddAddressState createState() => _AddAddressState();
@@ -38,16 +32,17 @@ class AddAddress extends StatefulWidget {
 class _AddAddressState extends State<AddAddress> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  var addressData;
-  LocationData? currentLocation;
   bool isAddAddressLoading = false;
-  StreamSubscription<LocationData>? locationSubscription;
   int? selectedAddressType = 0;
   TextEditingController addressController = TextEditingController();
+  LatLng? position;
 
   @override
   void initState() {
-    addressController.text = widget.pickedLocation!.formattedAddress!;
+    setState(() {
+      addressController.text = widget.address!;
+      position = widget.position;
+    });
 
     super.initState();
   }
@@ -73,8 +68,8 @@ class _AddAddressState extends State<AddAddress> {
       }
 
       var location = {
-        "latitude": widget.pickedLocation!.geometry!.location.lat,
-        "longitude": widget.pickedLocation!.geometry!.location.lng
+        "latitude": position?.latitude,
+        "longitude": position?.longitude
       };
       address['address'] = addressController.text;
       address['location'] = location;
@@ -120,12 +115,6 @@ class _AddAddressState extends State<AddAddress> {
   }
 
   @override
-  void dispose() {
-    locationSubscription?.cancel();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bg(context),
@@ -139,7 +128,7 @@ class _AddAddressState extends State<AddAddress> {
               children: <Widget>[
                 Padding(
                     padding: const EdgeInsets.only(
-                        left: 12.0, bottom: 5.0, right: 20.0),
+                        left: 20.0, bottom: 5.0, right: 20.0, top: 10),
                     child: addressPage(context, "LOCATION")),
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),

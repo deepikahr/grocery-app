@@ -167,6 +167,12 @@ class _DrawerPageState extends State<DrawerPage> {
                           localizedValues: widget.localizedValues,
                         ))
                     : Container(),
+                // InkWell(
+                //     onTap: () {
+                //       ChatService.onChat();
+                //     },
+                //     child: buildDrawer(context, "CHAT_ON_WHATSAPP",
+                //         'lib/assets/icons/chat.png')),
                 _buildMenuTileList('lib/assets/icons/about.png', "ABOUT_US",
                     route: AboutUs(
                         locale: widget.locale,
@@ -215,7 +221,7 @@ class _DrawerPageState extends State<DrawerPage> {
                           MyLocalizations.of(context)!
                                   .getLocalizations("SHARE_MESSAGE") +
                               " " +
-                              Constants.baseUrl,
+                              Constants.storeUrl,
                           sharePositionOrigin:
                               box.localToGlobal(Offset.zero) & box.size);
                     },

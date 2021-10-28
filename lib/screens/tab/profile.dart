@@ -318,13 +318,9 @@ class _ProfileState extends State<Profile> {
                                                         BorderRadius.circular(
                                                             20.0),
                                                     image: DecorationImage(
-                                                        image: imageProvider,
-                                                        fit: BoxFit.cover,
-                                                        colorFilter:
-                                                            ColorFilter.mode(
-                                                                Colors.red,
-                                                                BlendMode
-                                                                    .colorBurn)),
+                                                      image: imageProvider,
+                                                      fit: BoxFit.cover,
+                                                    ),
                                                   ),
                                                 ),
                                                 placeholder: (context, url) =>
@@ -475,6 +471,12 @@ class _ProfileState extends State<Profile> {
                             },
                             child: profileText(context, "SUBSCRIPTION")),
                         SizedBox(height: 15),
+                        // InkWell(
+                        //     onTap: () {
+                        //       ChatService.onChat();
+                        //     },
+                        //     child: profileText(context, "CHAT_ON_WHATSAPP")),
+                        // SizedBox(height: 15),
                         InkWell(
                             onTap: () {
                               Navigator.push(

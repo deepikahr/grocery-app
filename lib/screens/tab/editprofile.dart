@@ -43,7 +43,7 @@ class _EditProfileState extends State<EditProfile> {
       isUpdateMobileNumberLoading = false;
   String? firstName, lastName, currency = "", email;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  PickedFile? image;
+  XFile? image;
   final ImagePicker _picker = ImagePicker();
   @override
   void initState() {
@@ -139,7 +139,7 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   selectGallary() async {
-    image = await _picker.getImage(
+    image = await _picker.pickImage(
         source: ImageSource.gallery, maxHeight: 800, maxWidth: 800);
     if (mounted) {
       setState(() {
@@ -150,7 +150,7 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   selectCamera() async {
-    image = await _picker.getImage(
+    image = await _picker.pickImage(
         source: ImageSource.camera, maxHeight: 800, maxWidth: 800);
 
     if (mounted) {
@@ -161,7 +161,7 @@ class _EditProfileState extends State<EditProfile> {
     imageUpload(image);
   }
 
-  imageUpload(PickedFile? _imageFile) async {
+  imageUpload(XFile? _imageFile) async {
     Navigator.pop(context);
     var stream =
         // ignore: deprecated_member_use

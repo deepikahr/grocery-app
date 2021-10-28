@@ -26,9 +26,9 @@ class Common {
 
   static Future<Map<String, dynamic>?> getAllData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String info = prefs.getString('allData')!;
+    String? info = prefs.getString('allData');
     try {
-      return json.decode(info) as Map<String, dynamic>?;
+      return json.decode(info!) as Map<String, dynamic>?;
     } catch (err) {
       return Future(() => null);
     }
@@ -41,9 +41,9 @@ class Common {
 
   static Future<Map<String, dynamic>?> getCartData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String info = prefs.getString('cartData')!;
+    String? info = prefs.getString('cartData');
     try {
-      return json.decode(info) as Map<String, dynamic>?;
+      return json.decode(info!) as Map<String, dynamic>?;
     } catch (err) {
       return Future(() => null);
     }
@@ -66,9 +66,9 @@ class Common {
 
   static Future<Map<String, dynamic>?> getBanner() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String info = prefs.getString('bannerInfo')!;
+    String? info = prefs.getString('bannerInfo');
     try {
-      return json.decode(info) as Map<String, dynamic>?;
+      return json.decode(info!) as Map<String, dynamic>?;
     } catch (err) {
       return Future(() => null);
     }
@@ -146,9 +146,9 @@ class Common {
 
   static Future<Map<String, dynamic>?> getNoConnection() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String info = prefs.getString('connection')!;
+    String? info = prefs.getString('connection');
     try {
-      return json.decode(info) as Map<String, dynamic>?;
+      return json.decode(info!) as Map<String, dynamic>?;
     } catch (err) {
       return Future(() => null);
     }
@@ -185,9 +185,9 @@ class Common {
 
   static Future<Map<String, dynamic>?> getSubcriptionData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String info = prefs.getString('subscriptionData')!;
+    String? info = prefs.getString('subscriptionData');
     try {
-      return json.decode(info) as Map<String, dynamic>?;
+      return json.decode(info!) as Map<String, dynamic>?;
     } catch (err) {
       return Future(() => null);
     }

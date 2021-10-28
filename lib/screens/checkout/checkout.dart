@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_maps_place_picker/google_maps_place_picker.dart';
-import 'package:location/location.dart';
 import 'package:readymadeGroceryApp/screens/drawer/add-address.dart';
+import 'package:readymadeGroceryApp/screens/drawer/addressPick.dart';
 import 'package:readymadeGroceryApp/screens/drawer/edit-address.dart';
 import 'package:readymadeGroceryApp/screens/payment/payment.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/coupon-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
+import 'package:readymadeGroceryApp/service/locationService.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
@@ -64,13 +65,9 @@ class _CheckoutState extends State<Checkout> {
       isDeliveryChargeFree = false,
       isGetShippingLoading = false,
       isUpdateShippingMethodLoading = false;
-  LocationData? currentLocation;
-  Location _location = new Location();
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   TextEditingController instructionController = TextEditingController();
-  PermissionStatus? _permissionGranted;
-  PickResult? pickerResult;
   @override
   void initState() {
     Common.getCurrency().then((value) {
@@ -479,30 +476,27 @@ class _CheckoutState extends State<Checkout> {
 
   addAddressPageMethod(locationlatlong) async {
     await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PlacePicker(
-            apiKey: Constants.googleMapApiKey!,
-            initialPosition: LatLng(
-                locationlatlong['latitude'], locationlatlong['longitude']),
-            useCurrentLocation: true,
-            selectInitialPosition: true,
-            onPlacePicked: (result) {
-              Navigator.of(context).pop();
-              setState(() {
-                pickerResult = result;
-              });
-            },
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddressPickPage(
+          locale: widget.locale,
+          localizedValues: widget.localizedValues,
+          initialLocation: LatLng(
+            locationlatlong['latitude'],
+            locationlatlong['longitude'],
           ),
-        ));
-    if (pickerResult != null) {
-      setState(() {
+        ),
+      ),
+    ).then((value) {
+      if (value != null && value['initialLocation'] != null) {
+        addAddressPageMethod(value['initialLocation']);
+      } else if (value != null) {
         var result = Navigator.push(
           context,
           new MaterialPageRoute(
             builder: (BuildContext context) => new AddAddress(
-              isProfile: true,
-              pickedLocation: pickerResult,
+              address: value['address'],
+              position: value['location'],
               locale: widget.locale,
               localizedValues: widget.localizedValues,
             ),
@@ -511,8 +505,8 @@ class _CheckoutState extends State<Checkout> {
         result.then((res) {
           getAddress();
         });
-      });
-    }
+      }
+    });
   }
 
   Widget buildInstructionTextField() {
@@ -965,8 +959,6 @@ class _CheckoutState extends State<Checkout> {
                                                                             widget.locale,
                                                                         localizedValues:
                                                                             widget.localizedValues,
-                                                                        isCheckout:
-                                                                            true,
                                                                         updateAddressID:
                                                                             addressList![i],
                                                                       ),
@@ -1019,44 +1011,31 @@ class _CheckoutState extends State<Checkout> {
                                             SizedBox(height: 20),
                                             InkWell(
                                                 onTap: () async {
-                                                  _permissionGranted =
-                                                      await _location
-                                                          .hasPermission();
-                                                  if (_permissionGranted ==
-                                                      PermissionStatus.denied) {
-                                                    _permissionGranted =
-                                                        await _location
-                                                            .requestPermission();
-                                                    if (_permissionGranted !=
-                                                        PermissionStatus
-                                                            .granted) {
-                                                      Map locationLatLong = {
-                                                        "latitude":
-                                                            locationInfo![
-                                                                    'location']
-                                                                ['latitude'],
-                                                        "longitude":
-                                                            locationInfo![
-                                                                    'location']
-                                                                ['longitude']
-                                                      };
+                                                  bool? permission =
+                                                      await LocationUtils()
+                                                          .locationPermission();
 
-                                                      addAddressPageMethod(
-                                                          locationLatLong);
-                                                      return;
-                                                    }
-                                                  }
-                                                  currentLocation =
-                                                      await _location
-                                                          .getLocation();
-                                                  if (currentLocation != null) {
+                                                  if (permission) {
+                                                    Position position =
+                                                        await LocationUtils()
+                                                            .currentLocation();
                                                     Map locationLatLong = {
                                                       "latitude":
-                                                          currentLocation!
-                                                              .latitude,
+                                                          position.latitude,
                                                       "longitude":
-                                                          currentLocation!
-                                                              .longitude
+                                                          position.longitude
+                                                    };
+                                                    addAddressPageMethod(
+                                                        locationLatLong);
+                                                  } else {
+                                                    Map locationLatLong = {
+                                                      "latitude": locationInfo![
+                                                              'location']
+                                                          ['latitude'],
+                                                      "longitude":
+                                                          locationInfo![
+                                                                  'location']
+                                                              ['longitude']
                                                     };
                                                     addAddressPageMethod(
                                                         locationLatLong);
