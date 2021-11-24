@@ -167,6 +167,12 @@ class _DrawerPageState extends State<DrawerPage> {
                           localizedValues: widget.localizedValues,
                         ))
                     : Container(),
+                // InkWell(
+                //     onTap: () {
+                //       ChatService.onChat();
+                //     },
+                //     child: buildDrawer(context, "CHAT_ON_WHATSAPP",
+                //         'lib/assets/icons/chat.png')),
                 _buildMenuTileList('lib/assets/icons/about.png', "ABOUT_US",
                     route: AboutUs(
                         locale: widget.locale,

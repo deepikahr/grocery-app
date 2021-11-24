@@ -726,20 +726,20 @@ class _OrderDetailsState extends State<OrderDetails> {
                     SizedBox(height: 6),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                      child:
-                          orderHistory['order']['orderStatus'] == "DELIVERED" ||
-                                  orderHistory['order']['orderStatus'] ==
-                                      "CANCELLED" ||
-                                  widget.isSubscription == true
-                              ? Container()
-                              : InkWell(
-                                  onTap: orderCancelMethod,
-                                  child: orderHistory['order']['orderStatus'] ==
-                                          "PENDING"
-                                      ? buttonprimary(context, "CANCEL_ORDER",
-                                          isOrderCancleLoading)
-                                      : Container(),
-                                ),
+                      child: orderHistory['order']['orderStatus'] ==
+                                  "DELIVERED" ||
+                              orderHistory['order']['orderStatus'] ==
+                                  "CANCELLED" ||
+                              widget.isSubscription == true
+                          ? Container()
+                          : orderHistory['order']['orderStatus'] == "PENDING"
+                              ? InkWell(
+                                  onTap: isOrderCancleLoading
+                                      ? null
+                                      : orderCancelMethod,
+                                  child: buttonprimary(context, "CANCEL_ORDER",
+                                      isOrderCancleLoading))
+                              : Container(),
                     ),
                     orderHistory['order']['isDeliveryBoyRated'] == false &&
                             orderHistory['order']['orderStatus'] == "DELIVERED"

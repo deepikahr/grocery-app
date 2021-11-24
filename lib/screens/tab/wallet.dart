@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/tab/wallet-history.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
@@ -97,29 +98,45 @@ class _WalletPageState extends State<WalletPage> {
             ),
       bottomNavigationBar: isGetWalletInfoLoading
           ? Container(height: 1)
-          : Container(
-              height: 80.0,
-              color: Colors.transparent,
-              margin: EdgeInsets.symmetric(vertical: 5, horizontal: 14),
-              child: Column(
-                children: [
-                  InkWell(
-                      onTap: () {
-                        var result = Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => AddMoney(
-                                locale: widget.locale,
-                                localizedValues: widget.localizedValues),
-                          ),
-                        );
-                        result.then((value) => userInfoMethod());
-                      },
-                      child: regularbuttonPrimary(context, "ADD_MONEY", false)),
-                  SizedBox(height: 4),
-                ],
-              ),
-            ),
+          : ((Constants.stripKey == null || Constants.stripKey!.isEmpty) &&
+                  (Constants.razorPayKey == null ||
+                      Constants.razorPayKey!.isEmpty))
+              ? Container(
+                  height: 80.0,
+                  color: Colors.transparent,
+                  margin: EdgeInsets.symmetric(vertical: 5, horizontal: 14),
+                  child: Column(
+                    children: [
+                      regularbuttonPrimary(
+                          context, "ADD_MONEY_NOT_AVAILABLE_NOW", false),
+                      SizedBox(height: 4),
+                    ],
+                  ),
+                )
+              : Container(
+                  height: 80.0,
+                  color: Colors.transparent,
+                  margin: EdgeInsets.symmetric(vertical: 5, horizontal: 14),
+                  child: Column(
+                    children: [
+                      InkWell(
+                          onTap: () {
+                            var result = Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AddMoney(
+                                    locale: widget.locale,
+                                    localizedValues: widget.localizedValues),
+                              ),
+                            );
+                            result.then((value) => userInfoMethod());
+                          },
+                          child: regularbuttonPrimary(
+                              context, "ADD_MONEY", false)),
+                      SizedBox(height: 4),
+                    ],
+                  ),
+                ),
     );
   }
 }
