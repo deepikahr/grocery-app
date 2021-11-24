@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:readymadeGroceryApp/screens/payment/payment-webview.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:readymadeGroceryApp/screens/thank-you/payment-failed.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
+import 'package:readymadeGroceryApp/service/alert-service.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
+import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/orderSevice.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
@@ -12,6 +15,7 @@ import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -35,16 +39,19 @@ class _PaymentState extends State<Payment> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   int? groupValue = 0;
-  late String currency;
-  bool? isPlaceOrderLoading = false,
+  String? currency;
+  bool isPlaceOrderLoading = false,
       isCardListLoading = false,
       isSelected = false,
       isWalletLoading = false,
       walletUsedOrNotValue = false,
       fullWalletUsedOrNot = false;
 
-  List? paymentTypes = [];
+  List paymentTypes = [];
   var walletAmount, cartItem;
+  Razorpay? _razorpay;
+  Map? userInfo;
+
   @override
   void initState() {
     fetchCardInfo();
@@ -65,10 +72,21 @@ class _PaymentState extends State<Payment> {
       });
     }
     getUserInfo();
-    paymentTypes = widget.locationInfo!["paymentMethod"];
-
+    paymentTypes = widget.locationInfo!["paymentMethod"] ?? [];
+    if (Constants.stripKey == null || Constants.stripKey!.isEmpty) {
+      setState(() {
+        paymentTypes.remove('STRIPE');
+      });
+    }
+    if (Constants.razorPayKey == null || Constants.razorPayKey!.isEmpty) {
+      setState(() {
+        paymentTypes.remove('RAZORPAY');
+      });
+    }
     await Common.getCurrency().then((value) {
-      currency = value;
+      setState(() {
+        currency = value;
+      });
     });
   }
 
@@ -76,6 +94,7 @@ class _PaymentState extends State<Payment> {
     await LoginService.getUserInfo().then((onValue) {
       if (mounted) {
         setState(() {
+          userInfo = onValue['response_data'];
           walletAmount = onValue['response_data']['walletAmount'] ?? 0;
           isCardListLoading = false;
         });
@@ -106,47 +125,60 @@ class _PaymentState extends State<Payment> {
       showSnackbar(MyLocalizations.of(context)!
           .getLocalizations("SELECT_PAYMENT_FIRST"));
     } else {
-      widget.data!['deliveryInstruction'] = widget.instruction ?? "";
+      widget.data?['paymentType'] = paymentTypes[groupValue!];
+      widget.data?['deliveryInstruction'] = widget.instruction;
       if (fullWalletUsedOrNot == true) {
         widget.data!['paymentType'] = "COD";
         palceOrderMethod(widget.data);
+      } else if (widget.data!['paymentType'] == "RAZORPAY") {
+        try {
+          await OrderService.getPaymentRazorOrderId().then((onValue) {
+            _razorpay = Razorpay();
+            var options = {
+              'key': Constants.razorPayKey,
+              'amount':
+                  (100 * cartItem['grandTotal'].toDouble()).toStringAsFixed(2),
+              'name': Constants.appName,
+              'order_id': onValue['response_data']['paymentRazorOrderId'],
+              'timeout': 300,
+              'prefill': {
+                'contact': userInfo?['mobileNumber'],
+                'email': userInfo?['email']
+              }
+            };
+
+            _razorpay?.open(options);
+          });
+          _razorpay?.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+          _razorpay?.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+        } catch (e) {
+          if (mounted) {
+            setState(() {
+              isPlaceOrderLoading = false;
+            });
+          }
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => PaymentFailed(
+                  locale: widget.locale,
+                  localizedValues: widget.localizedValues,
+                ),
+              ),
+              (Route<dynamic> route) => false);
+        }
       } else {
-        widget.data!['paymentType'] = paymentTypes![groupValue!];
         palceOrderMethod(widget.data);
       }
     }
   }
 
   palceOrderMethod(cartData) async {
-    await OrderService.placeOrder(cartData).then((onValue) {
-      if (mounted) {
-        setState(() {
-          isPlaceOrderLoading = false;
-        });
-      }
-      Common.setCartDataCount(0);
-      Common.setCartData(null);
+    await OrderService.placeOrder(cartData).then((onValue) async {
       if (cartData['paymentType'] == 'STRIPE') {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => PaymentWeViewPage(
-                  locale: widget.locale,
-                  localizedValues: widget.localizedValues,
-                  sessionId: onValue['response_data']['sessionId'],
-                  orderId: onValue['response_data']['id']),
-            ),
-            (Route<dynamic> route) => false);
+        await createOrderViaStripe(onValue['response_data']);
       } else {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => Thankyou(
-                locale: widget.locale,
-                localizedValues: widget.localizedValues,
-              ),
-            ),
-            (Route<dynamic> route) => false);
+        thankyouPage();
       }
     }).catchError((error) {
       if (mounted) {
@@ -156,6 +188,78 @@ class _PaymentState extends State<Payment> {
       }
       sentryError.reportError(error, null);
     });
+  }
+
+  Future<void> createOrderViaStripe(Map? res) async {
+    if (res?['client_secret'] != null) {
+      try {
+        await Stripe.instance.initPaymentSheet(
+          paymentSheetParameters: SetupPaymentSheetParameters(
+            paymentIntentClientSecret: res?['client_secret'],
+          ),
+        );
+
+        await Stripe.instance.presentPaymentSheet(
+          // ignore: deprecated_member_use
+          parameters: PresentPaymentSheetParameters(
+            clientSecret: res?['client_secret'],
+            confirmPayment: true,
+          ),
+        );
+        thankyouPage();
+      } on Exception catch (e) {
+        if (e is StripeException) {
+          pleaseTryAgain(res);
+        }
+      }
+    } else {
+      pleaseTryAgain(res);
+    }
+  }
+
+  pleaseTryAgain(res) async {
+    AlertService().showToast(MyLocalizations.of(context)!
+        .getLocalizations('PLEASE_TRY_AGAIN_LATER'));
+    await OrderService.orderCancel(res?['id']);
+    Common.setCartDataCount(0);
+    Common.setCartData(null);
+    paymentFailedPage();
+  }
+
+  paymentFailedPage() {
+    if (mounted) {
+      setState(() {
+        isPlaceOrderLoading = false;
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => PaymentFailed(
+                locale: widget.locale,
+                localizedValues: widget.localizedValues,
+              ),
+            ),
+            (Route<dynamic> route) => false);
+      });
+    }
+  }
+
+  thankyouPage() {
+    if (mounted) {
+      setState(() {
+        isPlaceOrderLoading = false;
+        Common.setCartDataCount(0);
+        Common.setCartData(null);
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => Thankyou(
+                locale: widget.locale,
+                localizedValues: widget.localizedValues,
+              ),
+            ),
+            (Route<dynamic> route) => false);
+      });
+    }
   }
 
   applyWallet(walleValue) async {
@@ -220,7 +324,7 @@ class _PaymentState extends State<Payment> {
       backgroundColor: bg(context),
       key: _scaffoldKey,
       appBar: appBarTransparent(context, "PAYMENT") as PreferredSizeWidget?,
-      body: isCardListLoading!
+      body: isCardListLoading
           ? SquareLoader()
           : Padding(
               padding: const EdgeInsets.only(
@@ -349,7 +453,7 @@ class _PaymentState extends State<Payment> {
                       color: Color(0xFF707070).withOpacity(0.20), thickness: 1),
                   fullWalletUsedOrNot == true
                       ? Container()
-                      : paymentTypes!.length > 0
+                      : paymentTypes.length > 0
                           ? Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -359,7 +463,7 @@ class _PaymentState extends State<Payment> {
                                 ListView.builder(
                                   physics: ScrollPhysics(),
                                   shrinkWrap: true,
-                                  itemCount: paymentTypes!.length,
+                                  itemCount: paymentTypes.length,
                                   itemBuilder:
                                       (BuildContext context, int index) {
                                     return Container(
@@ -369,11 +473,11 @@ class _PaymentState extends State<Payment> {
                                       child: RadioListTile(
                                         value: index,
                                         groupValue: groupValue,
-                                        selected: isSelected!,
+                                        selected: isSelected,
                                         activeColor: primary(context),
                                         title: textGreenprimary(
                                             context,
-                                            paymentTypes![index],
+                                            paymentTypes[index],
                                             TextStyle(color: primarybg)),
                                         onChanged: (int? selected) {
                                           if (mounted) {
@@ -382,8 +486,8 @@ class _PaymentState extends State<Payment> {
                                             });
                                           }
                                         },
-                                        secondary: paymentTypes![index] == "COD"
-                                            ? Text(currency,
+                                        secondary: paymentTypes[index] == "COD"
+                                            ? Text(currency ?? '',
                                                 style:
                                                     TextStyle(color: primarybg))
                                             : Icon(Icons.credit_card,
@@ -398,7 +502,7 @@ class _PaymentState extends State<Payment> {
                 ],
               ),
             ),
-      bottomNavigationBar: paymentTypes!.length > 0
+      bottomNavigationBar: !isCardListLoading && paymentTypes.length > 0
           ? InkWell(
               onTap: placeOrder,
               child: Padding(
@@ -417,5 +521,27 @@ class _PaymentState extends State<Payment> {
         duration: Duration(milliseconds: 3000),
       ),
     );
+  }
+
+  _handlePaymentSuccess(PaymentSuccessResponse? response) {
+    var razorPayDetails = {
+      'paymentId': response?.paymentId,
+      'signature': response?.signature,
+      'orderId': response?.orderId
+    };
+    setState(() {
+      widget.data?['razorPayDetails'] = razorPayDetails;
+      widget.data?['paymentId'] = response?.paymentId;
+    });
+    palceOrderMethod(widget.data);
+  }
+
+  _handlePaymentError(PaymentFailureResponse response) {
+    paymentFailedPage();
+    if (mounted) {
+      setState(() {
+        isPlaceOrderLoading = false;
+      });
+    }
   }
 }

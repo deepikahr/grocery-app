@@ -2,9 +2,10 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_config/flutter_config.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/service/alert-service.dart';
@@ -26,12 +27,16 @@ void main() {
 }
 
 void initializeMain({bool? isTest}) async {
-  await dotenv.load(fileName: '.env');
   WidgetsFlutterBinding.ensureInitialized();
+  await FlutterConfig.loadEnvVariables();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarBrightness: Brightness.dark,
       statusBarIconBrightness: Brightness.dark));
   AlertService().checkConnectionMethod();
+  if (Constants.stripKey != null && Constants.stripKey!.isNotEmpty) {
+    Stripe.publishableKey = Constants.stripKey!;
+    await Stripe.instance.applySettings();
+  }
   runZonedGuarded(() {
     runApp(MainScreen());
     return Future.value(null);
@@ -75,10 +80,8 @@ void userInfoMethod() async {
 Future<void> configLocalNotification() async {
   await OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
   await OneSignal.shared.setAppId(Constants.oneSignalKey!);
-  await OneSignal.shared
-      .promptUserForPushNotificationPermission(fallbackToSettings: true);
-  var status = await (OneSignal.shared.getDeviceState());
-  var playerId = status?.userId;
+  await OneSignal.shared.promptUserForPushNotificationPermission();
+  var playerId = (await OneSignal.shared.getDeviceState())?.userId;
   if (playerId != null) {
     await Common.setPlayerID(playerId);
     getToken();
