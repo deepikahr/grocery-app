@@ -37,7 +37,6 @@ workflows:
       - sh temp
       - flutter packages pub get
       - |
-        rm .env 
         flutter pub get
         cd ios
         pod update
