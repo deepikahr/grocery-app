@@ -47,8 +47,9 @@ workflows:
       - keychain initialize
       - app-store-connect fetch-signing-files "com.ionicfirebaseapp.readymadegroceryuserapp" --type IOS_APP_STORE --create
       - keychain add-certificates
+      - flutter build ios --release --no-codesign
       - xcode-project use-profiles
-      - flutter build ipa --export-options-plist=/Users/builder/export_options.plist
+      - xcode-project build-ipa --workspace "ios/Runner.xcworkspace" --scheme "Runner"
     artifacts:
       - build/**/outputs/**/*.apk
       - build/**/outputs/**/*.aab
