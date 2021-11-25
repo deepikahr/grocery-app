@@ -36,14 +36,20 @@ workflows:
       - echo $SH_FILE_VAR | base64 --decode > temp
       - sh temp
       - flutter packages pub get
+      - |
+        rm .env 
+        flutter pub get
+        cd ios
+        pod update
+        pod install
+        cd ..
       - flutter build appbundle --target-platform android-arm,android-arm64,android-x64
       - find . -name "Podfile" -execdir pod install \;
       - keychain initialize
       - app-store-connect fetch-signing-files "com.ionicfirebaseapp.readymadegroceryuserapp" --type IOS_APP_STORE --create
       - keychain add-certificates
-      - flutter build ios --release --no-codesign
       - xcode-project use-profiles
-      - xcode-project build-ipa --workspace "ios/Runner.xcworkspace" --scheme "Runner"
+      - flutter build ipa --export-options-plist=/Users/builder/export_options.plist
     artifacts:
       - build/**/outputs/**/*.apk
       - build/**/outputs/**/*.aab
@@ -54,11 +60,7 @@ workflows:
     publishing:
       email:
         recipients:
-          - pietechsolution@gmail.com
           - chandra@pietechsolution.com
-          - ujjwal.2518@gmail.com
-          - montyvipul@gmail.com
-          - sarth@pietechsolution.com
       app_store_connect:
         # app_id: "1506920690"
         apple_id: pietechsolution@gmail.com
