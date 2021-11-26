@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/payment-failed.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
-import 'package:readymadeGroceryApp/service/alert-service.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
@@ -152,20 +151,7 @@ class _PaymentState extends State<Payment> {
           _razorpay?.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
           _razorpay?.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
         } catch (e) {
-          if (mounted) {
-            setState(() {
-              isPlaceOrderLoading = false;
-            });
-          }
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (BuildContext context) => PaymentFailed(
-                  locale: widget.locale,
-                  localizedValues: widget.localizedValues,
-                ),
-              ),
-              (Route<dynamic> route) => false);
+          moveToNextPage();
         }
       } else {
         palceOrderMethod(widget.data);
@@ -178,14 +164,10 @@ class _PaymentState extends State<Payment> {
       if (cartData['paymentType'] == 'STRIPE') {
         await createOrderViaStripe(onValue['response_data']);
       } else {
-        thankyouPage();
+        moveToNextPage(thanku: true);
       }
     }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          isPlaceOrderLoading = false;
-        });
-      }
+      moveToNextPage();
       sentryError.reportError(error, null);
     });
   }
@@ -196,54 +178,29 @@ class _PaymentState extends State<Payment> {
         await Stripe.instance.initPaymentSheet(
           paymentSheetParameters: SetupPaymentSheetParameters(
             paymentIntentClientSecret: res?['client_secret'],
+            merchantDisplayName: Constants.appName,
           ),
         );
-
-        await Stripe.instance.presentPaymentSheet(
-          // ignore: deprecated_member_use
-          parameters: PresentPaymentSheetParameters(
-            clientSecret: res?['client_secret'],
-            confirmPayment: true,
-          ),
-        );
-        thankyouPage();
+        await Stripe.instance.presentPaymentSheet();
+        moveToNextPage(thanku: true);
       } on Exception catch (e) {
         if (e is StripeException) {
-          pleaseTryAgain(res);
+          orderCancelMethod(res?['id'], message: '${e.error.message ?? ''}');
+        } else {
+          orderCancelMethod(res?['id']);
         }
       }
     } else {
-      pleaseTryAgain(res);
+      orderCancelMethod(res?['id']);
     }
   }
 
-  pleaseTryAgain(res) async {
-    AlertService().showToast(MyLocalizations.of(context)!
-        .getLocalizations('PLEASE_TRY_AGAIN_LATER'));
-    await OrderService.orderCancel(res?['id']);
-    Common.setCartDataCount(0);
-    Common.setCartData(null);
-    paymentFailedPage();
+  orderCancelMethod(String orderId, {String? message}) async {
+    await OrderService.orderCancel(orderId);
+    moveToNextPage(message: message);
   }
 
-  paymentFailedPage() {
-    if (mounted) {
-      setState(() {
-        isPlaceOrderLoading = false;
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => PaymentFailed(
-                locale: widget.locale,
-                localizedValues: widget.localizedValues,
-              ),
-            ),
-            (Route<dynamic> route) => false);
-      });
-    }
-  }
-
-  thankyouPage() {
+  moveToNextPage({String? message, bool? thanku}) async {
     if (mounted) {
       setState(() {
         isPlaceOrderLoading = false;
@@ -252,11 +209,16 @@ class _PaymentState extends State<Payment> {
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-              builder: (BuildContext context) => Thankyou(
-                locale: widget.locale,
-                localizedValues: widget.localizedValues,
-              ),
-            ),
+                builder: (BuildContext context) => (thanku == true
+                    ? Thankyou(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                      )
+                    : PaymentFailed(
+                        message: message,
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                      ))),
             (Route<dynamic> route) => false);
       });
     }
@@ -536,8 +498,8 @@ class _PaymentState extends State<Payment> {
     palceOrderMethod(widget.data);
   }
 
-  _handlePaymentError(PaymentFailureResponse response) {
-    paymentFailedPage();
+  _handlePaymentError(PaymentFailureResponse response) async {
+    moveToNextPage(message: '${response.message ?? ''}');
     if (mounted) {
       setState(() {
         isPlaceOrderLoading = false;

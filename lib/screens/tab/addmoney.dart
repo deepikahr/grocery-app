@@ -46,7 +46,11 @@ class _AddMoneyState extends State<AddMoney> {
       setState(() {
         isAddMoneyLoading = true;
       });
-      Map body = {"amount": walletAmmount, "userFrom": Constants.orderFrom};
+      Map body = {
+        "amount": walletAmmount,
+        "userFrom": Constants.orderFrom,
+        "paymentType": "STRIPE"
+      };
       await OrderService.addMoneyApi(body).then((onValue) {
         if (mounted) {
           setState(() {
@@ -54,7 +58,9 @@ class _AddMoneyState extends State<AddMoney> {
           });
         }
       }).catchError((error) {
-        playmentFailedRoute();
+        setState(() {
+          isAddMoneyLoading = false;
+        });
       });
     }
   }
@@ -67,7 +73,11 @@ class _AddMoneyState extends State<AddMoney> {
       setState(() {
         isAddMoneyLoading = true;
       });
-      Map body = {"amount": walletAmmount, "userFrom": Constants.orderFrom};
+      Map body = {
+        "amount": walletAmmount,
+        "userFrom": Constants.orderFrom,
+        "paymentType": "RAZORPAY"
+      };
       await OrderService.addMoneyRazorPayId(body).then((onValue) {
         try {
           _razorpay = Razorpay();
@@ -89,95 +99,66 @@ class _AddMoneyState extends State<AddMoney> {
                   response, onValue['response_data']['walletId']));
           _razorpay?.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
         } catch (e) {
-          if (mounted) {
-            setState(() {
-              isAddMoneyLoading = false;
-            });
-          }
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => PaymentFailed(
-                locale: widget.locale,
-                localizedValues: widget.localizedValues,
-              ),
-            ),
-          );
+          moveToNextPage();
+        }
+      }).catchError((onError) {
+        if (mounted) {
+          setState(() {
+            isAddMoneyLoading = false;
+          });
         }
       });
     }
   }
 
   _handlePaymentError(PaymentFailureResponse response) {
-    playmentFailedRoute();
-  }
-
-  void showSnackbar(message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        duration: Duration(milliseconds: 3000),
-      ),
-    );
+    moveToNextPage(message: response.message ?? '');
   }
 
   Future<void> createAddMoneyToWalletViaStripe(Map? res) async {
     await Stripe.instance.initPaymentSheet(
       paymentSheetParameters: SetupPaymentSheetParameters(
         paymentIntentClientSecret: res?['client_secret'],
+        merchantDisplayName: Constants.appName,
       ),
     );
 
     if (res?['client_secret'] != null) {
       try {
-        await Stripe.instance.presentPaymentSheet(
-          // ignore: deprecated_member_use
-          parameters: PresentPaymentSheetParameters(
-              clientSecret: res?['client_secret'], confirmPayment: true),
-        );
-
-        thankuPage();
+        await Stripe.instance.presentPaymentSheet();
+        moveToNextPage(isThanku: true);
       } on Exception catch (e) {
         if (e is StripeException) {
-          playmentFailedRoute();
+          moveToNextPage(message: '${e.error.message ?? ''}');
+        } else {
+          moveToNextPage();
         }
       }
     } else {
-      playmentFailedRoute();
+      moveToNextPage();
     }
   }
 
-  thankuPage() {
+  moveToNextPage({String? message, bool? isThanku}) {
     setState(() {
       isAddMoneyLoading = false;
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (BuildContext context) => Thankyou(
-            locale: widget.locale,
-            localizedValues: widget.localizedValues,
-            isWallet: true,
-          ),
+          builder: (BuildContext context) => (isThanku == true
+              ? Thankyou(
+                  locale: widget.locale,
+                  localizedValues: widget.localizedValues,
+                  isWallet: true,
+                )
+              : PaymentFailed(
+                  message: message,
+                  locale: widget.locale,
+                  localizedValues: widget.localizedValues,
+                )),
         ),
       );
     });
-  }
-
-  playmentFailedRoute() async {
-    if (mounted) {
-      setState(() {
-        isAddMoneyLoading = false;
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) => PaymentFailed(
-              locale: widget.locale,
-              localizedValues: widget.localizedValues,
-            ),
-          ),
-        );
-      });
-    }
   }
 
   @override
@@ -244,25 +225,16 @@ class _AddMoneyState extends State<AddMoney> {
           }
         },
         validator: (String? value) {
-          double enteredVal;
-          if (value!.isEmpty) {
+          if (value == null) {
             return MyLocalizations.of(context)!
                 .getLocalizations("ENTER_ADD_VALID_AMOUNT");
+          } else if (value.isEmpty || value == '0') {
+            return MyLocalizations.of(context)!
+                .getLocalizations("ENTER_ADD_VALID_AMOUNT");
+          } else if (double.parse(value) < 1) {
+            return MyLocalizations.of(context)!
+                .getLocalizations("ENTER_MIN_1_AMOUNT");
           } else {
-            try {
-              enteredVal = double.parse(value);
-            } catch (e) {
-              try {
-                enteredVal = int.parse(value).toDouble();
-              } catch (e) {
-                return MyLocalizations.of(context)!
-                    .getLocalizations("ENTER_ADD_VALID_AMOUNT");
-              }
-            }
-            if (value.isEmpty || enteredVal < 0) {
-              return MyLocalizations.of(context)!
-                  .getLocalizations("ENTER_ADD_VALID_AMOUNT");
-            }
             return null;
           }
         },
