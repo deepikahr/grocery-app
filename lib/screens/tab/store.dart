@@ -73,9 +73,9 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   }
 
   getToken() async {
-    await Common.getCurrency().then((value) {
-      currency = value;
-    });
+    await Common.getCurrency()
+        .then((value) => setState(() => currency = value));
+
     await Common.getSelectedLanguage().then((value) async {
       locale = value;
       await Common.getToken().then((onValue) {

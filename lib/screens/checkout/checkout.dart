@@ -70,9 +70,7 @@ class _CheckoutState extends State<Checkout> {
   TextEditingController instructionController = TextEditingController();
   @override
   void initState() {
-    Common.getCurrency().then((value) {
-      currency = value;
-    });
+    Common.getCurrency().then((value) => setState(() => currency = value));
     super.initState();
     getAdminLocationInfo();
     getDeliverySlot();
@@ -522,6 +520,7 @@ class _CheckoutState extends State<Checkout> {
           },
           style: textBarlowRegularBlack(context),
           keyboardType: TextInputType.text,
+          textInputAction: TextInputAction.done,
           decoration: InputDecoration(
             counterText: "",
             errorBorder: OutlineInputBorder(
@@ -684,6 +683,10 @@ class _CheckoutState extends State<Checkout> {
                                                   ),
                                                   child: TextFormField(
                                                     textAlign: TextAlign.center,
+                                                    keyboardType:
+                                                        TextInputType.text,
+                                                    textInputAction:
+                                                        TextInputAction.done,
                                                     textCapitalization:
                                                         TextCapitalization
                                                             .words,

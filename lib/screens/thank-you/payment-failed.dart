@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
+import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
@@ -7,11 +8,13 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 class PaymentFailed extends StatefulWidget {
   final Map? localizedValues;
   final String? locale;
+  final String? message;
 
   PaymentFailed({
     Key? key,
     this.locale,
     this.localizedValues,
+    this.message,
   });
   @override
   _PaymentFailedState createState() => _PaymentFailedState();
@@ -36,7 +39,10 @@ class _PaymentFailedState extends State<PaymentFailed> {
             SizedBox(height: 10.0),
             orderPlaceText(context, "PAYMENT_FAILED"),
             SizedBox(height: 13.0),
-            thankyouText(context, "PLEASE_TRY_AGAIN_LATER"),
+            thankyouText(
+                context,
+                MyLocalizations.of(context)!.getLocalizations(
+                    '${widget.message ?? "PLEASE_TRY_AGAIN_LATER"}')),
             SizedBox(height: 30.0),
             InkWell(
                 onTap: () {

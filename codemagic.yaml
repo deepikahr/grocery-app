@@ -36,13 +36,8 @@ workflows:
       - echo $SH_FILE_VAR | base64 --decode > temp
       - sh temp
       - flutter packages pub get
-      - |
-        flutter pub get
-        cd ios
-        pod update
-        pod install
-        cd ..
       - flutter build appbundle --target-platform android-arm,android-arm64,android-x64
+      - - find . -name "Podfile" -execdir pod update \;
       - find . -name "Podfile" -execdir pod install \;
       - keychain initialize
       - app-store-connect fetch-signing-files "com.ionicfirebaseapp.readymadegroceryuserapp" --type IOS_APP_STORE --create

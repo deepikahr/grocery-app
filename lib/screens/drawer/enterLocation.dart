@@ -60,6 +60,7 @@ class _EnterLocationPageState extends State<EnterLocationPage> {
                   const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
               child: TextFormField(
                 keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.search,
                 decoration: InputDecoration(
                   errorBorder: OutlineInputBorder(
                       borderSide:

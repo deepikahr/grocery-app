@@ -141,6 +141,7 @@ class _RateDeliveryState extends State<RateDelivery> {
               child: TextFormField(
                 style: textBarlowRegularBlack(context),
                 keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.done,
                 maxLines: 5,
                 onSaved: (String? value) {
                   discription = value;

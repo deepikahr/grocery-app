@@ -8,7 +8,6 @@ import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
-
 import 'addmoney.dart';
 
 SentryError sentryError = new SentryError();
@@ -37,9 +36,9 @@ class _WalletPageState extends State<WalletPage> {
         isGetWalletInfoLoading = true;
       });
     }
-    await Common.getCurrency().then((value) {
-      currency = value;
-    });
+    await Common.getCurrency()
+        .then((value) => setState(() => currency = value));
+
     await LoginService.getUserInfo().then((onValue) {
       if (mounted) {
         setState(() {
@@ -76,21 +75,26 @@ class _WalletPageState extends State<WalletPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     walletCard1(context, 'WALLET', 'BALANCE',
-                        '$currency ${userInfo!['walletAmount'] ?? 0}'),
+                        '$currency ${(userInfo!['walletAmount'] ?? 0).toStringAsFixed(2)}'),
                     InkWell(
                       onTap: () {
                         var result = Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => WalletHistoryyPage(
-                                locale: widget.locale,
-                                localizedValues: widget.localizedValues),
+                              locale: widget.locale,
+                              localizedValues: widget.localizedValues,
+                            ),
                           ),
                         );
                         result.then((value) => userInfoMethod());
                       },
                       child: walletCard2(
-                          context, 'RECENT', 'TRANSACTIONS', "VIEW"),
+                        context,
+                        'RECENT',
+                        'TRANSACTIONS',
+                        "VIEW",
+                      ),
                     )
                   ],
                 )
@@ -101,42 +105,48 @@ class _WalletPageState extends State<WalletPage> {
           : ((Constants.stripKey == null || Constants.stripKey!.isEmpty) &&
                   (Constants.razorPayKey == null ||
                       Constants.razorPayKey!.isEmpty))
-              ? Container(
-                  height: 80.0,
-                  color: Colors.transparent,
-                  margin: EdgeInsets.symmetric(vertical: 5, horizontal: 14),
-                  child: Column(
-                    children: [
-                      regularbuttonPrimary(
-                          context, "ADD_MONEY_NOT_AVAILABLE_NOW", false),
-                      SizedBox(height: 4),
-                    ],
+              ? notAvailableButton()
+              : addMoneyButton(),
+    );
+  }
+
+  Widget notAvailableButton() {
+    return Container(
+      height: 80.0,
+      color: Colors.transparent,
+      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 14),
+      child: Column(
+        children: [
+          regularbuttonPrimary(context, "ADD_MONEY_NOT_AVAILABLE_NOW", false),
+          SizedBox(height: 4),
+        ],
+      ),
+    );
+  }
+
+  Widget addMoneyButton() {
+    return Container(
+      height: 80.0,
+      color: Colors.transparent,
+      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 14),
+      child: Column(
+        children: [
+          InkWell(
+              onTap: () {
+                var result = Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddMoney(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues),
                   ),
-                )
-              : Container(
-                  height: 80.0,
-                  color: Colors.transparent,
-                  margin: EdgeInsets.symmetric(vertical: 5, horizontal: 14),
-                  child: Column(
-                    children: [
-                      InkWell(
-                          onTap: () {
-                            var result = Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AddMoney(
-                                    locale: widget.locale,
-                                    localizedValues: widget.localizedValues),
-                              ),
-                            );
-                            result.then((value) => userInfoMethod());
-                          },
-                          child: regularbuttonPrimary(
-                              context, "ADD_MONEY", false)),
-                      SizedBox(height: 4),
-                    ],
-                  ),
-                ),
+                );
+                result.then((value) => userInfoMethod());
+              },
+              child: regularbuttonPrimary(context, "ADD_MONEY", false)),
+          SizedBox(height: 4),
+        ],
+      ),
     );
   }
 }
