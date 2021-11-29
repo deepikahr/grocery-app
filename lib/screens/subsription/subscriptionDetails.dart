@@ -40,9 +40,9 @@ class _SubscriptionDetailsState extends State<SubscriptionDetails> {
     setState(() {
       isGetSubscribedProductLoading = true;
     });
-    await Common.getCurrency().then((value) {
-      currency = value;
-    });
+    await Common.getCurrency()
+        .then((value) => setState(() => currency = value));
+
     await ProductService.getSubscriptionDetails(widget.subscriptionId)
         .then((onValue) {
       if (mounted) {

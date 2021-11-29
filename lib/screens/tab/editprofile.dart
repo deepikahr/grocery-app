@@ -57,9 +57,9 @@ class _EditProfileState extends State<EditProfile> {
         isLoading = true;
       });
     }
-    await Common.getCurrency().then((value) {
-      currency = value;
-    });
+    await Common.getCurrency()
+        .then((value) => setState(() => currency = value));
+
     await LoginService.getUserInfo().then((onValue) {
       if (mounted) {
         setState(() {
@@ -430,6 +430,7 @@ class _EditProfileState extends State<EditProfile> {
                       initialValue: userInfo!['firstName'] ?? "",
                       style: textBarlowRegularBlack(context),
                       keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
                         errorBorder: OutlineInputBorder(
                             borderSide:
@@ -470,6 +471,7 @@ class _EditProfileState extends State<EditProfile> {
                       initialValue: userInfo!['lastName'] ?? "",
                       style: textBarlowRegularBlack(context),
                       keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
                         errorBorder: OutlineInputBorder(
                             borderSide:
@@ -514,6 +516,7 @@ class _EditProfileState extends State<EditProfile> {
                       initialValue: userInfo!['email'] ?? "",
                       style: textBarlowRegularBlack(context),
                       keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.done,
                       decoration: InputDecoration(
                         errorBorder: OutlineInputBorder(
                             borderSide:

@@ -63,9 +63,9 @@ class _AllSubscriptionProductsListPageState
     productsList = [];
     productsPageNumber = productsList.length;
     totalProducts = 1;
-    await Common.getCurrency().then((value) {
-      currency = value;
-    });
+    await Common.getCurrency()
+        .then((value) => setState(() => currency = value));
+
     await Common.getToken().then((onValue) {
       if (onValue != null) {
         isUserLoaggedIn = true;
