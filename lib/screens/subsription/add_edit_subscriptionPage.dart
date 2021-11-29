@@ -653,9 +653,13 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
 
   void doSubscription() {
     if (selectedAddress != null) {
+      print(widget.subProductData);
+      print(widget.productData);
       widget.subProductData!['products'][0]["quantity"] = quantity;
-      widget.subProductData!['products'][0]["imageUrl"] = widget.productData!['productImages'][0]['imageUrl'];
-      widget.subProductData!['products'][0]["filePath"] = widget.productData!['productImages'][0]['filePath'];
+      widget.subProductData!['products'][0]["imageUrl"] =
+          widget.productData!['productImages'][0]['imageUrl'];
+      widget.subProductData!['products'][0]["filePath"] =
+          widget.productData!['productImages'][0]['filePath'];
       widget.subProductData!['grandTotal'] =
           widget.subProductData!['products'][0]["subscriptionTotal"];
       widget.subProductData!["address"] = selectedAddress['_id'];
@@ -664,6 +668,8 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
       widget.subProductData!["subscriptionStartDate"] =
           selectedDate.millisecondsSinceEpoch;
       widget.subProductData!["orderFrom"] = Constants.orderFrom;
+      // widget.subProductData!['products'][0]["productDescription"] =
+      //     Constants.orderFrom;
       setState(() {
         isSubscriptionLoading = true;
       });
