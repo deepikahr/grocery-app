@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:readymadeGroceryApp/screens/drawer/addressPick.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -178,6 +179,7 @@ class _EditAddressState extends State<EditAddress> {
                       controller: addressController,
                       style: textBarlowRegularBlack(context),
                       keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
                         counterText: "",
                         errorBorder: OutlineInputBorder(
@@ -235,7 +237,8 @@ class _EditAddressState extends State<EditAddress> {
                     initialValue: widget.updateAddressID!['flatNo'],
                     maxLength: 14,
                     style: labelStyle(context),
-                    keyboardType: TextInputType.number,
+                    keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
                         fillColor: dark(context),
                         focusColor: dark(context),
@@ -275,6 +278,7 @@ class _EditAddressState extends State<EditAddress> {
                       initialValue: widget.updateAddressID!['apartmentName'],
                       style: labelStyle(context),
                       keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
                         fillColor: dark(context),
                         focusColor: dark(context),
@@ -314,6 +318,7 @@ class _EditAddressState extends State<EditAddress> {
                       initialValue: widget.updateAddressID!['landmark'],
                       style: labelStyle(context),
                       keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
                         fillColor: dark(context),
                         focusColor: dark(context),
@@ -354,6 +359,7 @@ class _EditAddressState extends State<EditAddress> {
                           widget.updateAddressID!['postalCode'].toString(),
                       style: labelStyle(context),
                       keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
                         fillColor: dark(context),
                         focusColor: dark(context),
@@ -396,7 +402,10 @@ class _EditAddressState extends State<EditAddress> {
                         : widget.updateAddressID!['mobileNumber'].toString(),
                     maxLength: 15,
                     style: labelStyle(context),
-                    keyboardType: TextInputType.number,
+                    keyboardType: TextInputType.numberWithOptions(
+                        signed: true, decimal: false),
+                    textInputAction: TextInputAction.done,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: InputDecoration(
                         counterText: "",
                         fillColor: dark(context),

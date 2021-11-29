@@ -48,9 +48,9 @@ class _WalletHistoryyPageState extends State<WalletHistoryyPage> {
     walletHistoryList = [];
     walletsPageNumber = walletHistoryList.length;
     totalWallet = 1;
-    await Common.getCurrency().then((value) {
-      currency = value;
-    });
+    await Common.getCurrency()
+        .then((value) => setState(() => currency = value));
+
     getwalletHistoryList();
   }
 

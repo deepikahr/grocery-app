@@ -87,9 +87,9 @@ class _ProductDetailsState extends State<ProductDetails>
   }
 
   getTokenValueMethod() async {
-    await Common.getCurrency().then((value) {
-      currency = value;
-    });
+    await Common.getCurrency()
+        .then((value) => setState(() => currency = value));
+
     await Common.getToken().then((onValue) {
       if (mounted) {
         setState(() {
