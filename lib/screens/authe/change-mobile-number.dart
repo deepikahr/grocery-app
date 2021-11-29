@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:readymadeGroceryApp/screens/authe/change-mobile-otp-verify.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -122,7 +123,10 @@ class _ChangeMobileNumberState extends State<ChangeMobileNumber> {
                   padding: const EdgeInsets.only(
                       left: 20.0, right: 20.0, bottom: 20.0),
                   child: TextFormField(
-                    keyboardType: TextInputType.number,
+                    keyboardType: TextInputType.numberWithOptions(
+                        signed: true, decimal: false),
+                    textInputAction: TextInputAction.done,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: InputDecoration(
                       errorBorder: OutlineInputBorder(
                           borderSide:

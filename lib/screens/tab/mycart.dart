@@ -90,9 +90,9 @@ class _MyCartState extends State<MyCart> {
         isGetTokenLoading = true;
       });
     }
-    await Common.getCurrency().then((value) {
-      currency = value;
-    });
+    await Common.getCurrency()
+        .then((value) => setState(() => currency = value));
+
     await Common.getToken().then((onValue) {
       if (onValue != null) {
         if (mounted) {
@@ -356,7 +356,7 @@ class _MyCartState extends State<MyCart> {
           ),
           actions: <Widget>[
             GFButton(
-                color: Colors.transparent,
+              color: Colors.transparent,
               child: Text(MyLocalizations.of(context)!.getLocalizations("OK")),
               onPressed: () {
                 Navigator.pop(context);

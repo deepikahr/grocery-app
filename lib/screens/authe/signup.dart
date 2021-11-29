@@ -266,7 +266,8 @@ class _SignupState extends State<Signup> {
       child: Container(
         child: TextFormField(
           style: textBarlowRegularBlack(context),
-          keyboardType: TextInputType.emailAddress,
+          keyboardType: TextInputType.text,
+          textInputAction: TextInputAction.next,
           validator: (String? value) {
             if (value!.isEmpty) {
               return MyLocalizations.of(context)!
@@ -304,7 +305,8 @@ class _SignupState extends State<Signup> {
       child: Container(
         child: TextFormField(
           style: textBarlowRegularBlack(context),
-          keyboardType: TextInputType.emailAddress,
+          keyboardType: TextInputType.text,
+          textInputAction: TextInputAction.next,
           validator: (String? value) {
             if (value!.isEmpty) {
               return MyLocalizations.of(context)!
@@ -343,6 +345,7 @@ class _SignupState extends State<Signup> {
         child: TextFormField(
           style: textBarlowRegularBlack(context),
           keyboardType: TextInputType.emailAddress,
+          textInputAction: TextInputAction.next,
           validator: (String? value) {
             if (value!.isEmpty) {
               return null;
@@ -382,6 +385,7 @@ class _SignupState extends State<Signup> {
       child: TextFormField(
         style: textBarlowRegularBlack(context),
         keyboardType: TextInputType.text,
+        textInputAction: TextInputAction.done,
         validator: (String? value) {
           if (value!.isEmpty) {
             return MyLocalizations.of(context)!
@@ -442,7 +446,10 @@ class _SignupState extends State<Signup> {
       child: TextFormField(
         maxLength: 15,
         style: textBarlowRegularBlack(context),
-        keyboardType: TextInputType.number,
+        keyboardType:
+            TextInputType.numberWithOptions(signed: true, decimal: false),
+        textInputAction: TextInputAction.next,
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         validator: (String? value) {
           if (value!.isEmpty) {
             return MyLocalizations.of(context)!

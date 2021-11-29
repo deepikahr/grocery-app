@@ -313,6 +313,7 @@ class _LoginState extends State<Login> {
           },
           style: textBarlowRegularBlack(context),
           keyboardType: TextInputType.text,
+          textInputAction: TextInputAction.next,
           decoration: InputDecoration(
             errorBorder: OutlineInputBorder(
                 borderSide: BorderSide(width: 0, color: Color(0xFFF44242))),
@@ -340,6 +341,7 @@ class _LoginState extends State<Login> {
       child: TextFormField(
         style: textBarlowRegularBlack(context),
         keyboardType: TextInputType.text,
+        textInputAction: TextInputAction.done,
         onSaved: (String? value) {
           password = value;
         },
