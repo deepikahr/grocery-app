@@ -1,7 +1,10 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/payment-failed.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
+import 'package:readymadeGroceryApp/service/alert-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -86,10 +89,10 @@ class _AddMoneyState extends State<AddMoney> {
             'amount': (100 * walletAmmount!).toStringAsFixed(2),
             'name': Constants.appName,
             'order_id': onValue['response_data']['generatedId'],
-            'timeout': 300,
             'prefill': {
-              'contact': widget.userInfo?['mobileNumber'],
-              'email': widget.userInfo?['email']
+              'contact':
+                  '${widget.userInfo?['countryCode'] ?? ''} ${widget.userInfo?['mobileNumber'] ?? ''}',
+              'email': '${widget.userInfo?['email'] ?? ''}'
             }
           };
           _razorpay?.open(options);
@@ -112,7 +115,12 @@ class _AddMoneyState extends State<AddMoney> {
   }
 
   _handlePaymentError(PaymentFailureResponse response) {
-    moveToNextPage(message: response.message ?? '');
+    setState(() {
+      isAddMoneyLoading = false;
+      AlertService().showToast(
+          jsonDecode(response.message!)['error']['description'] ?? '');
+      _razorpay?.clear();
+    });
   }
 
   Future<void> createAddMoneyToWalletViaStripe(Map? res) async {
@@ -239,7 +247,10 @@ class _AddMoneyState extends State<AddMoney> {
           }
         },
         style: textBarlowRegularBlack(context),
-        keyboardType: TextInputType.number,
+        keyboardType:
+            TextInputType.numberWithOptions(signed: true, decimal: false),
+        textInputAction: TextInputAction.done,
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         decoration: InputDecoration(
           errorBorder: OutlineInputBorder(
             borderSide: BorderSide(
@@ -294,6 +305,8 @@ class _AddMoneyState extends State<AddMoney> {
       'generatedId': response?.orderId,
       'userFrom': Constants.orderFrom,
     };
+    _razorpay?.clear();
+
     await OrderService.addMoneyApi(razorPayDetails).then((value) {
       if (mounted) {
         setState(() {

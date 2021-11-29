@@ -70,9 +70,9 @@ class _SavedItemsState extends State<SavedItems> {
         isGetTokenLoading = true;
       });
     }
-    await Common.getCurrency().then((value) {
-      currency = value;
-    });
+    await Common.getCurrency()
+        .then((value) => setState(() => currency = value));
+
     await Common.getToken().then((onValue) {
       if (onValue != null) {
         if (mounted) {

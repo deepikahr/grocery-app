@@ -76,9 +76,9 @@ class _AllSubscribedState extends State<SubScriptionList> {
     subscriptionList = [];
     subscriptionsPageNumber = subscriptionList.length;
     totalSubscription = 1;
-    await Common.getCurrency().then((value) {
-      currency = value;
-    });
+    await Common.getCurrency()
+        .then((value) => setState(() => currency = value));
+
     await Common.getToken().then((onValue) {
       if (onValue != null) {
         isUserLoaggedIn = true;
@@ -214,13 +214,13 @@ class _AllSubscribedState extends State<SubScriptionList> {
             .getLocalizations("YOU_WANT_TO_CANCEL_SUBSCRIPTION")),
         actions: <Widget>[
           GFButton(
-             color: Colors.transparent,
+            color: Colors.transparent,
             onPressed: () => Navigator.pop(context, false),
             child:
                 new Text(MyLocalizations.of(context)!.getLocalizations("NO")),
           ),
-        GFButton(
-         color: Colors.transparent,
+          GFButton(
+            color: Colors.transparent,
             onPressed: () {
               setState(() {
                 subscIndex = index;

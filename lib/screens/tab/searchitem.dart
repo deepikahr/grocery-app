@@ -54,9 +54,9 @@ class _SearchItemState extends State<SearchItem> {
         isTokenGetLoading = true;
       });
     }
-    await Common.getCurrency().then((value) {
-      currency = value;
-    });
+    await Common.getCurrency()
+        .then((value) => setState(() => currency = value));
+
     await Common.getToken().then((onValue) {
       if (onValue != null) {
         if (mounted) {
@@ -181,6 +181,8 @@ class _SearchItemState extends State<SearchItem> {
                         bottom: 15.0, left: 15.0, right: 15.0, top: 50.0),
                     child: Container(
                       child: new TextFormField(
+                        keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.search,
                         onEditingComplete: () {
                           FocusScopeNode currentScope = FocusScope.of(context);
                           FocusScopeNode rootScope =

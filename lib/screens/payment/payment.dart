@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/payment-failed.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
+import 'package:readymadeGroceryApp/service/alert-service.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
@@ -82,11 +84,8 @@ class _PaymentState extends State<Payment> {
         paymentTypes.remove('RAZORPAY');
       });
     }
-    await Common.getCurrency().then((value) {
-      setState(() {
-        currency = value;
-      });
-    });
+    await Common.getCurrency()
+        .then((value) => setState(() => currency = value));
   }
 
   getUserInfo() async {
@@ -139,10 +138,10 @@ class _PaymentState extends State<Payment> {
                   (100 * cartItem['grandTotal'].toDouble()).toStringAsFixed(2),
               'name': Constants.appName,
               'order_id': onValue['response_data']['paymentRazorOrderId'],
-              'timeout': 300,
               'prefill': {
-                'contact': userInfo?['mobileNumber'],
-                'email': userInfo?['email']
+                'contact':
+                    '${userInfo?['countryCode'] ?? ''} ${userInfo?['mobileNumber'] ?? ''}',
+                'email': '${userInfo?['email'] ?? ''}'
               }
             };
 
@@ -151,7 +150,12 @@ class _PaymentState extends State<Payment> {
           _razorpay?.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
           _razorpay?.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
         } catch (e) {
-          moveToNextPage();
+          if (mounted) {
+            setState(() {
+              isPlaceOrderLoading = false;
+              AlertService().showToast(e.toString());
+            });
+          }
         }
       } else {
         palceOrderMethod(widget.data);
@@ -495,14 +499,17 @@ class _PaymentState extends State<Payment> {
       widget.data?['razorPayDetails'] = razorPayDetails;
       widget.data?['paymentId'] = response?.paymentId;
     });
+    _razorpay?.clear();
     palceOrderMethod(widget.data);
   }
 
   _handlePaymentError(PaymentFailureResponse response) async {
-    moveToNextPage(message: '${response.message ?? ''}');
     if (mounted) {
       setState(() {
         isPlaceOrderLoading = false;
+        AlertService().showToast(
+            jsonDecode(response.message!)['error']['description'] ?? '');
+        _razorpay?.clear();
       });
     }
   }
