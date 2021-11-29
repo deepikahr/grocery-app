@@ -222,9 +222,12 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                                               "subScriptionAmount":
                                                   widget.productData!['variant']
                                                       [0]['subScriptionAmount'],
+                                              "productDescription": widget
+                                                  .productData!['description']
                                             },
                                           ],
                                         };
+
                                         subProduct['products'][0]
                                                 ["subscriptionTotal"] =
                                             subProduct['products'][0]
