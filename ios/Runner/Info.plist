@@ -11,7 +11,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>Readymade Grocery App</string>
+	<string>La Gazza</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -25,11 +25,11 @@
 	<key>NSCameraUsageDescription</key>
 	<string>This app requires access to the camera to set user profile picture.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>This app requires access to your current location to show user's address and location on map view.</string>
+	<string>This app requires access to your current location to show users location on map view.</string>
 	<key>NSLocationUsageDescription</key>
-	<string>This app requires access to your current location to show user's address and location on map view.</string>
+	<string>This app requires access to your current location to show users location on map view.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app requires access to your current location to show user's address and location on map view.</string>
+	<string>This app requires access to your current location to show users location on map view.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app requires access to the microphone.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
