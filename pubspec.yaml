@@ -40,7 +40,7 @@ dependencies:
   cached_network_image: ^3.0.0
   connectivity: ^3.0.6
   provider: ^5.0.0
-  photo_view: ^0.11.1
+  photo_view: ^0.13.0
   flutter_stripe: ^1.2.0
   google_maps_webservice: ^0.0.20-nullsafety.5
   razorpay_flutter: ^1.2.7
