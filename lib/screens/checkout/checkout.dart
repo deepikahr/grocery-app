@@ -344,7 +344,6 @@ class _CheckoutState extends State<Checkout> {
               localizedValues: widget.localizedValues,
               data: data,
               cartItems: cartItem,
-              locationInfo: locationInfo,
               instruction: instructionController.text),
         ),
       );

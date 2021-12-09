@@ -12,6 +12,8 @@ class Styles {
           unselectedItemColor: greyc2,
           selectedItemColor: primarybg),
       textSelectionTheme: TextSelectionThemeData(
+        selectionColor: Colors.transparent,
+        selectionHandleColor: Colors.transparent,
         cursorColor: isDarkTheme ? greyb2 : darkbg,
       ),
       appBarTheme: isDarkTheme

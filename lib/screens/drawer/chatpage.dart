@@ -224,26 +224,28 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
       );
 
   void _submitMsg(String txt) async {
-    Timer(Duration(milliseconds: 300), () {
-      Timer(
-          Duration(milliseconds: 300),
-          () => _scrollController
-              .jumpTo(_scrollController.position.maxScrollExtent));
-    });
-    _textController.clear();
-    if (mounted) {
-      setState(() {
-        _isWriting = false;
+    if (txt.length > 0) {
+      Timer(Duration(milliseconds: 300), () {
+        Timer(
+            Duration(milliseconds: 300),
+            () => _scrollController
+                .jumpTo(_scrollController.position.maxScrollExtent));
       });
-    }
-    var chatInfo = {
-      "message": txt,
-      "sentBy": 'USER',
-      "userName": userData['firstName'],
-      "userId": userData['_id']
-    };
-    socket.emit('message-user-to-store', chatInfo);
+      _textController.clear();
+      if (mounted) {
+        setState(() {
+          _isWriting = false;
+        });
+      }
+      var chatInfo = {
+        "message": txt,
+        "sentBy": 'USER',
+        "userName": userData['firstName'],
+        "userId": userData['_id']
+      };
+      socket.emit('message-user-to-store', chatInfo);
 
-    chatList.add(chatInfo);
+      chatList.add(chatInfo);
+    }
   }
 }
