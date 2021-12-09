@@ -54,6 +54,7 @@ class _PaymentState extends State<Payment> {
 
   @override
   void initState() {
+    Common.getCurrency().then((value) => setState(() => currency = value));
     fetchCardInfo();
     cartItem = widget.cartItems;
     if (cartItem['walletAmount'] > 0) {
@@ -73,18 +74,16 @@ class _PaymentState extends State<Payment> {
     }
     getUserInfo();
     paymentTypes.add('COD');
-    if (Constants.stripKey != null || Constants.stripKey!.isNotEmpty) {
+    if (Constants.stripKey != null && Constants.stripKey!.isNotEmpty) {
       setState(() {
         paymentTypes.add('STRIPE');
       });
-    }
-    if (Constants.razorPayKey != null || Constants.razorPayKey!.isNotEmpty) {
+    } else if (Constants.razorPayKey != null &&
+        Constants.razorPayKey!.isNotEmpty) {
       setState(() {
         paymentTypes.add('RAZORPAY');
       });
     }
-    await Common.getCurrency()
-        .then((value) => setState(() => currency = value));
   }
 
   getUserInfo() async {

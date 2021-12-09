@@ -319,6 +319,7 @@ class _AddMoneyState extends State<AddMoney> {
       if (mounted) {
         setState(() {
           isAddMoneyLoading = false;
+          addMoneyController.clear();
           Navigator.push(
             context,
             MaterialPageRoute(
