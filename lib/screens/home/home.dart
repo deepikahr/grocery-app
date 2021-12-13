@@ -15,6 +15,7 @@ import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/locationService.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/socket.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
@@ -53,7 +54,9 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   GeoCode geoCode = GeoCode();
   var addressData;
 
+  var socketService = SocketService();
   void initState() {
+    socketService.socketInitialize();
     if (widget.currentIndex != null) {
       if (mounted) {
         setState(() {

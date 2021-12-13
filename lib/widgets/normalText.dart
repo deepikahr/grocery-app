@@ -514,73 +514,70 @@ Widget addressPage(BuildContext context, title) {
 }
 
 Widget chatMessgae(BuildContext context, message, isOwn) {
-  return Padding(
-    padding: const EdgeInsets.only(left: 16.0),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: <Widget>[
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: isOwn
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.only(
-                            top: 12.0, bottom: 14.0, left: 16.0, right: 16.0),
-                        constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * 0.6,
-                        ),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(40),
-                              topRight: Radius.circular(0),
-                              bottomRight: Radius.circular(40),
-                              bottomLeft: Radius.circular(40),
-                            ),
-                            color: primarybg.withOpacity(0.60)),
-                        child: Text(
-                          message,
-                          textAlign: TextAlign.left,
-                        ),
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.start,
+    crossAxisAlignment: CrossAxisAlignment.end,
+    children: <Widget>[
+      Expanded(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: isOwn
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.only(
+                          top: 12.0, bottom: 14.0, left: 16.0, right: 16.0),
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * 0.6,
                       ),
-                    ],
-                  )
-                : Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.only(
-                            top: 12.0, bottom: 14.0, left: 16.0, right: 16.0),
-                        constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * 0.6,
-                        ),
-                        decoration: BoxDecoration(
+                      decoration: BoxDecoration(
                           borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(0),
-                            topRight: Radius.circular(40),
+                            topLeft: Radius.circular(40),
+                            topRight: Radius.circular(0),
                             bottomRight: Radius.circular(40),
                             bottomLeft: Radius.circular(40),
                           ),
-                          color: Theme.of(context).brightness == Brightness.dark
-                              ? greyb2
-                              : Color(0xFFF0F0F0),
-                        ),
-                        child: Text(
-                          message,
-                          textAlign: TextAlign.left,
-                        ),
+                          color: primarybg.withOpacity(0.60)),
+                      child: Text(
+                        message,
+                        textAlign: TextAlign.left,
                       ),
-                    ],
-                  ),
-          ),
+                    ),
+                  ],
+                )
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.only(
+                          top: 12.0, bottom: 14.0, left: 16.0, right: 16.0),
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * 0.6,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(0),
+                          topRight: Radius.circular(40),
+                          bottomRight: Radius.circular(40),
+                          bottomLeft: Radius.circular(40),
+                        ),
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? greyb2
+                            : Color(0xFFF0F0F0),
+                      ),
+                      child: Text(
+                        message,
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                  ],
+                ),
         ),
-      ],
-    ),
+      ),
+    ],
   );
 }
 

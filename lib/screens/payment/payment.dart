@@ -22,13 +22,12 @@ SentryError sentryError = new SentryError();
 
 class Payment extends StatefulWidget {
   final String? locale, instruction;
-  final Map? data, locationInfo, localizedValues, cartItems;
+  final Map? data, localizedValues, cartItems;
   Payment(
       {Key? key,
       this.data,
       this.locale,
       this.localizedValues,
-      this.locationInfo,
       this.cartItems,
       this.instruction})
       : super(key: key);
@@ -55,6 +54,7 @@ class _PaymentState extends State<Payment> {
 
   @override
   void initState() {
+    Common.getCurrency().then((value) => setState(() => currency = value));
     fetchCardInfo();
     cartItem = widget.cartItems;
     if (cartItem['walletAmount'] > 0) {
@@ -73,19 +73,17 @@ class _PaymentState extends State<Payment> {
       });
     }
     getUserInfo();
-    paymentTypes = widget.locationInfo!["paymentMethod"] ?? [];
-    if (Constants.stripKey == null || Constants.stripKey!.isEmpty) {
+    paymentTypes.add('COD');
+    if (Constants.stripKey != null && Constants.stripKey!.isNotEmpty) {
       setState(() {
-        paymentTypes.remove('STRIPE');
+        paymentTypes.add('STRIPE');
+      });
+    } else if (Constants.razorPayKey != null &&
+        Constants.razorPayKey!.isNotEmpty) {
+      setState(() {
+        paymentTypes.add('RAZORPAY');
       });
     }
-    if (Constants.razorPayKey == null || Constants.razorPayKey!.isEmpty) {
-      setState(() {
-        paymentTypes.remove('RAZORPAY');
-      });
-    }
-    await Common.getCurrency()
-        .then((value) => setState(() => currency = value));
   }
 
   getUserInfo() async {
@@ -507,8 +505,12 @@ class _PaymentState extends State<Payment> {
     if (mounted) {
       setState(() {
         isPlaceOrderLoading = false;
-        AlertService().showToast(
-            jsonDecode(response.message!)['error']['description'] ?? '');
+        AlertService().showToast((response.message is String
+            ? response.message
+            : response.message != null
+                ? jsonDecode(response.message!)['error']['description'] ?? ''
+                : ''));
+
         _razorpay?.clear();
       });
     }

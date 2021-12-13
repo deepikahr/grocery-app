@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:readymadeGroceryApp/screens/thank-you/payment-failed.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
 import 'package:readymadeGroceryApp/service/alert-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
@@ -30,10 +29,11 @@ class AddMoney extends StatefulWidget {
 
 class _AddMoneyState extends State<AddMoney> {
   String currency = "";
-  double? walletAmmount;
+  double? walletAmount;
   bool isAddMoneyLoading = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Razorpay? _razorpay;
+  final TextEditingController addMoneyController = new TextEditingController();
 
   @override
   void initState() {
@@ -50,7 +50,7 @@ class _AddMoneyState extends State<AddMoney> {
         isAddMoneyLoading = true;
       });
       Map body = {
-        "amount": walletAmmount,
+        "amount": walletAmount,
         "userFrom": Constants.orderFrom,
         "paymentType": "STRIPE"
       };
@@ -77,7 +77,7 @@ class _AddMoneyState extends State<AddMoney> {
         isAddMoneyLoading = true;
       });
       Map body = {
-        "amount": walletAmmount,
+        "amount": walletAmount,
         "userFrom": Constants.orderFrom,
         "paymentType": "RAZORPAY"
       };
@@ -86,7 +86,7 @@ class _AddMoneyState extends State<AddMoney> {
           _razorpay = Razorpay();
           var options = {
             'key': Constants.razorPayKey,
-            'amount': (100 * walletAmmount!).toStringAsFixed(2),
+            'amount': (100 * walletAmount!).toStringAsFixed(2),
             'name': Constants.appName,
             'order_id': onValue['response_data']['generatedId'],
             'prefill': {
@@ -115,12 +115,17 @@ class _AddMoneyState extends State<AddMoney> {
   }
 
   _handlePaymentError(PaymentFailureResponse response) {
-    setState(() {
-      isAddMoneyLoading = false;
-      AlertService().showToast(
-          jsonDecode(response.message!)['error']['description'] ?? '');
-      _razorpay?.clear();
-    });
+    if (mounted) {
+      setState(() {
+        isAddMoneyLoading = false;
+        AlertService().showToast((response.message is String
+            ? response.message
+            : response.message != null
+                ? jsonDecode(response.message!)['error']['description'] ?? ''
+                : ''));
+        _razorpay?.clear();
+      });
+    }
   }
 
   Future<void> createAddMoneyToWalletViaStripe(Map? res) async {
@@ -135,11 +140,13 @@ class _AddMoneyState extends State<AddMoney> {
       try {
         await Stripe.instance.presentPaymentSheet();
         moveToNextPage(isThanku: true);
+        addMoneyController.clear();
       } on Exception catch (e) {
         if (e is StripeException) {
           moveToNextPage(message: '${e.error.message ?? ''}');
-        } else {
-          moveToNextPage();
+        }
+        if (e is PlatformException) {
+          moveToNextPage(message: e.message);
         }
       }
     } else {
@@ -150,23 +157,24 @@ class _AddMoneyState extends State<AddMoney> {
   moveToNextPage({String? message, bool? isThanku}) {
     setState(() {
       isAddMoneyLoading = false;
+    });
+    if (isThanku == true) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (BuildContext context) => (isThanku == true
-              ? Thankyou(
-                  locale: widget.locale,
-                  localizedValues: widget.localizedValues,
-                  isWallet: true,
-                )
-              : PaymentFailed(
-                  message: message,
-                  locale: widget.locale,
-                  localizedValues: widget.localizedValues,
-                )),
+          builder: (BuildContext context) => (Thankyou(
+            locale: widget.locale,
+            localizedValues: widget.localizedValues,
+            isWallet: true,
+          )),
         ),
       );
-    });
+    } else {
+      if (message != null) {
+        AlertService()
+            .showToast(MyLocalizations.of(context)!.getLocalizations(message));
+      }
+    }
   }
 
   @override
@@ -205,8 +213,7 @@ class _AddMoneyState extends State<AddMoney> {
                     if (Constants.stripKey != null &&
                         Constants.stripKey!.isNotEmpty) {
                       addMoney();
-                    }
-                    if (Constants.razorPayKey != null &&
+                    } else if (Constants.razorPayKey != null &&
                         Constants.razorPayKey!.isNotEmpty) {
                       addMoneyVaiRazorpay();
                     }
@@ -220,16 +227,17 @@ class _AddMoneyState extends State<AddMoney> {
       );
 
   Widget buildLabelText() {
-    return buildGFTypography(context, "AMOUNT", false, false);
+    return buildGFTypography(context, "AMOUNT", true, true);
   }
 
   Widget buildTextField() {
     return Container(
       margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
       child: TextFormField(
+        controller: addMoneyController,
         onSaved: (String? value) {
           if (value!.length > 0) {
-            walletAmmount = double.parse(value);
+            walletAmount = double.parse(value);
           }
         },
         validator: (String? value) {
@@ -297,7 +305,7 @@ class _AddMoneyState extends State<AddMoney> {
   _handlePaymentSuccess(
       PaymentSuccessResponse? response, String? walletId) async {
     var razorPayDetails = {
-      'amount': walletAmmount,
+      'amount': walletAmount,
       'paymentType': 'RAZORPAY',
       'walletId': walletId,
       'paymentId': response?.paymentId,
@@ -311,6 +319,7 @@ class _AddMoneyState extends State<AddMoney> {
       if (mounted) {
         setState(() {
           isAddMoneyLoading = false;
+          addMoneyController.clear();
           Navigator.push(
             context,
             MaterialPageRoute(
