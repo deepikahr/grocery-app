@@ -48,6 +48,8 @@ dependencies:
     git:
       url: https://github.com/Realank/flutter_datetime_picker.git
       ref: master
+  go_sell_sdk_flutter: ^2.1.1
+  webview_flutter: ^2.0.13
   flutter_localizations:
     sdk: flutter
 

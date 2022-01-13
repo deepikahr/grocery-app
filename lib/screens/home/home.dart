@@ -84,21 +84,27 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           currencyLoading = false;
         });
       }
-      if (onValue['response_data']['currencySymbol'] == null) {
-        await Common.setCurrency('\$');
+      if (onValue['response_data'] != null &&
+          onValue['response_data']['currencySymbol'] != null) {
+        await Common.setCurrency(onValue['response_data']['currencySymbol']);
+        await Common.setCurrencyCode(onValue['response_data']['currencyCode']);
         await Common.getCurrency()
             .then((value) => setState(() => currency = value));
       } else {
+        await Common.setCurrency('\$');
+        await Common.setCurrencyCode('USD');
         await Common.getCurrency()
             .then((value) => setState(() => currency = value));
-        await Common.setCurrency(currency!);
       }
-    }).catchError((error) {
+    }).catchError((error) async {
       if (mounted) {
         setState(() {
           currencyLoading = false;
           Common.setCurrency('\$');
+          Common.setCurrencyCode('USD');
         });
+        await Common.getCurrency()
+            .then((value) => setState(() => currency = value));
       }
       sentryError.reportError(error, null);
     });

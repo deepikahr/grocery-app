@@ -38,6 +38,25 @@ class Constants {
 
   static String orderFrom = "USER_APP";
 
+  static String bundleId = "com.ionicfirebaseapp.readymadegroceryuserapp";
+
+  static String? tapProductionSecreteKey =
+      FlutterConfig.get('TAP_PRODUCTION_SECRETE_KEY');
+
+  static String? tapSandBoxSecretKey =
+      FlutterConfig.get('TAP_SEND_BOX_SECRETE_KEY');
+  static List currencyList = [
+    'AED', // UAE Dirham
+    'BHD', // Bahraini Dinar
+    'EGP', // Egyptian Pound
+    'EUR', // Euro
+    'GBP', // UK Pound Sterling
+    'KWD', // Kuwaiti Dinar
+    'OMR', // Omani Riyal
+    'QAR', // Qatari Riyal
+    'SAR', // Saudi Riyal
+    'USD', // US Dollar
+  ];
   // countries code
   static List countryCode = [
     {"name": "Afghanistan", "dial_code": "+93", "code": "AF"},

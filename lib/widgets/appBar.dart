@@ -50,6 +50,18 @@ Widget appBarTransparent(BuildContext context, title) {
       elevation: 0);
 }
 
+Widget appBarTransparentWithOutBack(BuildContext context, title) {
+  return GFAppBar(
+    title: Text(MyLocalizations.of(context)!.getLocalizations(title),
+        style: textbarlowSemiBoldBlack(context)),
+    centerTitle: true,
+    backgroundColor: Colors.transparent,
+    iconTheme: IconThemeData(color: dark(context)),
+    elevation: 0,
+    automaticallyImplyLeading: false,
+  );
+}
+
 Widget appBarTransparentWithoutBack(BuildContext context, title) {
   return GFAppBar(
       automaticallyImplyLeading: false,

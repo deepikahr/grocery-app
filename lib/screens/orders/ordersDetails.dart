@@ -98,6 +98,7 @@ class _OrderDetailsState extends State<OrderDetails> {
   orderCancelMethod() async {
     if (mounted) {
       setState(() {
+        Navigator.pop(context, false);
         isOrderCancleLoading = true;
       });
     }
