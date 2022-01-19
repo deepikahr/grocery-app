@@ -10,79 +10,26 @@ import 'package:readymadeGroceryApp/service/orderSevice.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class WebViewFlutterTapPay extends StatefulWidget {
+class WebViewOrderTapPay extends StatefulWidget {
   final String? orderId, tapUrl, locale;
   final Map? localizedValues;
-  WebViewFlutterTapPay(
+  WebViewOrderTapPay(
       {Key? key, this.orderId, this.tapUrl, this.locale, this.localizedValues})
       : super(key: key);
 
   @override
-  _WebViewFlutterTapPayState createState() => _WebViewFlutterTapPayState();
+  _WebViewOrderTapPayState createState() => _WebViewOrderTapPayState();
 }
 
-class _WebViewFlutterTapPayState extends State<WebViewFlutterTapPay> {
+class _WebViewOrderTapPayState extends State<WebViewOrderTapPay> {
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
-
-  var payData;
   Timer? timer;
-  String? selectedUrl, transectionStatus;
-  bool isLoading = false;
   paymentResponse(id) async {
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
-    print("jjjjjjjjjjjjjjjjjjjjjjj");
     await OrderService.getPaymentStatus(id).then((onValue) {
-      print(onValue);
-      try {
-        if (onValue['response_code'] == 200) {
-          setState(() {
-            if (timer != null) {
-              timer?.cancel();
-            }
-            transectionStatus = "Success";
-            selectedUrl = onValue['response_data']['url'];
+      if (onValue['response_code'] == 200) {
+        setState(() {
+          if (onValue['response_data']['success'] == true) {
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
@@ -92,32 +39,19 @@ class _WebViewFlutterTapPayState extends State<WebViewFlutterTapPay> {
                   ),
                 ),
                 (Route<dynamic> route) => false);
-          });
-        } else if (onValue['response_code'] == 402) {
-          setState(() {
-            transectionStatus = "Faild";
-            selectedUrl = onValue['response_data']['url'];
+          } else {
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
                   builder: (BuildContext context) => PaymentFailed(
                     locale: widget.locale,
                     localizedValues: widget.localizedValues,
-                    message: onValue['response_data']['msg'],
+                    message: onValue['response_data']['message'],
                   ),
                 ),
                 (Route<dynamic> route) => false);
-            if (timer != null) {
-              timer?.cancel();
-            }
-          });
-        } else {
-          setState(() {
-            transectionStatus = null;
-          });
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
+          }
+        });
       }
     }).catchError((error) {
       sentryError.reportError(error, null);
@@ -127,24 +61,20 @@ class _WebViewFlutterTapPayState extends State<WebViewFlutterTapPay> {
   orderCancel() async {
     await OrderService.orderCancelApi(widget.orderId).then((onValue) {
       Navigator.pop(context);
-      try {
-        if (timer != null) {
-          timer?.cancel();
-        }
-        if (onValue['response_code'] == 200) {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (BuildContext context) => Home(
-                  locale: widget.locale,
-                  localizedValues: widget.localizedValues,
-                  currentIndex: 0,
-                ),
+      if (timer != null) {
+        timer?.cancel();
+      }
+      if (onValue['response_code'] == 200) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => Home(
+                locale: widget.locale,
+                localizedValues: widget.localizedValues,
+                currentIndex: 0,
               ),
-              (Route<dynamic> route) => false);
-        }
-      } catch (error, stackTrace) {
-        sentryError.reportError(error, stackTrace);
+            ),
+            (Route<dynamic> route) => false);
       }
     }).catchError((error) {
       sentryError.reportError(error, null);
@@ -161,68 +91,51 @@ class _WebViewFlutterTapPayState extends State<WebViewFlutterTapPay> {
 
   @override
   void initState() {
-    timer = new Timer.periodic(Duration(seconds: 3), (_) {
+    timer = new Timer.periodic(Duration(seconds: 5), (_) {
       paymentResponse(widget.orderId);
     });
-    selectedUrl = widget.tapUrl.toString();
     super.initState();
+  }
+
+  showDailodBackPress() {
+    showDialog(
+      context: context,
+      builder: (context) => new AlertDialog(
+        title: new Text(
+            MyLocalizations.of(context)?.getLocalizations('ARE_YOU_SURE')),
+        content: new Text(MyLocalizations.of(context)
+            ?.getLocalizations('DO_YOU_WANT_TO_DISMISS_PAYMENT_PROCESS')),
+        actions: <Widget>[
+          GFButton(
+            color: Colors.transparent,
+            onPressed: () => Navigator.pop(context, false),
+            child:
+                new Text(MyLocalizations.of(context)?.getLocalizations('NO')),
+          ),
+          GFButton(
+            color: Colors.transparent,
+            onPressed: orderCancel,
+            child:
+                new Text(MyLocalizations.of(context)?.getLocalizations('YES')),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
-        transectionStatus == "Faild"
-            ? Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => PaymentFailed(
-                    locale: widget.locale,
-                    localizedValues: widget.localizedValues,
-                  ),
-                ),
-                (Route<dynamic> route) => false)
-            : transectionStatus == "Success"
-                ? Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => Thankyou(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
-                      ),
-                    ),
-                    (Route<dynamic> route) => false)
-                : showDialog(
-                    context: context,
-                    builder: (context) => new AlertDialog(
-                      title: new Text(MyLocalizations.of(context)
-                          ?.getLocalizations('ARE_YOU_SURE')),
-                      content: new Text(MyLocalizations.of(context)
-                          ?.getLocalizations(
-                              'DO_YOU_WANT_TO_DISMISS_PAYMENT_PROCESS')),
-                      actions: <Widget>[
-                        GFButton(
-                          color: Colors.transparent,
-                          onPressed: () => Navigator.pop(context, false),
-                          child: new Text(MyLocalizations.of(context)
-                              ?.getLocalizations('NO')),
-                        ),
-                        GFButton(
-                          color: Colors.transparent,
-                          onPressed: orderCancel,
-                          child: new Text(MyLocalizations.of(context)
-                              ?.getLocalizations('YES')),
-                        ),
-                      ],
-                    ),
-                  );
+        showDailodBackPress();
         return new Future(() => false);
       },
       child: Scaffold(
-        appBar: appBarTransparentWithOutBack(context, "PAYMENT")
-            as PreferredSizeWidget?,
+        appBar: appBarTransparentWithBackTab(context, "PAYMENT", () {
+          showDailodBackPress();
+        }) as PreferredSizeWidget?,
         body: WebView(
-          initialUrl: selectedUrl,
+          initialUrl: widget.tapUrl,
           javascriptMode: JavascriptMode.unrestricted,
           onWebViewCreated: (WebViewController webViewController) {
             _controller.complete(webViewController);

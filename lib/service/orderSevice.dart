@@ -85,13 +85,19 @@ class OrderService {
 
   static Future<dynamic> getPaymentStatus(id) async {
     final response = await client
-        .get(Uri.parse(Constants.apiUrl! + 'orders/payment/status/$id'));
+        .get(Uri.parse(Constants.apiUrl! + '/orders/payment-status/$id'));
+    return json.decode(response.body);
+  }
+
+  static Future<dynamic> getPaymentStatusWallet(id) async {
+    final response = await client
+        .get(Uri.parse(Constants.apiUrl! + '/wallets/payment-status/$id'));
     return json.decode(response.body);
   }
 
   static Future<dynamic> orderCancelApi(id) async {
-    final response = await client
-        .get(Uri.parse(Constants.apiUrl! + 'orders/cancel/order/$id'));
+    final response =
+        await client.put(Uri.parse(Constants.apiUrl! + '/orders/cancel/$id'));
     return json.decode(response.body);
   }
 }

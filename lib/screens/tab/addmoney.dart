@@ -2,8 +2,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:go_sell_sdk_flutter/go_sell_sdk_flutter.dart';
+import 'package:go_sell_sdk_flutter/model/models.dart';
+import 'package:readymadeGroceryApp/screens/tab/addMoneyTabPaymentWebView.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
 import 'package:readymadeGroceryApp/service/alert-service.dart';
+import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -12,6 +16,7 @@ import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
+import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
@@ -30,15 +35,228 @@ class AddMoney extends StatefulWidget {
 class _AddMoneyState extends State<AddMoney> {
   String currency = "";
   double? walletAmount;
-  bool isAddMoneyLoading = false;
+  bool isAddMoneyLoading = false, isLoading = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Razorpay? _razorpay;
+  Map? userInfo;
   final TextEditingController addMoneyController = new TextEditingController();
+  Map<dynamic, dynamic>? tapSDKResult;
+  String? sdkErrorCode;
+  String? sdkErrorMessage;
+  String? sdkErrorDescription;
 
   @override
   void initState() {
     Common.getCurrency().then((value) => setState(() => currency = value));
+    if (Constants.tapProductionSecreteKey != null &&
+        Constants.tapProductionSecreteKey!.isNotEmpty &&
+        Constants.tapSandBoxSecretKey != null &&
+        Constants.tapSandBoxSecretKey!.isNotEmpty) {
+      setState(() {
+        isLoading = true;
+        getUserInfo();
+      });
+    }
     super.initState();
+  }
+
+  getUserInfo() async {
+    await LoginService.getUserInfo().then((onValue) {
+      if (mounted) {
+        setState(() {
+          userInfo = onValue['response_data'];
+          isLoading = false;
+          configureApp();
+        });
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+      sentryError.reportError(error, null);
+    });
+  }
+
+  Future<void> configureApp() async {
+    GoSellSdkFlutter.configureApp(
+      bundleId: Constants.bundleId,
+      productionSecreteKey: Constants.tapProductionSecreteKey!,
+      sandBoxsecretKey: Constants.tapSandBoxSecretKey!,
+      lang: widget.locale ?? 'en',
+    );
+    print(GoSellSdkFlutter.appCredentials);
+  }
+
+  addMoneyWithTapPayment() async {
+    final form = _formKey.currentState!;
+    if (form.validate()) {
+      form.save();
+      FocusScope.of(context).unfocus();
+      setState(() {
+        isAddMoneyLoading = true;
+      });
+      setupSDKSession();
+    }
+  }
+
+  Future<void> setupSDKSession() async {
+    try {
+      GoSellSdkFlutter.sessionConfigurations(
+        allowedCadTypes: CardType.ALL,
+        allowsToEditCardHolderName: true,
+        cardHolderName:
+            '${userInfo?['firstName'] ?? ''} ${userInfo?['lastName'] ?? ''}',
+        trxMode: TransactionMode.TOKENIZE_CARD,
+        transactionCurrency: currency,
+        amount: walletAmount!.toDouble().toStringAsFixed(2),
+        customer: Customer(
+          customerId: '${userInfo?['_id'] ?? ''}',
+          email: '${userInfo?['email'] ?? ''}',
+          isdNumber: '${userInfo?['countryCode'] ?? ''} ',
+          number: '${userInfo?['mobileNumber'] ?? ''}',
+          firstName: '${userInfo?['firstName'] ?? ''}',
+          middleName: "",
+          lastName: '${userInfo?['lastName'] ?? ''}',
+          metaData: null,
+        ),
+        paymentItems: <PaymentItem>[],
+        taxes: [],
+        shippings: [],
+        postURL: "https://tap.company",
+        paymentDescription: "paymentDescription",
+        paymentMetaData: {"a": "a meta", "b": "b meta"},
+        paymentReference: Reference(
+          acquirer: "acquirer",
+          gateway: "gateway",
+          payment: "payment",
+          track: "track",
+          transaction: "transaction",
+          order: "add money",
+        ),
+        paymentStatementDescriptor: "paymentStatementDescriptor",
+        isUserAllowedToSaveCard: true,
+        isRequires3DSecure: false,
+        receipt: Receipt(true, true),
+        authorizeAction:
+            AuthorizeAction(type: AuthorizeActionType.CAPTURE, timeInHours: 10),
+        destinations: Destinations(
+          currency: currency,
+          amount: double.parse(walletAmount!.toDouble().toStringAsFixed(2)),
+          count: 1,
+        ),
+        merchantID: "",
+        applePayMerchantID: "applePayMerchantID",
+        allowsToSaveSameCardMoreThanOnce: false,
+        paymentType: PaymentType.ALL,
+        sdkMode: Constants.sdkModeType,
+      );
+      startSDK();
+    } on PlatformException {
+      AlertService().showToast(
+          MyLocalizations.of(context)?.getLocalizations("PAYMENT_FAILED"));
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      tapSDKResult = {};
+    });
+  }
+
+  Future<void> startSDK() async {
+    tapSDKResult = await GoSellSdkFlutter.startPaymentSDK;
+
+    setState(() {
+      switch (tapSDKResult?['sdk_result']) {
+        case "SUCCESS":
+          callTapAddMonet(tapSDKResult?['token']);
+          break;
+        case "FAILED":
+          if (mounted) {
+            setState(() {
+              isAddMoneyLoading = false;
+            });
+          }
+          AlertService().showToast(
+              MyLocalizations.of(context)?.getLocalizations("PAYMENT_FAILED"));
+          break;
+        case "CANCELLED":
+          if (mounted) {
+            setState(() {
+              isAddMoneyLoading = false;
+            });
+          }
+          AlertService().showToast(MyLocalizations.of(context)
+              ?.getLocalizations("PAYMENT_CANCELLED"));
+          break;
+        case "SDK_ERROR":
+          if (mounted) {
+            setState(() {
+              isAddMoneyLoading = false;
+            });
+          }
+          sdkErrorCode = tapSDKResult?['sdk_error_code'].toString();
+          sdkErrorMessage = tapSDKResult?['sdk_error_message'];
+          sdkErrorDescription = tapSDKResult?['sdk_error_description'];
+          if (sdkErrorCode != null) {
+            AlertService().showToast(sdkErrorCode);
+          } else if (sdkErrorMessage != null) {
+            AlertService().showToast(sdkErrorMessage);
+          } else if (sdkErrorDescription != null) {
+            AlertService().showToast(sdkErrorDescription);
+          } else {
+            AlertService().showToast(MyLocalizations.of(context)
+                ?.getLocalizations(MyLocalizations.of(context)
+                    ?.getLocalizations('PLEASE_TRY_AGAIN_LATER')));
+          }
+
+          break;
+
+        case "NOT_IMPLEMENTED":
+          if (mounted) {
+            setState(() {
+              isAddMoneyLoading = false;
+            });
+          }
+          AlertService().showToast(MyLocalizations.of(context)
+              ?.getLocalizations("PLEASE_TRY_AGAIN_LATER"));
+          break;
+      }
+    });
+  }
+
+  callTapAddMonet(String token) async {
+    Map body = {
+      "amount": walletAmount,
+      "userFrom": Constants.orderFrom,
+      "paymentType": "TAP",
+      "tapSourceId": token,
+    };
+    await OrderService.addMoneyApi(body).then((onValue) {
+      if (mounted) {
+        setState(() {
+          isAddMoneyLoading = false;
+          var result = Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => WebViewAddMoneyTapPay(
+                locale: widget.locale,
+                localizedValues: widget.localizedValues,
+                orderId: onValue['response_data']['id'],
+                tapUrl: onValue['response_data']['url'],
+              ),
+            ),
+          );
+          result.then((value) => addMoneyController.clear());
+        });
+      }
+    }).catchError((error) {
+      setState(() {
+        isAddMoneyLoading = false;
+      });
+    });
   }
 
   addMoney() async {
@@ -162,11 +380,11 @@ class _AddMoneyState extends State<AddMoney> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (BuildContext context) => (Thankyou(
+          builder: (BuildContext context) => Thankyou(
             locale: widget.locale,
             localizedValues: widget.localizedValues,
             isWallet: true,
-          )),
+          ),
         ),
       );
     } else {
@@ -181,49 +399,71 @@ class _AddMoneyState extends State<AddMoney> {
   Widget build(BuildContext context) => Scaffold(
         appBar:
             appBarPrimarynoradius(context, "ADD_MONEY") as PreferredSizeWidget?,
-        body: GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-          },
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 14),
-            child: Form(
-              key: _formKey,
-              child: ListView(
-                shrinkWrap: true,
-                children: [
-                  SizedBox(height: 40),
-                  buildImageView(),
-                  buildAddMoneyTextDescription(),
-                  buildLabelText(),
-                  buildTextField(),
-                ],
+        body: isLoading
+            ? Center(child: SquareLoader())
+            : GestureDetector(
+                onTap: () {
+                  FocusScope.of(context).unfocus();
+                },
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 14),
+                  child: Form(
+                    key: _formKey,
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: [
+                        SizedBox(height: 40),
+                        buildImageView(),
+                        buildAddMoneyTextDescription(),
+                        buildLabelText(),
+                        buildTextField(),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
-        bottomNavigationBar: Container(
-          height: 80.0,
-          color: Colors.transparent,
-          margin: EdgeInsets.symmetric(vertical: 5, horizontal: 14),
-          child: Column(
-            children: [
-              InkWell(
-                  onTap: () {
-                    if (Constants.stripKey != null &&
-                        Constants.stripKey!.isNotEmpty) {
-                      addMoney();
-                    } else if (Constants.razorPayKey != null &&
-                        Constants.razorPayKey!.isNotEmpty) {
-                      addMoneyVaiRazorpay();
-                    }
-                  },
-                  child: regularbuttonPrimary(
-                      context, "ADD_MONEY", isAddMoneyLoading)),
-              SizedBox(height: 4),
-            ],
-          ),
-        ),
+        bottomNavigationBar: isLoading
+            ? Container(height: 1)
+            : Container(
+                height: 80.0,
+                color: Colors.transparent,
+                margin: EdgeInsets.symmetric(vertical: 5, horizontal: 14),
+                child: Column(
+                  children: [
+                    InkWell(
+                        onTap: () async {
+                          if (Constants.stripKey != null &&
+                              Constants.stripKey!.isNotEmpty) {
+                            addMoney();
+                          } else if (Constants.razorPayKey != null &&
+                              Constants.razorPayKey!.isNotEmpty) {
+                            addMoneyVaiRazorpay();
+                          } else if (Constants.tapProductionSecreteKey !=
+                                  null &&
+                              Constants.tapProductionSecreteKey!.isNotEmpty &&
+                              Constants.tapSandBoxSecretKey != null &&
+                              Constants.tapSandBoxSecretKey!.isNotEmpty) {
+                            var code = await Common.getCurrencyCode();
+                            if (code.isNotEmpty) {
+                              final res = Constants.currencyList
+                                  .any((element) => element == code);
+                              if (res) {
+                                addMoneyWithTapPayment();
+                              } else {
+                                AlertService().showToast(MyLocalizations.of(
+                                        context)
+                                    ?.getLocalizations(
+                                        'ADDMONEY_NOT_ACCEPTABLE_FOR_THIS_CURRENCY'));
+                              }
+                            }
+                          }
+                        },
+                        child: regularbuttonPrimary(
+                            context, "ADD_MONEY", isAddMoneyLoading)),
+                    SizedBox(height: 4),
+                  ],
+                ),
+              ),
       );
 
   Widget buildLabelText() {
@@ -320,16 +560,7 @@ class _AddMoneyState extends State<AddMoney> {
         setState(() {
           isAddMoneyLoading = false;
           addMoneyController.clear();
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => Thankyou(
-                locale: widget.locale,
-                localizedValues: widget.localizedValues,
-                isWallet: true,
-              ),
-            ),
-          );
+          moveToNextPage(isThanku: true);
         });
       }
     }).catchError((error) {

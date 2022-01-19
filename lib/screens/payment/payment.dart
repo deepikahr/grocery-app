@@ -56,8 +56,6 @@ class _PaymentState extends State<Payment> {
   Razorpay? _razorpay;
   Map? userInfo;
   Map<dynamic, dynamic>? tapSDKResult;
-  String responseID = "";
-  String sdkStatus = "";
   String? sdkErrorCode;
   String? sdkErrorMessage;
   String? sdkErrorDescription;
@@ -81,15 +79,7 @@ class _PaymentState extends State<Payment> {
     super.initState();
   }
 
-  Future<void> configureSDK() async {
-    // configure app
-    configureApp();
-    // sdk session configurations
-    setupSDKSession();
-  }
-
   Future<void> configureApp() async {
-    print("kkk");
     GoSellSdkFlutter.configureApp(
       bundleId: Constants.bundleId,
       productionSecreteKey: Constants.tapProductionSecreteKey!,
@@ -98,7 +88,6 @@ class _PaymentState extends State<Payment> {
     );
   }
 
-// Platform messages are asynchronous, so we initialize in an async method.
   Future<void> setupSDKSession() async {
     try {
       GoSellSdkFlutter.sessionConfigurations(
@@ -120,20 +109,11 @@ class _PaymentState extends State<Payment> {
           metaData: null,
         ),
         paymentItems: <PaymentItem>[],
-        // List of taxes
         taxes: [],
-        // List of shippnig
         shippings: [],
-        // Post URL
         postURL: "https://tap.company",
-        // Payment description
         paymentDescription: "paymentDescription",
-        // Payment Metadata
-        paymentMetaData: {
-          "a": "a meta",
-          "b": "b meta",
-        },
-        // Payment Reference
+        paymentMetaData: {"a": "a meta", "b": "b meta"},
         paymentReference: Reference(
           acquirer: "acquirer",
           gateway: "gateway",
@@ -142,18 +122,12 @@ class _PaymentState extends State<Payment> {
           transaction: "transaction",
           order: "order",
         ),
-        // payment Descriptor
         paymentStatementDescriptor: "paymentStatementDescriptor",
-        // Save Card Switch
         isUserAllowedToSaveCard: true,
-        // Enable/Disable 3DSecure
         isRequires3DSecure: false,
-        // Receipt SMS/Email
         receipt: Receipt(true, true),
-        // Authorize Action [Capture - Void]
         authorizeAction:
             AuthorizeAction(type: AuthorizeActionType.CAPTURE, timeInHours: 10),
-        // Destinations
         destinations: Destinations(
           currency: currency!,
           amount: double.parse(
@@ -164,12 +138,12 @@ class _PaymentState extends State<Payment> {
         applePayMerchantID: "applePayMerchantID",
         allowsToSaveSameCardMoreThanOnce: false,
         paymentType: PaymentType.ALL,
-        sdkMode: SDKMode.Sandbox,
+        sdkMode: Constants.sdkModeType,
       );
+      startSDK();
     } on PlatformException {
-      // platformVersion = 'Failed to get platform version.';
-
-      AlertService().showToast("Failed to get platform version.");
+      AlertService().showToast(
+          MyLocalizations.of(context)?.getLocalizations("PAYMENT_FAILED"));
     }
 
     if (!mounted) return;
@@ -185,22 +159,26 @@ class _PaymentState extends State<Payment> {
     setState(() {
       switch (tapSDKResult?['sdk_result']) {
         case "SUCCESS":
-          sdkStatus = "SUCCESS";
-          print('tapSDKResult------$tapSDKResult');
-          Map<String, dynamic> transactionDetails = {
-            "tokenId": tapSDKResult?['token'],
-          };
-          widget.data?['transactionDetails'] = transactionDetails;
+          widget.data?['tapSourceId'] = tapSDKResult?['token'];
           palceOrderMethod(widget.data);
           break;
         case "FAILED":
-          sdkStatus = "FAILED";
           if (mounted) {
             setState(() {
               isPlaceOrderLoading = false;
             });
           }
-          AlertService().showToast(sdkStatus);
+          AlertService().showToast(
+              MyLocalizations.of(context)?.getLocalizations("PAYMENT_FAILED"));
+          break;
+        case "CANCELLED":
+          if (mounted) {
+            setState(() {
+              isPlaceOrderLoading = false;
+            });
+          }
+          AlertService().showToast(MyLocalizations.of(context)
+              ?.getLocalizations("PAYMENT_CANCELLED"));
           break;
         case "SDK_ERROR":
           if (mounted) {
@@ -208,9 +186,6 @@ class _PaymentState extends State<Payment> {
               isPlaceOrderLoading = false;
             });
           }
-          print(tapSDKResult?['sdk_error_code']);
-          print(tapSDKResult?['sdk_error_message']);
-          print(tapSDKResult?['sdk_error_description']);
           sdkErrorCode = tapSDKResult?['sdk_error_code'].toString();
           sdkErrorMessage = tapSDKResult?['sdk_error_message'];
           sdkErrorDescription = tapSDKResult?['sdk_error_description'];
@@ -222,7 +197,8 @@ class _PaymentState extends State<Payment> {
             AlertService().showToast(sdkErrorDescription);
           } else {
             AlertService().showToast(MyLocalizations.of(context)
-                ?.getLocalizations('PLEASE_TRY_AGAIN_LATER'));
+                ?.getLocalizations(MyLocalizations.of(context)
+                    ?.getLocalizations('PLEASE_TRY_AGAIN_LATER')));
           }
 
           break;
@@ -233,9 +209,8 @@ class _PaymentState extends State<Payment> {
               isPlaceOrderLoading = false;
             });
           }
-          sdkStatus = "NOT_IMPLEMENTED";
-          AlertService().showToast(sdkStatus);
-
+          AlertService().showToast(MyLocalizations.of(context)
+              ?.getLocalizations("PLEASE_TRY_AGAIN_LATER"));
           break;
       }
     });
@@ -279,7 +254,7 @@ class _PaymentState extends State<Payment> {
         Constants.tapSandBoxSecretKey!.isNotEmpty) {
       setState(() {
         paymentTypes.add('TAP');
-        configureSDK();
+        configureApp();
       });
     }
   }
@@ -338,7 +313,7 @@ class _PaymentState extends State<Payment> {
         if (code.isNotEmpty) {
           final res = Constants.currencyList.any((element) => element == code);
           if (res) {
-            startSDK();
+            setupSDKSession();
           } else {
             if (mounted) {
               setState(() {
@@ -361,10 +336,12 @@ class _PaymentState extends State<Payment> {
       if (cartData['paymentType'] == 'STRIPE') {
         await createOrderViaStripe(onValue['response_data']);
       } else if (cartData['paymentType'] == 'TAP') {
+        Common.setCartDataCount(0);
+        Common.setCartData(null);
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (BuildContext context) => WebViewFlutterTapPay(
+            builder: (BuildContext context) => WebViewOrderTapPay(
               locale: widget.locale,
               localizedValues: widget.localizedValues,
               orderId: onValue['response_data']['id'],
@@ -376,6 +353,11 @@ class _PaymentState extends State<Payment> {
         moveToNextPage(thanku: true);
       }
     }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          isPlaceOrderLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }

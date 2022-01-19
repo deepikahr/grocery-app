@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -50,7 +52,8 @@ Widget appBarTransparent(BuildContext context, title) {
       elevation: 0);
 }
 
-Widget appBarTransparentWithOutBack(BuildContext context, title) {
+Widget appBarTransparentWithBackTab(
+    BuildContext context, title, Function()? onPress) {
   return GFAppBar(
     title: Text(MyLocalizations.of(context)!.getLocalizations(title),
         style: textbarlowSemiBoldBlack(context)),
@@ -58,7 +61,11 @@ Widget appBarTransparentWithOutBack(BuildContext context, title) {
     backgroundColor: Colors.transparent,
     iconTheme: IconThemeData(color: dark(context)),
     elevation: 0,
-    automaticallyImplyLeading: false,
+    leading: InkWell(
+        onTap: onPress,
+        child: Platform.isIOS
+            ? Icon(Icons.arrow_back_ios)
+            : Icon(Icons.arrow_back)),
   );
 }
 

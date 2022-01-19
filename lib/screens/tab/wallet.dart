@@ -103,8 +103,12 @@ class _WalletPageState extends State<WalletPage> {
       bottomNavigationBar: isGetWalletInfoLoading
           ? Container(height: 1)
           : ((Constants.stripKey == null || Constants.stripKey!.isEmpty) &&
-                  (Constants.razorPayKey == null ||
-                      Constants.razorPayKey!.isEmpty))
+                      (Constants.razorPayKey == null ||
+                          Constants.razorPayKey!.isEmpty)) &&
+                  (Constants.tapProductionSecreteKey == null ||
+                      Constants.tapProductionSecreteKey!.isEmpty &&
+                          Constants.tapSandBoxSecretKey == null ||
+                      Constants.tapSandBoxSecretKey!.isEmpty)
               ? notAvailableButton()
               : addMoneyButton(),
     );

@@ -51,6 +51,9 @@ class ApiInterceptor implements InterceptorContract {
       await Common.deleteToken();
       await Common.deleteUserId();
       return Future.error('Unexpected error 😢');
+    } else if (data.statusCode == 500) {
+      AlertService().showToast(errorData['message'] ?? 'Unexpected error 😢');
+      return Future.error('Unexpected error 😢');
     }
     return data;
   }

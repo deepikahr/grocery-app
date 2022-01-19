@@ -1,6 +1,8 @@
 import 'package:flutter_config/flutter_config.dart';
 import 'dart:io';
 
+import 'package:go_sell_sdk_flutter/go_sell_sdk_flutter.dart';
+
 class Constants {
   // app name
   static String appName = 'Readymade Grocery App';
@@ -45,6 +47,11 @@ class Constants {
 
   static String? tapSandBoxSecretKey =
       FlutterConfig.get('TAP_SEND_BOX_SECRETE_KEY');
+  // tap testing
+  static SDKMode sdkModeType = SDKMode.Sandbox;
+  // tap production
+  // static SDKMode sdkModeType = SDKMode.Production;
+
   static List currencyList = [
     'AED', // UAE Dirham
     'BHD', // Bahraini Dinar
