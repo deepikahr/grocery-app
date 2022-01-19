@@ -1,6 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:go_sell_sdk_flutter/go_sell_sdk_flutter.dart';
+import 'package:go_sell_sdk_flutter/model/models.dart';
+import 'package:readymadeGroceryApp/screens/payment/tapPaymnetWebView.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/payment-failed.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
 import 'package:readymadeGroceryApp/service/alert-service.dart';
@@ -51,11 +55,20 @@ class _PaymentState extends State<Payment> {
   var walletAmount, cartItem;
   Razorpay? _razorpay;
   Map? userInfo;
+  Map<dynamic, dynamic>? tapSDKResult;
+  String? sdkErrorCode;
+  String? sdkErrorMessage;
+  String? sdkErrorDescription;
 
   @override
   void initState() {
+    if (mounted) {
+      setState(() {
+        isCardListLoading = true;
+      });
+    }
+    getUserInfo();
     Common.getCurrency().then((value) => setState(() => currency = value));
-    fetchCardInfo();
     cartItem = widget.cartItems;
     if (cartItem['walletAmount'] > 0) {
       walletUsedOrNotValue = true;
@@ -66,24 +79,141 @@ class _PaymentState extends State<Payment> {
     super.initState();
   }
 
-  fetchCardInfo() async {
-    if (mounted) {
-      setState(() {
-        isCardListLoading = true;
-      });
+  Future<void> configureApp() async {
+    GoSellSdkFlutter.configureApp(
+      bundleId: Constants.bundleId,
+      productionSecreteKey: Constants.tapProductionSecreteKey!,
+      sandBoxsecretKey: Constants.tapSandBoxSecretKey!,
+      lang: widget.locale ?? 'en',
+    );
+  }
+
+  Future<void> setupSDKSession() async {
+    try {
+      GoSellSdkFlutter.sessionConfigurations(
+        allowedCadTypes: CardType.ALL,
+        allowsToEditCardHolderName: true,
+        cardHolderName:
+            '${userInfo?['firstName'] ?? ''} ${userInfo?['lastName'] ?? ''}',
+        trxMode: TransactionMode.TOKENIZE_CARD,
+        transactionCurrency: currency!,
+        amount: cartItem['grandTotal'].toDouble().toStringAsFixed(2),
+        customer: Customer(
+          customerId: '${userInfo?['_id'] ?? ''}',
+          email: '${userInfo?['email'] ?? ''}',
+          isdNumber: '${userInfo?['countryCode'] ?? ''} ',
+          number: '${userInfo?['mobileNumber'] ?? ''}',
+          firstName: '${userInfo?['firstName'] ?? ''}',
+          middleName: "",
+          lastName: '${userInfo?['lastName'] ?? ''}',
+          metaData: null,
+        ),
+        paymentItems: <PaymentItem>[],
+        taxes: [],
+        shippings: [],
+        postURL: "https://tap.company",
+        paymentDescription: "paymentDescription",
+        paymentMetaData: {"a": "a meta", "b": "b meta"},
+        paymentReference: Reference(
+          acquirer: "acquirer",
+          gateway: "gateway",
+          payment: "payment",
+          track: "track",
+          transaction: "transaction",
+          order: "order",
+        ),
+        paymentStatementDescriptor: "paymentStatementDescriptor",
+        isUserAllowedToSaveCard: true,
+        isRequires3DSecure: false,
+        receipt: Receipt(true, true),
+        authorizeAction:
+            AuthorizeAction(type: AuthorizeActionType.CAPTURE, timeInHours: 10),
+        destinations: Destinations(
+          currency: currency!,
+          amount: double.parse(
+              cartItem['grandTotal'].toDouble().toStringAsFixed(2)),
+          count: cartItem['products'].length,
+        ),
+        merchantID: "",
+        applePayMerchantID: "applePayMerchantID",
+        allowsToSaveSameCardMoreThanOnce: false,
+        paymentType: PaymentType.ALL,
+        sdkMode: Constants.sdkModeType,
+      );
+      startSDK();
+    } on PlatformException {
+      AlertService().showToast(
+          MyLocalizations.of(context)?.getLocalizations("PAYMENT_FAILED"));
     }
-    getUserInfo();
-    paymentTypes.add('COD');
-    if (Constants.stripKey != null && Constants.stripKey!.isNotEmpty) {
-      setState(() {
-        paymentTypes.add('STRIPE');
-      });
-    } else if (Constants.razorPayKey != null &&
-        Constants.razorPayKey!.isNotEmpty) {
-      setState(() {
-        paymentTypes.add('RAZORPAY');
-      });
-    }
+
+    if (!mounted) return;
+
+    setState(() {
+      tapSDKResult = {};
+    });
+  }
+
+  Future<void> startSDK() async {
+    tapSDKResult = await GoSellSdkFlutter.startPaymentSDK;
+
+    setState(() {
+      switch (tapSDKResult?['sdk_result']) {
+        case "SUCCESS":
+          widget.data?['tapSourceId'] = tapSDKResult?['token'];
+          palceOrderMethod(widget.data);
+          break;
+        case "FAILED":
+          if (mounted) {
+            setState(() {
+              isPlaceOrderLoading = false;
+            });
+          }
+          AlertService().showToast(
+              MyLocalizations.of(context)?.getLocalizations("PAYMENT_FAILED"));
+          break;
+        case "CANCELLED":
+          if (mounted) {
+            setState(() {
+              isPlaceOrderLoading = false;
+            });
+          }
+          AlertService().showToast(MyLocalizations.of(context)
+              ?.getLocalizations("PAYMENT_CANCELLED"));
+          break;
+        case "SDK_ERROR":
+          if (mounted) {
+            setState(() {
+              isPlaceOrderLoading = false;
+            });
+          }
+          sdkErrorCode = tapSDKResult?['sdk_error_code'].toString();
+          sdkErrorMessage = tapSDKResult?['sdk_error_message'];
+          sdkErrorDescription = tapSDKResult?['sdk_error_description'];
+          if (sdkErrorCode != null) {
+            AlertService().showToast(sdkErrorCode);
+          } else if (sdkErrorMessage != null) {
+            AlertService().showToast(sdkErrorMessage);
+          } else if (sdkErrorDescription != null) {
+            AlertService().showToast(sdkErrorDescription);
+          } else {
+            AlertService().showToast(MyLocalizations.of(context)
+                ?.getLocalizations(MyLocalizations.of(context)
+                    ?.getLocalizations('PLEASE_TRY_AGAIN_LATER')));
+          }
+
+          break;
+
+        case "NOT_IMPLEMENTED":
+          if (mounted) {
+            setState(() {
+              isPlaceOrderLoading = false;
+            });
+          }
+          AlertService().showToast(MyLocalizations.of(context)
+              ?.getLocalizations("PLEASE_TRY_AGAIN_LATER"));
+          break;
+      }
+    });
   }
 
   getUserInfo() async {
@@ -93,6 +223,7 @@ class _PaymentState extends State<Payment> {
           userInfo = onValue['response_data'];
           walletAmount = onValue['response_data']['walletAmount'] ?? 0;
           isCardListLoading = false;
+          setPayment();
         });
       }
     }).catchError((error) {
@@ -104,6 +235,28 @@ class _PaymentState extends State<Payment> {
       }
       sentryError.reportError(error, null);
     });
+  }
+
+  setPayment() {
+    paymentTypes.add('COD');
+    if (Constants.stripKey != null && Constants.stripKey!.isNotEmpty) {
+      setState(() {
+        paymentTypes.add('STRIPE');
+      });
+    } else if (Constants.razorPayKey != null &&
+        Constants.razorPayKey!.isNotEmpty) {
+      setState(() {
+        paymentTypes.add('RAZORPAY');
+      });
+    } else if (Constants.tapProductionSecreteKey != null &&
+        Constants.tapProductionSecreteKey!.isNotEmpty &&
+        Constants.tapSandBoxSecretKey != null &&
+        Constants.tapSandBoxSecretKey!.isNotEmpty) {
+      setState(() {
+        paymentTypes.add('TAP');
+        configureApp();
+      });
+    }
   }
 
   placeOrder() async {
@@ -155,6 +308,23 @@ class _PaymentState extends State<Payment> {
             });
           }
         }
+      } else if (widget.data?['paymentType'] == "TAP") {
+        var code = await Common.getCurrencyCode();
+        if (code.isNotEmpty) {
+          final res = Constants.currencyList.any((element) => element == code);
+          if (res) {
+            setupSDKSession();
+          } else {
+            if (mounted) {
+              setState(() {
+                isPlaceOrderLoading = false;
+                AlertService().showToast(MyLocalizations.of(context)
+                    ?.getLocalizations(
+                        'ORDER_NOT_ACCEPTABLE_FOR_THIS_CURRENCY'));
+              });
+            }
+          }
+        }
       } else {
         palceOrderMethod(widget.data);
       }
@@ -165,11 +335,29 @@ class _PaymentState extends State<Payment> {
     await OrderService.placeOrder(cartData).then((onValue) async {
       if (cartData['paymentType'] == 'STRIPE') {
         await createOrderViaStripe(onValue['response_data']);
+      } else if (cartData['paymentType'] == 'TAP') {
+        Common.setCartDataCount(0);
+        Common.setCartData(null);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => WebViewOrderTapPay(
+              locale: widget.locale,
+              localizedValues: widget.localizedValues,
+              orderId: onValue['response_data']['id'],
+              tapUrl: onValue['response_data']['url'],
+            ),
+          ),
+        );
       } else {
         moveToNextPage(thanku: true);
       }
     }).catchError((error) {
-      moveToNextPage();
+      if (mounted) {
+        setState(() {
+          isPlaceOrderLoading = false;
+        });
+      }
       sentryError.reportError(error, null);
     });
   }
