@@ -105,8 +105,8 @@ class _WalletPageState extends State<WalletPage> {
           : ((Constants.stripKey == null || Constants.stripKey!.isEmpty) &&
                       (Constants.razorPayKey == null ||
                           Constants.razorPayKey!.isEmpty)) &&
-                  (Constants.tapProductionSecreteKey == null ||
-                      Constants.tapProductionSecreteKey!.isEmpty &&
+                  (Constants.tapProductionSecretKey == null ||
+                      Constants.tapProductionSecretKey!.isEmpty &&
                           Constants.tapSandBoxSecretKey == null ||
                       Constants.tapSandBoxSecretKey!.isEmpty)
               ? notAvailableButton()

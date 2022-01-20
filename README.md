@@ -16,6 +16,8 @@ ANDROID_GOOGLE_MAP_API_KEY=
 IOS_GOOGLE_MAP_API_KEY=
 RAZOR_PAY_KEY=
 PREDEFINED=
+TAP_PRODUCTION_SECRET_KEY=
+TAP_SAND_BOX_SECRET_KEY=
 ```
 ### to generate new icons & splash for android and ios.
 

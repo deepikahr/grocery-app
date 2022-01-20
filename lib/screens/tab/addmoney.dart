@@ -48,8 +48,8 @@ class _AddMoneyState extends State<AddMoney> {
   @override
   void initState() {
     Common.getCurrency().then((value) => setState(() => currency = value));
-    if (Constants.tapProductionSecreteKey != null &&
-        Constants.tapProductionSecreteKey!.isNotEmpty &&
+    if (Constants.tapProductionSecretKey != null &&
+        Constants.tapProductionSecretKey!.isNotEmpty &&
         Constants.tapSandBoxSecretKey != null &&
         Constants.tapSandBoxSecretKey!.isNotEmpty) {
       setState(() {
@@ -82,7 +82,7 @@ class _AddMoneyState extends State<AddMoney> {
   Future<void> configureApp() async {
     GoSellSdkFlutter.configureApp(
       bundleId: Constants.bundleId,
-      productionSecreteKey: Constants.tapProductionSecreteKey!,
+      productionSecreteKey: Constants.tapProductionSecretKey!,
       sandBoxsecretKey: Constants.tapSandBoxSecretKey!,
       lang: widget.locale ?? 'en',
     );
@@ -438,9 +438,8 @@ class _AddMoneyState extends State<AddMoney> {
                           } else if (Constants.razorPayKey != null &&
                               Constants.razorPayKey!.isNotEmpty) {
                             addMoneyVaiRazorpay();
-                          } else if (Constants.tapProductionSecreteKey !=
-                                  null &&
-                              Constants.tapProductionSecreteKey!.isNotEmpty &&
+                          } else if (Constants.tapProductionSecretKey != null &&
+                              Constants.tapProductionSecretKey!.isNotEmpty &&
                               Constants.tapSandBoxSecretKey != null &&
                               Constants.tapSandBoxSecretKey!.isNotEmpty) {
                             var code = await Common.getCurrencyCode();

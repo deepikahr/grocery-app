@@ -42,11 +42,11 @@ class Constants {
 
   static String bundleId = "com.ionicfirebaseapp.readymadegroceryuserapp";
 
-  static String? tapProductionSecreteKey =
-      FlutterConfig.get('TAP_PRODUCTION_SECRETE_KEY');
+  static String? tapProductionSecretKey =
+      FlutterConfig.get('TAP_PRODUCTION_SECRET_KEY');
 
   static String? tapSandBoxSecretKey =
-      FlutterConfig.get('TAP_SEND_BOX_SECRETE_KEY');
+      FlutterConfig.get('TAP_SAND_BOX_SECRET_KEY');
   // tap testing
   static SDKMode sdkModeType = SDKMode.Sandbox;
   // tap production

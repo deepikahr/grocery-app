@@ -82,7 +82,7 @@ class _PaymentState extends State<Payment> {
   Future<void> configureApp() async {
     GoSellSdkFlutter.configureApp(
       bundleId: Constants.bundleId,
-      productionSecreteKey: Constants.tapProductionSecreteKey!,
+      productionSecreteKey: Constants.tapProductionSecretKey!,
       sandBoxsecretKey: Constants.tapSandBoxSecretKey!,
       lang: widget.locale ?? 'en',
     );
@@ -248,8 +248,8 @@ class _PaymentState extends State<Payment> {
       setState(() {
         paymentTypes.add('RAZORPAY');
       });
-    } else if (Constants.tapProductionSecreteKey != null &&
-        Constants.tapProductionSecreteKey!.isNotEmpty &&
+    } else if (Constants.tapProductionSecretKey != null &&
+        Constants.tapProductionSecretKey!.isNotEmpty &&
         Constants.tapSandBoxSecretKey != null &&
         Constants.tapSandBoxSecretKey!.isNotEmpty) {
       setState(() {
