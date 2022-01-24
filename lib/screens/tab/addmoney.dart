@@ -86,7 +86,6 @@ class _AddMoneyState extends State<AddMoney> {
       sandBoxsecretKey: Constants.tapSandBoxSecretKey!,
       lang: widget.locale ?? 'en',
     );
-    print(GoSellSdkFlutter.appCredentials);
   }
 
   addMoneyWithTapPayment() async {
@@ -238,18 +237,31 @@ class _AddMoneyState extends State<AddMoney> {
       if (mounted) {
         setState(() {
           isAddMoneyLoading = false;
-          var result = Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => WebViewAddMoneyTapPay(
-                locale: widget.locale,
-                localizedValues: widget.localizedValues,
-                orderId: onValue['response_data']['id'],
-                tapUrl: onValue['response_data']['url'],
+          if (onValue['response_data']['success'] == true &&
+              onValue['response_data']['url'] != null) {
+            var result = Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => WebViewAddMoneyTapPay(
+                  locale: widget.locale,
+                  localizedValues: widget.localizedValues,
+                  orderId: onValue['response_data']['id'],
+                  tapUrl: onValue['response_data']['url'],
+                ),
               ),
-            ),
-          );
-          result.then((value) => addMoneyController.clear());
+            );
+            result.then((value) => addMoneyController.clear());
+          } else if (onValue['response_data']['success'] == true &&
+              onValue['response_data']['url'] == null) {
+            if (mounted) {
+              setState(() {
+                addMoneyController.clear();
+                moveToNextPage(isThanku: true);
+              });
+            }
+          } else if (onValue['response_data']['success'] == false) {
+            AlertService().showToast('${onValue['response_data']['message']}');
+          }
         });
       }
     }).catchError((error) {
