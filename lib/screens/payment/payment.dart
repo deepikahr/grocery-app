@@ -336,19 +336,33 @@ class _PaymentState extends State<Payment> {
       if (cartData['paymentType'] == 'STRIPE') {
         await createOrderViaStripe(onValue['response_data']);
       } else if (cartData['paymentType'] == 'TAP') {
-        Common.setCartDataCount(0);
-        Common.setCartData(null);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) => WebViewOrderTapPay(
-              locale: widget.locale,
-              localizedValues: widget.localizedValues,
-              orderId: onValue['response_data']['id'],
-              tapUrl: onValue['response_data']['url'],
+        if (onValue['response_data']['success'] == true &&
+            onValue['response_data']['url'] != null) {
+          Common.setCartDataCount(0);
+          Common.setCartData(null);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => WebViewOrderTapPay(
+                locale: widget.locale,
+                localizedValues: widget.localizedValues,
+                orderId: onValue['response_data']['id'],
+                tapUrl: onValue['response_data']['url'],
+              ),
             ),
-          ),
-        );
+          );
+        } else if (onValue['response_data']['success'] == true &&
+            onValue['response_data']['url'] == null) {
+          moveToNextPage(thanku: true);
+        } else if (onValue['response_data']['success'] == false) {
+          if (mounted) {
+            setState(() {
+              isPlaceOrderLoading = false;
+              AlertService()
+                  .showToast('${onValue['response_data']['message']}');
+            });
+          }
+        }
       } else {
         moveToNextPage(thanku: true);
       }
@@ -693,12 +707,8 @@ class _PaymentState extends State<Payment> {
     if (mounted) {
       setState(() {
         isPlaceOrderLoading = false;
-        AlertService().showToast((response.message is String
-            ? response.message
-            : response.message != null
-                ? jsonDecode(response.message!)['error']['description'] ?? ''
-                : ''));
-
+        AlertService().showToast(
+            '${(response.message is String ? response.message : response.message != null ? jsonDecode(response.message!)['error']['description'] ?? '' : '')}');
         _razorpay?.clear();
       });
     }
