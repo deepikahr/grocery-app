@@ -1,6 +1,8 @@
 import 'package:flutter_config/flutter_config.dart';
 import 'dart:io';
 
+import 'package:go_sell_sdk_flutter/go_sell_sdk_flutter.dart';
+
 class Constants {
   // app name
   static String appName = 'Readymade Grocery App';
@@ -38,6 +40,30 @@ class Constants {
 
   static String orderFrom = "USER_APP";
 
+  static String bundleId = "com.ionicfirebaseapp.readymadegroceryuserapp";
+
+  static String? tapProductionSecretKey =
+      FlutterConfig.get('TAP_PRODUCTION_SECRET_KEY');
+
+  static String? tapSandBoxSecretKey =
+      FlutterConfig.get('TAP_SAND_BOX_SECRET_KEY');
+  // tap testing
+  static SDKMode sdkModeType = SDKMode.Sandbox;
+  // tap production
+  // static SDKMode sdkModeType = SDKMode.Production;
+
+  static List currencyList = [
+    'AED', // UAE Dirham
+    'BHD', // Bahraini Dinar
+    'EGP', // Egyptian Pound
+    'EUR', // Euro
+    'GBP', // UK Pound Sterling
+    'KWD', // Kuwaiti Dinar
+    'OMR', // Omani Riyal
+    'QAR', // Qatari Riyal
+    'SAR', // Saudi Riyal
+    'USD', // US Dollar
+  ];
   // countries code
   static List countryCode = [
     {"name": "Afghanistan", "dial_code": "+93", "code": "AF"},

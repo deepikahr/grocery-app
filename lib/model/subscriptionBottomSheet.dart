@@ -35,7 +35,6 @@ class _SubsCriptionBottomSheetState extends State<SubsCriptionBottomSheet> {
 
   @override
   void initState() {
-    print(widget.productData);
     super.initState();
   }
 

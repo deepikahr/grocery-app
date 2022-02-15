@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:intl/intl.dart';
 import 'package:readymadeGroceryApp/screens/orders/rateDelivery.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
@@ -97,6 +98,7 @@ class _OrderDetailsState extends State<OrderDetails> {
   orderCancelMethod() async {
     if (mounted) {
       setState(() {
+        Navigator.pop(context, false);
         isOrderCancleLoading = true;
       });
     }
@@ -191,6 +193,33 @@ class _OrderDetailsState extends State<OrderDetails> {
     }).catchError((error) {
       sentryError.reportError(error, null);
     });
+  }
+
+  showCancelOrder() {
+    return showDialog(
+      context: context,
+      builder: (context) => new AlertDialog(
+        title: new Text(
+            MyLocalizations.of(context)!.getLocalizations("ARE_YOU_SURE")),
+        content: new Text(MyLocalizations.of(context)!
+            .getLocalizations("YOU_WANT_TO_CANCEL_ORDER")),
+        actions: <Widget>[
+          GFButton(
+            color: Colors.transparent,
+            onPressed: () => Navigator.pop(context, false),
+            child: new Text(MyLocalizations.of(context)!.getLocalizations("NO"),
+                style: textbarlowRegularaprimary(context)),
+          ),
+          GFButton(
+            color: Colors.transparent,
+            onPressed: orderCancelMethod,
+            child: new Text(
+                MyLocalizations.of(context)!.getLocalizations("YES"),
+                style: textbarlowRegularaprimary(context)),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -734,9 +763,9 @@ class _OrderDetailsState extends State<OrderDetails> {
                           ? Container()
                           : orderHistory['order']['orderStatus'] == "PENDING"
                               ? InkWell(
-                                  onTap: isOrderCancleLoading
+                                  onTap: () => isOrderCancleLoading
                                       ? null
-                                      : orderCancelMethod,
+                                      : showCancelOrder(),
                                   child: buttonprimary(context, "CANCEL_ORDER",
                                       isOrderCancleLoading))
                               : Container(),

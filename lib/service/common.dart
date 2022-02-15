@@ -129,6 +129,16 @@ class Common {
     return Future(() => prefs.getString('currency')!);
   }
 
+  static Future<bool> setCurrencyCode(String code) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setString('currencyCode', code);
+  }
+
+  static Future<String> getCurrencyCode() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return Future(() => prefs.getString('currencyCode')!);
+  }
+
   static Future<bool> setCountryInfo(String data) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.setString('countryInfo', data);

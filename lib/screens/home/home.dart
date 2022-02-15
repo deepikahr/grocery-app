@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:readymadeGroceryApp/model/counterModel.dart';
@@ -15,11 +16,11 @@ import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/locationService.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/socket.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
-import 'package:geocode/geocode.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -50,10 +51,11 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       getTokenValue = false;
   int? currentIndex = 0, cartData;
   String? currency = "";
-  GeoCode geoCode = GeoCode();
   var addressData;
 
+  var socketService = SocketService();
   void initState() {
+    socketService.socketInitialize();
     if (widget.currentIndex != null) {
       if (mounted) {
         setState(() {
@@ -82,21 +84,27 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           currencyLoading = false;
         });
       }
-      if (onValue['response_data']['currencySymbol'] == null) {
-        await Common.setCurrency('\$');
+      if (onValue['response_data'] != null &&
+          onValue['response_data']['currencySymbol'] != null) {
+        await Common.setCurrency(onValue['response_data']['currencySymbol']);
+        await Common.setCurrencyCode(onValue['response_data']['currencyCode']);
         await Common.getCurrency()
             .then((value) => setState(() => currency = value));
       } else {
+        await Common.setCurrency('\$');
+        await Common.setCurrencyCode('USD');
         await Common.getCurrency()
             .then((value) => setState(() => currency = value));
-        await Common.setCurrency(currency!);
       }
-    }).catchError((error) {
+    }).catchError((error) async {
       if (mounted) {
         setState(() {
           currencyLoading = false;
           Common.setCurrency('\$');
+          Common.setCurrencyCode('USD');
         });
+        await Common.getCurrency()
+            .then((value) => setState(() => currency = value));
       }
       sentryError.reportError(error, null);
     });
@@ -157,17 +165,15 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
             position.longitude,
           ),
         );
-        var addressescountryCode = await geoCode.reverseGeocoding(
-          latitude: position.latitude,
-          longitude: position.longitude,
-        );
+        List<Placemark> placemarks = await placemarkFromCoordinates(
+            position.latitude, position.longitude);
         if (mounted) {
           setState(() {
             addressData = addressValue.formattedAddress;
             isCurrentLoactionLoading = false;
           });
         }
-        await Common.setCountryInfo(addressescountryCode.countryCode!);
+        await Common.setCountryInfo(placemarks[0].isoCountryCode ?? '');
         await Common.setCurrentLocation(addressData);
       }
     });

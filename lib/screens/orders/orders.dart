@@ -87,11 +87,12 @@ class _OrdersState extends State<Orders> {
         });
       }
       await OrderService.getOrderByUserID(ordersPageNumber, ordersPerPage,
-              widget.isSubscription ? "SUBSCRIPTIONS" : "PURCHASES")
+              widget.isSubscription == true ? "SUBSCRIPTIONS" : "PURCHASES")
           .then((onValue) {
         _refreshController.refreshCompleted();
         if (onValue['response_data'] != null &&
-            onValue['response_data'] != []) {
+            onValue['response_data'] != [] &&
+            mounted) {
           orderList.addAll(onValue['response_data']);
           totalOrders = onValue["total"];
           ordersPageNumber = ordersPageNumber! + 1;

@@ -46,9 +46,7 @@ class _DrawerPageState extends State<DrawerPage> {
   @override
   void initState() {
     getToken();
-    Common.getTheme().then((isDark) {
-      isDark ? Color(0xFAAACF2D) : Color(0xFFFFCF2D);
-    });
+
     super.initState();
   }
 
@@ -269,11 +267,13 @@ class _DrawerPageState extends State<DrawerPage> {
           await Common.deleteUserId();
           await Common.setCartData(null);
           await Common.setCartDataCount(0);
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => MainScreen()),
-              (Route<dynamic> route) => false);
+          if (mounted) {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => MainScreen()),
+                (Route<dynamic> route) => false);
+          }
         });
       });
     });
