@@ -356,7 +356,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                     ? GFCarousel(
                                         height: 340,
                                         viewportFraction: 1.0,
-                                        pagination: true,
+                                        hasPagination: true,
                                         activeIndicator: primary(context),
                                         passiveIndicator: Colors.grey,
                                         onPageChanged: (_) {
