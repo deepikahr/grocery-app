@@ -152,6 +152,20 @@ flutter:
     - lib/assets/icons/front.png
     - lib/assets/icons/refer.png
     - lib/assets/icons/subscription_list.png
+    - lib/assets/icons/bell.png
+    - lib/assets/icons/menu.png
+    - lib/assets/icons/cat1.png
+    - lib/assets/icons/cat2.png
+    - lib/assets/icons/add.png
+    - lib/assets/icons/minus.png
+    - lib/assets/icons/heart.png
+    - lib/assets/icons/banner1.png
+    - lib/assets/icons/banner2.png
+    - lib/assets/icons/dairymilk.png
+    - lib/assets/icons/apple.png
+    - lib/assets/icons/filter.png
+    - lib/assets/icons/cancel.png
+    - lib/assets/icons/search.png
 
     - lib/assets/splash.png
     - lib/assets/logo.png

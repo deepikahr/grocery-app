@@ -26,6 +26,8 @@ class Styles {
 final primarybg = const Color(0xFFFFCF2D);
 final darkbg = const Color(0xFF10161f);
 final lightbg = const Color(0xFFF4F7FA);
+final white = const Color(0xFFFFFFFF);
+final black = const Color(0xFF000000);
 
 final blackText2 = const Color(0xFF272A3F);
 final bg2 = const Color(0xFFFDFDFD);
@@ -1014,6 +1016,15 @@ TextStyle textbarlowBoldBlack(context) {
   );
 }
 
+TextStyle textbarlowBoldblack(context) {
+  return TextStyle(
+    fontSize: 18.0,
+    fontWeight: FontWeight.bold,
+    fontFamily: 'BarlowBold',
+    color: black,
+  );
+}
+
 TextStyle textbarlowBoldGreen(context) {
   return TextStyle(
     fontSize: 18.0,
@@ -1793,5 +1804,180 @@ TextStyle textAddressLocationLow(context) {
     fontFamily: 'BarlowRegular',
     fontWeight: FontWeight.w400,
     color: dark(context).withOpacity(0.6),
+  );
+}
+
+//new design
+
+TextStyle textbarlowRegularsmall(context) {
+  return TextStyle(
+    fontSize: 12.0,
+    fontFamily: 'BarlowRegular',
+    color: white.withOpacity(0.70),
+  );
+}
+
+TextStyle textbarlowRegularstandard(context) {
+  return TextStyle(
+    fontSize: 16.0,
+    fontFamily: 'BarlowRegular',
+    color: white,
+  );
+}
+
+TextStyle textbarlowRegularstandardblack(context) {
+  return TextStyle(
+    fontSize: 16.0,
+    fontFamily: 'BarlowRegular',
+    color: black,
+  );
+}
+
+// TextStyle textbarlowRegularstandardgrey(context) {
+//   return TextStyle(
+//     fontSize: 16.0,
+//     fontFamily: 'BarlowRegular',
+//     color: black,
+//   );
+// }
+TextStyle textbarlowRegularblack(context) {
+  return TextStyle(
+    fontSize: 18.0,
+    fontFamily: 'BarlowRegular',
+    color: black,
+  );
+}
+TextStyle textbarlowRegularstandarddgrey(context) {
+  return TextStyle(
+    fontSize: 16.0,
+    fontFamily: 'BarlowRegular',
+    color: Color(0xff7B7B7B),
+  );
+}
+
+TextStyle textbarlowRegulargrey(context) {
+  return TextStyle(
+    fontSize: 16.0,
+    fontFamily: 'BarlowRegular',
+    color: Color(0xffAEB5C3),
+  );
+}
+
+TextStyle textbarlowRegularsmallgrey(context) {
+  return TextStyle(
+    fontSize: 14.0,
+    fontFamily: 'BarlowRegular',
+    color: Color(0xffAEB5C3),
+  );
+}
+
+TextStyle textbarlowRegularsmallgreystrike(context) {
+  return TextStyle(
+      fontSize: 14.0,
+      fontFamily: 'BarlowRegular',
+      color: Color(0xffAEB5C3),
+      decoration: TextDecoration.lineThrough);
+}
+
+TextStyle textbarlowblack(context) {
+  return TextStyle(
+    fontSize: 14.0,
+    fontFamily: 'BarlowRegular',
+    color: black,
+  );
+}
+
+TextStyle textbarlowwhite(context) {
+  return TextStyle(
+    fontSize: 14.0,
+    fontFamily: 'BarlowRegular',
+    color: white,
+  );
+}
+
+TextStyle textbarlowsemiyellow(context) {
+  return TextStyle(
+    fontSize: 14.0,
+    fontFamily: 'BarlowSemiBold',
+    color: primarybg,
+  );
+}
+
+TextStyle textbarlowsemiblack(context) {
+  return TextStyle(
+    fontSize: 18.0,
+    fontFamily: 'BarlowSemiBold',
+    color: black,
+  );
+}
+
+TextStyle textbarlowsemiy(context) {
+  return TextStyle(
+    fontSize: 18.0,
+    fontFamily: 'BarlowSemiBold',
+    color: primarybg,
+  );
+}
+
+TextStyle textbarlowsemiwhite(context) {
+  return TextStyle(
+    fontSize: 18.0,
+    fontFamily: 'BarlowSemiBold',
+    color: white,
+  );
+}
+
+TextStyle textbarlowsemiwhitesmall(context) {
+  return TextStyle(
+    fontSize: 14.0,
+    fontFamily: 'BarlowSemiBold',
+    color: white,
+  );
+}
+
+TextStyle textbarlowsemiblacksmall(context) {
+  return TextStyle(
+    fontSize: 16.0,
+    fontFamily: 'BarlowSemiBold',
+    color: black,
+  );
+}
+TextStyle textbarlowsemiwhites(context) {
+  return TextStyle(
+    fontSize: 16.0,
+    fontFamily: 'BarlowSemiBold',
+    color: white,
+  );
+}
+
+TextStyle textbarlowsemigreen(context) {
+  return TextStyle(
+    fontSize: 18.0,
+    fontFamily: 'BarlowSemiBold',
+    color: Color(0xFF547D00),
+  );
+}
+
+TextStyle textbarlowsemiboldyellow(context) {
+  return TextStyle(
+    fontSize: 16.0,
+    fontFamily: 'BarlowSemiBold',
+    color: primarybg,
+  );
+}
+
+TextStyle textbarlowmedsmallwhite(context) {
+  return TextStyle(
+    fontSize: 12.0,
+    fontFamily: 'BarlowMedium',
+    color: white,
+  );
+}
+
+TextStyle textbarlowmedblack(context) {
+  return TextStyle(
+    fontSize: 18.0,
+    fontFamily: 'BarlowMedium',
+    color: black,
   );
 }

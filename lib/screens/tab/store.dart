@@ -331,7 +331,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   banner() {
     return GFCarousel(
       autoPlay: true,
-      // hasPagination: true,
+      hasPagination: true,
       viewportFraction: 1.0,
       activeIndicator: primarybg,
       passiveIndicator: primaryLight2,

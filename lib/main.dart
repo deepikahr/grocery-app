@@ -8,6 +8,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
+import 'package:readymadeGroceryApp/screens/new-design/new-tabs.dart';
 import 'package:readymadeGroceryApp/service/alert-service.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
@@ -167,8 +168,10 @@ class _MainScreenState extends State<MainScreen> {
                   title: Constants.appName,
                   theme:
                       Styles.themeData(themeChangeProvider.darkTheme, context),
-                  home: Home(locale: locale, localizedValues: localizedValues),
-                );
+                  home: NewTabsPage()
+
+                  // home: Home(locale: locale, localizedValues: localizedValues),
+                  );
         },
       ),
     );
