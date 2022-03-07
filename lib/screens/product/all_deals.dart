@@ -47,9 +47,9 @@ class _AllDealsListState extends State<AllDealsList> {
     currency = widget.currency;
     getTokenValue = widget.token;
     if (widget.title == "DEALS_OF_THE_DAYS") {
-      getAllTopDealsListMethod();
-    } else {
       getAllTodayDealsListMethod();
+    } else {
+      getAllTopDealsListMethod();
     }
     super.initState();
   }
