@@ -295,7 +295,7 @@ Widget profileTextRow(BuildContext context, title, subTitle) {
   );
 }
 
-Widget subCatTab(BuildContext context, title, Color color) {
+Widget catTab(BuildContext context, title, Color color) {
   return Container(
     height: 45,
     padding: EdgeInsets.only(
