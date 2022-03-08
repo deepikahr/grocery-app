@@ -39,14 +39,14 @@ class _AllProductsState extends State<AllProducts> {
   bool isUserLoaggedIn = false,
       isFirstPageLoading = true,
       isNextPageLoading = false,
-      isSubCategoryLoading = true,
+      isCategoryLoading = true,
       isProductsForDeal = false,
       isProductsForCategory = false;
   int? productsPerPage = 12,
       productsPageNumber = 0,
       totalProducts = 1,
-      selectedSubCategoryIndex = 0;
-  List? productsList = [], subCategoryList = [];
+      selectedCategoryIndex = 0;
+  List? productsList = [], categoryList = [];
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   String? currency;
@@ -59,11 +59,11 @@ class _AllProductsState extends State<AllProducts> {
     super.initState();
     if (widget.dealId != null) {
       isProductsForDeal = true;
-      isSubCategoryLoading = false;
+      isCategoryLoading = false;
     } else if (widget.categoryId != null) {
       isProductsForCategory = true;
     } else {
-      getSubCategoryList();
+      getCategoryList();
     }
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
@@ -84,16 +84,16 @@ class _AllProductsState extends State<AllProducts> {
     if (isProductsForDeal) {
       getProductListByDealId();
     } else if (isProductsForCategory) {
-      if (selectedSubCategoryIndex == 0) {
-        getSubCategoryListByCategoryId();
+      if (selectedCategoryIndex == 0) {
+        getCategoryListByCategoryId();
       } else {
-        getProductsListBySubCategoryId();
+        getProductsListByCategoryId();
       }
     } else {
-      if (selectedSubCategoryIndex == 0) {
+      if (selectedCategoryIndex == 0) {
         getProductsList();
       } else {
-        getProductsListBySubCategoryId();
+        getProductsListByCategoryId();
       }
     }
   }
@@ -116,26 +116,26 @@ class _AllProductsState extends State<AllProducts> {
     });
   }
 
-  void getSubCategoryList() async {
-    await ProductService.getSubCatList().then((onValue) {
+  void getCategoryList() async {
+    await ProductService.getCategoryList().then((onValue) {
       if (onValue['response_data'] != null) {
-        subCategoryList = onValue['response_data'] as List?;
+        categoryList = onValue['response_data'] as List?;
       }
       if (mounted)
         setState(() {
-          isSubCategoryLoading = false;
+          isCategoryLoading = false;
         });
     }).catchError((error) {
       if (mounted) {
         setState(() {
-          isSubCategoryLoading = false;
+          isCategoryLoading = false;
         });
       }
       sentryError.reportError(error, null);
     });
   }
 
-  void getSubCategoryListByCategoryId() async {
+  void getCategoryListByCategoryId() async {
     if (totalProducts != productsList!.length) {
       if (productsPageNumber! > 0) {
         setState(() {
@@ -148,20 +148,19 @@ class _AllProductsState extends State<AllProducts> {
         _refreshController.refreshCompleted();
         if (onValue['response_data'] != null) {
           productsList!.addAll(onValue['response_data']['products']);
-          subCategoryList = onValue['response_data']['subCategories'];
           totalProducts = onValue["total"];
           productsPageNumber = productsPageNumber! + 1;
         }
         if (mounted)
           setState(() {
-            isSubCategoryLoading = false;
+            isCategoryLoading = false;
             isFirstPageLoading = false;
             isNextPageLoading = false;
           });
       }).catchError((error) {
         if (mounted) {
           setState(() {
-            isSubCategoryLoading = false;
+            isCategoryLoading = false;
             isFirstPageLoading = false;
             isNextPageLoading = false;
           });
@@ -206,22 +205,22 @@ class _AllProductsState extends State<AllProducts> {
     }
   }
 
-  void getProductsListBySubCategoryId() async {
+  void getProductsListByCategoryId() async {
     if (totalProducts != productsList!.length) {
       if (productsPageNumber! > 0) {
         setState(() {
           isNextPageLoading = true;
         });
       }
-      await ProductService.getProductToSubCategoryList(
-              subCategoryList![selectedSubCategoryIndex! - 1]['_id'],
+      await ProductService.getProductToCategoryList(
+              categoryList![selectedCategoryIndex! - 1]['_id'],
               productsPageNumber,
               productsPerPage)
           .then((onValue) {
         _refreshController.refreshCompleted();
         if (onValue['response_data'] != null &&
             onValue['response_data'] != []) {
-          productsList!.addAll(onValue['response_data']);
+          productsList!.addAll(onValue['response_data']['products']);
           totalProducts = onValue["total"];
           productsPageNumber = productsPageNumber! + 1;
         }
@@ -327,11 +326,11 @@ class _AllProductsState extends State<AllProducts> {
           ),
         ),
       ) as PreferredSizeWidget?,
-      body: isSubCategoryLoading
+      body: isCategoryLoading
           ? Center(child: SquareLoader())
           : Column(
               children: [
-                isSubCategoryLoading
+                isCategoryLoading
                     ? SquareLoader()
                     : isProductsForDeal
                         ? Container()
@@ -341,22 +340,22 @@ class _AllProductsState extends State<AllProducts> {
                                 physics: ScrollPhysics(),
                                 shrinkWrap: true,
                                 scrollDirection: Axis.horizontal,
-                                itemCount: subCategoryList!.length + 1,
+                                itemCount: categoryList!.length + 1,
                                 itemBuilder: (BuildContext context, int i) {
                                   return InkWell(
                                     onTap: () {
                                       setState(() {
-                                        selectedSubCategoryIndex = i;
+                                        selectedCategoryIndex = i;
                                       });
                                       checkIfUserIsLoaggedIn();
                                     },
-                                    child: subCatTab(
+                                    child: catTab(
                                       context,
                                       i == 0
                                           ? MyLocalizations.of(context)!
                                               .getLocalizations('ALL')
-                                          : subCategoryList![i - 1]['title'],
-                                      selectedSubCategoryIndex == i
+                                          : categoryList![i - 1]['title'],
+                                      selectedCategoryIndex == i
                                           ? primary(context)
                                           : Color(0xFFf0F0F0),
                                     ),
