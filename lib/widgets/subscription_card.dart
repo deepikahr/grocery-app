@@ -44,7 +44,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      backgroundColor: bg(context),
+      backgroundColor: Colors.transparent,
       key: _scaffoldKey,
       body: Container(
         width: MediaQuery.of(context).size.width * 0.5,
@@ -162,6 +162,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                                     barlowregularlack(context))
                               ],
                             ),
+                            SizedBox(height: 10),
                             InkWell(
                                 onTap: () async {
                                   if (widget.productData!['variant'].length >

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:readymadeGroceryApp/screens/tab/store.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 
@@ -80,4 +81,33 @@ Widget appBarTransparentWithoutBack(BuildContext context, title) {
           : Colors.transparent,
       iconTheme: IconThemeData(color: dark(context)),
       elevation: 0);
+}
+
+Widget appBarPrimarynoradiusWithContent(BuildContext context, title,
+    bool changeUi, actionTrueOrFalse, Widget? actionProcess) {
+  return GFAppBar(
+    title: changeUi
+        ? title
+        : Expanded(
+            child: Text(
+              MyLocalizations.of(context)!.getLocalizations(title),
+              style: textbarlowSemiBoldBlack(context),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+    centerTitle: false,
+    automaticallyImplyLeading: true,
+    // bottom: PreferredSize(
+    //   preferredSize: Size.fromHeight(250),
+    //   child: Container(
+    //     color: primarybg,
+    //     child: Store(),
+    //   ),
+    // ),
+    titleSpacing: 0,
+    backgroundColor: primary(context),
+    elevation: 0,
+    iconTheme: IconThemeData(color: Colors.white),
+    actions: actionTrueOrFalse ? [actionProcess!] : [Container()],
+  );
 }

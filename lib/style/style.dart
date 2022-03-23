@@ -1148,7 +1148,7 @@ TextStyle textAddressLocation(context) {
     fontSize: 20.0,
     fontWeight: FontWeight.bold,
     fontFamily: 'BarlowSemiBold',
-    color: dark(context),
+    color: whiteBg(context),
   );
 }
 
@@ -1650,7 +1650,7 @@ TextStyle textBarlowRegularrBlacksm(context) {
     fontSize: 12.0,
     fontFamily: 'BarlowRegular',
     fontWeight: FontWeight.w400,
-    color: dark(context).withOpacity(0.6),
+    color: whiteBg(context),
   );
 }
 
