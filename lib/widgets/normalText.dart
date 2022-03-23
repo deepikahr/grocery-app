@@ -685,7 +685,7 @@ Widget textMediumSmallGreen(title, context) {
 
 Widget priceMrpText(title, subtitle, context) {
   return Row(children: <Widget>[
-    Text(title, style: textbarlowBoldGreen(context)),
+    Text(title, style: textbarlowmediumwprimary(context)),
     SizedBox(width: 6),
     subtitle != null
         ? Padding(
@@ -750,7 +750,7 @@ homePageBoldText(BuildContext context, title) {
 
 viewAllBoldText(BuildContext context, title, {valueKey}) {
   return Text(MyLocalizations.of(context)!.getLocalizations(title),
-      key: valueKey, style: textbarlowMediumprimary(context));
+      key: valueKey, style: textBarlowMediumBlack(context));
 }
 
 bannerTitle(title, context) {

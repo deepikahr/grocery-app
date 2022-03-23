@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -14,20 +15,17 @@ class CategoryBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 80,
-      padding: EdgeInsets.only(right: 16),
+      width: 100,
       child: Column(
         children: <Widget>[
           Container(
-            width: isHome! ? 68 : 80,
-            height: isHome! ? 68 : 80,
+            width: isHome! ? 90 : 90,
+            height: isHome! ? 90 : 90,
             padding: EdgeInsets.all(5),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              border: Border.all(color: dark(context).withOpacity(0.20)),
-            ),
+              borderRadius: BorderRadius.circular(50)),
             child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
+              borderRadius: BorderRadius.all(Radius.circular(50)),
               child: CachedNetworkImage(
                 imageUrl: isPath
                     ? Constants.imageUrlPath! + "/tr:dpr-auto,tr:w-500" + image

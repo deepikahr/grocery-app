@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:getwidget/components/badge/gf_badge.dart';
+import 'package:getwidget/shape/gf_badge_shape.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:readymadeGroceryApp/model/counterModel.dart';
 import 'package:readymadeGroceryApp/screens/drawer/drawer.dart';
@@ -254,32 +257,64 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       key: _scaffoldKey,
       // backgroundColor: Colors.white,
       appBar: currentIndex == 0
-          ? appBarWhite(
+          ? appBarPrimarynoradiusWithContent(
               context,
               deliveryAddress(),
               true,
               true,
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SearchItem(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
-                        currency: currency,
-                        token: getTokenValue,
-                      ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  InkWell(
+                    onTap: () {
+                    },
+                    child:
+                    Stack(
+                      children: [
+                        Icon(Icons.shopping_cart),
+                        Positioned(
+                          right: 2,
+                          child: GFBadge(
+                            child: Text(
+                              '${cartData.toString()}',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.white, fontFamily: "bold", fontSize: 11),
+                            ),
+                            shape: GFBadgeShape.circle,
+                            color: Colors.red,
+                            size: 20,
+                          ),
+                        ),
+                      ],
+                    )
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SearchItem(
+                            locale: widget.locale,
+                            localizedValues: widget.localizedValues,
+                            currency: currency,
+                            token: getTokenValue,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.only(right: 15, left: 10),
+                      child: Icon(Icons.notifications_none),
                     ),
-                  );
-                },
-                child: Padding(
-                  padding: EdgeInsets.only(right: 15, left: 15),
-                  child: Icon(Icons.search),
-                ),
+                  ),
+                ],
               ),
             ) as PreferredSizeWidget?
           : null,
+
+
+
       drawer: Drawer(
         child: DrawerPage(
             locale: widget.locale,
