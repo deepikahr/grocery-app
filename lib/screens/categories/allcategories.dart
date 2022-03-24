@@ -72,7 +72,7 @@ class _AllCategoriesState extends State<AllCategories>
     return Scaffold(
       backgroundColor: bg(context),
       appBar:
-          appBarTransparent(context, "ALL_CATEGROIES") as PreferredSizeWidget?,
+          appBarTransparent(context, "CATEGORIES") as PreferredSizeWidget?,
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,

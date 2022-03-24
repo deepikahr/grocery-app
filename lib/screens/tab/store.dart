@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:readymadeGroceryApp/screens/categories/allcategories.dart';
+import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/product/all_deals.dart';
 import 'package:readymadeGroceryApp/screens/product/all_products.dart';
 import 'package:readymadeGroceryApp/screens/product/product-details.dart';
@@ -42,7 +43,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       isLocationLoading = false,
       isBannerLoading = false,
       isLoadingAllData = false,
-      isGetSubcribeLoading = false;
+      isGetSubcribeLoading = false,
+      isViewAllSelected = false;
   List? categoryList,
       productsList,
       searchProductList,
@@ -265,16 +267,35 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
 
   Widget _buildTitleViewAllTile(String name, {Widget? route, valueKey}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal:8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           homePageBoldText(context, name),
           InkWell(
             onTap: () {
-              Navigator.push(context,
+               Navigator.push(context,
                   MaterialPageRoute(builder: (BuildContext context) => route!));
             },
+            child: viewAllBoldText(context, "VIEW_ALL", valueKey: valueKey),
+          )
+        ],
+      ),
+    );
+  }
+
+
+
+
+  Widget _categoryListTile(String name, {void Function()? onTap, valueKey}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          homePageBoldText(context, name),
+          InkWell(
+            onTap:onTap,
             child: viewAllBoldText(context, "VIEW_ALL", valueKey: valueKey),
           )
         ],
@@ -285,13 +306,21 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   categoryRow() {
     return Column(
       children: <Widget>[
-        _buildTitleViewAllTile("CATEGORIES",
-            route: AllCategories(
-              locale: widget.locale,
-              localizedValues: widget.localizedValues,
-              getTokenValue: getTokenValue,
-            ),
-            valueKey: ValueKey('view-all-categories')),
+        _categoryListTile(
+          "CATEGORIES",
+          onTap: () {
+            setState(() {
+              isViewAllSelected = true;
+              print(isViewAllSelected);
+              Navigator.pushReplacement(
+                  context,
+                  PageRouteBuilder(pageBuilder: (_, __, ___) => Home(
+                    isViewAllSelected: isViewAllSelected,
+                  )));
+            });
+          },
+          valueKey: ValueKey('view-all-categories'),
+        ),
         SizedBox(height: 20),
         Container(
           height: 120,
@@ -373,23 +402,23 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
               );
             }
           },
-          child:  CachedNetworkImage(
+          child: CachedNetworkImage(
             imageUrl: url['filePath'] == null
                 ? url['imageURL']
                 : Constants.imageUrlPath! +
-                "/tr:dpr-auto,tr:w-500" +
-                url['filePath'],
+                    "/tr:dpr-auto,tr:w-500" +
+                    url['filePath'],
             imageBuilder: (context, imageProvider) => Container(
               height: 115,
               margin: EdgeInsets.only(top: 10, left: 5, right: 5),
               padding: EdgeInsets.only(top: 5, left: 20, right: 20),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                // color: primary(context),
+                  // color: primary(context),
                   image:
-                  // url['imageUrl'] == null ? DecorationImage(image: AssetImage('lib/assets/images/banner_bg.png'),fit: BoxFit.cover,
-                  //   colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.darken), ) :
-                  DecorationImage(
+                      // url['imageUrl'] == null ? DecorationImage(image: AssetImage('lib/assets/images/banner_bg.png'),fit: BoxFit.cover,
+                      //   colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.darken), ) :
+                      DecorationImage(
                     image: imageProvider,
                     // NetworkImage(url['imageUrl']),
                     fit: BoxFit.cover,
@@ -502,41 +531,39 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                   list[i]['averageRating'] = 0;
                 }
                 return list[i]['outOfStock'] != null ||
-                    list[i]['outOfStock'] != false
+                        list[i]['outOfStock'] != false
                     ? Container(
-                  height: 190,
-                  width: 200,
-                  margin: const EdgeInsets.only(right : 10),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12)
-                  ),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              ProductDetails(
-                                locale: widget.locale,
-                                localizedValues: widget.localizedValues,
-                                productID: list[i]['_id'],
+                        height: 190,
+                        width: 200,
+                        margin: const EdgeInsets.only(right: 10),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12)),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ProductDetails(
+                                  locale: widget.locale,
+                                  localizedValues: widget.localizedValues,
+                                  productID: list[i]['_id'],
+                                ),
                               ),
+                            );
+                          },
+                          child: ProductGridCard(
+                              currency: currency,
+                              productData: list[i],
+                              isHome: true),
                         ),
-                      );
-                    },
-                    child: ProductGridCard(
+                      )
+                    : ProductGridCard(
                         currency: currency,
                         productData: list[i],
-                        isHome: true),
-                  ),
-                ): ProductGridCard(
-                  currency: currency,
-                  productData: list[i],
-                  isHome: true,
-                );
+                        isHome: true,
+                      );
               }),
         )
-
       ],
     );
   }
@@ -554,7 +581,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
         SizedBox(height: 10),
         Container(
           height: 220,
-          margin: EdgeInsets.only(right : 10, top: 10),
+          margin: EdgeInsets.only(right: 10, top: 10),
           child: ListView.builder(
               scrollDirection: Axis.horizontal,
               physics: ScrollPhysics(),
@@ -564,7 +591,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                 return Container(
                   height: 220,
                   width: 220,
-                  padding: EdgeInsets.only(right : 15),
+                  padding: EdgeInsets.only(right: 15),
                   child: SubscriptionCard(
                     currency: currency,
                     productData: list[i],
@@ -856,72 +883,74 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                     subscriptionProductsList!.length == 0)
                 ? noDataImage()
                 : Container(
-          height: MediaQuery.of(context).size.height-120,
-                  child: Stack(
-                    children: [
-                      Container(
-                        height: 250,
-                        color: primarybg,
-                      ),
-                      Positioned(
-                        left: 20,
-                        bottom: 0,
-                        right: 10,
-                        top: 10,
-                        child: ListView(
-                          shrinkWrap: true,physics: ScrollPhysics(),
-                          children: <Widget>[
-                            categoryList!.length > 0
-                                ? categoryRow()
-                                : Container(),
-                            SizedBox(height : 10),
-                            bannerList!.length > 0
-                                ? Column(
-                              children: [banner(), Divider()],
-                            )
-                                : Container(),
-                            productsList!.length > 0
-                                ? Column(
-                              children: [
-                                productRow("POPULAR_PRODUCTS", productsList),
-                                Divider()
-                              ],
-                            )
-                                : Container(),
-                            topDealList!.length > 0
-                                ? Column(
-                              children: [
-                                topDealsRow("TOP_DEALS", topDealList),
-                                Divider()
-                              ],
-                            )
-                                : Container(),
-                            subscriptionProductsList!.length > 0
-                                ? Column(
-                              children: [
-                                subscriptionProductsRow(
-                                    "SUBSCRIPTION_PRODUCTS",
-                                    subscriptionProductsList),
-                                Divider()
-                              ],
-                            )
-                                : Container(),
-                            dealList!.length > 0
-                                ? Column(
-                              children: [
-                                todayDealsRow(
-                                    "DEALS_OF_THE_DAYS", dealList),
-                                Divider()
-                              ],
-                            )
-                                : Container(),
-                            SizedBox(height: 10)
-                          ],
+                    height: MediaQuery.of(context).size.height - 140,
+                    child: Stack(
+                      children: [
+                        Container(
+                          height: 250,
+                          color: primarybg,
                         ),
-                      ),
-                    ],
+                        Positioned(
+                          left: 20,
+                          bottom: 0,
+                          right: 10,
+                          top: 10,
+                          child: ListView(
+                            shrinkWrap: true,
+                            physics: ScrollPhysics(),
+                            children: <Widget>[
+                              categoryList!.length > 0
+                                  ? categoryRow()
+                                  : Container(),
+                              SizedBox(height: 10),
+                              bannerList!.length > 0
+                                  ? Column(
+                                      children: [banner(), Divider()],
+                                    )
+                                  : Container(),
+                              productsList!.length > 0
+                                  ? Column(
+                                      children: [
+                                        productRow(
+                                            "POPULAR_PRODUCTS", productsList),
+                                        Divider()
+                                      ],
+                                    )
+                                  : Container(),
+                              topDealList!.length > 0
+                                  ? Column(
+                                      children: [
+                                        topDealsRow("TOP_DEALS", topDealList),
+                                        Divider()
+                                      ],
+                                    )
+                                  : Container(),
+                              subscriptionProductsList!.length > 0
+                                  ? Column(
+                                      children: [
+                                        subscriptionProductsRow(
+                                            "SUBSCRIPTION_PRODUCTS",
+                                            subscriptionProductsList),
+                                        Divider()
+                                      ],
+                                    )
+                                  : Container(),
+                              dealList!.length > 0
+                                  ? Column(
+                                      children: [
+                                        todayDealsRow(
+                                            "DEALS_OF_THE_DAYS", dealList),
+                                        Divider()
+                                      ],
+                                    )
+                                  : Container(),
+                              SizedBox(height: 10)
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
       ),
     );
   }
