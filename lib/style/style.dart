@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'dart:ui';
 import 'package:readymadeGroceryApp/main.dart';
 
@@ -1144,11 +1145,12 @@ TextStyle textBarlowSemiBoldBlackbig(context) {
 }
 
 TextStyle textAddressLocation(context) {
+  final themeChange = Provider.of<DarkThemeProvider>(context);
   return TextStyle(
     fontSize: 20.0,
     fontWeight: FontWeight.bold,
     fontFamily: 'BarlowSemiBold',
-    color: whiteBg(context),
+    color: themeChange.darkTheme ? Colors.white : whiteBg(context),
   );
 }
 
@@ -1629,11 +1631,12 @@ TextStyle textBarlowRegularrGreenS(context) {
 }
 
 TextStyle textBarlowRegularrdarkdull(context) {
+  final themeChange = Provider.of<DarkThemeProvider>(context);
   return TextStyle(
     fontSize: 15.0,
     fontFamily: 'BarlowRegular',
-    fontWeight: FontWeight.w400,
-    color: dark(context).withOpacity(0.40),
+    fontWeight: FontWeight.w500,
+    color: themeChange.darkTheme ? Colors.white.withOpacity(0.9) : dark(context).withOpacity(0.50),
   );
 }
 
@@ -1646,11 +1649,12 @@ TextStyle textBarlowRegularGreen(context) {
 }
 
 TextStyle textBarlowRegularrBlacksm(context) {
+  final themeChange = Provider.of<DarkThemeProvider>(context);
   return TextStyle(
     fontSize: 12.0,
     fontFamily: 'BarlowRegular',
     fontWeight: FontWeight.w400,
-    color: whiteBg(context),
+    color: themeChange.darkTheme ? Colors.white : whiteBg(context),
   );
 }
 
@@ -1737,10 +1741,11 @@ TextStyle textbarlowRegularBlack87Font14(context) {
 }
 
 TextStyle textBarlowregwhitelg(context) {
+  final themeChange = Provider.of<DarkThemeProvider>(context);
   return TextStyle(
     fontSize: 20.0,
     fontFamily: 'BarlowRegular',
-    color: Colors.white.withOpacity(0.70),
+    color: themeChange.darkTheme ? Colors.white.withOpacity(0.70) : Colors.black,
   );
 }
 

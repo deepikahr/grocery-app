@@ -80,7 +80,7 @@ class _DrawerPageState extends State<DrawerPage> {
       child: Stack(
         children: <Widget>[
           Container(
-            color: Color(0xFF000000),
+            color: themeChange.darkTheme ? Color(0xFF000000) : Colors.white,
             child: ListView(
               children: <Widget>[
                 SizedBox(height: 40),

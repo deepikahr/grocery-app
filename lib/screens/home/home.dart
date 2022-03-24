@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:getwidget/components/badge/gf_badge.dart';
 import 'package:getwidget/shape/gf_badge_shape.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:readymadeGroceryApp/model/counterModel.dart';
 import 'package:readymadeGroceryApp/screens/drawer/drawer.dart';
 import 'package:readymadeGroceryApp/screens/tab/mycart.dart';
@@ -25,6 +26,9 @@ import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
+import '../../main.dart';
+import '../categories/allcategories.dart';
+
 SentryError sentryError = new SentryError();
 
 class Home extends StatefulWidget {
@@ -32,13 +36,14 @@ class Home extends StatefulWidget {
   final Map? localizedValues;
   final String? locale;
   final bool? isTest;
+  final bool? isViewAllSelected;
 
   Home(
       {Key? key,
       this.currentIndex,
       this.locale,
       this.localizedValues,
-      this.isTest})
+      this.isTest, this.isViewAllSelected})
       : super(key: key);
 
   @override
@@ -52,13 +57,19 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   bool currencyLoading = false,
       isCurrentLoactionLoading = false,
       getTokenValue = false;
+    bool? isViewAllSelected = false;
   int? currentIndex = 0, cartData;
   String? currency = "";
   var addressData;
 
   var socketService = SocketService();
   void initState() {
+    isViewAllSelected = widget.isViewAllSelected;
     socketService.socketInitialize();
+    if(isViewAllSelected == true){
+      currentIndex = 1;
+      print(currentIndex);
+    }
     if (widget.currentIndex != null) {
       if (mounted) {
         setState(() {
@@ -190,6 +201,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final themeChange = Provider.of<DarkThemeProvider>(context);
+
     if (getTokenValue) {
       CounterModel().getCartDataCountMethod().then((res) {
         if (mounted) {
@@ -216,16 +229,16 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               ),
               0)),
       BottomNavigationBarItem(
-          label: MyLocalizations.of(context)!.getLocalizations("FAVORITE"),
+          label: MyLocalizations.of(context)!.getLocalizations("CATEGORIES"),
           icon: buildIcon(
               context,
               const IconData(
-                0xe90d,
+                0xe90f,
                 fontFamily: 'icomoon',
               ),
               0)),
       BottomNavigationBarItem(
-          label: MyLocalizations.of(context)!.getLocalizations("MY_CART"),
+          label: MyLocalizations.of(context)!.getLocalizations("SEARCH"),
           icon: buildIcon(
               context,
               const IconData(
@@ -246,9 +259,17 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
 
     List<Widget> _screens = [
       Store(locale: widget.locale, localizedValues: widget.localizedValues),
-      SavedItems(
-          locale: widget.locale, localizedValues: widget.localizedValues),
-      MyCart(locale: widget.locale, localizedValues: widget.localizedValues),
+      AllCategories(
+        locale: widget.locale,
+        localizedValues: widget.localizedValues,
+        getTokenValue: getTokenValue,
+      ),
+      SearchItem(
+        locale: widget.locale,
+        localizedValues: widget.localizedValues,
+        currency: currency,
+        token: getTokenValue,
+      ),
       Profile(locale: widget.locale, localizedValues: widget.localizedValues),
     ];
 
@@ -256,8 +277,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       backgroundColor: bg(context),
       key: _scaffoldKey,
       // backgroundColor: Colors.white,
-      appBar: currentIndex == 0
-          ? appBarPrimarynoradiusWithContent(
+      appBar: appBarPrimarynoradiusWithContent(
               context,
               deliveryAddress(),
               true,
@@ -310,8 +330,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                   ),
                 ],
               ),
-            ) as PreferredSizeWidget?
-          : null,
+            ) as PreferredSizeWidget?,
 
 
 
@@ -324,7 +343,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       ),
       body: currencyLoading ? SquareLoader() : _screens[currentIndex!],
       bottomNavigationBar: BottomNavigationBar(
-        elevation: 1,
+        backgroundColor: themeChange.darkTheme ? Colors.black :  Colors.white.withOpacity(0.9),
+        elevation: 10,
         currentIndex: currentIndex!,
         type: BottomNavigationBarType.fixed,
         onTap: _onTapped,

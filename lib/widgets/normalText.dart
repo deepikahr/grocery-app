@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:provider/provider.dart';
 import 'package:readymadeGroceryApp/screens/orders/orders.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
+
+import '../main.dart';
 
 Widget alertText(BuildContext context, title, Icon? icon) {
   return Row(
@@ -106,6 +109,7 @@ Widget normalTextWithOutRow(BuildContext context, title, isCenter) {
 }
 
 Widget buildDrawer(BuildContext context, title, icon) {
+  final themeChange = Provider.of<DarkThemeProvider>(context);
   return Container(
     margin: EdgeInsets.only(bottom: 12.0),
     child: Container(
@@ -115,7 +119,7 @@ Widget buildDrawer(BuildContext context, title, icon) {
             flex: 2,
             child: ListTile(
               leading:
-                  Image.asset(icon, width: 35, height: 35, color: Colors.white),
+                  Image.asset(icon, width: 35, height: 35, color: themeChange.darkTheme ? Colors.white : Colors.black),
               selected: true,
             ),
           ),

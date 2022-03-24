@@ -176,9 +176,10 @@ class _SearchItemState extends State<SearchItem> {
               key: _formKeyForSearch,
               child: ListView(
                 children: <Widget>[
-                  Padding(
+                  Container(
+                    color : primary(context),
                     padding: const EdgeInsets.only(
-                        bottom: 15.0, left: 15.0, right: 15.0, top: 50.0),
+                        bottom: 15.0, left: 15.0, right: 15.0, top: 10),
                     child: Container(
                       child: new TextFormField(
                         keyboardType: TextInputType.text,
@@ -205,12 +206,12 @@ class _SearchItemState extends State<SearchItem> {
                         validator: (String? value) {
                           if (value!.isEmpty) {
                             return MyLocalizations.of(context)!
-                                .getLocalizations("WHAT_ARE_YOU_BUING_TODAY");
+                                .getLocalizations("SEARCH_PRODUCTS");
                           } else
                             return null;
                         },
                         decoration: new InputDecoration(
-                          suffixIcon: InkWell(
+                          prefixIcon: InkWell(
                             onTap: () {
                               FocusScopeNode currentScope =
                                   FocusScope.of(context);
@@ -225,21 +226,6 @@ class _SearchItemState extends State<SearchItem> {
                               _searchForProducts();
                             },
                             child: new Icon(Icons.search, color: Colors.black),
-                          ),
-                          prefixIcon: InkWell(
-                            onTap: () {
-                              FocusScopeNode currentScope =
-                                  FocusScope.of(context);
-                              FocusScopeNode rootScope = WidgetsBinding
-                                  .instance!.focusManager.rootScope;
-
-                              if (currentScope != rootScope) {
-                                currentScope.unfocus();
-                              }
-                              Navigator.pop(context);
-                            },
-                            child:
-                                new Icon(Icons.arrow_back, color: Colors.black),
                           ),
                           hintText: MyLocalizations.of(context)!
                               .getLocalizations("WHAT_ARE_YOU_BUING_TODAY"),
@@ -293,70 +279,53 @@ class _SearchItemState extends State<SearchItem> {
                                     ],
                                   ),
                                 ),
-                                GridView.builder(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 16, horizontal: 16),
-                                  physics: ScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemCount: searchresult.isEmpty
-                                      ? 0
-                                      : searchresult.length,
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 2,
-                                          childAspectRatio:
-                                              MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  520,
-                                          crossAxisSpacing: 16,
-                                          mainAxisSpacing: 16),
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    if (searchresult[index]['averageRating'] ==
-                                        null) {
-                                      searchresult[index]['averageRating'] = 0;
-                                    }
-                                    return InkWell(
-                                        onTap: () {
-                                          FocusScopeNode currentScope =
-                                              FocusScope.of(context);
-                                          FocusScopeNode rootScope =
-                                              WidgetsBinding.instance!
-                                                  .focusManager.rootScope;
-
-                                          if (currentScope != rootScope) {
-                                            currentScope.unfocus();
-                                          }
-                                          var result = Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ProductDetails(
-                                                locale: widget.locale,
-                                                localizedValues:
-                                                    widget.localizedValues,
-                                                productID: searchresult[index]
-                                                    ['_id'],
-                                              ),
-                                            ),
-                                          );
-                                          result.then((value) {
-                                            if (value != null) {
-                                              if (searchTerm!.length > 0) {
-                                                productIndex = 0;
-                                                searchresult = [];
-                                                _searchForProducts();
-                                              }
-                                            }
-                                          });
-                                        },
-                                        child: ProductGridCard(
+                                Container(
+                                  height: 190,
+                                  margin: EdgeInsets.only(left: 20),
+                                  child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      physics: ScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemCount: searchresult.isEmpty
+                                          ? 0
+                                          : searchresult.length,
+                                      itemBuilder: (BuildContext context, int i) {
+                                        if (searchresult[i]['averageRating'] == null) {
+                                          searchresult[i]['averageRating'] = 0;
+                                        }
+                                        return searchresult[i]['outOfStock'] != null ||
+                                            searchresult[i]['outOfStock'] != false
+                                            ? Container(
+                                          height: 190,
+                                          width: 200,
+                                          margin: const EdgeInsets.only(right: 10),
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(12)),
+                                          child: InkWell(
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => ProductDetails(
+                                                    locale: widget.locale,
+                                                    localizedValues: widget.localizedValues,
+                                                    productID: searchresult[i]['_id'],
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            child: ProductGridCard(
+                                                currency: currency,
+                                                productData: searchresult[i],
+                                                isHome: true),
+                                          ),
+                                        )
+                                            : ProductGridCard(
                                           currency: currency,
-                                          productData: searchresult[index],
-                                          isHome: false,
-                                        ));
-                                  },
+                                          productData: searchresult[i],
+                                          isHome: true,
+                                        );
+                                      }),
                                 ),
                               ],
                             )
