@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:getwidget/components/badge/gf_badge.dart';
+import 'package:getwidget/shape/gf_badge_shape.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:readymadeGroceryApp/model/counterModel.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/product/product-details.dart';
@@ -14,6 +19,8 @@ import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import 'package:readymadeGroceryApp/widgets/product_gridcard.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import '../../service/constants.dart';
+import '../../service/locationService.dart';
 import '../../style/style.dart';
 import '../../widgets/loader.dart';
 
@@ -37,11 +44,13 @@ class AllProducts extends StatefulWidget {
 
 class _AllProductsState extends State<AllProducts> {
   bool isUserLoaggedIn = false,
+      getTokenValue = false,
       isFirstPageLoading = true,
       isNextPageLoading = false,
       isCategoryLoading = true,
       isProductsForDeal = false,
-      isProductsForCategory = false;
+      isProductsForCategory = false,
+      isCurrentLocationLoading = false;
   int? productsPerPage = 12,
       productsPageNumber = 0,
       totalProducts = 1,
@@ -52,11 +61,12 @@ class _AllProductsState extends State<AllProducts> {
   String? currency;
   ScrollController _scrollController = ScrollController();
 
-  var cartData;
+  var cartData, addressData;
 
   @override
   void initState() {
     super.initState();
+    getResult();
     if (widget.dealId != null) {
       isProductsForDeal = true;
       isCategoryLoading = false;
@@ -132,6 +142,69 @@ class _AllProductsState extends State<AllProducts> {
         });
       }
       sentryError.reportError(error, null);
+    });
+  }
+
+  deliveryAddress() {
+    return locationText(context, addressData == null ? null : "YOUR_LOCATION",
+        addressData ?? Constants.appName);
+  }
+
+  getToken() async {
+    await Common.getToken().then((onValue) {
+      if (onValue != null) {
+        if (mounted) {
+          setState(() {
+            getTokenValue = true;
+          });
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            getTokenValue = false;
+          });
+        }
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          getTokenValue = false;
+        });
+      }
+      sentryError.reportError(error, null);
+    });
+  }
+
+  getResult() async {
+    await Common.getCurrentLocation().then((address) async {
+      if (address != null) {
+        if (mounted) {
+          setState(() {
+            addressData = address;
+          });
+        }
+      }
+      bool? permission = await LocationUtils().locationPermission();
+
+      if (permission) {
+        Position position = await LocationUtils().currentLocation();
+        var addressValue = await LocationUtils().getAddressFromLatLng(
+          LatLng(
+            position.latitude,
+            position.longitude,
+          ),
+        );
+        List<Placemark> placemarks = await placemarkFromCoordinates(
+            position.latitude, position.longitude);
+        if (mounted) {
+          setState(() {
+            addressData = addressValue.formattedAddress;
+            isCurrentLocationLoading = false;
+          });
+        }
+        await Common.setCountryInfo(placemarks[0].isoCountryCode ?? '');
+        await Common.setCurrentLocation(addressData);
+      }
     });
   }
 
@@ -279,24 +352,62 @@ class _AllProductsState extends State<AllProducts> {
 
   @override
   Widget build(BuildContext context) {
-    if (isUserLoaggedIn) {
-      CounterModel().getCartDataMethod().then((res) {
-        if (mounted) {
-          setState(() {
-            cartData = res;
-          });
-        }
-      });
-    } else {
-      if (mounted) {
-        setState(() {
-          cartData = null;
-        });
-      }
-    }
     return Scaffold(
       backgroundColor: bg(context),
-      appBar: appBarWhite(
+      appBar: appBarPrimarynoradiusWithContent(
+        context,
+        deliveryAddress(),
+        true,
+        true,
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            InkWell(
+                onTap: () {},
+                child: Stack(
+                  children: [
+                    Icon(Icons.shopping_cart),
+                    Positioned(
+                      right: 2,
+                      child: GFBadge(
+                        child: Text(
+                          '${cartData.toString()}',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: "bold",
+                              fontSize: 11),
+                        ),
+                        shape: GFBadgeShape.circle,
+                        color: Colors.red,
+                        size: 20,
+                      ),
+                    ),
+                  ],
+                )),
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SearchItem(
+                      locale: widget.locale,
+                      localizedValues: widget.localizedValues,
+                      currency: currency,
+                      token: getTokenValue,
+                    ),
+                  ),
+                );
+              },
+              child: Padding(
+                padding: EdgeInsets.only(right: 15, left: 10),
+                child: Icon(Icons.notifications_none),
+              ),
+            ),
+          ],
+        ),
+      ) as PreferredSizeWidget?,
+      /*appBarWhite(
         context,
         widget.pageTitle,
         false,
@@ -325,12 +436,13 @@ class _AllProductsState extends State<AllProducts> {
             ),
           ),
         ),
-      ) as PreferredSizeWidget?,
+      ) as PreferredSizeWidget?,*/
       body: isCategoryLoading
           ? Center(child: SquareLoader())
           : Column(
               children: [
-                isCategoryLoading
+                SizedBox(height: 20,),
+               /* isCategoryLoading
                     ? SquareLoader()
                     : isProductsForDeal
                         ? Container()
@@ -361,7 +473,7 @@ class _AllProductsState extends State<AllProducts> {
                                     ),
                                   );
                                 }),
-                          ),
+                          ),*/
                 Flexible(
                   child: isFirstPageLoading
                       ? Center(child: SquareLoader())

@@ -99,15 +99,12 @@ class _AllCategoriesState extends State<AllCategories>
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => AllProducts(
-                              locale: widget.locale,
-                              localizedValues: widget.localizedValues,
-                              categoryId: categoryList![index]['_id'],
-                              pageTitle: categoryList![index]['title'],
-                            ),
-                          ),
-                        );
+                          PageRouteBuilder(pageBuilder: (_, __, ___) => AllProducts(
+                          locale: widget.locale,
+                          localizedValues: widget.localizedValues,
+                          categoryId: categoryList![index]['_id'],
+                          pageTitle: categoryList![index]['title'],
+                        )));
                       },
                       child: CategoryBlock(
                           image: categoryList![index]['filePath'] == null
