@@ -108,50 +108,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - .env
-    - lib/assets/images/profile.png
-    - lib/assets/images/product.png
-    - lib/assets/images/thank-you.png
-    - lib/assets/images/badge.png
-    - lib/assets/images/no-orders.png
-    - lib/assets/images/wallet.png
-    - lib/assets/images/walleticon.png
-    - lib/assets/images/rate.png
-    - lib/assets/images/profileIcon.png
-    - lib/assets/images/failed.png
-    - lib/assets/images/ref.png
-    - lib/assets/images/copy.png
-    - lib/assets/images/wapp.png
-    - lib/assets/images/sms.png
-    - lib/assets/icons/map.png
-    - lib/assets/images/copylink.png
-    - lib/assets/images/addMoney.png
-    - lib/assets/images/walletImage.png
-    - lib/assets/images/banner_bg.png
-
-    - lib/assets/icons/tick.svg
-    - lib/assets/icons/editt.svg
-    - lib/assets/icons/add1.svg
-    - lib/assets/icons/Refer.svg
-
-    - lib/assets/icons/sale.png
-    - lib/assets/icons/Home.png
-    - lib/assets/icons/products.png
-    - lib/assets/icons/location.png
-    - lib/assets/icons/fav.png
-    - lib/assets/icons/chat.png
-    - lib/assets/icons/about.png
-    - lib/assets/icons/lg.png
-    - lib/assets/icons/categories.png
-    - lib/assets/icons/deals.png
-    - lib/assets/icons/history.png
-    - lib/assets/icons/tc.png
-    - lib/assets/icons/share.png
-    - lib/assets/icons/red.png
-    - lib/assets/icons/green.png
-    - lib/assets/icons/back.png
-    - lib/assets/icons/front.png
-    - lib/assets/icons/refer.png
-    - lib/assets/icons/subscription_list.png
-
-    - lib/assets/splash.png
+    - lib/assets/images/
+    - lib/assets/icons/
     - lib/assets/logo.png
+    - lib/assets/splash.png

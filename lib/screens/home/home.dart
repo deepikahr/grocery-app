@@ -43,7 +43,8 @@ class Home extends StatefulWidget {
       this.currentIndex,
       this.locale,
       this.localizedValues,
-      this.isTest, this.isViewAllSelected})
+      this.isTest,
+      this.isViewAllSelected})
       : super(key: key);
 
   @override
@@ -57,7 +58,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   bool currencyLoading = false,
       isCurrentLoactionLoading = false,
       getTokenValue = false;
-    bool? isViewAllSelected = false;
+  bool? isViewAllSelected = false;
   int? currentIndex = 0, cartData;
   String? currency = "";
   var addressData;
@@ -66,7 +67,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   void initState() {
     isViewAllSelected = widget.isViewAllSelected;
     socketService.socketInitialize();
-    if(isViewAllSelected == true){
+    if (isViewAllSelected == true) {
       currentIndex = 1;
       print(currentIndex);
     }
@@ -220,41 +221,25 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     }
     List<BottomNavigationBarItem> items = [
       BottomNavigationBarItem(
-          label: MyLocalizations.of(context)!.getLocalizations("STORE"),
-          icon: buildIcon(
-              context,
-              const IconData(
-                0xe90f,
-                fontFamily: 'icomoon',
-              ),
-              0)),
+          label: MyLocalizations.of(context)!.getLocalizations("HOME"),
+          activeIcon: buildIcon(context, "lib/assets/icons/home_filled.png", 0),
+          icon: buildIcon(context, "lib/assets/icons/home_Border.png", 0)),
       BottomNavigationBarItem(
+          activeIcon:
+              buildIcon(context, "lib/assets/icons/category_filled.png", 0),
           label: MyLocalizations.of(context)!.getLocalizations("CATEGORIES"),
-          icon: buildIcon(
-              context,
-              const IconData(
-                0xe90f,
-                fontFamily: 'icomoon',
-              ),
-              0)),
+          icon: buildIcon(context, "lib/assets/icons/category_border.png", 0)),
       BottomNavigationBarItem(
+          activeIcon:
+              buildIcon(context, "lib/assets/icons/Search_filled.png", 0),
           label: MyLocalizations.of(context)!.getLocalizations("SEARCH"),
           icon: buildIcon(
-              context,
-              const IconData(
-                0xe911,
-                fontFamily: 'icomoon',
-              ),
-              cartData)),
+              context, "lib/assets/icons/Search_border.png", cartData)),
       BottomNavigationBarItem(
+          activeIcon:
+              buildIcon(context, "lib/assets/icons/Profile_filled.png", 0),
           label: MyLocalizations.of(context)!.getLocalizations("PROFILE"),
-          icon: buildIcon(
-              context,
-              const IconData(
-                0xe912,
-                fontFamily: 'icomoon',
-              ),
-              0)),
+          icon: buildIcon(context, "lib/assets/icons/Profile_border.png", 0)),
     ];
 
     List<Widget> _screens = [
@@ -277,62 +262,64 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       backgroundColor: bg(context),
       key: _scaffoldKey,
       // backgroundColor: Colors.white,
+
       appBar: appBarPrimarynoradiusWithContent(
-              context,
-              deliveryAddress(),
-              true,
-              true,
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  InkWell(
-                    onTap: () {
-                    },
-                    child:
-                    Stack(
-                      children: [
-                        Icon(Icons.shopping_cart),
-                        Positioned(
-                          right: 2,
-                          child: GFBadge(
-                            child: Text(
-                              '${cartData.toString()}',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: Colors.white, fontFamily: "bold", fontSize: 11),
+        context,
+        deliveryAddress(),
+        true,
+        true,
+        // App Bar Actions
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            //Cart Icon with Cart data badge
+            InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MyCart(
+                                locale: widget.locale,
+                                localizedValues: widget.localizedValues,
+                              )));
+                },
+                child: Stack(
+                  children: [
+                    Icon(Icons.shopping_cart),
+                    Positioned(
+                      right: 2,
+                      child: (cartData == null || cartData == 0)
+                          ? Container()
+                          : GFBadge(
+                              child: Text(
+                                '${cartData.toString()}',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: "bold",
+                                    fontSize: 11),
+                              ),
+                              shape: GFBadgeShape.circle,
+                              color: Colors.red,
+                              size: 20,
                             ),
-                            shape: GFBadgeShape.circle,
-                            color: Colors.red,
-                            size: 20,
-                          ),
-                        ),
-                      ],
-                    )
-                  ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SearchItem(
-                            locale: widget.locale,
-                            localizedValues: widget.localizedValues,
-                            currency: currency,
-                            token: getTokenValue,
-                          ),
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.only(right: 15, left: 10),
-                      child: Icon(Icons.notifications_none),
                     ),
-                  ),
-                ],
+                  ],
+                )),
+
+            //Notification Icon
+            InkWell(
+              onTap: () {
+                //Notification Screen Open
+              },
+              child: Padding(
+                padding: EdgeInsets.only(right: 15, left: 10),
+                child: Icon(Icons.notifications_none),
               ),
-            ) as PreferredSizeWidget?,
-
-
+            ),
+          ],
+        ),
+      ) as PreferredSizeWidget?,
 
       drawer: Drawer(
         child: DrawerPage(
@@ -343,7 +330,9 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       ),
       body: currencyLoading ? SquareLoader() : _screens[currentIndex!],
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: themeChange.darkTheme ? Colors.black :  Colors.white.withOpacity(0.9),
+        backgroundColor: themeChange.darkTheme
+            ? Colors.black
+            : Colors.white.withOpacity(0.9),
         elevation: 10,
         currentIndex: currentIndex!,
         type: BottomNavigationBarType.fixed,

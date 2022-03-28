@@ -264,7 +264,7 @@ class _ProductDetailsState extends State<ProductDetails>
         showSnackbar(onValue['message'] ?? "");
       }
       Future.delayed(Duration(milliseconds: 1500), () {
-        Navigator.of(context).pop(true);
+        Navigator.of(context).pop(onValue['response_data']);
       });
       if (onValue['response_data'] is Map) {
         Common.setCartData(onValue['response_data']);
@@ -822,7 +822,7 @@ class _ProductDetailsState extends State<ProductDetails>
                       context,
                       '(${quantity.toString()})  ',
                       calculateTotal(),
-                      "ADD_TO_CART",
+                      isProductAlredayInCart == true ? "UPDATE" : "ADD_TO_CART",
                       Icon(Icons.shopping_cart, color: Colors.black),
                       addProductTocart),
                 ),

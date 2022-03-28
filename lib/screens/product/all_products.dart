@@ -407,36 +407,6 @@ class _AllProductsState extends State<AllProducts> {
           ],
         ),
       ) as PreferredSizeWidget?,
-      /*appBarWhite(
-        context,
-        widget.pageTitle,
-        false,
-        true,
-        InkWell(
-          onTap: () {
-            var result = Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => SearchItem(
-                  locale: widget.locale,
-                  localizedValues: widget.localizedValues,
-                  currency: currency,
-                  token: isUserLoaggedIn,
-                ),
-              ),
-            );
-            result.then((value) {
-              checkIfUserIsLoaggedIn();
-            });
-          },
-          child: Padding(
-            padding: EdgeInsets.only(right: 15, left: 15),
-            child: Icon(
-              Icons.search,
-            ),
-          ),
-        ),
-      ) as PreferredSizeWidget?,*/
       body: isCategoryLoading
           ? Center(child: SquareLoader())
           : Column(
