@@ -15,6 +15,8 @@ import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/cardOverlay.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
+import '../screens/product/product-details.dart';
+
 class ProductGridCard extends StatefulWidget {
   final String? currency;
   final Map? productData;
@@ -312,26 +314,12 @@ class _ProductGridCardState extends State<ProductGridCard> {
                                                   context: context,
                                                   builder:
                                                       (BuildContext bc) {
-                                                    return BottonSheetClassDryClean(
-                                                        locale:
-                                                            widget.locale,
-                                                        localizedValues: widget
-                                                            .localizedValues,
-                                                        currency:
-                                                            widget.currency,
-                                                        productData:
-                                                            widget.productData
-                                                                as Map<
-                                                                    String,
-                                                                    dynamic>?,
-                                                        dealPercentage:
-                                                            dealPercentage,
-                                                        variantsList: widget
-                                                                .productData![
-                                                            'variant'],
-                                                        productQuantity: widget
-                                                                .productData![
-                                                            'quantityToCart']);
+                                                    return ProductDetails(
+                                                      locale: widget.locale,
+                                                      localizedValues:
+                                                      widget.localizedValues,
+                                                     /* productID: productsList![i]['_id'],*/
+                                                    );
                                                   });
                                           bottomSheet.then((onValue) {
                                             if (onValue != null) {

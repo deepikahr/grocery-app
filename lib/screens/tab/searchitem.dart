@@ -14,6 +14,8 @@ import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import 'package:readymadeGroceryApp/widgets/product_gridcard.dart';
 
+import 'mycart.dart';
+
 SentryError sentryError = new SentryError();
 
 class SearchItem extends StatefulWidget {
@@ -177,7 +179,7 @@ class _SearchItemState extends State<SearchItem> {
               child: ListView(
                 children: <Widget>[
                   Container(
-                    color : primary(context),
+                    color: primary(context),
                     padding: const EdgeInsets.only(
                         bottom: 15.0, left: 15.0, right: 15.0, top: 10),
                     child: Container(
@@ -228,7 +230,7 @@ class _SearchItemState extends State<SearchItem> {
                             child: new Icon(Icons.search, color: Colors.black),
                           ),
                           hintText: MyLocalizations.of(context)!
-                              .getLocalizations("WHAT_ARE_YOU_BUING_TODAY"),
+                              .getLocalizations("SEARCH_PRODUCTS"),
                           hintStyle: new TextStyle(
                             color: greyb2,
                           ),
@@ -289,42 +291,54 @@ class _SearchItemState extends State<SearchItem> {
                                       itemCount: searchresult.isEmpty
                                           ? 0
                                           : searchresult.length,
-                                      itemBuilder: (BuildContext context, int i) {
-                                        if (searchresult[i]['averageRating'] == null) {
+                                      itemBuilder:
+                                          (BuildContext context, int i) {
+                                        if (searchresult[i]['averageRating'] ==
+                                            null) {
                                           searchresult[i]['averageRating'] = 0;
                                         }
-                                        return searchresult[i]['outOfStock'] != null ||
-                                            searchresult[i]['outOfStock'] != false
+                                        return searchresult[i]['outOfStock'] !=
+                                                    null ||
+                                                searchresult[i]['outOfStock'] !=
+                                                    false
                                             ? Container(
-                                          height: 190,
-                                          width: 200,
-                                          margin: const EdgeInsets.only(right: 10),
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(12)),
-                                          child: InkWell(
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) => ProductDetails(
-                                                    locale: widget.locale,
-                                                    localizedValues: widget.localizedValues,
-                                                    productID: searchresult[i]['_id'],
-                                                  ),
+                                                height: 190,
+                                                width: 200,
+                                                margin: const EdgeInsets.only(
+                                                    right: 10),
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            12)),
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            ProductDetails(
+                                                          locale: widget.locale,
+                                                          localizedValues: widget
+                                                              .localizedValues,
+                                                          productID:
+                                                              searchresult[i]
+                                                                  ['_id'],
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: ProductGridCard(
+                                                      currency: currency,
+                                                      productData:
+                                                          searchresult[i],
+                                                      isHome: true),
                                                 ),
-                                              );
-                                            },
-                                            child: ProductGridCard(
+                                              )
+                                            : ProductGridCard(
                                                 currency: currency,
                                                 productData: searchresult[i],
-                                                isHome: true),
-                                          ),
-                                        )
-                                            : ProductGridCard(
-                                          currency: currency,
-                                          productData: searchresult[i],
-                                          isHome: true,
-                                        );
+                                                isHome: true,
+                                              );
                                       }),
                                 ),
                               ],
@@ -368,7 +382,18 @@ class _SearchItemState extends State<SearchItem> {
                   }
                 });
               },
-              child: cartInfoButton(context, cartData, currency)),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MyCart(
+                                locale: widget.locale,
+                                localizedValues: widget.localizedValues,
+                              )));
+                },
+                child: cartInfoButton(context, cartData, currency),
+              )),
     );
   }
 }

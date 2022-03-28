@@ -783,27 +783,10 @@ orderNowDark(BuildContext context, title) {
   );
 }
 
-Widget buildIcon(BuildContext context, iconData, cartData) {
+Widget buildIcon(BuildContext context, String icon, cartData) {
   return Padding(
-    padding: const EdgeInsets.only(top: 8.0),
-    child: GFIconBadge(
-      child: new Icon(
-        iconData,
-      ),
-      counterChild: (cartData == null || cartData == 0)
-          ? Container()
-          : GFBadge(
-              child: Text(
-                '${cartData.toString()}',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: Colors.white, fontFamily: "bold", fontSize: 11),
-              ),
-              shape: GFBadgeShape.circle,
-              color: Colors.red,
-              size: 25,
-            ),
-    ),
+    padding: const EdgeInsets.only( top: 4.0),
+    child: Image.asset(icon, height: 25, width: 25, fit: BoxFit.fill,),
   );
 }
 
