@@ -23,6 +23,7 @@ import '../../service/constants.dart';
 import '../../service/locationService.dart';
 import '../../style/style.dart';
 import '../../widgets/loader.dart';
+import '../tab/mycart.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -363,41 +364,40 @@ class _AllProductsState extends State<AllProducts> {
           mainAxisSize: MainAxisSize.min,
           children: [
             InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MyCart(
+                            locale: widget.locale,
+                            localizedValues: widget.localizedValues,
+                          )));
+                },
                 child: Stack(
                   children: [
                     Icon(Icons.shopping_cart),
-                    Positioned(
-                      right: 2,
-                      child: GFBadge(
-                        child: Text(
-                          '${cartData.toString()}',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: "bold",
-                              fontSize: 11),
-                        ),
-                        shape: GFBadgeShape.circle,
-                        color: Colors.red,
-                        size: 20,
-                      ),
-                    ),
+                     Positioned(
+                            right: 2,
+                            child: cartData == 0 || cartData == null
+                                ? Container()
+                                : GFBadge(
+                              child: Text(
+                                '${cartData.toString()}',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: "bold",
+                                    fontSize: 11),
+                              ),
+                              shape: GFBadgeShape.circle,
+                              color: Colors.red,
+                              size: 20,
+                            ),
+                          ),
                   ],
                 )),
             InkWell(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SearchItem(
-                      locale: widget.locale,
-                      localizedValues: widget.localizedValues,
-                      currency: currency,
-                      token: getTokenValue,
-                    ),
-                  ),
-                );
               },
               child: Padding(
                 padding: EdgeInsets.only(right: 15, left: 10),
@@ -411,8 +411,10 @@ class _AllProductsState extends State<AllProducts> {
           ? Center(child: SquareLoader())
           : Column(
               children: [
-                SizedBox(height: 20,),
-               /* isCategoryLoading
+                SizedBox(
+                  height: 20,
+                ),
+                /* isCategoryLoading
                     ? SquareLoader()
                     : isProductsForDeal
                         ? Container()
