@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/screens/authe/change-mobile-number.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
@@ -17,7 +16,6 @@ import '../../service/constants.dart';
 import 'package:path/path.dart' as path;
 import 'package:http/http.dart' as http;
 import 'package:async/async.dart';
-import 'dart:ui';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:image_picker/image_picker.dart';
 

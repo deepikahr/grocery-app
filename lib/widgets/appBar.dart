@@ -1,8 +1,6 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:readymadeGroceryApp/screens/tab/store.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 
@@ -98,13 +96,6 @@ Widget appBarPrimarynoradiusWithContent(BuildContext context, title,
           ),
     centerTitle: false,
     automaticallyImplyLeading: true,
-    // bottom: PreferredSize(
-    //   preferredSize: Size.fromHeight(250),
-    //   child: Container(
-    //     color: primarybg,
-    //     child: Store(),
-    //   ),
-    // ),
     titleSpacing: 0,
     backgroundColor: primary(context),
     elevation: 0,

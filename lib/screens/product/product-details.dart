@@ -325,7 +325,7 @@ class _ProductDetailsState extends State<ProductDetails>
     return Scaffold(
         backgroundColor: bg(context),
         key: _scaffoldKey,
-        body: isProductDetails!
+        body: isProductDetails == true
             ? SquareLoader()
             : Container(
                 height: MediaQuery.of(context).size.height,
@@ -497,14 +497,15 @@ class _ProductDetailsState extends State<ProductDetails>
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
-                                      Expanded(
-                                          flex: 7,
-                                          child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 20, right: 20),
-                                              child: titleThreeLine(
-                                                  '${productDetail['title'][0].toUpperCase()}${productDetail['title'].substring(1)}',
-                                                  context))),
+                                      if (productDetail['title'] != null)
+                                        Expanded(
+                                            flex: 7,
+                                            child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 20, right: 20),
+                                                child: titleThreeLine(
+                                                    '${productDetail['title'][0].toUpperCase()}${productDetail['title'].substring(1)}',
+                                                    context))),
                                       Expanded(
                                         flex: 3,
                                         child: Padding(

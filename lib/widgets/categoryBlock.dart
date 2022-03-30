@@ -1,12 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
-
-import '../main.dart';
 
 class CategoryBlock extends StatelessWidget {
   final image, title;
@@ -22,11 +19,10 @@ class CategoryBlock extends StatelessWidget {
       child: Column(
         children: <Widget>[
           Container(
-            width: isHome! ? 90 : 90,
-            height: isHome! ? 90 : 90,
+            width: isHome! ? 75 : 60,
+            height: isHome! ? 75 : 60,
             padding: EdgeInsets.all(5),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(50)),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(50)),
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(50)),
               child: CachedNetworkImage(

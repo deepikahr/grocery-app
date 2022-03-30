@@ -1,8 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:readymadeGroceryApp/screens/categories/allcategories.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/product/all_deals.dart';
 import 'package:readymadeGroceryApp/screens/product/all_products.dart';
@@ -274,7 +272,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
           homePageBoldText(context, name),
           InkWell(
             onTap: () {
-               Navigator.push(context,
+              Navigator.push(context,
                   MaterialPageRoute(builder: (BuildContext context) => route!));
             },
             child: viewAllBoldText(context, "VIEW_ALL", valueKey: valueKey),
@@ -284,9 +282,6 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
     );
   }
 
-
-
-
   Widget _categoryListTile(String name, {void Function()? onTap, valueKey}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -295,7 +290,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
         children: <Widget>[
           homePageBoldText(context, name),
           InkWell(
-            onTap:onTap,
+            onTap: onTap,
             child: viewAllBoldText(context, "VIEW_ALL", valueKey: valueKey),
           )
         ],
@@ -313,17 +308,20 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
               isViewAllSelected = true;
               print(isViewAllSelected);
               Navigator.pushReplacement(
-                  context,
-                  PageRouteBuilder(pageBuilder: (_, __, ___) => Home(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (_, __, ___) => Home(
                     isViewAllSelected: isViewAllSelected,
-                  )));
+                  ),
+                ),
+              );
             });
           },
           valueKey: ValueKey('view-all-categories'),
         ),
         SizedBox(height: 20),
         Container(
-          height: 120,
+          height: 100,
           child: ListView.builder(
             physics: ScrollPhysics(),
             shrinkWrap: true,
@@ -367,7 +365,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       viewportFraction: 1.0,
       activeIndicator: primarybg,
       passiveIndicator: primaryLight2,
-      height: 150,
+      height: 100,
       aspectRatio: 2,
       onPageChanged: (_) {
         setState(() {
@@ -409,7 +407,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                     "/tr:dpr-auto,tr:w-500" +
                     url['filePath'],
             imageBuilder: (context, imageProvider) => Container(
-              height: 115,
+              height: 100,
               margin: EdgeInsets.only(top: 10, left: 5, right: 5),
               padding: EdgeInsets.only(top: 5, left: 20, right: 20),
               width: MediaQuery.of(context).size.width,
@@ -486,7 +484,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
             //   ),
             // ),
             placeholder: (context, url) => Container(
-              height: 115,
+              height: 100,
               margin: EdgeInsets.only(top: 10, left: 16, right: 16),
               padding: EdgeInsets.only(top: 5, left: 20, right: 20),
               width: MediaQuery.of(context).size.width,
@@ -494,7 +492,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
               color: Colors.black.withOpacity(0.2),
             ),
             errorWidget: (context, url, error) => Container(
-              height: 115,
+              height: 100,
               margin: EdgeInsets.only(top: 10, left: 16, right: 16),
               padding: EdgeInsets.only(top: 5, left: 20, right: 20),
               width: MediaQuery.of(context).size.width,
@@ -540,16 +538,20 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                             borderRadius: BorderRadius.circular(12)),
                         child: InkWell(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ProductDetails(
-                                  locale: widget.locale,
-                                  localizedValues: widget.localizedValues,
-                                  productID: list[i]['_id'],
-                                ),
-                              ),
-                            );
+                            showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                builder: (BuildContext bc) {
+                                  return Container(
+                                    height: MediaQuery.of(context).size.height /
+                                        1.45,
+                                    child: ProductDetails(
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues,
+                                      productID: list[i]['_id'],
+                                    ),
+                                  );
+                                });
                           },
                           child: ProductGridCard(
                               currency: currency,
@@ -891,7 +893,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                           color: primarybg,
                         ),
                         Positioned(
-                          left: 20,
+                          left: 10,
                           bottom: 0,
                           right: 10,
                           top: 10,

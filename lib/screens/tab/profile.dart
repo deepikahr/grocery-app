@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:getwidget/getwidget.dart';
@@ -10,6 +9,7 @@ import 'package:readymadeGroceryApp/screens/drawer/address.dart';
 import 'package:readymadeGroceryApp/screens/orders/orderTab.dart';
 import 'package:readymadeGroceryApp/screens/subsription/subscriptionList.dart';
 import 'package:readymadeGroceryApp/screens/tab/editprofile.dart';
+import 'package:readymadeGroceryApp/screens/tab/saveditems.dart';
 import 'package:readymadeGroceryApp/screens/tab/wallet.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -420,6 +420,21 @@ class _ProfileState extends State<Profile> {
                               result.then((value) => getToken());
                             },
                             child: profileText(context, "WALLET")),
+                        SizedBox(height: 15),
+                        InkWell(
+                            onTap: () {
+                              var result = Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SavedItems(
+                                    locale: widget.locale,
+                                    localizedValues: widget.localizedValues,
+                                  ),
+                                ),
+                              );
+                              result.then((value) => getToken());
+                            },
+                            child: profileText(context, "FAVORITE")),
                         SizedBox(height: 15),
                         InkWell(
                             onTap: () {

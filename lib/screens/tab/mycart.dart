@@ -1,8 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-
 import 'package:readymadeGroceryApp/model/addToCart.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
@@ -43,7 +40,6 @@ class _MyCartState extends State<MyCart> {
   String? token, currency;
   String quantityUpdateType = '+';
   Map? cartItem;
-  double bottomBarHeight = 150;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   var minAmout;
@@ -222,19 +218,6 @@ class _MyCartState extends State<MyCart> {
         Common.setCartData(onValue['response_data']);
         setState(() {
           cartItem = onValue['response_data'];
-          if (cartItem!['grandTotal'] != null) {
-            bottomBarHeight = 150;
-            if (cartItem!['deliveryCharges'] == 0 &&
-                cartItem!['deliveryAddress'] != null) {
-              bottomBarHeight = bottomBarHeight + 20;
-            }
-            if (cartItem!['tax'] != 0) {
-              bottomBarHeight = bottomBarHeight + 20;
-            }
-            if (cartItem!['couponInfo'] != null) {
-              bottomBarHeight = bottomBarHeight + 20;
-            }
-          }
         });
       } else {
         if (mounted) {
@@ -839,108 +822,106 @@ class _MyCartState extends State<MyCart> {
           ? SquareLoader()
           : token == null || cartItem == null
               ? Container(height: 1)
-              : Container(
-                  height: bottomBarHeight,
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                          padding:
-                              const EdgeInsets.only(left: 20.0, right: 20.0),
-                          child: buildPrice(
-                              context,
-                              null,
-                              MyLocalizations.of(context)!
-                                      .getLocalizations("SUB_TOTAL") +
-                                  ' ( ${cartItem!['products'].length} ' +
-                                  MyLocalizations.of(context)!
-                                      .getLocalizations("ITEMS") +
-                                  ')',
-                              '$currency${cartItem!['subTotal'].toDouble().toStringAsFixed(2)}',
-                              false)),
-                      SizedBox(height: 4),
-                      cartItem!['tax'] == 0
-                          ? Container()
-                          : Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 20.0, right: 20.0),
-                              child: buildPrice(
-                                  context,
-                                  Image.asset(
-                                    'lib/assets/icons/sale.png',
-                                    color: dark(context),
-                                  ),
-                                  cartItem!['taxInfo'] == null
-                                      ? MyLocalizations.of(context)!
-                                          .getLocalizations("TAX")
-                                      : MyLocalizations.of(context)!
-                                              .getLocalizations("TAX") +
-                                          " (" +
-                                          cartItem!['taxInfo']['taxName'] +
-                                          " " +
-                                          cartItem!['taxInfo']['amount']
-                                              .toString() +
-                                          "%)",
-                                  '$currency${cartItem!['tax'].toDouble().toStringAsFixed(2)}',
-                                  false)),
-                      SizedBox(height: 6),
-                      cartItem!['couponCode'] == null
-                          ? Container()
-                          : Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 20.0, right: 20.0),
-                              child: buildPrice(
-                                  context,
-                                  null,
-                                  MyLocalizations.of(context)!
-                                          .getLocalizations("COUPON_APPLIED") +
-                                      " (" +
-                                      "${cartItem!['couponCode']}"
-                                          ")",
-                                  '-$currency${cartItem!['couponAmount'].toDouble().toStringAsFixed(2)}',
-                                  false)),
-                      cartItem!['couponCode'] == null
-                          ? Container()
-                          : SizedBox(height: 6),
-                      cartItem!['deliveryCharges'] == 0 &&
-                              cartItem!['deliveryAddress'] != null
-                          ? Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 20.0, right: 20.0),
-                              child: buildPrice(
-                                  context,
-                                  null,
-                                  MyLocalizations.of(context)!
-                                      .getLocalizations("DELIVERY_CHARGES"),
-                                  MyLocalizations.of(context)!
-                                      .getLocalizations("FREE"),
-                                  false))
-                          : cartItem!['deliveryCharges'] == 0
-                              ? Container()
-                              : Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 20.0, right: 20.0),
-                                  child: buildPrice(
-                                      context,
-                                      null,
-                                      MyLocalizations.of(context)!
-                                          .getLocalizations("DELIVERY_CHARGES"),
-                                      '$currency${cartItem!['deliveryCharges'].toDouble().toStringAsFixed(2)}',
-                                      false)),
-                      InkWell(
-                        onTap: checkMinOrderAmountCondition,
-                        child: checkoutButton(
+              : Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Padding(
+                        padding: const EdgeInsets.only(
+                            left: 20.0, right: 20.0, top: 10),
+                        child: buildPrice(
                             context,
-                            "TOTAL",
-                            '$currency${cartItem!['grandTotal'].toDouble().toStringAsFixed(2)}',
-                            "CHECKOUT",
-                            Icon(
-                              Icons.arrow_forward,
-                              color: Colors.black,
-                            ),
-                            isCheckProductAvailableOrNot),
-                      ),
-                    ],
-                  ),
+                            null,
+                            MyLocalizations.of(context)!
+                                    .getLocalizations("SUB_TOTAL") +
+                                ' ( ${cartItem!['products'].length} ' +
+                                MyLocalizations.of(context)!
+                                    .getLocalizations("ITEMS") +
+                                ')',
+                            '$currency${cartItem!['subTotal'].toDouble().toStringAsFixed(2)}',
+                            false)),
+                    SizedBox(height: 4),
+                    cartItem!['tax'] == 0
+                        ? Container()
+                        : Padding(
+                            padding:
+                                const EdgeInsets.only(left: 20.0, right: 20.0),
+                            child: buildPrice(
+                                context,
+                                Image.asset(
+                                  'lib/assets/icons/sale.png',
+                                  color: dark(context),
+                                ),
+                                cartItem!['taxInfo'] == null
+                                    ? MyLocalizations.of(context)!
+                                        .getLocalizations("TAX")
+                                    : MyLocalizations.of(context)!
+                                            .getLocalizations("TAX") +
+                                        " (" +
+                                        cartItem!['taxInfo']['taxName'] +
+                                        " " +
+                                        cartItem!['taxInfo']['amount']
+                                            .toString() +
+                                        "%)",
+                                '$currency${cartItem!['tax'].toDouble().toStringAsFixed(2)}',
+                                false)),
+                    SizedBox(height: 6),
+                    cartItem!['couponCode'] == null
+                        ? Container()
+                        : Padding(
+                            padding:
+                                const EdgeInsets.only(left: 20.0, right: 20.0),
+                            child: buildPrice(
+                                context,
+                                null,
+                                MyLocalizations.of(context)!
+                                        .getLocalizations("COUPON_APPLIED") +
+                                    " (" +
+                                    "${cartItem!['couponCode']}"
+                                        ")",
+                                '-$currency${cartItem!['couponAmount'].toDouble().toStringAsFixed(2)}',
+                                false)),
+                    cartItem!['couponCode'] == null
+                        ? Container()
+                        : SizedBox(height: 6),
+                    cartItem!['deliveryCharges'] == 0 &&
+                            cartItem!['deliveryAddress'] != null
+                        ? Padding(
+                            padding:
+                                const EdgeInsets.only(left: 20.0, right: 20.0),
+                            child: buildPrice(
+                                context,
+                                null,
+                                MyLocalizations.of(context)!
+                                    .getLocalizations("DELIVERY_CHARGES"),
+                                MyLocalizations.of(context)!
+                                    .getLocalizations("FREE"),
+                                false))
+                        : cartItem!['deliveryCharges'] == 0
+                            ? Container()
+                            : Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 20.0, right: 20.0),
+                                child: buildPrice(
+                                    context,
+                                    null,
+                                    MyLocalizations.of(context)!
+                                        .getLocalizations("DELIVERY_CHARGES"),
+                                    '$currency${cartItem!['deliveryCharges'].toDouble().toStringAsFixed(2)}',
+                                    false)),
+                    InkWell(
+                      onTap: checkMinOrderAmountCondition,
+                      child: checkoutButton(
+                          context,
+                          "TOTAL",
+                          '$currency${cartItem!['grandTotal'].toDouble().toStringAsFixed(2)}',
+                          "CHECKOUT",
+                          Icon(
+                            Icons.arrow_forward,
+                            color: Colors.black,
+                          ),
+                          isCheckProductAvailableOrNot),
+                    ),
+                  ],
                 ),
     );
   }

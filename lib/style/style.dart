@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'dart:ui';
 import 'package:readymadeGroceryApp/main.dart';
 
 class Styles {
@@ -18,8 +18,8 @@ class Styles {
         cursorColor: isDarkTheme ? greyb2 : darkbg,
       ),
       appBarTheme: isDarkTheme
-          ? AppBarTheme(brightness: Brightness.dark)
-          : AppBarTheme(brightness: Brightness.light),
+          ? AppBarTheme(systemOverlayStyle: SystemUiOverlayStyle.light)
+          : AppBarTheme(systemOverlayStyle: SystemUiOverlayStyle.light),
     );
   }
 }
@@ -1636,7 +1636,9 @@ TextStyle textBarlowRegularrdarkdull(context) {
     fontSize: 15.0,
     fontFamily: 'BarlowRegular',
     fontWeight: FontWeight.w500,
-    color: themeChange.darkTheme ? Colors.white.withOpacity(0.9) : dark(context).withOpacity(0.50),
+    color: themeChange.darkTheme
+        ? Colors.white.withOpacity(0.9)
+        : dark(context).withOpacity(0.50),
   );
 }
 
@@ -1745,7 +1747,8 @@ TextStyle textBarlowregwhitelg(context) {
   return TextStyle(
     fontSize: 20.0,
     fontFamily: 'BarlowRegular',
-    color: themeChange.darkTheme ? Colors.white.withOpacity(0.70) : Colors.black,
+    color:
+        themeChange.darkTheme ? Colors.white.withOpacity(0.70) : Colors.black,
   );
 }
 
