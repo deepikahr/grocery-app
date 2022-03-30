@@ -122,7 +122,7 @@ class _SavedItemsState extends State<SavedItems> {
           ? null
           : token == null
               ? null
-              : appBarTransparent(context, "FAVORITE") as PreferredSizeWidget?,
+              : appBarPrimary(context, "FAVORITE") as PreferredSizeWidget?,
       body: isGetTokenLoading
           ? SquareLoader()
           : token == null
@@ -156,16 +156,25 @@ class _SavedItemsState extends State<SavedItems> {
 
                             return InkWell(
                                 onTap: () {
-                                  var result = Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ProductDetails(
-                                        locale: widget.locale,
-                                        localizedValues: widget.localizedValues,
-                                        productID: favProductList![i]['_id'],
-                                      ),
-                                    ),
-                                  );
+                                  var result = showModalBottomSheet(
+                                      isScrollControlled: true,
+                                      context: context,
+                                      builder: (BuildContext bc) {
+                                        return Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height /
+                                              1.45,
+                                          child: ProductDetails(
+                                            locale: widget.locale,
+                                            localizedValues:
+                                                widget.localizedValues,
+                                            productID: favProductList![i]
+                                                ['_id'],
+                                          ),
+                                        );
+                                      });
+
                                   result.then((value) {
                                     getToken();
                                   });

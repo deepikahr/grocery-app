@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:getwidget/components/badge/gf_badge.dart';
@@ -11,7 +9,6 @@ import 'package:readymadeGroceryApp/model/counterModel.dart';
 import 'package:readymadeGroceryApp/screens/drawer/drawer.dart';
 import 'package:readymadeGroceryApp/screens/tab/mycart.dart';
 import 'package:readymadeGroceryApp/screens/tab/profile.dart';
-import 'package:readymadeGroceryApp/screens/tab/saveditems.dart';
 import 'package:readymadeGroceryApp/screens/tab/searchitem.dart';
 import 'package:readymadeGroceryApp/screens/tab/store.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
@@ -261,66 +258,62 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     return Scaffold(
       backgroundColor: bg(context),
       key: _scaffoldKey,
-      // backgroundColor: Colors.white,
-
-      appBar: appBarPrimarynoradiusWithContent(
-        context,
-        deliveryAddress(),
-        true,
-        true,
-        // App Bar Actions
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            //Cart Icon with Cart data badge
-            InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
+      appBar: currentIndex == 0
+          ? appBarPrimarynoradiusWithContent(
+              context,
+              deliveryAddress(),
+              true,
+              true,
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
                           builder: (context) => MyCart(
-                                locale: widget.locale,
-                                localizedValues: widget.localizedValues,
-                              )));
-                },
-                child: Stack(
-                  children: [
-                    Icon(Icons.shopping_cart),
-                    Positioned(
-                      right: 2,
-                      child: (cartData == null || cartData == 0)
-                          ? Container()
-                          : GFBadge(
-                              child: Text(
-                                '${cartData.toString()}',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: "bold",
-                                    fontSize: 11),
-                              ),
-                              shape: GFBadgeShape.circle,
-                              color: Colors.red,
-                              size: 20,
-                            ),
+                            locale: widget.locale,
+                            localizedValues: widget.localizedValues,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Stack(
+                      children: [
+                        Icon(Icons.shopping_cart),
+                        Positioned(
+                          right: 2,
+                          child: (cartData == null || cartData == 0)
+                              ? Container()
+                              : GFBadge(
+                                  child: Text(
+                                    '${cartData.toString()}',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: "bold",
+                                        fontSize: 11),
+                                  ),
+                                  shape: GFBadgeShape.circle,
+                                  color: Colors.red,
+                                  size: 20,
+                                ),
+                        ),
+                      ],
                     ),
-                  ],
-                )),
-
-            //Notification Icon
-            InkWell(
-              onTap: () {
-                //Notification Screen Open
-              },
-              child: Padding(
-                padding: EdgeInsets.only(right: 15, left: 10),
-                child: Icon(Icons.notifications_none),
+                  ),
+                  InkWell(
+                    onTap: () {},
+                    child: Padding(
+                      padding: EdgeInsets.only(right: 15, left: 10),
+                      child: Icon(Icons.notifications_none),
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
-      ) as PreferredSizeWidget?,
-
+            ) as PreferredSizeWidget?
+          : null,
       drawer: Drawer(
         child: DrawerPage(
             locale: widget.locale,

@@ -1,7 +1,10 @@
 PODS:
+  - CardIODynamic (5.4.1)
   - connectivity (0.0.1):
     - Flutter
     - Reachability
+  - EditableTextInsetsTextFieldV2 (0.0.2):
+    - TapAdditionsKitV2
   - Flutter (1.0.0)
   - flutter_config (0.0.1):
     - Flutter
@@ -11,8 +14,13 @@ PODS:
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
+  - geocoding (1.0.5):
+    - Flutter
   - geolocator_apple (1.2.0):
     - Flutter
+  - go_sell_sdk_flutter (0.0.1):
+    - Flutter
+    - goSellSDK (= 2.3.1)
   - google_maps_flutter (0.0.1):
     - Flutter
     - GoogleMaps
@@ -21,43 +29,102 @@ PODS:
   - GoogleMaps/Base (5.2.0)
   - GoogleMaps/Maps (5.2.0):
     - GoogleMaps/Base
+  - goSellSDK (2.3.1):
+    - goSellSDK/Core (= 2.3.1)
+  - goSellSDK/Core (2.3.1):
+    - CardIODynamic
+    - EditableTextInsetsTextFieldV2
+    - SwiftyRSA
+    - TapAdditionsKitV2
+    - TapApplicationV2
+    - TapBundleLocalization
+    - TapCardValidator
+    - TapEditableViewV2
+    - TapFontsKitV2
+    - TapGLKitV2
+    - TapKeychain
+    - TapNetworkManagerV2
+    - TapNibViewV2
+    - TapResponderChainInputViewV2
+    - TapSearchViewV2
+    - TapVisualEffectViewV2
   - image_picker (0.0.1):
     - Flutter
-  - onesignal_flutter (3.2.3):
+  - onesignal_flutter (3.3.0):
     - Flutter
-    - OneSignalXCFramework (= 3.7.0)
-  - OneSignalXCFramework (3.7.0)
-  - path_provider (0.0.1):
+    - OneSignalXCFramework (= 3.10.1)
+  - OneSignalXCFramework (3.10.1)
+  - path_provider_ios (0.0.1):
     - Flutter
-  - razorpay-pod (1.1.16)
+  - razorpay-pod (1.2.1)
   - razorpay_flutter (1.1.10):
     - Flutter
     - razorpay-pod
   - Reachability (3.2)
   - share (0.0.1):
     - Flutter
-  - shared_preferences (0.0.1):
+  - shared_preferences_ios (0.0.1):
     - Flutter
   - sqflite (0.0.2):
     - Flutter
     - FMDB (>= 2.7.5)
-  - Stripe (21.7.0):
-    - Stripe/Stripe3DS2 (= 21.7.0)
-    - StripeCore (= 21.7.0)
-  - Stripe/Stripe3DS2 (21.7.0):
-    - StripeCore (= 21.7.0)
+  - Stripe (21.12.0):
+    - Stripe/Stripe3DS2 (= 21.12.0)
+    - StripeApplePay (= 21.12.0)
+    - StripeCore (= 21.12.0)
+    - StripeUICore (= 21.12.0)
+  - Stripe/Stripe3DS2 (21.12.0):
+    - StripeApplePay (= 21.12.0)
+    - StripeCore (= 21.12.0)
+    - StripeUICore (= 21.12.0)
   - stripe_ios (0.0.1):
     - Flutter
-    - Stripe (~> 21.7.0)
-  - StripeCore (21.7.0)
+    - Stripe (~> 21.12.0)
+  - StripeApplePay (21.12.0):
+    - StripeCore (= 21.12.0)
+  - StripeCore (21.12.0)
+  - StripeUICore (21.12.0):
+    - StripeCore (= 21.12.0)
+  - SwiftyRSA (1.7.0):
+    - SwiftyRSA/ObjC (= 1.7.0)
+  - SwiftyRSA/ObjC (1.7.0)
+  - TapAdditionsKitV2 (0.0.8):
+    - TapSwiftFixesV2
+  - TapApplicationV2 (0.0.2):
+    - TapAdditionsKitV2
+  - TapBundleLocalization (1.0.3)
+  - TapCardValidator (1.2.6)
+  - TapEditableViewV2 (1.0.1):
+    - TapAdditionsKitV2
+  - TapFontsKitV2 (0.0.4):
+    - TapAdditionsKitV2
+  - TapGLKitV2 (0.0.2):
+    - TapAdditionsKitV2
+  - TapKeychain (1.0.5)
+  - TapNetworkManagerV2 (0.0.5):
+    - TapAdditionsKitV2
+  - TapNibViewV2 (0.0.2):
+    - TapAdditionsKitV2
+  - TapResponderChainInputViewV2 (0.0.4):
+    - TapAdditionsKitV2
+    - TapNibViewV2
+  - TapSearchViewV2 (0.0.4):
+    - TapAdditionsKitV2
+    - TapNibViewV2
+  - TapSwiftFixesV2 (1.0.0):
+    - TapSwiftFixesV2/CoreGraphics (= 1.0.0)
+    - TapSwiftFixesV2/Exceptions (= 1.0.0)
+    - TapSwiftFixesV2/Threading (= 1.0.0)
+  - TapSwiftFixesV2/CoreGraphics (1.0.0)
+  - TapSwiftFixesV2/Exceptions (1.0.0)
+  - TapSwiftFixesV2/Threading (1.0.0)
+  - TapVisualEffectViewV2 (0.0.2):
+    - TapAdditionsKitV2
+    - TapNibViewV2
   - Toast (4.0.0)
-  - url_launcher (0.0.1):
+  - url_launcher_ios (0.0.1):
     - Flutter
-  - video_player (0.0.1):
-    - Flutter
-  - wakelock (0.0.1):
-    - Flutter
-  - webview_flutter (0.0.1):
+  - webview_flutter_wkwebview (0.0.1):
     - Flutter
 
 DEPENDENCIES:
@@ -65,30 +132,50 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_config (from `.symlinks/plugins/flutter_config/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
+  - geocoding (from `.symlinks/plugins/geocoding/ios`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
+  - go_sell_sdk_flutter (from `.symlinks/plugins/go_sell_sdk_flutter/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - onesignal_flutter (from `.symlinks/plugins/onesignal_flutter/ios`)
-  - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - razorpay_flutter (from `.symlinks/plugins/razorpay_flutter/ios`)
   - share (from `.symlinks/plugins/share/ios`)
-  - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
+  - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - stripe_ios (from `.symlinks/plugins/stripe_ios/ios`)
-  - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
-  - video_player (from `.symlinks/plugins/video_player/ios`)
-  - wakelock (from `.symlinks/plugins/wakelock/ios`)
-  - webview_flutter (from `.symlinks/plugins/webview_flutter/ios`)
+  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
+  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
 
 SPEC REPOS:
   trunk:
+    - CardIODynamic
+    - EditableTextInsetsTextFieldV2
     - FMDB
     - GoogleMaps
+    - goSellSDK
     - OneSignalXCFramework
     - razorpay-pod
     - Reachability
     - Stripe
+    - StripeApplePay
     - StripeCore
+    - StripeUICore
+    - SwiftyRSA
+    - TapAdditionsKitV2
+    - TapApplicationV2
+    - TapBundleLocalization
+    - TapCardValidator
+    - TapEditableViewV2
+    - TapFontsKitV2
+    - TapGLKitV2
+    - TapKeychain
+    - TapNetworkManagerV2
+    - TapNibViewV2
+    - TapResponderChainInputViewV2
+    - TapSearchViewV2
+    - TapSwiftFixesV2
+    - TapVisualEffectViewV2
     - Toast
 
 EXTERNAL SOURCES:
@@ -100,62 +187,82 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_config/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
+  geocoding:
+    :path: ".symlinks/plugins/geocoding/ios"
   geolocator_apple:
     :path: ".symlinks/plugins/geolocator_apple/ios"
+  go_sell_sdk_flutter:
+    :path: ".symlinks/plugins/go_sell_sdk_flutter/ios"
   google_maps_flutter:
     :path: ".symlinks/plugins/google_maps_flutter/ios"
   image_picker:
     :path: ".symlinks/plugins/image_picker/ios"
   onesignal_flutter:
     :path: ".symlinks/plugins/onesignal_flutter/ios"
-  path_provider:
-    :path: ".symlinks/plugins/path_provider/ios"
+  path_provider_ios:
+    :path: ".symlinks/plugins/path_provider_ios/ios"
   razorpay_flutter:
     :path: ".symlinks/plugins/razorpay_flutter/ios"
   share:
     :path: ".symlinks/plugins/share/ios"
-  shared_preferences:
-    :path: ".symlinks/plugins/shared_preferences/ios"
+  shared_preferences_ios:
+    :path: ".symlinks/plugins/shared_preferences_ios/ios"
   sqflite:
     :path: ".symlinks/plugins/sqflite/ios"
   stripe_ios:
     :path: ".symlinks/plugins/stripe_ios/ios"
-  url_launcher:
-    :path: ".symlinks/plugins/url_launcher/ios"
-  video_player:
-    :path: ".symlinks/plugins/video_player/ios"
-  wakelock:
-    :path: ".symlinks/plugins/wakelock/ios"
-  webview_flutter:
-    :path: ".symlinks/plugins/webview_flutter/ios"
+  url_launcher_ios:
+    :path: ".symlinks/plugins/url_launcher_ios/ios"
+  webview_flutter_wkwebview:
+    :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
 
 SPEC CHECKSUMS:
+  CardIODynamic: 4a0d2d0e7b82993ceca67491564934c3475fbe79
   connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
-  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  EditableTextInsetsTextFieldV2: 09a945c086dbcef688fe4fbb8302b408c146c391
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_config: 2226c1df19c78fe34a05eb7f1363445f18e76fc1
-  fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
+  fluttertoast: 16fbe6039d06a763f3533670197d01fc73459037
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
-  geolocator_apple: b741765c55dc21950e3e106e8b3584e55cf81ce5
-  google_maps_flutter: 279865bd07e2d8751f43a3bc64bac7f6075d0c93
+  geocoding: 32cfcdb16d38d907caaba65e2e42ad10d38bee58
+  geolocator_apple: cc556e6844d508c95df1e87e3ea6fa4e58c50401
+  go_sell_sdk_flutter: f1daa866708568660ea68f3288d4cb4e6244dbb9
+  google_maps_flutter: c59fc576c0d0c7f4dc4bd63832c862d22d5a7c6d
   GoogleMaps: 025272d5876d3b32604e5c080dc25eaf68764693
-  image_picker: e06f7a68f000bd36f552c1847e33cda96ed31f1f
-  onesignal_flutter: abfc75e8d08a0d9c977aacfab9454af58f4f4fcc
-  OneSignalXCFramework: 974dc438d68910cf04f3c8ab034e0131d41438c1
-  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
-  razorpay-pod: f1763f8ee8f83152837abe7de1cdfbcd4eb035b9
+  goSellSDK: 5e3fe6795b2cf8a2c4abc73a59c736abc75a93f7
+  image_picker: 541dcbb3b9cf32d87eacbd957845d8651d6c62c3
+  onesignal_flutter: a89207b9d7e97cc9d7d12bcfb4a25f62aedc445b
+  OneSignalXCFramework: fe027712118f2862ab193b72270487f11450ea63
+  path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
+  razorpay-pod: 372528dcba385d95d384aa8abc44feeb7a644d4e
   razorpay_flutter: 84b3bfd206ae9c9c2a9ba585524a1b3d8102b6c1
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410
-  shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
+  shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
-  Stripe: 90596971ef49bade169f68bc59369a796b30a045
-  stripe_ios: 669a91fd06d17954dedeaebec35c56bf1c72a602
-  StripeCore: c09b492efc3b269a6ff875ad738ca366db97e03b
+  Stripe: c3692f360abcdfeef9751e3c240e7efbc68b921f
+  stripe_ios: bfa5113de686073731d1ebbaecc0e863a2e110b7
+  StripeApplePay: 14db90fdf89abb2809ce41fc68bc6b1a86221408
+  StripeCore: 5e38cdea3dc176a32d8797ef312fe1ab41571272
+  StripeUICore: c28e371b385f968388ae38bedb93a2723c078442
+  SwiftyRSA: 8c6dd1ea7db1b8dc4fb517a202f88bb1354bc2c6
+  TapAdditionsKitV2: ba369802e9575c3475ce6d5af228cf60c68edfc9
+  TapApplicationV2: aee3d046c4272778431e1535de6cab34e1269f8c
+  TapBundleLocalization: c7d7c14850223b0ef447aca1269d7308f78d54f9
+  TapCardValidator: 8d43b6e8a1a78276c03116a5b625041adeffeb0d
+  TapEditableViewV2: 00370b2b6c967c382fa944be8c04156d584d630b
+  TapFontsKitV2: b05e5ed03fc182c227f0660a0b318f44934d353c
+  TapGLKitV2: d3ef8bc5d1655a1d46e1696cfdcf19ae6e6d4d35
+  TapKeychain: 143aa70bb2d1b094e0298e944660264034c79849
+  TapNetworkManagerV2: 857339ae980c9fb495ec9a4c609beabaeeeb5999
+  TapNibViewV2: 814b18346837d9dab611a211a702b9b0b8369d07
+  TapResponderChainInputViewV2: 2dcd4bda246b0bd8764ee7fe8dbbd092815d063f
+  TapSearchViewV2: a167173db767a2be86d66c319cbb6b8da1541531
+  TapSwiftFixesV2: a8623a7273c6790b9754ec7e272e96fce7d3a800
+  TapVisualEffectViewV2: b612ffee4d05004c449d433fe45aba9563c8a508
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
-  url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
-  video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
-  wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
-  webview_flutter: 3603125dfd3bcbc9d8d418c3f80aeecf331c068b
+  url_launcher_ios: 839c58cdb4279282219f5e248c3321761ff3c4de
+  webview_flutter_wkwebview: 005fbd90c888a42c5690919a1527ecc6649e1162
 
 PODFILE CHECKSUM: 7368163408c647b7eb699d0d788ba6718e18fb8d
 

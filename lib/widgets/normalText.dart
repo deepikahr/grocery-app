@@ -118,8 +118,10 @@ Widget buildDrawer(BuildContext context, title, icon) {
           Expanded(
             flex: 2,
             child: ListTile(
-              leading:
-                  Image.asset(icon, width: 35, height: 35, color: themeChange.darkTheme ? Colors.white : Colors.black),
+              leading: Image.asset(icon,
+                  width: 35,
+                  height: 35,
+                  color: themeChange.darkTheme ? Colors.white : Colors.black),
               selected: true,
             ),
           ),
@@ -785,8 +787,13 @@ orderNowDark(BuildContext context, title) {
 
 Widget buildIcon(BuildContext context, String icon, cartData) {
   return Padding(
-    padding: const EdgeInsets.only( top: 4.0),
-    child: Image.asset(icon, height: 25, width: 25, fit: BoxFit.fill,),
+    padding: const EdgeInsets.only(top: 4.0),
+    child: Image.asset(
+      icon,
+      height: 25,
+      width: 25,
+      fit: BoxFit.fill,
+    ),
   );
 }
 

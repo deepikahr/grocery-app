@@ -1,18 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:readymadeGroceryApp/model/addToCart.dart';
-import 'package:readymadeGroceryApp/model/bottomSheet.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
-import 'package:readymadeGroceryApp/widgets/cardOverlay.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
 import '../screens/product/product-details.dart';
@@ -197,28 +193,26 @@ class _ProductGridCardState extends State<ProductGridCard> {
               Column(
                 children: <Widget>[
                   ClipRRect(
-                      borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(12)),
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(12)),
                       child: CachedNetworkImage(
-                        imageUrl:
-                            (widget.productData!['productImages'] != null &&
-                                    widget.productData!['productImages']
-                                            .length >
-                                        0)
-                                ? (widget.productData!['productImages'][0]
-                                            ['filePath'] !=
-                                        null
-                                    ? Constants.imageUrlPath! +
-                                        "/tr:dpr-auto,tr:w-500" +
-                                        widget.productData!['productImages']
-                                            [0]['filePath']
-                                    : widget.productData!['productImages']
-                                        [0]['imageUrl'])
-                                : widget.productData!['filePath'] != null
-                                    ? Constants.imageUrlPath! +
-                                        "/tr:dpr-auto,tr:w-500" +
-                                        widget.productData!['filePath']
-                                    : widget.productData!['imageUrl'],
+                        imageUrl: (widget.productData!['productImages'] !=
+                                    null &&
+                                widget.productData!['productImages'].length > 0)
+                            ? (widget.productData!['productImages'][0]
+                                        ['filePath'] !=
+                                    null
+                                ? Constants.imageUrlPath! +
+                                    "/tr:dpr-auto,tr:w-500" +
+                                    widget.productData!['productImages'][0]
+                                        ['filePath']
+                                : widget.productData!['productImages'][0]
+                                    ['imageUrl'])
+                            : widget.productData!['filePath'] != null
+                                ? Constants.imageUrlPath! +
+                                    "/tr:dpr-auto,tr:w-500" +
+                                    widget.productData!['filePath']
+                                : widget.productData!['imageUrl'],
                         imageBuilder: (context, imageProvider) => Container(
                           width: MediaQuery.of(context).size.width * 0.5,
                           height: 123,
@@ -237,8 +231,7 @@ class _ProductGridCardState extends State<ProductGridCard> {
                             child: noDataImage()),
                       )),
                   Padding(
-                    padding:
-                        const EdgeInsets.only(left: 8, right: 8, top: 8),
+                    padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -249,76 +242,39 @@ class _ProductGridCardState extends State<ProductGridCard> {
                             context,
                             '${variantUnit == null ? widget.productData!['variant'][0]['unit'] : variantUnit}',
                             barlowregularlack(context)),
-                        priceMrpText(getDiscountedValue(),
-                            getPercentageValue(), context),
-                        SizedBox(height : 5),
-
-                        /* widget.productData!['averageRating'] == null ||
-                                    widget.productData!['averageRating'] ==
-                                        0.0 ||
-                                    widget.productData!['averageRating'] ==
-                                        '0.0'
-                                ? Container()
-                                : Container(
-                                    height: 19,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(2)),
-                                      color: Color(0xFF20C978),
-                                    ),
-                                    padding:
-                                        EdgeInsets.only(left: 5, right: 5),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.end,
-                                      children: <Widget>[
-                                        Text(
-                                            widget.productData![
-                                                    'averageRating']
-                                                .toStringAsFixed(1),
-                                            style: textBarlowregwhite(
-                                                context)),
-                                        Icon(Icons.star,
-                                            color: Colors.white, size: 10),
-                                      ],
-                                    ),
-                                  )*//*
-                          ],
-                        ),*/
-                     /*   Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            priceMrpText(getDiscountedValue(),
-                                getPercentageValue(), context),
-                            SizedBox(width: 3),
-                            textGreenprimary(
-                                context,
-                                '${variantUnit == null ? widget.productData!['variant'][0]['unit'] : variantUnit}',
-                                barlowregularlack(context))
-                          ],
-                        ),*/
+                        priceMrpText(getDiscountedValue(), getPercentageValue(),
+                            context),
+                        SizedBox(height: 5),
                         widget.isHome!
                             ? Container()
                             : !cardAdded!
                                 ? InkWell(
                                     onTap: () async {
-                                      if (widget.productData!['variant']
-                                              .length >
+                                      if (widget
+                                              .productData!['variant'].length >
                                           1) {
                                         if (widget.productData != null &&
-                                            widget.productData![
-                                                    'variant'] !=
+                                            widget.productData!['variant'] !=
                                                 null) {
                                           var bottomSheet =
                                               showModalBottomSheet(
+                                                  isScrollControlled: true,
                                                   context: context,
-                                                  builder:
-                                                      (BuildContext bc) {
-                                                    return ProductDetails(
-                                                      locale: widget.locale,
-                                                      localizedValues:
-                                                      widget.localizedValues,
-                                                     /* productID: productsList![i]['_id'],*/
+                                                  builder: (BuildContext bc) {
+                                                    return Container(
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height /
+                                                              1.45,
+                                                      child: ProductDetails(
+                                                        locale: widget.locale,
+                                                        localizedValues: widget
+                                                            .localizedValues,
+                                                        productID:
+                                                            widget.productData?[
+                                                                '_id'],
+                                                      ),
                                                     );
                                                   });
                                           bottomSheet.then((onValue) {
@@ -328,25 +284,23 @@ class _ProductGridCardState extends State<ProductGridCard> {
                                                       onValue['products']
                                                           .length;
                                                   i++) {
-                                                if (widget.productData![
-                                                        "_id"] ==
+                                                if (widget
+                                                        .productData!["_id"] ==
                                                     onValue['products'][i]
                                                         ["productId"]) {
                                                   if (mounted) {
                                                     setState(() {
                                                       widget.productData![
                                                               'quantityToCart'] =
-                                                          onValue['products']
-                                                                  [i]
+                                                          onValue['products'][i]
                                                               ['quantity'];
                                                       variantPrice =
-                                                          onValue['products']
-                                                              [i]['price'];
-                                                      cartId =
-                                                          onValue['_id'];
-                                                      variantUnit = onValue[
-                                                              'products'][i]
-                                                          ['unit'];
+                                                          onValue['products'][i]
+                                                              ['price'];
+                                                      cartId = onValue['_id'];
+                                                      variantUnit =
+                                                          onValue['products'][i]
+                                                              ['unit'];
                                                       cardAdded = true;
                                                     });
                                                   }
@@ -356,8 +310,7 @@ class _ProductGridCardState extends State<ProductGridCard> {
                                           });
                                         }
                                       } else {
-                                        await Common.getToken()
-                                            .then((onValue) {
+                                        await Common.getToken().then((onValue) {
                                           if (onValue != null) {
                                             if (mounted) {
                                               setState(() {
@@ -370,8 +323,7 @@ class _ProductGridCardState extends State<ProductGridCard> {
                                                     Map<String, dynamic>
                                                         productAddBody = {
                                                       'productId': widget
-                                                          .productData![
-                                                              '_id']
+                                                          .productData!['_id']
                                                           .toString(),
                                                       'quantity': 1,
                                                       "unit": widget
@@ -381,11 +333,11 @@ class _ProductGridCardState extends State<ProductGridCard> {
                                                           .toString()
                                                     };
                                                     setState(() {
-                                                      isAddInProgress =
-                                                          true;
+                                                      isAddInProgress = true;
                                                     });
-                                                    AddToCart.addAndUpdateProductMethod(
-                                                            productAddBody)
+                                                    AddToCart
+                                                            .addAndUpdateProductMethod(
+                                                                productAddBody)
                                                         .then((onValue) {
                                                       if (onValue[
                                                               'response_data']
@@ -407,42 +359,37 @@ class _ProductGridCardState extends State<ProductGridCard> {
                                                         if (widget.productData![
                                                                 "_id"] ==
                                                             onValue['response_data']
-                                                                    [
-                                                                    'products'][i]
+                                                                    ['products']
                                                                 [
-                                                                "productId"]) {
+                                                                i]["productId"]) {
                                                           if (mounted) {
                                                             setState(() {
                                                               widget.productData![
                                                                   'quantityToCart'] = onValue[
                                                                           'response_data']
                                                                       [
-                                                                      'products'][i]
+                                                                      'products']
                                                                   [
-                                                                  'quantity'];
+                                                                  i]['quantity'];
 
-                                                              variantPrice =
-                                                                  onValue['response_data']['products']
-                                                                          [
-                                                                          i]
+                                                              variantPrice = onValue[
+                                                                          'response_data']
                                                                       [
-                                                                      'price'];
-                                                              variantUnit =
-                                                                  onValue['response_data']
-                                                                          [
-                                                                          'products'][i]
+                                                                      'products']
+                                                                  [i]['price'];
+                                                              variantUnit = onValue[
+                                                                          'response_data']
                                                                       [
-                                                                      'unit'];
+                                                                      'products']
+                                                                  [i]['unit'];
 
-                                                              cardAdded =
-                                                                  true;
+                                                              cardAdded = true;
                                                             });
                                                           }
                                                         }
                                                       }
                                                       setState(() {
-                                                        isAddInProgress =
-                                                            false;
+                                                        isAddInProgress = false;
                                                       });
                                                     }).catchError((error) {
                                                       if (mounted) {
@@ -512,8 +459,7 @@ class _ProductGridCardState extends State<ProductGridCard> {
                                           height: 35,
                                           decoration: BoxDecoration(
                                             color: isQuantityUpdating! &&
-                                                    quantityChangeType ==
-                                                        '-'
+                                                    quantityChangeType == '-'
                                                 ? Colors.grey.shade100
                                                 : Colors.black,
                                             borderRadius: BorderRadius.all(
@@ -523,28 +469,24 @@ class _ProductGridCardState extends State<ProductGridCard> {
                                             onTap: () {
                                               if (!isQuantityUpdating!) {
                                                 quantityChangeType = '-';
-                                                _changeProductQuantity(
-                                                    false);
+                                                _changeProductQuantity(false);
                                               }
                                             },
                                             child: isQuantityUpdating! &&
-                                                    quantityChangeType ==
-                                                        '-'
+                                                    quantityChangeType == '-'
                                                 ? GFLoader(
                                                     type: GFLoaderType.ios,
                                                     size: 35,
                                                   )
                                                 : Icon(Icons.remove,
-                                                    color:
-                                                        primary(context)),
+                                                    color: primary(context)),
                                           ),
                                         ),
                                         titleTwoLine(
-                                            widget.productData![
-                                                    'quantityToCart']
+                                            widget
+                                                .productData!['quantityToCart']
                                                 .toString(),
                                             context),
-
                                         Container(
                                           width: 35,
                                           height: 35,
@@ -557,13 +499,11 @@ class _ProductGridCardState extends State<ProductGridCard> {
                                             onTap: () {
                                               if (!isQuantityUpdating!) {
                                                 quantityChangeType = '+';
-                                                _changeProductQuantity(
-                                                    true);
+                                                _changeProductQuantity(true);
                                               }
                                             },
                                             child: isQuantityUpdating! &&
-                                                    quantityChangeType ==
-                                                        '+'
+                                                    quantityChangeType == '+'
                                                 ? GFLoader(
                                                     type: GFLoaderType.ios,
                                                     size: 35)
@@ -581,7 +521,7 @@ class _ProductGridCardState extends State<ProductGridCard> {
                   ),
                 ],
               ),
-             /* (widget.productData!['isDealAvailable'] == true &&
+              /* (widget.productData!['isDealAvailable'] == true &&
                       widget.productData!['variant'][0]
                               ['isOfferAvailable'] ==
                           true)

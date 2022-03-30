@@ -7,9 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:readymadeGroceryApp/model/counterModel.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/product/product-details.dart';
-import 'package:readymadeGroceryApp/screens/tab/searchitem.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -67,6 +65,7 @@ class _AllProductsState extends State<AllProducts> {
   @override
   void initState() {
     super.initState();
+    getToken();
     getResult();
     if (widget.dealId != null) {
       isProductsForDeal = true;
@@ -353,8 +352,8 @@ class _AllProductsState extends State<AllProducts> {
 
   @override
   Widget build(BuildContext context) {
-    /*if (getTokenValue) {
-      CounterModel().getCartDataCountMethod().then((res) {
+    if (getTokenValue == true) {
+      CounterModel().getCartDataMethod().then((res) {
         if (mounted) {
           setState(() {
             cartData = res;
@@ -364,10 +363,10 @@ class _AllProductsState extends State<AllProducts> {
     } else {
       if (mounted) {
         setState(() {
-          cartData = 0;
+          cartData = null;
         });
       }
-    }*/
+    }
     return Scaffold(
       backgroundColor: bg(context),
       appBar: appBarPrimarynoradiusWithContent(
@@ -381,39 +380,42 @@ class _AllProductsState extends State<AllProducts> {
             InkWell(
                 onTap: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => MyCart(
-                            locale: widget.locale,
-                            localizedValues: widget.localizedValues,
-                          )));
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MyCart(
+                        locale: widget.locale,
+                        localizedValues: widget.localizedValues,
+                      ),
+                    ),
+                  );
                 },
                 child: Stack(
                   children: [
                     Icon(Icons.shopping_cart),
-                     Positioned(
-                            right: 2,
-                            child: cartData == 0 || cartData == null
-                                ? Container()
-                                : GFBadge(
-                              child: Text(
-                                '${cartData.toString()}',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: "bold",
-                                    fontSize: 11),
-                              ),
-                              shape: GFBadgeShape.circle,
-                              color: Colors.red,
-                              size: 20,
+                    if (cartData != null &&
+                        cartData['products'] != [] &&
+                        cartData['products'].length > 0)
+                      Positioned(
+                        right: 2,
+                        child: GFBadge(
+                          child: Text(
+                            '${cartData['products'].length}',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: "bold",
+                              fontSize: 11,
                             ),
                           ),
+                          shape: GFBadgeShape.circle,
+                          color: Colors.red,
+                          size: 20,
+                        ),
+                      ),
                   ],
                 )),
             InkWell(
-              onTap: () {
-              },
+              onTap: () {},
               child: Padding(
                 padding: EdgeInsets.only(right: 15, left: 10),
                 child: Icon(Icons.notifications_none),
@@ -429,38 +431,6 @@ class _AllProductsState extends State<AllProducts> {
                 SizedBox(
                   height: 20,
                 ),
-                /* isCategoryLoading
-                    ? SquareLoader()
-                    : isProductsForDeal
-                        ? Container()
-                        : Container(
-                            height: 45,
-                            child: ListView.builder(
-                                physics: ScrollPhysics(),
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                itemCount: categoryList!.length + 1,
-                                itemBuilder: (BuildContext context, int i) {
-                                  return InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        selectedCategoryIndex = i;
-                                      });
-                                      checkIfUserIsLoaggedIn();
-                                    },
-                                    child: catTab(
-                                      context,
-                                      i == 0
-                                          ? MyLocalizations.of(context)!
-                                              .getLocalizations('ALL')
-                                          : categoryList![i - 1]['title'],
-                                      selectedCategoryIndex == i
-                                          ? primary(context)
-                                          : Color(0xFFf0F0F0),
-                                    ),
-                                  );
-                                }),
-                          ),*/
                 Flexible(
                   child: isFirstPageLoading
                       ? Center(child: SquareLoader())
@@ -491,17 +461,24 @@ class _AllProductsState extends State<AllProducts> {
                               itemBuilder: (BuildContext context, int i) {
                                 return InkWell(
                                   onTap: () {
-                                    var result = Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ProductDetails(
-                                          locale: widget.locale,
-                                          localizedValues:
-                                              widget.localizedValues,
-                                          productID: productsList![i]['_id'],
-                                        ),
-                                      ),
-                                    );
+                                    var result = showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        context: context,
+                                        builder: (BuildContext bc) {
+                                          return Container(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height /
+                                                1.45,
+                                            child: ProductDetails(
+                                              locale: widget.locale,
+                                              localizedValues:
+                                                  widget.localizedValues,
+                                              productID: productsList![i]
+                                                  ['_id'],
+                                            ),
+                                          );
+                                        });
                                     result.then((value) {
                                       checkIfUserIsLoaggedIn();
                                     });

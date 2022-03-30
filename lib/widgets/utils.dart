@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class UtilService{
+class UtilService {
   static void navigateBack(BuildContext context, {result}) {
     return Navigator.pop(context, result);
   }
@@ -18,6 +18,6 @@ class UtilService{
         MaterialPageRoute(
           builder: (BuildContext context) => screen,
         ),
-            (Route<dynamic> route) => false);
+        (Route<dynamic> route) => false);
   }
 }

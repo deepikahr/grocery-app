@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -33,7 +32,8 @@ class _OrdersTabState extends State<OrdersTab>
   @override
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: bg(context),
-        appBar: appBarPrimarynoradius(context, "ORDERS") as PreferredSizeWidget?,
+        appBar:
+            appBarPrimarynoradius(context, "ORDERS") as PreferredSizeWidget?,
         body: ListView(
           children: <Widget>[
             Container(
@@ -47,7 +47,8 @@ class _OrdersTabState extends State<OrdersTab>
                 tabs: <Widget>[
                   Tab(
                     child: Text(
-                      MyLocalizations.of(context)!.getLocalizations("PURCHASES"),
+                      MyLocalizations.of(context)!
+                          .getLocalizations("PURCHASES"),
                       style: textbarlowRegularBlackb(context),
                       textAlign: TextAlign.center,
                     ),
