@@ -353,6 +353,21 @@ class _AllProductsState extends State<AllProducts> {
 
   @override
   Widget build(BuildContext context) {
+    /*if (getTokenValue) {
+      CounterModel().getCartDataCountMethod().then((res) {
+        if (mounted) {
+          setState(() {
+            cartData = res;
+          });
+        }
+      });
+    } else {
+      if (mounted) {
+        setState(() {
+          cartData = 0;
+        });
+      }
+    }*/
     return Scaffold(
       backgroundColor: bg(context),
       appBar: appBarPrimarynoradiusWithContent(
