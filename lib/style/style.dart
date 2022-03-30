@@ -18,7 +18,7 @@ class Styles {
         cursorColor: isDarkTheme ? greyb2 : darkbg,
       ),
       appBarTheme: isDarkTheme
-          ? AppBarTheme(systemOverlayStyle: SystemUiOverlayStyle.light)
+          ? AppBarTheme(systemOverlayStyle: SystemUiOverlayStyle.dark)
           : AppBarTheme(systemOverlayStyle: SystemUiOverlayStyle.light),
     );
   }
