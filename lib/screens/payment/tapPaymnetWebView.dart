@@ -6,6 +6,7 @@ import 'package:readymadeGroceryApp/screens/thank-you/payment-failed.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/orderSevice.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -130,6 +131,7 @@ class _WebViewOrderTapPayState extends State<WebViewOrderTapPay> {
         return new Future(() => false);
       },
       child: Scaffold(
+        backgroundColor: bg(context),
         appBar: appBarTransparentWithBackTab(context, "PAYMENT", () {
           showDailodBackPress();
         }) as PreferredSizeWidget?,

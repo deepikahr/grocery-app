@@ -1621,6 +1621,14 @@ TextStyle textBarlowRegularrGreen(context) {
   );
 }
 
+TextStyle textBarlowRegularrGreenWF(context) {
+  return TextStyle(
+    fontSize: 18.0,
+    fontWeight: FontWeight.w300,
+    color: green,
+  );
+}
+
 TextStyle textBarlowRegularrGreenS(context) {
   return TextStyle(
     fontSize: 13.0,

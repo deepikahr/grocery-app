@@ -3,6 +3,7 @@ import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import '../../service/sentry-service.dart';
+import '../../style/style.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -25,7 +26,7 @@ class _ReferralPageState extends State<ReferralPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: bg(context),
       appBar: appBarPrimary(context, "REFER_EARN") as PreferredSizeWidget?,
       body: ListView(
         children: <Widget>[

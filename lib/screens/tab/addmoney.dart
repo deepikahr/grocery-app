@@ -409,6 +409,7 @@ class _AddMoneyState extends State<AddMoney> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
+        backgroundColor: bg(context),
         appBar:
             appBarPrimarynoradius(context, "ADD_MONEY") as PreferredSizeWidget?,
         body: isLoading

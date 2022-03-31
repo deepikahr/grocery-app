@@ -355,6 +355,7 @@ class _MyCartState extends State<MyCart> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
+      backgroundColor: bg(context),
       appBar: isGetTokenLoading || isMinAmountCheckLoading
           ? null
           : token == null

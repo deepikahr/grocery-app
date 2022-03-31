@@ -4,6 +4,7 @@ import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/payment-failed.dart';
 import 'package:readymadeGroceryApp/screens/thank-you/thankyou.dart';
 import 'package:readymadeGroceryApp/service/orderSevice.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -75,6 +76,7 @@ class _WebViewAddMoneyTapPayState extends State<WebViewAddMoneyTapPay> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bg(context),
       appBar: appBarTransparent(context, "PAYMENT") as PreferredSizeWidget?,
       body: WebView(
         initialUrl: widget.tapUrl,
