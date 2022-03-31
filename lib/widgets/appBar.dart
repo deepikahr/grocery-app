@@ -46,7 +46,6 @@ Widget appBarTransparent(BuildContext context, title) {
       title: Text(MyLocalizations.of(context)!.getLocalizations(title),
           style: textbarlowSemiBoldBlack(context)),
       centerTitle: true,
-      automaticallyImplyLeading: false,
       backgroundColor: Colors.transparent,
       iconTheme: IconThemeData(color: dark(context)),
       elevation: 0);

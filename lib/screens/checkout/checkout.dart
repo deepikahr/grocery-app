@@ -541,7 +541,7 @@ class _CheckoutState extends State<Checkout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: bg(context),
+      backgroundColor: bg(context),
       key: _scaffoldKey,
       appBar: appBarTransparent(context, "CHECKOUT") as PreferredSizeWidget?,
       body: SmartRefresher(

@@ -388,7 +388,11 @@ class _PaymentState extends State<Payment> {
         await Stripe.instance.presentPaymentSheet();
         moveToNextPage(thanku: true);
       } on Exception catch (e) {
+        print('e.error--${e}');
+        print('e.error--${jsonEncode(e)}');
         if (e is StripeException) {
+          print('e.error--${e.error}');
+          print('e.error--${e.error.message}');
           orderCancelMethod(res?['id'], message: '${e.error.message ?? ''}');
         } else {
           orderCancelMethod(res?['id']);

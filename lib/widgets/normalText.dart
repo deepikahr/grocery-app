@@ -684,6 +684,15 @@ Widget textMediumSmall(title, context) {
       style: textBarlowRegularrGreen(context));
 }
 
+Widget textMediumSmallr(title, title1, context) {
+  return Row(
+    children: [
+      Text(title ?? "", style: textBarlowRegularrGreen(context)),
+      Text(title1 ?? "", style: textBarlowRegularrGreen(context)),
+    ],
+  );
+}
+
 Widget textMediumSmallGreen(title, context) {
   return Text(MyLocalizations.of(context)!.getLocalizations(title ?? ""),
       style: textBarlowRegularrGreenS(context));
