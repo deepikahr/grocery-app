@@ -57,7 +57,7 @@ workflows:
     publishing:
       email:
         recipients:
-          - chandra@pietechsolution.com
+          - yogesh@pietechsolution.com
       app_store_connect:
         # app_id: "1506920690"
         apple_id: pietechsolution@gmail.com
@@ -106,7 +106,7 @@ workflows:
       email:
         recipients:
           - pietechsolution@gmail.com
-          - chandra@pietechsolution.com
+          - yogesh@pietechsolution.com
           - ujjwal.2518@gmail.com
           - montyvipul@gmail.com
           - sarth@pietechsolution.com
@@ -157,7 +157,7 @@ workflows:
       email:
         recipients:
           - pietechsolution@gmail.com
-          - chandra@pietechsolution.com
+          - yogesh@pietechsolution.com
           - ujjwal.2518@gmail.com
           - montyvipul@gmail.com
           - sarth@pietechsolution.com
