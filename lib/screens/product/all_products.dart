@@ -378,49 +378,50 @@ class _AllProductsState extends State<AllProducts> {
           mainAxisSize: MainAxisSize.min,
           children: [
             InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MyCart(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MyCart(
+                      locale: widget.locale,
+                      localizedValues: widget.localizedValues,
+                    ),
+                  ),
+                );
+              },
+              child: Stack(
+                children: [
+                  Icon(Icons.shopping_cart),
+                  if (cartData != null &&
+                      cartData['products'] != [] &&
+                      cartData['products'].length > 0)
+                    Positioned(
+                      right: 2,
+                      child: GFBadge(
+                        child: Text(
+                          '${cartData['products'].length}',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: "bold",
+                            fontSize: 11,
+                          ),
+                        ),
+                        shape: GFBadgeShape.circle,
+                        color: Colors.red,
+                        size: 20,
                       ),
                     ),
-                  );
-                },
-                child: Stack(
-                  children: [
-                    Icon(Icons.shopping_cart),
-                    if (cartData != null &&
-                        cartData['products'] != [] &&
-                        cartData['products'].length > 0)
-                      Positioned(
-                        right: 2,
-                        child: GFBadge(
-                          child: Text(
-                            '${cartData['products'].length}',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: "bold",
-                              fontSize: 11,
-                            ),
-                          ),
-                          shape: GFBadgeShape.circle,
-                          color: Colors.red,
-                          size: 20,
-                        ),
-                      ),
-                  ],
-                )),
-            InkWell(
-              onTap: () {},
-              child: Padding(
-                padding: EdgeInsets.only(right: 15, left: 10),
-                child: Icon(Icons.notifications_none),
+                ],
               ),
             ),
+            // InkWell(
+            //   onTap: () {},
+            //   child: Padding(
+            //     padding: EdgeInsets.only(right: 15, left: 10),
+            //     child: Icon(Icons.notifications_none),
+            //   ),
+            // ),
           ],
         ),
       ) as PreferredSizeWidget?,
