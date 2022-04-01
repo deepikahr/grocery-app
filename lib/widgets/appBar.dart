@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
@@ -50,6 +51,23 @@ Widget appBarTransparent(BuildContext context, title) {
       elevation: 0);
 }
 
+Widget appBarTransparentWithBackTab(
+    BuildContext context, title, Function()? onPress) {
+  return GFAppBar(
+    title: Text(MyLocalizations.of(context)!.getLocalizations(title),
+        style: textbarlowSemiBoldBlack(context)),
+    centerTitle: true,
+    backgroundColor: Colors.transparent,
+    iconTheme: IconThemeData(color: dark(context)),
+    elevation: 0,
+    leading: InkWell(
+        onTap: onPress,
+        child: Platform.isIOS
+            ? Icon(Icons.arrow_back_ios)
+            : Icon(Icons.arrow_back)),
+  );
+}
+
 Widget appBarTransparentWithoutBack(BuildContext context, title) {
   return GFAppBar(
       automaticallyImplyLeading: false,
@@ -61,4 +79,26 @@ Widget appBarTransparentWithoutBack(BuildContext context, title) {
           : Colors.transparent,
       iconTheme: IconThemeData(color: dark(context)),
       elevation: 0);
+}
+
+Widget appBarPrimarynoradiusWithContent(BuildContext context, title,
+    bool changeUi, actionTrueOrFalse, Widget? actionProcess) {
+  return GFAppBar(
+    title: changeUi
+        ? title
+        : Expanded(
+            child: Text(
+              MyLocalizations.of(context)!.getLocalizations(title),
+              style: textbarlowSemiBoldBlack(context),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+    centerTitle: false,
+    automaticallyImplyLeading: true,
+    titleSpacing: 0,
+    backgroundColor: primary(context),
+    elevation: 0,
+    iconTheme: IconThemeData(color: Colors.white),
+    actions: actionTrueOrFalse ? [actionProcess!] : [Container()],
+  );
 }

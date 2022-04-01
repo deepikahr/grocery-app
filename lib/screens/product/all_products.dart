@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:getwidget/components/badge/gf_badge.dart';
+import 'package:getwidget/shape/gf_badge_shape.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:readymadeGroceryApp/model/counterModel.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/product/product-details.dart';
-import 'package:readymadeGroceryApp/screens/tab/searchitem.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
@@ -14,8 +17,11 @@ import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import 'package:readymadeGroceryApp/widgets/product_gridcard.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import '../../service/constants.dart';
+import '../../service/locationService.dart';
 import '../../style/style.dart';
 import '../../widgets/loader.dart';
+import '../tab/mycart.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -37,33 +43,37 @@ class AllProducts extends StatefulWidget {
 
 class _AllProductsState extends State<AllProducts> {
   bool isUserLoaggedIn = false,
+      getTokenValue = false,
       isFirstPageLoading = true,
       isNextPageLoading = false,
-      isSubCategoryLoading = true,
+      isCategoryLoading = true,
       isProductsForDeal = false,
-      isProductsForCategory = false;
+      isProductsForCategory = false,
+      isCurrentLocationLoading = false;
   int? productsPerPage = 12,
       productsPageNumber = 0,
       totalProducts = 1,
-      selectedSubCategoryIndex = 0;
-  List? productsList = [], subCategoryList = [];
+      selectedCategoryIndex = 0;
+  List? productsList = [], categoryList = [];
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   String? currency;
   ScrollController _scrollController = ScrollController();
 
-  var cartData;
+  var cartData, addressData;
 
   @override
   void initState() {
     super.initState();
+    getToken();
+    getResult();
     if (widget.dealId != null) {
       isProductsForDeal = true;
-      isSubCategoryLoading = false;
+      isCategoryLoading = false;
     } else if (widget.categoryId != null) {
       isProductsForCategory = true;
     } else {
-      getSubCategoryList();
+      getCategoryList();
     }
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
@@ -84,16 +94,16 @@ class _AllProductsState extends State<AllProducts> {
     if (isProductsForDeal) {
       getProductListByDealId();
     } else if (isProductsForCategory) {
-      if (selectedSubCategoryIndex == 0) {
-        getSubCategoryListByCategoryId();
+      if (selectedCategoryIndex == 0) {
+        getCategoryListByCategoryId();
       } else {
-        getProductsListBySubCategoryId();
+        getProductsListByCategoryId();
       }
     } else {
-      if (selectedSubCategoryIndex == 0) {
+      if (selectedCategoryIndex == 0) {
         getProductsList();
       } else {
-        getProductsListBySubCategoryId();
+        getProductsListByCategoryId();
       }
     }
   }
@@ -116,26 +126,89 @@ class _AllProductsState extends State<AllProducts> {
     });
   }
 
-  void getSubCategoryList() async {
-    await ProductService.getSubCatList().then((onValue) {
+  void getCategoryList() async {
+    await ProductService.getCategoryList().then((onValue) {
       if (onValue['response_data'] != null) {
-        subCategoryList = onValue['response_data'] as List?;
+        categoryList = onValue['response_data'] as List?;
       }
       if (mounted)
         setState(() {
-          isSubCategoryLoading = false;
+          isCategoryLoading = false;
         });
     }).catchError((error) {
       if (mounted) {
         setState(() {
-          isSubCategoryLoading = false;
+          isCategoryLoading = false;
         });
       }
       sentryError.reportError(error, null);
     });
   }
 
-  void getSubCategoryListByCategoryId() async {
+  deliveryAddress() {
+    return locationText(context, addressData == null ? null : "YOUR_LOCATION",
+        addressData ?? Constants.appName);
+  }
+
+  getToken() async {
+    await Common.getToken().then((onValue) {
+      if (onValue != null) {
+        if (mounted) {
+          setState(() {
+            getTokenValue = true;
+          });
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            getTokenValue = false;
+          });
+        }
+      }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          getTokenValue = false;
+        });
+      }
+      sentryError.reportError(error, null);
+    });
+  }
+
+  getResult() async {
+    await Common.getCurrentLocation().then((address) async {
+      if (address != null) {
+        if (mounted) {
+          setState(() {
+            addressData = address;
+          });
+        }
+      }
+      bool? permission = await LocationUtils().locationPermission();
+
+      if (permission) {
+        Position position = await LocationUtils().currentLocation();
+        var addressValue = await LocationUtils().getAddressFromLatLng(
+          LatLng(
+            position.latitude,
+            position.longitude,
+          ),
+        );
+        List<Placemark> placemarks = await placemarkFromCoordinates(
+            position.latitude, position.longitude);
+        if (mounted) {
+          setState(() {
+            addressData = addressValue.formattedAddress;
+            isCurrentLocationLoading = false;
+          });
+        }
+        await Common.setCountryInfo(placemarks[0].isoCountryCode ?? '');
+        await Common.setCurrentLocation(addressData);
+      }
+    });
+  }
+
+  void getCategoryListByCategoryId() async {
     if (totalProducts != productsList!.length) {
       if (productsPageNumber! > 0) {
         setState(() {
@@ -148,20 +221,19 @@ class _AllProductsState extends State<AllProducts> {
         _refreshController.refreshCompleted();
         if (onValue['response_data'] != null) {
           productsList!.addAll(onValue['response_data']['products']);
-          subCategoryList = onValue['response_data']['subCategories'];
           totalProducts = onValue["total"];
           productsPageNumber = productsPageNumber! + 1;
         }
         if (mounted)
           setState(() {
-            isSubCategoryLoading = false;
+            isCategoryLoading = false;
             isFirstPageLoading = false;
             isNextPageLoading = false;
           });
       }).catchError((error) {
         if (mounted) {
           setState(() {
-            isSubCategoryLoading = false;
+            isCategoryLoading = false;
             isFirstPageLoading = false;
             isNextPageLoading = false;
           });
@@ -206,22 +278,22 @@ class _AllProductsState extends State<AllProducts> {
     }
   }
 
-  void getProductsListBySubCategoryId() async {
+  void getProductsListByCategoryId() async {
     if (totalProducts != productsList!.length) {
       if (productsPageNumber! > 0) {
         setState(() {
           isNextPageLoading = true;
         });
       }
-      await ProductService.getProductToSubCategoryList(
-              subCategoryList![selectedSubCategoryIndex! - 1]['_id'],
+      await ProductService.getProductToCategoryList(
+              categoryList![selectedCategoryIndex! - 1]['_id'],
               productsPageNumber,
               productsPerPage)
           .then((onValue) {
         _refreshController.refreshCompleted();
         if (onValue['response_data'] != null &&
             onValue['response_data'] != []) {
-          productsList!.addAll(onValue['response_data']);
+          productsList!.addAll(onValue['response_data']['products']);
           totalProducts = onValue["total"];
           productsPageNumber = productsPageNumber! + 1;
         }
@@ -280,7 +352,7 @@ class _AllProductsState extends State<AllProducts> {
 
   @override
   Widget build(BuildContext context) {
-    if (isUserLoaggedIn) {
+    if (getTokenValue == true) {
       CounterModel().getCartDataMethod().then((res) {
         if (mounted) {
           setState(() {
@@ -297,72 +369,69 @@ class _AllProductsState extends State<AllProducts> {
     }
     return Scaffold(
       backgroundColor: bg(context),
-      appBar: appBarWhite(
+      appBar: appBarPrimarynoradiusWithContent(
         context,
-        widget.pageTitle,
-        false,
+        deliveryAddress(),
         true,
-        InkWell(
-          onTap: () {
-            var result = Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => SearchItem(
-                  locale: widget.locale,
-                  localizedValues: widget.localizedValues,
-                  currency: currency,
-                  token: isUserLoaggedIn,
-                ),
+        true,
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MyCart(
+                      locale: widget.locale,
+                      localizedValues: widget.localizedValues,
+                    ),
+                  ),
+                );
+              },
+              child: Stack(
+                children: [
+                  Icon(Icons.shopping_cart),
+                  if (cartData != null &&
+                      cartData['products'] != [] &&
+                      cartData['products'].length > 0)
+                    Positioned(
+                      right: 2,
+                      child: GFBadge(
+                        child: Text(
+                          '${cartData['products'].length}',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: "bold",
+                            fontSize: 11,
+                          ),
+                        ),
+                        shape: GFBadgeShape.circle,
+                        color: Colors.red,
+                        size: 20,
+                      ),
+                    ),
+                ],
               ),
-            );
-            result.then((value) {
-              checkIfUserIsLoaggedIn();
-            });
-          },
-          child: Padding(
-            padding: EdgeInsets.only(right: 15, left: 15),
-            child: Icon(
-              Icons.search,
             ),
-          ),
+            // InkWell(
+            //   onTap: () {},
+            //   child: Padding(
+            //     padding: EdgeInsets.only(right: 15, left: 10),
+            //     child: Icon(Icons.notifications_none),
+            //   ),
+            // ),
+          ],
         ),
       ) as PreferredSizeWidget?,
-      body: isSubCategoryLoading
+      body: isCategoryLoading
           ? Center(child: SquareLoader())
           : Column(
               children: [
-                isSubCategoryLoading
-                    ? SquareLoader()
-                    : isProductsForDeal
-                        ? Container()
-                        : Container(
-                            height: 45,
-                            child: ListView.builder(
-                                physics: ScrollPhysics(),
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                itemCount: subCategoryList!.length + 1,
-                                itemBuilder: (BuildContext context, int i) {
-                                  return InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        selectedSubCategoryIndex = i;
-                                      });
-                                      checkIfUserIsLoaggedIn();
-                                    },
-                                    child: subCatTab(
-                                      context,
-                                      i == 0
-                                          ? MyLocalizations.of(context)!
-                                              .getLocalizations('ALL')
-                                          : subCategoryList![i - 1]['title'],
-                                      selectedSubCategoryIndex == i
-                                          ? primary(context)
-                                          : Color(0xFFf0F0F0),
-                                    ),
-                                  );
-                                }),
-                          ),
+                SizedBox(
+                  height: 20,
+                ),
                 Flexible(
                   child: isFirstPageLoading
                       ? Center(child: SquareLoader())
@@ -393,17 +462,24 @@ class _AllProductsState extends State<AllProducts> {
                               itemBuilder: (BuildContext context, int i) {
                                 return InkWell(
                                   onTap: () {
-                                    var result = Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ProductDetails(
-                                          locale: widget.locale,
-                                          localizedValues:
-                                              widget.localizedValues,
-                                          productID: productsList![i]['_id'],
-                                        ),
-                                      ),
-                                    );
+                                    var result = showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        context: context,
+                                        builder: (BuildContext bc) {
+                                          return Container(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height /
+                                                1.45,
+                                            child: ProductDetails(
+                                              locale: widget.locale,
+                                              localizedValues:
+                                                  widget.localizedValues,
+                                              productID: productsList![i]
+                                                  ['_id'],
+                                            ),
+                                          );
+                                        });
                                     result.then((value) {
                                       checkIfUserIsLoaggedIn();
                                     });

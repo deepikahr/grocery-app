@@ -1,8 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:readymadeGroceryApp/screens/categories/allcategories.dart';
+import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/product/all_deals.dart';
 import 'package:readymadeGroceryApp/screens/product/all_products.dart';
 import 'package:readymadeGroceryApp/screens/product/product-details.dart';
@@ -42,7 +41,8 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
       isLocationLoading = false,
       isBannerLoading = false,
       isLoadingAllData = false,
-      isGetSubcribeLoading = false;
+      isGetSubcribeLoading = false,
+      isViewAllSelected = false;
   List? categoryList,
       productsList,
       searchProductList,
@@ -264,33 +264,63 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   }
 
   Widget _buildTitleViewAllTile(String name, {Widget? route, valueKey}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        homePageBoldText(context, name),
-        InkWell(
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (BuildContext context) => route!));
-          },
-          child: viewAllBoldText(context, "VIEW_ALL", valueKey: valueKey),
-        )
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          homePageBoldText(context, name),
+          InkWell(
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (BuildContext context) => route!));
+            },
+            child: viewAllBoldText(context, "VIEW_ALL", valueKey: valueKey),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _categoryListTile(String name, {void Function()? onTap, valueKey}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          homePageBoldText(context, name),
+          InkWell(
+            onTap: onTap,
+            child: viewAllBoldText(context, "VIEW_ALL", valueKey: valueKey),
+          )
+        ],
+      ),
     );
   }
 
   categoryRow() {
     return Column(
       children: <Widget>[
-        _buildTitleViewAllTile("EXPLORE_BY_CATEGORIES",
-            route: AllCategories(
-              locale: widget.locale,
-              localizedValues: widget.localizedValues,
-              getTokenValue: getTokenValue,
-            ),
-            valueKey: ValueKey('view-all-categories')),
+        _categoryListTile(
+          "CATEGORIES",
+          onTap: () {
+            setState(() {
+              isViewAllSelected = true;
+              print(isViewAllSelected);
+              Navigator.pushReplacement(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (_, __, ___) => Home(
+                    isViewAllSelected: isViewAllSelected,
+                  ),
+                ),
+              );
+            });
+          },
+          valueKey: ValueKey('view-all-categories'),
+        ),
         SizedBox(height: 20),
-        SizedBox(
+        Container(
           height: 100,
           child: ListView.builder(
             physics: ScrollPhysics(),
@@ -331,11 +361,11 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
   banner() {
     return GFCarousel(
       autoPlay: true,
-      pagination: true,
+      hasPagination: true,
       viewportFraction: 1.0,
       activeIndicator: primarybg,
       passiveIndicator: primaryLight2,
-      height: 150,
+      height: 100,
       aspectRatio: 2,
       onPageChanged: (_) {
         setState(() {
@@ -370,217 +400,105 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
               );
             }
           },
-          child: Stack(
-            children: <Widget>[
-              Container(height: 130, color: bg(context)),
-              CachedNetworkImage(
-                imageUrl: url['filePath'] == null
-                    ? url['imageURL']
-                    : Constants.imageUrlPath! +
-                        "/tr:dpr-auto,tr:w-500" +
-                        url['filePath'],
-                imageBuilder: (context, imageProvider) => Container(
-                  height: 115,
-                  margin: EdgeInsets.only(top: 10, left: 16, right: 16),
-                  padding: EdgeInsets.only(top: 5, left: 20, right: 20),
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                      // color: primary(context),
-                      image:
-                          // url['imageUrl'] == null ? DecorationImage(image: AssetImage('lib/assets/images/banner_bg.png'),fit: BoxFit.cover,
-                          //   colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.darken), ) :
-                          DecorationImage(
-                        image: imageProvider,
-                        // NetworkImage(url['imageUrl']),
-                        fit: BoxFit.cover,
-                        colorFilter: ColorFilter.mode(
-                            Colors.black.withOpacity(0.2), BlendMode.darken),
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(5))),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                          padding: EdgeInsets.only(
-                              right: locale == 'ar' ? 0 : 100,
-                              left: locale == 'ar' ? 100 : 0,
-                              top: 10),
-                          child: bannerTitle(
-                              '${url['title'][0].toUpperCase()}${url['title'].substring(1)}',
-                              context)),
-                      InkWell(
-                          onTap: () {
-                            if (url['bannerType'] == "PRODUCT") {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ProductDetails(
-                                    locale: widget.locale,
-                                    localizedValues: widget.localizedValues,
-                                    productID: url['productId'],
-                                  ),
-                                ),
-                              );
-                            } else {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => AllProducts(
-                                    locale: widget.locale,
-                                    localizedValues: widget.localizedValues,
-                                    categoryId: url['categoryId'],
-                                    pageTitle: url['title'],
-                                  ),
-                                ),
-                              );
-                            }
-                          },
-                          child: orderNowDark(context, "ORDER_NOW")),
-                      SizedBox(
-                        height: 1,
-                      ),
-                    ],
+          child: CachedNetworkImage(
+            imageUrl: url['filePath'] == null
+                ? url['imageURL']
+                : Constants.imageUrlPath! +
+                    "/tr:dpr-auto,tr:w-500" +
+                    url['filePath'],
+            imageBuilder: (context, imageProvider) => Container(
+              height: 100,
+              margin: EdgeInsets.only(top: 10, left: 5, right: 5),
+              padding: EdgeInsets.only(top: 5, left: 20, right: 20),
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                  // color: primary(context),
+                  image:
+                      // url['imageUrl'] == null ? DecorationImage(image: AssetImage('lib/assets/images/banner_bg.png'),fit: BoxFit.cover,
+                      //   colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.darken), ) :
+                      DecorationImage(
+                    image: imageProvider,
+                    // NetworkImage(url['imageUrl']),
+                    fit: BoxFit.cover,
+                    colorFilter: ColorFilter.mode(
+                        Colors.black.withOpacity(0.2), BlendMode.darken),
                   ),
-                ),
-                //     Container(
-                //   height: 134,
-                //   width: 134,
-                //   decoration: BoxDecoration(
-                //     boxShadow: [
-                //       BoxShadow(
-                //           color: dark(context).withOpacity(0.33),
-                //           blurRadius: 6)
-                //     ],
-                //     shape: BoxShape.circle,
-                //     image: DecorationImage(
-                //         image: imageProvider, fit: BoxFit.cover),
-                //   ),
-                // ),
-                placeholder: (context, url) => Container(
-                  height: 115,
-                  margin: EdgeInsets.only(top: 10, left: 16, right: 16),
-                  padding: EdgeInsets.only(top: 5, left: 20, right: 20),
-                  width: MediaQuery.of(context).size.width,
-                  child: noDataImage(),
-                  color: Colors.black.withOpacity(0.2),
-                ),
-                errorWidget: (context, url, error) => Container(
-                  height: 115,
-                  margin: EdgeInsets.only(top: 10, left: 16, right: 16),
-                  padding: EdgeInsets.only(top: 5, left: 20, right: 20),
-                  width: MediaQuery.of(context).size.width,
-                  child: noDataImage(),
-                  color: Colors.black.withOpacity(0.2),
-                ),
+                  borderRadius: BorderRadius.all(Radius.circular(5))),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                      padding: EdgeInsets.only(
+                          right: locale == 'ar' ? 0 : 100,
+                          left: locale == 'ar' ? 100 : 0,
+                          top: 10),
+                      child: bannerTitle(
+                          '${url['title'][0].toUpperCase()}${url['title'].substring(1)}',
+                          context)),
+                  InkWell(
+                      onTap: () {
+                        if (url['bannerType'] == "PRODUCT") {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProductDetails(
+                                locale: widget.locale,
+                                localizedValues: widget.localizedValues,
+                                productID: url['productId'],
+                              ),
+                            ),
+                          );
+                        } else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AllProducts(
+                                locale: widget.locale,
+                                localizedValues: widget.localizedValues,
+                                categoryId: url['categoryId'],
+                                pageTitle: url['title'],
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                      child: orderNowDark(context, "ORDER_NOW")),
+                  SizedBox(
+                    height: 1,
+                  ),
+                ],
               ),
-              // Container(
-              //   height: 115,
-              //   margin: EdgeInsets.only(top: 10, left: 16, right: 16),
-              //   padding: EdgeInsets.only(top: 5, left: 20, right: 20),
-              //   width: MediaQuery.of(context).size.width,
-              //   decoration: BoxDecoration(
-              //       // color: primary(context),
-              //       image: url['imageUrl'] != null ? DecorationImage(image: NetworkImage(url['imageUrl']),
-              //           fit: BoxFit.cover, colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.darken),)
-              //       : DecorationImage(image: AssetImage('lib/assets/images/banner_bg.png'),fit: BoxFit.cover,
-              //           colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.darken), ),
-              //       borderRadius: BorderRadius.all(Radius.circular(5))),
-              //   child: Column(
-              //     crossAxisAlignment: CrossAxisAlignment.start,
-              //     children: <Widget>[
-              //       Padding(
-              //           padding: EdgeInsets.only(
-              //             right: locale == 'ar' ? 0 : 100,
-              //             left: locale == 'ar' ? 100 : 0,
-              //             top:10
-              //           ),
-              //           child: bannerTitle(
-              //               '${url['title'][0].toUpperCase()}${url['title'].substring(1)}',
-              //               context)),
-              //       InkWell(
-              //           onTap: () {
-              //             if (url['bannerType'] == "PRODUCT") {
-              //               Navigator.push(
-              //                 context,
-              //                 MaterialPageRoute(
-              //                   builder: (context) => ProductDetails(
-              //                     locale: widget.locale,
-              //                     localizedValues: widget.localizedValues,
-              //                     productID: url['productId'],
-              //                   ),
-              //                 ),
-              //               );
-              //             } else {
-              //               Navigator.push(
-              //                 context,
-              //                 MaterialPageRoute(
-              //                   builder: (context) => AllProducts(
-              //                     locale: widget.locale,
-              //                     localizedValues: widget.localizedValues,
-              //                     categoryId: url['categoryId'],
-              //                     pageTitle: url['title'],
-              //                   ),
-              //                 ),
-              //               );
-              //             }
-              //           },
-              //           child: orderNowDark(context, "ORDER_NOW")),
-              //       SizedBox(height: 1,),
-              //     ],
-              //   ),
-              // ),
-              // url['filePath'] == null && url['imageURL'] == null
-              //     ? Container()
-              //     : Positioned(
-              //         right: locale == 'ar' ? null : 0,
-              //         left: locale == 'ar' ? 0 : null,
-              //         child: CachedNetworkImage(
-              //           imageUrl: url['filePath'] == null
-              //               ? url['imageURL']
-              //               : Constants.imageUrlPath! +
-              //                   "/tr:dpr-auto,tr:w-500" +
-              //                   url['filePath'],
-              //           imageBuilder: (context, imageProvider) => Container(
-              //             height: 134,
-              //             width: 134,
-              //             decoration: BoxDecoration(
-              //               boxShadow: [
-              //                 BoxShadow(
-              //                     color: dark(context).withOpacity(0.33),
-              //                     blurRadius: 6)
-              //               ],
-              //               shape: BoxShape.circle,
-              //               image: DecorationImage(
-              //                   image: imageProvider, fit: BoxFit.cover),
-              //             ),
-              //           ),
-              //           placeholder: (context, url) => Container(
-              //               decoration: BoxDecoration(
-              //                 boxShadow: [
-              //                   BoxShadow(
-              //                       color: dark(context).withOpacity(0.33),
-              //                       blurRadius: 6)
-              //                 ],
-              //                 shape: BoxShape.circle,
-              //               ),
-              //               height: 134,
-              //               width: 134,
-              //               child: noDataImage()),
-              //           errorWidget: (context, url, error) => Container(
-              //               decoration: BoxDecoration(
-              //                 boxShadow: [
-              //                   BoxShadow(
-              //                       color: dark(context).withOpacity(0.33),
-              //                       blurRadius: 6)
-              //                 ],
-              //                 shape: BoxShape.circle,
-              //               ),
-              //               height: 134,
-              //               width: 134,
-              //               child: noDataImage()),
-              //         ),
-              //       ),
-            ],
+            ),
+            //     Container(
+            //   height: 134,
+            //   width: 134,
+            //   decoration: BoxDecoration(
+            //     boxShadow: [
+            //       BoxShadow(
+            //           color: dark(context).withOpacity(0.33),
+            //           blurRadius: 6)
+            //     ],
+            //     shape: BoxShape.circle,
+            //     image: DecorationImage(
+            //         image: imageProvider, fit: BoxFit.cover),
+            //   ),
+            // ),
+            placeholder: (context, url) => Container(
+              height: 100,
+              margin: EdgeInsets.only(top: 10, left: 16, right: 16),
+              padding: EdgeInsets.only(top: 5, left: 20, right: 20),
+              width: MediaQuery.of(context).size.width,
+              child: noDataImage(),
+              color: Colors.black.withOpacity(0.2),
+            ),
+            errorWidget: (context, url, error) => Container(
+              height: 100,
+              margin: EdgeInsets.only(top: 10, left: 16, right: 16),
+              padding: EdgeInsets.only(top: 5, left: 20, right: 20),
+              width: MediaQuery.of(context).size.width,
+              child: noDataImage(),
+              color: Colors.black.withOpacity(0.2),
+            ),
           ),
         );
       }).toList(),
@@ -595,54 +513,59 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
           route: AllProducts(
             locale: widget.locale,
             localizedValues: widget.localizedValues,
-            pageTitle: "PRODUCTS",
+            pageTitle: "POPULAR_PRODUCTS",
           ),
         ),
-        SizedBox(height: 20),
-        GridView.builder(
-          physics: ScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: list.length != null ? list.length : 0,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 14,
-            mainAxisSpacing: 14,
-            childAspectRatio: MediaQuery.of(context).size.width / 435,
-          ),
-          itemBuilder: (BuildContext context, int i) {
-            if (list[i]['averageRating'] == null) {
-              list[i]['averageRating'] = 0;
-            }
-            return list[i]['outOfStock'] != null ||
-                    list[i]['outOfStock'] != false
-                ? Padding(
-                    padding: const EdgeInsets.all(1.0),
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ProductDetails(
-                              locale: widget.locale,
-                              localizedValues: widget.localizedValues,
-                              productID: list[i]['_id'],
-                            ),
-                          ),
-                        );
-                      },
-                      child: ProductGridCard(
-                          currency: currency,
-                          productData: list[i],
-                          isHome: true),
-                    ),
-                  )
-                : ProductGridCard(
-                    currency: currency,
-                    productData: list[i],
-                    isHome: true,
-                  );
-          },
-        ),
+        SizedBox(height: 10),
+        Container(
+          height: 190,
+          child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              physics: ScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: list.length != null ? list.length : 0,
+              itemBuilder: (BuildContext context, int i) {
+                if (list[i]['averageRating'] == null) {
+                  list[i]['averageRating'] = 0;
+                }
+                return list[i]['outOfStock'] != null ||
+                        list[i]['outOfStock'] != false
+                    ? Container(
+                        height: 190,
+                        width: 200,
+                        margin: const EdgeInsets.only(right: 10),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12)),
+                        child: InkWell(
+                          onTap: () {
+                            showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                builder: (BuildContext bc) {
+                                  return Container(
+                                    height: MediaQuery.of(context).size.height /
+                                        1.45,
+                                    child: ProductDetails(
+                                      locale: widget.locale,
+                                      localizedValues: widget.localizedValues,
+                                      productID: list[i]['_id'],
+                                    ),
+                                  );
+                                });
+                          },
+                          child: ProductGridCard(
+                              currency: currency,
+                              productData: list[i],
+                              isHome: true),
+                        ),
+                      )
+                    : ProductGridCard(
+                        currency: currency,
+                        productData: list[i],
+                        isHome: true,
+                      );
+              }),
+        )
       ],
     );
   }
@@ -657,23 +580,26 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
             localizedValues: widget.localizedValues,
           ),
         ),
-        SizedBox(height: 20),
-        GridView.builder(
-          physics: ScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: list.length != null ? list.length : 0,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 14,
-            mainAxisSpacing: 14,
-            childAspectRatio: MediaQuery.of(context).size.width / 520,
-          ),
-          itemBuilder: (BuildContext context, int i) {
-            return SubscriptionCard(
-              currency: currency,
-              productData: list[i],
-            );
-          },
+        SizedBox(height: 10),
+        Container(
+          height: 220,
+          margin: EdgeInsets.only(right: 10, top: 10),
+          child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              physics: ScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: list.length != null ? list.length : 0,
+              itemBuilder: (BuildContext context, int i) {
+                return Container(
+                  height: 220,
+                  width: 220,
+                  padding: EdgeInsets.only(right: 15),
+                  child: SubscriptionCard(
+                    currency: currency,
+                    productData: list[i],
+                  ),
+                );
+              }),
         ),
       ],
     );
@@ -958,36 +884,45 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
                     bannerList!.length == 0 &&
                     subscriptionProductsList!.length == 0)
                 ? noDataImage()
-                : SingleChildScrollView(
-                    physics: ScrollPhysics(),
-                    child: Column(
+                : Container(
+                    height: MediaQuery.of(context).size.height - 140,
+                    child: Stack(
                       children: [
-                        bannerList!.length > 0
-                            ? Column(
-                                children: [banner(), Divider()],
-                              )
-                            : Container(),
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
+                        Container(
+                          height: 250,
+                          color: primarybg,
+                        ),
+                        Positioned(
+                          left: 10,
+                          bottom: 0,
+                          right: 10,
+                          top: 10,
+                          child: ListView(
+                            shrinkWrap: true,
+                            physics: ScrollPhysics(),
                             children: <Widget>[
                               categoryList!.length > 0
+                                  ? categoryRow()
+                                  : Container(),
+                              SizedBox(height: 10),
+                              bannerList!.length > 0
                                   ? Column(
-                                      children: [categoryRow(), Divider()],
+                                      children: [banner(), Divider()],
+                                    )
+                                  : Container(),
+                              productsList!.length > 0
+                                  ? Column(
+                                      children: [
+                                        productRow(
+                                            "POPULAR_PRODUCTS", productsList),
+                                        Divider()
+                                      ],
                                     )
                                   : Container(),
                               topDealList!.length > 0
                                   ? Column(
                                       children: [
                                         topDealsRow("TOP_DEALS", topDealList),
-                                        Divider()
-                                      ],
-                                    )
-                                  : Container(),
-                              productsList!.length > 0
-                                  ? Column(
-                                      children: [
-                                        productRow("PRODUCTS", productsList),
                                         Divider()
                                       ],
                                     )

@@ -4,6 +4,7 @@ import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
@@ -60,6 +61,7 @@ class _WalletPageState extends State<WalletPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bg(context),
       appBar: appBarPrimarynoradius(context, "WALLET") as PreferredSizeWidget?,
       body: isGetWalletInfoLoading
           ? Center(child: SquareLoader())
@@ -103,8 +105,12 @@ class _WalletPageState extends State<WalletPage> {
       bottomNavigationBar: isGetWalletInfoLoading
           ? Container(height: 1)
           : ((Constants.stripKey == null || Constants.stripKey!.isEmpty) &&
-                  (Constants.razorPayKey == null ||
-                      Constants.razorPayKey!.isEmpty))
+                      (Constants.razorPayKey == null ||
+                          Constants.razorPayKey!.isEmpty)) &&
+                  (Constants.tapProductionSecretKey == null ||
+                      Constants.tapProductionSecretKey!.isEmpty &&
+                          Constants.tapSandBoxSecretKey == null ||
+                      Constants.tapSandBoxSecretKey!.isEmpty)
               ? notAvailableButton()
               : addMoneyButton(),
     );

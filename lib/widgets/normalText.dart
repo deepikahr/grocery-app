@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:provider/provider.dart';
 import 'package:readymadeGroceryApp/screens/orders/orders.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
+
+import '../main.dart';
 
 Widget alertText(BuildContext context, title, Icon? icon) {
   return Row(
@@ -106,6 +109,7 @@ Widget normalTextWithOutRow(BuildContext context, title, isCenter) {
 }
 
 Widget buildDrawer(BuildContext context, title, icon) {
+  final themeChange = Provider.of<DarkThemeProvider>(context);
   return Container(
     margin: EdgeInsets.only(bottom: 12.0),
     child: Container(
@@ -114,8 +118,10 @@ Widget buildDrawer(BuildContext context, title, icon) {
           Expanded(
             flex: 2,
             child: ListTile(
-              leading:
-                  Image.asset(icon, width: 35, height: 35, color: Colors.white),
+              leading: Image.asset(icon,
+                  width: 35,
+                  height: 35,
+                  color: themeChange.darkTheme ? Colors.white : Colors.black),
               selected: true,
             ),
           ),
@@ -295,7 +301,7 @@ Widget profileTextRow(BuildContext context, title, subTitle) {
   );
 }
 
-Widget subCatTab(BuildContext context, title, Color color) {
+Widget catTab(BuildContext context, title, Color color) {
   return Container(
     height: 45,
     padding: EdgeInsets.only(
@@ -514,73 +520,70 @@ Widget addressPage(BuildContext context, title) {
 }
 
 Widget chatMessgae(BuildContext context, message, isOwn) {
-  return Padding(
-    padding: const EdgeInsets.only(left: 16.0),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: <Widget>[
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: isOwn
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.only(
-                            top: 12.0, bottom: 14.0, left: 16.0, right: 16.0),
-                        constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * 0.6,
-                        ),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(40),
-                              topRight: Radius.circular(0),
-                              bottomRight: Radius.circular(40),
-                              bottomLeft: Radius.circular(40),
-                            ),
-                            color: primarybg.withOpacity(0.60)),
-                        child: Text(
-                          message,
-                          textAlign: TextAlign.left,
-                        ),
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.start,
+    crossAxisAlignment: CrossAxisAlignment.end,
+    children: <Widget>[
+      Expanded(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: isOwn
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.only(
+                          top: 12.0, bottom: 14.0, left: 16.0, right: 16.0),
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * 0.6,
                       ),
-                    ],
-                  )
-                : Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.only(
-                            top: 12.0, bottom: 14.0, left: 16.0, right: 16.0),
-                        constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * 0.6,
-                        ),
-                        decoration: BoxDecoration(
+                      decoration: BoxDecoration(
                           borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(0),
-                            topRight: Radius.circular(40),
+                            topLeft: Radius.circular(40),
+                            topRight: Radius.circular(0),
                             bottomRight: Radius.circular(40),
                             bottomLeft: Radius.circular(40),
                           ),
-                          color: Theme.of(context).brightness == Brightness.dark
-                              ? greyb2
-                              : Color(0xFFF0F0F0),
-                        ),
-                        child: Text(
-                          message,
-                          textAlign: TextAlign.left,
-                        ),
+                          color: primarybg.withOpacity(0.60)),
+                      child: Text(
+                        message,
+                        textAlign: TextAlign.left,
                       ),
-                    ],
-                  ),
-          ),
+                    ),
+                  ],
+                )
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.only(
+                          top: 12.0, bottom: 14.0, left: 16.0, right: 16.0),
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * 0.6,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(0),
+                          topRight: Radius.circular(40),
+                          bottomRight: Radius.circular(40),
+                          bottomLeft: Radius.circular(40),
+                        ),
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? greyb2
+                            : Color(0xFFF0F0F0),
+                      ),
+                      child: Text(
+                        message,
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                  ],
+                ),
         ),
-      ],
-    ),
+      ),
+    ],
   );
 }
 
@@ -681,6 +684,15 @@ Widget textMediumSmall(title, context) {
       style: textBarlowRegularrGreen(context));
 }
 
+Widget textMediumSmallr(title, title1, context) {
+  return Row(
+    children: [
+      Text(title ?? "", style: textBarlowRegularrGreen(context)),
+      Text(title1 ?? "", style: textBarlowRegularrGreen(context)),
+    ],
+  );
+}
+
 Widget textMediumSmallGreen(title, context) {
   return Text(MyLocalizations.of(context)!.getLocalizations(title ?? ""),
       style: textBarlowRegularrGreenS(context));
@@ -688,7 +700,7 @@ Widget textMediumSmallGreen(title, context) {
 
 Widget priceMrpText(title, subtitle, context) {
   return Row(children: <Widget>[
-    Text(title, style: textbarlowBoldGreen(context)),
+    Text(title, style: textbarlowmediumwprimary(context)),
     SizedBox(width: 6),
     subtitle != null
         ? Padding(
@@ -753,7 +765,7 @@ homePageBoldText(BuildContext context, title) {
 
 viewAllBoldText(BuildContext context, title, {valueKey}) {
   return Text(MyLocalizations.of(context)!.getLocalizations(title),
-      key: valueKey, style: textbarlowMediumprimary(context));
+      key: valueKey, style: textBarlowMediumBlack(context));
 }
 
 bannerTitle(title, context) {
@@ -782,26 +794,14 @@ orderNowDark(BuildContext context, title) {
   );
 }
 
-Widget buildIcon(BuildContext context, iconData, cartData) {
+Widget buildIcon(BuildContext context, String icon, cartData) {
   return Padding(
-    padding: const EdgeInsets.only(top: 8.0),
-    child: GFIconBadge(
-      child: new Icon(
-        iconData,
-      ),
-      counterChild: (cartData == null || cartData == 0)
-          ? Container()
-          : GFBadge(
-              child: Text(
-                '${cartData.toString()}',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: Colors.white, fontFamily: "bold", fontSize: 11),
-              ),
-              shape: GFBadgeShape.circle,
-              color: Colors.red,
-              size: 25,
-            ),
+    padding: const EdgeInsets.only(top: 4.0),
+    child: Image.asset(
+      icon,
+      height: 25,
+      width: 25,
+      fit: BoxFit.fill,
     ),
   );
 }

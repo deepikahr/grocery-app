@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
-import 'package:readymadeGroceryApp/screens/categories/allcategories.dart';
 import 'package:readymadeGroceryApp/screens/drawer/about-us.dart';
 import 'package:readymadeGroceryApp/screens/drawer/address.dart';
 import 'package:readymadeGroceryApp/screens/drawer/chatpage.dart';
@@ -20,6 +19,7 @@ import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import 'package:share/share.dart';
 import '../../main.dart';
+import '../tab/saveditems.dart';
 
 SentryError sentryError = new SentryError();
 
@@ -46,9 +46,7 @@ class _DrawerPageState extends State<DrawerPage> {
   @override
   void initState() {
     getToken();
-    Common.getTheme().then((isDark) {
-      isDark ? Color(0xFAAACF2D) : Color(0xFFFFCF2D);
-    });
+
     super.initState();
   }
 
@@ -82,7 +80,7 @@ class _DrawerPageState extends State<DrawerPage> {
       child: Stack(
         children: <Widget>[
           Container(
-            color: Color(0xFF000000),
+            color: themeChange.darkTheme ? Color(0xFF000000) : Colors.white,
             child: ListView(
               children: <Widget>[
                 SizedBox(height: 40),
@@ -98,12 +96,15 @@ class _DrawerPageState extends State<DrawerPage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0),
                   child: _buildMenuTileList(
-                      'lib/assets/icons/Home.png', "HOME_PAGE",
-                      route: Home(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
-                        currentIndex: 0,
-                      )),
+                    'lib/assets/icons/Home.png',
+                    "HOME_PAGE",
+                    route: Home(
+                      locale: widget.locale,
+                      localizedValues: widget.localizedValues,
+                      currentIndex: 0,
+                    ),
+                    nonBack: true,
+                  ),
                 ),
                 _buildMenuTileList('lib/assets/icons/products.png', "PRODUCTS",
                     route: AllProducts(
@@ -114,58 +115,75 @@ class _DrawerPageState extends State<DrawerPage> {
                 _buildMenuTileList(
                   'lib/assets/icons/categories.png',
                   "ALL_CATEGROIES",
-                  route: AllCategories(
+                  route: Home(
                     locale: widget.locale,
                     localizedValues: widget.localizedValues,
-                    getTokenValue: getTokenValue,
+                    currentIndex: 1,
+                  ),
+                  nonBack: true,
+                ),
+                _buildMenuTileList(
+                  'lib/assets/icons/deals.png',
+                  "TOP_DEALS",
+                  route: AllDealsList(
+                    locale: widget.locale,
+                    localizedValues: widget.localizedValues,
+                    currency: currency,
+                    token: getTokenValue,
+                    title: "TOP_DEALS",
                   ),
                 ),
-                _buildMenuTileList('lib/assets/icons/deals.png', "TOP_DEALS",
-                    route: AllDealsList(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues,
-                        currency: currency,
-                        token: getTokenValue,
-                        title: "TOP_DEALS")),
                 getTokenValue
                     ? _buildMenuTileList(
-                        'lib/assets/images/profileIcon.png', "PROFILE",
+                        'lib/assets/images/profileIcon.png',
+                        "PROFILE",
                         route: Home(
                           locale: widget.locale,
                           localizedValues: widget.localizedValues,
                           currentIndex: 3,
-                        ))
+                        ),
+                        nonBack: true,
+                      )
                     : Container(),
                 getTokenValue
                     ? _buildMenuTileList(
-                        'lib/assets/icons/history.png', "MY_ORDERS",
+                        'lib/assets/icons/history.png',
+                        "MY_ORDERS",
                         route: OrdersTab(
                           locale: widget.locale,
                           localizedValues: widget.localizedValues,
-                        ))
+                        ),
+                      )
                     : Container(),
                 getTokenValue
                     ? _buildMenuTileList(
-                        'lib/assets/icons/location.png', "ADDRESS",
+                        'lib/assets/icons/location.png',
+                        "ADDRESS",
                         route: Address(
                           locale: widget.locale,
                           localizedValues: widget.localizedValues,
-                        ))
+                        ),
+                      )
                     : Container(),
                 getTokenValue
-                    ? _buildMenuTileList('lib/assets/icons/fav.png', "FAVORITE",
-                        route: Home(
+                    ? _buildMenuTileList(
+                        'lib/assets/icons/fav.png',
+                        "FAVORITE",
+                        route: SavedItems(
                           locale: widget.locale,
                           localizedValues: widget.localizedValues,
-                          currentIndex: 1,
-                        ))
+                        ),
+                      )
                     : Container(),
                 getTokenValue
-                    ? _buildMenuTileList('lib/assets/icons/chat.png', "CHAT",
+                    ? _buildMenuTileList(
+                        'lib/assets/icons/chat.png',
+                        "CHAT",
                         route: Chat(
                           locale: widget.locale,
                           localizedValues: widget.localizedValues,
-                        ))
+                        ),
+                      )
                     : Container(),
                 // InkWell(
                 //     onTap: () {
@@ -173,27 +191,33 @@ class _DrawerPageState extends State<DrawerPage> {
                 //     },
                 //     child: buildDrawer(context, "CHAT_ON_WHATSAPP",
                 //         'lib/assets/icons/chat.png')),
-                _buildMenuTileList('lib/assets/icons/about.png', "ABOUT_US",
-                    route: AboutUs(
-                        locale: widget.locale,
-                        localizedValues: widget.localizedValues)),
+                _buildMenuTileList(
+                  'lib/assets/icons/about.png',
+                  "ABOUT_US",
+                  route: AboutUs(
+                    locale: widget.locale,
+                    localizedValues: widget.localizedValues,
+                  ),
+                ),
                 _buildMenuTileList(
                   'lib/assets/icons/tc.png',
                   "PRIVACY_POLICY",
                   route: TandCandPrivacyPolicy(
-                      locale: widget.locale,
-                      localizedValues: widget.localizedValues,
-                      endPoint: "/pages/privacy-policy",
-                      title: "PRIVACY_POLICY"),
+                    locale: widget.locale,
+                    localizedValues: widget.localizedValues,
+                    endPoint: "/pages/privacy-policy",
+                    title: "PRIVACY_POLICY",
+                  ),
                 ),
                 _buildMenuTileList(
                   'lib/assets/icons/tc.png',
                   "TERMS_CONDITIONS",
                   route: TandCandPrivacyPolicy(
-                      locale: widget.locale,
-                      localizedValues: widget.localizedValues,
-                      endPoint: "/pages/terms-and-conditions",
-                      title: "TERMS_CONDITIONS"),
+                    locale: widget.locale,
+                    localizedValues: widget.localizedValues,
+                    endPoint: "/pages/terms-and-conditions",
+                    title: "TERMS_CONDITIONS",
+                  ),
                 ),
                 getTokenValue
                     ? _buildMenuTileList(
@@ -269,11 +293,13 @@ class _DrawerPageState extends State<DrawerPage> {
           await Common.deleteUserId();
           await Common.setCartData(null);
           await Common.setCartDataCount(0);
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => MainScreen()),
-              (Route<dynamic> route) => false);
+          if (mounted) {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => MainScreen()),
+                (Route<dynamic> route) => false);
+          }
         });
       });
     });
@@ -288,15 +314,22 @@ class _DrawerPageState extends State<DrawerPage> {
     );
   }
 
-  Widget _buildMenuTileList(icon, name, {Widget? route}) {
+  Widget _buildMenuTileList(icon, name, {Widget? route, bool nonBack = false}) {
     return InkWell(
         onTap: () {
           if (route != null) {
             Navigator.pop(context);
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (BuildContext context) => route),
-            );
+            if (nonBack == true) {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (BuildContext context) => route),
+                  (Route<dynamic> route) => false);
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (BuildContext context) => route),
+              );
+            }
           }
         },
         child: buildDrawer(context, name, icon));

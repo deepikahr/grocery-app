@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:readymadeGroceryApp/service/alert-service.dart';
@@ -51,6 +50,9 @@ class ApiInterceptor implements InterceptorContract {
     } else if (data.statusCode == 401) {
       await Common.deleteToken();
       await Common.deleteUserId();
+      return Future.error('Unexpected error 😢');
+    } else if (data.statusCode == 500) {
+      AlertService().showToast(errorData['message'] ?? 'Unexpected error 😢');
       return Future.error('Unexpected error 😢');
     }
     return data;

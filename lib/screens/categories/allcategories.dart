@@ -71,8 +71,7 @@ class _AllCategoriesState extends State<AllCategories>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bg(context),
-      appBar:
-          appBarTransparent(context, "ALL_CATEGROIES") as PreferredSizeWidget?,
+      appBar: appBarPrimary(context, "CATEGORIES") as PreferredSizeWidget?,
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
@@ -89,10 +88,11 @@ class _AllCategoriesState extends State<AllCategories>
                   shrinkWrap: true,
                   itemCount: categoryList!.isEmpty ? 0 : categoryList!.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      childAspectRatio: MediaQuery.of(context).size.width / 420,
-                      crossAxisSpacing: 0,
-                      mainAxisSpacing: 0),
+                    crossAxisCount: 4,
+                    childAspectRatio: MediaQuery.of(context).size.width / 450,
+                    crossAxisSpacing: 0,
+                    mainAxisSpacing: 0,
+                  ),
                   itemBuilder: (BuildContext context, int index) {
                     return InkWell(
                       key: ValueKey('$index-first-category'),
@@ -100,7 +100,7 @@ class _AllCategoriesState extends State<AllCategories>
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (BuildContext context) => AllProducts(
+                            builder: (context) => AllProducts(
                               locale: widget.locale,
                               localizedValues: widget.localizedValues,
                               categoryId: categoryList![index]['_id'],

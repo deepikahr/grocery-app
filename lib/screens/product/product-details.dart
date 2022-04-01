@@ -264,7 +264,7 @@ class _ProductDetailsState extends State<ProductDetails>
         showSnackbar(onValue['message'] ?? "");
       }
       Future.delayed(Duration(milliseconds: 1500), () {
-        Navigator.of(context).pop(true);
+        Navigator.of(context).pop(onValue['response_data']);
       });
       if (onValue['response_data'] is Map) {
         Common.setCartData(onValue['response_data']);
@@ -325,7 +325,7 @@ class _ProductDetailsState extends State<ProductDetails>
     return Scaffold(
         backgroundColor: bg(context),
         key: _scaffoldKey,
-        body: isProductDetails!
+        body: isProductDetails == true
             ? SquareLoader()
             : Container(
                 height: MediaQuery.of(context).size.height,
@@ -356,7 +356,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                     ? GFCarousel(
                                         height: 340,
                                         viewportFraction: 1.0,
-                                        pagination: true,
+                                        hasPagination: true,
                                         activeIndicator: primary(context),
                                         passiveIndicator: Colors.grey,
                                         onPageChanged: (_) {
@@ -497,14 +497,15 @@ class _ProductDetailsState extends State<ProductDetails>
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
-                                      Expanded(
-                                          flex: 7,
-                                          child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 20, right: 20),
-                                              child: titleThreeLine(
-                                                  '${productDetail['title'][0].toUpperCase()}${productDetail['title'].substring(1)}',
-                                                  context))),
+                                      if (productDetail['title'] != null)
+                                        Expanded(
+                                            flex: 7,
+                                            child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 20, right: 20),
+                                                child: titleThreeLine(
+                                                    '${productDetail['title'][0].toUpperCase()}${productDetail['title'].substring(1)}',
+                                                    context))),
                                       Expanded(
                                         flex: 3,
                                         child: Padding(
@@ -822,7 +823,7 @@ class _ProductDetailsState extends State<ProductDetails>
                       context,
                       '(${quantity.toString()})  ',
                       calculateTotal(),
-                      "ADD_TO_CART",
+                      isProductAlredayInCart == true ? "UPDATE" : "ADD_TO_CART",
                       Icon(Icons.shopping_cart, color: Colors.black),
                       addProductTocart),
                 ),

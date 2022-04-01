@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:readymadeGroceryApp/model/subscriptionBottomSheet.dart';
 import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/subsription/add_edit_subscriptionPage.dart';
@@ -8,7 +7,6 @@ import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/cardOverlay.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
@@ -44,7 +42,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      backgroundColor: bg(context),
+      backgroundColor: Colors.transparent,
       key: _scaffoldKey,
       body: Container(
         width: MediaQuery.of(context).size.width * 0.5,
@@ -162,6 +160,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                                     barlowregularlack(context))
                               ],
                             ),
+                            SizedBox(height: 10),
                             InkWell(
                                 onTap: () async {
                                   if (widget.productData!['variant'].length >

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:readymadeGroceryApp/main.dart';
 
 class Styles {
@@ -12,11 +13,13 @@ class Styles {
           unselectedItemColor: greyc2,
           selectedItemColor: primarybg),
       textSelectionTheme: TextSelectionThemeData(
+        selectionColor: Colors.transparent,
+        selectionHandleColor: Colors.transparent,
         cursorColor: isDarkTheme ? greyb2 : darkbg,
       ),
       appBarTheme: isDarkTheme
-          ? AppBarTheme(brightness: Brightness.dark)
-          : AppBarTheme(brightness: Brightness.light),
+          ? AppBarTheme(systemOverlayStyle: SystemUiOverlayStyle.dark)
+          : AppBarTheme(systemOverlayStyle: SystemUiOverlayStyle.light),
     );
   }
 }
@@ -1142,11 +1145,12 @@ TextStyle textBarlowSemiBoldBlackbig(context) {
 }
 
 TextStyle textAddressLocation(context) {
+  final themeChange = Provider.of<DarkThemeProvider>(context);
   return TextStyle(
     fontSize: 20.0,
     fontWeight: FontWeight.bold,
     fontFamily: 'BarlowSemiBold',
-    color: dark(context),
+    color: themeChange.darkTheme ? Colors.white : whiteBg(context),
   );
 }
 
@@ -1617,6 +1621,14 @@ TextStyle textBarlowRegularrGreen(context) {
   );
 }
 
+TextStyle textBarlowRegularrGreenWF(context) {
+  return TextStyle(
+    fontSize: 18.0,
+    fontWeight: FontWeight.w300,
+    color: green,
+  );
+}
+
 TextStyle textBarlowRegularrGreenS(context) {
   return TextStyle(
     fontSize: 13.0,
@@ -1627,11 +1639,14 @@ TextStyle textBarlowRegularrGreenS(context) {
 }
 
 TextStyle textBarlowRegularrdarkdull(context) {
+  final themeChange = Provider.of<DarkThemeProvider>(context);
   return TextStyle(
     fontSize: 15.0,
     fontFamily: 'BarlowRegular',
-    fontWeight: FontWeight.w400,
-    color: dark(context).withOpacity(0.40),
+    fontWeight: FontWeight.w500,
+    color: themeChange.darkTheme
+        ? Colors.white.withOpacity(0.9)
+        : dark(context).withOpacity(0.50),
   );
 }
 
@@ -1644,11 +1659,12 @@ TextStyle textBarlowRegularGreen(context) {
 }
 
 TextStyle textBarlowRegularrBlacksm(context) {
+  final themeChange = Provider.of<DarkThemeProvider>(context);
   return TextStyle(
     fontSize: 12.0,
     fontFamily: 'BarlowRegular',
     fontWeight: FontWeight.w400,
-    color: dark(context).withOpacity(0.6),
+    color: themeChange.darkTheme ? Colors.white : whiteBg(context),
   );
 }
 
@@ -1735,10 +1751,12 @@ TextStyle textbarlowRegularBlack87Font14(context) {
 }
 
 TextStyle textBarlowregwhitelg(context) {
+  final themeChange = Provider.of<DarkThemeProvider>(context);
   return TextStyle(
     fontSize: 20.0,
     fontFamily: 'BarlowRegular',
-    color: Colors.white.withOpacity(0.70),
+    color:
+        themeChange.darkTheme ? Colors.white.withOpacity(0.70) : Colors.black,
   );
 }
 

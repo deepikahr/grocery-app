@@ -216,8 +216,8 @@ class _AllSubscribedState extends State<SubScriptionList> {
           GFButton(
             color: Colors.transparent,
             onPressed: () => Navigator.pop(context, false),
-            child:
-                new Text(MyLocalizations.of(context)!.getLocalizations("NO")),
+            child: new Text(MyLocalizations.of(context)!.getLocalizations("NO"),
+                style: textbarlowRegularaprimary(context)),
           ),
           GFButton(
             color: Colors.transparent,
@@ -228,8 +228,9 @@ class _AllSubscribedState extends State<SubScriptionList> {
                 Navigator.pop(context, false);
               });
             },
-            child:
-                new Text(MyLocalizations.of(context)!.getLocalizations("YES")),
+            child: new Text(
+                MyLocalizations.of(context)!.getLocalizations("YES"),
+                style: textbarlowRegularaprimary(context)),
           ),
         ],
       ),

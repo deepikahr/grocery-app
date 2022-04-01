@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import 'package:cached_network_image/cached_network_image.dart';
