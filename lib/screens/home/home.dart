@@ -303,23 +303,24 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                       ],
                     ),
                   ),
-                  InkWell(
-                    onTap: () {},
-                    child: Padding(
-                      padding: EdgeInsets.only(right: 15, left: 10),
-                      child: Icon(Icons.notifications_none),
-                    ),
-                  ),
+                  // InkWell(
+                  //   onTap: () {},
+                  //   child: Padding(
+                  //     padding: EdgeInsets.only(right: 15, left: 10),
+                  //     child: Icon(Icons.notifications_none),
+                  //   ),
+                  // ),
                 ],
               ),
             ) as PreferredSizeWidget?
           : null,
       drawer: Drawer(
         child: DrawerPage(
-            locale: widget.locale,
-            localizedValues: widget.localizedValues,
-            addressData: addressData ?? "",
-            scaffoldKey: _scaffoldKey),
+          locale: widget.locale,
+          localizedValues: widget.localizedValues,
+          addressData: addressData ?? "",
+          scaffoldKey: _scaffoldKey,
+        ),
       ),
       body: currencyLoading ? SquareLoader() : _screens[currentIndex!],
       bottomNavigationBar: BottomNavigationBar(
