@@ -8,7 +8,7 @@ import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/cart-service.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/error-service.dart';
 import 'package:readymadeGroceryApp/screens/checkout/checkout.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
@@ -17,7 +17,7 @@ import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
-SentryError sentryError = new SentryError();
+ReportError reportError = new ReportError();
 
 class MyCart extends StatefulWidget {
   final Map? localizedValues;
@@ -76,7 +76,7 @@ class _MyCartState extends State<MyCart> {
           isMinAmountCheckLoading = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -111,7 +111,7 @@ class _MyCartState extends State<MyCart> {
           isGetTokenLoading = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -185,7 +185,7 @@ class _MyCartState extends State<MyCart> {
           cartItem!['products'][i]['isQuantityUpdating'] = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -235,7 +235,7 @@ class _MyCartState extends State<MyCart> {
           isLoadingCart = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -262,7 +262,7 @@ class _MyCartState extends State<MyCart> {
           cartItem = null;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -276,7 +276,7 @@ class _MyCartState extends State<MyCart> {
         });
       }
     }).catchError((error) {
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -324,7 +324,7 @@ class _MyCartState extends State<MyCart> {
           isCheckProductAvailableOrNot = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 

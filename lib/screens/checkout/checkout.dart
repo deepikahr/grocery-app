@@ -12,7 +12,7 @@ import 'package:readymadeGroceryApp/service/coupon-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/locationService.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/error-service.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/address-service.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
@@ -22,7 +22,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import '../../service/constants.dart';
 
-SentryError sentryError = new SentryError();
+ReportError reportError = new ReportError();
 
 class Checkout extends StatefulWidget {
   final locale, id;
@@ -93,7 +93,7 @@ class _CheckoutState extends State<Checkout> {
           shippingMethodsList = [];
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -139,7 +139,7 @@ class _CheckoutState extends State<Checkout> {
           isLoadingCart = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -181,7 +181,7 @@ class _CheckoutState extends State<Checkout> {
             isDeliveryChargeLoading = true;
           });
         }
-        sentryError.reportError(error, null);
+        reportError.reportError(error, null);
       });
     }
     return value;
@@ -216,7 +216,7 @@ class _CheckoutState extends State<Checkout> {
             isUpdateShippingMethodLoading = false;
           });
         }
-        sentryError.reportError(error, null);
+        reportError.reportError(error, null);
       });
     }
     return value;
@@ -244,7 +244,7 @@ class _CheckoutState extends State<Checkout> {
           deliverySlotsLoading = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -300,7 +300,7 @@ class _CheckoutState extends State<Checkout> {
           addressLoading = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -314,7 +314,7 @@ class _CheckoutState extends State<Checkout> {
         });
       }
     }).catchError((error) {
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -378,7 +378,7 @@ class _CheckoutState extends State<Checkout> {
             couponApplied = false;
           });
         }
-        sentryError.reportError(error, null);
+        reportError.reportError(error, null);
       });
     }
   }
@@ -402,7 +402,7 @@ class _CheckoutState extends State<Checkout> {
           isCouponLoading = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 

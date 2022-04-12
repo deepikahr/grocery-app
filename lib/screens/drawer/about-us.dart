@@ -4,11 +4,11 @@ import 'package:getwidget/getwidget.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import '../../service/auth-service.dart';
-import '../../service/sentry-service.dart';
+import '../../service/error-service.dart';
 import '../../widgets/loader.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 
-SentryError sentryError = new SentryError();
+ReportError reportError = new ReportError();
 
 class AboutUs extends StatefulWidget {
   AboutUs({Key? key, this.locale, this.localizedValues}) : super(key: key);
@@ -51,7 +51,7 @@ class _AboutUsState extends State<AboutUs> {
             isAboutUsData = false;
           });
         }
-        sentryError.reportError(error, stackTrace);
+        reportError.reportError(error, stackTrace);
       }
     }).catchError((error) {
       if (mounted) {
@@ -59,7 +59,7 @@ class _AboutUsState extends State<AboutUs> {
           isAboutUsData = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -83,7 +83,7 @@ class _AboutUsState extends State<AboutUs> {
             isBusinessInfoData = false;
           });
         }
-        sentryError.reportError(error, stackTrace);
+        reportError.reportError(error, stackTrace);
       }
     }).catchError((error) {
       if (mounted) {
@@ -91,7 +91,7 @@ class _AboutUsState extends State<AboutUs> {
           isBusinessInfoData = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 

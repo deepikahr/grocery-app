@@ -4,13 +4,13 @@ import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/error-service.dart';
 import 'package:readymadeGroceryApp/service/address-service.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
-SentryError sentryError = new SentryError();
+ReportError reportError = new ReportError();
 
 class AddAddress extends StatefulWidget {
   const AddAddress(
@@ -92,7 +92,7 @@ class _AddAddressState extends State<AddAddress> {
             isAddAddressLoading = false;
           });
         }
-        sentryError.reportError(onError, null);
+        reportError.reportError(onError, null);
       });
     }
   }

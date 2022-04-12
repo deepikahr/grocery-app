@@ -5,7 +5,7 @@ import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/orderSevice.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/error-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:intl/intl.dart';
@@ -13,7 +13,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import '../../style/style.dart';
 
-SentryError sentryError = new SentryError();
+ReportError reportError = new ReportError();
 
 class Orders extends StatefulWidget {
   final String? userID, locale;
@@ -109,7 +109,7 @@ class _OrdersState extends State<Orders> {
             isNextPageLoading = false;
           });
         }
-        sentryError.reportError(error, null);
+        reportError.reportError(error, null);
       });
     }
   }

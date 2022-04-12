@@ -4,13 +4,13 @@ import 'package:getwidget/getwidget.dart';
 import 'package:readymadeGroceryApp/screens/authe/otp.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/otp-service.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/error-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
-SentryError sentryError = new SentryError();
+ReportError reportError = new ReportError();
 
 class ForgotPassword extends StatefulWidget {
   ForgotPassword({Key? key, this.title, this.locale, this.localizedValues})
@@ -89,7 +89,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             isVerifyMobileLoading = false;
           });
         }
-        sentryError.reportError(error, null);
+        reportError.reportError(error, null);
       });
     } else {
       if (mounted) {

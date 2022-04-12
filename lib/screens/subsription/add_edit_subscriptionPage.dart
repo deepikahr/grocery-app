@@ -19,9 +19,9 @@ import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
-import '../../service/sentry-service.dart';
+import '../../service/error-service.dart';
 
-SentryError sentryError = new SentryError();
+ReportError reportError = new ReportError();
 
 class AddEditSubscriptionPage extends StatefulWidget {
   AddEditSubscriptionPage(
@@ -583,7 +583,7 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
           addressLoading = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -597,7 +597,7 @@ class _AddEditSubscriptionPageState extends State<AddEditSubscriptionPage> {
         });
       }
     }).catchError((error) {
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 

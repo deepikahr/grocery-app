@@ -1,0 +1,83 @@
+{
+  "project_info": {
+    "project_number": "972424189072",
+    "firebase_url": "https://ngstarter.firebaseio.com",
+    "project_id": "ngstarter",
+    "storage_bucket": "ngstarter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:972424189072:android:d1d141050a92142ec1f415",
+        "android_client_info": {
+          "package_name": "com.ionicfirebaseapp.readymadegroceryuserapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "972424189072-d83fah5id7dhauc9m8feknbp6uo1d1f7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFMRI7aoVMSzIB1cpq7GvdNTBe-8cGjiM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "115924252093291745918",
+              "client_type": 3
+            },
+            {
+              "client_id": "972424189072-r4s19trprb5504chskcash81ti2mmlls.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ionicfirebaseapp.autowork"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:972424189072:android:bcf8e4997e5a4458c1f415",
+        "android_client_info": {
+          "package_name": "com.pietechsolution.testcrashlytics"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "972424189072-d83fah5id7dhauc9m8feknbp6uo1d1f7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFMRI7aoVMSzIB1cpq7GvdNTBe-8cGjiM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "115924252093291745918",
+              "client_type": 3
+            },
+            {
+              "client_id": "972424189072-r4s19trprb5504chskcash81ti2mmlls.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ionicfirebaseapp.autowork"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

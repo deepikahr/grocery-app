@@ -16,7 +16,7 @@ import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/locationService.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/error-service.dart';
 import 'package:readymadeGroceryApp/service/socket.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
@@ -26,7 +26,7 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import '../../main.dart';
 import '../categories/allcategories.dart';
 
-SentryError sentryError = new SentryError();
+ReportError reportError = new ReportError();
 
 class Home extends StatefulWidget {
   final int? currentIndex;
@@ -118,7 +118,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         await Common.getCurrency()
             .then((value) => setState(() => currency = value));
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -143,7 +143,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           getTokenValue = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 

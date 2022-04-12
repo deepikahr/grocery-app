@@ -1,7 +1,7 @@
 import 'package:readymadeGroceryApp/service/cart-service.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/error-service.dart';
 
-SentryError sentryError = new SentryError();
+ReportError reportError = new ReportError();
 
 class AddToCart {
   static Future<Map<String, dynamic>> addAndUpdateProductMethod(

@@ -7,7 +7,7 @@ import 'package:readymadeGroceryApp/screens/drawer/edit-address.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/locationService.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/error-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/service/address-service.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
@@ -15,7 +15,7 @@ import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
-SentryError sentryError = new SentryError();
+ReportError reportError = new ReportError();
 
 class Address extends StatefulWidget {
   final Map? localizedValues;
@@ -59,7 +59,7 @@ class _AddressState extends State<Address> {
           addressLoading = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -83,7 +83,7 @@ class _AddressState extends State<Address> {
           isLocationLoading = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -102,7 +102,7 @@ class _AddressState extends State<Address> {
           addressLoading = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
