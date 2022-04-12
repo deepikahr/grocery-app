@@ -11,7 +11,7 @@ import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/error-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -20,7 +20,7 @@ import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import 'package:readymadeGroceryApp/widgets/product_gridcard.dart';
 import 'package:readymadeGroceryApp/widgets/subscription_card.dart';
 
-SentryError sentryError = new SentryError();
+ReportError reportError = new ReportError();
 
 class Store extends StatefulWidget {
   final Map? localizedValues;
@@ -94,7 +94,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
           }
         }
       }).catchError((error) {
-        sentryError.reportError(error, null);
+        reportError.reportError(error, null);
       });
     });
   }
@@ -110,7 +110,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
         Common.setCartData(null);
       }
     }).catchError((error) {
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -162,7 +162,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
           isBannerLoading = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -213,7 +213,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
           isLoadingAllData = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -259,7 +259,7 @@ class _StoreState extends State<Store> with TickerProviderStateMixin {
           isGetSubcribeLoading = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 

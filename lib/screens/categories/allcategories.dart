@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/error-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/categoryBlock.dart';
@@ -9,7 +9,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../product/all_products.dart';
 
-SentryError sentryError = new SentryError();
+ReportError reportError = new ReportError();
 
 class AllCategories extends StatefulWidget {
   final Map? localizedValues;
@@ -63,7 +63,7 @@ class _AllCategoriesState extends State<AllCategories>
           isLoadingcategoryList = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 

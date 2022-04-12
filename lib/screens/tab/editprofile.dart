@@ -6,7 +6,7 @@ import 'package:readymadeGroceryApp/screens/authe/change-mobile-number.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/error-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
@@ -19,7 +19,7 @@ import 'package:async/async.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:image_picker/image_picker.dart';
 
-SentryError sentryError = new SentryError();
+ReportError reportError = new ReportError();
 
 class EditProfile extends StatefulWidget {
   final Map<String, dynamic>? userInfo;
@@ -72,7 +72,7 @@ class _EditProfileState extends State<EditProfile> {
           isLoading = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -95,7 +95,7 @@ class _EditProfileState extends State<EditProfile> {
           isPicUploading = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -131,7 +131,7 @@ class _EditProfileState extends State<EditProfile> {
             profileEdit = false;
           });
         }
-        sentryError.reportError(error, null);
+        reportError.reportError(error, null);
       });
     }
   }
@@ -184,7 +184,7 @@ class _EditProfileState extends State<EditProfile> {
           isPicUploading = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
 
     request.headers['Authorization'] = 'bearer $token';
@@ -201,7 +201,7 @@ class _EditProfileState extends State<EditProfile> {
           isPicUploading = true;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -276,7 +276,7 @@ class _EditProfileState extends State<EditProfile> {
           isPicUploading = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 

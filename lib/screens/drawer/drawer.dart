@@ -14,14 +14,14 @@ import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/error-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import 'package:share/share.dart';
 import '../../main.dart';
 import '../tab/saveditems.dart';
 
-SentryError sentryError = new SentryError();
+ReportError reportError = new ReportError();
 
 class DrawerPage extends StatefulWidget {
   DrawerPage(

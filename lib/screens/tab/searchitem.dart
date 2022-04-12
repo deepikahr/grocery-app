@@ -8,7 +8,7 @@ import 'package:readymadeGroceryApp/screens/product/product-details.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/error-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
@@ -17,7 +17,7 @@ import 'package:readymadeGroceryApp/widgets/product_gridcard.dart';
 
 import 'mycart.dart';
 
-SentryError sentryError = new SentryError();
+ReportError reportError = new ReportError();
 
 class SearchItem extends StatefulWidget {
   final String? currency, locale;
@@ -83,7 +83,7 @@ class _SearchItemState extends State<SearchItem> {
           isTokenGetLoading = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -151,7 +151,7 @@ class _SearchItemState extends State<SearchItem> {
           isSearching = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 

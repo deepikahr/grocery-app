@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import '../../service/auth-service.dart';
-import '../../service/sentry-service.dart';
+import '../../service/error-service.dart';
 import '../../widgets/loader.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 
-SentryError sentryError = new SentryError();
+ReportError reportError = new ReportError();
 
 class TandCandPrivacyPolicy extends StatefulWidget {
   TandCandPrivacyPolicy(
@@ -50,7 +50,7 @@ class _TandCandPrivacyPolicyState extends State<TandCandPrivacyPolicy> {
             isTandCandPPloading = false;
           });
         }
-        sentryError.reportError(error, stackTrace);
+        reportError.reportError(error, stackTrace);
       }
     }).catchError((error) {
       if (mounted) {
@@ -58,7 +58,7 @@ class _TandCandPrivacyPolicyState extends State<TandCandPrivacyPolicy> {
           isTandCandPPloading = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 

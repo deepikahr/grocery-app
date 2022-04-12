@@ -4,13 +4,13 @@ import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/error-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
-SentryError sentryError = new SentryError();
+ReportError reportError = new ReportError();
 
 class ChangePassword extends StatefulWidget {
   final String? token, locale;
@@ -93,7 +93,7 @@ class _ChangePasswordState extends State<ChangePassword> {
               isChangePasswordLoading = false;
             });
           }
-          sentryError.reportError(error, null);
+          reportError.reportError(error, null);
         });
       }
     } else {

@@ -8,10 +8,10 @@ import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
-import '../../service/sentry-service.dart';
+import '../../service/error-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 
-SentryError sentryError = new SentryError();
+ReportError reportError = new ReportError();
 
 class SubscriptionDetails extends StatefulWidget {
   SubscriptionDetails(
@@ -59,7 +59,7 @@ class _SubscriptionDetailsState extends State<SubscriptionDetails> {
           isGetSubscribedProductLoading = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 

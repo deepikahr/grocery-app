@@ -11,13 +11,13 @@ import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/error-service.dart';
 import 'package:readymadeGroceryApp/service/fav-service.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
-SentryError sentryError = new SentryError();
+ReportError reportError = new ReportError();
 
 class Variants {
   const Variants(this.id, this.price, this.unit, this.productstock);
@@ -149,7 +149,7 @@ class _ProductDetailsState extends State<ProductDetails>
           productDetail = null;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -178,7 +178,7 @@ class _ProductDetailsState extends State<ProductDetails>
         }
       }
     }).catchError((error) {
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -197,7 +197,7 @@ class _ProductDetailsState extends State<ProductDetails>
         isFavProductLoading = false;
         productDetail['isFavourite'] = false;
       });
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -217,7 +217,7 @@ class _ProductDetailsState extends State<ProductDetails>
         productDetail['isFavourite'] = true;
         isFavProductLoading = false;
       });
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -277,7 +277,7 @@ class _ProductDetailsState extends State<ProductDetails>
           addProductTocart = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 

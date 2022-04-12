@@ -1,4 +1,8 @@
 import 'dart:async';
+import 'dart:isolate';
+import 'dart:io';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
@@ -12,34 +16,49 @@ import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/constants.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/error-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 export 'package:flutter/services.dart' show Brightness;
 
-SentryError sentryError = new SentryError();
+ReportError reportError = new ReportError();
 
 void main() {
   initializeMain(isTest: false);
 }
 
 void initializeMain({bool? isTest}) async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await FlutterConfig.loadEnvVariables();
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarBrightness: Brightness.dark,
-      statusBarIconBrightness: Brightness.dark));
-  AlertService().checkConnectionMethod();
-  if (Constants.stripKey != null && Constants.stripKey!.isNotEmpty) {
-    Stripe.publishableKey = Constants.stripKey!;
-    await Stripe.instance.applySettings();
-  }
-  runZonedGuarded(() {
+  runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+    // The following lines are the same as previously explained in "Handling uncaught errors"
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+    // To catch errors that happen outside of the Flutter context
+    Isolate.current.addErrorListener(RawReceivePort((pair) async {
+      final List<dynamic> errorAndStacktrace = pair;
+      await FirebaseCrashlytics.instance.recordError(
+        errorAndStacktrace.first,
+        errorAndStacktrace.last,
+      );
+    }).sendPort);
+
+    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+
+    await FlutterConfig.loadEnvVariables();
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarBrightness: Brightness.dark,
+        statusBarIconBrightness: Brightness.dark));
+    AlertService().checkConnectionMethod();
+    if (Constants.stripKey != null && Constants.stripKey!.isNotEmpty) {
+      Stripe.publishableKey = Constants.stripKey!;
+      await Stripe.instance.applySettings();
+    }
+
     runApp(MainScreen());
     return Future.value(null);
   }, (error, stackTrace) {
-    sentryError.reportError(error, stackTrace);
+    reportError.reportError(error, stackTrace);
   });
   initializeLanguage(isTest: isTest);
 }
@@ -63,7 +82,7 @@ void getToken() async {
       });
     }
   }).catchError((error) {
-    sentryError.reportError(error, null);
+    reportError.reportError(error, null);
   });
 }
 
@@ -71,7 +90,7 @@ void userInfoMethod() async {
   await LoginService.getUserInfo().then((onValue) async {
     await Common.setUserID(onValue['response_data']['_id']);
   }).catchError((error) {
-    sentryError.reportError(error, null);
+    reportError.reportError(error, null);
   });
 }
 
@@ -84,6 +103,12 @@ Future<void> configLocalNotification() async {
     await Common.setPlayerID(playerId);
     getToken();
   }
+
+  ///test
+  // Use FirebaseCrashlytics to throw an error. Use this for
+  // confirmation that errors are being correctly reported.
+  //sleep(const Duration(seconds: 5));
+  //FirebaseCrashlytics.instance.crash();
 }
 
 class MainScreen extends StatefulWidget {

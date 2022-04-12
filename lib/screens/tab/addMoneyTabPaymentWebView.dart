@@ -53,7 +53,7 @@ class _WebViewAddMoneyTapPayState extends State<WebViewAddMoneyTapPay> {
         });
       }
     }).catchError((error) {
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 

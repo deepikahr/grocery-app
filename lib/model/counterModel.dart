@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/error-service.dart';
 
-SentryError sentryError = new SentryError();
+ReportError reportError = new ReportError();
 
 class CounterModel with ChangeNotifier {
   Map? cartData;

@@ -4,7 +4,7 @@ import 'package:readymadeGroceryApp/screens/authe/login.dart';
 import 'package:readymadeGroceryApp/screens/home/home.dart';
 import 'package:readymadeGroceryApp/screens/product/product-details.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/error-service.dart';
 import 'package:readymadeGroceryApp/service/fav-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
@@ -13,7 +13,7 @@ import 'package:readymadeGroceryApp/widgets/loader.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 import 'package:readymadeGroceryApp/widgets/product_gridcard.dart';
 
-SentryError sentryError = new SentryError();
+ReportError reportError = new ReportError();
 
 class SavedItems extends StatefulWidget {
   final Map? localizedValues;
@@ -60,7 +60,7 @@ class _SavedItemsState extends State<SavedItems> {
           favProductList = [];
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -95,7 +95,7 @@ class _SavedItemsState extends State<SavedItems> {
           isGetTokenLoading = false;
         });
       }
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
