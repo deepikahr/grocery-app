@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/product-service.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/error-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/loader.dart';
@@ -10,7 +10,7 @@ import 'package:readymadeGroceryApp/widgets/subscription_card.dart';
 import '../../style/style.dart';
 import '../../widgets/loader.dart';
 
-SentryError sentryError = new SentryError();
+ReportError reportError = new ReportError();
 
 class AllSubscriptionProductsListPage extends StatefulWidget {
   final Map? localizedValues;
@@ -104,7 +104,7 @@ class _AllSubscriptionProductsListPageState
             isNextPageLoading = false;
           });
         }
-        sentryError.reportError(error, null);
+        reportError.reportError(error, null);
       });
     }
   }

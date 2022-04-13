@@ -6,13 +6,13 @@ import 'package:readymadeGroceryApp/service/auth-service.dart';
 import 'package:readymadeGroceryApp/service/common.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/otp-service.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/error-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
-SentryError sentryError = new SentryError();
+ReportError reportError = new ReportError();
 
 class ChangeMobileNumberOtpVerify extends StatefulWidget {
   ChangeMobileNumberOtpVerify(
@@ -115,7 +115,7 @@ class _ChangeMobileNumberOtpVerifyState
               isOtpVerifyLoading = false;
             });
           }
-          sentryError.reportError(error, null);
+          reportError.reportError(error, null);
         });
       } else {
         return;

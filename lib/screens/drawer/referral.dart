@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
-import '../../service/sentry-service.dart';
+import '../../service/error-service.dart';
 import '../../style/style.dart';
 
-SentryError sentryError = new SentryError();
+ReportError reportError = new ReportError();
 
 class ReferralPage extends StatefulWidget {
   ReferralPage({Key? key, this.locale, this.localizedValues}) : super(key: key);

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/orderSevice.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/error-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 
-SentryError sentryError = new SentryError();
+ReportError reportError = new ReportError();
 
 class RateDelivery extends StatefulWidget {
   final Map? localizedValues, orderHistory;
@@ -55,7 +55,7 @@ class _RateDeliveryState extends State<RateDelivery> {
             isRatingLoading = false;
           });
         }
-        sentryError.reportError(error, null);
+        reportError.reportError(error, null);
       });
     }
   }

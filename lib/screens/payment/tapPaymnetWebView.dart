@@ -54,7 +54,7 @@ class _WebViewOrderTapPayState extends State<WebViewOrderTapPay> {
         });
       }
     }).catchError((error) {
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 
@@ -77,7 +77,7 @@ class _WebViewOrderTapPayState extends State<WebViewOrderTapPay> {
             (Route<dynamic> route) => false);
       }
     }).catchError((error) {
-      sentryError.reportError(error, null);
+      reportError.reportError(error, null);
     });
   }
 

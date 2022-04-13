@@ -4,13 +4,13 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:readymadeGroceryApp/screens/authe/resetPas.dart';
 import 'package:readymadeGroceryApp/service/localizations.dart';
 import 'package:readymadeGroceryApp/service/otp-service.dart';
-import 'package:readymadeGroceryApp/service/sentry-service.dart';
+import 'package:readymadeGroceryApp/service/error-service.dart';
 import 'package:readymadeGroceryApp/style/style.dart';
 import 'package:readymadeGroceryApp/widgets/appBar.dart';
 import 'package:readymadeGroceryApp/widgets/button.dart';
 import 'package:readymadeGroceryApp/widgets/normalText.dart';
 
-SentryError sentryError = new SentryError();
+ReportError reportError = new ReportError();
 
 class Otp extends StatefulWidget {
   Otp(
@@ -129,7 +129,7 @@ class _OtpState extends State<Otp> {
               isOtpVerifyLoading = false;
             });
           }
-          sentryError.reportError(error, null);
+          reportError.reportError(error, null);
         });
       } else {
         return;
